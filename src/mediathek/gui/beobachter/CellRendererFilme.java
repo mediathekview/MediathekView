@@ -1,0 +1,117 @@
+/*    
+ *    MediathekView
+ *    Copyright (C) 2008   W. Xaver
+ *    W.Xaver[at]googlemail.com
+ *    http://zdfmediathk.sourceforge.net/
+ *    
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package mediathek.gui.beobachter;
+
+import java.awt.Component;
+import java.awt.Font;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import mediathek.Log;
+import mediathek.controller.io.History;
+import mediathek.controller.io.starter.Starts;
+import mediathek.daten.DDaten;
+import mediathek.daten.DatenFilm;
+import mediathek.daten.ListeFilme;
+import mediathek.tool.GuiKonstanten;
+
+public class CellRendererFilme extends DefaultTableCellRenderer {
+
+    private DDaten ddaten;
+    private History history = null;
+
+    public CellRendererFilme(DDaten d) {
+        ddaten = d;
+        history = ddaten.history;
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(
+            JTable table,
+            Object value,
+            boolean isSelected,
+            boolean hasFocus,
+            int row,
+            int column) {
+        try {
+            setBackground(null);
+            setForeground(null);
+            setFont(null);
+            super.getTableCellRendererComponent(
+                    table, value, isSelected, hasFocus, row, column);
+            int r = table.convertRowIndexToModel(row);
+            String url = table.getModel().getValueAt(r, DatenFilm.FILM_URL_NR).toString();
+            boolean live = table.getModel().getValueAt(r, DatenFilm.FILM_THEMA_NR).equals(ListeFilme.THEMA_LIVE);
+            Starts s = ddaten.starterClass.getStart(url);
+            if (s != null) {
+                if (s.download.getQuelle() == Starts.QUELLE_BUTTON) {
+                    switch (s.status) {
+                        case Starts.STATUS_INIT:
+                            if (isSelected) {
+                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
+                            } else {
+                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
+                            }
+                            break;
+                        case Starts.STATUS_RUN:
+                            if (isSelected) {
+                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
+                            } else {
+                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
+                            }
+                            break;
+                        case Starts.STATUS_FERTIG:
+                            if (isSelected) {
+                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
+                            } else {
+                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
+                            }
+                            break;
+                        case Starts.STATUS_ERR:
+                            if (isSelected) {
+                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
+                            } else {
+                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+                            }
+                            break;
+                    }
+                }
+            } else {
+                // nur wenn kein Start vorhanden, also der Film gerade nicht läuft
+                if (!live /* bei livestreams kein gesehen anzeigen */) {
+                    if (history.contains(DatenFilm.getUrlOrg(table.getModel().getValueAt(r, DatenFilm.FILM_URL_RTMP_NR).toString(),
+                            table.getModel().getValueAt(r, DatenFilm.FILM_URL_ORG_NR).toString(),
+                            table.getModel().getValueAt(r, DatenFilm.FILM_URL_NR).toString()))) {
+                        if (isSelected) {
+                            setBackground(GuiKonstanten.FARBE_GRAU_SEL);
+                        } else {
+                            setBackground(GuiKonstanten.FARBE_GRAU);
+                        }
+                    }
+                } else if (live) {
+                    setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
+                    setForeground(GuiKonstanten.DOWNLOAD_FARBE_LIVE);
+                }
+            }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(this.getClass().getName(), ex);
+        }
+        return this;
+    }
+}

@@ -1,0 +1,296 @@
+/*    
+ *    MediathekView
+ *    Copyright (C) 2008   W. Xaver
+ *    W.Xaver[at]googlemail.com
+ *    http://zdfmediathk.sourceforge.net/
+ *    
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package mediathek.gui.dialog;
+
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import mediathek.daten.DDaten;
+import mediathek.daten.DatenAbo;
+import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.GuiFunktionen;
+
+public class DialogEditAbo extends javax.swing.JDialog {
+
+    private DDaten daten;
+    private DatenAbo aktAbo;
+    private JTextField[] textfeldListe;
+    private JComboBox comboboxProgramm = new JComboBox();
+    private JComboBox comboboxSender = new JComboBox();
+    private JCheckBox checkBoxExakt = new JCheckBox();
+    private JCheckBox checkBoxEingeschaltet = new JCheckBox();
+    public boolean ok = false;
+//    private boolean einmal = false;
+
+    /** Creates new form DialogSerienbrief
+     *
+     * @param parent
+     * @param modal
+     * @param d Daten
+     * @param aktA aktuelles Abo
+     */
+    public DialogEditAbo(java.awt.Frame parent, boolean modal, DDaten d, DatenAbo aktA) {
+        super(parent, modal);
+        initComponents();
+        daten = d;
+        aktAbo = aktA;
+        comboboxProgramm.setModel(new javax.swing.DefaultComboBoxModel(daten.listePgruppe.getListeAbo().getObjectDataCombo()));
+        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel(GuiFunktionen.addLeerListe(DDaten.filmeLaden.getSenderNamen())));
+        jButtonBeenden.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                check();
+                beenden();
+            }
+        });
+        jButtonAbbrechen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                beenden();
+            }
+        });
+        new EscBeenden(this) {
+
+            @Override
+            public void beenden_() {
+                beenden();
+            }
+        };
+        setExtra();
+    }
+
+    private void setExtra() {
+        textfeldListe = new JTextField[DatenAbo.ABO_MAX_ELEM];
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(5, 10, 10, 5);
+        jPanelExtra.setLayout(gridbag);
+        int zeile = 0;
+        for (int i = 0; i < DatenAbo.ABO_MAX_ELEM; ++i) {
+            addExtraFeld(i, gridbag, c, jPanelExtra, aktAbo.arr);
+            ++zeile;
+            c.gridy = zeile;
+        }
+    }
+
+    private void addExtraFeld(int i, GridBagLayout gridbag, GridBagConstraints c,
+            JPanel panel, String[] item) {
+        //Label
+        c.gridx = 0;
+        c.weightx = 0;
+        JLabel label;
+        if (i == DatenAbo.ABO_TITEL_NR || i == DatenAbo.ABO_THEMA_NR || i == DatenAbo.ABO_THEMA_EXAKT_NR || i == DatenAbo.ABO_SENDER_NR) {
+            label = new JLabel("  " + DatenAbo.ABO_COLUMN_NAMES[i] + ": ");
+            label.setForeground(Color.BLUE);
+        } else {
+            label = new JLabel(DatenAbo.ABO_COLUMN_NAMES[i] + ": ");
+        }
+        gridbag.setConstraints(label, c);
+        panel.add(label);
+        //Textfeld
+        c.gridx = 1;
+        c.weightx = 10;
+        if (i == DatenAbo.ABO_PGRUPPE_NR) {
+            comboboxProgramm.setSelectedItem(item[i]);
+            //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
+            aktAbo.arr[DatenAbo.ABO_PGRUPPE_NR] = comboboxProgramm.getSelectedItem().toString();
+            comboboxProgramm.addActionListener(new BeobComboProgramm());
+            gridbag.setConstraints(comboboxProgramm, c);
+            panel.add(comboboxProgramm);
+        } else if (i == DatenAbo.ABO_SENDER_NR) {
+            comboboxSender.setSelectedItem(item[i]);
+            //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
+            aktAbo.arr[DatenAbo.ABO_SENDER_NR] = comboboxSender.getSelectedItem().toString();
+            comboboxSender.addActionListener(new BeobComboSender());
+            gridbag.setConstraints(comboboxSender, c);
+            panel.add(comboboxSender);
+        } else if (i == DatenAbo.ABO_THEMA_EXAKT_NR) {
+            checkBoxExakt.setSelected(Boolean.parseBoolean(item[i]));
+            checkBoxExakt.addActionListener(new BeobCheckbox());
+            gridbag.setConstraints(checkBoxExakt, c);
+            panel.add(checkBoxExakt);
+        } else if (i == DatenAbo.ABO_EINGESCHALTET_NR) {
+            checkBoxEingeschaltet.setSelected(Boolean.parseBoolean(item[i]));
+            checkBoxEingeschaltet.addActionListener(new BeobCheckbox());
+            gridbag.setConstraints(checkBoxEingeschaltet, c);
+            panel.add(checkBoxEingeschaltet);
+        } else {
+            JTextField textfeld = new JTextField();
+            textfeldListe[i] = textfeld;
+            if (i == DatenAbo.ABO_NR_NR
+                    || i == DatenAbo.ABO_DOWN_DATUM_NR) {
+                textfeld.setEditable(false);
+            } else {
+                textfeld.getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
+            }
+            textfeld.setText(item[i]);
+            gridbag.setConstraints(textfeld, c);
+            panel.add(textfeld);
+        }
+    }
+
+    private void check() {
+        aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR] = GuiFunktionen.replaceLeerDateiname(aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR], false /* pfadtrennerEntfernen */);
+        ok = true;
+    }
+
+    private void beenden() {
+        this.dispose();
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jPanelExtra = new javax.swing.JPanel();
+        jButtonAbbrechen = new javax.swing.JButton();
+        jButtonBeenden = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jPanelExtra.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
+        jPanelExtra.setLayout(jPanelExtraLayout);
+        jPanelExtraLayout.setHorizontalGroup(
+            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 455, Short.MAX_VALUE)
+        );
+        jPanelExtraLayout.setVerticalGroup(
+            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 238, Short.MAX_VALUE)
+        );
+
+        jScrollPane1.setViewportView(jPanelExtra);
+
+        jButtonAbbrechen.setText("Abbrechen");
+
+        jButtonBeenden.setText("Ok");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonBeenden, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonAbbrechen)))
+                .addContainerGap())
+        );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonBeenden});
+
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonBeenden)
+                    .addComponent(jButtonAbbrechen))
+                .addContainerGap())
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAbbrechen;
+    private javax.swing.JButton jButtonBeenden;
+    private javax.swing.JPanel jPanelExtra;
+    private javax.swing.JScrollPane jScrollPane1;
+    // End of variables declaration//GEN-END:variables
+
+    private class BeobachterDocumentTextfeld implements DocumentListener {
+
+        int nr;
+
+        public BeobachterDocumentTextfeld(int n) {
+            nr = n;
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        private void eingabe() {
+            daten.setGeaendertPanel();
+            aktAbo.arr[nr] = textfeldListe[nr].getText().trim();
+        }
+    }
+
+    private class BeobComboProgramm implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            daten.setGeaendertPanel();
+            aktAbo.arr[DatenAbo.ABO_PGRUPPE_NR] = comboboxProgramm.getSelectedItem().toString();
+        }
+    }
+
+    private class BeobComboSender implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            daten.setGeaendertPanel();
+            aktAbo.arr[DatenAbo.ABO_SENDER_NR] = comboboxSender.getSelectedItem().toString();
+        }
+    }
+
+    private class BeobCheckbox implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            daten.setGeaendertPanel();
+            aktAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR] = Boolean.toString(checkBoxExakt.isSelected());
+            aktAbo.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(checkBoxEingeschaltet.isSelected());
+        }
+    }
+}
