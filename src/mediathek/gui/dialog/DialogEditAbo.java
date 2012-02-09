@@ -30,12 +30,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
+import mediathek.daten.DatenPgruppe;
 import mediathek.gui.beobachter.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 
 public class DialogEditAbo extends javax.swing.JDialog {
 
-    private DDaten daten;
+    private DDaten ddaten;
     private DatenAbo aktAbo;
     private JTextField[] textfeldListe;
     private JComboBox comboboxProgramm = new JComboBox();
@@ -55,9 +56,9 @@ public class DialogEditAbo extends javax.swing.JDialog {
     public DialogEditAbo(java.awt.Frame parent, boolean modal, DDaten d, DatenAbo aktA) {
         super(parent, modal);
         initComponents();
-        daten = d;
+        ddaten = d;
         aktAbo = aktA;
-        comboboxProgramm.setModel(new javax.swing.DefaultComboBoxModel(daten.listePgruppe.getListeAbo().getObjectDataCombo()));
+        comboboxProgramm.setModel(new javax.swing.DefaultComboBoxModel(ddaten.listePgruppe.getListeAbo().getObjectDataCombo()));
         comboboxSender.setModel(new javax.swing.DefaultComboBoxModel(GuiFunktionen.addLeerListe(DDaten.filmeLaden.getSenderNamen())));
         jButtonBeenden.addActionListener(new ActionListener() {
 
@@ -117,12 +118,28 @@ public class DialogEditAbo extends javax.swing.JDialog {
         c.gridx = 1;
         c.weightx = 10;
         if (i == DatenAbo.ABO_PGRUPPE_NR) {
-            comboboxProgramm.setSelectedItem(item[i]);
-            //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
-            aktAbo.arr[DatenAbo.ABO_PGRUPPE_NR] = comboboxProgramm.getSelectedItem().toString();
-            comboboxProgramm.addActionListener(new BeobComboProgramm());
-            gridbag.setConstraints(comboboxProgramm, c);
-            panel.add(comboboxProgramm);
+            if (ddaten.listePgruppe.getListeAbo().size() <= 1) {
+                // dann nur ein Texfeld und nicht veränderbar
+                DatenPgruppe gruppe = ddaten.listePgruppe.getListeAbo().getFirst();
+                JTextField textfeld = new JTextField();
+                textfeldListe[i] = textfeld;
+                if (item[i].equals("")) {
+                    if (gruppe != null) {
+                        aktAbo.arr[DatenAbo.ABO_PGRUPPE_NR] = gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
+                    }
+                }
+                textfeld.setText(item[i]);
+                textfeld.setEditable(false);
+                gridbag.setConstraints(textfeld, c);
+                panel.add(textfeld);
+            } else {
+                comboboxProgramm.setSelectedItem(item[i]);
+                //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
+                aktAbo.arr[DatenAbo.ABO_PGRUPPE_NR] = comboboxProgramm.getSelectedItem().toString();
+                comboboxProgramm.addActionListener(new BeobComboProgramm());
+                gridbag.setConstraints(comboboxProgramm, c);
+                panel.add(comboboxProgramm);
+            }
         } else if (i == DatenAbo.ABO_SENDER_NR) {
             comboboxSender.setSelectedItem(item[i]);
             //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
@@ -185,11 +202,11 @@ public class DialogEditAbo extends javax.swing.JDialog {
         jPanelExtra.setLayout(jPanelExtraLayout);
         jPanelExtraLayout.setHorizontalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 455, Short.MAX_VALUE)
+            .addGap(0, 463, Short.MAX_VALUE)
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 238, Short.MAX_VALUE)
+            .addGap(0, 457, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(jPanelExtra);
@@ -205,7 +222,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonBeenden, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -220,7 +237,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonBeenden)
@@ -261,7 +278,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         }
 
         private void eingabe() {
-            daten.setGeaendertPanel();
+            ddaten.setGeaendertPanel();
             aktAbo.arr[nr] = textfeldListe[nr].getText().trim();
         }
     }
@@ -270,7 +287,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            daten.setGeaendertPanel();
+            ddaten.setGeaendertPanel();
             aktAbo.arr[DatenAbo.ABO_PGRUPPE_NR] = comboboxProgramm.getSelectedItem().toString();
         }
     }
@@ -279,7 +296,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            daten.setGeaendertPanel();
+            ddaten.setGeaendertPanel();
             aktAbo.arr[DatenAbo.ABO_SENDER_NR] = comboboxSender.getSelectedItem().toString();
         }
     }
@@ -288,7 +305,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            daten.setGeaendertPanel();
+            ddaten.setGeaendertPanel();
             aktAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR] = Boolean.toString(checkBoxExakt.isSelected());
             aktAbo.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(checkBoxEingeschaltet.isSelected());
         }
