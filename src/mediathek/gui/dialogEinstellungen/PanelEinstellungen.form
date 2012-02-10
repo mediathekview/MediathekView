@@ -36,11 +36,11 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="29" max="32767" attributes="0"/>
+              <EmptySpace pref="138" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -58,28 +58,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jCheckBoxHinweise" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jCheckBoxFehler" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jCheckBoxMax" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jComboBoxLook" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
+                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jComboBoxLook" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -87,12 +71,6 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jCheckBoxFehler" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jCheckBoxHinweise" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jCheckBoxMax" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jComboBoxLook" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -103,16 +81,6 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JCheckBox" name="jCheckBoxFehler">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Fehlermeldungen anzeigen"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="jCheckBoxMax">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Programmfenster maximiert starten"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="text" type="java.lang.String" value="Look and Feel:"/>
@@ -128,11 +96,6 @@
                 <StringItem index="3" value="Item 4"/>
               </StringArray>
             </Property>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="jCheckBoxHinweise">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Hinweise anzeigen"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -151,27 +114,16 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jCheckBoxFlvstreamer" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jCheckBoxAufloesung" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jSpinnerDownload" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jSpinnerDownload" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="19" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="jCheckBoxFlvstreamer" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                  <Component id="jCheckBoxAufloesung" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -193,16 +145,6 @@
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
               <SpinnerModel initial="1" maximum="9" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
             </Property>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="jCheckBoxFlvstreamer">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Flash-Filme ( RTMP-Protokoll ): Url f&#xfc;r flvstreamer vorbereiten"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="jCheckBoxAufloesung">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Filme in niedriger Aufl&#xf6;sung zeigen"/>
           </Properties>
         </Component>
       </SubComponents>

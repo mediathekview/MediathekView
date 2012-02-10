@@ -45,11 +45,11 @@ public class Konstanten {
     // Tags System
     // ################################
     public static final String SYSTEM_FEHLER_ANZEIGEN = "Fehler_anzeigen";
-    public static final int SYSTEM_FEHLER_ANZEIGEN_NR = 0;
+//    public static final int SYSTEM_FEHLER_ANZEIGEN_NR = 0;
     public static final String SYSTEM_LOOK = "System-look";
     public static final int SYSTEM_LOOK_NR = 1;
     public static final String SYSTEM_START_MAX = "Start-maximiert";
-    public static final int SYSTEM_START_MAX_NR = 2;
+//    public static final int SYSTEM_START_MAX_NR = 2;
     public static final String SYSTEM_USER_AGENT = "User-Agent";
     public static final int SYSTEM_USER_AGENT_NR = 3;
     public static final String SYSTEM_VERSION = "version";
@@ -82,7 +82,7 @@ public class Konstanten {
     public static final String SYSTEM_LEITUNG_LOW = "Leitung";
     public static final int SYSTEM_LEITUNG_LOW_NR = 16;
     public static final String SYSTEM_RTMP_FLVSTREAMER = "Rtmp-bauen";
-    public static final int SYSTEM_RTMP_FLVSTREAMER_NR = 17;
+//    public static final int SYSTEM_RTMP_FLVSTREAMER_NR = 17;
     public static final String SYSTEM_SWR_LISTE = "nr-in-liste";
     public static final int SYSTEM_SWR_LISTE_NR = 18;
     //Einstellungen Im-Export
@@ -98,17 +98,17 @@ public class Konstanten {
     public static final int SYSTEM_EXPORT_DATEI_NR = 23;
     //##############
     public static final String SYSTEM_HINWEIS_ANZEIGEN = "Hinweis_anzeigen";
-    public static final int SYSTEM_HINWEIS_ANZEIGEN_NR = 24;
+//    public static final int SYSTEM_HINWEIS_ANZEIGEN_NR = 24;
     public static final String SYSTEM_WARTEN = "warten";
     public static final int SYSTEM_WARTEN_NR = 25;
     public static final String SYSTEM_ALTE_FILME = "alte-filme";
-    public static final int SYSTEM_ALTE_FILME_NR = 26;
+//    public static final int SYSTEM_ALTE_FILME_NR = 26;
     public static final String SYSTEM_UDATE_SUCHEN = "update-suchen";
     public static final int SYSTEM_UPDATE_SUCHEN_NR = 27;
     public static final String SYSTEM_UPDATE_DATUM = "update-datum";
     public static final int SYSTEM_UPDATE_DATUM_NR = 28;
     public static final String SYSTEM_UPDATE_20 = "update-nach-20";
-    public static final int SYSTEM_UPDATE_20_NR = 29;
+//    public static final int SYSTEM_UPDATE_20_NR = 29;
     public static final String SYSTEM_IMPORT_ART_FILME = "update-filme"; // url automatisch suchen - oder nur manuell
     public static final int SYSTEM_IMPORT_ART_FILME_NR = 30;
     // Filter

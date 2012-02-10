@@ -44,9 +44,6 @@ public class PanelEinstellungen extends PanelVorlage {
         ddaten = d;
         init();
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
-        jCheckBoxFehler.addActionListener(new BeobCheckboxFehler());
-        jCheckBoxHinweise.addActionListener(new BeobHinweise());
-        jCheckBoxMax.addActionListener(new BeobCheckboxMax());
         String[] theme = new String[GuiKonstanten.THEME.length];
         for (int i = 0; i < GuiKonstanten.THEME.length; ++i) {
             theme[i] = GuiKonstanten.THEME[i][0];
@@ -82,8 +79,6 @@ public class PanelEinstellungen extends PanelVorlage {
             }
         });
         jTextFieldUserAgent.getDocument().addDocumentListener(new BeobUserAgent());
-        jCheckBoxFlvstreamer.addActionListener(new BeobRtmp());
-        jCheckBoxAufloesung.addActionListener(new BeobAufloesung());
     }
 
     @Override
@@ -91,17 +86,8 @@ public class PanelEinstellungen extends PanelVorlage {
         init();
     }
 
-    @Override
-    public void neuLadenSofort() {
-        jCheckBoxFehler.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FEHLER_ANZEIGEN_NR]));
-        jCheckBoxHinweise.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_HINWEIS_ANZEIGEN_NR]));
-    }
-
     private void init() {
         initUserAgent();
-        jCheckBoxFehler.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FEHLER_ANZEIGEN_NR]));
-        jCheckBoxHinweise.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_HINWEIS_ANZEIGEN_NR]));
-        jCheckBoxMax.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_START_MAX_NR]));
         if (Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR].equals("")) {
             jSpinnerDownload.setValue(1);
             Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] = "1";
@@ -149,16 +135,11 @@ public class PanelEinstellungen extends PanelVorlage {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel6 = new javax.swing.JPanel();
-        jCheckBoxFehler = new javax.swing.JCheckBox();
-        jCheckBoxMax = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
         jComboBoxLook = new javax.swing.JComboBox();
-        jCheckBoxHinweise = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jSpinnerDownload = new javax.swing.JSpinner();
-        jCheckBoxFlvstreamer = new javax.swing.JCheckBox();
-        jCheckBoxAufloesung = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
         jTextFieldUserAgent = new javax.swing.JTextField();
         jButtonHilfe = new javax.swing.JButton();
@@ -167,15 +148,9 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jCheckBoxFehler.setText("Fehlermeldungen anzeigen");
-
-        jCheckBoxMax.setText("Programmfenster maximiert starten");
-
         jLabel1.setText("Look and Feel:");
 
         jComboBoxLook.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jCheckBoxHinweise.setText("Hinweise anzeigen");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -183,31 +158,15 @@ public class PanelEinstellungen extends PanelVorlage {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBoxHinweise)
-                            .addComponent(jCheckBoxFehler))
-                        .addContainerGap())
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBoxMax)
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBoxLook, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(16, 16, 16))))
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBoxLook, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxFehler)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxHinweise)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxMax)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jComboBoxLook, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -220,33 +179,21 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jSpinnerDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
 
-        jCheckBoxFlvstreamer.setText("Flash-Filme ( RTMP-Protokoll ): Url für flvstreamer vorbereiten");
-
-        jCheckBoxAufloesung.setText("Filme in niedriger Auflösung zeigen");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jCheckBoxFlvstreamer)
-                        .addComponent(jCheckBoxAufloesung))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jCheckBoxFlvstreamer)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxAufloesung)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -312,21 +259,16 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(138, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonHilfe;
-    private javax.swing.JCheckBox jCheckBoxAufloesung;
-    private javax.swing.JCheckBox jCheckBoxFehler;
-    private javax.swing.JCheckBox jCheckBoxFlvstreamer;
-    private javax.swing.JCheckBox jCheckBoxHinweise;
-    private javax.swing.JCheckBox jCheckBoxMax;
     private javax.swing.JComboBox jComboBoxLook;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
@@ -346,33 +288,6 @@ public class PanelEinstellungen extends PanelVorlage {
             Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
                     String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue());
             DDaten.setGeaendert();
-        }
-    }
-
-    private class BeobCheckboxFehler implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Daten.system[Konstanten.SYSTEM_FEHLER_ANZEIGEN_NR] = Boolean.toString(jCheckBoxFehler.isSelected());
-            ddaten.setGeaendertPanel();
-        }
-    }
-
-    private class BeobHinweise implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Daten.system[Konstanten.SYSTEM_HINWEIS_ANZEIGEN_NR] = Boolean.toString(jCheckBoxHinweise.isSelected());
-            ddaten.setGeaendertPanel();
-        }
-    }
-
-    private class BeobCheckboxMax implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Daten.system[Konstanten.SYSTEM_START_MAX_NR] = Boolean.toString(jCheckBoxMax.isSelected());
-            ddaten.setGeaendertPanel();
         }
     }
 
@@ -415,23 +330,4 @@ public class PanelEinstellungen extends PanelVorlage {
         }
     }
 
-    private class BeobRtmp implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //////////////////////////////////
-            DDaten.system[Konstanten.SYSTEM_RTMP_FLVSTREAMER_NR] = Boolean.toString(jCheckBoxFlvstreamer.isSelected());
-            DDaten.setGeaendert();
-        }
-    }
-
-    private class BeobAufloesung implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            /////////////////////////////
-            DDaten.system[Konstanten.SYSTEM_LEITUNG_LOW_NR] = Boolean.toString(jCheckBoxAufloesung.isSelected());
-            DDaten.setGeaendert();
-        }
-    }
 }

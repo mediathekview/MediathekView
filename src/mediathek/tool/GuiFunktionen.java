@@ -31,6 +31,7 @@ import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.daten.*;
@@ -698,19 +699,20 @@ public class GuiFunktionen {
         try {
             ret = Integer.parseInt(DDaten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR]);
         } catch (Exception ex) {
-            ret = GuiKonstanten.UPDATE_FILME_URL;
+            Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO);
+            ret = GuiKonstanten.UPDATE_FILME_AUTO;
         }
         return ret;
     }
 
-    public static void checkFlash(DDaten daten, String url, String befehlsString) {
-        if (!System.getProperty("os.name").toLowerCase().contains("linux")) {
-            // bei Linux klappts inzwischen meist auch mit anderen Playern
-            if (url.startsWith("-r") || url.startsWith("rtmp") || url.startsWith("--host")) {
-                if (!(befehlsString.contains("flvstreamer") || befehlsString.contains("rtmpdump"))) {
-                    new Hinweis(daten).hinweisFlash();
-                }
-            }
-        }
-    }
+//    public static void checkFlash(DDaten daten, String url, String befehlsString) {
+//        if (!System.getProperty("os.name").toLowerCase().contains("linux")) {
+//            // bei Linux klappts inzwischen meist auch mit anderen Playern
+//            if (url.startsWith("-r") || url.startsWith("rtmp") || url.startsWith("--host")) {
+//                if (!(befehlsString.contains("flvstreamer") || befehlsString.contains("rtmpdump"))) {
+//                    new Hinweis(daten).hinweisFlash();
+//                }
+//            }
+//        }
+//    }
 }

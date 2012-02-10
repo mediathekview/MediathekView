@@ -64,20 +64,8 @@ public class Daten {
         if (system[Konstanten.SYSTEM_WARTEN_NR].equals("")) {
             system[Konstanten.SYSTEM_WARTEN_NR] = "1";
         }
-        if (system[Konstanten.SYSTEM_HINWEIS_ANZEIGEN_NR].equals("")) {
-            system[Konstanten.SYSTEM_HINWEIS_ANZEIGEN_NR] = Boolean.toString(true);
-        }
         if (system[Konstanten.SYSTEM_LOOK_NR].equals("")) {
             system[Konstanten.SYSTEM_LOOK_NR] = "1";
-        }
-//        if (system[Konstanten.SYSTEM_RTMP_FLVSTREAMER_NR].equals("")) {
-//            system[Konstanten.SYSTEM_RTMP_FLVSTREAMER_NR] = Boolean.toString(true);
-//        }
-        if (system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR].equals("")) {
-////////            system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(Konstanten.UPDATE_FILME_URL);
-        }
-        if (system[Konstanten.SYSTEM_FEHLER_ANZEIGEN_NR].equals("")) {
-            system[Konstanten.SYSTEM_FEHLER_ANZEIGEN_NR] = Boolean.toString(true);
         }
         //Version prüfen+++++++++++++++++++++++
         if (!system[Konstanten.SYSTEM_VERSION_NR].equals(Konstanten.VERSION)) {

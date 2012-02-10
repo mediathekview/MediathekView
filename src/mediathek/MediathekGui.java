@@ -188,7 +188,7 @@ public final class MediathekGui extends javax.swing.JFrame {
 
     private void setSize(boolean max) {
         this.pack();
-        if (max || Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_START_MAX_NR])) {
+        if (max) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else {
             int x;
