@@ -60,7 +60,7 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
             boolean eingeschaltet = abo.aboIstEingeschaltet();
             boolean exakt = abo.aboIstExakt();
             if (eingeschaltet) {
-                setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
+//                setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
 //                    setForeground(GuiKonstanten.ABO_FOREGROUND);
 //                if (isSelected) {
 //                    setBackground(GuiKonstanten.ABO_SEL);
@@ -69,11 +69,11 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
 //                }
             } else {
                 setFont(new java.awt.Font("Dialog", Font.ITALIC, 12));
-//                if (isSelected) {
-//                    setBackground(GuiKonstanten.FARBE_GRAU_SEL);
-//                } else {
-//                    setBackground(GuiKonstanten.FARBE_GRAU);
-//                }
+                if (isSelected) {
+                    setBackground(GuiKonstanten.FARBE_GRAU_SEL);
+                } else {
+                    setBackground(GuiKonstanten.FARBE_GRAU);
+                }
             }
             if (c == DatenAbo.ABO_EINGESCHALTET_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);

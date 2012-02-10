@@ -137,7 +137,7 @@ public class GuiFunktionen {
             }
         }
         if (ret.equals("")) {
-//////////////            daten.fehler.fehlerMeldung("Fehler!", "Funktionen.addsPfad: " + pfad1 + " " + pfad2);
+            Log.fehlerMeldung("GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
         }
         return ret;
     }
@@ -157,7 +157,7 @@ public class GuiFunktionen {
             ret = ret.substring(0, ret.indexOf("&"));
         }
         if (ret.equals("")) {
-//////////////////            daten.fehler.fehlerMeldung("Fehler!", "Funktionen.getDateiName: " + pfad);
+            Log.fehlerMeldung("GuiFunktionen.getDateiName", pfad);
         }
         return ret;
     }

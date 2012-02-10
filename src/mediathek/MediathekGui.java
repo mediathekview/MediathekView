@@ -32,6 +32,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import mediathek.controller.filme.BeobFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
+import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
 import mediathek.gui.*;
 import mediathek.gui.beobachter.BeobWeb;
@@ -39,6 +40,7 @@ import mediathek.gui.dialog.Dialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.gui.dialogInfos.DialogInfos;
+import mediathek.importOld.IoXmlLesen__old;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 
@@ -87,7 +89,17 @@ public final class MediathekGui extends javax.swing.JFrame {
         DDaten.debug = debug;
         jPanelInfo.setLayout(new BorderLayout());
         jPanelInfo.add(ddaten.infoPanel, BorderLayout.CENTER);
-        ddaten.allesLaden();
+        if (IoXmlLesen.einstellungenExistieren()) {
+            ddaten.allesLaden();
+        } else {
+            if (IoXmlLesen__old.altExistiert()) {
+                new IoXmlLesen__old().importOld(ddaten);
+            }
+            if (ddaten.listePgruppe.size() == 0) {
+                GuiFunktionen.addStandardprogrammeButton(ddaten);
+                GuiFunktionen.addStandardprogrammeAbo(ddaten);
+            }
+        }
         this.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
         GuiFunktionen.setLook(this);
         init();

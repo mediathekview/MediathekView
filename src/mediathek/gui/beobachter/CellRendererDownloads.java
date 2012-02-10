@@ -51,7 +51,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             setForeground(null);
             setFont(null);
             setIcon(null);
-//            setHorizontalAlignment(SwingConstants.LEADING);
+            setHorizontalAlignment(SwingConstants.LEADING);
             super.getTableCellRendererComponent(
                     table, value, isSelected, hasFocus, row, column);
             int r = table.convertRowIndexToModel(row);
@@ -110,7 +110,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 //                        setBackground(GuiKonstanten.DOWNLOAD);
 //                    }
                     setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
-//                    setHorizontalAlignment(SwingConstants.CENTER);
+                    setHorizontalAlignment(SwingConstants.CENTER);
 //                    setText("-");
                 }
             }

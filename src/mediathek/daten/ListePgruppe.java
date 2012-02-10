@@ -99,12 +99,19 @@ public class ListePgruppe extends LinkedList<DatenPgruppe> {
             while (it.hasNext()) {
                 DatenPgruppe gruppe;
                 gruppe = it.next();
-                if (gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR].equals(name)) {
-                    ret = gruppe;
+                if (gruppe.istAbo()) {
+                    if (gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR].equals(name)) {
+                        ret = gruppe;
+                    }
                 }
             }
             if (ret == null) {
-                ret = this.getFirst();
+                // die erste Pgruppe der Abos
+                ret = getListeAbo().getFirst();
+                if (ret == null) {
+                    // dann die erste Prgruppe
+                    ret = this.getFirst();
+                }
             }
         }
         return ret;

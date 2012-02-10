@@ -190,10 +190,20 @@ public class DatenDownload implements Comparable<DatenDownload> {
             name = name.replace("%t", arr[DOWNLOAD_THEMA_NR]);
             name = name.replace("%T", arr[DOWNLOAD_TITEL_NR]);
             name = name.replace("%s", arr[DOWNLOAD_SENDER_NR]);
-            name = name.replace("%n", GuiFunktionen.getDateiName(arr[DOWNLOAD_URL_NR])); //vorsichtshalber
-            name = name.replace("%N", GuiFunktionen.getDateiName(arr[DOWNLOAD_URL_NR]));
             name = name.replace("%H", DatumZeit.getHeute_yyyyMMdd());
             name = name.replace("%h", DatumZeit.getJetzt_HHMMSS());
+            name = name.replace("%n", GuiFunktionen.getDateiName(arr[DOWNLOAD_URL_NR])); //vorsichtshalber
+            name = name.replace("%N", GuiFunktionen.getDateiName(arr[DOWNLOAD_URL_NR]));
+            // prüfen ob das Suffix 2x vorkommt
+            if (name.length() > 8) {
+                String suf1 = name.substring(name.length() - 8, name.length() - 4);
+                String suf2 = name.substring(name.length() - 4);
+                if (suf1.startsWith(".") && suf2.startsWith(".")) {
+                    if (suf1.equalsIgnoreCase(suf2)) {
+                        name = name.substring(0, name.length() - 4);
+                    }
+                }
+            }
         }
         if (pfad.endsWith(File.separator)) {
             pfad = pfad.substring(0, pfad.length() - 1);

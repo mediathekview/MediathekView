@@ -45,6 +45,18 @@ public class IoXmlLesen {
         xmlDatenLesen(daten);
     }
 
+    public static boolean einstellungenExistieren() {
+        try {
+            String datei;
+            datei = Daten.getBasisVerzeichnis(false) + Konstanten.XML_DATEI;
+            if (new File(datei).exists()) {
+                return true;
+            }
+        } catch (Exception ex) {
+        }
+        return false;
+    }
+
     public static DatenPgruppe importPgruppe(String datei, boolean log) {
         DatenPgruppe datenPgruppe = null;
         try {
@@ -188,11 +200,6 @@ public class IoXmlLesen {
         } catch (Exception ex) {
             Log.fehlerMeldung("IoXml.xmlDatenLesen", ex);
         } finally {
-            //fürs update
-            if (ddaten.listePgruppe.size() == 0) {
-                GuiFunktionen.addStandardprogrammeButton(ddaten);
-                GuiFunktionen.addStandardprogrammeAbo(ddaten);
-            }
             //ListeFilmUpdateServer aufbauen
             DDaten.filmeLaden.getListeFilmUpdateServer(false).sort();
         }

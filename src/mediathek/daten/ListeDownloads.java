@@ -143,6 +143,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 //wenn nicht doppelt, dann in die Liste schreiben
                 DatenDownload download = new DatenDownload(film, Starts.QUELLE_ABO);
                 DatenPgruppe gruppe = ddaten.listePgruppe.getPgruppeAbo(abo.arr[DatenAbo.ABO_PGRUPPE_NR]);
+                if (!abo.arr[DatenAbo.ABO_PGRUPPE_NR].equals(gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR])) {
+                    // abändern
+                    abo.arr[DatenAbo.ABO_PGRUPPE_NR] = gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
+                }
                 if (gruppe != null) {
                     download.aufrufBauen(gruppe, abo);
                     this.add(download);
@@ -179,31 +183,4 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         return ret;
     }
-//    private void loeschenInListe(LinkedList<DatenDownload> liste, String url) {
-//        //prüfen, ob der Film schon in der Liste ist, (manche Filme sind in verschiedenen Themen)
-//        DatenDownload d;
-//        ListIterator<DatenDownload> it = liste.listIterator();
-//        while (it.hasNext()) {
-//            d = it.next();
-//            if (url.equals(d.arr[DatenDownload.DOWNLOAD_URL_NR])) {
-//                it.remove();
-//                break;
-//            }
-//        }
-//    }
-//
-//    private Datum getDatumForObject(DatenFilm film) {
-//        Datum tmp = new Datum(0);
-//        if (!film.arr[DatenFilm.FILM_DATUM_NR].equals("")) {
-//            try {
-//                if (!film.arr[DatenFilm.FILM_ZEIT_NR].equals("")) {
-//                    tmp.setTime(sdf_datum_zeit.parse(film.arr[DatenFilm.FILM_DATUM_NR] + film.arr[DatenFilm.FILM_ZEIT_NR]).getTime());
-//                } else {
-//                    tmp.setTime(sdf_datum.parse(film.arr[DatenFilm.FILM_DATUM_NR]).getTime());
-//                }
-//            } catch (ParseException ex) {
-//            }
-//        }
-//        return tmp;
-//    }
 }

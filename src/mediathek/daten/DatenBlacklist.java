@@ -19,8 +19,6 @@
  */
 package mediathek.daten;
 
-import mediathek.tool.GuiKonstanten;
-
 public class DatenBlacklist {
 
     public static final String BLACKLIST = "Blacklist";
