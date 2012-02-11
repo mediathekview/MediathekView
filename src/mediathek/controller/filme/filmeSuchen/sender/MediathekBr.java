@@ -27,11 +27,10 @@ import java.util.Date;
 import java.util.zip.ZipInputStream;
 import mediathek.Daten;
 import mediathek.Konstanten;
-import mediathek.daten.DatenFilm;
-import mediathek.controller.filme.FilmeLaden;
-import mediathek.daten.ListeFilme;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
 import mediathek.Log;
+import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
+import mediathek.daten.DatenFilm;
+import mediathek.daten.ListeFilme;
 
 public class MediathekBr extends MediathekReader implements Runnable {
 
@@ -84,7 +83,9 @@ public class MediathekBr extends MediathekReader implements Runnable {
         final String MUSTER_TITEL = "<nebentitel>";
         final String MUSTER_DATUM = "<beginnPlan>";
         //final String ADRESSE = "http://rd.gl-systemhaus.de/br/b7/archive/archive.xml.zip.adler32";
-        final String ADRESSE = "http://rd.gl-systemhaus.de/br/b7/listra/archive/archive.xml.zip.adler32";
+        //final String ADRESSE = "http://rd.gl-systemhaus.de/br/b7/listra/archive/archive.xml.zip.adler32";
+        //final String ADRESSE="http://mediathek-video.br.de/nc/archive/archive-1328897218.xml.zip.adler32";
+        final String ADRESSE="http://rd.gl-systemhaus.de/br/b7/nc/archive/archive.xml.zip.adler32";
         meldungProgress(ADRESSE);
         try {
             InputStreamReader inReader = null;

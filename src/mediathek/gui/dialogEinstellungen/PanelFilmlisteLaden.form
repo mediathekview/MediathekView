@@ -67,7 +67,7 @@
                       <Component id="jRadioButtonUrl" min="-2" max="-2" attributes="0"/>
                       <Component id="jRadioButtonAuto" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="62" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -89,7 +89,7 @@
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Filme beim Start und alle 75 Minuten laden, URL automatisch w&#xe4;hlen"/>
+            <Property name="text" type="java.lang.String" value="zus&#xe4;tzlich beim Programmstart laden, wenn die Filmliste &#xe4;lter als 5h ist"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="jRadioButtonUrl">
@@ -126,7 +126,7 @@
                       <Component id="jScrollPane1" alignment="0" max="32767" attributes="2"/>
                       <Group type="102" attributes="0">
                           <Component id="jRadioButtonUpdateAus" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="16" max="32767" attributes="0"/>
                           <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonUpdate" min="-2" max="-2" attributes="0"/>

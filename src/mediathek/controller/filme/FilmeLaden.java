@@ -31,6 +31,7 @@ import mediathek.controller.filme.filmeSuchen.sender.MediathekReader;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DDaten;
 import mediathek.daten.ListeFilme;
+import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
 
 public class FilmeLaden {
@@ -39,7 +40,9 @@ public class FilmeLaden {
     public static final int UPDATE_FILME_AUS = 0; // nix
     public static final int UPDATE_FILME_URL = 1; // manuell laden, Url automatisch wählen
     public static final int UPDATE_FILME_AUTO = 2; // beim Start, immer mal wieder, + Url auto
-    public static int updateStatus = UPDATE_FILME_URL;
+//    public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 1; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
+    public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
+//    public static int updateStatus = UPDATE_FILME_URL;
     public static boolean allesLaden = false;
     public static String updateUrl = "";
     // public
@@ -87,10 +90,9 @@ public class FilmeLaden {
         stop = false;
     }
 
-    public void setUpdateStatus(int sstatus) {
-        updateStatus = sstatus;
-    }
-
+//    public void setUpdateStatus(int sstatus) {
+//        updateStatus = sstatus;
+//    }
     public ListeFilmUpdateServer getListeFilmUpdateServer(boolean update) {
         if (update) {
             filmeImportieren.filmUpdateServer.suchen();

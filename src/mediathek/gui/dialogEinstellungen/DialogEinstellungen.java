@@ -57,7 +57,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         super(parent, false);
         /////////super(parent, modal);
         initComponents();
-        this.setTitle("Einstellungen zum Laden der Filme");
+        setTitle("Programmeinstellungen");
         ddaten = d;
         init();
         initTree();
@@ -97,7 +97,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         final String NAME_logfile = "erledigte Abos";
         final String NAME_programme = "Programme";
         final String NAME_programmeImportieren = "Programme importieren";
-        final String NAME_abosEinrichten = "Einrichten";
         DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode("Einstellungen");
         // allgemeine Einstellungen
         DefaultMutableTreeNode treeNodeAllgemein = new DefaultMutableTreeNode("Allgemein");
@@ -146,6 +145,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                     jPanelExtra.add(panelLeer);
                 } else {
                     String name = node.getUserObject().toString();
+                    setTitle(name);
                     if (name.equals(NAME_allgemeineEinstellungen)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungen);
@@ -179,11 +179,10 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                     } else if (name.equals(NAME_programmeImportieren)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelImportProgramme);
-                    } else if (name.equals(NAME_abosEinrichten)) {
-                        jPanelExtra.removeAll();
                     } else {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelLeer);
+                        setTitle("Programmeinstellungen");
                     }
                 }
                 jPanelExtra.updateUI();

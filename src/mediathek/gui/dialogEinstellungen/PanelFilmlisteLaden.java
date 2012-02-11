@@ -163,7 +163,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Filmliste (URL) automatisch wählen"));
 
         buttonGroup1.add(jRadioButtonAuto);
-        jRadioButtonAuto.setText("Filme beim Start und alle 75 Minuten laden, URL automatisch wählen");
+        jRadioButtonAuto.setText("zusätzlich beim Programmstart laden, wenn die Filmliste älter als 5h ist");
 
         buttonGroup1.add(jRadioButtonUrl);
         jRadioButtonUrl.setText("das Laden der Filme von Hand anstoßen, die URL automatisch wählen");
@@ -177,7 +177,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jRadioButtonUrl)
                     .addComponent(jRadioButtonAuto))
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -230,7 +230,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jRadioButtonUpdateAus)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonUpdate))
@@ -287,6 +287,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonDateiAuswaehlen;

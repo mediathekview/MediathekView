@@ -213,52 +213,25 @@ public class GuiFilme extends PanelVorlage {
 
     private void setInfo() {
         final String PAUSE = "    ";
-        String textRechts = "", textLinks = "";
+        String textRechts, textLinks;
         // Text rechts: alter/neuladenIn anzeigen
-        textRechts = "Filmeliste erstellt: " + DDaten.listeFilmeNachBlackList.metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
-        if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
-            // Auto in ein
-            textRechts += PAUSE + "Neuladen in: ";
-            String sek = String.valueOf(DDaten.filmeLaden.getTimerRestzeit() % 60);
-            String min = String.valueOf(DDaten.filmeLaden.getTimerRestzeit() / 60);
-            while (sek.length() < 2) {
-                sek = "0" + sek;
-            }
-            while (min.length() < 2) {
-                min = "0" + min;
-            }
-            textRechts += " " + min + ":" + sek + " ";
-        } else {
-            textRechts += PAUSE + "Alter: ";
-            String date;
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
-            date = DDaten.listeFilmeNachBlackList.metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
-            Date jetzt = new Date(System.currentTimeMillis());
-            Date filmDate = null;
-            try {
-                filmDate = sdf.parse(date);
-            } catch (ParseException ex) {
-            }
-            if (jetzt != null && filmDate != null) {
-                int sekunden = Math.round((jetzt.getTime() - filmDate.getTime()) / (1000));
-                boolean minus = sekunden < 0;
-                sekunden = Math.abs(sekunden);
-                int minuten = sekunden / 60;
-                String sek = String.valueOf(sekunden % 60);
-                String min = String.valueOf(minuten % 60);
-                String stu = String.valueOf(minuten / 60);
-                while (sek.length() < 2) {
-                    sek = "0" + sek;
-                }
-                while (min.length() < 2) {
-                    min = "0" + min;
-                }
-                while (stu.length() < 2) {
-                    stu = "0" + stu;
-                }
-                textRechts += " " + (minus ? "-" : "") + stu + ":" + min + ":" + sek + " ";
-            }
+        textRechts = "Filmeliste erstellt am: " + Daten.listeFilme.metaDaten[ListeFilme.FILMLISTE_DATUM_NR] + " Uhr";
+        textRechts += PAUSE + "Alter: ";
+        int sekunden = DatumZeit.alterFilmlisteSek();
+        int minuten = sekunden / 60;
+        String sek = String.valueOf(sekunden % 60);
+        String min = String.valueOf(minuten % 60);
+        String stu = String.valueOf(minuten / 60);
+        while (sek.length() < 2) {
+            sek = "0" + sek;
         }
+        while (min.length() < 2) {
+            min = "0" + min;
+        }
+        while (stu.length() < 2) {
+            stu = "0" + stu;
+        }
+        textRechts += stu + ":" + min + ":" + sek + " ";
         // Text links: Zeilen Tabelle
         String leer = "   -   ";
         int runs = ddaten.starterClass.getStarts(Starts.QUELLE_BUTTON).size();

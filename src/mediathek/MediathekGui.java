@@ -32,6 +32,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import mediathek.controller.filme.BeobFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
+import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
 import mediathek.gui.*;
@@ -41,6 +42,7 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.gui.dialogInfos.DialogInfos;
 import mediathek.importOld.IoXmlLesen__old;
+import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 
@@ -107,7 +109,9 @@ public final class MediathekGui extends javax.swing.JFrame {
         // Set up our application to respond to the Mac OS X application menu
         registerForMacOSXEvents();
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
-            DDaten.filmeLaden.filmlisteImportierenAuto();
+            if (DatumZeit.alterFilmlisteSek() > FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE) {
+                DDaten.filmeLaden.filmlisteImportierenAuto();
+            }
         }
     }
 
