@@ -23,6 +23,7 @@ import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.*;
 import mediathek.MediathekGui;
+import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.beobachter.CellRendererAbo;
@@ -49,6 +50,7 @@ public class GuiAbo extends PanelVorlage {
     public void isShown() {
         super.isShown();
         ddaten.mediathekGui.setToolbar(MediathekGui.ButtonAbo);
+        ddaten.infoPanel.setIdx(InfoPanel.IDX_GUI_ABO);
     }
 
     @Override
@@ -91,6 +93,7 @@ public class GuiAbo extends PanelVorlage {
         jTable1.setModel(tModelAbo);
         GuiFunktionen.spaltenAboSetzen(jTable1);
         setSpalten(jTable1);
+        setInfo();
     }
 
     private void aboLoeschen() {
@@ -100,6 +103,7 @@ public class GuiAbo extends PanelVorlage {
                 int delRow = jTable1.convertRowIndexToModel(rows[i]);
                 int ret = JOptionPane.showConfirmDialog(null, "\"" + (String) jTable1.getModel().getValueAt(delRow, DatenAbo.ABO_NAME_NR) + "\"", "Löschen?", JOptionPane.YES_NO_OPTION);
                 if (ret == JOptionPane.OK_OPTION) {
+                    ((TModelAbo) jTable1.getModel()).removeRow(delRow);
                     ddaten.listeAbo.remove(delRow);
                 }
             }
@@ -123,6 +127,7 @@ public class GuiAbo extends PanelVorlage {
                 DDaten.setGeaendert();
                 load();
             }
+            setInfo();
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -142,9 +147,38 @@ public class GuiAbo extends PanelVorlage {
             for (int i = 0; i < rows.length; ++i) {
                 jTable1.addRowSelectionInterval(rows[i], rows[i]);
             }
+            setInfo();
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
+    }
+
+    private void setInfo() {
+        String textLinks;
+        int ein = 0;
+        int aus = 0;
+        for (int i = 0; i < jTable1.getModel().getRowCount(); ++i) {
+            int modelRow = jTable1.convertRowIndexToModel(i);
+            DatenAbo akt = ddaten.listeAbo.getAboNr(modelRow);
+            if (akt.aboIstEingeschaltet()) {
+                ++ein;
+            } else {
+                ++aus;
+            }
+        }
+        if (ein == 1) {
+            textLinks = "1 Abo eingeschaltet,";
+        } else {
+            textLinks = ein + " Abos eingeschaltet,";
+        }
+        textLinks += "    ";
+        if (aus == 1) {
+            textLinks += "1 Abo ausgeschaltet";
+        } else {
+            textLinks += aus + " Abos ausgeschaltet";
+        }
+        // Infopanel setzen
+        ddaten.infoPanel.setTextLinks(InfoPanel.IDX_GUI_ABO, textLinks);
     }
 
     /** This method is called from within the constructor to

@@ -99,6 +99,34 @@ public class StarterClass {
         return ret;
     }
 
+    public synchronized int getDownloadsWarten() {
+        int ret = 0;
+        Iterator<Starts> it = listeStarts.getIt();
+        while (it.hasNext()) {
+            Starts s = it.next();
+            if (s.download.getQuelle() == Starts.QUELLE_ABO || s.download.getQuelle() == Starts.QUELLE_DOWNLOAD) {
+                if (s.status == Starts.STATUS_INIT) {
+                    ++ret;
+                }
+            }
+        }
+        return ret;
+    }
+
+    public synchronized int getDownloadsLaufen() {
+        int ret = 0;
+        Iterator<Starts> it = listeStarts.getIt();
+        while (it.hasNext()) {
+            Starts s = it.next();
+            if (s.download.getQuelle() == Starts.QUELLE_ABO || s.download.getQuelle() == Starts.QUELLE_DOWNLOAD) {
+                if (s.status == Starts.STATUS_RUN) {
+                    ++ret;
+                }
+            }
+        }
+        return ret;
+    }
+
     /**
      * Liefert ein TModell mit den aktuelen Starts
      *

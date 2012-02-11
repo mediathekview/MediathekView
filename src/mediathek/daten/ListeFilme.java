@@ -19,7 +19,11 @@
  */
 package mediathek.daten;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import mediathek.Daten;
+import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.filme.filmeSuchen.sender.*;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
@@ -393,5 +397,46 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 model.addRow(object);
             }
         }
+    }
+
+    public int alterFilmlisteSek() {
+        // Alter der Filmliste in Sekunden
+        int ret = 0;
+        Date jetzt = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
+        String date = metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
+        Date filmDate = null;
+        try {
+            filmDate = sdf.parse(date);
+        } catch (ParseException ex) {
+        }
+        if (jetzt != null && filmDate != null) {
+            ret = Math.round((jetzt.getTime() - filmDate.getTime()) / (1000));
+            ret = Math.abs(ret);
+        }
+        return ret;
+    }
+
+    public boolean filmlisteIstAelter() {
+        // Filmliste ist älter als: FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE
+        int ret = -1;
+        Date jetzt = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
+        String date = metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
+        Date filmDate = null;
+        try {
+            filmDate = sdf.parse(date);
+        } catch (ParseException ex) {
+        }
+        if (jetzt != null && filmDate != null) {
+            ret = Math.round((jetzt.getTime() - filmDate.getTime()) / (1000));
+            ret = Math.abs(ret);
+        }
+        if (ret > FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE) {
+            return true;
+        } else if (ret == -1) {
+            return true;
+        }
+        return false;
     }
 }

@@ -30,13 +30,11 @@ import mediathek.controller.io.starter.StartListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
+import mediathek.daten.ListeFilme;
 import mediathek.gui.beobachter.BeobMpanel;
 import mediathek.gui.beobachter.CellRendererDownloads;
 import mediathek.gui.dialog.DialogEditDownload;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiKonstanten;
-import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.TModel;
+import mediathek.tool.*;
 
 public class GuiDownloads extends PanelVorlage {
 
@@ -55,10 +53,7 @@ public class GuiDownloads extends PanelVorlage {
     public void isShown() {
         super.isShown();
         ddaten.mediathekGui.setToolbar(MediathekGui.ButtonDonwload);
-    }
-
-    @Override
-    public void neuLaden() {
+        ddaten.infoPanel.setIdx(InfoPanel.IDX_GUI_DOWNLOAD);
     }
 
     //toolbar
@@ -132,6 +127,7 @@ public class GuiDownloads extends PanelVorlage {
         jTable1.setModel(tModel);
         GuiFunktionen.spaltenDownloadSetzen(jTable1);
         setSpalten(jTable1);
+        setInfo();
     }
 
     private void downloadAendern() {
@@ -150,6 +146,7 @@ public class GuiDownloads extends PanelVorlage {
                     load();
                 }
             }
+            setInfo();
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -174,6 +171,7 @@ public class GuiDownloads extends PanelVorlage {
                 ddaten.starterClass.filmLoeschen(jTable1.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
                 ((TModel) jTable1.getModel()).removeRow(delRow);
             }
+            setInfo();
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -198,6 +196,7 @@ public class GuiDownloads extends PanelVorlage {
             if (starten) {
                 downloadAll(url);
             }
+            setInfo();
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -216,6 +215,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         }
+        setInfo();
         ddaten.starterClass.aufraeumen();
     }
 
@@ -262,12 +262,38 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         }
+        setInfo();
         return ret;
     }
 
     private void panelUpdate() {
         jTable1.repaint();
         this.validate();
+    }
+
+    private void setInfo() {
+        String textLinks;
+        // Text links: Zeilen Tabelle
+        String leer = "   -   ";
+        int laufen = ddaten.starterClass.getDownloadsLaufen();
+        int warten = ddaten.starterClass.getDownloadsWarten();
+        if (jTable1.getModel() != null) {
+            textLinks = jTable1.getModel().getRowCount() + " Downloads";
+        } else {
+            textLinks = "0 Downloads";
+        }
+        if (laufen == 1) {
+            textLinks += (leer + laufen + " laufender Download");
+        } else if (laufen > 1) {
+            textLinks += (leer + laufen + " laufende Downloads");
+        }
+        if (warten == 1) {
+            textLinks += (leer + "1 wartender Download");
+        } else if (warten > 1) {
+            textLinks += (leer + warten + " wartende Downloads");
+        }
+        // Infopanel setzen
+        ddaten.infoPanel.setTextLinks(InfoPanel.IDX_GUI_DOWNLOAD, textLinks);
     }
 
     /** This method is called from within the constructor to

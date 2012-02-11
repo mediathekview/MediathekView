@@ -221,22 +221,4 @@ public class DatumZeit {
         }
         return tmp;
     }
-
-    public static int alterFilmlisteSek() {
-        // Alter der Filmliste in Sekunden
-        int ret = 0;
-        Date jetzt = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
-        String date = Daten.listeFilme.metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
-        Date filmDate = null;
-        try {
-            filmDate = sdf.parse(date);
-        } catch (ParseException ex) {
-        }
-        if (jetzt != null && filmDate != null) {
-            ret = Math.round((jetzt.getTime() - filmDate.getTime()) / (1000));
-            ret = Math.abs(ret);
-        }
-        return ret;
-    }
 }

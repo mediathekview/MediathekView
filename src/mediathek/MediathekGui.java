@@ -109,7 +109,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         // Set up our application to respond to the Mac OS X application menu
         registerForMacOSXEvents();
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
-            if (DatumZeit.alterFilmlisteSek() > FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE) {
+            if (Daten.listeFilme.filmlisteIstAelter()) {
                 DDaten.filmeLaden.filmlisteImportierenAuto();
             }
         }

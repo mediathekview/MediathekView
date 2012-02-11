@@ -7,9 +7,10 @@ package mediathek.gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import mediathek.Daten;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.daten.ListeFilme;
 
 /**
  *
@@ -17,12 +18,22 @@ import mediathek.Daten;
  */
 public final class InfoPanel extends javax.swing.JPanel {
 
-    /** Creates new form InfoPanel */
+    public static final int IDX_NIX = 0;
+    public static final int IDX_GUI_FILME = 1;
+    public static final int IDX_GUI_DOWNLOAD = 2;
+    public static final int IDX_GUI_ABO = 3;
+    private final int IDX_MAX = 4;
+    private String[] idx = new String[IDX_MAX];
+    private int aktIdx = 0;
+
     public InfoPanel() {
         initComponents();
         clearProgress();
+        for (int i = 0; i < IDX_MAX; ++i) {
+            idx[i] = "";
+        }
         jLabelStatusLinks.setMinimumSize(new Dimension(25, 25));
-        jLabelProgress.setMinimumSize(new Dimension(25, 25));
+        jLabelRechts.setMinimumSize(new Dimension(25, 25));
         jButtonStop.addActionListener(new ActionListener() {
 
             @Override
@@ -30,24 +41,21 @@ public final class InfoPanel extends javax.swing.JPanel {
                 Daten.filmeLaden.setStop();
             }
         });
+        Daten.filmeLaden.addListener(new BeobTimer());
+    }
+
+    public void setTextLinks(int i, String text) {
+        idx[i] = text;
+        setIdx(aktIdx);
+    }
+
+    public void setIdx(int i) {
+        aktIdx = i;
+        jLabelStatusLinks.setText(idx[i]);
     }
 
     public JProgressBar getProgressBar() {
         return jProgressBar1;
-    }
-
-    public JLabel getLabelLinks() {
-        return jLabelStatusLinks;
-    }
-
-    public JLabel getLabelProgress() {
-        return jLabelProgress;
-    }
-
-    public void setText(String links, String rechts) {
-        jLabelStatusLinks.setText(links);
-        jLabelProgress.setText(rechts);
-        updateUI();
     }
 
     public void clearProgress() {
@@ -60,6 +68,31 @@ public final class InfoPanel extends javax.swing.JPanel {
         jButtonStop.setVisible(true);
     }
 
+    private void setInfoRechts() {
+        final String PAUSE = "    ";
+        String textRechts;
+        // Text rechts: alter/neuladenIn anzeigen
+        textRechts = "Filmeliste erstellt am: " + Daten.listeFilme.metaDaten[ListeFilme.FILMLISTE_DATUM_NR] + " Uhr";
+        textRechts += PAUSE + "Alter: ";
+        int sekunden = Daten.listeFilme.alterFilmlisteSek();
+        int minuten = sekunden / 60;
+        String sek = String.valueOf(sekunden % 60);
+        String min = String.valueOf(minuten % 60);
+        String stu = String.valueOf(minuten / 60);
+        while (sek.length() < 2) {
+            sek = "0" + sek;
+        }
+        while (min.length() < 2) {
+            min = "0" + min;
+        }
+        while (stu.length() < 2) {
+            stu = "0" + stu;
+        }
+        textRechts += stu + ":" + min + ":" + sek + " ";
+        // Infopanel setzen
+        jLabelRechts.setText(textRechts);
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -70,7 +103,7 @@ public final class InfoPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabelStatusLinks = new javax.swing.JLabel();
-        jLabelProgress = new javax.swing.JLabel();
+        jLabelRechts = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
         jButtonStop = new javax.swing.JButton();
 
@@ -79,7 +112,7 @@ public final class InfoPanel extends javax.swing.JPanel {
 
         jLabelStatusLinks.setText("jLabel2");
 
-        jLabelProgress.setText("jLabel1");
+        jLabelRechts.setText("jLabel1");
 
         jButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/stop_16.png"))); // NOI18N
         jButtonStop.setIconTextGap(1);
@@ -92,7 +125,7 @@ public final class InfoPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jLabelStatusLinks)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 316, Short.MAX_VALUE)
-                .addComponent(jLabelProgress)
+                .addComponent(jLabelRechts)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -102,7 +135,7 @@ public final class InfoPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                 .addComponent(jLabelStatusLinks)
-                .addComponent(jLabelProgress)
+                .addComponent(jLabelRechts)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(jButtonStop))
         );
@@ -112,8 +145,16 @@ public final class InfoPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonStop;
-    private javax.swing.JLabel jLabelProgress;
+    private javax.swing.JLabel jLabelRechts;
     private javax.swing.JLabel jLabelStatusLinks;
     private javax.swing.JProgressBar jProgressBar1;
     // End of variables declaration//GEN-END:variables
+
+    private class BeobTimer extends MediathekListener {
+
+        @Override
+        public void ping(int rrestZeit) {
+            setInfoRechts();
+        }
+    }
 }
