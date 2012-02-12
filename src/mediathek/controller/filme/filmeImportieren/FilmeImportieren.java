@@ -118,7 +118,7 @@ public class FilmeImportieren {
             } else {
                 Log.systemMeldung("Filmliste laden von: " + dateiUrl);
                 listeFilme = new ListeFilme();
-                ret = ioXmlFilmlisteLesen.filmlisteLesen(dateiUrl, istUrl, listeFilme, Daten.getUserAgent());
+                ret = ioXmlFilmlisteLesen.filmlisteLesen(dateiUrl, istUrl, listeFilme);
             }
         } catch (Exception ex) {
             Log.fehlerMeldung("ImportListe.urlLaden: ", ex);

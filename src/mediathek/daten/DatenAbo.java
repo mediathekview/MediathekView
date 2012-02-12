@@ -25,7 +25,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     //Tags Abo
 
     public static final String ABO = "Abonnement";
-    public static final int ABO_MAX_ELEM = 10;
+    public static final int ABO_MAX_ELEM = 9;
     public static final String ABO_NR = "Nr";
     public static final int ABO_NR_NR = 0;
     public static final String ABO_EINGESCHALTET = "aktiv";
@@ -34,19 +34,17 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_NAME_NR = 2;
     public static final String ABO_SENDER = DatenFilm.FILM_SENDER;
     public static final int ABO_SENDER_NR = 3;
-    public static final String ABO_THEMA = DatenFilm.FILM_THEMA;
+    public static final String ABO_THEMA = DatenFilm.FILM_THEMA+" (exakt)";
     public static final int ABO_THEMA_NR = 4;
-    public static final String ABO_THEMA_EXAKT = DatenFilm.FILM_THEMA + "-exakt";
-    public static final int ABO_THEMA_EXAKT_NR = 5;
-    public static final String ABO_TITEL = DatenFilm.FILM_TITEL;
-    public static final int ABO_TITEL_NR = 6;
+    public static final String ABO_TITEL = DatenFilm.FILM_THEMA + "/" + DatenFilm.FILM_TITEL;
+    public static final int ABO_TITEL_NR = 5;
     public static final String ABO_ZIELPFAD = "Zielpfad";
-    public static final int ABO_ZIELPFAD_NR = 7;
+    public static final int ABO_ZIELPFAD_NR = 6;
     public static final String ABO_DOWN_DATUM = "letztes_Abo";
-    public static final int ABO_DOWN_DATUM_NR = 8;
+    public static final int ABO_DOWN_DATUM_NR = 7;
     public static final String ABO_PGRUPPE = "Programmgruppe";
-    public static final int ABO_PGRUPPE_NR = 9;
-    public static final String[] ABO_COLUMN_NAMES = {ABO_NR, ABO_EINGESCHALTET, ABO_NAME, ABO_SENDER, ABO_THEMA, ABO_THEMA_EXAKT, ABO_TITEL,
+    public static final int ABO_PGRUPPE_NR = 8;
+    public static final String[] ABO_COLUMN_NAMES = {ABO_NR, ABO_EINGESCHALTET, ABO_NAME, ABO_SENDER, ABO_THEMA, ABO_TITEL,
         ABO_ZIELPFAD, ABO_DOWN_DATUM, ABO_PGRUPPE};
     public String[] arr;
 
@@ -59,7 +57,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         arr[ABO_NAME_NR] = name;
         arr[ABO_SENDER_NR] = sender;
         arr[ABO_THEMA_NR] = thema;
-        arr[ABO_THEMA_EXAKT_NR] = Boolean.toString(exakt);
+//        arr[ABO_THEMA_EXAKT_NR] = Boolean.toString(exakt);
         arr[ABO_TITEL_NR] = titel;
         arr[ABO_ZIELPFAD_NR] = ziel;
         arr[ABO_PGRUPPE_NR] = programmname;
@@ -92,14 +90,13 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return false;
     }
 
-    public boolean aboIstExakt() {
-        if (arr[DatenAbo.ABO_THEMA_EXAKT_NR].equals("")) {
-            arr[DatenAbo.ABO_THEMA_EXAKT_NR] = String.valueOf(true);
-            return true;
-        }
-        return Boolean.parseBoolean(arr[DatenAbo.ABO_THEMA_EXAKT_NR]);
-    }
-
+//    public boolean aboIstExakt() {
+//        if (arr[DatenAbo.ABO_THEMA_EXAKT_NR].equals("")) {
+//            arr[DatenAbo.ABO_THEMA_EXAKT_NR] = String.valueOf(true);
+//            return true;
+//        }
+//        return Boolean.parseBoolean(arr[DatenAbo.ABO_THEMA_EXAKT_NR]);
+//    }
     public boolean toggleAboEinAus() {
         // Abo EinAus wird geändert und der Zustand NACH der Änderung
         // wird zurückgegeben

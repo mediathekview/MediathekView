@@ -41,7 +41,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private JTextField[] textfeldListe;
     private JComboBox comboboxProgramm = new JComboBox();
     private JComboBox comboboxSender = new JComboBox();
-    private JCheckBox checkBoxExakt = new JCheckBox();
+//    private JCheckBox checkBoxExakt = new JCheckBox();
     private JCheckBox checkBoxEingeschaltet = new JCheckBox();
     public boolean ok = false;
 //    private boolean einmal = false;
@@ -106,7 +106,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         c.gridx = 0;
         c.weightx = 0;
         JLabel label;
-        if (i == DatenAbo.ABO_TITEL_NR || i == DatenAbo.ABO_THEMA_NR || i == DatenAbo.ABO_THEMA_EXAKT_NR || i == DatenAbo.ABO_SENDER_NR) {
+        if (i == DatenAbo.ABO_TITEL_NR || i == DatenAbo.ABO_THEMA_NR || i == DatenAbo.ABO_SENDER_NR) {
             label = new JLabel("  " + DatenAbo.ABO_COLUMN_NAMES[i] + ": ");
             label.setForeground(Color.BLUE);
         } else {
@@ -147,11 +147,11 @@ public class DialogEditAbo extends javax.swing.JDialog {
             comboboxSender.addActionListener(new BeobComboSender());
             gridbag.setConstraints(comboboxSender, c);
             panel.add(comboboxSender);
-        } else if (i == DatenAbo.ABO_THEMA_EXAKT_NR) {
-            checkBoxExakt.setSelected(Boolean.parseBoolean(item[i]));
-            checkBoxExakt.addActionListener(new BeobCheckbox());
-            gridbag.setConstraints(checkBoxExakt, c);
-            panel.add(checkBoxExakt);
+//        } else if (i == DatenAbo.ABO_THEMA_EXAKT_NR) {
+//            checkBoxExakt.setSelected(Boolean.parseBoolean(item[i]));
+//            checkBoxExakt.addActionListener(new BeobCheckbox());
+//            gridbag.setConstraints(checkBoxExakt, c);
+//            panel.add(checkBoxExakt);
         } else if (i == DatenAbo.ABO_EINGESCHALTET_NR) {
             checkBoxEingeschaltet.setSelected(Boolean.parseBoolean(item[i]));
             checkBoxEingeschaltet.addActionListener(new BeobCheckbox());
@@ -306,7 +306,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             ddaten.setGeaendertPanel();
-            aktAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR] = Boolean.toString(checkBoxExakt.isSelected());
+//            aktAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR] = Boolean.toString(checkBoxExakt.isSelected());
             aktAbo.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(checkBoxEingeschaltet.isSelected());
         }
     }

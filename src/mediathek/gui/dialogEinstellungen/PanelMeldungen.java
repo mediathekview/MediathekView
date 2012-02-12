@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui.dialogInfos;
+package mediathek.gui.dialogEinstellungen;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -65,8 +65,8 @@ public class PanelMeldungen extends PanelVorlage {
 
     private void setTextArea() {
         //pane.setViewportView(area);
-        jScrollPane1.getVerticalScrollBar().setValue(jScrollPane1.getVerticalScrollBar().getMaximum());
-        jScrollPane1.repaint();
+        jScrollPane.getVerticalScrollBar().setValue(jScrollPane.getVerticalScrollBar().getMaximum());
+        jScrollPane.repaint();
     }
 
     private void clear() {
@@ -83,34 +83,33 @@ public class PanelMeldungen extends PanelVorlage {
     private void initComponents() {
 
         jButtonLoeschen = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jScrollPaneFehler = new javax.swing.JScrollPane();
+        jScrollPane = new javax.swing.JScrollPane();
         jTextArea = new javax.swing.JTextArea();
 
         jButtonLoeschen.setText("löschen");
 
-        jScrollPaneFehler.setViewportView(jTextArea);
-
-        jScrollPane1.setViewportView(jScrollPaneFehler);
+        jTextArea.setColumns(20);
+        jTextArea.setRows(5);
+        jScrollPane.setViewportView(jTextArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 246, Short.MAX_VALUE)
-                        .addComponent(jButtonLoeschen)))
+                        .addComponent(jButtonLoeschen))
+                    .addComponent(jScrollPane))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
+                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonLoeschen)
                 .addGap(12, 12, 12))
@@ -118,8 +117,7 @@ public class PanelMeldungen extends PanelVorlage {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonLoeschen;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPaneFehler;
+    private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JTextArea jTextArea;
     // End of variables declaration//GEN-END:variables
 

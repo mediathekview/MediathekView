@@ -49,7 +49,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         if (dialogEditAbo.ok) {
             if (!aboSuchen(datenAbo.arr[DatenAbo.ABO_SENDER_NR],
                     datenAbo.arr[DatenAbo.ABO_THEMA_NR],
-                    Boolean.parseBoolean(datenAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR]),
+//                    Boolean.parseBoolean(datenAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR]),
                     datenAbo.arr[DatenAbo.ABO_TITEL_NR])) {
                 addAbo(datenAbo);
                 sort();
@@ -75,9 +75,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
         datenAbo.arr[DatenAbo.ABO_NR_NR] = str;
         //für die neue Funktion
-        if (datenAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR].equals("")) {
-            datenAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR] = Boolean.toString(true);
-        }
+//        if (datenAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR].equals("")) {
+//            datenAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR] = Boolean.toString(true);
+//        }
         super.add(datenAbo);
     }
 
@@ -103,8 +103,8 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                     object[m] = DatumZeit.getDatumForObject(datenAbo.arr[DatenAbo.ABO_DOWN_DATUM_NR]);
                 } else if (m == DatenAbo.ABO_EINGESCHALTET_NR) {
                     object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());
-                } else if (m == DatenAbo.ABO_THEMA_EXAKT_NR) {
-                    object[m] = "";
+//                } else if (m == DatenAbo.ABO_THEMA_EXAKT_NR) {
+//                    object[m] = "";
                 } else {
                     object[m] = datenAbo.arr[m];
                 }
@@ -113,7 +113,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
     }
 
-    public boolean aboSuchen(String sender, String thema, boolean exakt, String text) {
+    public boolean aboSuchen(String sender, String thema, String text) {
         //Abo suchen
         boolean ret = false;
         DatenAbo abo = null;
@@ -122,8 +122,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             abo = it.next();
             if (abo.arr[DatenAbo.ABO_SENDER_NR].equalsIgnoreCase(sender)
                     && abo.arr[DatenAbo.ABO_THEMA_NR].equalsIgnoreCase(thema)
-                    && abo.arr[DatenAbo.ABO_TITEL_NR].equalsIgnoreCase(text)
-                    && (abo.aboIstExakt() && exakt)) {
+                    && abo.arr[DatenAbo.ABO_TITEL_NR].equalsIgnoreCase(text)) {
                 ret = true;
             }
         }
@@ -139,52 +138,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         return ret;
     }
 
-    public static boolean isPattern(String textSuchen) {
-        return textSuchen.startsWith("#:");
-    }
-
-    public static Pattern makePattern(String textSuchen) {
-        Pattern p = null;
-        try {
-            if (isPattern(textSuchen)) {
-                p = Pattern.compile(textSuchen.substring(2));
-            }
-        } catch (Exception ex) {
-            p = null;
-        }
-        return p;
-    }
-
-    public static boolean aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
-            String imSender, String imThema, String imText) {
-        //prüfen ob xxxSuchen im String imXxx enthalten ist
-        Pattern p1 = makePattern(themaSuchen);
-        boolean ret = false;
-        if (senderSuchen.equals("") || imSender.equalsIgnoreCase(senderSuchen)) {
-            if (p1 != null) {
-                if (p1.matcher(imThema).matches()) {
-                    ret = textPruefen(textSuchen, imText);
-                }
-            } else if (themaSuchen.equals("")
-                    || themaExakt && imThema.equalsIgnoreCase(themaSuchen)
-                    || !themaExakt && (imThema.toLowerCase().contains(themaSuchen.toLowerCase()))) {
-                ret = textPruefen(textSuchen, imText);
-            }
-        }
-        return ret;
-    }
-
-    private static boolean textPruefen(String textSuchen, String imText) {
-        Pattern p = makePattern(textSuchen);
-        boolean ret = false;
-        if (p != null) {
-            ret = p.matcher(imText).matches();
-        } else if (textSuchen.equals("") || imText.toLowerCase().contains(textSuchen.toLowerCase())) {
-            ret = true;
-        }
-        return ret;
-    }
-
     public DatenAbo getAbo(String sender, String thema, String text, String url) {
         DatenAbo datenAbo = null;
         ListIterator<DatenAbo> it = this.listIterator();
@@ -193,10 +146,10 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         } else {
             while (it.hasNext()) {
                 datenAbo = it.next();
-                if (aboPruefen(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR],
+                if (ListeFilme.filterPruefen(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR],
                         // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
                         //                     String imSender, String imThema, String imText) {
-                        datenAbo.aboIstExakt(),
+//                        datenAbo.aboIstExakt(),
                         datenAbo.arr[DatenAbo.ABO_TITEL_NR],
                         sender, thema, text)) {
                     return datenAbo;

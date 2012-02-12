@@ -36,8 +36,6 @@ import mediathek.tool.GuiKonstanten;
 
 public class PanelEinstellungen extends PanelVorlage {
 
-    private static String userAgentManuel = "";
-
     public PanelEinstellungen(DDaten d) {
         super(d);
         initComponents();
@@ -87,7 +85,16 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void init() {
-        initUserAgent();
+        // UserAgent
+        jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
+        jTextFieldUserAgent.setText(Daten.system[Konstanten.SYSTEM_USER_AGENT_NR]);
+        if (Daten.isUserAgentAuto()) {
+            jRadioButtonAuto.setSelected(true);
+        } else {
+            jRadioButtonManuel.setSelected(true);
+        }
+        jTextFieldUserAgent.setEditable(jRadioButtonManuel.isSelected());
+        // Rest
         if (Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR].equals("")) {
             jSpinnerDownload.setValue(1);
             Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] = "1";
@@ -96,31 +103,12 @@ public class PanelEinstellungen extends PanelVorlage {
         }
     }
 
-    private void initUserAgent() {
-        jRadioButtonAuto.setText(Konstanten.USER_AGENT_DEFAULT);
-        if (Daten.isUserAgentAuto()) {
-            jRadioButtonAuto.setSelected(true);
-            jTextFieldUserAgent.setText(userAgentManuel);
-        } else {
-            jRadioButtonManuel.setSelected(true);
-            jTextFieldUserAgent.setText(Daten.system[Konstanten.SYSTEM_USER_AGENT_NR]);
-        }
-        jTextFieldUserAgent.setEditable(jRadioButtonManuel.isSelected());
-    }
-
     private void setUserAgent() {
         Daten.setGeaendert();
         if (jRadioButtonAuto.isSelected()) {
             Daten.setUserAgentAuto();
-            userAgentManuel = jTextFieldUserAgent.getText();
-            jTextFieldUserAgent.setText(userAgentManuel);
-            Daten.system[Konstanten.SYSTEM_USER_AGENT_NR] = "";
         } else {
-            if (userAgentManuel.equals("")) {
-                userAgentManuel = Konstanten.USER_AGENT_DEFAULT;
-            }
-            Daten.system[Konstanten.SYSTEM_USER_AGENT_NR] = userAgentManuel;
-            jTextFieldUserAgent.setText(Daten.system[Konstanten.SYSTEM_USER_AGENT_NR]);
+            Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
         }
         jTextFieldUserAgent.setEditable(jRadioButtonManuel.isSelected());
     }
@@ -145,6 +133,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonHilfe = new javax.swing.JButton();
         jRadioButtonAuto = new javax.swing.JRadioButton();
         jRadioButtonManuel = new javax.swing.JRadioButton();
+        jTextFieldAuto = new javax.swing.JTextField();
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
@@ -205,7 +194,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonHilfe.setText("Hilfe");
 
         buttonGroup1.add(jRadioButtonAuto);
-        jRadioButtonAuto.setText("jRadioButton1");
+        jRadioButtonAuto.setText("Auto:");
 
         buttonGroup1.add(jRadioButtonManuel);
 
@@ -221,8 +210,10 @@ public class PanelEinstellungen extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldUserAgent))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jRadioButtonAuto, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
+                        .addComponent(jRadioButtonAuto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldAuto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonHilfe)))
                 .addContainerGap())
         );
@@ -230,8 +221,9 @@ public class PanelEinstellungen extends PanelVorlage {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(13, 13, 13)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jRadioButtonAuto)
+                    .addComponent(jTextFieldAuto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonHilfe))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
@@ -240,7 +232,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addContainerGap())
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfe, jTextFieldUserAgent});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfe, jTextFieldAuto, jTextFieldUserAgent});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -278,6 +270,7 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JRadioButton jRadioButtonAuto;
     private javax.swing.JRadioButton jRadioButtonManuel;
     private javax.swing.JSpinner jSpinnerDownload;
+    private javax.swing.JTextField jTextFieldAuto;
     private javax.swing.JTextField jTextFieldUserAgent;
     // End of variables declaration//GEN-END:variables
 
@@ -309,8 +302,8 @@ public class PanelEinstellungen extends PanelVorlage {
         }
 
         private void tus() {
-            Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
             Daten.setGeaendert();
+            Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
         }
     }
 
@@ -329,5 +322,4 @@ public class PanelEinstellungen extends PanelVorlage {
 
         }
     }
-
 }

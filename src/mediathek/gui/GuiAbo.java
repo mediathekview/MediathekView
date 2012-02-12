@@ -157,6 +157,7 @@ public class GuiAbo extends PanelVorlage {
         String textLinks;
         int ein = 0;
         int aus = 0;
+        int gesamt = jTable1.getModel().getRowCount();
         for (int i = 0; i < jTable1.getModel().getRowCount(); ++i) {
             int modelRow = jTable1.convertRowIndexToModel(i);
             DatenAbo akt = ddaten.listeAbo.getAboNr(modelRow);
@@ -166,17 +167,12 @@ public class GuiAbo extends PanelVorlage {
                 ++aus;
             }
         }
-        if (ein == 1) {
-            textLinks = "1 Abo eingeschaltet,";
+        if (gesamt == 1) {
+            textLinks = "1 Abo, ";
         } else {
-            textLinks = ein + " Abos eingeschaltet,";
+            textLinks = gesamt + " Abos, ";
         }
-        textLinks += "    ";
-        if (aus == 1) {
-            textLinks += "1 Abo ausgeschaltet";
-        } else {
-            textLinks += aus + " Abos ausgeschaltet";
-        }
+        textLinks += "(" + ein + " eingeschaltet, " + aus + " ausgeschaltet)";
         // Infopanel setzen
         ddaten.infoPanel.setTextLinks(InfoPanel.IDX_GUI_ABO, textLinks);
     }

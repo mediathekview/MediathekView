@@ -22,6 +22,7 @@ package mediathek.daten;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 import mediathek.Daten;
 import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.filme.filmeSuchen.sender.*;
@@ -282,11 +283,9 @@ public class ListeFilme extends LinkedList<DatenFilm> {
      * @param filterText
      * @return
      * // */
-    public synchronized void getModelTabFilme(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema, boolean filterExakt, String filterText) {
+    public synchronized void getModelTabFilme(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema,  String filterText) {
         modelFilm.setRowCount(0);
-        if (this.size() == 0) {
-            return;
-        } else {
+        if (this.size() != 0) {
             ListeFilme liste = new ListeFilme();
             Iterator<DatenFilm> it = this.iterator();
             DatenFilm film;
@@ -300,7 +299,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 //                     String imSender, String imThema, String imText) {
                 if (nixFiltern) {
                     liste.add(film);
-                } else if (ListeAbo.aboPruefen(filterSender, filterThema, filterExakt, filterText,
+                } else if (filterPruefen(filterSender, filterThema, filterText,
                         film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
                     liste.add(film);
                 }
@@ -362,6 +361,71 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 ret = f;
                 break;
             }
+        }
+        return ret;
+    }
+
+    public static boolean isPattern(String textSuchen) {
+        return textSuchen.startsWith("#:");
+    }
+
+    public static Pattern makePattern(String textSuchen) {
+        Pattern p = null;
+        try {
+            if (isPattern(textSuchen)) {
+                p = Pattern.compile(textSuchen.substring(2));
+            }
+        } catch (Exception ex) {
+            p = null;
+        }
+        return p;
+    }
+
+    public static boolean filterPruefen(String senderSuchen, String themaSuchen, String textSuchen,
+            String imSender, String imThema, String imText) {
+        // prüfen ob xxxSuchen im String imXxx enthalten ist, textSuchen wird mit Thema u. Titel verglichen
+        // themaSuchen exakt mit thema
+        Pattern p1 = makePattern(themaSuchen);
+        boolean ret = false;
+        if (senderSuchen.equals("") || imSender.equalsIgnoreCase(senderSuchen)) {
+            if (p1 != null) {
+                if (p1.matcher(imThema).matches()) {
+                    ret = textPruefen(textSuchen, imText) || textPruefen(textSuchen, imThema);
+                }
+            } else if (themaSuchen.equals("")
+                    || imThema.equalsIgnoreCase(themaSuchen)) {
+                ret = textPruefen(textSuchen, imText) || textPruefen(textSuchen, imThema);
+            }
+        }
+        return ret;
+    }
+
+    public static boolean filterPruefen_old(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
+            String imSender, String imThema, String imText) {
+        //prüfen ob xxxSuchen im String imXxx enthalten ist
+        Pattern p1 = makePattern(themaSuchen);
+        boolean ret = false;
+        if (senderSuchen.equals("") || imSender.equalsIgnoreCase(senderSuchen)) {
+            if (p1 != null) {
+                if (p1.matcher(imThema).matches()) {
+                    ret = textPruefen(textSuchen, imText);
+                }
+            } else if (themaSuchen.equals("")
+                    || themaExakt && imThema.equalsIgnoreCase(themaSuchen)
+                    || !themaExakt && (imThema.toLowerCase().contains(themaSuchen.toLowerCase()))) {
+                ret = textPruefen(textSuchen, imText);
+            }
+        }
+        return ret;
+    }
+
+    private static boolean textPruefen(String textSuchen, String imText) {
+        Pattern p = makePattern(textSuchen);
+        boolean ret = false;
+        if (p != null) {
+            ret = p.matcher(imText).matches();
+        } else if (textSuchen.equals("") || imText.toLowerCase().contains(textSuchen.toLowerCase())) {
+            ret = true;
         }
         return ret;
     }

@@ -28,11 +28,12 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import mediathek.Daten;
 import mediathek.Konstanten;
 
 public class FilmUpdateServerSuchen {
 
-    public static String[] getListe(ListeFilmUpdateServer sListe, String useragent) throws MalformedURLException, IOException, XMLStreamException {
+    public static String[] getListe(ListeFilmUpdateServer sListe) throws MalformedURLException, IOException, XMLStreamException {
         String[] ret = new String[]{""/*version*/, ""/*release*/, ""/*updateUrl*/};
         //String parsername = "";
         sListe.clear();
@@ -44,7 +45,7 @@ public class FilmUpdateServerSuchen {
         int timeout = 10000;
         URLConnection conn = null;
         conn = new URL(Konstanten.ADRESSE_UPDATE).openConnection();
-        conn.setRequestProperty("User-Agent", useragent);
+        conn.setRequestProperty("User-Agent",  Daten.getUserAgent());
         conn.setReadTimeout(timeout);
         conn.setConnectTimeout(timeout);
         inReader = new InputStreamReader(conn.getInputStream(), Konstanten.KODIERUNG_UTF);

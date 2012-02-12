@@ -54,7 +54,7 @@ public class FilmUpdateServer {
         String[] ret = {"", "", ""};
         try {
             listeUpdateServer.clear();
-            ret = FilmUpdateServerSuchen.getListe(listeUpdateServer, Daten.getUserAgent());
+            ret = FilmUpdateServerSuchen.getListe(listeUpdateServer);
             version = ret[0];
             release = ret[1];
             downloadUrlProgramm = ret[2];

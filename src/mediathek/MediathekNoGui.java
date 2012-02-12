@@ -108,7 +108,7 @@ public class MediathekNoGui {
         if (!url.equals("")) {
             Log.systemMeldung("Filmliste importieren von: " + url);
             ListeFilme tmpListe = new ListeFilme();
-            ioXmlFilmlisteLesen.filmlisteLesen(url, false /* istDatei */, tmpListe, Daten.getUserAgent());
+            ioXmlFilmlisteLesen.filmlisteLesen(url, false /* istDatei */, tmpListe);
             listeFilme.updateListe(tmpListe, false /* nur URL vergleichen */);
             tmpListe.clear();
         }

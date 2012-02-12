@@ -56,7 +56,7 @@ public class IoXmlFilmlisteLesen {
      * @param istDatei
      * @return
      */
-    public boolean filmlisteLesen(String datei, boolean istUrl, ListeFilme listeFilme, String user_agent) {
+    public boolean filmlisteLesen(String datei, boolean istUrl, ListeFilme listeFilme) {
         boolean ret = true;
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
@@ -89,7 +89,7 @@ public class IoXmlFilmlisteLesen {
                 conn = new URL(datei).openConnection();
                 conn.setConnectTimeout(timeout);
                 conn.setReadTimeout(timeout);
-                conn.setRequestProperty("User-Agent", user_agent);
+                conn.setRequestProperty("User-Agent", Daten.getUserAgent());
                 if (datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
                     File tmpFile = File.createTempFile("mediathek", null);
                     tmpFile.deleteOnExit();

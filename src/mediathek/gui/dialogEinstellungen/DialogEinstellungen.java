@@ -26,7 +26,9 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
+import mediathek.Log;
 import mediathek.daten.DDaten;
+import mediathek.gui.beobachter.EscBeenden;
 import mediathek.gui.dialog.PanelSenderLaden;
 
 public class DialogEinstellungen extends javax.swing.JDialog {
@@ -44,6 +46,12 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private PanelLogfile panelLogfile;
     private PanelPgruppen panelPgruppen;
     private PanelImportProgramme panelImportProgramme;
+    // Infos
+    private PanelInfo panelInfo;
+    private PanelInfoStarts panelStarts;
+    private PanelMeldungen panelMeldungenFehler;
+    private PanelMeldungen panelMeldungenSystem;
+    private PanelMeldungen panelMeldungenPlayer;
     private JPanel panelLeer = new JPanel();
 
     /**
@@ -54,8 +62,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
      * @param gguiFilme
      */
     public DialogEinstellungen(java.awt.Frame parent, boolean modal, DDaten d) {
-        super(parent, false);
-        /////////super(parent, modal);
+        super(parent, modal);
         initComponents();
         setTitle("Programmeinstellungen");
         ddaten = d;
@@ -69,6 +76,13 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                 beenden();
             }
         });
+        new EscBeenden(this) {
+
+            @Override
+            public void beenden_() {
+                beenden();
+            }
+        };
     }
 
     private void init() {
@@ -83,10 +97,16 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         panelLogfile = new PanelLogfile(ddaten);
         panelPgruppen = new PanelPgruppen(ddaten);
         panelImportProgramme = new PanelImportProgramme(ddaten);
+        // Infos
+        panelInfo = new PanelInfo(ddaten);
+        panelStarts = new PanelInfoStarts(ddaten);
+        panelMeldungenFehler = new PanelMeldungen(ddaten, Log.LOG_FEHLER);
+        panelMeldungenSystem = new PanelMeldungen(ddaten, Log.LOG_SYSTEM);
+        panelMeldungenPlayer = new PanelMeldungen(ddaten, Log.LOG_PLAYER);
     }
 
     private void initTree() {
-        final String NAME_allgemeineEinstellungen = "allgemeine Einstellungen";
+        final String NAME_allgemeineEinstellungen = "Allgemein";
         final String NAME_netzwerk = "Netzwerk";
         final String NAME_update = "Update";
         final String NAME_filmListeLaden = "Filmliste laden";
@@ -97,18 +117,26 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         final String NAME_logfile = "erledigte Abos";
         final String NAME_programme = "Programme";
         final String NAME_programmeImportieren = "Programme importieren";
-        DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode("Einstellungen");
+        // Infos
+        final String NAME_allgemeineInfos = "Allgemein";
+        final String NAME_infosStarts = "laufende Programme";
+        final String NAME_systemmeldungen = "Systemmeldungen";
+        final String NAME_fehlermeldungen = "Fehlermeldungen";
+        final String NAME_meldungenProgramme = "Programmeldungen";
+        //
+        DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode("Programm");
+        // ######## Einstellulngen ############
+        DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
         // allgemeine Einstellungen
-        DefaultMutableTreeNode treeNodeAllgemein = new DefaultMutableTreeNode("Allgemein");
         DefaultMutableTreeNode treeNodeAllgemeineEinstellungen = new DefaultMutableTreeNode(NAME_allgemeineEinstellungen);
-        treeNodeAllgemein.add(treeNodeAllgemeineEinstellungen);
+        treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungen);
         DefaultMutableTreeNode treeNodeNetzwerk = new DefaultMutableTreeNode(NAME_netzwerk);
-        treeNodeAllgemein.add(treeNodeNetzwerk);
+        treeNodeEinstellungen.add(treeNodeNetzwerk);
         DefaultMutableTreeNode treeNodeUpdate = new DefaultMutableTreeNode(NAME_update);
-        treeNodeAllgemein.add(treeNodeUpdate);
-        treeNodeStart.add(treeNodeAllgemein);
-        // Einstellungen Filme
-        DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filme");
+        treeNodeEinstellungen.add(treeNodeUpdate);
+        treeNodeStart.add(treeNodeEinstellungen);
+        // ######## Filme ###############
+        DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filme verwalten");
         DefaultMutableTreeNode treeNodeFilmliste = new DefaultMutableTreeNode(NAME_filmListeLaden);
         treeNodeFilme.add(treeNodeFilmliste);
         DefaultMutableTreeNode treeNodeSenderLaden = new DefaultMutableTreeNode(NAME_senderLaden);
@@ -122,13 +150,29 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
         treeNodeFilme.add(treeNodeLogfile);
         treeNodeStart.add(treeNodeFilme);
-        // Einstellungen Downloads
+        // ########### Programme ##############
         DefaultMutableTreeNode treeNodeDownloads = new DefaultMutableTreeNode("Programme einrichten");
         DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programme);
         treeNodeDownloads.add(treeNodeProgramme);
         DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmeImportieren);
         treeNodeDownloads.add(treeNodeImportProgramme);
         treeNodeStart.add(treeNodeDownloads);
+        // ####### Infos #########
+        DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode("Infos");
+        DefaultMutableTreeNode treeNodeAllgemeineInfos = new DefaultMutableTreeNode(NAME_allgemeineInfos);
+        treeNodeInfos.add(treeNodeAllgemeineInfos);
+        DefaultMutableTreeNode treeNodeInfosStarts = new DefaultMutableTreeNode(NAME_infosStarts);
+        treeNodeInfos.add(treeNodeInfosStarts);
+        treeNodeStart.add(treeNodeInfos);
+        // ############ Systemmeldungen ###############
+        DefaultMutableTreeNode treeNodeSystem = new DefaultMutableTreeNode("Systemmeldungen");
+        DefaultMutableTreeNode treeNodeSystemmeldungen = new DefaultMutableTreeNode(NAME_systemmeldungen);
+        treeNodeSystem.add(treeNodeSystemmeldungen);
+        DefaultMutableTreeNode treeNodeFehlermeldungen = new DefaultMutableTreeNode(NAME_fehlermeldungen);
+        treeNodeSystem.add(treeNodeFehlermeldungen);
+        DefaultMutableTreeNode treeNodeProgrammmeldungen = new DefaultMutableTreeNode(NAME_meldungenProgramme);
+        treeNodeSystem.add(treeNodeProgrammmeldungen);
+        treeNodeStart.add(treeNodeSystem);
         // Aufbauen
         jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNodeStart));
         jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -179,6 +223,21 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                     } else if (name.equals(NAME_programmeImportieren)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelImportProgramme);
+                    } else if (name.equals(NAME_allgemeineInfos)) {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelInfo);
+                    } else if (name.equals(NAME_infosStarts)) {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelStarts);
+                    } else if (name.equals(NAME_systemmeldungen)) {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelMeldungenSystem);
+                    } else if (name.equals(NAME_fehlermeldungen)) {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelMeldungenFehler);
+                    } else if (name.equals(NAME_meldungenProgramme)) {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelMeldungenPlayer);
                     } else {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelLeer);

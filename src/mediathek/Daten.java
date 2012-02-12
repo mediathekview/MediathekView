@@ -92,10 +92,11 @@ public class Daten {
     // userAgent
 
     public static boolean isUserAgentAuto() {
-        if (system[Konstanten.SYSTEM_USER_AGENT_NR].equals("")) {
+        if (system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR].equals("")) {
+            system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.TRUE.toString();
             return true;
         } else {
-            return false;
+            return Boolean.parseBoolean(system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR]);
         }
     }
 
@@ -108,10 +109,11 @@ public class Daten {
     }
 
     public static void setUserAgentAuto() {
-        system[Konstanten.SYSTEM_USER_AGENT_NR] = "";
+        system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.TRUE.toString();
     }
 
     public static void setUserAgentManuel(String ua) {
+        system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.FALSE.toString();
         system[Konstanten.SYSTEM_USER_AGENT_NR] = ua;
     }
 
@@ -170,7 +172,7 @@ public class Daten {
     }
 
     public void allesLaden() {
-        ioXmlFilmlisteLesen.filmlisteLesen(getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, listeFilme, Daten.getUserAgent());
+        ioXmlFilmlisteLesen.filmlisteLesen(getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, listeFilme);
     }
 
     public void allesSpeichern() {

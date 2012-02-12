@@ -48,8 +48,8 @@ public class Konstanten {
 //    public static final int SYSTEM_FEHLER_ANZEIGEN_NR = 0;
     public static final String SYSTEM_LOOK = "System-look";
     public static final int SYSTEM_LOOK_NR = 1;
-    public static final String SYSTEM_START_MAX = "Start-maximiert";
-//    public static final int SYSTEM_START_MAX_NR = 2;
+    public static final String SYSTEM_USER_AGENT_AUTO = "User-Agent-Auto";
+    public static final int SYSTEM_USER_AGENT_AUTO_NR = 2;
     public static final String SYSTEM_USER_AGENT = "User-Agent";
     public static final int SYSTEM_USER_AGENT_NR = 3;
     public static final String SYSTEM_VERSION = "version";
@@ -121,7 +121,7 @@ public class Konstanten {
     //
     public static final String SYSTEM = "system";
     public static final int SYSTEM_MAX_ELEM = 34;
-    public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_FEHLER_ANZEIGEN, SYSTEM_LOOK, SYSTEM_START_MAX, SYSTEM_USER_AGENT, SYSTEM_VERSION, SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y,
+    public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_FEHLER_ANZEIGEN, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION, SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y,
         SYSTEM_ICON_KLEIN, SYSTEM_TAGE_ANZEIGEN, SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN,
         SYSTEM_PROXY_SERVER, SYSTEM_PROXY_PORT, SYSTEM_PROXY_USER, SYSTEM_PROXY_PWD, SYSTEM_PROXY_ON,
         SYSTEM_MAX_DOWNLOAD, SYSTEM_LEITUNG_LOW, SYSTEM_RTMP_FLVSTREAMER,

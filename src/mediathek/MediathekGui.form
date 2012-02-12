@@ -20,8 +20,6 @@
                 <Property name="text" type="java.lang.String" value="neue Filmliste laden"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemEinstellungen">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
@@ -30,17 +28,8 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/configure_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Programmeinstellungen"/>
+                <Property name="text" type="java.lang.String" value="Programm"/>
                 <Property name="toolTipText" type="java.lang.String" value="allgemeine Programmeinstellungen"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemInfos">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/info.png"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Programminfos"/>
-                <Property name="toolTipText" type="java.lang.String" value="Programminfos, Speicherpfade"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator2">

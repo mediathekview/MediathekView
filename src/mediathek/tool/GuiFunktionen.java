@@ -636,8 +636,7 @@ public class GuiFunktionen {
             tabelle.getColumnModel().getColumn(i).setMaxWidth(3000);
             if (i == DatenAbo.ABO_NR_NR) {
                 tabelle.getColumnModel().getColumn(i).setPreferredWidth(50);
-            } else if (i == DatenAbo.ABO_THEMA_EXAKT_NR
-                    || i == DatenAbo.ABO_EINGESCHALTET_NR
+            } else if (i == DatenAbo.ABO_EINGESCHALTET_NR
                     || i == DatenAbo.ABO_DOWN_DATUM_NR
                     || i == DatenAbo.ABO_SENDER_NR) {
                 tabelle.getColumnModel().getColumn(i).setPreferredWidth(100);

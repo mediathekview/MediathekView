@@ -267,6 +267,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void panelUpdate() {
+        setInfo();
         jTable1.repaint();
         this.validate();
     }
@@ -274,24 +275,26 @@ public class GuiDownloads extends PanelVorlage {
     private void setInfo() {
         String textLinks;
         // Text links: Zeilen Tabelle
-        String leer = "   -   ";
         int laufen = ddaten.starterClass.getDownloadsLaufen();
         int warten = ddaten.starterClass.getDownloadsWarten();
-        if (jTable1.getModel() != null) {
-            textLinks = jTable1.getModel().getRowCount() + " Downloads";
+        int gesamt = jTable1.getModel().getRowCount();
+        if (gesamt == 1) {
+            textLinks = "1 Download,";
         } else {
-            textLinks = "0 Downloads";
+            textLinks = gesamt + " Downloads,";
         }
+        textLinks += " (";
         if (laufen == 1) {
-            textLinks += (leer + laufen + " laufender Download");
-        } else if (laufen > 1) {
-            textLinks += (leer + laufen + " laufende Downloads");
+            textLinks += "1 läuft,";
+        } else {
+            textLinks += laufen + " laufen,";
         }
         if (warten == 1) {
-            textLinks += (leer + "1 wartender Download");
-        } else if (warten > 1) {
-            textLinks += (leer + warten + " wartende Downloads");
+            textLinks += " 1 wartet";
+        } else {
+            textLinks += " " + warten + " warten";
         }
+        textLinks += ")";
         // Infopanel setzen
         ddaten.infoPanel.setTextLinks(InfoPanel.IDX_GUI_DOWNLOAD, textLinks);
     }

@@ -32,7 +32,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import mediathek.controller.filme.BeobFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
-import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
 import mediathek.gui.*;
@@ -40,9 +39,7 @@ import mediathek.gui.beobachter.BeobWeb;
 import mediathek.gui.dialog.Dialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
-import mediathek.gui.dialogInfos.DialogInfos;
 import mediathek.importOld.IoXmlLesen__old;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 
@@ -57,6 +54,7 @@ public final class MediathekGui extends javax.swing.JFrame {
     public static boolean MAC_OS_X = (System.getProperty("os.name").toLowerCase().startsWith("mac os x"));
     private boolean debug = false;
     private BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
+    private DialogEinstellungen dialogEinstellungen;
 
     public MediathekGui(String[] ar) {
         String pfad = "";
@@ -106,6 +104,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         GuiFunktionen.setLook(this);
         init();
         setSize(max);
+        dialogEinstellungen = new DialogEinstellungen(this, false, ddaten);
         // Set up our application to respond to the Mac OS X application menu
         registerForMacOSXEvents();
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
@@ -364,14 +363,7 @@ public final class MediathekGui extends javax.swing.JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogEinstellungen(null, true, ddaten).setVisible(true);
-            }
-        });
-        jMenuItemInfos.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogInfos(null, false, ddaten).setVisible(true);
+                dialogEinstellungen.setVisible(true);
             }
         });
         jMenuItemBeenden.addActionListener(new ActionListener() {
@@ -599,9 +591,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItemFilmlisteLaden = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItemEinstellungen = new javax.swing.JMenuItem();
-        jMenuItemInfos = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItemBeenden = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
@@ -736,18 +726,12 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenuItemFilmlisteLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_16.png"))); // NOI18N
         jMenuItemFilmlisteLaden.setText("neue Filmliste laden");
         jMenu1.add(jMenuItemFilmlisteLaden);
-        jMenu1.add(jSeparator1);
 
         jMenuItemEinstellungen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
         jMenuItemEinstellungen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png"))); // NOI18N
-        jMenuItemEinstellungen.setText("Programmeinstellungen");
+        jMenuItemEinstellungen.setText("Programm");
         jMenuItemEinstellungen.setToolTipText("allgemeine Programmeinstellungen");
         jMenu1.add(jMenuItemEinstellungen);
-
-        jMenuItemInfos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/info.png"))); // NOI18N
-        jMenuItemInfos.setText("Programminfos");
-        jMenuItemInfos.setToolTipText("Programminfos, Speicherpfade");
-        jMenu1.add(jMenuItemInfos);
         jMenu1.add(jSeparator2);
 
         jMenuItemBeenden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/exit_16.png"))); // NOI18N
@@ -908,11 +892,9 @@ public final class MediathekGui extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemFilmAbspielen;
     private javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
     private javax.swing.JMenuItem jMenuItemFilmlisteLaden;
-    private javax.swing.JMenuItem jMenuItemInfos;
     private javax.swing.JMenuItem jMenuItemLoeschen;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelInfo;
-    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JToolBar jToolBar;

@@ -57,7 +57,7 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
             int c = table.convertColumnIndexToModel(column);
             DatenAbo abo = daten.listeAbo.getAboNr(r);
             boolean eingeschaltet = abo.aboIstEingeschaltet();
-            boolean exakt = abo.aboIstExakt();
+//            boolean exakt = abo.aboIstExakt();
             if (eingeschaltet) {
 //                setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
 //                    setForeground(GuiKonstanten.ABO_FOREGROUND);
@@ -83,15 +83,15 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
 //                    setText("X");
                 }
             }
-            if (c == DatenAbo.ABO_THEMA_EXAKT_NR) {
-                setHorizontalAlignment(SwingConstants.CENTER);
-                if (exakt) {
-                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
-                } else {
-                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
-//                    setText("X");
-                }
-            }
+//            if (c == DatenAbo.ABO_THEMA_EXAKT_NR) {
+//                setHorizontalAlignment(SwingConstants.CENTER);
+//                if (exakt) {
+//                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
+//                } else {
+//                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
+////                    setText("X");
+//                }
+//            }
         } catch (Exception ex) {
             Log.fehlerMeldung(this.getClass().getName(), ex);
         }
