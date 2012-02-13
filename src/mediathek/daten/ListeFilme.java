@@ -23,7 +23,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
-import mediathek.Daten;
 import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.filme.filmeSuchen.sender.*;
 import mediathek.tool.DatumZeit;
@@ -283,7 +282,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
      * @param filterText
      * @return
      * // */
-    public synchronized void getModelTabFilme(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema,  String filterText) {
+    public synchronized void getModelTabFilme(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema, String[] filterText) {
         modelFilm.setRowCount(0);
         if (this.size() != 0) {
             ListeFilme liste = new ListeFilme();
@@ -381,7 +380,27 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return p;
     }
 
-    public static boolean filterPruefen(String senderSuchen, String themaSuchen, String textSuchen,
+    public static boolean filterPruefen(String senderSuchen, String themaSuchen, String[] textSuchen,
+            String imSender, String imThema, String imText) {
+        // prüfen ob xxxSuchen im String imXxx enthalten ist, textSuchen wird mit Thema u. Titel verglichen
+        // themaSuchen exakt mit thema
+        if (senderSuchen.equals("") || imSender.equalsIgnoreCase(senderSuchen)) {
+            if (themaSuchen.equals("") || imThema.equalsIgnoreCase(themaSuchen)) {
+                if (textSuchen.length == 0) {
+                    return true;
+                } else {
+                    for (int i = 0; i < textSuchen.length; ++i) {
+                        if (textPruefen(textSuchen[i], imText) || textPruefen(textSuchen[i], imThema)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean filterPruefen__(String senderSuchen, String themaSuchen, String textSuchen,
             String imSender, String imThema, String imText) {
         // prüfen ob xxxSuchen im String imXxx enthalten ist, textSuchen wird mit Thema u. Titel verglichen
         // themaSuchen exakt mit thema

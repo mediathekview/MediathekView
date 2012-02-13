@@ -31,7 +31,6 @@ import mediathek.controller.filme.filmeSuchen.sender.MediathekReader;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DDaten;
 import mediathek.daten.ListeFilme;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
 
 public class FilmeLaden {

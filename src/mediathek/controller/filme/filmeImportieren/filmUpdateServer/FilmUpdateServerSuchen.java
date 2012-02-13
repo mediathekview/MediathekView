@@ -34,7 +34,7 @@ import mediathek.Konstanten;
 public class FilmUpdateServerSuchen {
 
     public static String[] getListe(ListeFilmUpdateServer sListe) throws MalformedURLException, IOException, XMLStreamException {
-        String[] ret = new String[]{""/*version*/, ""/*release*/, ""/*updateUrl*/};
+        String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
         //String parsername = "";
         sListe.clear();
         int event;
@@ -45,7 +45,7 @@ public class FilmUpdateServerSuchen {
         int timeout = 10000;
         URLConnection conn = null;
         conn = new URL(Konstanten.ADRESSE_UPDATE).openConnection();
-        conn.setRequestProperty("User-Agent",  Daten.getUserAgent());
+        conn.setRequestProperty("User-Agent", Daten.getUserAgent());
         conn.setReadTimeout(timeout);
         conn.setConnectTimeout(timeout);
         inReader = new InputStreamReader(conn.getInputStream(), Konstanten.KODIERUNG_UTF);
@@ -73,7 +73,7 @@ public class FilmUpdateServerSuchen {
         String anzahl = "";
         String zeit = "";
         String datum = "";
-        String filmUrl = "";
+        String serverUrl = "";
         //String parsername = "";
         String prio = "";
         int event;
@@ -84,9 +84,16 @@ public class FilmUpdateServerSuchen {
                 if (event == XMLStreamConstants.END_ELEMENT) {
                     //parsername = parser.getLocalName();
                     if (parser.getLocalName().equals("Server")) {
-                        if (!filmUrl.equals("")) {
+                        if (!serverUrl.equals("")) {
                             //public DatenFilmUpdate(String url, String prio, String zeit, String datum, String anzahl) {
-                            sListe.addWithCheck(new DatenFilmUpdateServer(filmUrl, prio, zeit, datum, anzahl));
+                            ///////////////////////////////////////////////
+                            // zum Testen:
+                            if (serverUrl.contains("178.77.79.81")) {
+                                sListe.addWithCheck(new DatenFilmUpdateServer(serverUrl, prio, zeit, datum, anzahl));
+                            }
+                            //////////////////////////////////////////////////
+                            // sons nur das:
+                            // sListe.addWithCheck(new DatenFilmUpdateServer(filmUrl, prio, zeit, datum, anzahl));
                         }
                         break;
                     }
@@ -94,10 +101,10 @@ public class FilmUpdateServerSuchen {
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     //parsername = parser.getLocalName();
                     if (parser.getLocalName().equals("Download_Filme_1")) {
-                        filmUrl = parser.getElementText();
+                        serverUrl = parser.getElementText();
                         prio = FilmUpdateServer.FILM_UPDATE_SERVER_PRIO_1;
                     } else if (parser.getLocalName().equals("Download_Filme_2")) {
-                        filmUrl = parser.getElementText();
+                        serverUrl = parser.getElementText();
                         prio = FilmUpdateServer.FILM_UPDATE_SERVER_PRIO_2;
                     } else if (parser.getLocalName().equals("Datum")) {
                         datum = parser.getElementText();

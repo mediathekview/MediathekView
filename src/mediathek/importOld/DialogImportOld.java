@@ -17,7 +17,7 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui.dialog;
+package mediathek.importOld;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,8 +27,8 @@ import mediathek.Log;
 import mediathek.daten.DDaten;
 import mediathek.gui.beobachter.EscBeenden;
 
-public class DialogExportAbos extends javax.swing.JDialog {
-
+public class DialogImportOld extends javax.swing.JDialog {
+    
     DDaten daten;
     public boolean ok = false;
     public String ziel;
@@ -40,17 +40,17 @@ public class DialogExportAbos extends javax.swing.JDialog {
      * @param d
      * @param zziel
      */
-    public DialogExportAbos(java.awt.Frame parent, boolean modal, DDaten d, String zziel) {
+    public DialogImportOld(java.awt.Frame parent, boolean modal, String zziel) {
         super(parent, modal);
         initComponents();
-        daten = d;
+        this.setTitle("Alte Einstellungen importieren");
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
         jButtonZiel.addActionListener(new ZielBeobachter());
         jTextFieldPfad.setText(zziel);
         ziel = zziel;
         new EscBeenden(this) {
-
+            
             @Override
             public void beenden_() {
                 ok = false;
@@ -58,7 +58,7 @@ public class DialogExportAbos extends javax.swing.JDialog {
             }
         };
     }
-
+    
     void check() {
         boolean ret = false;
         String pfad = jTextFieldPfad.getText();
@@ -68,7 +68,7 @@ public class DialogExportAbos extends javax.swing.JDialog {
         }
         ok = ret;
     }
-
+    
     private void beenden() {
         this.dispose();
     }
@@ -104,7 +104,7 @@ public class DialogExportAbos extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldPfad, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                .addComponent(jTextFieldPfad, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonZiel)
                 .addContainerGap())
@@ -152,7 +152,7 @@ public class DialogExportAbos extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonAbbrechen)
                     .addComponent(jButtonOk))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
@@ -170,29 +170,30 @@ public class DialogExportAbos extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private class OkBeobachter implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             check();
             beenden();
         }
     }
-
+    
     private class AbbrechenBeobachter implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             ok = false;
             beenden();
         }
     }
-
+    
     private class ZielBeobachter implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             int returnVal;
             JFileChooser chooser = new JFileChooser();
+            chooser.setFileHidingEnabled(false);
             if (!jTextFieldPfad.getText().equals("")) {
                 chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
             }
@@ -202,7 +203,7 @@ public class DialogExportAbos extends javax.swing.JDialog {
                 try {
                     jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("DialogExport.ZielBeobachter", ex);
+                    Log.fehlerMeldung("DialogImportOld.ZielBeobachter", ex);
                 }
             }
         }

@@ -71,7 +71,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_DATUM_NR] = DatumZeit.checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_ZEIT_NR] = DatumZeit.checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_URL_THEMA_NR] = urlThema;
-////////        arr[FILM_DATEI_NR] = GuiFunktionen.getDateiName( uurl);
     }
 
     public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp,
@@ -88,22 +87,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_ZEIT_NR] = DatumZeit.checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
     }
 
-//    public DatenFilm leitungAendern(boolean low) {
-//        DatenFilm film = this.getCopy();
-//        if (low) {
-//            if (film.arr[Konstanten.FILM_SENDER_NR].equalsIgnoreCase(Konstanten.SENDER_3SAT)) {
-//                //3Sat
-//                film.arr[Konstanten.FILM_URL_NR] = film.arr[Konstanten.FILM_URL_NR].replace("/veryhigh/", "/300/");
-//            } else if (film.arr[Konstanten.FILM_SENDER_NR].equalsIgnoreCase(Konstanten.SENDER_ZDF)) {
-//                //ZDF
-//                film.arr[Konstanten.FILM_URL_NR] = film.arr[Konstanten.FILM_URL_NR].replace("/veryhigh/", "/300/");
-//            } else if (film.arr[Konstanten.FILM_SENDER_NR].equalsIgnoreCase(Konstanten.SENDER_NDR)) {
-//                //NDR
-//                film.arr[Konstanten.FILM_URL_NR] = film.arr[Konstanten.FILM_URL_NR].replace(".hq.", ".lo.");
-//            }
-//        }
-//        return film;
-//    }
     public String getIndex() {
         // liefert einen eindeutigen Index für die Filmliste
         return arr[FILM_SENDER_NR] + arr[FILM_THEMA_NR] + arr[FILM_URL_NR];

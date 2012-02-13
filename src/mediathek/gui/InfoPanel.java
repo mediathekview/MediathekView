@@ -69,11 +69,11 @@ public final class InfoPanel extends javax.swing.JPanel {
     }
 
     private void setInfoRechts() {
-        final String PAUSE = "    ";
         String textRechts;
         // Text rechts: alter/neuladenIn anzeigen
-        textRechts = "Filmeliste erstellt am: " + Daten.listeFilme.metaDaten[ListeFilme.FILMLISTE_DATUM_NR] + " Uhr";
-        textRechts += PAUSE + "Alter: ";
+        textRechts = "Filmliste erstellt: ";
+        textRechts += Daten.listeFilme.metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
+        textRechts += " Uhr  ||  Alter: ";
         int sekunden = Daten.listeFilme.alterFilmlisteSek();
         int minuten = sekunden / 60;
         String sek = String.valueOf(sekunden % 60);

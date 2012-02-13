@@ -26,9 +26,8 @@ import java.util.ListIterator;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.tool.DatumZeit;
 import mediathek.gui.GuiFilme;
-import mediathek.tool.GuiFunktionen;
+import mediathek.tool.DatumZeit;
 
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     //Tags Blacklist

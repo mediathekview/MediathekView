@@ -49,7 +49,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         if (dialogEditAbo.ok) {
             if (!aboSuchen(datenAbo.arr[DatenAbo.ABO_SENDER_NR],
                     datenAbo.arr[DatenAbo.ABO_THEMA_NR],
-//                    Boolean.parseBoolean(datenAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR]),
+                    //                    Boolean.parseBoolean(datenAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR]),
                     datenAbo.arr[DatenAbo.ABO_TITEL_NR])) {
                 addAbo(datenAbo);
                 sort();
@@ -147,10 +147,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             while (it.hasNext()) {
                 datenAbo = it.next();
                 if (ListeFilme.filterPruefen(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR],
-                        // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
-                        //                     String imSender, String imThema, String imText) {
-//                        datenAbo.aboIstExakt(),
-                        datenAbo.arr[DatenAbo.ABO_TITEL_NR],
+                        new String[]{datenAbo.arr[DatenAbo.ABO_TITEL_NR]},
                         sender, thema, text)) {
                     return datenAbo;
                 }

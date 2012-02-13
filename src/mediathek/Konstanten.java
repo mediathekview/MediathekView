@@ -44,8 +44,8 @@ public class Konstanten {
     // ################################
     // Tags System
     // ################################
-    public static final String SYSTEM_FEHLER_ANZEIGEN = "Fehler_anzeigen";
-//    public static final int SYSTEM_FEHLER_ANZEIGEN_NR = 0;
+    public static final String SYSTEM_ECHTZEITSUCHE = "Echtzeitsuche";
+    public static final int SYSTEM_ECHTZEITSUCHE_NR = 0;
     public static final String SYSTEM_LOOK = "System-look";
     public static final int SYSTEM_LOOK_NR = 1;
     public static final String SYSTEM_USER_AGENT_AUTO = "User-Agent-Auto";
@@ -121,7 +121,7 @@ public class Konstanten {
     //
     public static final String SYSTEM = "system";
     public static final int SYSTEM_MAX_ELEM = 34;
-    public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_FEHLER_ANZEIGEN, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION, SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y,
+    public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION, SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y,
         SYSTEM_ICON_KLEIN, SYSTEM_TAGE_ANZEIGEN, SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN,
         SYSTEM_PROXY_SERVER, SYSTEM_PROXY_PORT, SYSTEM_PROXY_USER, SYSTEM_PROXY_PWD, SYSTEM_PROXY_ON,
         SYSTEM_MAX_DOWNLOAD, SYSTEM_LEITUNG_LOW, SYSTEM_RTMP_FLVSTREAMER,

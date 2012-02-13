@@ -29,7 +29,7 @@ import javax.xml.stream.XMLStreamReader;
 import mediathek.daten.*;
 
 public class IoXmlLesen__old {
-
+    
     public ListePgruppe__old listePgruppeButton = new ListePgruppe__old();
     public ListePgruppe__old listePgruppeAbo = new ListePgruppe__old();
     public ListeAbo__old listeAbo = new ListeAbo__old();
@@ -40,7 +40,14 @@ public class IoXmlLesen__old {
     // private
     // ##############################
     public void importOld(DDaten ddaten) {
-        xmlDatenLesen();
+        String datei = getBasisVerzeichnis() + Konstanten__old.XML_DATEI;
+        DialogImportOld dialogImportOld = new DialogImportOld(null, true, datei);
+        dialogImportOld.setVisible(true);
+        if (!dialogImportOld.ok) {
+            // Satz mit X, war wohl nix
+            return;
+        }
+        xmlDatenLesen(dialogImportOld.ziel);
         // Liste Buttons importieren
         for (int i = 0; i < listePgruppeButton.size(); ++i) {
             DatenPgruppe__old gruppe = listePgruppeButton.get(i);
@@ -82,7 +89,7 @@ public class IoXmlLesen__old {
             ddaten.listeBlacklist.add(listeBlacklist.get(i));
         }
     }
-
+    
     public static boolean altExistiert() {
         try {
             String datei = getBasisVerzeichnis() + Konstanten__old.XML_DATEI;
@@ -93,10 +100,9 @@ public class IoXmlLesen__old {
         }
         return false;
     }
-
-    private void xmlDatenLesen() {
+    
+    private void xmlDatenLesen(String datei) {
         try {
-            String datei = getBasisVerzeichnis() + Konstanten__old.XML_DATEI;
             if (new File(datei).exists()) {
                 //nur wenn die Datei schon existiert
                 int event;
@@ -155,7 +161,7 @@ public class IoXmlLesen__old {
                     "Fehler", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
     private boolean get(XMLStreamReader parser, int event, String xmlElem, String[] xmlNames, String[] strRet) {
         boolean ret = true;
         int maxElem = strRet.length;
@@ -184,7 +190,7 @@ public class IoXmlLesen__old {
         }
         return ret;
     }
-
+    
     private static String getBasisVerzeichnis() {
         return System.getProperty("user.home") + File.separator + ".mediathek" + File.separator;
     }

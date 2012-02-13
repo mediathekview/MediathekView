@@ -46,7 +46,7 @@
                   <Component id="jButtonAbbrechen" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonOk" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="18" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -68,7 +68,7 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jTextFieldPfad" pref="259" max="32767" attributes="2"/>
+                  <Component id="jTextFieldPfad" pref="255" max="32767" attributes="2"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jButtonZiel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
