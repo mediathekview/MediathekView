@@ -83,15 +83,35 @@ public class IoXmlFilmlisteSchreiben {
 
     private void xmlSchreibenFilmliste(ListeFilme listeFilme) {
         //Filmliste Metadaten schreiben
+        listeFilme.metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
         xmlSchreibenDaten(ListeFilme.FILMLISTE, ListeFilme.FILMLISTE_COLUMN_NAMES, listeFilme.metaDaten);
         xmlSchreibenDaten(ListeFilme.FILMLISTE_INFOS, ListeFilme.FILMLISTE_INFOS_COLUMN_NAMES, listeFilme.infos);
+        xmlSchreibenFeldInfo();
         //Filme schreiben
         ListIterator<DatenFilm> iterator;
         DatenFilm datenFilm;
         iterator = listeFilme.listIterator();
         while (iterator.hasNext()) {
             datenFilm = iterator.next();
-            xmlSchreibenDaten(DatenFilm.FILME, DatenFilm.FILME_COLUMN_NAMES, datenFilm.getClean().arr);
+            xmlSchreibenDaten(DatenFilm.FILME_, DatenFilm.FILME_COLUMN_NAMES_, datenFilm.getClean().arr);
+        }
+    }
+
+    private void xmlSchreibenFeldInfo() {
+        int xmlMax = DatenFilm.FILME_COLUMN_NAMES.length;
+        try {
+            writer.writeStartElement(DatenFilm.FELD_INFO);
+            writer.writeCharacters("\n");//neue Zeile
+            for (int i = 0; i < xmlMax; ++i) {
+                writer.writeStartElement(DatenFilm.FILME_COLUMN_NAMES_[i]);
+                writer.writeCharacters(DatenFilm.FILME_COLUMN_NAMES[i]);
+                writer.writeEndElement();
+                writer.writeCharacters("\n");//neue Zeile
+            }
+            writer.writeEndElement();
+            writer.writeCharacters("\n");//neue Zeile
+        } catch (Exception ex) {
+            Log.fehlerMeldung("IoXmlSchreiben.xmlSchreibenFeldInfo", ex);
         }
     }
 

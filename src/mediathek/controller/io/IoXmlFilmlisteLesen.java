@@ -145,12 +145,21 @@ public class IoXmlFilmlisteLesen {
         text = GuiFunktionen.textLaenge(text);
         try {
             int event;
+            String filmTag = DatenFilm.FILME_;
+            String[] namen = DatenFilm.FILME_COLUMN_NAMES_;
             while (!Daten.filmeLaden.getStop() && parser.hasNext()) {
                 event = parser.next();
                 //Filmeliste
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     if (parser.getLocalName().equals(ListeFilme.FILMLISTE)) {
                         get(parser, event, ListeFilme.FILMLISTE, ListeFilme.FILMLISTE_COLUMN_NAMES, listeFilme.metaDaten);
+                        if (listeFilme.metaDaten[ListeFilme.FILMLISTE_VERSION_NR].startsWith("3")) {
+                            filmTag = DatenFilm.FILME_;
+                            namen = DatenFilm.FILME_COLUMN_NAMES_;
+                        } else {
+                            filmTag = DatenFilm.FILME;
+                            namen = DatenFilm.FILME_COLUMN_NAMES;
+                        }
                         int anz = 1;
                         try {
                             anz = Integer.parseInt(listeFilme.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR]);
@@ -160,9 +169,9 @@ public class IoXmlFilmlisteLesen {
                 }
                 //Filme
                 if (event == XMLStreamConstants.START_ELEMENT) {
-                    if (parser.getLocalName().equals(DatenFilm.FILME)) {
+                    if (parser.getLocalName().equals(filmTag)) {
                         DatenFilm datenFilm = new DatenFilm();
-                        if (get(parser, event, DatenFilm.FILME, DatenFilm.FILME_COLUMN_NAMES, datenFilm.arr)) {
+                        if (get(parser, event, filmTag, namen, datenFilm.arr)) {
                             ++count;
                             if (count > 100) {
                                 count = 0;
@@ -219,7 +228,9 @@ public class IoXmlFilmlisteLesen {
     }
 
     private void notifyProgress(String text) {
-        progress += 1;
+        if (progress < max) {
+            progress += 1;
+        }
         for (FilmListener l : listeners.getListeners(FilmListener.class)) {
             l.progress(new FilmListenerElement("", text, max, progress));
         }

@@ -209,14 +209,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         }
     }
 
-    private void setInfoPanel(FilmListenerElement filmListenerElement) {
-        ddaten.infoPanel.getProgressBar().setMaximum(filmListenerElement.max);
-        ddaten.infoPanel.getProgressBar().setMinimum(0);
-        ddaten.infoPanel.getProgressBar().setValue(filmListenerElement.progress);
-        ddaten.infoPanel.getProgressBar().setStringPainted(true);
-        ddaten.infoPanel.updateUI();
-    }
-
     private void init() {
         initTabs();
         initMenue();
@@ -225,14 +217,14 @@ public final class MediathekGui extends javax.swing.JFrame {
 
             @Override
             public void start(FilmListenerElement filmListenerElement) {
-                ddaten.infoPanel.setProgress();
+                //ddaten.infoPanel.setProgress();
                 jButtonFilmeLaden.setEnabled(false);
                 jMenuItemFilmlisteLaden.setEnabled(false);
             }
 
             @Override
             public void progress(FilmListenerElement filmListenerElement) {
-                setInfoPanel(filmListenerElement);
+                ddaten.infoPanel.setProgressBar(filmListenerElement);
             }
 
             @Override

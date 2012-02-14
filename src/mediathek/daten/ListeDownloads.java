@@ -156,12 +156,16 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void abosLoschen() {
-        // es werden alle Abos aus der Liste gelöscht
+        // es werden alle Abos (DIE NOCH NICHT GESTARTET SIND) aus der Liste gelöscht
         Iterator<DatenDownload> it = this.iterator();
         while (it.hasNext()) {
             DatenDownload d = it.next();
             if (d.istAbo()) {
-                it.remove();
+                Starts s = ddaten.starterClass.getStart(d.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                if (s == null) {
+                    // ansonsten läuft er schon
+                    it.remove();
+                }
             }
         }
     }

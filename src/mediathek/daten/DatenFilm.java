@@ -26,7 +26,9 @@ import mediathek.tool.GuiKonstanten;
 public class DatenFilm implements Comparable<DatenFilm> {
     //Tags Filme
 
+    public static final String FELD_INFO = "Feldinfo";
     public static final String FILME = "Filme";
+    public static final String FILME_ = "X";
     public static final int FILME_MAX_ELEM = 12;
     //
     public static final String FILM_NR = "Nr"; // wird vor dem Speichern gelöscht!
@@ -54,8 +56,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final String FILM_ABO_NAME = "Abo-Name";// wird vor dem Speichern gelöscht!
     public static final int FILM_ABO_NAME_NR = 11;
     public static final String[] FILME_COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT,
-        FILM_URL, FILM_URL_ORG, FILM_URL_RTMP, FILM_URL_AUTH, FILM_URL_THEMA, FILM_ABO_NAME
-    };
+        FILM_URL, FILM_URL_ORG, FILM_URL_RTMP, FILM_URL_AUTH, FILM_URL_THEMA, FILM_ABO_NAME};
+    public static final String[] FILME_COLUMN_NAMES_ = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"};
     public String[] arr;
 
     public DatenFilm() {

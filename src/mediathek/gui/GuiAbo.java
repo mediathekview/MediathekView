@@ -99,10 +99,17 @@ public class GuiAbo extends PanelVorlage {
     private void aboLoeschen() {
         int rows[] = jTable1.getSelectedRows();
         if (rows.length > 0) {
-            for (int i = rows.length - 1; i >= 0; --i) {
-                int delRow = jTable1.convertRowIndexToModel(rows[i]);
-                int ret = JOptionPane.showConfirmDialog(null, "\"" + (String) jTable1.getModel().getValueAt(delRow, DatenAbo.ABO_NAME_NR) + "\"", "Löschen?", JOptionPane.YES_NO_OPTION);
-                if (ret == JOptionPane.OK_OPTION) {
+            String text;
+            if (rows.length == 1) {
+                int delRow = jTable1.convertRowIndexToModel(rows[0]);
+                text = "\"" + jTable1.getModel().getValueAt(delRow, DatenAbo.ABO_NAME_NR).toString() + "\" löschen?";
+            } else {
+                text = rows.length + " Abos löschen?";
+            }
+            int ret = JOptionPane.showConfirmDialog(null, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+            if (ret == JOptionPane.OK_OPTION) {
+                for (int i = rows.length - 1; i >= 0; --i) {
+                    int delRow = jTable1.convertRowIndexToModel(rows[i]);
                     ((TModelAbo) jTable1.getModel()).removeRow(delRow);
                     ddaten.listeAbo.remove(delRow);
                 }

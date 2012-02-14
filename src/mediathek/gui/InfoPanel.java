@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JProgressBar;
 import mediathek.Daten;
+import mediathek.controller.filme.FilmListenerElement;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.ListeFilme;
 
@@ -54,18 +55,19 @@ public final class InfoPanel extends javax.swing.JPanel {
         jLabelStatusLinks.setText(idx[i]);
     }
 
-    public JProgressBar getProgressBar() {
-        return jProgressBar1;
+    public void setProgressBar(FilmListenerElement filmListenerElement) {
+        jProgressBar1.setVisible(true);
+        jButtonStop.setVisible(true);
+        jProgressBar1.setMaximum(filmListenerElement.max);
+        jProgressBar1.setMinimum(0);
+        jProgressBar1.setValue(filmListenerElement.progress);
+        jProgressBar1.setStringPainted(true);
+        /////updateUI();
     }
 
     public void clearProgress() {
         jProgressBar1.setVisible(false);
         jButtonStop.setVisible(false);
-    }
-
-    public void setProgress() {
-        jProgressBar1.setVisible(true);
-        jButtonStop.setVisible(true);
     }
 
     private void setInfoRechts() {
@@ -124,10 +126,10 @@ public final class InfoPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jLabelStatusLinks)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabelRechts)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonStop))
         );

@@ -34,9 +34,9 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_NAME_NR = 2;
     public static final String ABO_SENDER = DatenFilm.FILM_SENDER;
     public static final int ABO_SENDER_NR = 3;
-    public static final String ABO_THEMA = DatenFilm.FILM_THEMA+" (exakt)";
+    public static final String ABO_THEMA = DatenFilm.FILM_THEMA+"-exakt";
     public static final int ABO_THEMA_NR = 4;
-    public static final String ABO_TITEL = DatenFilm.FILM_THEMA + "/" + DatenFilm.FILM_TITEL;
+    public static final String ABO_TITEL = DatenFilm.FILM_THEMA + "-" + DatenFilm.FILM_TITEL;
     public static final int ABO_TITEL_NR = 5;
     public static final String ABO_ZIELPFAD = "Zielpfad";
     public static final int ABO_ZIELPFAD_NR = 6;

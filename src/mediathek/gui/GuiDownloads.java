@@ -23,18 +23,19 @@ import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.*;
 import mediathek.Daten;
-import mediathek.Konstanten;
 import mediathek.MediathekGui;
 import mediathek.controller.io.starter.StartEvent;
 import mediathek.controller.io.starter.StartListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
-import mediathek.daten.ListeFilme;
 import mediathek.gui.beobachter.BeobMpanel;
 import mediathek.gui.beobachter.CellRendererDownloads;
 import mediathek.gui.dialog.DialogEditDownload;
-import mediathek.tool.*;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiKonstanten;
+import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.TModel;
 
 public class GuiDownloads extends PanelVorlage {
 
@@ -450,19 +451,19 @@ public class GuiDownloads extends PanelVorlage {
             JPopupMenu menu = new JPopupMenu();
             //Film vorziehen
             int row = jTable1.getSelectedRow();
-            boolean stehtNoch = true;
+            boolean wartenOderLaufen = false;
             if (row >= 0) {
                 int delRow = jTable1.convertRowIndexToModel(row);
                 Starts s = ddaten.starterClass.getStart(jTable1.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
                 if (s != null) {
-                    if (s.status >= Starts.STATUS_RUN) {
-                        stehtNoch = false;
+                    if (s.status <= Starts.STATUS_RUN) {
+                        wartenOderLaufen = true;
                     }
                 }
             }
             JMenuItem itemStarten = new JMenuItem("Download starten");
             itemStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_16.png")));
-            itemStarten.setEnabled(stehtNoch);
+            itemStarten.setEnabled(!wartenOderLaufen);
             menu.add(itemStarten);
             itemStarten.addActionListener(new ActionListener() {
 
@@ -473,7 +474,7 @@ public class GuiDownloads extends PanelVorlage {
             });
             JMenuItem itemStoppen = new JMenuItem("Download stoppen");
             itemStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
-            itemStoppen.setEnabled(!stehtNoch);
+            itemStoppen.setEnabled(wartenOderLaufen);
             menu.add(itemStoppen);
             itemStoppen.addActionListener(new ActionListener() {
 

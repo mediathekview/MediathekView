@@ -165,7 +165,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         treeNodeInfos.add(treeNodeInfosStarts);
         treeNodeStart.add(treeNodeInfos);
         // ############ Systemmeldungen ###############
-        DefaultMutableTreeNode treeNodeSystem = new DefaultMutableTreeNode("Systemmeldungen");
+        DefaultMutableTreeNode treeNodeSystem = new DefaultMutableTreeNode("Meldungen");
         DefaultMutableTreeNode treeNodeSystemmeldungen = new DefaultMutableTreeNode(NAME_systemmeldungen);
         treeNodeSystem.add(treeNodeSystemmeldungen);
         DefaultMutableTreeNode treeNodeFehlermeldungen = new DefaultMutableTreeNode(NAME_fehlermeldungen);

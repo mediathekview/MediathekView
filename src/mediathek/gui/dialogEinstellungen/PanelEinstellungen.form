@@ -65,7 +65,7 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="86" max="32767" attributes="0"/>
                           <Component id="jSpinnerDownload" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -117,7 +117,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
-            <Property name="text" type="java.lang.String" value="max. parallele Downloads beim Laden der Abos ( empf: 2 ):"/>
+            <Property name="text" type="java.lang.String" value="max. parallele Downloads beim Laden der Abos:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JSpinner" name="jSpinnerDownload">

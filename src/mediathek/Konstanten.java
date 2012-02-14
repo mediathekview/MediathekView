@@ -21,7 +21,7 @@ package mediathek;
 
 public class Konstanten {
 
-    public static final String VERSION = "2.9.1";
+    public static final String VERSION = "3.0.0";
     public static final String PROGRAMMNAME = "MediathekView";
     public static final String ADRESSE_UPDATE = "http://zdfmediathk.sourceforge.net/update.xml";
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";

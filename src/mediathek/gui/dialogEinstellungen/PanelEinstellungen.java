@@ -143,7 +143,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jComboBoxLook.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jLabel3.setText("max. parallele Downloads beim Laden der Abos ( empf: 2 ):");
+        jLabel3.setText("max. parallele Downloads beim Laden der Abos:");
 
         jSpinnerDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
 
@@ -162,7 +162,7 @@ public class PanelEinstellungen extends PanelVorlage {
                         .addComponent(jComboBoxLook, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
                         .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jCheckBoxEchtzeit)

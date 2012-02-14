@@ -58,7 +58,7 @@ public class Daten {
         //zur Info, Basisverzeichnis für die Einstellungen
         Log.systemMeldung("Programmeinstellungen: " + getBasisVerzeichnis());
         //initialisieren
-        system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] = "2";
+        system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] = "1";
         system[Konstanten.SYSTEM_WARTEN_NR] = "1";
         system[Konstanten.SYSTEM_USER_AGENT_NR] = Konstanten.USER_AGENT_DEFAULT;
         if (system[Konstanten.SYSTEM_WARTEN_NR].equals("")) {
