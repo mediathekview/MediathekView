@@ -100,9 +100,9 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         // Infos
         panelInfo = new PanelInfo(ddaten);
         panelStarts = new PanelInfoStarts(ddaten);
-        panelMeldungenFehler = new PanelMeldungen(ddaten, Log.LOG_FEHLER);
-        panelMeldungenSystem = new PanelMeldungen(ddaten, Log.LOG_SYSTEM);
-        panelMeldungenPlayer = new PanelMeldungen(ddaten, Log.LOG_PLAYER);
+        panelMeldungenFehler = new PanelMeldungen(ddaten, Log.LOG_FEHLER, "Fehlermeldungen");
+        panelMeldungenSystem = new PanelMeldungen(ddaten, Log.LOG_SYSTEM, "Systemmeldungen");
+        panelMeldungenPlayer = new PanelMeldungen(ddaten, Log.LOG_PLAYER, "Meldungen Videoplayer");
     }
 
     private void initTree() {
@@ -113,13 +113,13 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         final String NAME_senderLaden = "Sender aktualisieren";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";
+        final String NAME_programme = "Programmgruppen";
+        final String NAME_programmeImportieren = "Importieren";
+        // Infos
+        final String NAME_allgemeineInfos = "Pfade";
+        final String NAME_infosStarts = "laufende Programme";
         final String NAME_history = "History";
         final String NAME_logfile = "erledigte Abos";
-        final String NAME_programme = "Programme";
-        final String NAME_programmeImportieren = "Programme importieren";
-        // Infos
-        final String NAME_allgemeineInfos = "Allgemein";
-        final String NAME_infosStarts = "laufende Programme";
         final String NAME_systemmeldungen = "Systemmeldungen";
         final String NAME_fehlermeldungen = "Fehlermeldungen";
         final String NAME_meldungenProgramme = "Programmeldungen";
@@ -136,7 +136,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         treeNodeEinstellungen.add(treeNodeUpdate);
         treeNodeStart.add(treeNodeEinstellungen);
         // ######## Filme ###############
-        DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filme verwalten");
+        DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filme");
         DefaultMutableTreeNode treeNodeFilmliste = new DefaultMutableTreeNode(NAME_filmListeLaden);
         treeNodeFilme.add(treeNodeFilmliste);
         DefaultMutableTreeNode treeNodeSenderLaden = new DefaultMutableTreeNode(NAME_senderLaden);
@@ -145,13 +145,9 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         treeNodeFilme.add(treeNodeFilmlisteExport);
         DefaultMutableTreeNode treeNodeBlacklist = new DefaultMutableTreeNode(NAME_blacklist);
         treeNodeFilme.add(treeNodeBlacklist);
-        DefaultMutableTreeNode treeNodeHistory = new DefaultMutableTreeNode(NAME_history);
-        treeNodeFilme.add(treeNodeHistory);
-        DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
-        treeNodeFilme.add(treeNodeLogfile);
         treeNodeStart.add(treeNodeFilme);
         // ########### Programme ##############
-        DefaultMutableTreeNode treeNodeDownloads = new DefaultMutableTreeNode("Programme einrichten");
+        DefaultMutableTreeNode treeNodeDownloads = new DefaultMutableTreeNode("Videoplayer");
         DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programme);
         treeNodeDownloads.add(treeNodeProgramme);
         DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmeImportieren);
@@ -163,6 +159,10 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         treeNodeInfos.add(treeNodeAllgemeineInfos);
         DefaultMutableTreeNode treeNodeInfosStarts = new DefaultMutableTreeNode(NAME_infosStarts);
         treeNodeInfos.add(treeNodeInfosStarts);
+        DefaultMutableTreeNode treeNodeHistory = new DefaultMutableTreeNode(NAME_history);
+        treeNodeInfos.add(treeNodeHistory);
+        DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
+        treeNodeInfos.add(treeNodeLogfile);
         treeNodeStart.add(treeNodeInfos);
         // ############ Systemmeldungen ###############
         DefaultMutableTreeNode treeNodeSystem = new DefaultMutableTreeNode("Meldungen");

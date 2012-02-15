@@ -32,15 +32,16 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.Daten;
+import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenPgruppe;
 import mediathek.daten.DatenProg;
-import mediathek.daten.ListePgruppe;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.beobachter.CellRendererPguppen;
 import mediathek.gui.dialog.DialogHilfeProgramme;
+import mediathek.gui.dialog.DialogZielDatei;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.TModel;
@@ -55,14 +56,12 @@ public class PanelPgruppen extends PanelVorlage {
 
     private void init() {
         //Programme
-        ListePgruppe.addAdListener(new MediathekListener() {
+        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, PanelPgruppen.class.getSimpleName()) {
 
             @Override
-            public void ping(String className) {
-                if (className.equals(ListePgruppe.class.getSimpleName())) {
-                    if (!stopBeob) {
-                        tabellePgruppe();
-                    }
+            public void ping() {
+                if (!stopBeob) {
+                    tabellePgruppe();
                 }
             }
         });
@@ -95,7 +94,7 @@ public class PanelPgruppen extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 getPgruppe().setAbspielen(ddaten);
                 nurtabellePgruppe();
-                ListePgruppe.notifyMediathekListener();
+                notifyPgruppe();
             }
         });
         jCheckBoxSpeichern.addActionListener(new ActionListener() {
@@ -104,7 +103,7 @@ public class PanelPgruppen extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 getPgruppe().setSpeichern(jCheckBoxSpeichern.isSelected());
                 nurtabellePgruppe();
-                ListePgruppe.notifyMediathekListener();
+                notifyPgruppe();
             }
         });
         jCheckBoxButton.addActionListener(new ActionListener() {
@@ -113,7 +112,7 @@ public class PanelPgruppen extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 getPgruppe().setButton(jCheckBoxButton.isSelected());
                 nurtabellePgruppe();
-                ListePgruppe.notifyMediathekListener();
+                notifyPgruppe();
             }
         });
         jCheckBoxAbo.addActionListener(new ActionListener() {
@@ -122,7 +121,7 @@ public class PanelPgruppen extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 getPgruppe().setAbo(jCheckBoxAbo.isSelected());
                 nurtabellePgruppe();
-                ListePgruppe.notifyMediathekListener();
+                notifyPgruppe();
             }
         });
         jButtonGruppeNeu.addActionListener(new BeobGruppeNeu());
@@ -246,6 +245,10 @@ public class PanelPgruppen extends PanelVorlage {
         }
     }
 
+    private void notifyPgruppe() {
+        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, PanelPgruppen.class.getSimpleName());
+    }
+
     private void fillTextProgramme() {
         //Textfelder mit Programmdaten füllen
         stopBeob = true;
@@ -317,8 +320,7 @@ public class PanelPgruppen extends PanelVorlage {
             jTablePgruppen.setRowSelectionInterval(neu, neu);
             jTablePgruppen.scrollRectToVisible(jTablePgruppen.getCellRect(neu, 0, false));
             Daten.setGeaendert();
-            ListePgruppe.notifyMediathekListener();
-            notifyMediathekListener();
+            notifyPgruppe();
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -328,7 +330,7 @@ public class PanelPgruppen extends PanelVorlage {
         //DatenPgruppe(String name, String suffix, String farbe, String zielPfad, String zielDateiname) {
         ddaten.listePgruppe.addPgruppe(new DatenPgruppe());
         tabellePgruppe();
-        ListePgruppe.notifyMediathekListener();
+        notifyPgruppe();
     }
 
     private void gruppeLoeschen() {
@@ -342,30 +344,31 @@ public class PanelPgruppen extends PanelVorlage {
                 ddaten.listePgruppe.remove(delRow);
             }
             tabellePgruppe();
-            ListePgruppe.notifyMediathekListener();
+            notifyPgruppe();
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
     }
 
     private void gruppeExport() {
-//////        DatenPgruppe pGruppe = null;
-//////        String name = "";
-//////        int row = jList1.getSelectedIndex();
-//////        if (row >= 0) {
-//////            pGruppe = listePgruppe.get(row);
-//////            if (pGruppe != null) {
-//////                name = pGruppe.arr[Konstanten.PROGRAMMGRUPPE_NAME_NR].equals("") ? "Name.xml" : pGruppe.arr[Konstanten.PROGRAMMGRUPPE_NAME_NR] + ".xml";
-//////                DialogZielDatei dialog = new DialogZielDatei(null, true, daten, "" /* Pfad */, Funktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */));
-//////                dialog.setVisible(true);
-//////                if (dialog.ok) {
-//////                    name = Funktionen.addsPfad(daten, dialog.zielPfad, dialog.zielDateiname);
-//////                    daten.ioXmlSchreiben.exportPgruppe(pGruppe, name);
-//////                }
-//////            }
-//////        } else {
-//////            new HinweisKeineAuswahl().zeigen();
-//////        }
+        DatenPgruppe pGruppe;
+        String name;
+        int row = jTablePgruppen.getSelectedRow();
+        if (row != -1) {
+            int delRow = jTablePgruppen.convertRowIndexToModel(row);
+            pGruppe = ddaten.listePgruppe.get(delRow);
+            if (pGruppe != null) {
+                name = pGruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR].equals("") ? "Name.xml" : pGruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] + ".xml";
+                DialogZielDatei dialog = new DialogZielDatei(null, true, "" /* Pfad */, GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */));
+                dialog.setVisible(true);
+                if (dialog.ok) {
+                    name = GuiFunktionen.addsPfad(dialog.zielPfad, dialog.zielDateiname);
+                    ddaten.ioXmlSchreiben.exportPgruppe(pGruppe, name);
+                }
+            }
+        } else {
+            new HinweisKeineAuswahl().zeigen();
+        }
     }
 
     private void progNeueZeile(DatenProg prog) {
@@ -405,9 +408,9 @@ public class PanelPgruppen extends PanelVorlage {
     }
 
     /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+     *     initialize the form.
+     *     WARNING: Do NOT modify this code. The content of this method is
+     *     always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -1160,7 +1163,7 @@ public class PanelPgruppen extends PanelVorlage {
                     if (nr == DatenPgruppe.PROGRAMMGRUPPE_NAME_NR) {
                         jTablePgruppen.getModel().setValueAt(jTextFieldGruppeName.getText(), row, DatenPgruppe.PROGRAMMGRUPPE_NAME_NR);
                     }
-                    ListePgruppe.notifyMediathekListener();
+                    notifyPgruppe();
                     Daten.setGeaendert();
                     stopBeob = false;
                 } else {
@@ -1298,7 +1301,7 @@ public class PanelPgruppen extends PanelVorlage {
                     pgruppe.setFarbe(dialog.farbe);
                     tabellePgruppe();
                     Daten.setGeaendert();
-                    ListePgruppe.notifyMediathekListener();
+                    notifyPgruppe();
                 }
             }
 
@@ -1314,7 +1317,7 @@ public class PanelPgruppen extends PanelVorlage {
                 pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_FARBE_NR] = "";
                 tabellePgruppe();
                 Daten.setGeaendert();
-                ListePgruppe.notifyMediathekListener();
+                notifyPgruppe();
             }
 
         }
@@ -1339,24 +1342,6 @@ public class PanelPgruppen extends PanelVorlage {
             setBackground(null);
             setBorder(null);
             Color col = null;
-
-//////            col = listePgruppe.get(index).getFarbe(ddaten);
-////////            boolean doppelklick = listePgruppe.get(index).arr[Konstanten.PROGRAMMGRUPPE_DOPPELKLICK_NR].equals(Boolean.toString(true));
-//////            if (isSelected) {
-//////                if (doppelklick) {
-//////                    setForeground(Color.RED);
-//////                } else {
-//////                    setForeground(list.getSelectionForeground());
-//////                }
-//////                setBackground(list.getSelectionBackground());
-//////            } else {
-//////                if (doppelklick) {
-//////                    setForeground(Color.RED);
-//////                } else {
-//////                    setForeground(list.getForeground());
-//////                }
-//////                setBackground(list.getBackground());
-//////            }
             if (col != null) {
                 setBorder(javax.swing.BorderFactory.createLineBorder(col, 2));
             }
@@ -1379,15 +1364,4 @@ public class PanelPgruppen extends PanelVorlage {
 
         }
     }
-//    public class BeobMaus extends MouseAdapter {
-//
-//        @Override
-//        public void mouseClicked(MouseEvent arg0) {
-//            if (arg0.getButton() == MouseEvent.BUTTON1) {
-//                if (arg0.getClickCount() > 1) {
-//                    setDoppelklick();
-//                }
-//            }
-//        }
-//    }
 }

@@ -90,10 +90,20 @@ public class IoXmlFilmlisteSchreiben {
         //Filme schreiben
         ListIterator<DatenFilm> iterator;
         DatenFilm datenFilm;
+        DatenFilm datenFilmAlt = new DatenFilm();
+        DatenFilm kopie = new DatenFilm();
         iterator = listeFilme.listIterator();
         while (iterator.hasNext()) {
             datenFilm = iterator.next();
+            kopie = datenFilm.getCopy();
+            if (datenFilm.arr[DatenFilm.FILM_SENDER_NR].equals(datenFilmAlt.arr[DatenFilm.FILM_SENDER_NR])) {
+                datenFilm.arr[DatenFilm.FILM_SENDER_NR] = "";
+            }
+            if (datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals(datenFilmAlt.arr[DatenFilm.FILM_THEMA_NR])) {
+                datenFilm.arr[DatenFilm.FILM_THEMA_NR] = "";
+            }
             xmlSchreibenDaten(DatenFilm.FILME_, DatenFilm.FILME_COLUMN_NAMES_, datenFilm.getClean().arr);
+            datenFilmAlt = kopie;
         }
     }
 

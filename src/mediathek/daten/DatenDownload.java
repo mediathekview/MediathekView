@@ -238,7 +238,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
             if (name == null) {
                 name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
             }
-            name = GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */);
         }
         // ##############################################
         // und jetzt noch den Pfad aufbauen
@@ -246,7 +245,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (pfad.endsWith(File.separator)) {
             pfad = pfad.substring(0, pfad.length() - 1);
         }
-        arr[DOWNLOAD_ZIEL_DATEINAME_NR] = name;
+        arr[DOWNLOAD_ZIEL_DATEINAME_NR] = GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */);
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
         arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, arr[DOWNLOAD_ZIEL_DATEINAME_NR]);
     }

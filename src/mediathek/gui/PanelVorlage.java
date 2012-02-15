@@ -21,9 +21,7 @@ package mediathek.gui;
 
 import java.util.List;
 import javax.swing.JTable;
-import javax.swing.event.EventListenerList;
 import mediathek.Log;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
 
 public class PanelVorlage extends javax.swing.JPanel {
@@ -36,7 +34,6 @@ public class PanelVorlage extends javax.swing.JPanel {
     private List<? extends javax.swing.RowSorter.SortKey> listeSort = null;
     private int sel;
     private int rows;
-    static EventListenerList listeners = new EventListenerList();
 
     /**
      *
@@ -77,33 +74,6 @@ public class PanelVorlage extends javax.swing.JPanel {
         //nur wenn geändert
     }
 
-    public static void addAdListener(MediathekListener listener) {
-        listeners.add(MediathekListener.class, listener);
-    }
-
-    public void notifyMediathekListener() {
-        for (MediathekListener l : listeners.getListeners(MediathekListener.class)) {
-            String name = this.getClass().getSimpleName();
-            l.ping(this.getClass().getSimpleName());
-        }
-    }
-
-//    public void toolbarLoeschen() {
-//        //erst alle aus
-////        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonFilmeLaden, false);
-//        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonFilmAbspielen, false);
-//        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonFilmSpeichern, false);
-//        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonDownloadAktualisieren, false);
-//        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonDownloadStarten, false);
-//        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonDownloadZurueckstellen, false);
-//        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonDownloadLoeschen, false);
-//        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonDownloadAufraeumen, false);
-//
-//         ddaten.mediathekGui.setToolbar(MediathekGui.ButtonAbo, false);
-//        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonDownloadLoeschen, false);
-//        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonDownloadAufraeumen, false);
-//
-//    }
     public void getSpalten(JTable tabelle) {
         try {
             breite = new int[tabelle.getColumnCount()];

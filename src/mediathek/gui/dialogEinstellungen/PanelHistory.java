@@ -26,9 +26,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.table.DefaultTableModel;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.TModel;
 
 public class PanelHistory extends PanelVorlage {
 
@@ -62,7 +62,7 @@ public class PanelHistory extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        jTable1.setModel(new DefaultTableModel(ddaten.history.getObjectData(), new String[]{"Url"}));
+        jTable1.setModel(new TModel(ddaten.history.getObjectData(), new String[]{"Url"}));
     }
 
     /** This method is called from within the constructor to

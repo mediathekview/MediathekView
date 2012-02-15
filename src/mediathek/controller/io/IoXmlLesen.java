@@ -33,6 +33,8 @@ import mediathek.Log;
 import mediathek.controller.filme.filmeImportieren.filmUpdateServer.DatenFilmUpdateServer;
 import mediathek.controller.filme.filmeImportieren.filmUpdateServer.FilmUpdateServer;
 import mediathek.daten.*;
+import mediathek.importOld.DatenPgruppe__old;
+import mediathek.importOld.Konstanten__old;
 import mediathek.tool.GuiFunktionen;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
@@ -76,6 +78,13 @@ public class IoXmlLesen {
                         if (!get(parser, event, DatenPgruppe.PROGRAMMGRUPPE, DatenPgruppe.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe.arr, false)) {
                             datenPgruppe = null;
                         }
+                    } else if (parser.getLocalName().equals(Konstanten__old.PROGRAMMGRUPPE_BUTTON)) {
+                        DatenPgruppe__old datenPgruppe__old = new DatenPgruppe__old();
+                        if (!get(parser, event, Konstanten__old.PROGRAMMGRUPPE_BUTTON, Konstanten__old.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe__old.arr, false)) {
+                            datenPgruppe = null;
+                        } else {
+                            datenPgruppe = datenPgruppe__old.getNewVersion();
+                        }
                     } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
                         if (datenPgruppe != null) {
                             DatenProg datenProg = new DatenProg();
@@ -112,6 +121,13 @@ public class IoXmlLesen {
                         datenPgruppe = new DatenPgruppe();
                         if (!get(parser, event, DatenPgruppe.PROGRAMMGRUPPE, DatenPgruppe.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe.arr, false)) {
                             datenPgruppe = null;
+                        }
+                    } else if (parser.getLocalName().equals(Konstanten__old.PROGRAMMGRUPPE_BUTTON)) {
+                        DatenPgruppe__old datenPgruppe__old = new DatenPgruppe__old();
+                        if (!get(parser, event, Konstanten__old.PROGRAMMGRUPPE_BUTTON, Konstanten__old.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe__old.arr, false)) {
+                            datenPgruppe = null;
+                        } else {
+                            datenPgruppe = datenPgruppe__old.getNewVersion();
                         }
                     } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
                         if (datenPgruppe != null) {

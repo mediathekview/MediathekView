@@ -22,33 +22,13 @@ package mediathek.daten;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import javax.swing.event.EventListenerList;
+import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.gui.dialogEinstellungen.PanelPgruppen;
 import mediathek.tool.TModel;
 
 public class ListePgruppe extends LinkedList<DatenPgruppe> {
 
-    static EventListenerList listeners = new EventListenerList();
-
-    public static void addAdListener(MediathekListener listener) {
-        listeners.add(MediathekListener.class, listener);
-    }
-
-    public static void notifyMediathekListener() {
-        for (MediathekListener l : listeners.getListeners(MediathekListener.class)) {
-            l.ping(ListePgruppe.class.getSimpleName());
-        }
-    }
-
-//    public ListePgruppe getCopyOfMe() {
-//        //Kopie dieser Liste zurückgeben
-//        ListePgruppe ret = new ListePgruppe();
-//        Iterator<DatenPgruppe> it = this.iterator();
-//        while (it.hasNext()) {
-//            ret.add(it.next().copy());
-//        }
-//        return ret;
-//    }
     public boolean nameExists(String name) {
         boolean ret = false;
         ListIterator<DatenPgruppe> it = this.listIterator(0);
@@ -183,13 +163,13 @@ public class ListePgruppe extends LinkedList<DatenPgruppe> {
             }
         }
         this.add(neu, prog);
-        notifyMediathekListener();
+        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, ListePgruppe.class.getSimpleName());
         return neu;
     }
 
     public boolean addPgruppe(DatenPgruppe gruppe) {
         boolean ret = add(gruppe);
-        notifyMediathekListener();
+        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, ListePgruppe.class.getSimpleName());
         return ret;
     }
 

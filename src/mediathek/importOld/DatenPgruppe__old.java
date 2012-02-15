@@ -43,7 +43,7 @@ public class DatenPgruppe__old {
     public DatenPgruppe getNewVersion() {
         DatenPgruppe gruppeNeu = new DatenPgruppe();
         gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_NAME_NR];
-        gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_SUFFIX_DIREKT_NR];
+        gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR];
         gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_SUFFIX_DIREKT_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_SUFFIX_DIREKT_NR];
         gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_FARBE_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_FARBE_NR];
         gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_ZIEL_PFAD_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_ZIEL_PFAD_NR];

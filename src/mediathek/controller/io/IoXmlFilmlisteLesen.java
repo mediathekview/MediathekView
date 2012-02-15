@@ -143,6 +143,8 @@ public class IoXmlFilmlisteLesen {
         boolean ret = true;
         int count = 0;
         text = GuiFunktionen.textLaenge(text);
+        DatenFilm datenFilm;
+        DatenFilm datenFilmAlt = new DatenFilm();
         try {
             int event;
             String filmTag = DatenFilm.FILME_;
@@ -170,14 +172,21 @@ public class IoXmlFilmlisteLesen {
                 //Filme
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     if (parser.getLocalName().equals(filmTag)) {
-                        DatenFilm datenFilm = new DatenFilm();
+                        datenFilm = new DatenFilm();
                         if (get(parser, event, filmTag, namen, datenFilm.arr)) {
+                            if (datenFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
+                                datenFilm.arr[DatenFilm.FILM_SENDER_NR] = datenFilmAlt.arr[DatenFilm.FILM_SENDER_NR];
+                            }
+                            if (datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals("")) {
+                                datenFilm.arr[DatenFilm.FILM_THEMA_NR] = datenFilmAlt.arr[DatenFilm.FILM_THEMA_NR];
+                            }
                             ++count;
                             if (count > 100) {
                                 count = 0;
                                 this.notifyProgress(text);
                             }
                             listeFilme.addWithNr(datenFilm);
+                            datenFilmAlt = datenFilm;
                         }
                     }
                 }

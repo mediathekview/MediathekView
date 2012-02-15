@@ -26,6 +26,7 @@ import java.util.ListIterator;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.gui.GuiFilme;
 import mediathek.tool.DatumZeit;
 
@@ -33,6 +34,14 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     //Tags Blacklist
 
     private long tage = 0;
+
+    @Override
+    public boolean add(DatenBlacklist db) {
+        boolean ret;
+        ret = super.add(db);
+        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_BLACKLIST_ADD, ListeBlacklist.class.getSimpleName());
+        return ret;
+    }
 
     public Object[][] getObjectData() {
         Object[][] object;

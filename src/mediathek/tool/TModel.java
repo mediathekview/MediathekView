@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -70,29 +69,6 @@ public class TModel extends DefaultTableModel {
         }
     }
 
-//    public void verkuerzen(int feld1, int feld2, int anz) {
-//        //nur eine Zeile mit gleichem Inhalt aus fleld
-//        int start = 0;
-//        int count = 1;
-//        while (start < this.getRowCount()) {
-//            String str1 = this.getValueAt(start, feld1).toString();
-//            String str2 = this.getValueAt(start, feld2).toString();
-//            for (int i = start + 1; i < this.getRowCount(); ++i) {
-//                String tmp1 = this.getValueAt(i, feld1).toString();
-//                String tmp2 = this.getValueAt(i, feld2).toString();
-//                if (tmp1.equals(str1) && tmp2.equals(str2)) {
-//                    if (count < anz) {
-//                        ++count;
-//                    } else {
-//                        this.removeRow(i);
-//                        --i;
-//                    }
-//                }
-//            }
-//            count = 1;
-//            ++start;
-//        }
-//    }
     public void filter(DDaten daten, boolean keineAbos, boolean kGesehen, boolean live) {
         List zeile;
         ListIterator<List> it = this.getDataVector().listIterator();
@@ -124,10 +100,10 @@ public class TModel extends DefaultTableModel {
 
     public String[] getModelOfField(DDaten daten, int feld, boolean leer) {
         /* erstellt ein StringArray mit den Daten des Feldes
-         * lee: immer ein leeres Feld am Anfang */
+         *  leer: immer ein leeres Feld am Anfang */
         LinkedList<String> list = new LinkedList<String>();
         String[] ret;
-        String str = new String();
+        String str;
         for (int i = 0; i < this.getRowCount(); ++i) {
             str = this.getValueAt(i, feld).toString();
             if (str.equals("")) {
@@ -150,21 +126,4 @@ public class TModel extends DefaultTableModel {
         }
         return ret;
     }
-//    public void removeListener() {
-//        tmls = (TableModelListener[]) (this.getListeners(TableModelListener.class));
-//        for (int i = 0; i < tmls.length; ++i) {
-//            this.removeTableModelListener(tmls[i]);
-//        }
-//
-//    }
-//
-//    public void addListener() {
-//        if (tmls != null) {
-//            for (int i = 0; i < tmls.length; ++i) {
-//                this.addTableModelListener(tmls[i]);
-//            }
-//            this.fireTableDataChanged();
-//            tmls = null;
-//        }
-//    }
 }

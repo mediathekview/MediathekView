@@ -33,7 +33,6 @@ import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPgruppe;
-import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.TModel;
 
 public class StarterClass {

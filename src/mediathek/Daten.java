@@ -20,10 +20,13 @@
 package mediathek;
 
 import java.io.File;
+import javax.swing.event.EventListenerList;
 import mediathek.controller.filme.FilmeLaden;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.ListeFilme;
+import mediathek.daten.ListePgruppe;
 
 public class Daten {
     // Konstanten
@@ -44,6 +47,7 @@ public class Daten {
     public static IoXmlFilmlisteLesen ioXmlFilmlisteLesen = null;
     public static IoXmlFilmlisteSchreiben ioXmlFilmlisteSchreiben = null;
     public static ListeFilme listeFilme = null;
+    private static EventListenerList listeners = new EventListenerList();
 
     public Daten(String basis) {
         basisverzeichnis = basis;
@@ -90,6 +94,21 @@ public class Daten {
 
     }
     // userAgent
+
+    public static void addAdListener(MediathekListener listener) {
+        listeners.add(MediathekListener.class, listener);
+    }
+
+    public static void notifyMediathekListener(int ereignis, String klasse) {
+        for (MediathekListener l : listeners.getListeners(MediathekListener.class)) {
+            if (l.ereignis == ereignis) {
+                if (!l.klasse.equals(klasse)) {
+                    // um einen Kreislauf zu verhindern
+                    l.ping();
+                }
+            }
+        }
+    }
 
     public static boolean isUserAgentAuto() {
         if (system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR].equals("")) {

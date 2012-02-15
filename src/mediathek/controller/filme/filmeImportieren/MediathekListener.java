@@ -23,7 +23,22 @@ import java.util.EventListener;
 
 public class MediathekListener implements EventListener {
 
+    public static final int EREIGNIS_BLACKLIST_ADD = 1;
+    public static final int EREIGNIS_BLACKLIST_DEL = 2;
+    public static final int EREIGNIS_LISTE_PGRUPPE = 3;
+    public static final int EREIGNIS_FILMLISTE_NEU = 4;
+    public int ereignis = -1;
+    public String klasse = "";
+
     public MediathekListener() {
+    }
+
+    public MediathekListener(int eereignis, String kklasse) {
+        ereignis = eereignis;
+        klasse = kklasse;
+    }
+
+    public void ping() {
     }
 
     public void ping(int intInfo) {

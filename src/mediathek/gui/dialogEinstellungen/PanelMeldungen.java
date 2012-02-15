@@ -38,9 +38,10 @@ public class PanelMeldungen extends PanelVorlage {
      *
      * @param d
      */
-    public PanelMeldungen(DDaten d, String llogArt) {
+    public PanelMeldungen(DDaten d, String llogArt, String header) {
         super(d);
         initComponents();
+        jLabelHeader.setText(header);
         logArt = llogArt;
         //init
         Log.addAdListener(new MediathekListener() {
@@ -85,12 +86,15 @@ public class PanelMeldungen extends PanelVorlage {
         jButtonLoeschen = new javax.swing.JButton();
         jScrollPane = new javax.swing.JScrollPane();
         jTextArea = new javax.swing.JTextArea();
+        jLabelHeader = new javax.swing.JLabel();
 
         jButtonLoeschen.setText("löschen");
 
         jTextArea.setColumns(20);
         jTextArea.setRows(5);
         jScrollPane.setViewportView(jTextArea);
+
+        jLabelHeader.setText("jLabel1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -99,17 +103,22 @@ public class PanelMeldungen extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                    .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 246, Short.MAX_VALUE)
                         .addComponent(jButtonLoeschen))
-                    .addComponent(jScrollPane))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabelHeader)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
+                .addComponent(jLabelHeader)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonLoeschen)
                 .addGap(12, 12, 12))
@@ -117,6 +126,7 @@ public class PanelMeldungen extends PanelVorlage {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonLoeschen;
+    private javax.swing.JLabel jLabelHeader;
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JTextArea jTextArea;
     // End of variables declaration//GEN-END:variables
