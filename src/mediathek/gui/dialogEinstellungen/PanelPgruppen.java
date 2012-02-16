@@ -32,7 +32,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.Daten;
-import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
