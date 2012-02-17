@@ -173,6 +173,17 @@ public class ListePgruppe extends LinkedList<DatenPgruppe> {
         return ret;
     }
 
+    public boolean addPgruppe(DatenPgruppe[] gruppe) {
+        boolean ret = true;
+        for (int i = 0; i < gruppe.length; ++i) {
+            if (!add(gruppe[i])) {
+                ret = false;
+            }
+        }
+        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, ListePgruppe.class.getSimpleName());
+        return ret;
+    }
+
     public TModel getModel() {
         TModel model;
         Object[][] object;

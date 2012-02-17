@@ -20,16 +20,12 @@
 package mediathek.daten;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
-import mediathek.Log;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.TModelAbo;
-import org.apache.commons.lang.StringEscapeUtils;
 
 public class ListeAbo extends LinkedList<DatenAbo> {
 
@@ -40,17 +36,14 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
     private int nr = 0;
 
-    public boolean addAbo(String sender, String thema, boolean exakt, String text) {
+    public boolean addAbo(String sender, String thema, String titel) {
         //abo anlegen, oder false wenns schon existiert
         boolean ret = false;
-        DatenAbo datenAbo = new DatenAbo(thema, sender, thema, exakt, text, thema, "");
+        DatenAbo datenAbo = new DatenAbo(thema /* name */, sender, thema, titel, thema /* Pfad */, "");
         DialogEditAbo dialogEditAbo = new DialogEditAbo(null, true, daten, datenAbo);
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
-            if (!aboSuchen(datenAbo.arr[DatenAbo.ABO_SENDER_NR],
-                    datenAbo.arr[DatenAbo.ABO_THEMA_NR],
-                    //                    Boolean.parseBoolean(datenAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR]),
-                    datenAbo.arr[DatenAbo.ABO_TITEL_NR])) {
+            if (getAbo(sender, thema, titel) == null) {
                 addAbo(datenAbo);
                 sort();
                 ret = true;
@@ -113,46 +106,24 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
     }
 
-    public boolean aboSuchen(String sender, String thema, String text) {
-        //Abo suchen
-        boolean ret = false;
-        DatenAbo abo = null;
-        Iterator<DatenAbo> it = this.iterator();
-        while (it.hasNext()) {
-            abo = it.next();
-            if (abo.arr[DatenAbo.ABO_SENDER_NR].equalsIgnoreCase(sender)
-                    && abo.arr[DatenAbo.ABO_THEMA_NR].equalsIgnoreCase(thema)
-                    && abo.arr[DatenAbo.ABO_TITEL_NR].equalsIgnoreCase(text)) {
-                ret = true;
-            }
-        }
-        return ret;
-    }
+//    public boolean aboExists(String sender, String thema) {
+//        thema = StringEscapeUtils.unescapeHtml(thema.trim());
+//        boolean ret = false;
+//        if (getAbo(sender, thema, "", "") != null) {
+//            ret = true;
+//        }
+//        return ret;
+//    }
 
-    public boolean aboExists(String sender, String thema) {
-        thema = StringEscapeUtils.unescapeHtml(thema.trim());
-        boolean ret = false;
-        if (getAbo(sender, thema, "", "") != null) {
-            ret = true;
-        }
-        return ret;
-    }
-
-    public DatenAbo getAbo(String sender, String thema, String text, String url) {
-        DatenAbo datenAbo = null;
+    public DatenAbo getAbo(String sender, String thema, String titel) {
+        DatenAbo datenAbo;
         ListIterator<DatenAbo> it = this.listIterator();
-        if (sender.equals("") && thema.equals("") && text.equals("") && url.equals("")) {
-            Log.fehlerMeldung("ListeAbo.getAbo", "Leeres Abo!");
-        } else {
-            while (it.hasNext()) {
-                datenAbo = it.next();
-                if (ListeFilme.filterPruefen(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR],
-                        new String[]{datenAbo.arr[DatenAbo.ABO_TITEL_NR]},
-                        sender, thema, text)) {
-                    return datenAbo;
-                }
+        while (it.hasNext()) {
+            datenAbo = it.next();
+            if (ListeFilme.filterPruefen(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR], datenAbo.arr[DatenAbo.ABO_TITEL_NR],
+                    datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR], sender, thema, titel)) {
+                return datenAbo;
             }
-
         }
         return null;
     }

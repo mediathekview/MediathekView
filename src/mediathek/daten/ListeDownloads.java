@@ -124,8 +124,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             film = itFilm.next();
             abo = ddaten.listeAbo.getAbo(film.arr[DatenFilm.FILM_SENDER_NR],
                     film.arr[DatenFilm.FILM_THEMA_NR],
-                    film.arr[DatenFilm.FILM_TITEL_NR],
-                    film.arr[DatenFilm.FILM_URL_NR]);
+                    film.arr[DatenFilm.FILM_TITEL_NR]);
             if (abo == null) {
                 continue;
             } else if (!abo.aboIstEingeschaltet()) {

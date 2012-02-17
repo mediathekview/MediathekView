@@ -202,8 +202,8 @@ public class DatenPgruppe {
             ret.arr[i] = new String(this.arr[i]);
         }
         //es darf nur einen geben!
-        arr[PROGRAMMGRUPPE_IST_ABSPIELEN_NR] = Boolean.toString(false);
-        arr[PROGRAMMGRUPPE_IST_SPEICHERN_NR] = Boolean.toString(false);
+        ret.arr[PROGRAMMGRUPPE_NAME_NR] = "Kopie-" + arr[PROGRAMMGRUPPE_NAME_NR];
+        ret.arr[PROGRAMMGRUPPE_IST_ABSPIELEN_NR] = Boolean.toString(false);
         ListIterator<DatenProg> it = getListeProg().listIterator(0);
         while (it.hasNext()) {
             ret.addProg(it.next().copy());

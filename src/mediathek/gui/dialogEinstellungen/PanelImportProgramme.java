@@ -65,10 +65,13 @@ public class PanelImportProgramme extends PanelVorlage {
     }
 
     private void importDatei() {
-        DatenPgruppe pGruppe;
+        DatenPgruppe[] pGruppe;
         pGruppe = IoXmlLesen.importPgruppe(jTextFieldDatei.getText(), true);
         if (pGruppe != null) {
-            ddaten.listePgruppe.addPgruppe(pGruppe);
+            if (ddaten.listePgruppe.addPgruppe(pGruppe)) {
+                JOptionPane.showMessageDialog(null, pGruppe.length + " Programmgruppe(n) importiert!",
+                        "Ok", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Die Datei konnte nicht importiert werden!",
                     "Fehler", JOptionPane.ERROR_MESSAGE);
@@ -76,10 +79,13 @@ public class PanelImportProgramme extends PanelVorlage {
     }
 
     private void importText() {
-        DatenPgruppe pGruppe;
+        DatenPgruppe[] pGruppe;
         pGruppe = IoXmlLesen.importPgruppeText(jTextAreaImport.getText(), true);
         if (pGruppe != null) {
-            ddaten.listePgruppe.addPgruppe(pGruppe);
+            if (ddaten.listePgruppe.addPgruppe(pGruppe)) {
+                JOptionPane.showMessageDialog(null, pGruppe.length + " Programmgruppe(n) importiert!",
+                        "Ok", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Der Import war nicht möglich!",
                     "Fehler", JOptionPane.ERROR_MESSAGE);
@@ -255,8 +261,10 @@ public class PanelImportProgramme extends PanelVorlage {
             } else {
                 if (IoXmlLesen.importPgruppeText(jTextAreaImport.getText(), false) != null) {
                     jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
+                    jButtonImportText.setEnabled(true);
                 } else {
                     jTextAreaImport.setBackground(new Color(255, 200, 200));
+                    jButtonImportText.setEnabled(false);
                 }
             }
         }
@@ -269,6 +277,7 @@ public class PanelImportProgramme extends PanelVorlage {
             int returnVal;
             JFileChooser chooser = new JFileChooser();
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            chooser.setFileHidingEnabled(false);
             if (jTextFieldDatei.getText().equals("")) {
                 chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
             } else {

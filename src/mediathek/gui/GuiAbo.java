@@ -23,7 +23,6 @@ import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.*;
 import mediathek.MediathekGui;
-import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.beobachter.CellRendererAbo;

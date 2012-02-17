@@ -53,7 +53,7 @@ public class IoXmlSchreiben {
         daten.history.speichern();
     }
 
-    public synchronized void exportPgruppe(DatenPgruppe pGruppe, String datei) {
+    public synchronized void exportPgruppe(DatenPgruppe[] pGruppe, String datei) {
         try {
             Log.systemMeldung("Pgruppe exportieren");
             xmlSchreibenStart(datei);
@@ -123,12 +123,14 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void xmlSchreibenPGruppe(DatenPgruppe datenPgruppe) {
+    private void xmlSchreibenPGruppe(DatenPgruppe[] datenPgruppe) {
         ListIterator<DatenProg> it;
-        xmlSchreibenDaten(DatenPgruppe.PROGRAMMGRUPPE, DatenPgruppe.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe.arr);
-        it = datenPgruppe.getListeProg().listIterator();
-        while (it.hasNext()) {
-            xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, it.next().arr);
+        for (int i = 0; i < datenPgruppe.length; ++i) {
+            xmlSchreibenDaten(DatenPgruppe.PROGRAMMGRUPPE, DatenPgruppe.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe[i].arr);
+            it = datenPgruppe[i].getListeProg().listIterator();
+            while (it.hasNext()) {
+                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, it.next().arr);
+            }
         }
     }
 

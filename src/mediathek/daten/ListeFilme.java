@@ -31,7 +31,7 @@ import mediathek.tool.TModelFilm;
 import org.apache.commons.lang.StringEscapeUtils;
 
 public class ListeFilme extends LinkedList<DatenFilm> {
-
+    
     public static final String THEMA_LIVE = "Livestream";
     //Tags Infos Filmliste, erste Zeile der .filme-Datei
     public static final String FILMLISTE = "Filmliste";
@@ -78,7 +78,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret;
     }
-
+    
     public static String[] newInfo() {
         String[] ret = new String[FILMLISTE_INFOS_MAX_ELEM];
         for (int i = 0; i < ret.length; ++i) {
@@ -86,13 +86,13 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret;
     }
-
+    
     @Override
     public synchronized void clear() {
         nr = 0;
         super.clear();
     }
-
+    
     public void sort() {
         Collections.<DatenFilm>sort(this);
         // und jetzt noch die Nummerierung in Ordnung brinegen
@@ -102,23 +102,23 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             it.next().arr[DatenFilm.FILM_NR_NR] = getNr(i++);
         }
     }
-
+    
     public synchronized void setInfo(int feld, String wert) {
         infos[feld] = wert;
     }
-
+    
     public synchronized void setInfo(String[] iinfo) {
         for (int i = 0; i < FILMLISTE_INFOS_MAX_ELEM; ++i) {
             infos[i] = iinfo[i].toString();
         }
     }
-
+    
     public synchronized void setMeta(String[] mmeta) {
         for (int i = 0; i < FILMLISTE_MAX_ELEM; ++i) {
             metaDaten[i] = mmeta[i].toString();
         }
     }
-
+    
     public synchronized boolean addFilmVomSender(DatenFilm film) {
         // Filme die beim Sender gesucht wurden (und nur die) hier eintragen
         // nur für die MediathekReader
@@ -136,7 +136,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return add(film);
     }
-
+    
     public synchronized void updateListe(ListeFilme liste, boolean index /* Vergleich über Index, sonst nur URL */) {
         // in eine vorhandene Liste soll eine andere Filmliste einsortiert werden
         // es werden nur Filme die noch nicht vorhanden sind, einsortiert
@@ -164,7 +164,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             }
         }
     }
-
+    
     public synchronized void alteThemenLöschen(String sender, LinkedList<String[]> liste) {
         //alle Themen des Senders die NICHT in der Liste liste sind, löschen, die gibts nicht mehr
         Iterator<DatenFilm> itIch = this.iterator();
@@ -191,7 +191,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             }
         } //while (itIch.hasNext()) {
     }
-
+    
     public synchronized boolean addWithNr(DatenFilm film) {
         film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml(film.arr[DatenFilm.FILM_THEMA_NR].trim());
         film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeHtml(film.arr[DatenFilm.FILM_TITEL_NR].trim());
@@ -199,7 +199,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         film.arr[DatenFilm.FILM_URL_NR] = film.getUrlOrg();
         return add(film);
     }
-
+    
     private String getNr(int nr) {
         final int MAX_STELLEN = 5;
         final String FUELL_ZEICHEN = "0";
@@ -209,7 +209,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return str;
     }
-
+    
     public synchronized int countSender(String sender) {
         int ret = 0;
         ListIterator<DatenFilm> it = this.listIterator(0);
@@ -232,7 +232,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             }
         }
     }
-
+    
     public void liveStreamEintragen() {
         // Live-Stream eintragen
         //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
@@ -282,14 +282,14 @@ public class ListeFilme extends LinkedList<DatenFilm> {
      * @param filterText
      * @return
      * // */
-    public synchronized void getModelTabFilme(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema, String[] filterText) {
+    public synchronized void getModelTabFilme(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {
         modelFilm.setRowCount(0);
         if (this.size() != 0) {
             ListeFilme liste = new ListeFilme();
             Iterator<DatenFilm> it = this.iterator();
             DatenFilm film;
             boolean nixFiltern = false;
-            if (filterSender.equals("") && filterThema.equals("") && filterText.equals("")) {
+            if (filterSender.equals("") && filterThema.equals("") && filterThemaTitel.equals("")) {
                 nixFiltern = true;
             }
             while (it.hasNext()) {
@@ -298,7 +298,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 //                     String imSender, String imThema, String imText) {
                 if (nixFiltern) {
                     liste.add(film);
-                } else if (filterPruefen(filterSender, filterThema, filterText,
+                } else if (filterPruefen(filterSender, filterThema, filterTitel, filterThemaTitel,
                         film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
                     liste.add(film);
                 }
@@ -306,7 +306,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             liste.addObjectDataTabFilme(ddaten, modelFilm);
         }
     }
-
+    
     public synchronized String[] getModelOfField(int feld, String filterString, int filterFeld) {
         /* erstellt ein StringArray mit den Daten des Feldes und filtert nach filterFeld */
         HashSet<String> tree = new HashSet<String>();
@@ -363,11 +363,11 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret;
     }
-
+    
     public static boolean isPattern(String textSuchen) {
         return textSuchen.startsWith("#:");
     }
-
+    
     public static Pattern makePattern(String textSuchen) {
         Pattern p = null;
         try {
@@ -379,65 +379,50 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return p;
     }
-
-    public static boolean filterPruefen(String senderSuchen, String themaSuchen, String[] textSuchen,
-            String imSender, String imThema, String imText) {
-        // prüfen ob xxxSuchen im String imXxx enthalten ist, textSuchen wird mit Thema u. Titel verglichen
+    
+    public static boolean filterPruefen(String senderSuchen, String themaSuchen, String titelSuchen, String themaTitelSuchen,
+            String imFilmSender, String imFilmThema, String imFilmTitel) {
+        // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
         // themaSuchen exakt mit thema
-        if (senderSuchen.equals("") || imSender.equalsIgnoreCase(senderSuchen)) {
-            if (themaSuchen.equals("") || imThema.equalsIgnoreCase(themaSuchen)) {
-                if (textSuchen.length == 0) {
+        // titelSuchen muss nur enthalten sein
+        if (senderSuchen.equals("") || imFilmSender.equalsIgnoreCase(senderSuchen)) {
+            if (themaSuchen.equals("") || imFilmThema.equalsIgnoreCase(themaSuchen)) {
+                ///////////////////////////////////////////////////////??????????????????????
+                if (titelSuchen.equals("") || imFilmTitel.toLowerCase().contains(titelSuchen.toLowerCase()) || titelSuchen.toLowerCase().contains(imFilmTitel.toLowerCase())) {
+//                    if (themaTitelSuchen.equals("")) {
                     return true;
-                } else {
-                    for (int i = 0; i < textSuchen.length; ++i) {
-                        if (textPruefen(textSuchen[i], imText) || textPruefen(textSuchen[i], imThema)) {
-                            return true;
-                        }
-                    }
+//                    } else {
+//                        Pattern p = makePattern(themaTitelSuchen);
+//                        if (p != null) {
+//                            return (p.matcher(imThema).matches() || p.matcher(imTitel).matches());
+//                        } else if (!themaTitelSuchen.contains(" ")) {
+//                            return (textPruefen(themaTitelSuchen, imTitel) || textPruefen(themaTitelSuchen, imThema));
+//                        }
+//                        String[] arr = getArr(themaTitelSuchen);
+//                        for (int i = 0; i < arr.length; ++i) {
+//                            if (textPruefen(arr[i], imTitel) || textPruefen(arr[i], imThema)) {
+//                                return true;
+//                            }
+//                        }
+//                    }
                 }
             }
         }
         return false;
     }
-
-    public static boolean filterPruefen__(String senderSuchen, String themaSuchen, String textSuchen,
-            String imSender, String imThema, String imText) {
-        // prüfen ob xxxSuchen im String imXxx enthalten ist, textSuchen wird mit Thema u. Titel verglichen
-        // themaSuchen exakt mit thema
-        Pattern p1 = makePattern(themaSuchen);
-        boolean ret = false;
-        if (senderSuchen.equals("") || imSender.equalsIgnoreCase(senderSuchen)) {
-            if (p1 != null) {
-                if (p1.matcher(imThema).matches()) {
-                    ret = textPruefen(textSuchen, imText) || textPruefen(textSuchen, imThema);
-                }
-            } else if (themaSuchen.equals("")
-                    || imThema.equalsIgnoreCase(themaSuchen)) {
-                ret = textPruefen(textSuchen, imText) || textPruefen(textSuchen, imThema);
+    
+    private static String[] getArr(String str) {
+        LinkedList<String> liste = new LinkedList<String>();
+        String[] s;
+        s = str.split(" ");
+        for (int i = 0; i < s.length; ++i) {
+            if (!s[i].equals("")) {
+                liste.add(s[i]);
             }
         }
-        return ret;
+        return liste.toArray(new String[0]);
     }
-
-    public static boolean filterPruefen_old(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
-            String imSender, String imThema, String imText) {
-        //prüfen ob xxxSuchen im String imXxx enthalten ist
-        Pattern p1 = makePattern(themaSuchen);
-        boolean ret = false;
-        if (senderSuchen.equals("") || imSender.equalsIgnoreCase(senderSuchen)) {
-            if (p1 != null) {
-                if (p1.matcher(imThema).matches()) {
-                    ret = textPruefen(textSuchen, imText);
-                }
-            } else if (themaSuchen.equals("")
-                    || themaExakt && imThema.equalsIgnoreCase(themaSuchen)
-                    || !themaExakt && (imThema.toLowerCase().contains(themaSuchen.toLowerCase()))) {
-                ret = textPruefen(textSuchen, imText);
-            }
-        }
-        return ret;
-    }
-
+    
     private static boolean textPruefen(String textSuchen, String imText) {
         Pattern p = makePattern(textSuchen);
         boolean ret = false;
@@ -449,6 +434,42 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return ret;
     }
 
+//    public static boolean filterPruefen__(String senderSuchen, String themaSuchen, String textSuchen,
+//            String imSender, String imThema, String imText) {
+//        // prüfen ob xxxSuchen im String imXxx enthalten ist, textSuchen wird mit Thema u. Titel verglichen
+//        // themaSuchen exakt mit thema
+//        Pattern p1 = makePattern(themaSuchen);
+//        boolean ret = false;
+//        if (senderSuchen.equals("") || imSender.equalsIgnoreCase(senderSuchen)) {
+//            if (p1 != null) {
+//                if (p1.matcher(imThema).matches()) {
+//                    ret = textPruefen(textSuchen, imText) || textPruefen(textSuchen, imThema);
+//                }
+//            } else if (themaSuchen.equals("")
+//                    || imThema.equalsIgnoreCase(themaSuchen)) {
+//                ret = textPruefen(textSuchen, imText) || textPruefen(textSuchen, imThema);
+//            }
+//        }
+//        return ret;
+//    }
+//    public static boolean filterPruefen_old(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
+//            String imSender, String imThema, String imText) {
+//        //prüfen ob xxxSuchen im String imXxx enthalten ist
+//        Pattern p1 = makePattern(themaSuchen);
+//        boolean ret = false;
+//        if (senderSuchen.equals("") || imSender.equalsIgnoreCase(senderSuchen)) {
+//            if (p1 != null) {
+//                if (p1.matcher(imThema).matches()) {
+//                    ret = textPruefen(textSuchen, imText);
+//                }
+//            } else if (themaSuchen.equals("")
+//                    || themaExakt && imThema.equalsIgnoreCase(themaSuchen)
+//                    || !themaExakt && (imThema.toLowerCase().contains(themaSuchen.toLowerCase()))) {
+//                ret = textPruefen(textSuchen, imText);
+//            }
+//        }
+//        return ret;
+//    }
     //===================================
     // private
     //===================================
@@ -462,8 +483,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 film = iterator.next();
                 datenAbo = ddaten.listeAbo.getAbo(film.arr[DatenFilm.FILM_SENDER_NR],
                         film.arr[DatenFilm.FILM_THEMA_NR],
-                        film.arr[DatenFilm.FILM_TITEL_NR],
-                        film.arr[DatenFilm.FILM_URL_NR]);
+                        film.arr[DatenFilm.FILM_TITEL_NR]);
                 if (datenAbo != null) {
                     film.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
                 } else {
@@ -481,7 +501,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             }
         }
     }
-
+    
     public int alterFilmlisteSek() {
         // Alter der Filmliste in Sekunden
         int ret = 0;
@@ -499,7 +519,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret;
     }
-
+    
     public boolean filmlisteIstAelter() {
         // Filmliste ist älter als: FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE
         int ret = -1;

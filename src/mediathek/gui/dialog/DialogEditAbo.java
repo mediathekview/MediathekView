@@ -106,7 +106,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         c.gridx = 0;
         c.weightx = 0;
         JLabel label;
-        if (i == DatenAbo.ABO_TITEL_NR || i == DatenAbo.ABO_THEMA_NR || i == DatenAbo.ABO_SENDER_NR) {
+        if (i == DatenAbo.ABO_SENDER_NR || i == DatenAbo.ABO_THEMA_NR || i == DatenAbo.ABO_TITEL_NR || i == DatenAbo.ABO_THEMA_TITEL_NR) {
             label = new JLabel("  " + DatenAbo.ABO_COLUMN_NAMES[i] + ": ");
             label.setForeground(Color.BLUE);
         } else {
