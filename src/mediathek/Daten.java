@@ -26,7 +26,6 @@ import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.ListeFilme;
-import mediathek.daten.ListePgruppe;
 
 public class Daten {
     // Konstanten
@@ -95,11 +94,11 @@ public class Daten {
     }
     // userAgent
 
-    public static void addAdListener(MediathekListener listener) {
+    public synchronized static void addAdListener(MediathekListener listener) {
         listeners.add(MediathekListener.class, listener);
     }
 
-    public static void notifyMediathekListener(int ereignis, String klasse) {
+    public synchronized static void notifyMediathekListener(int ereignis, String klasse) {
         for (MediathekListener l : listeners.getListeners(MediathekListener.class)) {
             if (l.ereignis == ereignis) {
                 if (!l.klasse.equals(klasse)) {

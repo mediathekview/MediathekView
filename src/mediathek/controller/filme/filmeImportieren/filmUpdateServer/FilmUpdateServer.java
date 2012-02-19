@@ -20,7 +20,6 @@
 package mediathek.controller.filme.filmeImportieren.filmUpdateServer;
 
 import mediathek.Daten;
-import mediathek.controller.filme.FilmeLaden;
 import mediathek.Log;
 
 public class FilmUpdateServer {
@@ -51,7 +50,7 @@ public class FilmUpdateServer {
         String version;
         String release;
         String downloadUrlProgramm;
-        String[] ret = {"", "", ""};
+        String[] ret;
         try {
             listeUpdateServer.clear();
             ret = FilmUpdateServerSuchen.getListe(listeUpdateServer);

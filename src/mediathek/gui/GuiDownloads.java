@@ -19,10 +19,14 @@
  */
 package mediathek.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import mediathek.Daten;
+import mediathek.Konstanten;
 import mediathek.MediathekGui;
 import mediathek.controller.io.starter.StartEvent;
 import mediathek.controller.io.starter.StartListener;
@@ -200,6 +204,24 @@ public class GuiDownloads extends PanelVorlage {
             setInfo();
         } else {
             new HinweisKeineAuswahl().zeigen();
+        }
+    }
+
+    private void stopAll() {
+        // es werden alle laufenden Downloads gestopt
+        for (int i = 0; i < jTable1.getRowCount(); ++i) {
+            int delRow = jTable1.convertRowIndexToModel(i);
+            String url = jTable1.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
+            Starts s = ddaten.starterClass.getStart(url);
+            if (s != null) {
+                if (s.status <= Starts.STATUS_RUN) {
+                    //daten.starterClass.delStart(url);
+                    ddaten.starterClass.filmLoeschen(url);
+                    //Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
+                    ddaten.log.urlAusLogfileLoeschen(url);
+                }
+            }
+            setInfo();
         }
     }
 
@@ -431,6 +453,9 @@ public class GuiDownloads extends PanelVorlage {
 
         private Point p;
 
+        public BeobMausTabelle() {
+        }
+
         @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
@@ -529,6 +554,16 @@ public class GuiDownloads extends PanelVorlage {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     downloadAll("");
+                }
+            });
+            JMenuItem itemAlleStoppen = new JMenuItem("alle Downloads stoppen");
+            itemAlleStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
+            menu.add(itemAlleStoppen);
+            itemAlleStoppen.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    stopAll();
                 }
             });
             JMenuItem itemAktualisieren = new JMenuItem("Liste der Downloads aktualisieren");

@@ -60,16 +60,21 @@ public class FilmeImportieren {
             //wenn auto-update-url dann erst mal die Updateserver aktualiseren laden
             boolean ret = false;
             FilmeLaden.updateUrl = filmUpdateServer.suchen();
-            for (int i = 0; i < 10; ++i) {
-                //10 mal mit einem anderen Server probieren
-                if (urlLaden(FilmeLaden.updateUrl, true)) {
-                    // hat geklappt, nix wie weiter
-                    ret=true;
-                    break;
+            if (!FilmeLaden.updateUrl.equals("")) {
+                for (int i = 0; i < 10; ++i) {
+                    //10 mal mit einem anderen Server probieren
+                    if (urlLaden(FilmeLaden.updateUrl, true)) {
+                        // hat geklappt, nix wie weiter
+                        ret = true;
+                        break;
+                    }
+                    FilmeLaden.updateUrl = filmUpdateServer.listeUpdateServer.getRand(i); //nächste Adresse in der Liste wählen
                 }
-                FilmeLaden.updateUrl = filmUpdateServer.listeUpdateServer.getRand(i); //nächste Adresse in der Liste wählen
+            } else {
+                fertigMelden();
             }
-             if (!ret /*listeFilme ist schon wieder null -> "FilmeLaden"*/) {
+            if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {
+                JOptionPane.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
                 Log.fehlerMeldung("Filme laden", "Es konnten keine Filme geladen werden!");
             }
         }
@@ -112,9 +117,7 @@ public class FilmeImportieren {
 //////////        istUrl = true;
         ////////////////////////////
         try {
-            if (dateiUrl.equals("")) {
-                JOptionPane.showMessageDialog(null, "Keine Datei/Url angegeben", "Pfad", JOptionPane.INFORMATION_MESSAGE);
-            } else {
+            if (!dateiUrl.equals("")) {
                 Log.systemMeldung("Filmliste laden von: " + dateiUrl);
                 listeFilme = new ListeFilme();
                 ret = ioXmlFilmlisteLesen.filmlisteLesen(dateiUrl, istUrl, listeFilme);
@@ -128,6 +131,12 @@ public class FilmeImportieren {
     // #######################################
     // Listener
     // #######################################
+    private synchronized void fertigMelden() {
+        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+            l.fertig(new FilmListenerElement("", "", 0, 0));
+        }
+    }
+
     public void addAdListener(FilmListener listener) {
         listeners.add(FilmListener.class, listener);
     }

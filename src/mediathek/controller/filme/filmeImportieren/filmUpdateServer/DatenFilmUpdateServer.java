@@ -19,7 +19,6 @@
  */
 package mediathek.controller.filme.filmeImportieren.filmUpdateServer;
 
-import mediathek.tool.GuiKonstanten;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

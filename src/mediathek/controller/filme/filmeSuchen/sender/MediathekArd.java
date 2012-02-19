@@ -51,8 +51,8 @@ public class MediathekArd extends MediathekReader implements Runnable {
         //seite = new GetUrl(daten).getUriArd(ADRESSE, seite, "");
         seite = getUrlIo.getUri_Utf(senderName, ADRESSE, seite, "");
         int pos = 0;
-        int pos1 = 0;
-        int pos2 = 0;
+        int pos1;
+        int pos2;
         String url = "";
         String thema = "";
         while ((pos = seite.indexOf(MUSTER_THEMA, pos)) != -1) {
@@ -130,10 +130,10 @@ public class MediathekArd extends MediathekReader implements Runnable {
             //URL: http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=4106/index.html
             final String MUSTER = "<option value=\"";
             seite1 = getUrl.getUri_Utf(senderName, strUrlFeed, seite1, "Thema: " + thema);
-            int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
-            String url = "";
+            int pos;
+            int pos1;
+            int pos2;
+            String url;
             //erst mal die erste Seite holen
             if (!feedEinerSeiteSuchen(seite1, strUrlFeed, thema, false)) {
                 // http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=3322404/index.html
@@ -187,7 +187,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             final String MUSTER_SET = "http://www.ardmediathek.de";
             final String MUSTER_DATUM_1 = "<span class=\"mt-icon mt-icon-toggle_arrows\"></span>";
             final String MUSTER_DATUM_2 = "</a>";
-            int pos = 0;
+            int pos;
             int posDatum1 = 0;
             int posDatum2 = 0;
             int pos1 = 0;

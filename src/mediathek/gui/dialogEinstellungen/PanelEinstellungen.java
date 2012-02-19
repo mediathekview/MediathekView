@@ -28,6 +28,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.Daten;
 import mediathek.Konstanten;
+import mediathek.MediathekGui;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
@@ -78,6 +80,13 @@ public class PanelEinstellungen extends PanelVorlage {
             }
         });
         jTextFieldUserAgent.getDocument().addDocumentListener(new BeobUserAgent());
+        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
+
+            @Override
+            public void ping() {
+                init();
+            }
+        });
     }
 
     @Override
@@ -157,13 +166,13 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxLook, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
                         .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxLook, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jCheckBoxEchtzeit)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -274,6 +283,7 @@ public class PanelEinstellungen extends PanelVorlage {
             Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
                     String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue());
             DDaten.setGeaendert();
+            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
         }
     }
 

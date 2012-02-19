@@ -40,10 +40,10 @@ public class FilmUpdateServerSuchen {
         int event;
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-        XMLStreamReader parser = null;
-        InputStreamReader inReader = null;
+        XMLStreamReader parser;
+        InputStreamReader inReader;
         int timeout = 10000;
-        URLConnection conn = null;
+        URLConnection conn;
         conn = new URL(Konstanten.ADRESSE_UPDATE).openConnection();
         conn.setRequestProperty("User-Agent", Daten.getUserAgent());
         conn.setReadTimeout(timeout);
@@ -75,7 +75,7 @@ public class FilmUpdateServerSuchen {
         String datum = "";
         String serverUrl = "";
         //String parsername = "";
-        String prio = "";
+        String prio;
         int event;
         try {
             while (parser.hasNext()) {

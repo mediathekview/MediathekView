@@ -21,7 +21,6 @@ package mediathek.controller.filme.filmeSuchen.sender;
 
 import mediathek.Daten;
 import mediathek.Log;
-import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.DatumZeit;
@@ -44,8 +43,8 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
         //seite = new GetUrl(daten).getUriArd(ADRESSE, seite, "");
         seite = getUrlIo.getUri_Iso(senderName, ADRESSE, seite, "");
         int pos = 0;
-        int pos1 = 0;
-        int pos2 = 0;
+        int pos1;
+        int pos2;
         String url = "";
         String thema = "";
         String tmp = "";

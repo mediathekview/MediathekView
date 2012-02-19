@@ -20,16 +20,15 @@
 package mediathek;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
+import javax.accessibility.Accessible;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import mediathek.controller.filme.BeobFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
@@ -39,7 +38,6 @@ import mediathek.gui.*;
 import mediathek.gui.beobachter.BeobWeb;
 import mediathek.gui.dialog.Dialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
-import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.importOld.IoXmlLesen__old;
 import mediathek.tool.GuiFunktionen;
@@ -57,6 +55,9 @@ public final class MediathekGui extends javax.swing.JFrame {
     private boolean debug = false;
     private BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     private DialogEinstellungen dialogEinstellungen;
+    private JSpinner jSpinnerAnzahl = new JSpinner(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
+    JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
+    JPanel jPanelAnzahl = new JPanel();
 
     public MediathekGui(String[] ar) {
         String pfad = "";
@@ -146,6 +147,8 @@ public final class MediathekGui extends javax.swing.JFrame {
                 jMenuItemDownloadsStarten.setEnabled(true);
                 jMenuItemDownloadAendern.setEnabled(true);
                 jMenuItemDownloadsZurueckstellen.setEnabled(true);
+                jSpinnerAnzahl.setEnabled(true);
+                jLabelAnzahl.setEnabled(true);
                 break;
             case ButtonAbo:
                 buttonAus();
@@ -185,6 +188,8 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenuItemDownloadsStarten.setEnabled(false);
         jMenuItemDownloadAendern.setEnabled(false);
         jMenuItemDownloadsZurueckstellen.setEnabled(false);
+        jSpinnerAnzahl.setEnabled(false);
+        jLabelAnzahl.setEnabled(false);
         jMenuItemAbosEinschalten.setEnabled(false);
         jMenuItemAbosAusschalten.setEnabled(false);
         jMenuItemAbosLoeschen.setEnabled(false);
@@ -351,7 +356,40 @@ public final class MediathekGui extends javax.swing.JFrame {
         });
     }
 
+    private void initSpinner() {
+        if (Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR].equals("")) {
+            jSpinnerAnzahl.setValue(1);
+            Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] = "1";
+        } else {
+            jSpinnerAnzahl.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR]));
+        }
+    }
+
     private void initMenue() {
+        initSpinner();
+        // Anzahl gleichzeitiger Downlaods
+        jPanelAnzahl.setLayout(new BorderLayout());
+        jPanelAnzahl.add(jLabelAnzahl, BorderLayout.WEST);
+        jPanelAnzahl.add(jSpinnerAnzahl, BorderLayout.EAST);
+        jLabelAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/up_down_16.png")));
+        jSpinnerAnzahl.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent arg0) {
+                Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
+                        String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue());
+                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
+                DDaten.setGeaendert();
+            }
+        });
+        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
+
+            @Override
+            public void ping() {
+                initSpinner();
+            }
+        });
+        jMenuDownload.add(jPanelAnzahl);
         // Datei
         jMenuItemEinstellungen.addActionListener(new ActionListener() {
 
@@ -556,10 +594,38 @@ public final class MediathekGui extends javax.swing.JFrame {
         }
     }
 
+    public class JMenuItemSpinner extends JSpinner implements Accessible, MenuElement {
+
+        @Override
+        public void processMouseEvent(MouseEvent event, MenuElement[] path, MenuSelectionManager manager) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void processKeyEvent(KeyEvent event, MenuElement[] path, MenuSelectionManager manager) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void menuSelectionChanged(boolean isIncluded) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public MenuElement[] getSubElements() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Component getComponent() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
+
     /**
-     *  This method is called from within the constructor to initialize the form.
-     *  WARNING: Do NOT modify this code. The content of this method is always
-     *  regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -842,7 +908,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     /**
-     *  @param args the command line arguments
+     * @param args the command line arguments
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;

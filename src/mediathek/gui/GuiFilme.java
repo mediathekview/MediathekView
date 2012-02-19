@@ -212,6 +212,8 @@ public class GuiFilme extends PanelVorlage {
         jComboBoxFilterThema.addActionListener(new BeobFilter());
         jTextFieldFilterTitel.addActionListener(new BeobFilter());
         jTextFieldFilterTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
+        jTextFieldFilterThemaTitel.addActionListener(new BeobFilter());
+        jTextFieldFilterThemaTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
         jCheckBoxKeineAbos.addActionListener(new BeobFilter());
         jCheckBoxKeineGesehenen.addActionListener(new BeobFilter());
         //restliche Filter
@@ -359,7 +361,7 @@ public class GuiFilme extends PanelVorlage {
             //filtern
             if (themaNichtDa) {
                 // nochmal filtern anschieben
-                //jComboBoxFilterThema.setSelectedIndex(0);
+                // jComboBoxFilterThema.setSelectedIndex(0);
                 this.tabelleBauen();
             }
         } catch (Exception ex) {
@@ -434,8 +436,8 @@ public class GuiFilme extends PanelVorlage {
 
     private void checkPattern(JTextField tf) {
         String text = tf.getText();
-        if (ListeFilme.isPattern(text)) {
-            if (ListeFilme.makePattern(text) == null) {
+        if (ListeAbo.isPattern(text)) {
+            if (ListeAbo.makePattern(text) == null) {
                 //soll Pattern sein, ist aber falsch
                 tf.setBackground(Color.RED);
             } else {
@@ -488,35 +490,30 @@ public class GuiFilme extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jLabel4 = new javax.swing.JLabel();
         jPanelFilter = new javax.swing.JPanel();
         jCheckBoxFilter = new javax.swing.JCheckBox();
         jPanelFilterInnen = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jComboBoxZeitraum = new javax.swing.JComboBox();
+        jCheckBoxKeineGesehenen = new javax.swing.JCheckBox();
+        jCheckBoxKeineAbos = new javax.swing.JCheckBox();
+        jToggleButtonLivestram = new javax.swing.JToggleButton();
+        jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
         jComboBoxFilterThema = new javax.swing.JComboBox();
         jLabel5 = new javax.swing.JLabel();
         jTextFieldFilterTitel = new javax.swing.JTextField();
-        jButtonFilterLoeschen = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jComboBoxZeitraum = new javax.swing.JComboBox();
-        jCheckBoxKeineGesehenen = new javax.swing.JCheckBox();
-        jCheckBoxKeineAbos = new javax.swing.JCheckBox();
-        jToggleButtonLivestram = new javax.swing.JToggleButton();
         jLabel6 = new javax.swing.JLabel();
         jTextFieldFilterThemaTitel = new javax.swing.JTextField();
-        jPanel1 = new javax.swing.JPanel();
+        jButtonFilterLoeschen = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanelExtra = new javax.swing.JPanel();
         jCheckBoxProgamme = new javax.swing.JCheckBox();
         jPanelExtraInnen = new javax.swing.JPanel();
-
-        jCheckBox1.setText("jCheckBox1");
-
-        jLabel4.setText("jLabel4");
 
         jPanelFilter.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
@@ -524,18 +521,7 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxFilter.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         jCheckBoxFilter.setText("Filter");
 
-        jLabel2.setText("Sender:");
-
-        jComboBoxFilterSender.setMaximumRowCount(25);
-
-        jLabel3.setText("Thema:");
-
-        jComboBoxFilterThema.setMaximumRowCount(25);
-
-        jLabel5.setText("Titel:");
-
-        jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
-        jButtonFilterLoeschen.setToolTipText("Filter löschen");
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
         jLabel1.setText("Zeitraum:");
 
@@ -548,20 +534,101 @@ public class GuiFilme extends PanelVorlage {
 
         jToggleButtonLivestram.setText("nur Livestreams");
 
-        jLabel6.setText("Thema oder Titel:");
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBoxKeineGesehenen)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBoxKeineAbos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
+                .addComponent(jToggleButtonLivestram)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jCheckBoxKeineGesehenen)
+                    .addComponent(jCheckBoxKeineAbos)
+                    .addComponent(jToggleButtonLivestram))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+
+        jLabel2.setText("Sender:");
+
+        jComboBoxFilterSender.setMaximumRowCount(25);
+
+        jLabel3.setText("Thema:");
+
+        jComboBoxFilterThema.setMaximumRowCount(25);
+
+        jLabel5.setText("Titel:");
+
+        jLabel6.setText("Thema oder Titel:");
+
+        jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
+        jButtonFilterLoeschen.setToolTipText("Filter löschen");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxFilterSender, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxFilterThema, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldFilterTitel))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldFilterThemaTitel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonFilterLoeschen)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel2)
+                    .addComponent(jComboBoxFilterSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(jComboBoxFilterThema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6))
+                    .addComponent(jButtonFilterLoeschen, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonFilterLoeschen, jComboBoxFilterSender, jComboBoxFilterThema, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
 
         javax.swing.GroupLayout jPanelFilterInnenLayout = new javax.swing.GroupLayout(jPanelFilterInnen);
         jPanelFilterInnen.setLayout(jPanelFilterInnenLayout);
@@ -570,73 +637,19 @@ public class GuiFilme extends PanelVorlage {
             .addGroup(jPanelFilterInnenLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelFilterInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanelFilterInnenLayout.createSequentialGroup()
-                        .addGroup(jPanelFilterInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelFilterInnenLayout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanelFilterInnenLayout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBoxFilterSender, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(jPanelFilterInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelFilterInnenLayout.createSequentialGroup()
-                                .addGap(29, 29, 29)
-                                .addComponent(jCheckBoxKeineGesehenen)
-                                .addGap(18, 18, 18)
-                                .addComponent(jCheckBoxKeineAbos)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jToggleButtonLivestram))
-                            .addGroup(jPanelFilterInnenLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBoxFilterThema, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel5)
-                                .addGap(6, 6, 6)
-                                .addComponent(jTextFieldFilterTitel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButtonFilterLoeschen))))
-                    .addGroup(jPanelFilterInnenLayout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanelFilterInnenLayout.setVerticalGroup(
             jPanelFilterInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelFilterInnenLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanelFilterInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel2)
-                    .addComponent(jComboBoxFilterSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(jComboBoxFilterThema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonFilterLoeschen, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanelFilterInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel6)
-                    .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanelFilterInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelFilterInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanelFilterInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jCheckBoxKeineGesehenen)
-                        .addComponent(jCheckBoxKeineAbos)
-                        .addComponent(jToggleButtonLivestram)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        jPanelFilterInnenLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonFilterLoeschen, jComboBoxFilterSender, jComboBoxFilterThema, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
 
         javax.swing.GroupLayout jPanelFilterLayout = new javax.swing.GroupLayout(jPanelFilter);
         jPanelFilter.setLayout(jPanelFilterLayout);
@@ -650,7 +663,7 @@ public class GuiFilme extends PanelVorlage {
             .addGroup(jPanelFilterLayout.createSequentialGroup()
                 .addComponent(jCheckBoxFilter)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelFilterInnen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanelFilterInnen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTable1.setAutoCreateRowSorter(true);
@@ -706,7 +719,7 @@ public class GuiFilme extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jPanelFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelExtra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -714,7 +727,6 @@ public class GuiFilme extends PanelVorlage {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonFilterLoeschen;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBoxFilter;
     private javax.swing.JCheckBox jCheckBoxKeineAbos;
     private javax.swing.JCheckBox jCheckBoxKeineGesehenen;
@@ -725,10 +737,10 @@ public class GuiFilme extends PanelVorlage {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JPanel jPanelExtraInnen;
     private javax.swing.JPanel jPanelFilter;
@@ -892,9 +904,9 @@ public class GuiFilme extends PanelVorlage {
             if (nr >= 0) {
                 jTable1.setRowSelectionInterval(nr, nr);
             }
-            String thema = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
-            String sender = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_SENDER_NR).toString();
-            String titel = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_TITEL_NR).toString();
+            String filmThema = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
+            String filmSender = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_SENDER_NR).toString();
+            String filmTitel = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_TITEL_NR).toString();
 //            String url = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_URL_NR).toString();
             JPopupMenu jPopupMenu = new JPopupMenu();
 
@@ -974,7 +986,7 @@ public class GuiFilme extends PanelVorlage {
             itemAboLoeschen = new JMenuItem("Abo Löschen");
             itemAbo = new JMenuItem("Abo mit Sender und Thema anlegen");
             itemAboMitTitel = new JMenuItem("Abo mit Sender und Thema und Titel anlegen");
-            if ((ddaten.listeAbo.getAbo(sender, thema, titel)) != null) {
+            if ((ddaten.listeAbo.getAbo(filmSender, filmThema, filmTitel)) != null) {
                 //gibts schon, dann löschen
                 itemAbo.setEnabled(false);
                 itemAboMitTitel.setEnabled(false);
@@ -1159,20 +1171,20 @@ public class GuiFilme extends PanelVorlage {
                 int nr = jTable1.rowAtPoint(p);
                 if (nr >= 0) {
                     stopBeob = true;
-                    String thema = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
-                    String sender = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_SENDER_NR).toString();
-                    String titel = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_TITEL_NR).toString();
+                    String filmSender = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_SENDER_NR).toString();
+                    String filmThema = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
+                    String filmTitel = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_TITEL_NR).toString();
 //                    String url = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_URL_NR).toString();
                     DatenAbo datenAbo;
-                    if ((datenAbo = ddaten.listeAbo.getAbo(sender, thema, titel)) != null) {
+                    if ((datenAbo = ddaten.listeAbo.getAbo(filmSender, filmThema, filmTitel)) != null) {
                         //gibts schon, dann löschen
                         ddaten.listeAbo.aboLoeschen(datenAbo);
                     } else {
                         //neues Abo anlegen
                         if (mitTitel) {
-                            ddaten.listeAbo.addAbo(sender, thema, titel);
+                            ddaten.listeAbo.addAbo(filmSender, filmThema, filmTitel);
                         } else {
-                            ddaten.listeAbo.addAbo(sender, thema, "");
+                            ddaten.listeAbo.addAbo(filmSender, filmThema, "");
                         }
                     }
                     ddaten.setGeaendertPanel();
@@ -1239,6 +1251,7 @@ public class GuiFilme extends PanelVorlage {
         }
 
         private void tus() {
+            checkPattern(jTextFieldFilterThemaTitel);
             checkPattern(jTextFieldFilterTitel);
             if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
                 tabelleBauen();

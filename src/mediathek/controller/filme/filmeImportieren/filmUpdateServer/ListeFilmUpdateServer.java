@@ -21,12 +21,7 @@ package mediathek.controller.filme.filmeImportieren.filmUpdateServer;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.Random;
+import java.util.*;
 
 public class ListeFilmUpdateServer extends LinkedList<DatenFilmUpdateServer> {
 
@@ -84,7 +79,7 @@ public class ListeFilmUpdateServer extends LinkedList<DatenFilmUpdateServer> {
     }
 
     public DatenFilmUpdateServer getNrUpdate(String url) {
-        DatenFilmUpdateServer update = null;
+        DatenFilmUpdateServer update;
         ListIterator<DatenFilmUpdateServer> iterator = this.listIterator();
         while (iterator.hasNext()) {
             update = iterator.next();
@@ -103,14 +98,14 @@ public class ListeFilmUpdateServer extends LinkedList<DatenFilmUpdateServer> {
         }
         String ret = "";
         if (!this.isEmpty()) {
-            DatenFilmUpdateServer filmUpdate = null;
+            DatenFilmUpdateServer filmUpdate;
             Iterator<DatenFilmUpdateServer> it;
             LinkedList<DatenFilmUpdateServer> listePrio = new LinkedList<DatenFilmUpdateServer>();
             LinkedList<DatenFilmUpdateServer> listeZeit = new LinkedList<DatenFilmUpdateServer>();
             //aktuellsten auswählen
             it = this.iterator();
             Date today = new Date(System.currentTimeMillis());
-            String date = "";
+            String date;
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
             Date d;
             int minuten = 200;
@@ -150,7 +145,7 @@ public class ListeFilmUpdateServer extends LinkedList<DatenFilmUpdateServer> {
     }
 
     public void listeSchreiben() {
-        DatenFilmUpdateServer filmUpdate = null;
+        DatenFilmUpdateServer filmUpdate;
         Iterator<DatenFilmUpdateServer> it = this.iterator();
         while (it.hasNext()) {
             filmUpdate = it.next();
