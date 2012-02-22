@@ -203,6 +203,8 @@ public class PanelEinstellungen extends PanelVorlage {
 
         buttonGroup1.add(jRadioButtonManuel);
 
+        jTextFieldAuto.setEditable(false);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(

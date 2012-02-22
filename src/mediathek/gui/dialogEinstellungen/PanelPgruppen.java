@@ -20,14 +20,14 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
-import javax.swing.*;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -47,6 +47,8 @@ import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.TModel;
 
 public class PanelPgruppen extends PanelVorlage {
+
+    private int neuZaehler = 0;
 
     public PanelPgruppen(DDaten d) {
         super(d);
@@ -70,11 +72,13 @@ public class PanelPgruppen extends PanelVorlage {
         jTextFieldProgPfad.getDocument().addDocumentListener(beobDoc);
         jTextFieldProgSchalter.getDocument().addDocumentListener(beobDoc);
         jTextFieldProgName.getDocument().addDocumentListener(beobDoc);
+        jTextFieldProgZielDateiName.getDocument().addDocumentListener(beobDoc);
         jTextFieldProgPraefix.getDocument().addDocumentListener(beobDoc);
         jTextFieldProgSuffix.getDocument().addDocumentListener(beobDoc);
         jTextFieldProgPfad.setEnabled(false);
         jTextFieldProgSchalter.setEnabled(false);
         jTextFieldProgName.setEnabled(false);
+        jTextFieldProgZielDateiName.setEnabled(false);
         jTextFieldProgPraefix.setEnabled(false);
         jTextFieldProgSuffix.setEnabled(false);
         jButtonProgPfad.addActionListener(new BeobDateiDialogProg());
@@ -84,9 +88,9 @@ public class PanelPgruppen extends PanelVorlage {
         jButtonProgAuf.addActionListener(new BeobProgAufAb(true));
         jButtonProgAb.addActionListener(new BeobProgAufAb(false));
         jButtonProgPfad.setEnabled(false);
-        jButtonProgVorlageHinzufuegen.addActionListener(new BeobVorlageProgHinzufuegen());
-        jComboBoxProgVorlagen.setModel(new DefaultComboBoxModel(ddaten.listeProgVorlagen.getObjectDataCombo()));
-        jCheckBoxRestart.addActionListener(new BeobProgAction());
+//        jButtonProgVorlageHinzufuegen.addActionListener(new BeobVorlageProgHinzufuegen());
+//        jComboBoxProgVorlagen.setModel(new DefaultComboBoxModel(ddaten.listeProgVorlagen.getObjectDataCombo()));
+        jCheckBoxRestart.addActionListener(new BeobProgRestart());
         //Pgruppe
         jButtonAbspielen.addActionListener(new ActionListener() {
 
@@ -155,8 +159,9 @@ public class PanelPgruppen extends PanelVorlage {
         tabelleProgramme();
     }
 
-    private  void nurtabellePgruppe() {
+    private void nurtabellePgruppe() {
         stopBeob = true;
+        int i = jTablePgruppen.getSelectedRow();
         getSpalten(jTablePgruppen);
         jTablePgruppen.setModel(ddaten.listePgruppe.getModel());
         spaltenSetzen();
@@ -165,7 +170,7 @@ public class PanelPgruppen extends PanelVorlage {
         stopBeob = false;
     }
 
-    public void spaltenSetzen() {
+    private void spaltenSetzen() {
         for (int i = 0; i < jTablePgruppen.getColumnCount(); ++i) {
             if (i == DatenPgruppe.PROGRAMMGRUPPE_NAME_NR) {
                 jTablePgruppen.getColumnModel().getColumn(i).setMinWidth(10);
@@ -201,6 +206,8 @@ public class PanelPgruppen extends PanelVorlage {
         jCheckBoxButton.setEnabled(pgruppe != null);
         jCheckBoxAbo.setEnabled(pgruppe != null);
         if (pgruppe != null) {
+            jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
+            jTabbedPane.setTitleAt(0, pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR]);
             jTextFieldGruppeName.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR]);
             jTextFieldGruppeDirektSuffix.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_SUFFIX_DIREKT_NR]);
             jTextFieldGruppeDirektPraefix.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR]);
@@ -210,6 +217,8 @@ public class PanelPgruppen extends PanelVorlage {
             jCheckBoxButton.setSelected(pgruppe.istButton());
             jCheckBoxAbo.setSelected(pgruppe.istAbo());
         } else {
+            jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
+            jTabbedPane.setTitleAt(0, "           ");
             jTextFieldGruppeName.setText("");
             jTextFieldGruppeDirektSuffix.setText("");
             jTextFieldGruppeDirektPraefix.setText("");
@@ -258,6 +267,7 @@ public class PanelPgruppen extends PanelVorlage {
         jTextFieldProgSchalter.setEnabled(row != -1);
         jTextFieldProgZielDateiName.setEnabled(row != -1);
         jTextFieldProgName.setEnabled(row != -1);
+        jTextFieldProgZielDateiName.setEnabled(row != -1);
         jTextFieldProgPraefix.setEnabled(row != -1);
         jTextFieldProgSuffix.setEnabled(row != -1);
         jButtonProgPfad.setEnabled(row != -1);
@@ -268,6 +278,7 @@ public class PanelPgruppen extends PanelVorlage {
             jTextFieldProgSchalter.setText(prog.arr[DatenProg.PROGRAMM_SCHALTER_NR]);
             jTextFieldProgZielDateiName.setText(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR]);
             jTextFieldProgName.setText(prog.arr[DatenProg.PROGRAMM_NAME_NR]);
+            jTextFieldProgZielDateiName.setText(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR]);
             jTextFieldProgPraefix.setText(prog.arr[DatenProg.PROGRAMM_PRAEFIX_NR]);
             jTextFieldProgSuffix.setText(prog.arr[DatenProg.PROGRAMM_SUFFIX_NR]);
             jCheckBoxRestart.setSelected(prog.isRestart());
@@ -276,7 +287,7 @@ public class PanelPgruppen extends PanelVorlage {
             jTextFieldProgSchalter.setText("");
             jTextFieldProgZielDateiName.setText("");
             jTextFieldProgName.setText("");
-            jTextFieldProgName.setBackground(Color.WHITE);
+            jTextFieldProgZielDateiName.setText("");
             jTextFieldProgPraefix.setText("");
             jTextFieldProgSuffix.setText("");
         }
@@ -329,7 +340,7 @@ public class PanelPgruppen extends PanelVorlage {
 
     private void gruppeNeu() {
         //DatenPgruppe(String name, String suffix, String farbe, String zielPfad, String zielDateiname) {
-        ddaten.listePgruppe.addPgruppe(new DatenPgruppe());
+        ddaten.listePgruppe.addPgruppe(new DatenPgruppe("Neu-" + ++neuZaehler));
         tabellePgruppe();
         notifyPgruppe();
     }
@@ -409,12 +420,11 @@ public class PanelPgruppen extends PanelVorlage {
 
     }
 
-    private void vorlageProgHinzufuegen() {
-        int i = jComboBoxProgVorlagen.getSelectedIndex();
-        DatenProg prog = ddaten.listeProgVorlagen.get(i).copy();
-        progNeueZeile(prog);
-    }
-
+//    private void vorlageProgHinzufuegen() {
+//        int i = jComboBoxProgVorlagen.getSelectedIndex();
+//        DatenProg prog = ddaten.listeProgVorlagen.get(i).copy();
+//        progNeueZeile(prog);
+//    }
     //Rest
     private void dialogHilfe() {
         new DialogHilfeProgramme(null, true, ddaten).setVisible(true);
@@ -431,7 +441,7 @@ public class PanelPgruppen extends PanelVorlage {
 
         jButtonHilfe = new javax.swing.JButton();
         jButtonPruefen = new javax.swing.JButton();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jTabbedPane = new javax.swing.JTabbedPane();
         jPanelPgruppe = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTablePgruppen = new javax.swing.JTable();
@@ -446,7 +456,7 @@ public class PanelPgruppen extends PanelVorlage {
         jCheckBoxButton = new javax.swing.JCheckBox();
         jCheckBoxAbo = new javax.swing.JCheckBox();
         jButtonAbspielen = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
+        jPanelDetails = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jTextFieldGruppeDirektSuffix = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -461,15 +471,13 @@ public class PanelPgruppen extends PanelVorlage {
         jLabel10 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jTextFieldGruppeName = new javax.swing.JTextField();
-        jPanel3 = new javax.swing.JPanel();
+        jPanelProgramme = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableProgramme = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jButtonProgPlus = new javax.swing.JButton();
         jButtonProgMinus = new javax.swing.JButton();
         jButtonProgDuplizieren = new javax.swing.JButton();
-        jComboBoxProgVorlagen = new javax.swing.JComboBox();
-        jButtonProgVorlageHinzufuegen = new javax.swing.JButton();
         jButtonProgAuf = new javax.swing.JButton();
         jButtonProgAb = new javax.swing.JButton();
         jPanelProgrammDetails = new javax.swing.JPanel();
@@ -496,7 +504,6 @@ public class PanelPgruppen extends PanelVorlage {
 
         jPanelPgruppe.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jTablePgruppen.setAutoCreateRowSorter(true);
         jTablePgruppen.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -609,9 +616,9 @@ public class PanelPgruppen extends PanelVorlage {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Programmgruppe", jPanelPgruppe);
+        jTabbedPane.addTab("Programmgruppe", jPanelPgruppe);
 
-        jPanel5.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanelDetails.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -704,26 +711,27 @@ public class PanelPgruppen extends PanelVorlage {
 
         jPanel7Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonGruppePfad, jTextFieldGruppeDirektPraefix, jTextFieldGruppeDirektSuffix, jTextFieldGruppeName, jTextFieldGruppeZielName, jTextFieldGruppeZielPfad});
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelDetailsLayout = new javax.swing.GroupLayout(jPanelDetails);
+        jPanelDetails.setLayout(jPanelDetailsLayout);
+        jPanelDetailsLayout.setHorizontalGroup(
+            jPanelDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDetailsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        jPanelDetailsLayout.setVerticalGroup(
+            jPanelDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelDetailsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(192, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Details", jPanel5);
+        jTabbedPane.addTab("Details", jPanelDetails);
 
-        jTableProgramme.setAutoCreateRowSorter(true);
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Titel", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
+
         jTableProgramme.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -746,11 +754,6 @@ public class PanelPgruppen extends PanelVorlage {
         jButtonProgDuplizieren.setText("Duplizieren");
         jButtonProgDuplizieren.setToolTipText("markierte Zeile duplizieren");
 
-        jComboBoxProgVorlagen.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jButtonProgVorlageHinzufuegen.setText("Hinzufügen");
-        jButtonProgVorlageHinzufuegen.setToolTipText("eine Auswahl an Programmen hinzufügen");
-
         jButtonProgAuf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/up_blue_16.png"))); // NOI18N
         jButtonProgAuf.setToolTipText("markierte Zeile eins nach oben");
 
@@ -763,23 +766,16 @@ public class PanelPgruppen extends PanelVorlage {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButtonProgPlus)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonProgMinus)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonProgAuf)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonProgAb)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButtonProgDuplizieren)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jComboBoxProgVorlagen, 0, 488, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonProgVorlageHinzufuegen)))
-                .addContainerGap())
+                .addComponent(jButtonProgPlus)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonProgMinus)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonProgAuf)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonProgAb)
+                .addGap(18, 18, 18)
+                .addComponent(jButtonProgDuplizieren)
+                .addContainerGap(270, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -792,10 +788,6 @@ public class PanelPgruppen extends PanelVorlage {
                         .addComponent(jButtonProgAuf)
                         .addComponent(jButtonProgAb))
                     .addComponent(jButtonProgDuplizieren, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBoxProgVorlagen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonProgVorlageHinzufuegen))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -887,23 +879,23 @@ public class PanelPgruppen extends PanelVorlage {
 
         jPanelProgrammDetailsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonProgPfad, jTextFieldProgName, jTextFieldProgPfad, jTextFieldProgPraefix, jTextFieldProgSchalter, jTextFieldProgSuffix, jTextFieldProgZielDateiName});
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelProgrammeLayout = new javax.swing.GroupLayout(jPanelProgramme);
+        jPanelProgramme.setLayout(jPanelProgrammeLayout);
+        jPanelProgrammeLayout.setHorizontalGroup(
+            jPanelProgrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelProgrammeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanelProgrammDetails, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanelProgrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanelProgrammDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+        jPanelProgrammeLayout.setVerticalGroup(
+            jPanelProgrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProgrammeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -911,7 +903,7 @@ public class PanelPgruppen extends PanelVorlage {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Programme", jPanel3);
+        jTabbedPane.addTab("Programme", jPanelProgramme);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -925,14 +917,14 @@ public class PanelPgruppen extends PanelVorlage {
                         .addComponent(jButtonPruefen, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonHilfe))
-                    .addComponent(jTabbedPane1))
+                    .addComponent(jTabbedPane))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonHilfe)
@@ -958,13 +950,11 @@ public class PanelPgruppen extends PanelVorlage {
     private javax.swing.JButton jButtonProgMinus;
     private javax.swing.JButton jButtonProgPfad;
     private javax.swing.JButton jButtonProgPlus;
-    private javax.swing.JButton jButtonProgVorlageHinzufuegen;
     private javax.swing.JButton jButtonPruefen;
     private javax.swing.JCheckBox jCheckBoxAbo;
     private javax.swing.JCheckBox jCheckBoxButton;
     private javax.swing.JCheckBox jCheckBoxRestart;
     private javax.swing.JCheckBox jCheckBoxSpeichern;
-    private javax.swing.JComboBox jComboBoxProgVorlagen;
     private javax.swing.JLabel jLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -977,15 +967,15 @@ public class PanelPgruppen extends PanelVorlage {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanelDetails;
     private javax.swing.JPanel jPanelPgruppe;
     private javax.swing.JPanel jPanelProgrammDetails;
+    private javax.swing.JPanel jPanelProgramme;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JTable jTablePgruppen;
     private javax.swing.JTable jTableProgramme;
     private javax.swing.JTextField jTextFieldGruppeDirektPraefix;
@@ -1001,7 +991,7 @@ public class PanelPgruppen extends PanelVorlage {
     private javax.swing.JTextField jTextFieldProgZielDateiName;
     // End of variables declaration//GEN-END:variables
 
-    private class BeobProgAction implements ActionListener {
+    private class BeobProgRestart implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -1046,11 +1036,13 @@ public class PanelPgruppen extends PanelVorlage {
                     prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = jTextFieldProgPfad.getText();
                     prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = jTextFieldProgSchalter.getText();
                     prog.arr[DatenProg.PROGRAMM_NAME_NR] = jTextFieldProgName.getText();
+                    prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = jTextFieldProgZielDateiName.getText();
                     prog.arr[DatenProg.PROGRAMM_SUFFIX_NR] = jTextFieldProgSuffix.getText();
                     prog.arr[DatenProg.PROGRAMM_PRAEFIX_NR] = jTextFieldProgPraefix.getText();
                     jTableProgramme.getModel().setValueAt(jTextFieldProgPfad.getText(), row, DatenProg.PROGRAMM_PROGRAMMPFAD_NR);
                     jTableProgramme.getModel().setValueAt(jTextFieldProgSchalter.getText(), row, DatenProg.PROGRAMM_SCHALTER_NR);
                     jTableProgramme.getModel().setValueAt(jTextFieldProgName.getText(), row, DatenProg.PROGRAMM_NAME_NR);
+                    jTableProgramme.getModel().setValueAt(jTextFieldProgZielDateiName.getText(), row, DatenProg.PROGRAMM_ZIEL_DATEINAME_NR);
                     jTableProgramme.getModel().setValueAt(jTextFieldProgSuffix.getText(), row, DatenProg.PROGRAMM_SUFFIX_NR);
                     jTableProgramme.getModel().setValueAt(jTextFieldProgPraefix.getText(), row, DatenProg.PROGRAMM_PRAEFIX_NR);
 //                    progNamePruefen();
@@ -1060,8 +1052,6 @@ public class PanelPgruppen extends PanelVorlage {
     }
 
     private class BeobTableSelectPgruppe implements ListSelectionListener {
-
-        public int selectedModelRow = -1;
 
         @Override
         public void valueChanged(ListSelectionEvent event) {
@@ -1219,12 +1209,19 @@ public class PanelPgruppen extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             int rows[] = jTableProgramme.getSelectedRows();
             if (rows.length > 0) {
-                int ret = -1;
-                ret = JOptionPane.showConfirmDialog(null, "Löschen?", " ", JOptionPane.YES_NO_OPTION);
+                DatenPgruppe pGruppe = getPgruppe();
+                String text;
+                if (rows.length == 1) {
+                    int delRow = jTableProgramme.convertRowIndexToModel(rows[0]);
+                    text = pGruppe.getProg(delRow).arr[DatenProg.PROGRAMM_NAME_NR];
+                } else {
+                    text = rows.length + " Programme löschen?";
+                }
+                int ret = JOptionPane.showConfirmDialog(null, text, "Löschen?", JOptionPane.YES_NO_OPTION);
                 if (ret == JOptionPane.OK_OPTION) {
                     for (int i = rows.length - 1; i >= 0; --i) {
                         int delRow = jTableProgramme.convertRowIndexToModel(rows[i]);
-                        getPgruppe().getListeProg().remove(delRow);
+                        pGruppe.getListeProg().remove(delRow);
                     }
                     tabelleProgramme();
                     Daten.setGeaendert();
@@ -1240,14 +1237,6 @@ public class PanelPgruppen extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             GuiFunktionen.programmePruefen(ddaten);
-        }
-    }
-
-    private class BeobVorlageProgHinzufuegen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            vorlageProgHinzufuegen();
         }
     }
 
@@ -1337,35 +1326,34 @@ public class PanelPgruppen extends PanelVorlage {
         }
     }
 
-    private class ComboBoxRenderer extends JLabel implements ListCellRenderer {
-
-        @Override
-        public Component getListCellRendererComponent(
-                JList list, // the list
-                Object value, // value to display
-                int index, // cell index
-                boolean isSelected, // is the cell selected
-                boolean cellHasFocus) // does the cell have focus
-        {
-            if (value.toString().equals("")) {
-                //für Leerzeichen
-                this.setMinimumSize(new Dimension(19, 19));
-                this.setPreferredSize(new Dimension(19, 19));
-            }
-            setText(value.toString());
-            setBackground(null);
-            setBorder(null);
-            Color col = null;
-            if (col != null) {
-                setBorder(javax.swing.BorderFactory.createLineBorder(col, 2));
-            }
-            setEnabled(list.isEnabled());
-            setFont(list.getFont());
-            setOpaque(true);
-            return this;
-        }
-    }
-
+//    private class ComboBoxRenderer extends JLabel implements ListCellRenderer {
+//
+//        @Override
+//        public Component getListCellRendererComponent(
+//                JList list, // the list
+//                Object value, // value to display
+//                int index, // cell index
+//                boolean isSelected, // is the cell selected
+//                boolean cellHasFocus) // does the cell have focus
+//        {
+//            if (value.toString().equals("")) {
+//                //für Leerzeichen
+//                this.setMinimumSize(new Dimension(19, 19));
+//                this.setPreferredSize(new Dimension(19, 19));
+//            }
+//            setText(value.toString());
+//            setBackground(null);
+//            setBorder(null);
+//            Color col = null;
+//            if (col != null) {
+//                setBorder(javax.swing.BorderFactory.createLineBorder(col, 2));
+//            }
+//            setEnabled(list.isEnabled());
+//            setFont(list.getFont());
+//            setOpaque(true);
+//            return this;
+//        }
+//    }
     public class BeobTableSelect implements ListSelectionListener {
 
         @Override

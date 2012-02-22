@@ -63,6 +63,11 @@ public class DatenPgruppe {
         makeArray();
     }
 
+    public DatenPgruppe(String name) {
+        makeArray();
+        arr[PROGRAMMGRUPPE_NAME_NR] = name;
+    }
+
     // public
     public boolean addProg(DatenProg prog) {
         return listeProg.add(prog);

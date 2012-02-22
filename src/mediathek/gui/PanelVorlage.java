@@ -87,7 +87,9 @@ public class PanelVorlage extends javax.swing.JPanel {
                 breite[i] = tabelle.getColumnModel().getColumn(
                         tabelle.convertColumnIndexToView(i)).getWidth();
             }
-            listeSort = tabelle.getRowSorter().getSortKeys();
+            if (tabelle.getRowSorter() != null) {
+                listeSort = tabelle.getRowSorter().getSortKeys();
+            }
         } catch (Exception ex) {
             Log.fehlerMeldung("PanelVorlage.getSpalten", ex);
         }
@@ -104,8 +106,10 @@ public class PanelVorlage extends javax.swing.JPanel {
                         tabelle.convertColumnIndexToView(reihe[i]), i);
 
             }
-            if (!listeSort.isEmpty()) {
-                tabelle.getRowSorter().setSortKeys(listeSort);
+            if (listeSort != null) {
+                if (!listeSort.isEmpty()) {
+                    tabelle.getRowSorter().setSortKeys(listeSort);
+                }
             }
             if (rows == tabelle.getRowCount()) {
                 if (sel >= 0 && sel < tabelle.getRowCount()) {

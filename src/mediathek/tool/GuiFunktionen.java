@@ -386,45 +386,45 @@ public class GuiFunktionen {
 /////////////////        daten.listePgruppe.setDoppelklick(0);
     }
 
-    public static void addProgVorlagen(DDaten daten) {
-        // Liste der Sandardprogramme
-        // erst leeren
-        daten.listeProgVorlagen.clear();
-        // Windows
-        daten.listeProgVorlagen.addProg("Win - Abspielen Vlc", getWindowsVlcPath(), "%f");
-        daten.listeProgVorlagen.addProg("Win - Aufzeichnen Vlc",
-                getWindowsVlcPath(),
-                "%f :sout=#transcode{acodec=mpga,ab=128,channels=2}:duplicate{dst=std{access=file,mux=ts,dst=\"**\"}} -I \"dummy\" --play-and-exit");
-
-        daten.listeProgVorlagen.addProg("Win - nicht transcodiertes Aufnehmen ohne Anschauen",
-                getWindowsVlcPath(),
-                "%f :sout=#duplicate{dst=std{access=file,mux=asf,dst=\"**\"}} -I \"dummy\" --play-and-exit");
-        daten.listeProgVorlagen.addProg("Win - nicht transcodiertes Aufnehmen und Anschauen",
-                getWindowsVlcPath(),
-                "%f :sout=#duplicate{dst=std{access=file,mux=asf,dst=\"**\"},dst=display} --play-and-exit");
-        daten.listeProgVorlagen.addProg("Win - Itunes lauffähiges Video",
-                getWindowsVlcPath(),
-                "%f :sout=#transcode{vcodec=mp4v,vb=1024,scale=1,width=480,height=272,acodec=mp4a,ab=128,channels=2,samplerate=48000}:duplicate{dst=std{access=file,mux=mp4,dst=\"**\"}} --play-and-exit");
-        DatenProg prog = new DatenProg("Windows - Aufzeichnen flvstreamer", "flvstreamer_win32_latest.exe",
-                "%f -o \"**\" --resume", Boolean.TRUE.toString());
-        prog.arr[DatenProg.PROGRAMM_PRAEFIX_NR] = "-";
-        daten.listeProgVorlagen.add(prog);
-        //
-        //Linux
-        daten.listeProgVorlagen.addProg("Linux - Abspielen Vlc", "/usr/bin/vlc", "%f");
-        daten.listeProgVorlagen.addProg("Linux - Aufzeichnen mplayer", "/usr/bin/mplayer", "-cache 8192 -cache-min 50 -playlist %f -dumpstream -dumpfile **");
-        daten.listeProgVorlagen.addProg("Linux - nicht transcodiertes Aufnehmen ohne Anschauen",
-                "vlc",
-                "%f :sout=#duplicate{dst=std{access=file,mux=asf,dst=**}} -I dummy --play-and-exit");
-        prog = new DatenProg("Linux - Aufzeichnen flvstreamer", "/usr/bin/flvstreamer", "%f -o ** --resume", Boolean.TRUE.toString());
-        prog.arr[DatenProg.PROGRAMM_PRAEFIX_NR] = "-";
-        daten.listeProgVorlagen.add(prog);
-
-        //
-        //Mac
-        daten.listeProgVorlagen.addProg("Mac - Abspielen Vlc", "/Applications/VLC.app/Contents/MacOS/VLC", "%f");
-        //
-    }
+//    public static void addProgVorlagen(DDaten daten) {
+//        // Liste der Sandardprogramme
+//        // erst leeren
+//        daten.listeProgVorlagen.clear();
+//        // Windows
+//        daten.listeProgVorlagen.addProg("Win - Abspielen Vlc", getWindowsVlcPath(), "%f");
+//        daten.listeProgVorlagen.addProg("Win - Aufzeichnen Vlc",
+//                getWindowsVlcPath(),
+//                "%f :sout=#transcode{acodec=mpga,ab=128,channels=2}:duplicate{dst=std{access=file,mux=ts,dst=\"**\"}} -I \"dummy\" --play-and-exit");
+//
+//        daten.listeProgVorlagen.addProg("Win - nicht transcodiertes Aufnehmen ohne Anschauen",
+//                getWindowsVlcPath(),
+//                "%f :sout=#duplicate{dst=std{access=file,mux=asf,dst=\"**\"}} -I \"dummy\" --play-and-exit");
+//        daten.listeProgVorlagen.addProg("Win - nicht transcodiertes Aufnehmen und Anschauen",
+//                getWindowsVlcPath(),
+//                "%f :sout=#duplicate{dst=std{access=file,mux=asf,dst=\"**\"},dst=display} --play-and-exit");
+//        daten.listeProgVorlagen.addProg("Win - Itunes lauffähiges Video",
+//                getWindowsVlcPath(),
+//                "%f :sout=#transcode{vcodec=mp4v,vb=1024,scale=1,width=480,height=272,acodec=mp4a,ab=128,channels=2,samplerate=48000}:duplicate{dst=std{access=file,mux=mp4,dst=\"**\"}} --play-and-exit");
+//        DatenProg prog = new DatenProg("Windows - Aufzeichnen flvstreamer", "flvstreamer_win32_latest.exe",
+//                "%f -o \"**\" --resume", Boolean.TRUE.toString());
+//        prog.arr[DatenProg.PROGRAMM_PRAEFIX_NR] = "-";
+//        daten.listeProgVorlagen.add(prog);
+//        //
+//        //Linux
+//        daten.listeProgVorlagen.addProg("Linux - Abspielen Vlc", "/usr/bin/vlc", "%f");
+//        daten.listeProgVorlagen.addProg("Linux - Aufzeichnen mplayer", "/usr/bin/mplayer", "-cache 8192 -cache-min 50 -playlist %f -dumpstream -dumpfile **");
+//        daten.listeProgVorlagen.addProg("Linux - nicht transcodiertes Aufnehmen ohne Anschauen",
+//                "vlc",
+//                "%f :sout=#duplicate{dst=std{access=file,mux=asf,dst=**}} -I dummy --play-and-exit");
+//        prog = new DatenProg("Linux - Aufzeichnen flvstreamer", "/usr/bin/flvstreamer", "%f -o ** --resume", Boolean.TRUE.toString());
+//        prog.arr[DatenProg.PROGRAMM_PRAEFIX_NR] = "-";
+//        daten.listeProgVorlagen.add(prog);
+//
+//        //
+//        //Mac
+//        daten.listeProgVorlagen.addProg("Mac - Abspielen Vlc", "/Applications/VLC.app/Contents/MacOS/VLC", "%f");
+//        //
+//    }
 
     public static boolean programmePruefen(DDaten daten) {
         boolean ret = true;

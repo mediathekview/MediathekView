@@ -37,7 +37,7 @@ public final class DDaten extends Daten {
     public static ListeFilme listeFilmeNachBlackList = null;
     public ListeBlacklist listeBlacklist;
     public ListePgruppe listePgruppe = null;
-    public ListeProg listeProgVorlagen = null;
+//    public ListeProg listeProgVorlagen = null;
     public ListeAbo listeAbo = null;
     public ListeDownloads listeDownloads = null;
     public History history = null;
@@ -62,7 +62,7 @@ public final class DDaten extends Daten {
         listeFilmeNachBlackList = new ListeFilme();
         listeBlacklist = new ListeBlacklist();
         listePgruppe = new ListePgruppe();
-        listeProgVorlagen = new ListeProg();
+//        listeProgVorlagen = new ListeProg();
         listeAbo = new ListeAbo(this);
         listeDownloads = new ListeDownloads(this);
         log = new LogDownload(this);
@@ -72,7 +72,7 @@ public final class DDaten extends Daten {
         history = new History(getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_HISTORY);
         dialogDatenFilm = new DialogDatenFilm(null, false, this);
         starterClass = new StarterClass(this);
-        GuiFunktionen.addProgVorlagen(this);
+//        GuiFunktionen.addProgVorlagen(this);
         //Version prüfen+++++++++++++++++++++++
     }
 
