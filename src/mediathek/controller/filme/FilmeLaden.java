@@ -39,14 +39,11 @@ public class FilmeLaden {
     public static final int UPDATE_FILME_AUS = 0; // nix
     public static final int UPDATE_FILME_URL = 1; // manuell laden, Url automatisch wählen
     public static final int UPDATE_FILME_AUTO = 2; // beim Start, immer mal wieder, + Url auto
-//    public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 1; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
     public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
-//    public static int updateStatus = UPDATE_FILME_URL;
     public static boolean allesLaden = false;
     public static String updateUrl = "";
-    // public
     // private
-    private static boolean stop = false;
+    private boolean stop = false;
     private MediathekTimer mediathekTimer = new MediathekTimer();
     private ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
     private ListeFilme listeFilmeNeu = null; //ist eine NEUE ungefilterte Liste, wird beim Laden NEU erstellt
@@ -64,7 +61,6 @@ public class FilmeLaden {
     }
 
     public void filmeLaden(DDaten daten) {
-        mediathekTimer.resetTimer();
         if (GuiFunktionen.getImportArtFilme() == FilmeLaden.UPDATE_FILME_AUS) {
             // ImportDialog starten zum Auswählen der URL
             filmlisteImportieren(DDaten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
@@ -89,9 +85,6 @@ public class FilmeLaden {
         stop = false;
     }
 
-//    public void setUpdateStatus(int sstatus) {
-//        updateStatus = sstatus;
-//    }
     public ListeFilmUpdateServer getListeFilmUpdateServer(boolean update) {
         if (update) {
             filmeImportieren.filmUpdateServer.suchen();
@@ -101,14 +94,6 @@ public class FilmeLaden {
 
     public int getSeitenGeladen() {
         return GetUrl.getSeitenZaehler();
-    }
-
-    public int getTimerRestzeit() {
-        return mediathekTimer.neuLadenIn;
-    }
-
-    public void resetTimer() {
-        mediathekTimer.resetTimer();
     }
 
     public ListeFilme getListeFilme() {
@@ -258,9 +243,9 @@ public class FilmeLaden {
     private class BeobTimer extends MediathekListener {
 
         @Override
-        public void ping(int restZeit) {
+        public void ping() {
             for (MediathekListener tl : listeners.getListeners(MediathekListener.class)) {
-                tl.ping(restZeit);
+                tl.ping();
             }
         }
     }

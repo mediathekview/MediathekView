@@ -155,7 +155,7 @@ public final class InfoPanel extends javax.swing.JPanel {
     private class BeobTimer extends MediathekListener {
 
         @Override
-        public void ping(int rrestZeit) {
+        public void ping() {
             setInfoRechts();
         }
     }

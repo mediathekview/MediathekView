@@ -318,7 +318,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_URL);
                 } else {
                     Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO);
-                    Daten.filmeLaden.resetTimer();
                 }
                 Daten.setGeaendert();
             }

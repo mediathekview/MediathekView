@@ -167,6 +167,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = zielDateiname;
             arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = zielPfad;
             dateinamePfadBauen();
+            kuerzen(gruppe);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
             Log.fehlerMeldung(this.getClass().getName(), ex);
@@ -248,6 +249,21 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZIEL_DATEINAME_NR] = GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */);
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
         arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, arr[DOWNLOAD_ZIEL_DATEINAME_NR]);
+    }
+
+    private void kuerzen(DatenPgruppe gruppe) {
+        if (Boolean.parseBoolean(gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_LAENGE_BESCHRAENKEN_NR])) {
+            // nur dann ist was zu tun
+            String name = arr[DOWNLOAD_ZIEL_DATEINAME_NR];
+            int laenge = GuiKonstanten.LAENGE_DATEINAME;
+            if (!gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_MAX_LAENGE_NR].equals("")) {
+                laenge = Integer.parseInt(gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_MAX_LAENGE_NR]);
+            }
+            if (name.length() > laenge) {
+                name = name.substring(0, laenge - 4)  + name.substring(name.length() - 4);
+            }
+            arr[DOWNLOAD_ZIEL_DATEINAME_NR] = name;
+        }
     }
 
     private void programmaufrufBauen(DatenProg programm) {

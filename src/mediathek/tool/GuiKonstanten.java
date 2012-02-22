@@ -48,7 +48,8 @@ public class GuiKonstanten {
     public static final String RTMP_PRTOKOLL = "rtmp";
     // Auto-Neu-Laden
     public static final int NEU_LADEN_IN = 75 * 60; // Sekunden
-    //
+    // Standardwert für die Länge des Zieldateinamens
+    public static final int LAENGE_DATEINAME = 25;
     //
     public static final int UPDATE_FILME_AUS = 0; // nix
     public static final int UPDATE_FILME_URL = 1; // manuell laden, Url automatisch wählen

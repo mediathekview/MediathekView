@@ -42,9 +42,6 @@ public class MediathekListener implements EventListener {
     public void ping() {
     }
 
-    public void ping(int intInfo) {
-    }
-
     public void ping(String from) {
     }
 

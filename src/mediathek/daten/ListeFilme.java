@@ -22,7 +22,6 @@ package mediathek.daten;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Pattern;
 import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.filme.filmeSuchen.sender.*;
 import mediathek.tool.DatumZeit;

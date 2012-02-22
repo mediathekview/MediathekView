@@ -20,44 +20,29 @@
 package mediathek.controller.filme.filmeImportieren;
 
 import javax.swing.event.EventListenerList;
-import mediathek.tool.GuiKonstanten;
 
 public class MediathekTimer {
 
-    private final int WARTEZEIT = 1000; // 1 Minuten
-    public int neuLadenIn = GuiKonstanten.NEU_LADEN_IN;
+    private final int WARTEZEIT = 1000; // 1 Sekunde
     private EventListenerList listeners = new EventListenerList();
 
     public MediathekTimer() {
         new Thread(new TimerClass()).start();
     }
 
-    public synchronized void resetTimer() {
-        reset();
-    }
-
-    // #############################
-    // listener
-    // #############################
     public void addAdListener(MediathekListener listener) {
         listeners.add(MediathekListener.class, listener);
     }
 
     private void notifyTakt() {
         for (MediathekListener l : listeners.getListeners(MediathekListener.class)) {
-            l.ping(neuLadenIn);
+            l.ping();
         }
     }
-    // #########################################
 
-    private void reset() {
-        neuLadenIn = GuiKonstanten.NEU_LADEN_IN;
-
-    }
     // ################################################
     // Timer-Thread
     // ################################################
-
     private class TimerClass implements Runnable {
 
         @Override
@@ -67,10 +52,6 @@ public class MediathekTimer {
                     Thread.sleep(WARTEZEIT);
                 } catch (InterruptedException e) {
                 } finally {
-                    --neuLadenIn;
-                    if (neuLadenIn <= 0) {
-                        reset();
-                    }
                     notifyTakt();
                 }
             }
