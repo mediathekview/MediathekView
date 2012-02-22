@@ -40,7 +40,6 @@ public class FilmeLaden {
     public static final int UPDATE_FILME_URL = 1; // manuell laden, Url automatisch wählen
     public static final int UPDATE_FILME_AUTO = 2; // beim Start, immer mal wieder, + Url auto
     public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
-    public static boolean allesLaden = false;
     public static String updateUrl = "";
     // private
     private boolean stop = false;
@@ -67,10 +66,6 @@ public class FilmeLaden {
         } else {
             filmlisteImportierenAuto();
         }
-    }
-
-    public void setAllesLaden(boolean aallesLaden) {
-        allesLaden = aallesLaden;
     }
 
     public synchronized void setStop() {
@@ -141,8 +136,14 @@ public class FilmeLaden {
         }
     }
 
+    public synchronized void filmlisteDirektImportieren(String dateiUrl) {
+        boolean istUrl;
+        istUrl = dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
+        filmeImportieren.filmeDirektImportierenDatei(dateiUrl, istUrl);
+    }
+
     // #######################################
-    // Filme beim Sender laden
+    // Filme beim allen Sender laden
     // #######################################
     public void filmeBeimSenderSuchen(ListeFilme llisteFilme, boolean allesLaden) {
         if (!istAmLaufen) {

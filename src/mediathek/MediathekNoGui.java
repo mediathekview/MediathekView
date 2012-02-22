@@ -44,11 +44,7 @@ public class MediathekNoGui {
     private boolean allesLaden = false;
     private Date startZeit = new Date(System.currentTimeMillis());
     private Date stopZeit = null;
-    private ListeFilme listeFilme = null;
-    private FilmeLaden filmeLaden = null;
     private String pfad = "";
-    private IoXmlFilmlisteSchreiben ioXmlFilmlisteSchreiben = null;
-    private IoXmlFilmlisteLesen ioXmlFilmlisteLesen = null;
 
     public MediathekNoGui(String[] ar) {
         if (ar != null) {
@@ -90,33 +86,34 @@ public class MediathekNoGui {
 
     public void starten() {
         // initialisieren
-        ioXmlFilmlisteSchreiben = new IoXmlFilmlisteSchreiben();
-        ioXmlFilmlisteLesen = new IoXmlFilmlisteLesen();
-        filmeLaden = new FilmeLaden();
+        Daten daten = new Daten(pfad);
         if (!userAgent.equals("")) {
             Daten.setUserAgentManuel(userAgent);
         }
-        filmeLaden.setAllesLaden(allesLaden);
-        listeFilme = new ListeFilme();
-        filmeLaden.addAdListener(new BeobachterLadenFilme());
+        Daten.filmeLaden.addAdListener(new BeobachterLadenFilme());
         // laden was es schon gibt
-        filmeLaden.filmlisteImportieren(pfad);
-        addImportListe(importUrl);
+        Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
+        if (!importUrl.equals("")) {
+            // wenn eine ImportUrl angegeben, dann noch eine Liste importieren
+            addImportListe(importUrl);
+        }
+        // das eigentliche Suchen der Filme bei den Sendern starten
+        Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, allesLaden);
     }
 
     private void addImportListe(String url) {
         if (!url.equals("")) {
             Log.systemMeldung("Filmliste importieren von: " + url);
             ListeFilme tmpListe = new ListeFilme();
-            ioXmlFilmlisteLesen.filmlisteLesen(url, false /* istDatei */, tmpListe);
-            listeFilme.updateListe(tmpListe, false /* nur URL vergleichen */);
+            Daten.ioXmlFilmlisteLesen.filmlisteLesen(url, false /* istDatei */, tmpListe);
+            Daten.listeFilme.updateListe(tmpListe, false /* nur URL vergleichen */);
             tmpListe.clear();
         }
     }
 
     private void undTschuess() {
-        listeFilme = filmeLaden.getListeFilme();
-        new FilmeExportieren().filmeSchreiben(listeFilme);
+        Daten.listeFilme = Daten.filmeLaden.getListeFilme();
+        new FilmeExportieren().filmeSchreiben(Daten.listeFilme);
         if (!output.equals("")) {
             LinkedList<String> out = new LinkedList<String>();
             String tmp = "";
@@ -135,7 +132,7 @@ public class MediathekNoGui {
             Iterator<String> it = out.iterator();
             while (it.hasNext()) {
                 //datei schreiben
-                ioXmlFilmlisteSchreiben.filmeSchreiben(it.next(), listeFilme);
+                Daten.ioXmlFilmlisteSchreiben.filmeSchreiben(it.next(), Daten.listeFilme);
             }
         }
         stopZeit = new Date(System.currentTimeMillis());
@@ -148,13 +145,13 @@ public class MediathekNoGui {
         }
         Log.systemMeldung(new String[]{
                     "========================================",
-                    "  " + filmeLaden.getSeitenGeladen() + " Seiten geladen",
-                    "  " + listeFilme.size() + " Filme gesamt",
+                    "  " + Daten.filmeLaden.getSeitenGeladen() + " Seiten geladen",
+                    "  " + Daten.listeFilme.size() + " Filme gesamt",
                     "  --> Beginn: " + sdf.format(startZeit),
                     "  --> Fertig: " + sdf.format(stopZeit), "  --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten),
                     "========================================"});
 
-        if (listeFilme.isEmpty()) {
+        if (Daten.listeFilme.isEmpty()) {
             //Satz mit x, war wohl nix
             System.exit(1);
         } else {

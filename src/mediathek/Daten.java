@@ -28,20 +28,19 @@ import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.ListeFilme;
 
 public class Daten {
-    // Konstanten
 
+    // Konstanten
     public final static int GESTARTET_ALS_GUI = 1; // Programm läuft als GUI-Version
     public final static int GESTARTET_ALS_AUTO = 2; // als auto
     public final static int GESTARTET_ALS_NOGUI = 3; // als noGui nur zum Laden der Filmliste
     // Systemeinstellungen
     public static String[] system = new String[Konstanten.SYSTEM_MAX_ELEM];
-    // globale flags
+    // flags
     public static boolean debug = false;
     public static boolean fehlerFensterAnzeigen = true;
-    private static int gestartetAls = GESTARTET_ALS_GUI;
     private static boolean geaendert;
     private static String basisverzeichnis;
-    // globale Klassen
+    // Klassen
     public static FilmeLaden filmeLaden;
     public static IoXmlFilmlisteLesen ioXmlFilmlisteLesen = null;
     public static IoXmlFilmlisteSchreiben ioXmlFilmlisteSchreiben = null;
@@ -133,15 +132,6 @@ public class Daten {
     public static void setUserAgentManuel(String ua) {
         system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.FALSE.toString();
         system[Konstanten.SYSTEM_USER_AGENT_NR] = ua;
-    }
-
-    // Art in der das Programm läuft
-    public static int gestartetAls() {
-        return gestartetAls;
-    }
-
-    public static void setGestartetAls(int gest) {
-        gestartetAls = gest;
     }
 
     // geändert

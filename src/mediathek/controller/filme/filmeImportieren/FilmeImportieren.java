@@ -83,6 +83,10 @@ public class FilmeImportieren {
     // #######################################
     // Filme aus Datei laden
     // #######################################
+    public void filmeDirektImportierenDatei(String pfad, boolean istUrl) {
+        urlLaden(pfad, istUrl);
+    }
+
     public void filmeImportierenDatei(String pfad, boolean istUrl) {
         new Thread(new filmeImportierenDateiThread(pfad, istUrl)).start();
     }
