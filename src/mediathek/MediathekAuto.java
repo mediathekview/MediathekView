@@ -79,7 +79,7 @@ public class MediathekAuto extends javax.swing.JFrame {
         } else {
             jSpinnerDownload.setValue(Integer.parseInt(daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR]));
         }
-        daten.fehlerFensterAnzeigen = false; //in diesem Modus keine Fehler anzeigen
+//        daten.fehlerFensterAnzeigen = false; //in diesem Modus keine Fehler anzeigen
         if (daten.system[Konstanten.SYSTEM_LOOK_NR].equals("")) {
             daten.system[Konstanten.SYSTEM_LOOK_NR] = "0";
         }

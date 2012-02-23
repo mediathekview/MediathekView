@@ -23,11 +23,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 import mediathek.Daten;
-import mediathek.daten.DatenFilm;
-import mediathek.tool.DatumZeit;
+import mediathek.Log;
 import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
 import mediathek.controller.io.GetUrl;
-import mediathek.Log;
+import mediathek.daten.DatenFilm;
+import mediathek.tool.DatumZeit;
 
 /**
  *
@@ -49,7 +49,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     private Semaphore sem = new Semaphore(1);
 
     /**
-     * 
+     *
      * @param ddaten
      * @param dde
      */
@@ -68,14 +68,10 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     //===================================
     // public
     //===================================
-    /**
-     * 
-     */
     @Override
     public synchronized void addToList() {
         if (!laufeSchon) {
             laufeSchon = true;
-//            LogFilme.systemMeldung("Sender Arte: " + SENDER);
             addToList_de_fr();
         }
     }
@@ -120,18 +116,17 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
         StringBuffer strSeite = new StringBuffer();
         strSeite = getUrlIo.getUri_Utf(senderName, ADRESSE, strSeite, "");
         int pos = 0;
-        int pos1 = 0;
-        int pos2 = 0;
+        int pos1;
+        int pos2;
         int ende = strSeite.indexOf(STOP);
-        String url = "";
-        String thema = "";
+        String url;
+        String thema;
         if ((pos = strSeite.indexOf(START, pos)) != -1) {
             while (!Daten.filmeLaden.getStop() && (pos = strSeite.indexOf(MUSTER_URL, pos)) != -1) {
                 if (pos > ende) {
                     //Themenbereich zu Ende
                     break;
                 }
-                url = "";
                 thema = "";
                 pos += MUSTER_URL.length();
                 pos1 = pos;
@@ -169,12 +164,10 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     //===================================
     private class ArteThemaLaden implements Runnable {
 
-        GetUrl getUrl7 = new GetUrl( 20000, senderWartenSeiteLaden);
-        GetUrl getUrl = new GetUrl( 10000, senderWartenSeiteLaden);
+        GetUrl getUrl7 = new GetUrl(senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
         String[] link = null;
         private StringBuffer strSeite1 = new StringBuffer();
-//        private StringBuffer strSeite2 = new StringBuffer();
-//        private StringBuffer strSeite3 = new StringBuffer();
 
         @Override
         public void run() {
@@ -188,7 +181,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 for (int t = 0; t < senderMaxThread; ++t) {
                     new Thread(new ArteFilmseitenLaden()).start();
                 }
-                while (!Daten.filmeLaden.getStop()&& (link = getListeThemen()) != null) {
+                while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
                     themenSeitenSuchen(link[0] /* url */, link[1] /* Thema */);
                     meldungProgress(link[0]);
                 }
@@ -223,15 +216,15 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             LinkedList<String> themenseiten = new LinkedList<String>();
             themenseiten.add(strUrlFeed); //erste Themenseite
             int count = 0;
-            int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
-            int start = 0;
-            int ende = 0;
-            String url = "";
-            String titel = "";
-            String seite = "";
-            boolean gefunden = false;
+            int pos;
+            int pos1;
+            int pos2;
+            int start;
+            int ende;
+            String url;
+            String titel;
+            String seite;
+            boolean gefunden;
             boolean ersteSeite = true;
             seite = strUrlFeed;
             if (suchen.allesLaden || thema.startsWith(THEMA_ARTE_7)) {
@@ -248,8 +241,6 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                         ende = strSeite1.indexOf(MUSTER_THEMA_STOP);
                         pos = start;
                         while (!Daten.filmeLaden.getStop() && (pos = strSeite1.indexOf(MUSTER_THEMA_URL, pos)) != -1 && pos < ende) {
-                            url = "";
-                            titel = "";
                             pos += MUSTER_THEMA_URL.length();
                             pos1 = pos;
                             pos2 = strSeite1.indexOf("\"", pos);
@@ -271,8 +262,6 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 } while (!Daten.filmeLaden.getStop() && gefunden && count < MAX_SEITEN);
             }
             pos = 0;
-            pos1 = 0;
-            pos2 = 0;
             Iterator<String> it = themenseiten.iterator();
             while (!Daten.filmeLaden.getStop() && it.hasNext()) {
                 seite = it.next();
@@ -282,8 +271,6 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                     strSeite1 = getUrl.getUri_Utf(senderName, seite, strSeite1, "");
                 }
                 while (!Daten.filmeLaden.getStop() && (pos = strSeite1.indexOf(MUSTER_URL, pos)) != -1) {
-                    url = "";
-                    titel = "";
                     pos += MUSTER_URL.length();
                     pos1 = pos;
                     pos2 = strSeite1.indexOf("\"", pos);
@@ -312,8 +299,8 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
 
     private class ArteFilmseitenLaden implements Runnable {
 
-        GetUrl getUrl7 = new GetUrl( 20000, senderWartenSeiteLaden);
-        GetUrl getUrl = new GetUrl( 5000, senderWartenSeiteLaden);
+        GetUrl getUrl7 = new GetUrl(senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(5000, senderWartenSeiteLaden);
         private StringBuffer strSeite2 = new StringBuffer();
         private StringBuffer strSeite3 = new StringBuffer();
 
@@ -330,7 +317,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                         while (!Daten.filmeLaden.getStop() && (filmseite = getAddListeFilmseiten(null)) != null) {
                             //addFilme2(String strUrlFeed, String thema, String titel, String urlFilm, String alt);
                             addFilme2(filmseite[0], filmseite[1], filmseite[2], filmseite[3]);
-                          meldungProgress(filmseite[3]);
+                            meldungProgress(filmseite[3]);
                         }
                         //da ist die Themenliste noch nicht fertig
                         this.wait(500);
@@ -364,9 +351,9 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 strSeite2 = getUrl.getUri_Utf(senderName, urlFilm, strSeite2, "");
             }
             int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
-            String url = "";
+            int pos1;
+            int pos2;
+            String url;
             String authurl = "";
             //auth suchen
             if (!Daten.filmeLaden.getStop() && (pos = strSeite2.indexOf(MUSTER_AUTH, pos)) != -1) {
@@ -382,8 +369,6 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             }
             //url suchen
             pos = 0;
-            pos1 = 0;
-            pos2 = 0;
             if ((pos = strSeite2.indexOf(MUSTER_URL, pos)) != -1) {
                 pos += MUSTER_URL.length();
                 pos1 = pos;
@@ -418,14 +403,13 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 strSeite2 = getUrl.getUri_Utf(senderName, urlFilm, strSeite2, "");
             }
             int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
-            String url = "";
-            String MUSTER_URL = "";
+            int pos1;
+            int pos2;
+            String url;
+            String MUSTER_URL;
             if (!Daten.filmeLaden.getStop() && arte_de) {
                 MUSTER_URL = MUSTER_URL_DE;
                 if ((pos = strSeite2.indexOf(MUSTER_URL, pos)) != -1) {
-                    url = "";
                     pos += MUSTER_URL.length();
                     pos1 = pos;
                     pos2 = strSeite2.indexOf("\"", pos);
@@ -441,13 +425,8 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 }
             }
             if (!Daten.filmeLaden.getStop() && arte_fr) {
-                pos = 0;
-                pos1 = 0;
-                pos2 = 0;
-                url = "";
                 MUSTER_URL = MUSTER_URL_FR;
                 if ((pos = strSeite2.indexOf(MUSTER_URL, pos)) != -1) {
-                    url = "";
                     pos += MUSTER_URL.length();
                     pos1 = pos;
                     pos2 = strSeite2.indexOf("\"", pos);
@@ -471,22 +450,20 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             // rtmp://artestras.fcod.llnwd.net/a3903/o35/MP4:geo/videothek/ALL/arteprod/2010/05/16/ARTE3220966_DE_28919_16by9_800_MP4?h=db7388494aa3ec5cda2a7decfb083ce4
             // </url>
             //<dateVideo>Thu, 25 Nov 2010 18:06:32 +0100</dateVideo>
-            String tmp = "";
+            String tmp;
             String datum = "";
             String zeit = "";
             final String MUSTER_DATUM = "<dateVideo>";
-            boolean alt = !thema.startsWith(THEMA_ARTE_7);
             final String MUSTER_URL = "<url quality=\"hd\">";
-//            notifyProgress("*" + urlFilm);
             if (thema.startsWith(THEMA_ARTE_7)) {
                 strSeite3 = getUrl7.getUri_Utf(senderName, urlFilm, strSeite3, "");
             } else {
                 strSeite3 = getUrl.getUri_Utf(senderName, urlFilm, strSeite3, "");
             }
             int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
-            String url = "";
+            int pos1;
+            int pos2;
+            String url;
             if ((pos = strSeite3.indexOf(MUSTER_DATUM, pos)) != -1) {
                 pos1 = pos + MUSTER_DATUM.length();
                 if ((pos2 = strSeite3.indexOf("<", pos1)) != -1) {
@@ -501,8 +478,6 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 }
             }
             pos = 0;
-            pos1 = 0;
-            pos2 = 0;
             if ((pos = strSeite3.indexOf(MUSTER_URL, pos)) != -1) {
                 pos += MUSTER_URL.length();
                 pos1 = pos;

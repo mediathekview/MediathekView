@@ -26,7 +26,6 @@ import java.util.*;
 public class ListeFilmUpdateServer extends LinkedList<DatenFilmUpdateServer> {
 
     public boolean addWithCheck(DatenFilmUpdateServer film) {
-        // Film wird in die BackListe geschrieben, check20 muss dann selbst aufgerufen werden
         ListIterator<DatenFilmUpdateServer> it = listIterator();
         while (it.hasNext()) {
             if (it.next().arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR].equals(film.arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR])) {

@@ -28,6 +28,7 @@ public class RunSender {
     int max = 0;
     int progress = 0;
     Date startZeit = new Date();
+    boolean fertig = false;
 
     public RunSender(String ssender, int mmax, int pprogress) {
         sender = ssender;
@@ -38,7 +39,7 @@ public class RunSender {
     public String getLaufzeitMinuten() {
         Date endZeit = new Date();
         String ret = "";
-        int sekunden = 0;
+        int sekunden;
         try {
             if (startZeit != null && endZeit != null) {
                 sekunden = Math.round((endZeit.getTime() - startZeit.getTime()) / 1000);
@@ -54,7 +55,4 @@ public class RunSender {
         }
         return ret;
     }
-
-
-
 }

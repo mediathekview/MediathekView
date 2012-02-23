@@ -51,6 +51,9 @@ public class MediathekSwr extends MediathekReader implements Runnable {
     @Override
     public synchronized void addToList() {
         //nur im --nogui laufen lassen
+        if (suchen.listeFilmeNeu.infos[ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR].equals("")) {
+            suchen.listeFilmeNeu.infos[ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR] = "0";
+        }
         startThema = Integer.parseInt(suchen.listeFilmeNeu.infos[ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR]);
         if (suchen.allesLaden) {
             //Theman suchen
@@ -129,7 +132,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
 //////////    }
     private class SenderThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl( senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
         private StringBuffer strSeite1 = new StringBuffer();
         private StringBuffer strSeite2 = new StringBuffer();
 

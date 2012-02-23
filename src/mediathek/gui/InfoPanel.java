@@ -7,10 +7,10 @@ package mediathek.gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JProgressBar;
 import mediathek.Daten;
 import mediathek.controller.filme.FilmListenerElement;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.controller.filme.filmeImportieren.MediathekTimer;
 import mediathek.daten.ListeFilme;
 
 /**
@@ -26,6 +26,7 @@ public final class InfoPanel extends javax.swing.JPanel {
     private final int IDX_MAX = 4;
     private String[] idx = new String[IDX_MAX];
     private int aktIdx = 0;
+    private MediathekTimer mediathekTimer = new MediathekTimer();
 
     public InfoPanel() {
         initComponents();
@@ -42,7 +43,7 @@ public final class InfoPanel extends javax.swing.JPanel {
                 Daten.filmeLaden.setStop();
             }
         });
-        Daten.filmeLaden.addListener(new BeobTimer());
+        mediathekTimer.addAdListener(new BeobTimer());
     }
 
     public void setTextLinks(int i, String text) {

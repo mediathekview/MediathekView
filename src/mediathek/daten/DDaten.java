@@ -19,9 +19,12 @@
  */
 package mediathek.daten;
 
+import javax.swing.event.EventListenerList;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.MediathekGui;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.controller.filme.filmeImportieren.MediathekTimer;
 import mediathek.controller.io.History;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.IoXmlSchreiben;
@@ -72,8 +75,6 @@ public final class DDaten extends Daten {
         history = new History(getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_HISTORY);
         dialogDatenFilm = new DialogDatenFilm(null, false, this);
         starterClass = new StarterClass(this);
-//        GuiFunktionen.addProgVorlagen(this);
-        //Version prüfen+++++++++++++++++++++++
     }
 
     @Override
@@ -115,4 +116,5 @@ public final class DDaten extends Daten {
         panelListe.aendernSofort();
         Daten.setGeaendert();
     }
+
 }

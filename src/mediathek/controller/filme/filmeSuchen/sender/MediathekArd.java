@@ -24,6 +24,7 @@ import mediathek.Log;
 import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.DatumZeit;
 
 /**
  *
@@ -189,14 +190,14 @@ public class MediathekArd extends MediathekReader implements Runnable {
             final String MUSTER_DATUM_2 = "</a>";
             int pos;
             int posDatum1 = 0;
-            int posDatum2 = 0;
-            int pos1 = 0;
-            int pos2 = 0;
+            int posDatum2;
+            int pos1;
+            int pos2;
             String url = "";
             String titel = "";
             String datum = "";
             String zeit = "";
-            String tmp = "";
+            String tmp;
             ///////////////////////////////////////
 //            if (!thema.contains("Abendschau")) {
 //                return;
@@ -204,11 +205,8 @@ public class MediathekArd extends MediathekReader implements Runnable {
             //erst mal nach weitern Seiten schauen
 //            if ((pos = seite.indexOf(MUSTER, pos)) != -1) {
 //            }
-            pos = 0;
             while (!Daten.filmeLaden.getStop() && (posDatum1 = seite.indexOf(MUSTER_DATUM_1, posDatum1)) != -1) {
                 posDatum1 += MUSTER_DATUM_1.length();
-                pos1 = 0;
-                pos2 = 0;
                 if ((pos1 = seite.indexOf(MUSTER_DATUM_2, posDatum1)) != -1) {
                     tmp = seite.substring(posDatum1, pos1).trim();
                     if (tmp.contains("Sendung vom")) {
@@ -241,8 +239,6 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         if (url.equals("")) {
                             continue;
                         }
-                        pos1 = 0;
-                        pos2 = 0;
                         if ((pos = seite.indexOf(TITEL, pos)) != -1) {
                             pos1 = pos += TITEL.length();
                             pos2 = seite.indexOf("<", pos);
@@ -252,7 +248,9 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         }
                         gefunden = true;
                         ret = filmLaden(strUrlFeed, MUSTER_SET + url, thema, titel, datum, zeit, alt);
-
+                        ///////////////////////////////////////////
+                        DatumZeit.checkDatum(datum, "");
+                        ////////////////////////////////////////////
                     } catch (Exception ex) {
                         Log.fehlerMeldung("MediathekArd.feedEinerSeiteSuchen-1", ex, "Thema hat keine Links");
                     }
@@ -263,8 +261,6 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 //07.10.10
                 final String DAT = "<span class=\"mt-airtime\">";
                 pos = 0;
-                pos1 = 0;
-                pos2 = 0;
                 while (!Daten.filmeLaden.getStop() && (pos = seite.indexOf(MUSTER, pos)) != -1) {
                     try {
                         pos += MUSTER.length();
@@ -276,8 +272,6 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         if (url.equals("")) {
                             continue;
                         }
-                        pos1 = 0;
-                        pos2 = 0;
                         if ((pos = seite.indexOf(TITEL, pos)) != -1) {
                             pos1 = pos += TITEL.length();
                             pos2 = seite.indexOf("<", pos);
@@ -297,6 +291,9 @@ public class MediathekArd extends MediathekReader implements Runnable {
                             }
                         }
                         ret = filmLaden(strUrlFeed, MUSTER_SET + url, thema, titel, datum, zeit, alt);
+                        ///////////////////////////////////////////
+                        DatumZeit.checkDatum(datum, "");
+                        ////////////////////////////////////////////
                     } catch (Exception ex) {
                         Log.fehlerMeldung("MediathekArd.feedEinerSeiteSuchen-2", ex, "Thema hat keine Links");
                     }
@@ -334,18 +331,17 @@ public class MediathekArd extends MediathekReader implements Runnable {
             boolean ret = false;
             meldung("*" + urlFilm);
             seite2 = getUrl.getUri_Utf(senderName, urlFilm, seite2, "urlFeed: " + urlFeed);
-            int pos1 = 0;
-            int pos1Tmp = 0;
-            int pos1a = 0;
-            int pos2 = 0;
-            int pos3 = 0;
+            int pos1;
+            int pos1Tmp;
+            int pos1a;
+            int pos2;
+            int pos3;
             String protokoll = "";
             String url1a = "";
             String url1b = "";
             String url2 = "";
-            boolean flash = false;
+            boolean flash = true;
             //Flashfilme
-            flash = true;
             if ((pos1 = seite2.indexOf(MUSTER_URL1a)) != -1) {
                 pos1 += MUSTER_URL1a.length();
             } else if ((pos1 = seite2.indexOf(MUSTER_URL1b)) != -1) {

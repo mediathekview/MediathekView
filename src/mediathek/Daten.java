@@ -23,6 +23,7 @@ import java.io.File;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.controller.filme.filmeImportieren.filmUpdateServer.DatenFilmUpdateServer;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.ListeFilme;
@@ -37,9 +38,8 @@ public class Daten {
     public static String[] system = new String[Konstanten.SYSTEM_MAX_ELEM];
     // flags
     public static boolean debug = false;
-    public static boolean fehlerFensterAnzeigen = true;
-    private static boolean geaendert;
-    private static String basisverzeichnis;
+    private static boolean geaendert = false;
+    private static String basisverzeichnis = "";
     // Klassen
     public static FilmeLaden filmeLaden;
     public static IoXmlFilmlisteLesen ioXmlFilmlisteLesen = null;
@@ -47,51 +47,31 @@ public class Daten {
     public static ListeFilme listeFilme = null;
     private static EventListenerList listeners = new EventListenerList();
 
-    public Daten(String basis) {
-        basisverzeichnis = basis;
-        // einrichten der statischen
-        system = new String[Konstanten.SYSTEM_MAX_ELEM];
-        system = new String[Konstanten.SYSTEM_MAX_ELEM];
+    public Daten(String pfad) {
+        basisverzeichnis = pfad;
+        init();
+    }
+
+    private void init() {
         for (int i = 0; i < system.length; ++i) {
             system[i] = "";
         }
-        // der Rest
-        geaendert = false;
-        //zur Info, Basisverzeichnis für die Einstellungen
-        Log.systemMeldung("Programmeinstellungen: " + getBasisVerzeichnis());
         //initialisieren
         system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] = "1";
         system[Konstanten.SYSTEM_WARTEN_NR] = "1";
         system[Konstanten.SYSTEM_USER_AGENT_NR] = Konstanten.USER_AGENT_DEFAULT;
-        if (system[Konstanten.SYSTEM_WARTEN_NR].equals("")) {
-            system[Konstanten.SYSTEM_WARTEN_NR] = "1";
-        }
-        if (system[Konstanten.SYSTEM_LOOK_NR].equals("")) {
-            system[Konstanten.SYSTEM_LOOK_NR] = "1";
-        }
-        //Version prüfen+++++++++++++++++++++++
-        if (!system[Konstanten.SYSTEM_VERSION_NR].equals(Konstanten.VERSION)) {
-            //Version setzten
-            system[Konstanten.SYSTEM_VERSION_NR] = Konstanten.VERSION;
-        }
-        //Version prüfen+++++++++++++++++++++++
-
+        system[Konstanten.SYSTEM_WARTEN_NR] = "1";
+        system[Konstanten.SYSTEM_LOOK_NR] = "1";
+        system[Konstanten.SYSTEM_VERSION_NR] = Konstanten.VERSION;
         listeFilme = new ListeFilme();
         ioXmlFilmlisteLesen = new IoXmlFilmlisteLesen();
         ioXmlFilmlisteSchreiben = new IoXmlFilmlisteSchreiben();
         filmeLaden = new FilmeLaden();
-        //updateListe aufbauen
-//        filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://178.77.79.81/mediathek4/Mediathek_14.bz2", "1"));
-//        filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://178.77.79.81/mediathek3/Mediathek_10.bz2", "1"));
-//        filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://178.77.79.81/mediathek2/Mediathek_08.zip", "1"));
-////////            filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://mediathekview.xml.in/mediathek-1-13.bz2", "1"));
-////////            filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://mediathek.000a.de/filme/Mediathek_15.bz2", "1"));
-////////            filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://178.77.79.81/mediathek1/Mediathek_15.bz2", "1"));
-////////            filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://mitglied.multimania.de/mediathekview/mediathek-1-13.bz2", "1"));
-
-
+        //eine Erstfüllung der UpdateListe
+        filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://178.77.79.81/mediathek4/Mediathek_14.bz2", "1"));
+        filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://178.77.79.81/mediathek3/Mediathek_10.bz2", "1"));
+        filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://178.77.79.81/mediathek2/Mediathek_08.zip", "1"));
     }
-    // userAgent
 
     public synchronized static void addAdListener(MediathekListener listener) {
         listeners.add(MediathekListener.class, listener);
@@ -106,6 +86,15 @@ public class Daten {
                 }
             }
         }
+    }
+
+    public static void setUserAgentAuto() {
+        system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.TRUE.toString();
+    }
+
+    public static void setUserAgentManuel(String ua) {
+        system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.FALSE.toString();
+        system[Konstanten.SYSTEM_USER_AGENT_NR] = ua;
     }
 
     public static boolean isUserAgentAuto() {
@@ -123,15 +112,6 @@ public class Daten {
         } else {
             return system[Konstanten.SYSTEM_USER_AGENT_NR];
         }
-    }
-
-    public static void setUserAgentAuto() {
-        system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.TRUE.toString();
-    }
-
-    public static void setUserAgentManuel(String ua) {
-        system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.FALSE.toString();
-        system[Konstanten.SYSTEM_USER_AGENT_NR] = ua;
     }
 
     // geändert
@@ -159,7 +139,7 @@ public class Daten {
         return getBasisVerzeichnis(basisverzeichnis, anlegen);
     }
 
-    public static String getBasisVerzeichnis(String basis, boolean anlegen) {
+    private static String getBasisVerzeichnis(String basis, boolean anlegen) {
         String ret;
         if (basis.equals("")) {
             ret = System.getProperty("user.home") + File.separator + Konstanten.MEDIATHEK_VIEW_VERZEICHNISS + File.separator;

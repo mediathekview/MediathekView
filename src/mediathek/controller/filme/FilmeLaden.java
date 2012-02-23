@@ -43,7 +43,6 @@ public class FilmeLaden {
     public static String updateUrl = "";
     // private
     private boolean stop = false;
-    private MediathekTimer mediathekTimer = new MediathekTimer();
     private ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
     private ListeFilme listeFilmeNeu = null; //ist eine NEUE ungefilterte Liste, wird beim Laden NEU erstellt
     private FilmeSuchen filmeSuchen;
@@ -56,7 +55,6 @@ public class FilmeLaden {
         filmeImportieren = new FilmeImportieren();
         filmeSuchen.addAdListener(new BeobLadenSuchen());
         filmeImportieren.addAdListener(new BeobLadenImportieren());
-        mediathekTimer.addAdListener(new BeobTimer());
     }
 
     public void filmeLaden(DDaten daten) {
@@ -241,13 +239,4 @@ public class FilmeLaden {
         }
     }
 
-    private class BeobTimer extends MediathekListener {
-
-        @Override
-        public void ping() {
-            for (MediathekListener tl : listeners.getListeners(MediathekListener.class)) {
-                tl.ping();
-            }
-        }
-    }
-}
+ }

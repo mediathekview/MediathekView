@@ -24,6 +24,19 @@ import java.util.LinkedList;
 
 public class ListeRunSender extends LinkedList<RunSender> {
 
+    public boolean listeFertig() {
+        // liefert true wenn alle Sender fertig sind
+        // und löscht dann auch die Liste
+        Iterator<RunSender> it = iterator();
+        while (it.hasNext()) {
+            if (!it.next().fertig) {
+                return false;
+            }
+        }
+        this.clear();
+        return true;
+    }
+
     public RunSender getSender(String sender) {
         Iterator<RunSender> it = iterator();
         while (it.hasNext()) {
@@ -35,13 +48,13 @@ public class ListeRunSender extends LinkedList<RunSender> {
         return null;
     }
 
-    public RunSender delSender(String sender) {
+    public RunSender senderFertig(String sender) {
         RunSender run = null;
         Iterator<RunSender> it = iterator();
         while (it.hasNext()) {
             run = it.next();
             if (run.sender.equals(sender)) {
-                it.remove();
+                run.fertig = true;
                 return run;
             }
         }

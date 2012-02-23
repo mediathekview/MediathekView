@@ -26,10 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.controller.filme.BeobFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
-import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.filme.filmeExportieren.FilmeExportieren;
-import mediathek.controller.io.IoXmlFilmlisteLesen;
-import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.ListeFilme;
 
 public class MediathekNoGui {
@@ -45,6 +42,7 @@ public class MediathekNoGui {
     private Date startZeit = new Date(System.currentTimeMillis());
     private Date stopZeit = null;
     private String pfad = "";
+    private Daten daten;
 
     public MediathekNoGui(String[] ar) {
         if (ar != null) {
@@ -77,26 +75,26 @@ public class MediathekNoGui {
                 }
             }
         }
+        daten = new Daten(pfad);
+        if (!userAgent.equals("")) {
+            Daten.setUserAgentManuel(userAgent);
+        }
+        // Infos schreiben
         if (allesLaden) {
             Log.systemMeldung("Programmstart: alles laden");
         } else {
             Log.systemMeldung("Programmstart: nur update laden");
         }
+        Log.systemMeldung("Basisverzeichnis: " + Daten.getBasisVerzeichnis());
+        Log.systemMeldung("Useragent: " + Daten.getUserAgent());
+        Log.systemMeldung("ImportUrl: " + importUrl);
+        Log.systemMeldung("Outputfile: " + output);
     }
 
     public void starten() {
-        // initialisieren
-        Daten daten = new Daten(pfad);
-        if (!userAgent.equals("")) {
-            Daten.setUserAgentManuel(userAgent);
-        }
         Daten.filmeLaden.addAdListener(new BeobachterLadenFilme());
         // laden was es schon gibt
         Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
-        if (!importUrl.equals("")) {
-            // wenn eine ImportUrl angegeben, dann noch eine Liste importieren
-            addImportListe(importUrl);
-        }
         // das eigentliche Suchen der Filme bei den Sendern starten
         Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, allesLaden);
     }
@@ -113,10 +111,14 @@ public class MediathekNoGui {
 
     private void undTschuess() {
         Daten.listeFilme = Daten.filmeLaden.getListeFilme();
+        if (!importUrl.equals("")) {
+            // wenn eine ImportUrl angegeben, dann noch eine Liste importieren
+            addImportListe(importUrl);
+        }
         new FilmeExportieren().filmeSchreiben(Daten.listeFilme);
         if (!output.equals("")) {
             LinkedList<String> out = new LinkedList<String>();
-            String tmp = "";
+            String tmp;
             do {
                 if (output.startsWith(",")) {
                     output = output.substring(1);
@@ -137,7 +139,7 @@ public class MediathekNoGui {
         }
         stopZeit = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        int minuten = 0;
+        int minuten;
         try {
             minuten = Math.round((stopZeit.getTime() - startZeit.getTime()) / (1000 * 60));
         } catch (Exception ex) {

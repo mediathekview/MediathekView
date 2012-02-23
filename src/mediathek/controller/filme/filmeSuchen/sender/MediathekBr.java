@@ -66,16 +66,16 @@ public class MediathekBr extends MediathekReader implements Runnable {
         ///mnt/daten/software/bin/flvstreamer/flvstreamer --host gffstream.fcod.llnwd.net --app a792/o16/ --playpath mp4:br/b7/b7konks25241.mp4 -o film-3
         StringBuilder seite = new StringBuilder();
         int pos = 0;
-        int posEnde = 0;
-        int pos1 = 0;
-        int pos2 = 0;
-        String url = "";
-        String thema = "";
-        String link = "";
-        String datum = "";
-        String zeit = "";
-        String titel = "";
-        String tmp = "";
+        int posEnde;
+        int pos1;
+        int pos2;
+        String url;
+        String thema;
+        String link;
+        String datum;
+        String zeit;
+        String titel;
+        String tmp;
         final String ITEM_1 = "<ausstrahlung";
         final String ITEM_2 = "</ausstrahlung>";
         final String MUSTER_URL = "<video ";
@@ -85,10 +85,10 @@ public class MediathekBr extends MediathekReader implements Runnable {
         //final String ADRESSE = "http://rd.gl-systemhaus.de/br/b7/archive/archive.xml.zip.adler32";
         //final String ADRESSE = "http://rd.gl-systemhaus.de/br/b7/listra/archive/archive.xml.zip.adler32";
         //final String ADRESSE="http://mediathek-video.br.de/nc/archive/archive-1328897218.xml.zip.adler32";
-        final String ADRESSE="http://rd.gl-systemhaus.de/br/b7/nc/archive/archive.xml.zip.adler32";
+        final String ADRESSE = "http://rd.gl-systemhaus.de/br/b7/nc/archive/archive.xml.zip.adler32";
         meldungProgress(ADRESSE);
         try {
-            InputStreamReader inReader = null;
+            InputStreamReader inReader;
             int timeout = 30000;
             char[] zeichen = new char[1];
             URLConnection conn = new URL(ADRESSE).openConnection();
@@ -113,7 +113,6 @@ public class MediathekBr extends MediathekReader implements Runnable {
                 datum = "";
                 zeit = "";
                 titel = "";
-                tmp = "";
                 pos1 = pos;
                 while (true) {
                     pos1 = seite.indexOf(MUSTER_URL, pos1);
@@ -179,7 +178,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                     }
                     // <video application="a792/o16" host="gffstream.fcod.llnwd.net" groesse="xlarge" stream="br/b7/b7konks25277.mp4" typ="aufzeichnung"/>
                     // mnt/daten/software/bin/flvstreamer/flvstreamer --host gffstream.fcod.llnwd.net --app a792/o16/ --playpath mp4:br/b7/b7konks25241.mp4 -o film-3
-                    int p = 0;
+                    int p ;
                     String host = "";
                     String app = "";
                     String play = "";
@@ -187,12 +186,10 @@ public class MediathekBr extends MediathekReader implements Runnable {
                         p += "host=\"".length();
                         host = url.substring(p, url.indexOf("\"", p));
                     }
-                    p = 0;
                     if ((p = url.indexOf("application=\"")) != -1) {
                         p += "application=\"".length();
                         app = url.substring(p, url.indexOf("\"", p));
                     }
-                    p = 0;
                     if ((p = url.indexOf("stream=\"")) != -1) {
                         p += "stream=\"".length();
                         play = url.substring(p, url.indexOf("\"", p));

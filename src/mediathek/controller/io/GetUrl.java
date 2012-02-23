@@ -37,9 +37,10 @@ public class GetUrl {
     public static final long UrlWartenBasis = 500;//ms, Basiswert zu dem dann der Faktor multipliziert wird
     static EventListenerList listeners = new EventListenerList();
     private int faktorWarten = 1;
-    private int timeout = 30000;
+    private int timeout = 10000;
     private long wartenBasis = UrlWartenBasis;
     private static LinkedList<Seitenzaehler> listeSeitenZaehler = new LinkedList<Seitenzaehler>();
+    private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehler = new LinkedList<Seitenzaehler>();
 
     private class Seitenzaehler {
 
@@ -81,7 +82,7 @@ public class GetUrl {
 
     public static int getSeitenZaehler(String sender) {
         Iterator<Seitenzaehler> it = listeSeitenZaehler.iterator();
-        Seitenzaehler sz = null;
+        Seitenzaehler sz;
         while (it.hasNext()) {
             sz = it.next();
             if (sz.senderName.equals(sender)) {
@@ -94,7 +95,27 @@ public class GetUrl {
     public static synchronized int getSeitenZaehler() {
         int ret = 0;
         Iterator<Seitenzaehler> it = listeSeitenZaehler.iterator();
-        Seitenzaehler sz = null;
+        while (it.hasNext()) {
+            ret += it.next().seitenAnzahl;
+        }
+        return ret;
+    }
+
+    public static int getSeitenZaehlerFehler(String sender) {
+        Iterator<Seitenzaehler> it = listeSeitenZaehlerFehler.iterator();
+        Seitenzaehler sz;
+        while (it.hasNext()) {
+            sz = it.next();
+            if (sz.senderName.equals(sender)) {
+                return sz.seitenAnzahl;
+            }
+        }
+        return 0;
+    }
+
+    public static synchronized int getSeitenZaehlerFehler() {
+        int ret = 0;
+        Iterator<Seitenzaehler> it = listeSeitenZaehlerFehler.iterator();
         while (it.hasNext()) {
             ret += it.next().seitenAnzahl;
         }
@@ -103,6 +124,7 @@ public class GetUrl {
 
     public static synchronized void resetSeitenZaehler() {
         listeSeitenZaehler.clear();
+        listeSeitenZaehlerFehler.clear();
     }
 
     //===================================
@@ -111,7 +133,7 @@ public class GetUrl {
     private synchronized void incSeitenZaehler(String sender) {
         boolean gefunden = false;
         Iterator<Seitenzaehler> it = listeSeitenZaehler.iterator();
-        Seitenzaehler sz = null;
+        Seitenzaehler sz;
         while (it.hasNext()) {
             sz = it.next();
             if (sz.senderName.equals(sender)) {
@@ -122,6 +144,23 @@ public class GetUrl {
         }
         if (!gefunden) {
             listeSeitenZaehler.add(new Seitenzaehler(sender));
+        }
+    }
+
+    private synchronized void incSeitenZaehlerFehler(String sender) {
+        boolean gefunden = false;
+        Iterator<Seitenzaehler> it = listeSeitenZaehlerFehler.iterator();
+        Seitenzaehler sz;
+        while (it.hasNext()) {
+            sz = it.next();
+            if (sz.senderName.equals(sender)) {
+                ++sz.seitenAnzahl;
+                gefunden = true;
+                break;
+            }
+        }
+        if (!gefunden) {
+            listeSeitenZaehlerFehler.add(new Seitenzaehler(sender));
         }
     }
 
@@ -142,14 +181,7 @@ public class GetUrl {
         incSeitenZaehler(sender);
         gibBescheid();
         seite.setLength(0);
-
-//        String str1 = System.getProperty("proxySet");
-//        String str2 = System.getProperty("proxyHost");
-//        String str3 = System.getProperty("proxyPort");
-//        String str4 = System.getProperty("http.proxyUser");
-//        String str5 = System.getProperty("http.proxyPassword");
-
-        URLConnection conn = null;
+        URLConnection conn;
         InputStream in = null;
         InputStreamReader inReader = null;
         try {
@@ -166,6 +198,7 @@ public class GetUrl {
                 seite.append(zeichen);
             }
         } catch (Exception ex) {
+            incSeitenZaehlerFehler(sender);
             if (!meldung.equals("")) {
                 Log.fehlerMeldung("GetUrl.getUri für: ", meldung);
             }

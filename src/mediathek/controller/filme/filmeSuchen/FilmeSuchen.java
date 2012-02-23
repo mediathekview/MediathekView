@@ -64,6 +64,13 @@ public class FilmeSuchen {
         listeFilmeNeu.liveStreamEintragen();
         Iterator<MediathekReader> it = mediathekListe.iterator();
         MediathekReader mr;
+        // erst den Start melden, damit nicht ein schneller alles gleich wieder beendet
+        while (it.hasNext()) {
+            mr = it.next();
+            melden(mr.getSenderName(), 0 /* max */, 0 /* progress */, "" /* text */);
+        }
+        // dann starten
+        it = mediathekListe.iterator();
         while (it.hasNext()) {
             mr = it.next();
             new Thread(mr).start();
@@ -162,24 +169,26 @@ public class FilmeSuchen {
         //wird ausgeführt wenn Sender beendet ist
         int MAX_SENDER = 15, MAX = 20;
         Log.systemMeldung("Fertig " + sender + ": " + DatumZeit.getJetzt_HH_MM_SS());
-        RunSender run = listeSenderLaufen.delSender(sender);
+        RunSender run = listeSenderLaufen.senderFertig(sender);
         if (run != null) {
             String zeile = "";
-            zeile += textLaenge(MAX_SENDER, "Sender: " + run.sender);
-            zeile += textLaenge(MAX, "    Laufzeit: " + run.getLaufzeitMinuten() + " Min.");
-            zeile += textLaenge(MAX, "    Seiten:   " + GetUrl.getSeitenZaehler(run.sender));
-            zeile += textLaenge(MAX, "    Filme:    " + listeFilmeNeu.countSender(run.sender));
+            zeile += textLaenge(MAX_SENDER, "Sender:   " + run.sender);
+            zeile += textLaenge(MAX, "    Laufzeit:   " + run.getLaufzeitMinuten() + " Min.");
+            zeile += textLaenge(MAX, "    Seiten:     " + GetUrl.getSeitenZaehler(run.sender));
+            zeile += textLaenge(MAX, "    Ladefehler: " + GetUrl.getSeitenZaehlerFehler(run.sender));
+            zeile += textLaenge(MAX, "    Filme:      " + listeFilmeNeu.countSender(run.sender));
             fertigMeldung.add(zeile);
         }
         // wird einmal aufgerufen, wenn der Sender fertig ist
-        if (listeSenderLaufen.size() == 0) {
+        if (listeSenderLaufen.listeFertig()) {
+            Log.systemMeldung("Alle Sender fertig: " + DatumZeit.getJetzt_HH_MM_SS());
             listeFilmeNeu.sort();
             if (!allesLaden) {
                 // alte Filme eintragen
                 listeFilmeNeu.updateListe(listeFilmeAlt, true /* über den Index vergleichen */);
             }
             listeFilmeAlt = null; // brauchmer nicht mehr
-            metaDatenSchreiben(Daten.filmeLaden.getStop() /* löschen */);
+            metaDatenSchreiben();
             Log.systemMeldung(fertigMeldung.toArray(new String[0]));
             notifyFertig(new FilmListenerElement(sender, "", listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
         } else {
@@ -213,10 +222,10 @@ public class FilmeSuchen {
         }
     }
 
-    private void metaDatenSchreiben(boolean loeschen) {
+    private void metaDatenSchreiben() {
         // FilmlisteMetaDaten
         listeFilmeNeu.metaDaten = ListeFilme.newMetaDaten();
-        if (!loeschen) {
+        if (!Daten.filmeLaden.getStop() /* löschen */) {
             listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_DATUM_NR] = DatumZeit.getJetzt_ddMMyyyy_HHmm();
             listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_NUR_ZEIT_NR] = DatumZeit.getJetzt_HH_MM_SS();
             listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_NUR_DATUM_NR] = DatumZeit.getHeute_dd_MM_yyyy();

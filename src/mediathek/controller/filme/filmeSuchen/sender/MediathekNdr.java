@@ -96,8 +96,8 @@ public class MediathekNdr extends MediathekReader implements Runnable {
 
     private class ThemaLaden implements Runnable {
 
-        GetUrl getUrl1 = new GetUrl( 30000, senderWartenSeiteLaden);
-        GetUrl getUrl2 = new GetUrl( 10000, senderWartenSeiteLaden);
+        GetUrl getUrl1 = new GetUrl( senderWartenSeiteLaden);
+        GetUrl getUrl2 = new GetUrl( senderWartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
         private StringBuffer seite2 = new StringBuffer();
 
