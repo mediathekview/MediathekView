@@ -26,10 +26,11 @@ import javax.swing.JOptionPane;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
+import mediathek.Log;
 import mediathek.daten.*;
 
 public class IoXmlLesen__old {
-    
+
     public ListePgruppe__old listePgruppeButton = new ListePgruppe__old();
     public ListePgruppe__old listePgruppeAbo = new ListePgruppe__old();
     public ListeAbo__old listeAbo = new ListeAbo__old();
@@ -39,57 +40,64 @@ public class IoXmlLesen__old {
     // ##############################
     // private
     // ##############################
-    public void importOld(DDaten ddaten) {
-        String datei = getBasisVerzeichnis() + Konstanten__old.XML_DATEI;
-        DialogImportOld dialogImportOld = new DialogImportOld(null, true, datei);
-        dialogImportOld.setVisible(true);
-        if (!dialogImportOld.ok) {
-            // Satz mit X, war wohl nix
-            return;
-        }
-        xmlDatenLesen(dialogImportOld.ziel);
-        // Liste Buttons importieren
-        for (int i = 0; i < listePgruppeButton.size(); ++i) {
-            DatenPgruppe__old gruppe = listePgruppeButton.get(i);
-            DatenPgruppe gruppeNeu = gruppe.getNewVersion();
-            gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_BUTTON_NR] = Boolean.TRUE.toString();
-            gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] = "Button" + String.valueOf(i) + "-" + gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
-            ListeProg__old listeProg = gruppe.getListeProg();
-            for (int l = 0; l < listeProg.size(); ++l) {
-                DatenProg progNeu = listeProg.get(l).getNewVersion();
-                gruppeNeu.addProg(progNeu);
+    public boolean importOld(DDaten ddaten) {
+        try {
+            // liefert true wenn gelesen werden soll, sonst false
+            String datei = getBasisVerzeichnis() + Konstanten__old.XML_DATEI;
+            DialogImportOld dialogImportOld = new DialogImportOld(null, true, datei);
+            dialogImportOld.setVisible(true);
+            if (!dialogImportOld.ok) {
+                // Satz mit X, war wohl nix
+                return false;
             }
-            ddaten.listePgruppe.addPgruppe(gruppeNeu);
-        }
-        // erster Button=abspielen
-        ddaten.listePgruppe.getListeButton().getFirst().setAbspielen(ddaten);
-        // Liste Abos importieren
-        for (int i = 0; i < listePgruppeAbo.size(); ++i) {
-            DatenPgruppe__old gruppe = listePgruppeAbo.get(i);
-            DatenPgruppe gruppeNeu = gruppe.getNewVersion();
-            gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABO_NR] = Boolean.TRUE.toString();
-            gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] = "PGruppeAbo" + String.valueOf(i) + "-" + gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
-            ListeProg__old listeProg = gruppe.getListeProg();
-            for (int l = 0; l < listeProg.size(); ++l) {
-                DatenProg progNeu = listeProg.get(l).getNewVersion();
-                gruppeNeu.addProg(progNeu);
+            xmlDatenLesen(dialogImportOld.ziel);
+            // Liste Buttons importieren
+            for (int i = 0; i < listePgruppeButton.size(); ++i) {
+                DatenPgruppe__old gruppe = listePgruppeButton.get(i);
+                DatenPgruppe gruppeNeu = gruppe.getNewVersion();
+                gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_BUTTON_NR] = Boolean.TRUE.toString();
+                gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] = "Button" + String.valueOf(i) + "-" + gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
+                ListeProg__old listeProg = gruppe.getListeProg();
+                for (int l = 0; l < listeProg.size(); ++l) {
+                    DatenProg progNeu = listeProg.get(l).getNewVersion();
+                    gruppeNeu.addProg(progNeu);
+                }
+                ddaten.listePgruppe.addPgruppe(gruppeNeu);
             }
-            ddaten.listePgruppe.addPgruppe(gruppeNeu);
+            // erster Button=abspielen
+            ddaten.listePgruppe.getListeButton().getFirst().setAbspielen(ddaten);
+            // Liste Abos importieren
+            for (int i = 0; i < listePgruppeAbo.size(); ++i) {
+                DatenPgruppe__old gruppe = listePgruppeAbo.get(i);
+                DatenPgruppe gruppeNeu = gruppe.getNewVersion();
+                gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABO_NR] = Boolean.TRUE.toString();
+                gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] = "PGruppeAbo" + String.valueOf(i) + "-" + gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
+                ListeProg__old listeProg = gruppe.getListeProg();
+                for (int l = 0; l < listeProg.size(); ++l) {
+                    DatenProg progNeu = listeProg.get(l).getNewVersion();
+                    gruppeNeu.addProg(progNeu);
+                }
+                ddaten.listePgruppe.addPgruppe(gruppeNeu);
+            }
+            // ersters Abo=speichern
+            ddaten.listePgruppe.getListeAbo().getFirst().setSpeichern(true);
+            // Liste Abos importieren
+            for (int i = 0; i < listeAbo.size(); ++i) {
+                DatenAbo__old abo = listeAbo.get(i);
+                DatenAbo aboNeu = abo.getNewVersion();
+                ddaten.listeAbo.addAbo(aboNeu);
+            }
+            // Liste Blacklist
+            for (int i = 0; i < listeBlacklist.size(); ++i) {
+                ddaten.listeBlacklist.add(listeBlacklist.get(i));
+            }
+            return true;
+        } catch (Exception ex) {
+            Log.fehlerMeldung("IoXmlLesen__old.import__old", ex);
         }
-        // ersters Abo=speichern
-        ddaten.listePgruppe.getListeAbo().getFirst().setSpeichern(true);
-        // Liste Abos importieren
-        for (int i = 0; i < listeAbo.size(); ++i) {
-            DatenAbo__old abo = listeAbo.get(i);
-            DatenAbo aboNeu = abo.getNewVersion();
-            ddaten.listeAbo.addAbo(aboNeu);
-        }
-        // Liste Blacklist
-        for (int i = 0; i < listeBlacklist.size(); ++i) {
-            ddaten.listeBlacklist.add(listeBlacklist.get(i));
-        }
+        return false;
     }
-    
+
     public static boolean altExistiert() {
         try {
             String datei = getBasisVerzeichnis() + Konstanten__old.XML_DATEI;
@@ -100,7 +108,7 @@ public class IoXmlLesen__old {
         }
         return false;
     }
-    
+
     private void xmlDatenLesen(String datei) {
         try {
             if (new File(datei).exists()) {
@@ -161,7 +169,7 @@ public class IoXmlLesen__old {
                     "Fehler", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private boolean get(XMLStreamReader parser, int event, String xmlElem, String[] xmlNames, String[] strRet) {
         boolean ret = true;
         int maxElem = strRet.length;
@@ -190,7 +198,7 @@ public class IoXmlLesen__old {
         }
         return ret;
     }
-    
+
     private static String getBasisVerzeichnis() {
         return System.getProperty("user.home") + File.separator + ".mediathek" + File.separator;
     }

@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui.dialog;
+package mediathek.gui.dialogEinstellungen;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

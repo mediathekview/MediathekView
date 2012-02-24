@@ -41,6 +41,7 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.importOld.IoXmlLesen__old;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
 
 public final class MediathekGui extends javax.swing.JFrame {
@@ -96,11 +97,14 @@ public final class MediathekGui extends javax.swing.JFrame {
             ddaten.allesLaden();
         } else {
             if (IoXmlLesen__old.altExistiert()) {
-                new IoXmlLesen__old().importOld(ddaten);
+                if (!new IoXmlLesen__old().importOld(ddaten)) {
+                    // dann mit Standardwerten füllen
+                    
+                }
             }
             if (ddaten.listePgruppe.size() == 0) {
-                GuiFunktionen.addStandardprogrammeButton(ddaten);
-                GuiFunktionen.addStandardprogrammeAbo(ddaten);
+                GuiFunktionenProgramme.addStandardprogrammeButton(ddaten);
+                GuiFunktionenProgramme.addStandardprogrammeAbo(ddaten);
             }
         }
         this.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
@@ -524,7 +528,7 @@ public final class MediathekGui extends javax.swing.JFrame {
             }
         });
         // Hilfe
-        jMenuItemAnleitung.addActionListener(new BeobWeb());
+        jMenuItemAnleitung.addActionListener(new BeobWeb(Konstanten.ADRESSE_ANLEITUNG));
         // Debug
         if (!DDaten.debug) {
             jMenuDebug.setVisible(false);

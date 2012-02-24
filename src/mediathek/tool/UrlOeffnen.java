@@ -17,22 +17,24 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui.beobachter;
+package mediathek.tool;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import mediathek.tool.UrlOeffnen;
+import java.awt.Desktop;
+import java.net.URI;
 
-public class BeobWeb implements ActionListener {
+public class UrlOeffnen {
 
-    private String url;
-
-    public BeobWeb(String uurl) {
-        url = uurl;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        UrlOeffnen.urlOeffnen(url);
+    public static boolean urlOeffnen(String url) {
+        if (Desktop.isDesktopSupported()) {
+            Desktop d = Desktop.getDesktop();
+            try {
+                if (d.isSupported(Desktop.Action.BROWSE)) {
+                    d.browse(new URI(url));
+                    return true;
+                }
+            } catch (Exception ex) {
+            }
+        }
+        return false;
     }
 }

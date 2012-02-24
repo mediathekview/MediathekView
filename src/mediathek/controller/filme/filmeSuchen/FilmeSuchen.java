@@ -64,12 +64,6 @@ public class FilmeSuchen {
         listeFilmeNeu.liveStreamEintragen();
         Iterator<MediathekReader> it = mediathekListe.iterator();
         MediathekReader mr;
-        // erst den Start melden, damit nicht ein schneller alles gleich wieder beendet
-        while (it.hasNext()) {
-            mr = it.next();
-            melden(mr.getSenderName(), 0 /* max */, 0 /* progress */, "" /* text */);
-        }
-        // dann starten
         it = mediathekListe.iterator();
         while (it.hasNext()) {
             mr = it.next();
@@ -121,13 +115,13 @@ public class FilmeSuchen {
         mediathekListe.add(new MediathekArte7(this, false));
         mediathekListe.add(new Mediathek3Sat(this));
         mediathekListe.add(new MediathekSwr(this));
-        mediathekListe.add(new MediathekBr(this));
-        // Spalte 2
         mediathekListe.add(new MediathekNdr(this));
+        // Spalte 2
         mediathekListe.add(new MediathekMdr(this));
         mediathekListe.add(new MediathekWdr(this));
         mediathekListe.add(new MediathekHr(this));
         mediathekListe.add(new MediathekRbb(this));
+        mediathekListe.add(new MediathekBr(this));
         mediathekListe.add(new MediathekSf(this));
         mediathekListe.add(new MediathekSfPod(this));
         mediathekListe.add(new MediathekOrf(this));
@@ -167,16 +161,16 @@ public class FilmeSuchen {
 
     public void meldenFertig(String sender) {
         //wird ausgeführt wenn Sender beendet ist
-        int MAX_SENDER = 15, MAX = 20;
+        int MAX_SENDER = 15, MAX1 = 22, MAX2 = 15, MAX3 = 20;
         Log.systemMeldung("Fertig " + sender + ": " + DatumZeit.getJetzt_HH_MM_SS());
         RunSender run = listeSenderLaufen.senderFertig(sender);
         if (run != null) {
             String zeile = "";
             zeile += textLaenge(MAX_SENDER, "Sender:   " + run.sender);
-            zeile += textLaenge(MAX, "    Laufzeit:   " + run.getLaufzeitMinuten() + " Min.");
-            zeile += textLaenge(MAX, "    Seiten:     " + GetUrl.getSeitenZaehler(run.sender));
-            zeile += textLaenge(MAX, "    Ladefehler: " + GetUrl.getSeitenZaehlerFehler(run.sender));
-            zeile += textLaenge(MAX, "    Filme:      " + listeFilmeNeu.countSender(run.sender));
+            zeile += textLaenge(MAX1, " Laufzeit: " + run.getLaufzeitMinuten() + " Min.");
+            zeile += textLaenge(MAX2, " Seiten: " + GetUrl.getSeitenZaehler(run.sender));
+            zeile += textLaenge(MAX3, " Ladefehler: " + GetUrl.getSeitenZaehlerFehler(run.sender));
+            zeile += textLaenge(MAX3, " Filme: " + listeFilmeNeu.countSender(run.sender));
             fertigMeldung.add(zeile);
         }
         // wird einmal aufgerufen, wenn der Sender fertig ist

@@ -26,6 +26,7 @@ import javax.swing.JOptionPane;
 import mediathek.Log;
 import mediathek.controller.io.starter.Starts;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiFunktionenProgramme;
 
 public class DatenPgruppe {
     //Tags Programmgruppen
@@ -248,8 +249,8 @@ public class DatenPgruppe {
         //auf direkte prüfen, pref oder suf: wenn angegeben dann muss es stimmen
         if (!this.arr[PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR].equals("")
                 || !this.arr[PROGRAMMGRUPPE_SUFFIX_DIREKT_NR].equals("")) {
-            if (GuiFunktionen.praefixTesten(this.arr[PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR], url, true)
-                    && GuiFunktionen.praefixTesten(this.arr[PROGRAMMGRUPPE_SUFFIX_DIREKT_NR], url, false)) {
+            if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR], url, true)
+                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMGRUPPE_SUFFIX_DIREKT_NR], url, false)) {
                 ret = Starts.ART_DOWNLOAD;
             }
         }

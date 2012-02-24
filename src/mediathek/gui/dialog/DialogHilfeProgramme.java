@@ -25,6 +25,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Texte;
 import mediathek.gui.beobachter.EscBeenden;
 import mediathek.daten.DDaten;
+import mediathek.tool.GuiFunktionenProgramme;
 
 public class DialogHilfeProgramme extends javax.swing.JDialog {
 
@@ -69,9 +70,9 @@ public class DialogHilfeProgramme extends javax.swing.JDialog {
 
     private void vorlageEinfuegen() {
         if (button) {
-            GuiFunktionen.addStandardprogrammeButton(daten);
+            GuiFunktionenProgramme.addStandardprogrammeButton(daten);
         } else {
-            GuiFunktionen.addStandardprogrammeAbo(daten);
+            GuiFunktionenProgramme.addStandardprogrammeAbo(daten);
         }
     }
 

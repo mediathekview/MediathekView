@@ -20,6 +20,7 @@
 package mediathek.daten;
 
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiFunktionenProgramme;
 
 public class DatenProg {
 
@@ -84,8 +85,8 @@ public class DatenProg {
         boolean ret = false;
         if (url != null) {
             //Felder sind entweder leer oder passen
-            if (GuiFunktionen.praefixTesten(this.arr[PROGRAMM_PRAEFIX_NR], url, true)
-                    && GuiFunktionen.praefixTesten(this.arr[PROGRAMM_SUFFIX_NR], url, false)) {
+            if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMM_PRAEFIX_NR], url, true)
+                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMM_SUFFIX_NR], url, false)) {
                 ret = true;
             }
         }

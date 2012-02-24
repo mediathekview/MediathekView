@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Mediathek>
+<Programmgruppe><Name>Programmgruppe Abspielen</Name><Abspielen>true</Abspielen><Speichern>false</Speichern><Button>false</Button><Abo>false</Abo></Programmgruppe>
+<Programm><Programmname>flvstreamer</Programmname><Programmpfad>..\bin\flv.bat</Programmpfad><Programmschalter>"%f" "C:\Program Files\VideoLAN\VLC\vlc.exe"</Programmschalter><Praefix>rtmp</Praefix><Restart>false</Restart></Programm>
+<Programm><Programmname>Abspielen Vlc</Programmname><Programmpfad>C:\Program Files\VideoLAN\VLC\vlc.exe</Programmpfad><Programmschalter>%f --tcp-caching 30000 --play-and-exit</Programmschalter></Programm>
+<Programmgruppe><Name>Programmgruppe Speichern</Name><Praefix>http</Praefix><Suffix>mp4,mp3,m4v,flv</Suffix><Zielpfad>..\filme</Zielpfad><Zieldateiname>%t-%T-%N.mp4</Zieldateiname><Abspielen>false</Abspielen><Speichern>true</Speichern><Button>false</Button><Abo>true</Abo></Programmgruppe>
+<Programm><Programmname>rtmpdump (rtmp://arte &lt;#&gt; )</Programmname><Zieldateiname>%t-%T-%N.flv</Zieldateiname><Programmpfad>..\bin\rtmpdump.exe</Programmpfad><Programmschalter>%F --resume %A -o "**"</Programmschalter><Praefix>rtmp://arte</Praefix><Restart>true</Restart></Programm>
+<Programm><Programmname>flvstreamer (rtmp &lt;#&gt; )</Programmname><Zieldateiname>%t-%T-%N.flv</Zieldateiname><Programmpfad>..\bin\flvstreamer_win32_latest.exe</Programmpfad><Programmschalter>%F --resume -o "**"</Programmschalter><Praefix>rtmp</Praefix><Restart>true</Restart></Programm>
+<Programm><Programmname>vlc (mms://ndr &lt;#&gt; wmv)</Programmname><Zieldateiname>%t-%T-%N.wmv</Zieldateiname><Programmpfad>C:\Program Files\VideoLAN\VLC\vlc.exe</Programmpfad><Programmschalter>%f :sout=#standard{access=file,mux=asf,dst="**"} -I "dummy" --play-and-exit</Programmschalter><Praefix>mms://ndr</Praefix><Suffix>wmv</Suffix></Programm>
+<Programm><Programmname>vlc ( &lt;#&gt; )</Programmname><Zieldateiname>%t-%T-%N.asf</Zieldateiname><Programmpfad>C:\Program Files\VideoLAN\VLC\vlc.exe</Programmpfad><Programmschalter>%f :sout=#standard{access=file,mux=asf,dst="**"} -I "dummy" --play-and-exit</Programmschalter></Programm>
+</Mediathek>

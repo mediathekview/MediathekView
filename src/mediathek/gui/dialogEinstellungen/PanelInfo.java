@@ -39,7 +39,7 @@ public class PanelInfo extends PanelVorlage {
         ddaten = d;
         setText();
         //init
-        jButtonAnleitung.addActionListener(new BeobWeb());
+        jButtonAnleitung.addActionListener(new BeobWeb(Konstanten.ADRESSE_ANLEITUNG));
     }
     //===================================
     // Public

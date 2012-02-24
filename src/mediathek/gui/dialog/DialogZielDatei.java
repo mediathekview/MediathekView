@@ -27,6 +27,7 @@ import javax.swing.JOptionPane;
 import mediathek.Log;
 import mediathek.gui.beobachter.EscBeenden;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiFunktionenProgramme;
 
 public class DialogZielDatei extends javax.swing.JDialog {
 
@@ -71,7 +72,7 @@ public class DialogZielDatei extends javax.swing.JDialog {
             }
             zielPfad = pfad;
             zielDateiname = name;
-            if (GuiFunktionen.checkPfadBeschreibbar(zielPfad)) {
+            if (GuiFunktionenProgramme.checkPfadBeschreibbar(zielPfad)) {
                 ok = true;
             } else {
                 JOptionPane.showMessageDialog(null, "Pfad ist nicht beschreibbar", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);

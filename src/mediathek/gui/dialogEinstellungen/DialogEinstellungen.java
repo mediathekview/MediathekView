@@ -29,7 +29,6 @@ import javax.swing.tree.TreeSelectionModel;
 import mediathek.Log;
 import mediathek.daten.DDaten;
 import mediathek.gui.beobachter.EscBeenden;
-import mediathek.gui.dialog.PanelSenderLaden;
 
 public class DialogEinstellungen extends javax.swing.JDialog {
 
@@ -45,7 +44,8 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private PanelHistory panelHistory;
     private PanelLogfile panelLogfile;
     private PanelPgruppen panelPgruppen;
-    private PanelImportProgramme panelImportProgramme;
+    private PanelImportStandardPgruppe panelImportStandardPgruppe;
+    private PanelImportPgruppe panelImportProgramme;
     // Infos
     private PanelInfo panelInfo;
     private PanelInfoStarts panelStarts;
@@ -96,7 +96,8 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         panelHistory = new PanelHistory(ddaten);
         panelLogfile = new PanelLogfile(ddaten);
         panelPgruppen = new PanelPgruppen(ddaten);
-        panelImportProgramme = new PanelImportProgramme(ddaten);
+        panelImportStandardPgruppe = new PanelImportStandardPgruppe(ddaten);
+        panelImportProgramme = new PanelImportPgruppe(ddaten);
         // Infos
         panelInfo = new PanelInfo(ddaten);
         panelStarts = new PanelInfoStarts(ddaten);
@@ -114,6 +115,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";
         final String NAME_programme = "Programmgruppen";
+        final String NAME_programmeStandard = "Standardgruppen importieren";
         final String NAME_programmeImportieren = "Importieren";
         // Infos
         final String NAME_allgemeineInfos = "Pfade";
@@ -152,6 +154,8 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         treeNodeDownloads.add(treeNodeProgramme);
         DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmeImportieren);
         treeNodeDownloads.add(treeNodeImportProgramme);
+        DefaultMutableTreeNode treeNodeImportStandard = new DefaultMutableTreeNode(NAME_programmeStandard);
+        treeNodeDownloads.add(treeNodeImportStandard);
         treeNodeStart.add(treeNodeDownloads);
         // ####### Infos #########
         DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode("Infos");
@@ -223,6 +227,9 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                     } else if (name.equals(NAME_programmeImportieren)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelImportProgramme);
+                    } else if (name.equals(NAME_programmeStandard)) {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelImportStandardPgruppe);
                     } else if (name.equals(NAME_allgemeineInfos)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelInfo);

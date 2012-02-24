@@ -39,10 +39,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.beobachter.CellRendererPguppen;
 import mediathek.gui.dialog.DialogHilfeProgramme;
 import mediathek.gui.dialog.DialogZielDatei;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiKonstanten;
-import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.TModel;
+import mediathek.tool.*;
 
 public class PanelPgruppen extends PanelVorlage {
 
@@ -1284,7 +1281,7 @@ public class PanelPgruppen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            GuiFunktionen.programmePruefen(ddaten);
+            GuiFunktionenProgramme.programmePruefen(ddaten);
         }
     }
 

@@ -34,9 +34,9 @@ import mediathek.daten.DatenPgruppe;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
 
-public class PanelImportProgramme extends PanelVorlage {
+public class PanelImportPgruppe extends PanelVorlage {
 
-    public PanelImportProgramme(DDaten d) {
+    public PanelImportPgruppe(DDaten d) {
         super(d);
         initComponents();
         init();
