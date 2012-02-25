@@ -44,6 +44,7 @@ import mediathek.tool.*;
 public class PanelPgruppen extends PanelVorlage {
 
     private int neuZaehler = 0;
+    private String exportPfad = "";
 
     public PanelPgruppen(DDaten d) {
         super(d);
@@ -405,11 +406,13 @@ public class PanelPgruppen extends PanelVorlage {
                 }
             }
             String name = liste.getFirst().arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] + ".xml";
-            DialogZielDatei dialog = new DialogZielDatei(null, true, "" /* Pfad */, GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */));
-            dialog.setVisible(true);
-            if (dialog.ok) {
-                name = GuiFunktionen.addsPfad(dialog.zielPfad, dialog.zielDateiname);
-                ddaten.ioXmlSchreiben.exportPgruppe(liste.toArray(new DatenPgruppe[0]), name);
+            DialogZiel dialogZiel = new DialogZiel(null, true, exportPfad, GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */));
+            dialogZiel.setVisible(true);
+            if (dialogZiel.ok) {
+                if (dialogZiel.ziel.contains(File.separator)) {
+                    exportPfad = dialogZiel.ziel.substring(0, dialogZiel.ziel.lastIndexOf(File.separator));
+                }
+                ddaten.ioXmlSchreiben.exportPgruppe(liste.toArray(new DatenPgruppe[0]), dialogZiel.ziel);
             }
         } else {
             new HinweisKeineAuswahl().zeigen();

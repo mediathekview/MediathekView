@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Mediathek>
+<Programmgruppe><Name>Mac Abspielen</Name><Abspielen>true</Abspielen><Speichern>false</Speichern><Button>true</Button><Abo>false</Abo><max-Laenge>25</max-Laenge></Programmgruppe>
+<Programm><Programmname>Abspielen Vlc</Programmname><Programmpfad>/Applications/VLC.app/Contents/MacOS/VLC</Programmpfad><Programmschalter>%f --tcp-caching 30000 --play-and-exit</Programmschalter></Programm>
+<Programmgruppe><Name>Mac Speichern</Name><Praefix>http</Praefix><Suffix>mp4,mp3,m4v,flv</Suffix><Zielpfad>..\filme</Zielpfad><Zieldateiname>%t-%T-%N.mp4</Zieldateiname><Abspielen>false</Abspielen><Speichern>true</Speichern><Button>false</Button><Abo>true</Abo><max-Laenge>25</max-Laenge></Programmgruppe>
+<Programm><Programmname>Aufzeichnen Vlc</Programmname><Programmpfad>/Applications/VLC.app/Contents/MacOS/VLC</Programmpfad><Programmschalter>%f :sout=#standard{access=file,mux=asf,dst="**"} -I "dummy" --play-and-exit</Programmschalter></Programm>
+</Mediathek>

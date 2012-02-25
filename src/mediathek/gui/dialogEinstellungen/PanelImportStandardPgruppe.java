@@ -23,21 +23,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
-import mediathek.daten.DatenPgruppe;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.beobachter.BeobWeb;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiFunktionenProgramme;
 
 public class PanelImportStandardPgruppe extends PanelVorlage {
-
-    private final String PROGRAMM__VLC = "PROGRAMM__VLC";
 
     public PanelImportStandardPgruppe(DDaten d) {
         super(d);
@@ -47,20 +44,41 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
 
     private void init() {
         jButtonUrl.addActionListener(new BeobWeb(Konstanten.ADRESSE_VLC));
+        jTextFieldVlcGefunden.setText(GuiFunktionenProgramme.getPfadVlc());
+        if (jTextFieldVlcGefunden.getText().equals("")) {
+            jRadioButtonVlcManuell.setSelected(true);
+        } else {
+            jRadioButtonVlcAuto.setSelected(true);
+        }
+        jButtonPfad.addActionListener(new BeobPfad(jTextFieldAuswaehlen));
+        jButtonZielpfad.addActionListener(new BeobPfad(jTextFieldZielpfad));
+        jTextFieldZielpfad.setText(GuiFunktionen.getHomePath());
+        jButtonErneut.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jTextFieldVlcGefunden.setText(GuiFunktionenProgramme.getPfadVlc());
+            }
+        });
+        jButtonUebernehmen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uebernehmen();
+            }
+        });
     }
 
-    private void importDatei() {
-        DatenPgruppe[] pGruppe;
-        pGruppe = IoXmlLesen.importPgruppe(jTextFieldAuswaehlen.getText(), true);
-        if (pGruppe != null) {
-            if (ddaten.listePgruppe.addPgruppe(pGruppe)) {
-                JOptionPane.showMessageDialog(null, pGruppe.length + " Programmgruppe(n) importiert!",
-                        "Ok", JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Die Datei konnte nicht importiert werden!",
-                    "Fehler", JOptionPane.ERROR_MESSAGE);
+    private void uebernehmen() {
+        if (pruefen()) {
+            GuiFunktionenProgramme.addStandardprogramme(ddaten,
+                    jRadioButtonVlcAuto.isSelected() ? jTextFieldVlcGefunden.getText() : jTextFieldAuswaehlen.getText(),
+                    jTextFieldZielpfad.getText());
         }
+    }
+
+    private boolean pruefen() {
+        return true;
     }
 
     /** This method is called from within the constructor to
@@ -71,27 +89,32 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel3 = new javax.swing.JPanel();
         jPanelGefunden = new javax.swing.JPanel();
-        jTextFieldGefunden = new javax.swing.JTextField();
-        jButtonGefunden = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        jTextFieldVlcGefunden = new javax.swing.JTextField();
+        jButtonErneut = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jTextFieldAuswaehlen = new javax.swing.JTextField();
         jButtonPfad = new javax.swing.JButton();
-        jButtonAuswaehlen = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButtonUrl = new javax.swing.JButton();
+        jRadioButtonVlcAuto = new javax.swing.JRadioButton();
+        jRadioButtonVlcManuell = new javax.swing.JRadioButton();
         jPanel4 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jTextFieldZielpfad = new javax.swing.JTextField();
+        jButtonZielpfad = new javax.swing.JButton();
+        jButtonUebernehmen = new javax.swing.JButton();
 
         jPanelGefunden.setBorder(javax.swing.BorderFactory.createTitledBorder("Der VLC-Player wurde gefunden"));
 
-        jButtonGefunden.setText("verwenden");
+        jTextFieldVlcGefunden.setEditable(false);
 
-        jButton1.setText("erneut suchen");
+        jButtonErneut.setText("erneut suchen");
 
         javax.swing.GroupLayout jPanelGefundenLayout = new javax.swing.GroupLayout(jPanelGefunden);
         jPanelGefunden.setLayout(jPanelGefundenLayout);
@@ -100,33 +123,27 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
             .addGroup(jPanelGefundenLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelGefundenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldGefunden)
+                    .addComponent(jTextFieldVlcGefunden)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelGefundenLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonGefunden)))
+                        .addComponent(jButtonErneut)))
                 .addContainerGap())
         );
         jPanelGefundenLayout.setVerticalGroup(
             jPanelGefundenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelGefundenLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextFieldGefunden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTextFieldVlcGefunden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanelGefundenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonGefunden)
-                    .addComponent(jButton1))
+                .addComponent(jButtonErneut)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanelGefundenLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonGefunden, jTextFieldGefunden});
+        jPanelGefundenLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonErneut, jTextFieldVlcGefunden});
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zum VLC-Player auswählen"));
 
         jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
-
-        jButtonAuswaehlen.setText("verwenden");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -134,14 +151,9 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jTextFieldAuswaehlen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonPfad))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonAuswaehlen)))
+                .addComponent(jTextFieldAuswaehlen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonPfad)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -151,12 +163,10 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonPfad)
                     .addComponent(jTextFieldAuswaehlen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonAuswaehlen)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonAuswaehlen, jButtonPfad, jTextFieldAuswaehlen});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonPfad, jTextFieldAuswaehlen});
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
@@ -176,25 +186,33 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonUrl)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                        .addComponent(jButtonUrl))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jButtonUrl)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonUrl))
+                .addContainerGap())
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonUrl, jTextField1});
+
+        buttonGroup1.add(jRadioButtonVlcAuto);
+
+        buttonGroup1.add(jRadioButtonVlcManuell);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -202,72 +220,128 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelGefunden, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButtonVlcAuto)
+                            .addComponent(jRadioButtonVlcManuell))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanelGefunden, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanelGefunden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanelGefunden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jRadioButtonVlcAuto))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jRadioButtonVlcManuell))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("VLC-Player", jPanel3);
 
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Zielpfad in dem die Filme gespeichert werden"));
+
+        jButtonZielpfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTextFieldZielpfad, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonZielpfad)
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonZielpfad)
+                    .addComponent(jTextFieldZielpfad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonZielpfad, jTextFieldZielpfad});
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 727, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 427, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(219, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Zielpfad", jPanel4);
+
+        jButtonUebernehmen.setText("Einstellungen übernehmen");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonUebernehmen)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonUebernehmen)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButtonAuswaehlen;
-    private javax.swing.JButton jButtonGefunden;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton jButtonErneut;
     private javax.swing.JButton jButtonPfad;
+    private javax.swing.JButton jButtonUebernehmen;
     private javax.swing.JButton jButtonUrl;
+    private javax.swing.JButton jButtonZielpfad;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelGefunden;
+    private javax.swing.JRadioButton jRadioButtonVlcAuto;
+    private javax.swing.JRadioButton jRadioButtonVlcManuell;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextFieldAuswaehlen;
-    private javax.swing.JTextField jTextFieldGefunden;
+    private javax.swing.JTextField jTextFieldVlcGefunden;
+    private javax.swing.JTextField jTextFieldZielpfad;
     // End of variables declaration//GEN-END:variables
 
     private class BeobPfadDoc implements DocumentListener {
@@ -303,23 +377,29 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
 
     private class BeobPfad implements ActionListener {
 
+        private JTextField textField;
+
+        public BeobPfad(JTextField ttextField) {
+            textField = ttextField;
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             int returnVal;
             JFileChooser chooser = new JFileChooser();
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             chooser.setFileHidingEnabled(false);
-            if (jTextFieldAuswaehlen.getText().equals("")) {
+            if (textField.getText().equals("")) {
                 chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
             } else {
-                chooser.setCurrentDirectory(new File(jTextFieldAuswaehlen.getText()));
+                chooser.setCurrentDirectory(new File(textField.getText()));
             }
             returnVal = chooser.showOpenDialog(null);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try {
-                    jTextFieldAuswaehlen.setText(chooser.getSelectedFile().getAbsolutePath());
+                    textField.setText(chooser.getSelectedFile().getAbsolutePath());
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("PanelImportProgramme.BeobPfad", ex);
+                    Log.fehlerMeldung("PanelImportStandardProgramme.BeobPfad", ex);
                 }
             }
         }

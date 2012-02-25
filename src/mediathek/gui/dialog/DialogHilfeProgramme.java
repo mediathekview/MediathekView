@@ -21,11 +21,9 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Texte;
-import mediathek.gui.beobachter.EscBeenden;
 import mediathek.daten.DDaten;
-import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.Texte;
 
 public class DialogHilfeProgramme extends javax.swing.JDialog {
 
@@ -51,7 +49,6 @@ public class DialogHilfeProgramme extends javax.swing.JDialog {
         } else {
             jTextArea1.setText(Texte.PROGRAMMGRUPPE_ABO);
         }
-        jButtonVorlage.addActionListener(new BeobachterVorlage());
         jButtonBeenden.addActionListener(new ActionListener() {
 
             @Override
@@ -66,14 +63,6 @@ public class DialogHilfeProgramme extends javax.swing.JDialog {
                 beenden();
             }
         };
-    }
-
-    private void vorlageEinfuegen() {
-        if (button) {
-            GuiFunktionenProgramme.addStandardprogrammeButton(daten);
-        } else {
-            GuiFunktionenProgramme.addStandardprogrammeAbo(daten);
-        }
     }
 
     private void beenden() {
@@ -91,7 +80,6 @@ public class DialogHilfeProgramme extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jButtonVorlage = new javax.swing.JButton();
         jButtonBeenden = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -101,8 +89,6 @@ public class DialogHilfeProgramme extends javax.swing.JDialog {
         jTextArea1.setRows(5);
         jTextArea1.setText("\n\n");
         jScrollPane1.setViewportView(jTextArea1);
-
-        jButtonVorlage.setText("Beispielprogramme setzen");
 
         jButtonBeenden.setText("Beenden");
 
@@ -115,8 +101,7 @@ public class DialogHilfeProgramme extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButtonVorlage)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonBeenden)))
                 .addContainerGap())
         );
@@ -126,9 +111,7 @@ public class DialogHilfeProgramme extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonVorlage)
-                    .addComponent(jButtonBeenden))
+                .addComponent(jButtonBeenden)
                 .addContainerGap())
         );
 
@@ -156,17 +139,9 @@ public class DialogHilfeProgramme extends javax.swing.JDialog {
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBeenden;
-    private javax.swing.JButton jButtonVorlage;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 
-    private class BeobachterVorlage implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            vorlageEinfuegen();
-        }
-    }
 }

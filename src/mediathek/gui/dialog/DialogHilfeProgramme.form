@@ -50,8 +50,7 @@
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="jScrollPane1" alignment="0" pref="463" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="jButtonVorlage" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="142" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Component id="jButtonBeenden" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -65,10 +64,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jScrollPane1" pref="429" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButtonVorlage" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonBeenden" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="jButtonBeenden" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -92,11 +88,6 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="jButtonVorlage">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Beispielprogramme setzen"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JButton" name="jButtonBeenden">
           <Properties>
             <Property name="text" type="java.lang.String" value="Beenden"/>

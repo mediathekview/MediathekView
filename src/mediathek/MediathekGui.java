@@ -103,8 +103,8 @@ public final class MediathekGui extends javax.swing.JFrame {
                 }
             }
             if (ddaten.listePgruppe.size() == 0) {
-                GuiFunktionenProgramme.addStandardprogrammeButton(ddaten);
-                GuiFunktionenProgramme.addStandardprogrammeAbo(ddaten);
+//////                GuiFunktionenProgramme.addStandardprogrammeButton(ddaten);
+//////                GuiFunktionenProgramme.addStandardprogrammeAbo(ddaten);
             }
         }
         this.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
