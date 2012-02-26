@@ -19,10 +19,7 @@
  */
 package mediathek.controller.io;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLInputFactory;
@@ -36,7 +33,6 @@ import mediathek.controller.filme.filmeImportieren.filmUpdateServer.FilmUpdateSe
 import mediathek.daten.*;
 import mediathek.importOld.DatenPgruppe__old;
 import mediathek.importOld.Konstanten__old;
-import mediathek.tool.GuiFunktionen;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 public class IoXmlLesen {
@@ -61,6 +57,17 @@ public class IoXmlLesen {
     }
 
     public static DatenPgruppe[] importPgruppe(String datei, boolean log) {
+        try {
+            return importPgruppe(new FileInputStream(datei), log);
+        } catch (Exception ex) {
+            if (log) {
+                Log.fehlerMeldung("IoXml.importPgruppe", ex);
+            }
+            return null;
+        }
+    }
+
+    public static DatenPgruppe[] importPgruppe(InputStream datei, boolean log) {
         DatenPgruppe datenPgruppe = null;
         LinkedList<DatenPgruppe> liste = new LinkedList<DatenPgruppe>();
         try {
@@ -69,7 +76,7 @@ public class IoXmlLesen {
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
             XMLStreamReader parser;
             InputStreamReader in;
-            in = new InputStreamReader(new FileInputStream(datei), Konstanten.KODIERUNG_UTF);
+            in = new InputStreamReader(datei, Konstanten.KODIERUNG_UTF);
             parser = inFactory.createXMLStreamReader(in);
             while (parser.hasNext()) {
                 event = parser.next();

@@ -228,7 +228,7 @@ public class PanelImportPgruppe extends PanelVorlage {
             if (jTextFieldDatei.getText().equals("")) {
                 jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
             } else {
-                if (IoXmlLesen.importPgruppe(jTextFieldDatei.getText(), false) != null) {
+                if (IoXmlLesen.importPgruppe(jTextFieldDatei.getText(),  false) != null) {
                     jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
                 } else {
                     jTextFieldDatei.setBackground(new Color(255, 200, 200));

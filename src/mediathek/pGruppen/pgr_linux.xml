@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Mediathek>
 <Programmgruppe><Name>Linux Abspielen</Name><Abspielen>true</Abspielen><Speichern>false</Speichern><Button>true</Button><Abo>false</Abo><max-Laenge>25</max-Laenge></Programmgruppe>
-<Programm><Programmname>skript</Programmname><Programmpfad>..\bin\flv.sh</Programmpfad><Programmschalter>%F</Programmschalter><Praefix>rt</Praefix><Restart>false</Restart></Programm>
-<Programm><Programmname>Abspielen Vlc</Programmname><Programmpfad>vlc</Programmpfad><Programmschalter>%f --tcp-caching 30000 --play-and-exit</Programmschalter></Programm>
+<Programm><Programmname>skript</Programmname><Programmpfad>../bin/flv.sh</Programmpfad><Programmschalter>PFAD_FLVSTREAMER PFAD_VLC %F</Programmschalter><Praefix>rt</Praefix><Restart>false</Restart></Programm>
+<Programm><Programmname>Abspielen Vlc</Programmname><Programmpfad>PFAD_VLC</Programmpfad><Programmschalter>%f --tcp-caching 30000 --play-and-exit</Programmschalter></Programm>
 <Programmgruppe><Name>Linux Speichern</Name><Praefix>http</Praefix><Suffix>mp4,mp3,m4v,flv</Suffix><Zielpfad>../filme</Zielpfad><Zieldateiname>%t-%T-%N.mp4</Zieldateiname><Abspielen>false</Abspielen><Speichern>true</Speichern><Button>false</Button><Abo>true</Abo><max-Laenge>25</max-Laenge></Programmgruppe>
-<Programm><Programmname>rtmpdump</Programmname><Programmpfad>rtmpdump</Programmpfad><Programmschalter>%F --resume %A -o **</Programmschalter><Praefix>rtmp://arte</Praefix><Restart>true</Restart></Programm>
-<Programm><Programmname>flvstreamer</Programmname><Programmpfad>flvstreamer</Programmpfad><Programmschalter>%F --resume -o **</Programmschalter><Praefix>rtmp</Praefix><Restart>true</Restart></Programm>
-<Programm><Programmname>Aufzeichnen Vlc</Programmname><Programmpfad>vlc</Programmpfad><Programmschalter>%f :sout=#standard{access=file,mux=asf,dst="**"} -I "dummy" --play-and-exit</Programmschalter></Programm>
+<Programm><Programmname>flvstreamer</Programmname><Programmpfad>PFAD_FLVSTREAMER</Programmpfad><Programmschalter>%F --resume -o **</Programmschalter><Praefix>rtmp</Praefix><Restart>true</Restart></Programm>
+<Programm><Programmname>Aufzeichnen Vlc</Programmname><Programmpfad>PFAD_VLC</Programmpfad><Programmschalter>%f :sout=#standard{access=file,mux=asf,dst="**"} -I "dummy" --play-and-exit</Programmschalter></Programm>
 </Mediathek>

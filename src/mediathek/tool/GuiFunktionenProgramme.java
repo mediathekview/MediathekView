@@ -20,6 +20,7 @@
 package mediathek.tool;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
 import mediathek.controller.io.IoXmlLesen;
@@ -27,6 +28,7 @@ import mediathek.daten.DDaten;
 import mediathek.daten.DatenPgruppe;
 import mediathek.daten.DatenProg;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.pGruppen.Pgruppen;
 
 public class GuiFunktionenProgramme {
 
@@ -35,6 +37,8 @@ public class GuiFunktionenProgramme {
     private static final String PFEIL = " -> ";
     private static final String PFAD_LINUX_VLC = "/usr/bin/vlc";
     private static final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
+    private static final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
+    private static final String PFAD_WINDOWS_FLV = "..\bin\flvstreamer_win32_latest.exe";
     // MusterPgruppen
 
     private static String getWindowsVlcPath() {
@@ -79,22 +83,33 @@ public class GuiFunktionenProgramme {
         }
     }
 
-    public static void addStandardprogramme(DDaten ddaten, String pfadVLC, String zielpfad) {
-        String PFAD_PGRUPPE_LINUX = "src/mediathek/pGruppen/pgr_linux.xml";
-        String PFAD_PGRUPPE_WINDOWS = "src/mediathek/pGruppen/pgr_windows.xml";
-        String PFAD_PGRUPPE_MAC = "src/mediathek/pGruppen/pgr_mac.xml";
+    public static String getPfadFlv() {
+        String pfad = "";
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            pfad = PFAD_WINDOWS_FLV;
+        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            pfad = PFAD_LINUX_FLV;
+        }
+        if (new File(pfad).exists()) {
+            return pfad;
+        } else {
+            return "";
+        }
+    }
+
+    public static void addStandardprogramme(DDaten ddaten, String pfadVLC, String pfadFlv, String zielpfad) {
         // Variable für den Pfad des VLC
         String MUSTER_PFAD_VLC = "PFAD_VLC";
+        String MUSTER_PFAD_FLV = "PFAD_FLVSTREAMER";
         DatenPgruppe[] pGruppe;
-        String datei = "";
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            datei = PFAD_PGRUPPE_WINDOWS;
-        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            datei = PFAD_PGRUPPE_LINUX;
+        InputStream datei;
+        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            datei = new Pgruppen().getLinux();
         } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            datei = PFAD_PGRUPPE_MAC;
+            datei = new Pgruppen().getMac();
+        } else {
+            datei = new Pgruppen().getWindows();
         }
-        datei = GuiFunktionen.addsPfad(System.getProperty("user.dir"), datei);
         pGruppe = IoXmlLesen.importPgruppe(datei, true);
         if (pGruppe == null) {
             JOptionPane.showMessageDialog(null, "Die Programme konnten nicht importiert werden!",
@@ -109,7 +124,12 @@ public class GuiFunktionenProgramme {
                 for (int i = 0; i < pg.getListeProg().size(); ++i) {
                     DatenProg prog = pg.getProg(i);
                     if (!pfadVLC.equals("")) {
-                        prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replace(MUSTER_PFAD_VLC, pfadVLC);
+                        prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replace(MUSTER_PFAD_VLC, pfadVLC);
+                        prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replace(MUSTER_PFAD_VLC, pfadVLC);
+                    }
+                    if (!pfadFlv.equals("")) {
+                        prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replace(MUSTER_PFAD_FLV, pfadFlv);
+                        prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replace(MUSTER_PFAD_FLV, pfadFlv);
                     }
                 }
             }

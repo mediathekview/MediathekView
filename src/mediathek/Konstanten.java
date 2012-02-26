@@ -27,6 +27,7 @@ public class Konstanten {
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";
     public static final String ADRESSE_ANLEITUNG = "http://zdfmediathk.sourceforge.net";
     public static final String ADRESSE_VLC = "http://www.videolan.org/";
+    public static final String ADRESSE_FLVSTREAMER = "https://savannah.nongnu.org/projects/flvstreamer/";
     public static final String USER_AGENT_DEFAULT = PROGRAMMNAME + " " + VERSION;
     // Dateien/Verzeichnisse
     public static final String MEDIATHEK_VIEW_VERZEICHNISS = ".mediathek3";
