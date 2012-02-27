@@ -27,9 +27,10 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jPanel1" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="jButtonOk" linkSize="3" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="94" max="32767" attributes="0"/>
+                      <Component id="jButtonOk" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jButtonAbbrechen" linkSize="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonAbbrechen" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -68,7 +69,7 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jTextFieldPfad" pref="255" max="32767" attributes="2"/>
+                  <Component id="jTextFieldPfad" max="32767" attributes="2"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jButtonZiel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -108,12 +109,12 @@
     </Container>
     <Component class="javax.swing.JButton" name="jButtonAbbrechen">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Abbrechen"/>
+        <Property name="text" type="java.lang.String" value="Mit Standardeinstellungen starten"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonOk">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Ok"/>
+        <Property name="text" type="java.lang.String" value="Importieren"/>
       </Properties>
     </Component>
   </SubComponents>

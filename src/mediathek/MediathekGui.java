@@ -94,8 +94,8 @@ public final class MediathekGui extends javax.swing.JFrame {
         System.out.println("Programmpfad: " + GuiFunktionenProgramme.getPath());
         System.out.println("+++++++++++++++++++++++++++++++++++++");
 ///////////////////////
-        JOptionPane.showMessageDialog(null, GuiFunktionenProgramme.getPath(),
-                "Programmpfad", JOptionPane.INFORMATION_MESSAGE);
+////        JOptionPane.showMessageDialog(null, GuiFunktionenProgramme.getPath(),
+////                "Programmpfad", JOptionPane.INFORMATION_MESSAGE);
 
 
         ddaten = new DDaten(pfad);
