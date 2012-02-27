@@ -115,7 +115,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";
         final String NAME_programme = "Programmgruppen";
-        final String NAME_programmeStandard = "Standardgruppen importieren";
+        final String NAME_programmeStandard = "Standardgruppen";
         final String NAME_programmeImportieren = "Importieren";
         // Infos
         final String NAME_allgemeineInfos = "Pfade";
@@ -152,10 +152,10 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         DefaultMutableTreeNode treeNodeDownloads = new DefaultMutableTreeNode("Videoplayer");
         DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programme);
         treeNodeDownloads.add(treeNodeProgramme);
-        DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmeImportieren);
-        treeNodeDownloads.add(treeNodeImportProgramme);
         DefaultMutableTreeNode treeNodeImportStandard = new DefaultMutableTreeNode(NAME_programmeStandard);
         treeNodeDownloads.add(treeNodeImportStandard);
+        DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmeImportieren);
+        treeNodeDownloads.add(treeNodeImportProgramme);
         treeNodeStart.add(treeNodeDownloads);
         // ####### Infos #########
         DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode("Infos");

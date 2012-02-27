@@ -1,8 +1,8 @@
 <launch4jConfig>
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>Mediathek.jar</jar>
-  <outfile>/mnt/daten/software/java/Mediathek/bin/Starten_Windows.exe</outfile>
+  <jar>MediathekView.jar</jar>
+  <outfile>/mnt/daten/software/java/Mediathek_3/bin/Starten_Windows.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir></chdir>
@@ -12,7 +12,7 @@
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon></icon>
+  <icon>/mnt/daten/software/java/Mediathek_3/bin/MediathekView.ico</icon>
   <jre>
     <path></path>
     <minVersion>1.6.0</minVersion>

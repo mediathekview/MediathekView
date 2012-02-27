@@ -21,8 +21,10 @@ package mediathek.tool;
 
 import java.io.File;
 import java.io.InputStream;
+import java.security.CodeSource;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
+import mediathek.Main;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenPgruppe;
@@ -38,8 +40,23 @@ public class GuiFunktionenProgramme {
     private static final String PFAD_LINUX_VLC = "/usr/bin/vlc";
     private static final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
     private static final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
-    private static final String PFAD_WINDOWS_FLV = "..\bin\flvstreamer_win32_latest.exe";
+    private static final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
     // MusterPgruppen
+
+    public static String getPath() {
+        String pFilePath = "pFile";
+        File propFile = new File(pFilePath);
+        if (!propFile.exists()) {
+            try {
+                CodeSource cS = Main.class.getProtectionDomain().getCodeSource();
+                File jarFile = new File(cS.getLocation().toURI().getPath());
+                String jarDir = jarFile.getParentFile().getPath();
+                propFile = new File(jarDir + File.separator + pFilePath);
+            } catch (Exception ex) {
+            }
+        }
+        return propFile.getAbsolutePath().replace(pFilePath, "");
+    }
 
     private static String getWindowsVlcPath() {
         //Für Windows den Pfad des VLC ermitteln
@@ -86,7 +103,8 @@ public class GuiFunktionenProgramme {
     public static String getPfadFlv() {
         String pfad = "";
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            pfad = PFAD_WINDOWS_FLV;
+            pfad = GuiFunktionenProgramme.getPath() + PFAD_WINDOWS_FLV;
+//            pfad = PFAD_WINDOWS_FLV;
         } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
             pfad = PFAD_LINUX_FLV;
         }
@@ -97,8 +115,8 @@ public class GuiFunktionenProgramme {
         }
     }
 
-    public static void addStandardprogramme(DDaten ddaten, String pfadVLC, String pfadFlv, String zielpfad) {
-        // Variable für den Pfad des VLC
+    public static boolean addStandardprogramme(DDaten ddaten, String pfadVLC, String pfadFlv, String zielpfad) {
+        boolean ret = false;
         String MUSTER_PFAD_VLC = "PFAD_VLC";
         String MUSTER_PFAD_FLV = "PFAD_FLVSTREAMER";
         DatenPgruppe[] pGruppe;
@@ -135,7 +153,11 @@ public class GuiFunktionenProgramme {
             }
             // und jetzt in die Liste der PGruppen schreiben
             ddaten.listePgruppe.addPgruppe(pGruppe);
+            JOptionPane.showMessageDialog(null, "Die Programme wurden importiert!",
+                    "", JOptionPane.INFORMATION_MESSAGE);
+            ret = true;
         }
+        return ret;
     }
 
     public static boolean praefixTesten(String str, String uurl, boolean praefix) {

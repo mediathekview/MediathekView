@@ -30,9 +30,9 @@
                   <Component id="jTabbedPane1" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="jButtonUebernehmen" linkSize="6" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonUebernehmen" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jButtonReset" linkSize="6" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonReset" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -689,7 +689,7 @@
     </Container>
     <Component class="javax.swing.JButton" name="jButtonUebernehmen">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&#xdc;bernehmen"/>
+        <Property name="text" type="java.lang.String" value="Standardgruppen hinzuf&#xfc;gen"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonReset">

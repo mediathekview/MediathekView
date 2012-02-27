@@ -4,13 +4,16 @@
  */
 package mediathek.pGruppen;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.CodeSource;
 import mediathek.Log;
+import mediathek.Main;
 
 /**
  *
- * @author emil
+ *   @author emil
  */
 public class Pgruppen {
 
