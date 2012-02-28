@@ -166,15 +166,14 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[DOWNLOAD_PROGRAMM_RESTART_NR] = String.valueOf(programm.isRestart());
             arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = zielDateiname;
             arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = zielPfad;
-            dateinamePfadBauen();
-            kuerzen(gruppe);
+            dateinamePfadBauen(gruppe);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
             Log.fehlerMeldung(this.getClass().getName(), ex);
         }
     }
 
-    private void dateinamePfadBauen() {
+    private void dateinamePfadBauen(DatenPgruppe gruppe) {
         String name = arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR];
         String pfad = arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
         // ##############################################
@@ -212,12 +211,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
         // ##############################################
         // abfragen wenn %p oder %n
         // ##############################################
-        if (name.contains("%p")) {
+        if (name.contains("%p") || pfad.contains("%p")) {
             if (name.equals("%p")) {
                 name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
             } else {
                 name = name.replace("%p", "-_-");
             }
+            pfad = pfad.replace("%p", "");
             name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */);
             DialogZielDatei dialog = new DialogZielDatei(null, true, pfad, name);
             dialog.setVisible(true);
@@ -246,24 +246,20 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (pfad.endsWith(File.separator)) {
             pfad = pfad.substring(0, pfad.length() - 1);
         }
-        arr[DOWNLOAD_ZIEL_DATEINAME_NR] = GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */);
-        arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
-        arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, arr[DOWNLOAD_ZIEL_DATEINAME_NR]);
-    }
-
-    private void kuerzen(DatenPgruppe gruppe) {
+        // Kürzen
         if (Boolean.parseBoolean(gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_LAENGE_BESCHRAENKEN_NR])) {
             // nur dann ist was zu tun
-            String name = arr[DOWNLOAD_ZIEL_DATEINAME_NR];
             int laenge = GuiKonstanten.LAENGE_DATEINAME;
             if (!gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_MAX_LAENGE_NR].equals("")) {
                 laenge = Integer.parseInt(gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_MAX_LAENGE_NR]);
             }
             if (name.length() > laenge) {
-                name = name.substring(0, laenge - 4)  + name.substring(name.length() - 4);
+                name = name.substring(0, laenge - 4) + name.substring(name.length() - 4);
             }
-            arr[DOWNLOAD_ZIEL_DATEINAME_NR] = name;
         }
+        arr[DOWNLOAD_ZIEL_DATEINAME_NR] = GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */);
+        arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
+        arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, arr[DOWNLOAD_ZIEL_DATEINAME_NR]);
     }
 
     private void programmaufrufBauen(DatenProg programm) {

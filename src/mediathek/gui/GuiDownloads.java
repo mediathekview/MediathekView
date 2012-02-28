@@ -19,14 +19,10 @@
  */
 package mediathek.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import mediathek.Daten;
-import mediathek.Konstanten;
 import mediathek.MediathekGui;
 import mediathek.controller.io.starter.StartEvent;
 import mediathek.controller.io.starter.StartListener;

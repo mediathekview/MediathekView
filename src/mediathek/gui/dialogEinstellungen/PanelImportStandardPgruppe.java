@@ -511,7 +511,7 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
         jPanelZielpfadFragen.setBorder(javax.swing.BorderFactory.createTitledBorder("Bei jedem Film nach dem Pfad fragen"));
 
         jTextFieldZielpfad1.setEditable(false);
-        jTextFieldZielpfad1.setText("%p");
+        jTextFieldZielpfad1.setText("Fragen?");
 
         javax.swing.GroupLayout jPanelZielpfadFragenLayout = new javax.swing.GroupLayout(jPanelZielpfadFragen);
         jPanelZielpfadFragen.setLayout(jPanelZielpfadFragenLayout);
@@ -563,7 +563,7 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
 
         jTabbedPane1.addTab("Zielpfad", jPanel4);
 
-        jButtonUebernehmen.setText("Standardgruppen hinzufügen");
+        jButtonUebernehmen.setText("Programme hinzufügen");
 
         jButtonReset.setText("Reset");
 

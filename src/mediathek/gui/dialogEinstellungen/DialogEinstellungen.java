@@ -114,8 +114,8 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         final String NAME_senderLaden = "Sender aktualisieren";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";
-        final String NAME_programme = "Programmgruppen";
-        final String NAME_programmeStandard = "Standardgruppen";
+        final String NAME_programme = "Programme";
+        final String NAME_programmeStandard = "Standardprogramme";
         final String NAME_programmeImportieren = "Importieren";
         // Infos
         final String NAME_allgemeineInfos = "Pfade";

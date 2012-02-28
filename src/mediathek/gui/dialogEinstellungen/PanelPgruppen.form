@@ -145,7 +145,7 @@
                                   <Component id="jButtonGruppeAuf" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jButtonGruppeAb" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace pref="122" max="32767" attributes="0"/>
                                   <Component id="jButtonGruppeDuplizieren" min="-2" pref="125" max="-2" attributes="3"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jButtonExport" min="-2" pref="125" max="-2" attributes="1"/>
@@ -323,7 +323,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jTextFieldGruppeDirektSuffix" pref="210" max="32767" attributes="0"/>
+                                  <Component id="jTextFieldGruppeDirektSuffix" pref="203" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -665,7 +665,7 @@
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jTextFieldProgSuffix" pref="187" max="32767" attributes="2"/>
+                                          <Component id="jTextFieldProgSuffix" pref="180" max="32767" attributes="2"/>
                                       </Group>
                                   </Group>
                               </Group>

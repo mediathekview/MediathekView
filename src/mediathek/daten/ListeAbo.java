@@ -125,7 +125,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // titelSuchen muss im Titel nur enthalten sein
         if (aboFilter_SenderSuchen.equals("") || imFilm_Sender.equalsIgnoreCase(aboFilter_SenderSuchen)) {
             if (aboFilter_themaSuchen.equals("") || imFilm_Thema.equalsIgnoreCase(aboFilter_themaSuchen)) {
-                if (aboFilter_titelSuchen.equals("") || pruefen(aboFilter_titelSuchen, imFilm_Titel)) {
+                if (aboFilter_titelSuchen.equals("") || imFilm_Titel.toLowerCase().contains(aboFilter_titelSuchen.toLowerCase())) {
                     if (aboFilter_themaTitelSuchen.equals("")) {
                         return true;
                     } else if (pruefen(aboFilter_themaTitelSuchen, imFilm_Thema)) {

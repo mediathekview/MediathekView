@@ -41,7 +41,7 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.gui.dialogEinstellungen.PanelImportStandardPgruppe;
 import mediathek.importOld.IoXmlLesen__old;
-import mediathek.pGruppen.Pgruppen;
+import mediathek.file.GetFile;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
@@ -699,7 +699,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         jPanelInfo.setLayout(jPanelInfoLayout);
         jPanelInfoLayout.setHorizontalGroup(
             jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 676, Short.MAX_VALUE)
+            .addGap(0, 1083, Short.MAX_VALUE)
         );
         jPanelInfoLayout.setVerticalGroup(
             jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -911,11 +911,11 @@ public final class MediathekGui extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1083, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 737, Short.MAX_VALUE)
         );
 
         pack();

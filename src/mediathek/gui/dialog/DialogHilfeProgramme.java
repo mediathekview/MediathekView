@@ -37,18 +37,19 @@ public class DialogHilfeProgramme extends javax.swing.JDialog {
      * @param d
      * @param bbutton
      */
-    public DialogHilfeProgramme(java.awt.Frame parent, boolean modal, DDaten d) {
+    public DialogHilfeProgramme(java.awt.Frame parent, boolean modal, DDaten d, String text) {
         super(parent, modal);
         daten = d;
         button = true;
         initComponents();
         this.setTitle("Hilfe");
         ////////////////////////////////////////
-        if (button) {
-            jTextArea1.setText(Texte.PROGRAMMGRUPPE_BUTTON);
-        } else {
-            jTextArea1.setText(Texte.PROGRAMMGRUPPE_ABO);
-        }
+////////        if (button) {
+////////            jTextArea1.setText(Texte.PROGRAMMGRUPPE_BUTTON);
+////////        } else {
+////////            jTextArea1.setText(Texte.PROGRAMMGRUPPE_ABO);
+////////        }
+        jTextArea1.setText(text);
         jButtonBeenden.addActionListener(new ActionListener() {
 
             @Override
@@ -143,5 +144,4 @@ public class DialogHilfeProgramme extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
-
 }

@@ -678,7 +678,7 @@
                 <Component class="javax.swing.JTextField" name="jTextFieldZielpfad1">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
-                    <Property name="text" type="java.lang.String" value="%p"/>
+                    <Property name="text" type="java.lang.String" value="Fragen?"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -689,7 +689,7 @@
     </Container>
     <Component class="javax.swing.JButton" name="jButtonUebernehmen">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Standardgruppen hinzuf&#xfc;gen"/>
+        <Property name="text" type="java.lang.String" value="Programme hinzuf&#xfc;gen"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonReset">

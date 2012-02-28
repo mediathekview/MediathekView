@@ -21,6 +21,7 @@ package mediathek.daten;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import javax.swing.JOptionPane;
 import mediathek.Daten;
 import mediathek.controller.io.starter.Starts;
 import mediathek.tool.TModel;
@@ -99,19 +100,24 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // es wird der aktuellere Eintrag verwendet
         DatenDownload download = new DatenDownload(film, Starts.QUELLE_DOWNLOAD);
         DatenPgruppe gruppe = ddaten.listePgruppe.getPgruppeSpeichern();
-        download.aufrufBauen(gruppe, null);
-        // erst mal schauen obs das schon gibt
-        Iterator<DatenDownload> it = this.iterator();
-        while (it.hasNext()) {
-            if (it.next().arr[DatenDownload.DOWNLOAD_URL_NR].equals(film.arr[DatenFilm.FILM_URL_NR])) {
-                // alte Eintrag wird gelöscht und der neue eingetragen
-                it.remove();
-                this.add(download);
-                return;
+        if (gruppe == null) {
+            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            download.aufrufBauen(gruppe, null);
+            // erst mal schauen obs das schon gibt
+            Iterator<DatenDownload> it = this.iterator();
+            while (it.hasNext()) {
+                if (it.next().arr[DatenDownload.DOWNLOAD_URL_NR].equals(film.arr[DatenFilm.FILM_URL_NR])) {
+                    // alte Eintrag wird gelöscht und der neue eingetragen
+                    it.remove();
+                    this.add(download);
+                    return;
+                }
             }
+            // nix gefunden
+            this.add(download);
         }
-        // nix gefunden
-        this.add(download);
     }
 
     public synchronized void abosEintragen() {

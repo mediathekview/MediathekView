@@ -443,14 +443,9 @@ public class PanelPgruppen extends PanelVorlage {
 
     }
 
-//    private void vorlageProgHinzufuegen() {
-//        int i = jComboBoxProgVorlagen.getSelectedIndex();
-//        DatenProg prog = ddaten.listeProgVorlagen.get(i).copy();
-//        progNeueZeile(prog);
-//    }
-    //Rest
     private void dialogHilfe() {
-        new DialogHilfeProgramme(null, true, ddaten).setVisible(true);
+        ///////////////////////////////////////////////////////
+        new DialogHilfeProgramme(null, true, ddaten, Texte.PROGRAMMGRUPPE_ABO).setVisible(true);
         tabellePgruppe();
     }
 

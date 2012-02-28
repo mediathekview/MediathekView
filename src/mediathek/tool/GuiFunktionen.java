@@ -118,6 +118,7 @@ public class GuiFunktionen {
         ret = ret.replace(">", "_");
         ret = ret.replace(":", "_");
         ret = ret.replace("'", "_");
+        ret = ret.replace("|", "_");
         return ret;
     }
 

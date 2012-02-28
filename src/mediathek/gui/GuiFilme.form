@@ -33,7 +33,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanelFilter" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="283" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="280" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanelExtra" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -133,7 +133,7 @@
                           <Component id="jCheckBoxKeineGesehenen" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jCheckBoxKeineAbos" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="122" max="32767" attributes="0"/>
+                          <EmptySpace pref="109" max="32767" attributes="0"/>
                           <Component id="jToggleButtonLivestram" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -219,14 +219,16 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jTextFieldFilterTitel" max="32767" attributes="0"/>
+                                  <Component id="jTextFieldFilterTitel" pref="207" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jTextFieldFilterThemaTitel" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jButtonFilterLoeschen" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButtonFilterLoeschen" linkSize="2" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jButtonHilfe" linkSize="2" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -250,6 +252,7 @@
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jTextFieldFilterThemaTitel" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButtonHilfe" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="jButtonFilterLoeschen" linkSize="1" min="-2" pref="16" max="-2" attributes="0"/>
                           </Group>
@@ -305,6 +308,13 @@
                       <Image iconType="3" name="/mediathek/res/del_16.png"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" value="Filter l&#xf6;schen"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="jButtonHilfe">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/help_16.png"/>
+                    </Property>
                   </Properties>
                 </Component>
               </SubComponents>

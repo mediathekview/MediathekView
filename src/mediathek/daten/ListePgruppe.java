@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
-import mediathek.gui.dialogEinstellungen.PanelPgruppen;
 import mediathek.tool.TModel;
 
 public class ListePgruppe extends LinkedList<DatenPgruppe> {
@@ -168,6 +167,17 @@ public class ListePgruppe extends LinkedList<DatenPgruppe> {
     }
 
     public boolean addPgruppe(DatenPgruppe gruppe) {
+        boolean abspielen = false;
+        Iterator<DatenPgruppe> it = this.iterator();
+        while (it.hasNext()) {
+            if (Boolean.parseBoolean(it.next().arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABSPIELEN_NR])) {
+                abspielen = true;
+                break;
+            }
+        }
+        if (abspielen) {
+            gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
+        }
         boolean ret = add(gruppe);
         Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, ListePgruppe.class.getSimpleName());
         return ret;
@@ -176,11 +186,10 @@ public class ListePgruppe extends LinkedList<DatenPgruppe> {
     public boolean addPgruppe(DatenPgruppe[] gruppe) {
         boolean ret = true;
         for (int i = 0; i < gruppe.length; ++i) {
-            if (!add(gruppe[i])) {
+            if (!addPgruppe(gruppe[i])) {
                 ret = false;
             }
         }
-        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, ListePgruppe.class.getSimpleName());
         return ret;
     }
 
