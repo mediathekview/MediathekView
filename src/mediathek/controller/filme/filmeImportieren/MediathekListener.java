@@ -28,6 +28,7 @@ public class MediathekListener implements EventListener {
     public static final int EREIGNIS_LISTE_PGRUPPE = 3;
     public static final int EREIGNIS_FILMLISTE_NEU = 4;
     public static final int EREIGNIS_ANZAHL_DOWNLOADS = 5;
+    public static final int EREIGNIS_LISTE_UPDATESERVER = 6;
     public int ereignis = -1;
     public String klasse = "";
 

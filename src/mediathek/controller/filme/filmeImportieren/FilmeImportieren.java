@@ -50,10 +50,10 @@ public class FilmeImportieren {
     // Filme von Server/Datei importieren
     // #######################################
     public void filmeImportierenAuto() {
-        new Thread(new filmeImportierenAutoThread()).start();
+        new Thread(new FilmeImportierenAutoThread()).start();
     }
 
-    private class filmeImportierenAutoThread implements Runnable {
+    private class FilmeImportierenAutoThread implements Runnable {
 
         @Override
         public synchronized void run() {

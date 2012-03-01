@@ -89,7 +89,7 @@
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="zus&#xe4;tzlich beim Programmstart laden, wenn die Filmliste &#xe4;lter als 5h ist"/>
+            <Property name="text" type="java.lang.String" value="zus&#xe4;tzlich beim Programmstart laden, wenn die Filmliste &#xe4;lter als 3h ist"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="jRadioButtonUrl">

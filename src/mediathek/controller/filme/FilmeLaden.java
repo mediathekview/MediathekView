@@ -77,6 +77,10 @@ public class FilmeLaden {
         stop = false;
     }
 
+    public void checkProgrammVersion(DDaten ddaten, boolean anzeigen) {
+        filmeImportieren.filmUpdateServer.checkVersion(ddaten, anzeigen);
+    }
+
     public ListeFilmUpdateServer getListeFilmUpdateServer(boolean update) {
         if (update) {
             filmeImportieren.filmUpdateServer.suchen();
@@ -237,5 +241,4 @@ public class FilmeLaden {
             notifyFertig(filmListenerElement);
         }
     }
-
- }
+}

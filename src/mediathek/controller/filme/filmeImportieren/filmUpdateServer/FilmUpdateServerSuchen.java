@@ -33,7 +33,8 @@ import mediathek.Konstanten;
 
 public class FilmUpdateServerSuchen {
 
-    public static String[] getListe(ListeFilmUpdateServer sListe) throws MalformedURLException, IOException, XMLStreamException {
+
+    public static String[] getListe(String url, ListeFilmUpdateServer sListe) throws MalformedURLException, IOException, XMLStreamException {
         String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
         //String parsername = "";
         sListe.clear();
@@ -44,7 +45,7 @@ public class FilmUpdateServerSuchen {
         InputStreamReader inReader;
         int timeout = 10000;
         URLConnection conn;
-        conn = new URL(Konstanten.ADRESSE_UPDATE).openConnection();
+        conn = new URL(url).openConnection();
         conn.setRequestProperty("User-Agent", Daten.getUserAgent());
         conn.setReadTimeout(timeout);
         conn.setConnectTimeout(timeout);

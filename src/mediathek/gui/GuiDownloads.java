@@ -238,33 +238,33 @@ public class GuiDownloads extends PanelVorlage {
         ddaten.starterClass.aufraeumen();
     }
 
-    private void export() {
-////        OutputStreamWriter writer = null;
-////        DialogExportAbos dialog = new DialogExportAbos(null, true, ddaten, Daten.system[Konstanten.SYSTEM_PFAD_EXPORT_ABOS_NR]);
-////        dialog.setVisible(true);
-////        if (dialog.ok) {
-////            File f = new File(dialog.ziel);
-////            if (!f.exists()
-////                    || JOptionPane.showConfirmDialog(null, "Trotzdem anlegen und \u00fcberschreiben?",
-////                    "Datei existiert bereits!", JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
-////                try {
-////                    Daten.system[Konstanten.SYSTEM_PFAD_EXPORT_ABOS_NR] = dialog.ziel;
-////                    writer = new OutputStreamWriter(new FileOutputStream(f));
-////                    for (int i = 0; i < jTable1.getModel().getRowCount(); ++i) {
-////                        writer.write(jTable1.getModel().getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString() + "\n");
-////                    }
-////                } catch (Exception ex) {
-////                    ddaten.fehler.fehlerMeldung(ex, "GuiAbo.zeileSchreiben");
-////                } finally {
-////                    try {
-////                        writer.close();
-////                    } catch (Exception ex) {
-////                        ddaten.fehler.fehlerMeldung(ex, "GuiAbo.zeileSchreiben");
-////                    }
-////                }
-////            }
-////        }
-    }
+//    private void export() {
+//////        OutputStreamWriter writer = null;
+//////        DialogExportAbos dialog = new DialogExportAbos(null, true, ddaten, Daten.system[Konstanten.SYSTEM_PFAD_EXPORT_ABOS_NR]);
+//////        dialog.setVisible(true);
+//////        if (dialog.ok) {
+//////            File f = new File(dialog.ziel);
+//////            if (!f.exists()
+//////                    || JOptionPane.showConfirmDialog(null, "Trotzdem anlegen und \u00fcberschreiben?",
+//////                    "Datei existiert bereits!", JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+//////                try {
+//////                    Daten.system[Konstanten.SYSTEM_PFAD_EXPORT_ABOS_NR] = dialog.ziel;
+//////                    writer = new OutputStreamWriter(new FileOutputStream(f));
+//////                    for (int i = 0; i < jTable1.getModel().getRowCount(); ++i) {
+//////                        writer.write(jTable1.getModel().getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString() + "\n");
+//////                    }
+//////                } catch (Exception ex) {
+//////                    ddaten.fehler.fehlerMeldung(ex, "GuiAbo.zeileSchreiben");
+//////                } finally {
+//////                    try {
+//////                        writer.close();
+//////                    } catch (Exception ex) {
+//////                        ddaten.fehler.fehlerMeldung(ex, "GuiAbo.zeileSchreiben");
+//////                    }
+//////                }
+//////            }
+//////        }
+//    }
 
     private boolean downloadAll(String uurl) {
         // liefert false, wenn es nichts zu Laden gibt
@@ -600,28 +600,28 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             menu.add(itemVor);
-            //Infos
-            JMenuItem itemIfo = new JMenuItem("Infos anzeigen");
-            itemIfo.addActionListener(new ActionListener() {
-
-                //Infos zum Film anzeigen
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    ddaten.dialogDatenFilm.setVis();
-                }
-            });
-            menu.add(itemIfo);
+//            //Infos
+//            JMenuItem itemIfo = new JMenuItem("Infos anzeigen");
+//            itemIfo.addActionListener(new ActionListener() {
+//
+//                //Infos zum Film anzeigen
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    ddaten.dialogDatenFilm.setVis();
+//                }
+//            });
+//            menu.add(itemIfo);
             //export
-            JMenuItem itemExport = new JMenuItem("Links in Datei exportieren");
-            itemExport.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    export();
-                }
-            });
-            menu.add(itemExport);
-            //Menü anzeigen
+//            JMenuItem itemExport = new JMenuItem("Links in Datei exportieren");
+//            itemExport.addActionListener(new ActionListener() {
+//
+//                @Override
+//                public void actionPerformed(ActionEvent arg0) {
+//                    export();
+//                }
+//            });
+//            menu.add(itemExport);
+//            //Menü anzeigen
             menu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }

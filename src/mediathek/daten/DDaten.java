@@ -19,12 +19,9 @@
  */
 package mediathek.daten;
 
-import javax.swing.event.EventListenerList;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.MediathekGui;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
-import mediathek.controller.filme.filmeImportieren.MediathekTimer;
 import mediathek.controller.io.History;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.IoXmlSchreiben;
@@ -32,15 +29,12 @@ import mediathek.controller.io.LogDownload;
 import mediathek.controller.io.starter.StarterClass;
 import mediathek.gui.*;
 import mediathek.gui.dialog.DialogDatenFilm;
-import mediathek.tool.GuiFunktionen;
 
 public final class DDaten extends Daten {
     // Listen
-
     public static ListeFilme listeFilmeNachBlackList = null;
     public ListeBlacklist listeBlacklist;
     public ListePgruppe listePgruppe = null;
-//    public ListeProg listeProgVorlagen = null;
     public ListeAbo listeAbo = null;
     public ListeDownloads listeDownloads = null;
     public History history = null;

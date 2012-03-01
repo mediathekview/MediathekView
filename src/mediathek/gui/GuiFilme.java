@@ -1291,34 +1291,4 @@ public class GuiFilme extends PanelVorlage {
             jTable1.updateUI();
         }
     }
-//    private class BeobMausProgramme extends MouseAdapter {
-//
-//        JMenuItem itemAusblenden = new JMenuItem("ausblenden");
-//
-//        public BeobMausProgramme() {
-//            itemAusblenden.setSelected(true);
-//        }
-//
-//        @Override
-//        public void mouseClicked(MouseEvent arg0) {
-//            if (arg0.getButton() == MouseEvent.BUTTON3) {
-//                showMenu(arg0);
-//            }
-//        }
-//
-//        private void showMenu(MouseEvent evt) {
-//            JPopupMenu jPopupMenu = new JPopupMenu();
-//            itemAusblenden.addActionListener(new ActionListener() {
-//
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    Daten.setGeaendert();
-//                    Daten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR] = Boolean.FALSE.toString();
-//                    ddaten.guiFilme.videoPlayerAnzeigen(false);
-//                }
-//            });
-//            jPopupMenu.add(itemAusblenden);
-//            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-//        }
-//    }
 }

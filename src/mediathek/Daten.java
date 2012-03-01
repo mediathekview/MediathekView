@@ -63,14 +63,11 @@ public class Daten {
         system[Konstanten.SYSTEM_WARTEN_NR] = "1";
         system[Konstanten.SYSTEM_LOOK_NR] = "1";
         system[Konstanten.SYSTEM_VERSION_NR] = Konstanten.VERSION;
+        system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
         listeFilme = new ListeFilme();
         ioXmlFilmlisteLesen = new IoXmlFilmlisteLesen();
         ioXmlFilmlisteSchreiben = new IoXmlFilmlisteSchreiben();
         filmeLaden = new FilmeLaden();
-        //eine Erstfüllung der UpdateListe
-        filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://178.77.79.81/mediathek4/Mediathek_14.bz2", "1"));
-        filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://178.77.79.81/mediathek3/Mediathek_10.bz2", "1"));
-        filmeLaden.getListeFilmUpdateServer(false).addWithCheck(new DatenFilmUpdateServer("http://178.77.79.81/mediathek2/Mediathek_08.zip", "1"));
     }
 
     public synchronized static void addAdListener(MediathekListener listener) {

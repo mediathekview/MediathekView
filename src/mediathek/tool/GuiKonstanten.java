@@ -46,8 +46,6 @@ public class GuiKonstanten {
     // für das Anpassen der URL für den flvstreamer
     public static final String RTMP_FLVSTREAMER = "-r ";
     public static final String RTMP_PRTOKOLL = "rtmp";
-    // Auto-Neu-Laden
-    public static final int NEU_LADEN_IN = 75 * 60; // Sekunden
     // Standardwert für die Länge des Zieldateinamens
     public static final int LAENGE_DATEINAME = 25;
     //

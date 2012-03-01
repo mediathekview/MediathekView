@@ -71,4 +71,8 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-post-jar">
+      <exec executable="./post_make.sh">
+      </exec>
+    </target>
 </project>

@@ -111,9 +111,8 @@ public class Log {
             System.out.print("                                                                            \r");
             prog = false;
         }
-        final String PLAYERMELDUNG = "";
         final String z = "  >>";
-        System.out.println(z + " " + PLAYERMELDUNG + texte[0]);
+        System.out.println(z + " " + texte[0]);
         notifyMediathekListener(LOG_PLAYER, texte[0]);
         for (int i = 1; i < texte.length; ++i) {
             System.out.println(z + " " + texte[i]);

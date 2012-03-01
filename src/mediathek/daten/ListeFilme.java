@@ -34,7 +34,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public static final String THEMA_LIVE = "Livestream";
     //Tags Infos Filmliste, erste Zeile der .filme-Datei
     public static final String FILMLISTE = "Filmliste";
-    public static final int FILMLISTE_MAX_ELEM = 5;
+    public static final int FILMLISTE_MAX_ELEM = 6;
     public static final String FILMLISTE_DATUM = "Filmliste-Datum";
     public static final int FILMLISTE_DATUM_NR = 0;
     public static final String FILMLISTE_ZEIT = "Filmliste-Nur-Zeit";
@@ -45,7 +45,10 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public static final int FILMLISTE_ANZAHL_NR = 3;
     public static final String FILMLISTE_VERSION = "Filmliste-Version";
     public static final int FILMLISTE_VERSION_NR = 4;
-    public static final String[] FILMLISTE_COLUMN_NAMES = {FILMLISTE_DATUM, FILMLISTE_ZEIT, FILMLISTE_DATUM_ZEIT, FILMLISTE_ANZAHL, FILMLISTE_VERSION};
+    public static final String FILMLISTE_PROGRAMM = "Filmliste-Programm";
+    public static final int FILMLISTE_PRGRAMM_NR = 5;
+    public static final String[] FILMLISTE_COLUMN_NAMES = {FILMLISTE_DATUM, FILMLISTE_ZEIT, FILMLISTE_DATUM_ZEIT,
+        FILMLISTE_ANZAHL, FILMLISTE_VERSION, FILMLISTE_PROGRAMM};
     // Tags
     public static final String FILMLISTE_INFOS = "Filmliste-Infos";
     public static final int FILMLISTE_INFOS_MAX_ELEM = 2;
