@@ -19,12 +19,14 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
+import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.daten.DDaten;
@@ -106,12 +108,11 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
         jRadioButtonPfadFragen.addActionListener(new BeobRadio());
     }
 
-    private void uebernehmen() {
+    public void uebernehmen() {
         if (GuiFunktionenProgramme.addStandardprogramme(ddaten,
                 jRadioButtonVlcAuto.isSelected() ? jTextFieldVlcGefunden.getText() : jTextFieldVlcAuswaehlen.getText(),
                 jRadioButtonFlvAuto.isSelected() ? jTextFieldFlvGefunden.getText() : jTextFieldFlvAuswaehlen.getText(),
                 jRadioButtonPfadFest.isSelected() ? jTextFieldZielpfad.getText() : "%p")) {
-
             if (dialog != null) {
                 dialog.dispose();
             }
@@ -200,6 +201,7 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
         jTextFieldZielpfad1 = new javax.swing.JTextField();
         jButtonUebernehmen = new javax.swing.JButton();
         jButtonReset = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         jPanelVlcGefunden.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 102)), "Der VLC-Player wurde gefunden"));
 
@@ -567,6 +569,8 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
 
         jButtonReset.setText("Reset");
 
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -579,7 +583,9 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonUebernehmen)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonReset)))
+                        .addComponent(jButtonReset)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -590,14 +596,19 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonUebernehmen)
-                    .addComponent(jButtonReset))
+                    .addComponent(jButtonReset)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButton1, jButtonReset, jButtonUebernehmen});
+
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.ButtonGroup buttonGroup3;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonFlvErneut;
     private javax.swing.JButton jButtonFlvPfad;
     private javax.swing.JButton jButtonFlvUrl;

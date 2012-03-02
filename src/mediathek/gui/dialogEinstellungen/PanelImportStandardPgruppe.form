@@ -33,6 +33,8 @@
                       <Component id="jButtonUebernehmen" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonReset" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -46,8 +48,9 @@
               <Component id="jTabbedPane1" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButtonUebernehmen" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButtonReset" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonUebernehmen" linkSize="9" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonReset" linkSize="9" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButton1" linkSize="9" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -695,6 +698,13 @@
     <Component class="javax.swing.JButton" name="jButtonReset">
       <Properties>
         <Property name="text" type="java.lang.String" value="Reset"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButton1">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/mediathek/res/help_16.png"/>
+        </Property>
       </Properties>
     </Component>
   </SubComponents>

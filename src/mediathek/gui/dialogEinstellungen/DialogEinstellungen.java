@@ -36,7 +36,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     public boolean ok = false;
     private PanelEinstellungen panelEinstellungen;
     private PanelEinstellungenNetz panelEinstellungenNetz;
-    private PanelUpdate panelUpdate;
     private PanelFilmlisteLaden panelImportFilme;
     private PanelExportFilmliste panelExportFilmliste;
     private PanelSenderLaden panelSenderLaden;
@@ -88,7 +87,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private void init() {
         panelEinstellungen = new PanelEinstellungen(ddaten);
         panelEinstellungenNetz = new PanelEinstellungenNetz(ddaten);
-        panelUpdate = new PanelUpdate(ddaten);
         panelImportFilme = new PanelFilmlisteLaden(ddaten);
         panelExportFilmliste = new PanelExportFilmliste(ddaten);
         panelSenderLaden = new PanelSenderLaden(ddaten);
@@ -109,7 +107,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private void initTree() {
         final String NAME_allgemeineEinstellungen = "Allgemein";
         final String NAME_netzwerk = "Netzwerk";
-        final String NAME_update = "Update";
         final String NAME_filmListeLaden = "Filmliste laden";
         final String NAME_senderLaden = "Sender aktualisieren";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
@@ -134,8 +131,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungen);
         DefaultMutableTreeNode treeNodeNetzwerk = new DefaultMutableTreeNode(NAME_netzwerk);
         treeNodeEinstellungen.add(treeNodeNetzwerk);
-        DefaultMutableTreeNode treeNodeUpdate = new DefaultMutableTreeNode(NAME_update);
-        treeNodeEinstellungen.add(treeNodeUpdate);
         treeNodeStart.add(treeNodeEinstellungen);
         // ######## Filme ###############
         DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filme");
@@ -200,9 +195,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                     } else if (name.equals(NAME_netzwerk)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungenNetz);
-                    } else if (name.equals(NAME_update)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelUpdate);
                     } else if (name.equals(NAME_filmListeLaden)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelImportFilme);

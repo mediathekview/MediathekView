@@ -40,17 +40,9 @@ public class IoXmlLesen__old {
     // ##############################
     // private
     // ##############################
-    public boolean importOld(DDaten ddaten) {
+    public boolean importOld(DDaten ddaten, String pfad) {
         try {
-            // liefert true wenn gelesen werden soll, sonst false
-            String datei = getBasisVerzeichnis() + Konstanten__old.XML_DATEI;
-            DialogImportOld dialogImportOld = new DialogImportOld(null, true, datei);
-            dialogImportOld.setVisible(true);
-            if (!dialogImportOld.ok) {
-                // Satz mit X, war wohl nix
-                return false;
-            }
-            xmlDatenLesen(dialogImportOld.ziel);
+            xmlDatenLesen(pfad);
             // Liste Buttons importieren
             for (int i = 0; i < listePgruppeButton.size(); ++i) {
                 DatenPgruppe__old gruppe = listePgruppeButton.get(i);
@@ -98,15 +90,15 @@ public class IoXmlLesen__old {
         return false;
     }
 
-    public static boolean altExistiert() {
+    public static String altExistiert() {
         try {
             String datei = getBasisVerzeichnis() + Konstanten__old.XML_DATEI;
             if (new File(datei).exists()) {
-                return true;
+                return datei;
             }
         } catch (Exception ex) {
         }
-        return false;
+        return "";
     }
 
     private void xmlDatenLesen(String datei) {
