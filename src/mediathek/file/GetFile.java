@@ -17,12 +17,14 @@ public class GetFile {
     String PFAD_PGRUPPE_LINUX = "/mediathek/file/pgr_linux.xml";
     String PFAD_PGRUPPE_WINDOWS = "/mediathek/file/pgr_windows.xml";
     String PFAD_PGRUPPE_MAC = "/mediathek/file/pgr_mac.xml";
-    String PFAD_HILFETEXT_SUCHEN = "/mediathek/file/hilfetext_suchen.txt";
+    public static String PFAD_HILFETEXT_SUCHEN = "/mediathek/file/hilfetext_suchen.txt";
+    public static String PFAD_HILFETEXT_PRGRAMME = "/mediathek/file/hilfetext_programme.txt";
+    public static String PFAD_HILFETEXT_STANDARD_PGRUPPEN = "hilfetext_standardPgruppen.txt";
 
-    public String getHilfeSuchen() {
+    public String getHilfeSuchen(String pfad) {
         String ret = "";
         try {
-            InputStreamReader in = new InputStreamReader(getClass().getResource(PFAD_HILFETEXT_SUCHEN).openStream(), Konstanten.KODIERUNG_UTF);
+            InputStreamReader in = new InputStreamReader(getClass().getResource(pfad).openStream(), Konstanten.KODIERUNG_UTF);
             BufferedReader br = new BufferedReader(in);
             String strLine;
             while ((strLine = br.readLine()) != null) {

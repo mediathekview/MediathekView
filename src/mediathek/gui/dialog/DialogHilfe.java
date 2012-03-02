@@ -22,9 +22,9 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.gui.beobachter.EscBeenden;
 import mediathek.daten.DDaten;
 import mediathek.gui.GuiAbo;
+import mediathek.gui.beobachter.EscBeenden;
 
 public class DialogHilfe extends javax.swing.JDialog {
 

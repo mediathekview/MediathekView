@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.gui.dialog.DialogPgruppeSpeichern;
 import mediathek.tool.TModel;
 
 public class ListePgruppe extends LinkedList<DatenPgruppe> {
@@ -59,9 +60,9 @@ public class ListePgruppe extends LinkedList<DatenPgruppe> {
         } else if (liste.size() == 1) {
             return liste.getFirst();
         } else {
-            /////////////////////////////
-            // Dialog zum Auswählen
-            return liste.getFirst();
+            DialogPgruppeSpeichern dialog = new DialogPgruppeSpeichern(null, true, liste);
+            dialog.setVisible(true);
+            return liste.get(dialog.index);
         }
     }
 

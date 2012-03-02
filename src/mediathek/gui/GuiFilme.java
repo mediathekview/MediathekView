@@ -182,7 +182,7 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, false, new GetFile().getHilfeSuchen()).setVisible(true);
+                new DialogHilfe(null, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_SUCHEN)).setVisible(true);
             }
         });
         //Tabelle einrichten

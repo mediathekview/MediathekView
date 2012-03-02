@@ -1,0 +1,83 @@
+
+Eine Programmgruppe ist ein Satz von Programmen an die eine
+URL eines Films übergeben wird. Je nach Angabe der Programme
+wird der Film dann aufgezeichnet oder angezeigt.
+
+
+Arten:
+
+Es muss je eine Programmgruppe zum Abspielen und zum Aufzeichnen angelegt
+sein. Diese werden beim ersten Programmstart mit den "Standardeinstellungen"
+angelegt. Die Programmgruppe "Abspielen" wird gestartet, wenn ein Film zum
+Abspielen gestartet wird, die Gruppe "Speichern" ist dann für das Speichern
+eines Films zuständig. Sind mehrere Gruppen zum Speichern angelegt, wird die
+Gruppe zum Speichern für jeden Film in einem Dialog abgefragt.
+Werden Abos genutzt, muss auch dafür eine Programmgruppe angelegt sein. Meist
+eignet sich dafür die Programmgruppe "Speichern", bei dieser ist also "Speicher"
+und "Abo" eingeschaltet.
+"Button" ist eine Möglichkeit weitere Programme einzurichten, und diese dann
+über das Menü "Ansicht->weitere Videoplayer" anzuzeigen.
+
+
+Details Programmgruppe:
+
+Soll ein Film mit einer Programmgruppe aufgezeichnet werden, ist die Angabe des
+"Zielpfads" und des "Zieldateinamens" wichtig. Beim Namen sind diese Parameter
+möglich:
+%D Sendedatum des Films oder aktuelles Datum wenn Sendedatum leer
+%d Sendezeit des Films oder jetzt wenn Sendezeit leer
+%s Sender des Films
+%N Originaldateiname des Films
+%T Titel des Films
+%t Thema des Films
+%H heute, aktuelles Datum der Form JJJJMMTT zB. 20090815 (15.08.2009)
+%h jetzt, aktuelle Uhrzeit der Form SSMMss zB. 152059 (15:20:59)
+
+%n der Name wird in einem Dialog abgefragt
+%p Pfad und Name der Zieldatei werden in einem Dialog abgefragt
+
+wird %p verwendet, dann wird das Feld Zielpfad als Vorgabe im
+Auswahldialog eingetragen. Es kann entweder %n oder %p verwendet 
+werden und wird dann vor dem Speichern abgefragt. Wird kein %p verwendet,
+muss ein fester existierender Pfad im Feld Pfad eingetragen werden.
+
+
+"Direkter Download, Präfix, Suffix": damit kann man URL's angeben, die nicht
+über ein Programm geladen werden sollen, sonder direkt als Download heruntergeladen
+werden.
+
+
+Programme:
+
+Hier werden die Programme zu der jeweiligen Programmgruppe eingetragen. Sind mehrere
+Programme eingetragen, kann man zu jedem Programm über die Felder Präfix und Suffix wählen,
+für welche URL ein Programm zuständig ist.
+
+"Zieldateiname": Damit kann ein eigener Zieldateiname für das jeweilige Programm gewählt
+werden. Ist das Feld leer, wird der Zieldateiname der Programmgruppe verwendet.
+
+"Programm": In dem Feld steht der Pfad zur Programmdatei.
+
+"Schalter": In diesem Feld werden die Programmschalter angegeben, die das Programm
+zum Start braucht. Mögliche Parameter sind:
+
+Diese Angeben werden durch die URL ersetzt:
+%f ist die URL des Films (Original-URL)
+%F ist die URL des Films für den flvstreamer vorbereitet
+%k ist die URL des Films in \"kleiner\" Auflösung, nur 3sat, ZDF, NDR
+zwei Sterne ** werden durch den Zieldateinamen mit Pfad ersetzt.
+
+Nur zum Ansehen eines Films reicht meist einer der 3 ersten Parameter.
+
+
+Beispiel für den vlc:
+Programm: "/usr/bin/vlc"
+Schalter: "%f :sout=#standard{access=file,mux=asf,dst=**} -I dummy --play-and-exit"
+Dateiname: "%t-%T-%n.mp4"
+
+hier wird %f durch die URL des Films ersetzt. %t, %T und %n 
+werden durch einen Pfad und Dateinamen (Thema-Titel-Dateiname_des_Films.mp4)
+ersetzt und in den Programmschalter anstatt der "**" eingesetzt.
+
+
+

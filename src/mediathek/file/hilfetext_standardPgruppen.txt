@@ -1,0 +1,29 @@
+
+Hiermit können die Standardprogramme zum "Ansehen" und "Aufzeichnen"
+der Filme eingetragen werden. Werden die Pfade nicht automatisch erkannt
+kann man sie auch per Hand auswählen. Der Zielpfad gibt an, wo Filme gespeichert
+werden sollen. "Fragen.." bedeutet, dass vor dem Speichern eines Films, in einem
+Dialog das Ziel abgefragt wird.
+
+
+Um alle Filme ansehen und aufzeichnen zu können, müssen mindestens diese Programme
+installiert sein:
+
+VLC-Player
+Dieses Programm dient zum Ansehen und teilweise auch zum Aufzeichnen der Filme.
+
+flvstreamer
+Damit können Flashfilme (die URL beginnt mit "rtmp") aufgezeichnet werden. Es ist
+auch möglich, durch die gleichzeitige Nutzung des VLC und des flvstreamers, Flashfilme
+direkt anzusehen.
+
+
+Linux:
+Die Programme können über die Paketverwaltung eingespielt werden.
+
+Windows, MacOsX:
+Die Programme könne aus dem Internet geladen werden:
+
+http://www.videolan.org/
+https://savannah.nongnu.org/projects/flvstreamer/
+

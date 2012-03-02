@@ -34,7 +34,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonReset" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonHilfe" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -50,7 +50,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonUebernehmen" linkSize="9" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonReset" linkSize="9" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton1" linkSize="9" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonHilfe" linkSize="9" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -700,7 +700,7 @@
         <Property name="text" type="java.lang.String" value="Reset"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="jButtonHilfe">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/mediathek/res/help_16.png"/>
