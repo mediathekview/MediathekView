@@ -127,7 +127,7 @@ public class GuiFunktionenProgramme {
             pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_LINUX_SCRIPT;
             datei = new GetFile().getMac();
         } else {
-            pfadScript = PFAD_WINDOWS_SCRIPT;
+            pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_WINDOWS_SCRIPT;
             datei = new GetFile().getWindows();
         }
         // Standardgruppen laden
