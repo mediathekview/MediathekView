@@ -105,21 +105,20 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         dialog.setVisible(true);
         if (dialog.ok && dialog.gruppe != null) {
             download.aufrufBauen(dialog.gruppe, null);
-            if (dialog.starten) {
-                ddaten.starterClass.addStarts(new Starts(download));
-            }
             // erst mal schauen obs das schon gibt
             Iterator<DatenDownload> it = this.iterator();
             while (it.hasNext()) {
                 if (it.next().arr[DatenDownload.DOWNLOAD_URL_NR].equals(film.arr[DatenFilm.FILM_URL_NR])) {
                     // alte Eintrag wird gelöscht und der neue eingetragen
                     it.remove();
-                    this.add(download);
-                    return;
                 }
             }
-            // nix gefunden
+            // und dann eintragen
             this.add(download);
+            if (dialog.starten) {
+                // und evtl. auch gleich starten
+                ddaten.starterClass.addStarts(new Starts(download));
+            }
             ddaten.guiDownloads.akualisieren();
         }
     }
