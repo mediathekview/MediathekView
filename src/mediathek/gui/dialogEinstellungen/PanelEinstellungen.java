@@ -29,6 +29,7 @@ import javax.swing.event.DocumentListener;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.controller.io.ProgrammUpdateSuchen;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
@@ -389,7 +390,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            DDaten.filmeLaden.checkProgrammVersion(ddaten, true /* Fenster immer anzeigen */);
+            new ProgrammUpdateSuchen().checkVersion(ddaten, true);
         }
     }
 }

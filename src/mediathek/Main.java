@@ -80,7 +80,7 @@ public class Main {
                 if (ar != null) {
                     for (int i = 0; i < ar.length; ++i) {
                         if (ar[i].equals("-A")) {
-                            state = AUTO;
+                            ////state = AUTO;
                         }
                         if (ar[i].equalsIgnoreCase("-noGui")) {
                             state = NOGUI;

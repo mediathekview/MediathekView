@@ -63,7 +63,6 @@ public class MediathekBr extends MediathekReader implements Runnable {
 
     void laden() {
         //        <video application="a792/o16" host="gffstream.fcod.llnwd.net" groesse="xlarge" stream="br/b7/b7konks25277.mp4" typ="aufzeichnung"/>
-        ///mnt/daten/software/bin/flvstreamer/flvstreamer --host gffstream.fcod.llnwd.net --app a792/o16/ --playpath mp4:br/b7/b7konks25241.mp4 -o film-3
         StringBuilder seite = new StringBuilder();
         int pos = 0;
         int posEnde;
@@ -178,7 +177,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                     }
                     // <video application="a792/o16" host="gffstream.fcod.llnwd.net" groesse="xlarge" stream="br/b7/b7konks25277.mp4" typ="aufzeichnung"/>
                     // mnt/daten/software/bin/flvstreamer/flvstreamer --host gffstream.fcod.llnwd.net --app a792/o16/ --playpath mp4:br/b7/b7konks25241.mp4 -o film-3
-                    int p ;
+                    int p;
                     String host = "";
                     String app = "";
                     String play = "";

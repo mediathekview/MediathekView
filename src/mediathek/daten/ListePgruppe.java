@@ -52,20 +52,6 @@ public class ListePgruppe extends LinkedList<DatenPgruppe> {
         return null;
     }
 
-    public DatenPgruppe getPgruppeSpeichern() {
-        //Pgruppe zum Aufzeichnen
-        ListePgruppe liste = getListeSpeichern();
-        if (liste.size() == 0) {
-            return null;
-        } else if (liste.size() == 1) {
-            return liste.getFirst();
-        } else {
-            DialogPgruppeSpeichern dialog = new DialogPgruppeSpeichern(null, true, liste);
-            dialog.setVisible(true);
-            return liste.get(dialog.index);
-        }
-    }
-
     public DatenPgruppe getPgruppeAbo(String name) {
         //liefert mit dem Namen eines Abos die passende Programmgruppe zurück
         //wird nichts gefunden, wird die erste Programmgruppe (der Abos) genommen

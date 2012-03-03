@@ -61,7 +61,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             listeThemen.clear();
             meldungStart(0);
             addToList__("http://www.swrmediathek.de/tvlist.htm");
-            suchen.listeFilmeNeu.alteThemenLöschen(senderName, listeThemen); /////////??
+            suchen.listeFilmeNeu.alteThemenLöschen(senderName, listeThemen);
             if (!Daten.filmeLaden.getStop() && listeThemen.size() > 0) {
                 for (int t = 0; t < senderMaxThread; ++t) {
                     new Thread(new SenderThemaLaden()).start();
@@ -121,15 +121,6 @@ public class MediathekSwr extends MediathekReader implements Runnable {
         }
     }
 
-//////////
-//////////    private void delThema(String thema) {
-//////////        if (daten.filmeLaden.listeFilmeOld != null) {
-//////////            daten.filmeLaden.listeFilmeOld.delThema(SENDER, thema);
-//////////        }
-//////////        if (daten.filmeLaden.listeFilmeSchattenliste != null) {
-//////////            daten.filmeLaden.listeFilmeSchattenliste.delThema(sender, thema);
-//////////        }
-//////////    }
     private class SenderThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
@@ -177,9 +168,6 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     while (!Daten.filmeLaden.getStop() && themen < maxThemen && (link = getListeThemen()) != null) {
                         ++themen;
                         ++nrListe;
-////////                        daten.system[FilmeKonstanten.SYSTEM_SWR_LISTE_NR] = String.valueOf(nrListe);
-////////                        daten.setGeaendertOhnePanel();
-////////                        delThema(link[1]);
                         themenSeitenSuchen(link[0] /* url */, link[1] /* Thema */);
                         meldungProgress(link[0]);
                         meldungAddMax(1);
@@ -306,33 +294,6 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     Log.fehlerMeldung("MediathekSwr.addFilme2-2", ex, thema + " " + urlFilm);
                 }
             }
-//            if ((pos = strSeite2.indexOf(MUSTER_DATUM_1)) != -1) {
-//                pos += MUSTER_DATUM_1.length();
-//                try {
-//                    pos1 = 0;
-//                    pos2 = 0;
-//                    if ((pos1 = strSeite2.indexOf(MUSTER_DATUM_2, pos)) != -1) {
-//                        tmp = strSeite2.substring(pos, pos1).trim();
-//                        if (tmp.contains("|")) {
-//                            datum = tmp.substring(0, tmp.indexOf("|")).trim();
-//                            tmp = tmp.substring(tmp.indexOf("|") + 1).trim();
-//                            if (tmp.contains("|")) {
-//                                zeit = tmp.substring(0, tmp.indexOf("|")).trim();
-//                            } else {
-//                                zeit = tmp.trim();
-//                            }
-//                            if (!zeit.equals("")) {
-//                                if (zeit.contains("Uhr")) {
-//                                    zeit = zeit.replace("Uhr", "");
-//                                }
-//                                zeit = zeit.trim() + ":00";
-//                            }
-//                        }
-//                    }
-//                } catch (Exception ex) {
-//                    LogFilme.fehlerMeldung("MediathekSwr.addFilme2-3", ex, thema + " " + urlFilm);
-//                }
-//            }
             pos = 0;
             pos1 = 0;
             pos2 = 0;

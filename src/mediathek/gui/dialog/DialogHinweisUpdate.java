@@ -48,13 +48,6 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
         this.setTitle(dialogTitel);
         initComponents();
         initBeob();
-//        if (daten.mediathekGui != null) {
-//            //nicht in der Autofunktion
-//            titelOrg = daten.mediathekGui.getTitle();
-//            daten.mediathekGui.setTitle(ttitel);
-//        }
-////        new Thread(new Zeit()).start();
-//        this.dispose();
     }
 
     private void initBeob() {
@@ -73,29 +66,6 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
         this.dispose();
     }
 
-//    private class Zeit implements Runnable {
-//        // warten sekunden Sekunden
-//
-//        @Override
-//        public synchronized void run() {
-//            try {
-//                for (int i = sekunden; i > 0; --i) {
-//                    if (i % 3 == 0) {
-//                        if (daten.mediathekGui != null) {
-//                            daten.mediathekGui.setTitle(" * " + daten.mediathekGui.getTitle() + " * ");
-//                        }
-//                    }
-//                    jLabel1.setText("Schließen in " + i + " Sekunden");
-//                    this.wait(1000);
-//                }
-//            } catch (InterruptedException ex) {
-//            }
-//            if (daten.mediathekGui != null) {
-//                daten.mediathekGui.setTitle(titelOrg);
-//            }
-//            beenden();
-//        }
-//    }
     /** This method is called from within the constructor to
      *   initialize the form.
      *   WARNING: Do NOT modify this code. The content of this method is

@@ -25,9 +25,8 @@ public class DatenKonstanten {
 
     public static final String VERSION = "2.6.0";
     public static final String PROGRAMMNAME = "MediathekView";
-    ////////////////////////////////
+    //
     public static final String ADRESSE_UPDATE = "http://zdfmediathk.sourceforge.net/update.xml";
-    //public static final String ADRESSE_UPDATE = "http://zdfmediathk.sourceforge.net/update-test.xml";
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";
     public static final String ADRESSE_ANLEITUNG_UPDATE = "http://zdfmediathk.sourceforge.net/update.html";
     public static final String TextUpdateSuchen = "Eimal am Tag nach einer neuen Programmversion suchen";

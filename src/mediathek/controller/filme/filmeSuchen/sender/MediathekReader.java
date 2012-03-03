@@ -117,7 +117,6 @@ public class MediathekReader implements Runnable {
 
     boolean themaLaden(String sender, String thema) {
         boolean ret = true;
-        ///////////////////////////////////////////////////////
         return ret;
     }
 

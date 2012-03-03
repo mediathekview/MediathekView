@@ -265,8 +265,7 @@ public class StarterClass {
         Iterator<Starts> it;
         Starts ret = null;
         if (allesStop) {
-            //////////listeStarts.clear();
-            //nur die laufenden Starts löschen, damit die Anzeige der Podcasts stimmt
+            // nur die laufenden Starts löschen, damit die Anzeige der Podcasts stimmt
             it = listeStarts.getIt();
             while (it.hasNext()) {
                 Starts s = it.next();

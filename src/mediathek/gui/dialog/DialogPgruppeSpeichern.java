@@ -21,44 +21,82 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JComboBox;
-import mediathek.daten.ListePgruppe;
+import javax.swing.JOptionPane;
+import mediathek.daten.DDaten;
+import mediathek.daten.DatenFilm;
+import mediathek.daten.DatenPgruppe;
 import mediathek.gui.beobachter.EscBeenden;
 
 public class DialogPgruppeSpeichern extends javax.swing.JDialog {
-
-    private ListePgruppe listePgruppeSpeichern; // ist schon die Auswahl nur zum Speichern!!
-    public int index = 0;
-
-    /** Creates new form DialogSerienbrief
-     *
-     * @param parent
-     * @param modal
-     * @param d Daten
-     * @param aktA aktuelles Abo
-     */
-    public DialogPgruppeSpeichern(java.awt.Frame parent, boolean modal, ListePgruppe l) {
+    
+    public DatenPgruppe gruppe = null;
+    public boolean starten = true;
+    public boolean ok = false;
+    private DDaten ddaten;
+    
+    public DialogPgruppeSpeichern(java.awt.Frame parent, boolean modal, DDaten dd, DatenFilm film) {
         super(parent, modal);
+        ddaten = dd;
         initComponents();
-        listePgruppeSpeichern = l;
-        jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel(listePgruppeSpeichern.getObjectDataCombo()));
-        jComboBoxPgr.addActionListener(new BeobComboProgramm());
-        jButtonBeenden.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                beenden();
+        this.setTitle("Film Speichern");
+        if (ddaten.listePgruppe.getListeSpeichern().size() == 0) {
+            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+            beenden();
+        } else {
+            jTextFieldSender.setText(film.arr[DatenFilm.FILM_SENDER_NR]);
+            jTextFieldTitel.setText(film.arr[DatenFilm.FILM_TITEL_NR]);
+            jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel(ddaten.listePgruppe.getListeSpeichern().getObjectDataCombo()));
+            if (ddaten.listePgruppe.getListeSpeichern().size() == 1) {
+                // macht dann keinen Sinn
+                jComboBoxPgr.setVisible(false);
+                jLabelPgruppe.setVisible(false);
+            } else {
+                jComboBoxPgr.addActionListener(new BeobComboProgramm());
             }
-        });
-        new EscBeenden(this) {
-
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
+            setGruppe();
+            jButtonBeenden.addActionListener(new ActionListener() {
+                
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ok = true;
+                    beenden();
+                }
+            });
+            new EscBeenden(this) {
+                
+                @Override
+                public void beenden_() {
+                    beenden();
+                }
+            };
+            jButtonAbbrechen.addActionListener(new ActionListener() {
+                
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    beenden();
+                }
+            });
+            jCheckBoxStarten.setSelected(true);
+            starten = true;
+            jCheckBoxStarten.addActionListener(new ActionListener() {
+                
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    starten = jCheckBoxStarten.isSelected();
+                }
+            });
+        }
     }
-
+    
+    private void setGruppe() {
+        if (ddaten.listePgruppe.getListeSpeichern().size() > 0) {
+            gruppe = ddaten.listePgruppe.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
+        } else {
+            gruppe = null;
+        }
+    }
+    
     private void beenden() {
         this.dispose();
     }
@@ -72,80 +110,139 @@ public class DialogPgruppeSpeichern extends javax.swing.JDialog {
     private void initComponents() {
 
         jButtonBeenden = new javax.swing.JButton();
-        jPanelExtra = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jButtonAbbrechen = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jTextFieldSender = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jTextFieldTitel = new javax.swing.JTextField();
+        jLabelPgruppe = new javax.swing.JLabel();
         jComboBoxPgr = new javax.swing.JComboBox();
+        jCheckBoxStarten = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jButtonBeenden.setText("Ok");
 
-        jPanelExtra.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButtonAbbrechen.setText("Abbrechen");
 
-        jLabel1.setText("Programmgruppe zum Aufzeichnen");
+        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel2.setText("Sender:");
+
+        jTextFieldSender.setEditable(false);
+        jTextFieldSender.setText("jTextField1");
+
+        jLabel3.setText("Titel:");
+
+        jTextFieldTitel.setEditable(false);
+        jTextFieldTitel.setText("jTextField2");
+
+        jLabelPgruppe.setText("Programmgruppe zum Aufzeichnen");
 
         jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
-        jPanelExtra.setLayout(jPanelExtraLayout);
-        jPanelExtraLayout.setHorizontalGroup(
-            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelExtraLayout.createSequentialGroup()
+        jCheckBoxStarten.setSelected(true);
+        jCheckBoxStarten.setText("Download sofort starten");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelExtraLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 197, Short.MAX_VALUE))
-                    .addComponent(jComboBoxPgr, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBoxPgr, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextFieldSender)
+                                    .addComponent(jTextFieldTitel)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jCheckBoxStarten)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(15, 15, 15))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabelPgruppe)
+                        .addContainerGap(243, Short.MAX_VALUE))))
         );
-        jPanelExtraLayout.setVerticalGroup(
-            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelExtraLayout.createSequentialGroup()
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextFieldSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel3)
+                    .addComponent(jTextFieldTitel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
+                .addComponent(jLabelPgruppe)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jComboBoxPgr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBoxStarten)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jTextFieldSender, jTextFieldTitel});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelExtra, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonBeenden, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButtonBeenden, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonAbbrechen)))
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonBeenden});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanelExtra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonBeenden)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonAbbrechen)
+                    .addComponent(jButtonBeenden))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAbbrechen;
     private javax.swing.JButton jButtonBeenden;
+    private javax.swing.JCheckBox jCheckBoxStarten;
     private javax.swing.JComboBox jComboBoxPgr;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanelExtra;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabelPgruppe;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JTextField jTextFieldSender;
+    private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
 
     private class BeobComboProgramm implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
-            index = jComboBoxPgr.getSelectedIndex();
+            setGruppe();
         }
     }
 }

@@ -114,12 +114,6 @@ public class FilmeImportieren {
     //===================================
     private boolean urlLaden(String dateiUrl, boolean istUrl) {
         boolean ret = false;
-        ////////////////////////////
-//////////        Log.systemMeldung("laden von: http://178.77.79.81/mediathek2/Mediathek_18.zip");
-//////////        Log.systemMeldung("statt von: " + dateiUrl);
-//////////        dateiUrl = "http://178.77.79.81/mediathek2/Mediathek_18.zip";
-//////////        istUrl = true;
-        ////////////////////////////
         try {
             if (!dateiUrl.equals("")) {
                 Log.systemMeldung("Filmliste laden von: " + dateiUrl);

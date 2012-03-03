@@ -63,7 +63,6 @@ public final class InfoPanel extends javax.swing.JPanel {
         jProgressBar1.setMinimum(0);
         jProgressBar1.setValue(filmListenerElement.progress);
         jProgressBar1.setStringPainted(true);
-        /////updateUI();
     }
 
     public void clearProgress() {
