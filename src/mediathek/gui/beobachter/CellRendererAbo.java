@@ -30,13 +30,13 @@ import mediathek.daten.DatenAbo;
 import mediathek.tool.GuiKonstanten;
 
 public class CellRendererAbo extends DefaultTableCellRenderer {
-    
+
     DDaten daten;
-    
+
     public CellRendererAbo(DDaten d) {
         daten = d;
     }
-    
+
     @Override
     public Component getTableCellRendererComponent(
             JTable table,
@@ -57,16 +57,7 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
             int c = table.convertColumnIndexToModel(column);
             DatenAbo abo = daten.listeAbo.getAboNr(r);
             boolean eingeschaltet = abo.aboIstEingeschaltet();
-//            boolean exakt = abo.aboIstExakt();
-            if (eingeschaltet) {
-//                setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
-//                    setForeground(GuiKonstanten.ABO_FOREGROUND);
-//                if (isSelected) {
-//                    setBackground(GuiKonstanten.ABO_SEL);
-//                } else {
-//                    setBackground(GuiKonstanten.ABO);
-//                }
-            } else {
+            if (!eingeschaltet) {
                 setFont(new java.awt.Font("Dialog", Font.ITALIC, 12));
                 if (isSelected) {
                     setBackground(GuiKonstanten.FARBE_GRAU_SEL);
@@ -80,18 +71,8 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                     setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
                 } else {
                     setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
-//                    setText("X");
                 }
             }
-//            if (c == DatenAbo.ABO_THEMA_EXAKT_NR) {
-//                setHorizontalAlignment(SwingConstants.CENTER);
-//                if (exakt) {
-//                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
-//                } else {
-//                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
-////                    setText("X");
-//                }
-//            }
         } catch (Exception ex) {
             Log.fehlerMeldung(this.getClass().getName(), ex);
         }

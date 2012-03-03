@@ -33,7 +33,6 @@ import mediathek.Konstanten;
 
 public class FilmUpdateServerSuchen {
 
-
     public static String[] getListe(String url, ListeFilmUpdateServer sListe) throws MalformedURLException, IOException, XMLStreamException {
         String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
         //String parsername = "";
@@ -87,14 +86,7 @@ public class FilmUpdateServerSuchen {
                     if (parser.getLocalName().equals("Server")) {
                         if (!serverUrl.equals("")) {
                             //public DatenFilmUpdate(String url, String prio, String zeit, String datum, String anzahl) {
-                            ///////////////////////////////////////////////
-                            // zum Testen:
-                            if (serverUrl.contains("178.77.79.81")) {
-                                sListe.addWithCheck(new DatenFilmUpdateServer(serverUrl, prio, zeit, datum, anzahl));
-                            }
-                            //////////////////////////////////////////////////
-                            // sons nur das:
-                            // sListe.addWithCheck(new DatenFilmUpdateServer(filmUrl, prio, zeit, datum, anzahl));
+                            sListe.addWithCheck(new DatenFilmUpdateServer(serverUrl, prio, zeit, datum, anzahl));
                         }
                         break;
                     }

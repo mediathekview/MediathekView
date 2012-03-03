@@ -126,7 +126,6 @@ public class MediathekArd extends MediathekReader implements Runnable {
         private void feedSuchen(String strUrlFeed, String thema) {
             //weitere Seiten:
             //wenn vorhanden: <option value="
-
             //<option value="/ard/servlet/ajax-cache/3516962/view=list/documentId=1175574/goto=2/index.html">2</option>
             //URL: http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=4106/index.html
             final String MUSTER = "<option value=\"";
@@ -198,13 +197,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             String datum = "";
             String zeit = "";
             String tmp;
-            ///////////////////////////////////////
-//            if (!thema.contains("Abendschau")) {
-//                return;
-//            }
             //erst mal nach weitern Seiten schauen
-//            if ((pos = seite.indexOf(MUSTER, pos)) != -1) {
-//            }
             while (!Daten.filmeLaden.getStop() && (posDatum1 = seite.indexOf(MUSTER_DATUM_1, posDatum1)) != -1) {
                 posDatum1 += MUSTER_DATUM_1.length();
                 if ((pos1 = seite.indexOf(MUSTER_DATUM_2, posDatum1)) != -1) {
@@ -248,9 +241,6 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         }
                         gefunden = true;
                         ret = filmLaden(strUrlFeed, MUSTER_SET + url, thema, titel, datum, zeit, alt);
-                        ///////////////////////////////////////////
-                        DatumZeit.checkDatum(datum, "");
-                        ////////////////////////////////////////////
                     } catch (Exception ex) {
                         Log.fehlerMeldung("MediathekArd.feedEinerSeiteSuchen-1", ex, "Thema hat keine Links");
                     }
@@ -291,9 +281,6 @@ public class MediathekArd extends MediathekReader implements Runnable {
                             }
                         }
                         ret = filmLaden(strUrlFeed, MUSTER_SET + url, thema, titel, datum, zeit, alt);
-                        ///////////////////////////////////////////
-                        DatumZeit.checkDatum(datum, "");
-                        ////////////////////////////////////////////
                     } catch (Exception ex) {
                         Log.fehlerMeldung("MediathekArd.feedEinerSeiteSuchen-2", ex, "Thema hat keine Links");
                     }

@@ -24,6 +24,8 @@ import java.util.*;
 import javax.swing.JOptionPane;
 import mediathek.Daten;
 import mediathek.controller.io.starter.Starts;
+import mediathek.gui.GuiDownloads;
+import mediathek.gui.dialog.DialogPgruppeSpeichern;
 import mediathek.tool.TModel;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
@@ -99,12 +101,13 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // ist eine URL schon vorhanden,Sender,Thema,Titel aktualisieren,
         // es wird der aktuellere Eintrag verwendet
         DatenDownload download = new DatenDownload(film, Starts.QUELLE_DOWNLOAD);
-        DatenPgruppe gruppe = ddaten.listePgruppe.getPgruppeSpeichern();
-        if (gruppe == null) {
-            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
-                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            download.aufrufBauen(gruppe, null);
+        DialogPgruppeSpeichern dialog = new DialogPgruppeSpeichern(null, true, ddaten, film);
+        dialog.setVisible(true);
+        if (dialog.ok && dialog.gruppe != null) {
+            download.aufrufBauen(dialog.gruppe, null);
+            if (dialog.starten) {
+                ddaten.starterClass.addStarts(new Starts(download));
+            }
             // erst mal schauen obs das schon gibt
             Iterator<DatenDownload> it = this.iterator();
             while (it.hasNext()) {
@@ -117,6 +120,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
             // nix gefunden
             this.add(download);
+            ddaten.guiDownloads.akualisieren();
         }
     }
 

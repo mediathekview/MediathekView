@@ -29,9 +29,8 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 
 public class DatenPgruppe {
-    //Tags Programmgruppen
-////////////////////////////////////////
 
+    //Tags Programmgruppen
     public static final String PROGRAMMGRUPPE = "Programmgruppe";
     public static final int PROGRAMMGRUPPE_MAX_ELEM = 12;
     public static final String PROGRAMMGRUPPE_NAME = "Name";
