@@ -64,8 +64,8 @@ public class Konstanten {
     //abo
     public static final String SYSTEM_ICON_KLEIN = "system-icon-groesse";
     public static final int SYSTEM_ICON_KLEIN_NR = 7;
-    public static final String SYSTEM_TAGE_ANZEIGEN = "system-tage-anzeigen";
-//    public static final int SYSTEM_TAGE_ANZEIGEN_NR = 8;
+    public static final String SYSTEM_FENSTER_MAX = "programmfenster-maximieren";
+    public static final int SYSTEM_FENSTER_MAX_NR = 8;
     public static final String SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN = "system-panel-videoplayer-anzeigen";
     public static final int SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR = 9;
     //proxy
@@ -125,7 +125,7 @@ public class Konstanten {
     public static final String SYSTEM = "system";
     public static final int SYSTEM_MAX_ELEM = 34;
     public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION, SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y,
-        SYSTEM_ICON_KLEIN, SYSTEM_TAGE_ANZEIGEN, SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN,
+        SYSTEM_ICON_KLEIN, SYSTEM_FENSTER_MAX, SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN,
         SYSTEM_PROXY_SERVER, SYSTEM_PROXY_PORT, SYSTEM_PROXY_USER, SYSTEM_PROXY_PWD, SYSTEM_PROXY_ON,
         SYSTEM_MAX_DOWNLOAD, SYSTEM_LEITUNG_LOW, SYSTEM_RTMP_FLVSTREAMER,
         SYSTEM_SWR_LISTE, SYSTEM_PFAD_EXPORT_ABOS, SYSTEM_IMPORT_DATEI, SYSTEM_IMPORT_URL_AUTO, SYSTEM_IMPORT_URL_MANUELL,

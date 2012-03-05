@@ -40,7 +40,6 @@ import mediathek.gui.beobachter.BeobWeb;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
@@ -192,7 +191,7 @@ public final class MediathekGui extends javax.swing.JFrame {
 
     private void setSize(boolean max) {
         this.pack();
-        if (max) {
+        if (max || Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR])) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else {
             int x;
@@ -537,6 +536,12 @@ public final class MediathekGui extends javax.swing.JFrame {
 
     private void beenden() {
         ddaten.allesAbbrechen();
+        //int t = this.getExtendedState();
+        if (this.getExtendedState() == JFrame.MAXIMIZED_BOTH) {
+            Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR] = Boolean.TRUE.toString();
+        } else {
+            Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR] = Boolean.FALSE.toString();
+        }
         Daten.system[Konstanten.SYSTEM_GROESSE_X_NR] = String.valueOf(this.getSize().width);
         Daten.system[Konstanten.SYSTEM_GROESSE_Y_NR] = String.valueOf(this.getSize().height);
         ddaten.allesSpeichern();
