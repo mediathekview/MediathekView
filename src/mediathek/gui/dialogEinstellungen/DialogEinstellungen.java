@@ -175,8 +175,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         // Aufbauen
         jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNodeStart));
         jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-
-
         jTree1.addTreeSelectionListener(new TreeSelectionListener() {
 
             @Override
@@ -246,8 +244,15 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                 jPanelExtra.updateUI();
             }
         });
+        expand();
+    }
 
-
+    private void expand() {
+        int row = 0;
+        while (row < jTree1.getRowCount()) {
+            jTree1.expandRow(row);
+            row++;
+        }
     }
 
     private void beenden() {
