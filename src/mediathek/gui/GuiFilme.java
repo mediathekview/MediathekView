@@ -395,6 +395,7 @@ public class GuiFilme extends PanelVorlage {
         jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(DDaten.listeFilmeNachBlackList.getModelOfField(DatenFilm.FILM_SENDER_NR, "", 0)));
         jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(DDaten.listeFilmeNachBlackList.getModelOfField(DatenFilm.FILM_THEMA_NR, "", 0)));
         jTextFieldFilterTitel.setText("");
+        jTextFieldFilterThemaTitel.setText("");
         //neu laden
         tabelleBauen();
         stopBeob = false;

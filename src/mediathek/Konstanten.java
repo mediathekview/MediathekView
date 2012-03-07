@@ -23,13 +23,16 @@ public class Konstanten {
 
     public static final String VERSION = "3.0.0";
     public static final String PROGRAMMNAME = "MediathekView";
+    public static final String USER_AGENT_DEFAULT = PROGRAMMNAME + " " + VERSION;
+    // MediathekView URLs
     public static final String ADRESSE_UPDATE_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
     public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/version.xml";
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";
     public static final String ADRESSE_ANLEITUNG = "http://zdfmediathk.sourceforge.net";
+    public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen.xml";
+    // ProgrammUrls
     public static final String ADRESSE_VLC = "http://www.videolan.org/";
     public static final String ADRESSE_FLVSTREAMER = "https://savannah.nongnu.org/projects/flvstreamer/";
-    public static final String USER_AGENT_DEFAULT = PROGRAMMNAME + " " + VERSION;
     // Dateien/Verzeichnisse
     public static final String MEDIATHEK_VIEW_VERZEICHNISS = ".mediathek3";
     public static final String LOG_DATEI_DOWNLOAD_ABOS = "downloadAbos.txt";
