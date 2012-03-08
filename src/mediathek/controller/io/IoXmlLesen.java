@@ -20,6 +20,8 @@
 package mediathek.controller.io;
 
 import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.LinkedList;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLInputFactory;
@@ -33,6 +35,7 @@ import mediathek.controller.filme.filmeImportieren.filmUpdateServer.FilmUpdateSe
 import mediathek.daten.*;
 import mediathek.importOld.DatenPgruppe__old;
 import mediathek.importOld.Konstanten__old;
+import mediathek.tool.GuiFunktionen;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 public class IoXmlLesen {
@@ -56,9 +59,19 @@ public class IoXmlLesen {
         return false;
     }
 
-    public static DatenPgruppe[] importPgruppe(String datei, boolean log) {
+    public static DatenPgruppe[] importPgruppe(String dateiUrl, boolean log) {
+        int timeout = 10000; //10 Sekunden
         try {
-            return importPgruppe(new FileInputStream(datei), log);
+            if (GuiFunktionen.istUrl(dateiUrl)) {
+                URLConnection conn;
+                conn = new URL(dateiUrl).openConnection();
+                conn.setConnectTimeout(timeout);
+                conn.setReadTimeout(timeout);
+                conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+                return importPgruppe(conn.getInputStream(), log);
+            } else {
+                return importPgruppe(new FileInputStream(dateiUrl), log);
+            }
         } catch (Exception ex) {
             if (log) {
                 Log.fehlerMeldung("IoXml.importPgruppe", ex);

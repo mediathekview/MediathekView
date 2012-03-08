@@ -123,22 +123,19 @@ public class FilmeLaden {
     // Filme als Liste importieren, feste URL/Datei
     // #################################################
     public synchronized void filmlisteImportieren(String dateiUrl) {
-        boolean istUrl;
-        istUrl = dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
             stop = false;
-            filmeImportieren.filmeImportierenDatei(dateiUrl, istUrl);
+            filmeImportieren.filmeImportierenDatei(dateiUrl, GuiFunktionen.istUrl(dateiUrl));
         }
     }
 
-    public synchronized void filmlisteDirektImportieren(String dateiUrl) {
-        boolean istUrl;
-        istUrl = dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
-        filmeImportieren.filmeDirektImportierenDatei(dateiUrl, istUrl);
-    }
-
+//    public synchronized void filmlisteDirektImportieren(String dateiUrl) {
+//        boolean istUrl;
+//        istUrl = dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
+//        filmeImportieren.filmeDirektImportierenDatei(dateiUrl, istUrl);
+//    }
     // #######################################
     // Filme beim allen Sender laden
     // #######################################

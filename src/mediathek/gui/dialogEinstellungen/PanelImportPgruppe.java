@@ -27,15 +27,18 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import mediathek.Daten;
 import mediathek.Log;
-import mediathek.controller.filme.filmeImportieren.filmUpdateServer.FilmUpdateServer;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.ListeProgrammgruppenVorlagen;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenPgruppe;
+import mediathek.daten.ListePgruppe;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TModel;
 
 public class PanelImportPgruppe extends PanelVorlage {
 
@@ -51,11 +54,20 @@ public class PanelImportPgruppe extends PanelVorlage {
         jButtonPfad.addActionListener(new BeobPfad());
         jTextFieldDatei.getDocument().addDocumentListener(new BeobPfadDoc());
         jTextAreaImport.getDocument().addDocumentListener(new BeobTextArea());
+        jButtonImportVorlage.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!jTextFieldUrl.getText().equals("")) {
+                    importDatei(jTextFieldUrl.getText());
+                }
+            }
+        });
         jButtonImportDatei.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                importDatei();
+                importDatei(jTextFieldDatei.getText());
             }
         });
         jButtonImportText.addActionListener(new ActionListener() {
@@ -65,14 +77,23 @@ public class PanelImportPgruppe extends PanelVorlage {
                 importText();
             }
         });
+        jButtonAktualisieren.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabelleLaden();
+            }
+        });
+        jTableVorlagen.getSelectionModel().addListSelectionListener(new BeobTableSelect());
         tabelleLaden();
     }
 
-    private void importDatei() {
+    private void importDatei(String datei) {
         DatenPgruppe[] pGruppe;
-        pGruppe = IoXmlLesen.importPgruppe(jTextFieldDatei.getText(), true);
+        pGruppe = IoXmlLesen.importPgruppe(datei, true);
         if (pGruppe != null) {
             if (ddaten.listePgruppe.addPgruppe(pGruppe)) {
+                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, PanelImportPgruppe.class.getSimpleName());
                 JOptionPane.showMessageDialog(null, pGruppe.length + " Programmgruppe(n) importiert!",
                         "Ok", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -87,6 +108,7 @@ public class PanelImportPgruppe extends PanelVorlage {
         pGruppe = IoXmlLesen.importPgruppeText(jTextAreaImport.getText(), true);
         if (pGruppe != null) {
             if (ddaten.listePgruppe.addPgruppe(pGruppe)) {
+                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, PanelImportPgruppe.class.getSimpleName());
                 JOptionPane.showMessageDialog(null, pGruppe.length + " Programmgruppe(n) importiert!",
                         "Ok", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -97,20 +119,35 @@ public class PanelImportPgruppe extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        ListeProgrammgruppenVorlagen l = new ListeProgrammgruppenVorlagen();
-        l.getListe();
-        jTableVorlagen.setModel(l.getTModel());
-        for (int i = 0; i < jTableVorlagen.getColumnCount(); ++i) {
-            if (i == FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR) {
-                jTableVorlagen.getColumnModel().getColumn(i).setMinWidth(10);
-                jTableVorlagen.getColumnModel().getColumn(i).setMaxWidth(3000);
-                jTableVorlagen.getColumnModel().getColumn(i).setPreferredWidth(350);
-            } else {
-                jTableVorlagen.getColumnModel().getColumn(i).setMinWidth(10);
-                jTableVorlagen.getColumnModel().getColumn(i).setMaxWidth(3000);
-                jTableVorlagen.getColumnModel().getColumn(i).setPreferredWidth(100);
+        jTableVorlagen.setModel(new ListeProgrammgruppenVorlagen().getTModel());
+//        for (int i = 0; i < jTableVorlagen.getColumnCount(); ++i) {
+//            if (i == FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR) {
+//                jTableVorlagen.getColumnModel().getColumn(i).setMinWidth(10);
+//                jTableVorlagen.getColumnModel().getColumn(i).setMaxWidth(3000);
+//                jTableVorlagen.getColumnModel().getColumn(i).setPreferredWidth(350);
+//            } else {
+//                jTableVorlagen.getColumnModel().getColumn(i).setMinWidth(10);
+//                jTableVorlagen.getColumnModel().getColumn(i).setMaxWidth(3000);
+//                jTableVorlagen.getColumnModel().getColumn(i).setPreferredWidth(100);
+//            }
+//        }
+    }
+
+    private void table1Select() {
+        String[] vorlage = new String[ListeProgrammgruppenVorlagen.PGR_MAX_ELEM];
+        for (int i = 0; i < ListeProgrammgruppenVorlagen.PGR_MAX_ELEM; i++) {
+            vorlage[i] = "";
+        }
+        int selectedTableRow = jTableVorlagen.getSelectedRow();
+        if (selectedTableRow >= 0) {
+            int selectedModelRow = jTableVorlagen.convertRowIndexToModel(selectedTableRow);
+            for (int i = 0; i < ListeProgrammgruppenVorlagen.PGR_MAX_ELEM; ++i) {
+                vorlage[i] = jTableVorlagen.getModel().getValueAt(selectedModelRow, i).toString();
             }
         }
+        jTextFieldName.setText(vorlage[ListeProgrammgruppenVorlagen.PGR_NAME_NR]);
+        jTextFieldUrl.setText(vorlage[ListeProgrammgruppenVorlagen.PGR_URL_NR]);
+        jTextAreaBeschreibung.setText(vorlage[ListeProgrammgruppenVorlagen.PGR_BESCHREIBUNG_NR]);
     }
 
     /** This method is called from within the constructor to
@@ -125,6 +162,17 @@ public class PanelImportPgruppe extends PanelVorlage {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTableVorlagen = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jTextFieldName = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jTextFieldUrl = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextAreaBeschreibung = new javax.swing.JTextArea();
+        jButtonImportVorlage = new javax.swing.JButton();
+        jButtonAktualisieren = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jTextFieldDatei = new javax.swing.JTextField();
         jButtonPfad = new javax.swing.JButton();
@@ -147,21 +195,106 @@ public class PanelImportPgruppe extends PanelVorlage {
         ));
         jScrollPane2.setViewportView(jTableVorlagen);
 
+        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel1.setText("Name:");
+
+        jTextFieldName.setEditable(false);
+
+        jLabel2.setText("URL:");
+
+        jTextFieldUrl.setEditable(false);
+
+        jLabel3.setText("Beschreibung:");
+
+        jTextAreaBeschreibung.setColumns(20);
+        jTextAreaBeschreibung.setEditable(false);
+        jTextAreaBeschreibung.setRows(5);
+        jScrollPane3.setViewportView(jTextAreaBeschreibung);
+
+        jButtonImportVorlage.setText("Importieren");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldName)
+                            .addComponent(jTextFieldUrl)))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonImportVorlage)))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonImportVorlage)
+                .addContainerGap())
+        );
+
+        jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonImportVorlage, jTextFieldName, jTextFieldUrl});
+
+        jButtonAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png"))); // NOI18N
+        jButtonAktualisieren.setToolTipText("Neu laden");
+
+        jLabel4.setText("Tabelle aktualisieren:");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonAktualisieren)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(96, Short.MAX_VALUE))
+                .addGap(7, 7, 7)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel4)
+                    .addComponent(jButtonAktualisieren))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Vorlagen", jPanel3);
@@ -195,7 +328,7 @@ public class PanelImportPgruppe extends PanelVorlage {
                     .addComponent(jTextFieldDatei, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonImportDatei)
-                .addContainerGap(262, Short.MAX_VALUE))
+                .addContainerGap(428, Short.MAX_VALUE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonPfad, jTextFieldDatei});
@@ -225,7 +358,7 @@ public class PanelImportPgruppe extends PanelVorlage {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonImportText)
                 .addContainerGap())
@@ -251,18 +384,29 @@ public class PanelImportPgruppe extends PanelVorlage {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAktualisieren;
     private javax.swing.JButton jButtonImportDatei;
     private javax.swing.JButton jButtonImportText;
+    private javax.swing.JButton jButtonImportVorlage;
     private javax.swing.JButton jButtonPfad;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTableVorlagen;
+    private javax.swing.JTextArea jTextAreaBeschreibung;
     private javax.swing.JTextArea jTextAreaImport;
     private javax.swing.JTextField jTextFieldDatei;
+    private javax.swing.JTextField jTextFieldName;
+    private javax.swing.JTextField jTextFieldUrl;
     // End of variables declaration//GEN-END:variables
 
     private class BeobPfadDoc implements DocumentListener {
@@ -349,6 +493,18 @@ public class PanelImportPgruppe extends PanelVorlage {
                 } catch (Exception ex) {
                     Log.fehlerMeldung("PanelImportProgramme.BeobPfad", ex);
                 }
+            }
+        }
+    }
+
+    private class BeobTableSelect implements ListSelectionListener {
+
+        public int selectedModelRow = -1;
+
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            if (!event.getValueIsAdjusting()) {
+                table1Select();
             }
         }
     }

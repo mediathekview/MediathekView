@@ -23,9 +23,6 @@ import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
-import mediathek.daten.DDaten;
-import mediathek.gui.dialog.DialogHinweisUpdate;
-import mediathek.tool.DatumZeit;
 
 public class FilmUpdateServer {
     //Tags FilmUpdateServer Filmliste

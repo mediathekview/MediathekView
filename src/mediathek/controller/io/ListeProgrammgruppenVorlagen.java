@@ -19,22 +19,16 @@
  */
 package mediathek.controller.io;
 
-import mediathek.controller.filme.filmeImportieren.filmUpdateServer.*;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
-import java.util.ListIterator;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.daten.DDaten;
 import mediathek.tool.TModel;
 
 public class ListeProgrammgruppenVorlagen extends LinkedList<String[]> {
@@ -54,20 +48,20 @@ public class ListeProgrammgruppenVorlagen extends LinkedList<String[]> {
     private final int timeout = 10000;
     private final String url = Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN;
 
-    public ListeProgrammgruppenVorlagen() {
-    }
-
     public TModel getTModel() {
-        String[][] object;
-        object = new String[this.size()][PGR_MAX_ELEM];
-        for (int i = 0; i < this.size(); i++) {
-            object[i] = this.get(i);
+        if (getListe()) {
+            String[][] object = new String[this.size()][PGR_MAX_ELEM];
+            for (int i = 0; i < this.size(); i++) {
+                object[i] = this.get(i);
+            }
+            TModel model = new TModel(object, PGR_COLUMN_NAMES);
+            return model;
+        } else {
+            return new TModel(new Object[][]{}, PGR_COLUMN_NAMES);
         }
-        TModel model = new TModel(object, PGR_COLUMN_NAMES);
-        return model;
     }
 
-    public boolean getListe() {
+    private boolean getListe() {
         try {
             //String parsername = "";
             int event;

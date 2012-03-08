@@ -119,10 +119,6 @@ public class ListePgruppe extends LinkedList<DatenPgruppe> {
         return liste;
     }
 
-    public void duplicate(DatenPgruppe gruppe) {
-        this.addPgruppe(gruppe.copy());
-    }
-
     public String[] getObjectDataCombo() {
         //liefert eine Liste aller Pgruppen
         String[] object;
@@ -166,7 +162,6 @@ public class ListePgruppe extends LinkedList<DatenPgruppe> {
             gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
         }
         boolean ret = add(gruppe);
-        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, ListePgruppe.class.getSimpleName());
         return ret;
     }
 

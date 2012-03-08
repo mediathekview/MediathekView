@@ -25,7 +25,6 @@ import java.awt.Window;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.JTable;
@@ -35,13 +34,8 @@ import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.daten.*;
-import mediathek.gui.dialog.DialogHilfe;
 
 public class GuiFunktionen {
-
-    private static final String PIPE = "| ";
-    private static final String LEER = "      ";
-    private static final String PFEIL = " -> ";
 
     public static boolean setLook(JFrame frame) {
         int look;
@@ -305,7 +299,11 @@ public class GuiFunktionen {
         }
         return ret;
     }
-//    public static void checkFlash(DDaten daten, String url, String befehlsString) {
+
+    public static boolean istUrl(String dateiUrl) {
+        return dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
+    }
+    //    public static void checkFlash(DDaten daten, String url, String befehlsString) {
 //        if (!System.getProperty("os.name").toLowerCase().contains("linux")) {
 //            // bei Linux klappts inzwischen meist auch mit anderen Playern
 //            if (url.startsWith("-r") || url.startsWith("rtmp") || url.startsWith("--host")) {
