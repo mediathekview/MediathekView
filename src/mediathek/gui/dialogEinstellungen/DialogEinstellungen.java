@@ -82,25 +82,24 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                 beenden();
             }
         };
-        jRadioButtonPlus.addActionListener(new ActionListener() {
+        jToggleButton1.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int row = 0;
-                while (row < jTree1.getRowCount()) {
-                    jTree1.expandRow(row);
-                    row++;
-                }
-            }
-        });
-        jRadioButtonMinus.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = 1;
-                while (row < jTree1.getRowCount()) {
-                    jTree1.collapseRow(row);
-                    row++;
+                if (jToggleButton1.isSelected()) {
+                    jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/tree-zu_50.png")));
+                    int row = 0;
+                    while (row < jTree1.getRowCount()) {
+                        jTree1.expandRow(row);
+                        row++;
+                    }
+                } else {
+                    jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/tree-auf_50.png")));
+                    int row = 1;
+                    while (row < jTree1.getRowCount()) {
+                        jTree1.collapseRow(row);
+                        row++;
+                    }
                 }
             }
         });
@@ -290,8 +289,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
         jPanel2 = new javax.swing.JPanel();
-        jRadioButtonPlus = new javax.swing.JRadioButton();
-        jRadioButtonMinus = new javax.swing.JRadioButton();
+        jToggleButton1 = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -309,9 +307,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
 
         jScrollPane1.setViewportView(jTree1);
 
-        jRadioButtonPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/tree-auf_32.png"))); // NOI18N
-
-        jRadioButtonMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/tree-zu_32.png"))); // NOI18N
+        jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/tree-auf_50.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -319,25 +315,22 @@ public class DialogEinstellungen extends javax.swing.JDialog {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jRadioButtonPlus)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
-                .addComponent(jRadioButtonMinus)
+                .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButtonMinus)
-                    .addComponent(jRadioButtonPlus)))
+                .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
@@ -345,7 +338,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(jPanel1);
@@ -384,11 +377,10 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelExtra;
-    private javax.swing.JRadioButton jRadioButtonMinus;
-    private javax.swing.JRadioButton jRadioButtonPlus;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }

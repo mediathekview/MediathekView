@@ -33,26 +33,48 @@ import mediathek.tool.TModel;
 
 public class ListeProgrammgruppenVorlagen extends LinkedList<String[]> {
 
+    public static final String BS_WIN_32 = "Windows-32Bit";
+    public static final String BS_WIN_64 = "Windows-64Bit";
+    public static final String BS_LINUX = "Linux";
+    public static final String BS_MAC = "Mac";
+    public static final String[] BS = {"", BS_WIN_32, BS_WIN_64, BS_LINUX, BS_MAC};
+    //
     public static final String PGR = "Programmgruppe";
-    public static final int PGR_MAX_ELEM = 4;
+    public static final int PGR_MAX_ELEM = 5;
     public static final String PGR_NAME = "Name";
     public static final int PGR_NAME_NR = 0;
     public static final String PGR_BESCHREIBUNG = "Beschreibung";
     public static final int PGR_BESCHREIBUNG_NR = 1;
     public static final String PGR_VERSION = "Version";
     public static final int PGR_VERSION_NR = 2;
+    public static final String PGR_BS = "Bs";
+    public static final int PGR_BS_NR = 3;
     public static final String PGR_URL = "URL";
-    public static final int PGR_URL_NR = 3;
-    public static final String[] PGR_COLUMN_NAMES = {PGR_NAME, PGR_BESCHREIBUNG, PGR_VERSION, PGR_URL};
+    public static final int PGR_URL_NR = 4;
+    public static final String[] PGR_COLUMN_NAMES = {PGR_NAME, PGR_BESCHREIBUNG, PGR_VERSION, PGR_BS, PGR_URL};
     // private
     private final int timeout = 10000;
     private final String url = Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN;
 
-    public TModel getTModel() {
-        if (getListe()) {
-            String[][] object = new String[this.size()][PGR_MAX_ELEM];
-            for (int i = 0; i < this.size(); i++) {
-                object[i] = this.get(i);
+    public TModel getTModel(String bs) {
+        LinkedList<String[]> tmp = new LinkedList<String[]>();
+        String[][] object;
+        if (this.size() > 0) {
+            if (!bs.equals("")) {
+                for (int i = 0; i < this.size(); i++) {
+                    if (this.get(i)[PGR_BS_NR].contains(bs)) {
+                        tmp.add(this.get(i));
+                    }
+                }
+                object = new String[tmp.size()][PGR_MAX_ELEM];
+                for (int i = 0; i < tmp.size(); i++) {
+                    object[i] = tmp.get(i);
+                }
+            } else {
+                object = new String[this.size()][PGR_MAX_ELEM];
+                for (int i = 0; i < this.size(); i++) {
+                    object[i] = this.get(i);
+                }
             }
             TModel model = new TModel(object, PGR_COLUMN_NAMES);
             return model;
@@ -61,9 +83,9 @@ public class ListeProgrammgruppenVorlagen extends LinkedList<String[]> {
         }
     }
 
-    private boolean getListe() {
+    public boolean getListe() {
         try {
-            //String parsername = "";
+            this.clear();
             int event;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);

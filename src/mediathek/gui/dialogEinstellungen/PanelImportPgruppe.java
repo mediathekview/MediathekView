@@ -23,12 +23,10 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.*;
 import mediathek.Daten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
@@ -36,11 +34,13 @@ import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.ListeProgrammgruppenVorlagen;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenPgruppe;
-import mediathek.daten.ListePgruppe;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.TModel;
 
 public class PanelImportPgruppe extends PanelVorlage {
+
+    ListeProgrammgruppenVorlagen listeVorlagen = new ListeProgrammgruppenVorlagen();
 
     public PanelImportPgruppe(DDaten d) {
         super(d);
@@ -49,6 +49,14 @@ public class PanelImportPgruppe extends PanelVorlage {
     }
 
     private void init() {
+        jComboBoxBs.setModel(new DefaultComboBoxModel(ListeProgrammgruppenVorlagen.BS));
+        jComboBoxBs.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabelleLaden();
+            }
+        });
         jButtonImportDatei.setEnabled(false);
         jButtonImportText.setEnabled(false);
         jButtonPfad.addActionListener(new BeobPfad());
@@ -81,11 +89,12 @@ public class PanelImportPgruppe extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                listeVorlagen.getListe();
                 tabelleLaden();
             }
         });
         jTableVorlagen.getSelectionModel().addListSelectionListener(new BeobTableSelect());
-        tabelleLaden();
+        jTableVorlagen.setModel(new TModel(new Object[][]{}, ListeProgrammgruppenVorlagen.PGR_COLUMN_NAMES));
     }
 
     private void importDatei(String datei) {
@@ -119,18 +128,7 @@ public class PanelImportPgruppe extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        jTableVorlagen.setModel(new ListeProgrammgruppenVorlagen().getTModel());
-//        for (int i = 0; i < jTableVorlagen.getColumnCount(); ++i) {
-//            if (i == FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR) {
-//                jTableVorlagen.getColumnModel().getColumn(i).setMinWidth(10);
-//                jTableVorlagen.getColumnModel().getColumn(i).setMaxWidth(3000);
-//                jTableVorlagen.getColumnModel().getColumn(i).setPreferredWidth(350);
-//            } else {
-//                jTableVorlagen.getColumnModel().getColumn(i).setMinWidth(10);
-//                jTableVorlagen.getColumnModel().getColumn(i).setMaxWidth(3000);
-//                jTableVorlagen.getColumnModel().getColumn(i).setPreferredWidth(100);
-//            }
-//        }
+        jTableVorlagen.setModel(listeVorlagen.getTModel(jComboBoxBs.getSelectedItem().toString()));
     }
 
     private void table1Select() {
@@ -146,6 +144,7 @@ public class PanelImportPgruppe extends PanelVorlage {
             }
         }
         jTextFieldName.setText(vorlage[ListeProgrammgruppenVorlagen.PGR_NAME_NR]);
+        jTextFieldBs.setText(vorlage[ListeProgrammgruppenVorlagen.PGR_BS_NR]);
         jTextFieldUrl.setText(vorlage[ListeProgrammgruppenVorlagen.PGR_URL_NR]);
         jTextAreaBeschreibung.setText(vorlage[ListeProgrammgruppenVorlagen.PGR_BESCHREIBUNG_NR]);
     }
@@ -171,8 +170,12 @@ public class PanelImportPgruppe extends PanelVorlage {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextAreaBeschreibung = new javax.swing.JTextArea();
         jButtonImportVorlage = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jTextFieldBs = new javax.swing.JTextField();
         jButtonAktualisieren = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jComboBoxBs = new javax.swing.JComboBox();
         jPanel1 = new javax.swing.JPanel();
         jTextFieldDatei = new javax.swing.JTextField();
         jButtonPfad = new javax.swing.JButton();
@@ -214,6 +217,10 @@ public class PanelImportPgruppe extends PanelVorlage {
 
         jButtonImportVorlage.setText("Importieren");
 
+        jLabel6.setText("Betriebssystem:");
+
+        jTextFieldBs.setEditable(false);
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -224,15 +231,19 @@ public class PanelImportPgruppe extends PanelVorlage {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
-                            .addComponent(jLabel2))
+                            .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldName)
-                            .addComponent(jTextFieldUrl)))
+                            .addComponent(jTextFieldBs)
+                            .addComponent(jTextFieldName)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldUrl)
+                            .addComponent(jScrollPane3)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonImportVorlage)))
@@ -247,6 +258,10 @@ public class PanelImportPgruppe extends PanelVorlage {
                     .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jTextFieldBs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -254,18 +269,22 @@ public class PanelImportPgruppe extends PanelVorlage {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonImportVorlage)
                 .addContainerGap())
         );
 
-        jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonImportVorlage, jTextFieldName, jTextFieldUrl});
+        jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonImportVorlage, jTextFieldBs, jTextFieldName, jTextFieldUrl});
 
         jButtonAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png"))); // NOI18N
         jButtonAktualisieren.setToolTipText("Neu laden");
 
-        jLabel4.setText("Tabelle aktualisieren:");
+        jLabel4.setText("Vorlagen laden:");
+
+        jLabel5.setText("Betriebssystem:");
+
+        jComboBoxBs.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -275,12 +294,15 @@ public class PanelImportPgruppe extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonAktualisieren)))
+                        .addComponent(jButtonAktualisieren)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxBs, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -289,7 +311,9 @@ public class PanelImportPgruppe extends PanelVorlage {
                 .addGap(7, 7, 7)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel4)
-                    .addComponent(jButtonAktualisieren))
+                    .addComponent(jButtonAktualisieren)
+                    .addComponent(jLabel5)
+                    .addComponent(jComboBoxBs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -315,7 +339,7 @@ public class PanelImportPgruppe extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonPfad))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 471, Short.MAX_VALUE)
+                        .addGap(0, 399, Short.MAX_VALUE)
                         .addComponent(jButtonImportDatei)))
                 .addContainerGap())
         );
@@ -348,7 +372,7 @@ public class PanelImportPgruppe extends PanelVorlage {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonImportText)))
@@ -389,10 +413,13 @@ public class PanelImportPgruppe extends PanelVorlage {
     private javax.swing.JButton jButtonImportText;
     private javax.swing.JButton jButtonImportVorlage;
     private javax.swing.JButton jButtonPfad;
+    private javax.swing.JComboBox jComboBoxBs;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -404,6 +431,7 @@ public class PanelImportPgruppe extends PanelVorlage {
     private javax.swing.JTable jTableVorlagen;
     private javax.swing.JTextArea jTextAreaBeschreibung;
     private javax.swing.JTextArea jTextAreaImport;
+    private javax.swing.JTextField jTextFieldBs;
     private javax.swing.JTextField jTextFieldDatei;
     private javax.swing.JTextField jTextFieldName;
     private javax.swing.JTextField jTextFieldUrl;

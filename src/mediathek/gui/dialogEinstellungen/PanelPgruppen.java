@@ -168,6 +168,7 @@ public class PanelPgruppen extends PanelVorlage {
         jTablePgruppen.setDefaultRenderer(Object.class, new CellRendererPguppen(ddaten));
         jTablePgruppen.getSelectionModel().addListSelectionListener(new BeobTableSelectPgruppe());
         tabellePgruppe();
+        spaltenSetzen();
         if (jTablePgruppen.getRowCount() > 0) {
             jTablePgruppen.setRowSelectionInterval(0, 0);
             jTablePgruppen.scrollRectToVisible(jTablePgruppen.getCellRect(0, 0, false));
@@ -181,7 +182,6 @@ public class PanelPgruppen extends PanelVorlage {
 
     private void nurtabellePgruppe() {
         stopBeob = true;
-//        int i = jTablePgruppen.getSelectedRow();
         getSpalten(jTablePgruppen);
         jTablePgruppen.setModel(ddaten.listePgruppe.getModel());
         spaltenSetzen();
