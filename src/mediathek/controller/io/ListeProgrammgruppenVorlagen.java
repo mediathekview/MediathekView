@@ -39,19 +39,17 @@ public class ListeProgrammgruppenVorlagen extends LinkedList<String[]> {
     public static final String BS_MAC = "Mac";
     public static final String[] BS = {"", BS_WIN_32, BS_WIN_64, BS_LINUX, BS_MAC};
     //
-    public static final String PGR = "Programmgruppe";
-    public static final int PGR_MAX_ELEM = 5;
+    public static final String PGR = "Vorlage";
+    public static final int PGR_MAX_ELEM = 4;
     public static final String PGR_NAME = "Name";
     public static final int PGR_NAME_NR = 0;
     public static final String PGR_BESCHREIBUNG = "Beschreibung";
     public static final int PGR_BESCHREIBUNG_NR = 1;
-    public static final String PGR_VERSION = "Version";
-    public static final int PGR_VERSION_NR = 2;
     public static final String PGR_BS = "Bs";
-    public static final int PGR_BS_NR = 3;
+    public static final int PGR_BS_NR = 2;
     public static final String PGR_URL = "URL";
-    public static final int PGR_URL_NR = 4;
-    public static final String[] PGR_COLUMN_NAMES = {PGR_NAME, PGR_BESCHREIBUNG, PGR_VERSION, PGR_BS, PGR_URL};
+    public static final int PGR_URL_NR = 3;
+    public static final String[] PGR_COLUMN_NAMES = {PGR_NAME, PGR_BESCHREIBUNG, PGR_BS, PGR_URL};
     // private
     private final int timeout = 10000;
     private final String url = Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN;

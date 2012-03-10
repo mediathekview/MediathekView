@@ -25,14 +25,13 @@ import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import mediathek.Log;
 import mediathek.controller.io.starter.Starts;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 
 public class DatenPgruppe {
 
     //Tags Programmgruppen
     public static final String PROGRAMMGRUPPE = "Programmgruppe";
-    public static final int PROGRAMMGRUPPE_MAX_ELEM = 12;
+    public static final int PROGRAMMGRUPPE_MAX_ELEM = 13;
     public static final String PROGRAMMGRUPPE_NAME = "Name";
     public static final int PROGRAMMGRUPPE_NAME_NR = 0;
     public static final String PROGRAMMGRUPPE_PRAEFIX_DIREKT = "Praefix";
@@ -57,10 +56,12 @@ public class DatenPgruppe {
     public static final int PROGRAMMGRUPPE_LAENGE_BESCHRAENKEN_NR = 10;
     public static final String PROGRAMMGRUPPE_MAX_LAENGE = "max-Laenge";
     public static final int PROGRAMMGRUPPE_MAX_LAENGE_NR = 11;
+    public static final String PROGRAMMGRUPPE_BESCHREIBUNG = "Beschreibung";
+    public static final int PROGRAMMGRUPPE_BESCHREIBUNG_NR = 12;
     public static final String[] PROGRAMMGRUPPE_COLUMN_NAMES = {PROGRAMMGRUPPE_NAME, PROGRAMMGRUPPE_PRAEFIX_DIREKT, PROGRAMMGRUPPE_SUFFIX_DIREKT,
         PROGRAMMGRUPPE_FARBE, PROGRAMMGRUPPE_ZIEL_PFAD, PROGRAMMGRUPPE_ZIEL_DATEINAME,
         PROGRAMMGRUPPE_IST_ABSPIELEN, PROGRAMMGRUPPE_IST_SPEICHERN, PROGRAMMGRUPPE_IST_BUTTON, PROGRAMMGRUPPE_IST_ABO,
-        PROGRAMMGRUPPE_LAENGE_BESCHRAENKEN, PROGRAMMGRUPPE_MAX_LAENGE};
+        PROGRAMMGRUPPE_LAENGE_BESCHRAENKEN, PROGRAMMGRUPPE_MAX_LAENGE, PROGRAMMGRUPPE_BESCHREIBUNG};
     public String[] arr;
     private ListeProg listeProg = new ListeProg();
 
