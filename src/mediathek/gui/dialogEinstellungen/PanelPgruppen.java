@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.*;
 import mediathek.Daten;
@@ -148,6 +149,7 @@ public class PanelPgruppen extends PanelVorlage {
         jButtonExport.addActionListener(new BeobGruppeExport());
         jButtonGruppePfad.addActionListener(new BeobDateiDialogPfad());
         jTextFieldGruppeName.getDocument().addDocumentListener(new BeobGruppenDoc(jTextFieldGruppeName, DatenPgruppe.PROGRAMMGRUPPE_NAME_NR));
+        jTextAreaBeschreibung.getDocument().addDocumentListener(new BeobGruppenDoc(jTextAreaBeschreibung, DatenPgruppe.PROGRAMMGRUPPE_BESCHREIBUNG_NR));
         jTextFieldGruppeDirektSuffix.getDocument().addDocumentListener(
                 new BeobGruppenDoc(jTextFieldGruppeDirektSuffix, DatenPgruppe.PROGRAMMGRUPPE_SUFFIX_DIREKT_NR));
         jTextFieldGruppeDirektPraefix.getDocument().addDocumentListener(
@@ -220,6 +222,7 @@ public class PanelPgruppen extends PanelVorlage {
         jTextFieldGruppeDirektPraefix.setEnabled(pgruppe != null);
         jTextFieldGruppeZielName.setEnabled(pgruppe != null);
         jTextFieldGruppeZielPfad.setEnabled(pgruppe != null);
+        jTextAreaBeschreibung.setEnabled(pgruppe != null);
         jButtonGruppePfad.setEnabled(pgruppe != null);
         jButtonAbspielen.setEnabled(pgruppe != null);
         jCheckBoxSpeichern.setEnabled(pgruppe != null);
@@ -242,6 +245,7 @@ public class PanelPgruppen extends PanelVorlage {
             jTextFieldGruppeDirektPraefix.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR]);
             jTextFieldGruppeZielName.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_ZIEL_DATEINAME_NR]);
             jTextFieldGruppeZielPfad.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_ZIEL_PFAD_NR]);
+            jTextAreaBeschreibung.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_BESCHREIBUNG_NR]);
             jCheckBoxSpeichern.setSelected(pgruppe.istSpeichern());
             jCheckBoxButton.setSelected(pgruppe.istButton());
             jCheckBoxAbo.setSelected(pgruppe.istAbo());
@@ -255,6 +259,7 @@ public class PanelPgruppen extends PanelVorlage {
             jTextFieldGruppeDirektPraefix.setText("");
             jTextFieldGruppeZielName.setText("");
             jTextFieldGruppeZielPfad.setText("");
+            jTextAreaBeschreibung.setText("");
         }
         if (pgruppe != null) {
             jTableProgramme.setModel(pgruppe.getListeProg().getModel());
@@ -496,6 +501,9 @@ public class PanelPgruppen extends PanelVorlage {
         jCheckBoxLaenge = new javax.swing.JCheckBox();
         jSpinnerLaenge = new javax.swing.JSpinner();
         jSeparator1 = new javax.swing.JSeparator();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextAreaBeschreibung = new javax.swing.JTextArea();
+        jLabel11 = new javax.swing.JLabel();
         jPanelProgramme = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableProgramme = new javax.swing.JTable();
@@ -635,7 +643,7 @@ public class PanelPgruppen extends PanelVorlage {
             jPanelPgruppeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelPgruppeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -670,6 +678,12 @@ public class PanelPgruppen extends PanelVorlage {
 
         jSpinnerLaenge.setModel(new javax.swing.SpinnerNumberModel(25, 12, 100, 1));
 
+        jTextAreaBeschreibung.setColumns(20);
+        jTextAreaBeschreibung.setRows(5);
+        jScrollPane2.setViewportView(jTextAreaBeschreibung);
+
+        jLabel11.setText("Beschreibung:");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -698,19 +712,21 @@ public class PanelPgruppen extends PanelVorlage {
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
-                            .addComponent(jLabel7))
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jCheckBoxLaenge)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSpinnerLaenge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(jTextFieldGruppeZielPfad)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonGruppePfad))
-                            .addComponent(jTextFieldGruppeZielName))))
+                            .addComponent(jTextFieldGruppeZielName)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jCheckBoxLaenge)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSpinnerLaenge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
 
@@ -732,11 +748,15 @@ public class PanelPgruppen extends PanelVorlage {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(jTextFieldGruppeZielName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBoxLaenge)
                     .addComponent(jSpinnerLaenge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(22, 22, 22)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
@@ -766,8 +786,8 @@ public class PanelPgruppen extends PanelVorlage {
             jPanelDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelDetailsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(125, Short.MAX_VALUE))
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Details", jPanelDetails);
@@ -937,7 +957,7 @@ public class PanelPgruppen extends PanelVorlage {
             jPanelProgrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProgrammeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -966,7 +986,7 @@ public class PanelPgruppen extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane)
+                .addComponent(jTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonHilfe)
@@ -1001,6 +1021,7 @@ public class PanelPgruppen extends PanelVorlage {
     private javax.swing.JLabel jLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1017,12 +1038,14 @@ public class PanelPgruppen extends PanelVorlage {
     private javax.swing.JPanel jPanelProgrammDetails;
     private javax.swing.JPanel jPanelProgramme;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSpinner jSpinnerLaenge;
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JTable jTablePgruppen;
     private javax.swing.JTable jTableProgramme;
+    private javax.swing.JTextArea jTextAreaBeschreibung;
     private javax.swing.JTextField jTextFieldGruppeDirektPraefix;
     private javax.swing.JTextField jTextFieldGruppeDirektSuffix;
     private javax.swing.JTextField jTextFieldGruppeName;
@@ -1178,11 +1201,17 @@ public class PanelPgruppen extends PanelVorlage {
 
     private class BeobGruppenDoc implements DocumentListener {
 
-        JTextField textfeld;
+        JTextField textfeld = null;
+        JTextArea textArea = null;
         int nr;
 
         public BeobGruppenDoc(JTextField ttextfeld, int nnr) {
             textfeld = ttextfeld;
+            nr = nnr;
+        }
+
+        public BeobGruppenDoc(JTextArea tt, int nnr) {
+            textArea = tt;
             nr = nnr;
         }
 
@@ -1208,7 +1237,11 @@ public class PanelPgruppen extends PanelVorlage {
                 if (row != -1) {
                     gruppe = ddaten.listePgruppe.get(jTablePgruppen.convertRowIndexToModel(row));
                     stopBeob = true;
-                    gruppe.arr[nr] = textfeld.getText();
+                    if (textfeld != null) {
+                        gruppe.arr[nr] = textfeld.getText();
+                    } else {
+                        gruppe.arr[nr] = textArea.getText();
+                    }
                     if (nr == DatenPgruppe.PROGRAMMGRUPPE_NAME_NR) {
                         jTablePgruppen.getModel().setValueAt(jTextFieldGruppeName.getText(), row, DatenPgruppe.PROGRAMMGRUPPE_NAME_NR);
                         jTabbedPane.setTitleAt(0, gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR]);

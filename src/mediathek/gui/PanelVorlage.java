@@ -34,10 +34,11 @@ public class PanelVorlage extends javax.swing.JPanel {
     private List<? extends javax.swing.RowSorter.SortKey> listeSort = null;
     private int sel;
     private int rows;
+    boolean erstesMal = false;
 
     /**
      *
-     * @param d
+     *  @param d
      */
     public PanelVorlage(DDaten d) {
         ddaten = d;
@@ -53,7 +54,6 @@ public class PanelVorlage extends javax.swing.JPanel {
 
     public void isShown() {
         // immer wenn isShown
-        boolean erstesMal = false;
         if (!erstesMal) {
             erstesIsShown();
         }

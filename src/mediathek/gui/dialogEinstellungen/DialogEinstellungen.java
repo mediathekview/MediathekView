@@ -43,7 +43,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private PanelHistory panelHistory;
     private PanelLogfile panelLogfile;
     private PanelPgruppen panelPgruppen;
-    private PanelImportStandardPgruppe panelImportStandardPgruppe;
     private PanelImportPgruppe panelImportProgramme;
     // Infos
     private PanelInfo panelInfo;
@@ -115,7 +114,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         panelHistory = new PanelHistory(ddaten);
         panelLogfile = new PanelLogfile(ddaten);
         panelPgruppen = new PanelPgruppen(ddaten);
-        panelImportStandardPgruppe = new PanelImportStandardPgruppe(ddaten);
         panelImportProgramme = new PanelImportPgruppe(ddaten);
         // Infos
         panelInfo = new PanelInfo(ddaten);
@@ -133,7 +131,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";
         final String NAME_programme = "Programme";
-        final String NAME_programmeStandard = "Standardprogramme";
         final String NAME_programmeImportieren = "Importieren";
         // Infos
         final String NAME_allgemeineInfos = "Pfade";
@@ -168,8 +165,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         DefaultMutableTreeNode treeNodeDownloads = new DefaultMutableTreeNode("Videoplayer");
         DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programme);
         treeNodeDownloads.add(treeNodeProgramme);
-        DefaultMutableTreeNode treeNodeImportStandard = new DefaultMutableTreeNode(NAME_programmeStandard);
-        treeNodeDownloads.add(treeNodeImportStandard);
         DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmeImportieren);
         treeNodeDownloads.add(treeNodeImportProgramme);
         treeNodeStart.add(treeNodeDownloads);
@@ -238,9 +233,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                     } else if (name.equals(NAME_programmeImportieren)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelImportProgramme);
-                    } else if (name.equals(NAME_programmeStandard)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelImportStandardPgruppe);
                     } else if (name.equals(NAME_allgemeineInfos)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelInfo);
