@@ -27,7 +27,7 @@ import javax.swing.JOptionPane;
 import mediathek.Main;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
-import mediathek.daten.DatenPgruppe;
+import mediathek.daten.DatenPset;
 import mediathek.daten.DatenProg;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
@@ -118,7 +118,7 @@ public class GuiFunktionenProgramme {
         String MUSTER_ZIELPFAD = "ZIELPFAD";
         boolean ret = false;
         String pfadScript;
-        DatenPgruppe[] pGruppe;
+        DatenPset[] pSet;
         InputStream datei;
         if (System.getProperty("os.name").toLowerCase().contains("linux")) {
             pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_LINUX_SCRIPT;
@@ -131,16 +131,16 @@ public class GuiFunktionenProgramme {
             datei = new GetFile().getWindows();
         }
         // Standardgruppen laden
-        pGruppe = IoXmlLesen.importPgruppe(datei, true);
-        if (pGruppe == null) {
+        pSet = IoXmlLesen.importPset(datei, true);
+        if (pSet == null) {
             JOptionPane.showMessageDialog(null, "Die Programme konnten nicht importiert werden!",
                     "Fehler", JOptionPane.ERROR_MESSAGE);
         } else {
             // und anpassen
-            for (int p = 0; p < pGruppe.length; ++p) {
-                DatenPgruppe pg = pGruppe[p];
+            for (int p = 0; p < pSet.length; ++p) {
+                DatenPset pg = pSet[p];
                 if (!zielpfad.equals("")) {
-                    pg.arr[DatenPgruppe.PROGRAMMGRUPPE_ZIEL_PFAD_NR] = pg.arr[DatenPgruppe.PROGRAMMGRUPPE_ZIEL_PFAD_NR].replace(MUSTER_ZIELPFAD, zielpfad);
+                    pg.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pg.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_ZIELPFAD, zielpfad);
                 }
                 for (int i = 0; i < pg.getListeProg().size(); ++i) {
                     DatenProg prog = pg.getProg(i);
@@ -156,8 +156,8 @@ public class GuiFunktionenProgramme {
                     }
                 }
             }
-            // und jetzt in die Liste der PGruppen schreiben
-            ddaten.listePgruppe.addPgruppe(pGruppe);
+            // und jetzt in die Liste der Pset schreiben
+            ddaten.listePset.addPset(pSet);
             JOptionPane.showMessageDialog(null, "Die Programme wurden hinzugefügt!",
                     "", JOptionPane.INFORMATION_MESSAGE);
             ret = true;
@@ -223,20 +223,20 @@ public class GuiFunktionenProgramme {
         final String PFEIL = " -> ";
         boolean ret = true;
         String text = "";
-        Iterator<DatenPgruppe> itPgruppe = daten.listePgruppe.iterator();
-        DatenPgruppe datenPgruppe;
+        Iterator<DatenPset> itPset = daten.listePset.iterator();
+        DatenPset datenPset;
         DatenProg datenProg;
-        while (itPgruppe.hasNext()) {
-            datenPgruppe = itPgruppe.next();
+        while (itPset.hasNext()) {
+            datenPset = itPset.next();
             ret = true;
-            if (!datenPgruppe.isFreeLine() && !datenPgruppe.isLable()) {
+            if (!datenPset.isFreeLine() && !datenPset.isLable()) {
                 // nur wenn kein Lable oder freeline
                 text += "++++++++++++++++++++++++++++++++++++++++++++" + "\n";
-                text += PIPE + "Programmgruppe: " + datenPgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] + "\n";
-                String zielPfad = datenPgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_ZIEL_PFAD_NR];
+                text += PIPE + "Programmgruppe: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME_NR] + "\n";
+                String zielPfad = datenPset.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR];
                 if (zielPfad.equals("")) {
                     // beim nur Abspielen wird er nicht gebraucht
-                    if (datenPgruppe.needsPath()) {
+                    if (datenPset.needsPath()) {
                         ret = false;
                         text += PIPE + LEER + "Zielpfad fehlt!\n";
                     }
@@ -256,7 +256,7 @@ public class GuiFunktionenProgramme {
                         }
                     }
                 }
-                Iterator<DatenProg> itProg = datenPgruppe.getListeProg().iterator();
+                Iterator<DatenProg> itProg = datenPset.getListeProg().iterator();
                 while (itProg.hasNext()) {
                     datenProg = itProg.next();
                     // Programmpfad prüfen

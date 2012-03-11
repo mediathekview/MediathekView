@@ -31,7 +31,7 @@ import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.tool.TModel;
 
-public class ListeProgrammgruppenVorlagen extends LinkedList<String[]> {
+public class ListePsetVorlagen extends LinkedList<String[]> {
 
     public static final String BS_WIN_32 = "Windows-32Bit";
     public static final String BS_WIN_64 = "Windows-64Bit";

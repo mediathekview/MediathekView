@@ -24,33 +24,33 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.DatenPgruppe;
+import mediathek.daten.DatenPset;
 import mediathek.gui.beobachter.EscBeenden;
 
-public class DialogPgruppeSpeichern extends javax.swing.JDialog {
+public class DialogPsetSpeichern extends javax.swing.JDialog {
     
-    public DatenPgruppe gruppe = null;
+    public DatenPset gruppe = null;
     public boolean starten = true;
     public boolean ok = false;
     private DDaten ddaten;
     
-    public DialogPgruppeSpeichern(java.awt.Frame parent, boolean modal, DDaten dd, DatenFilm film) {
+    public DialogPsetSpeichern(java.awt.Frame parent, boolean modal, DDaten dd, DatenFilm film) {
         super(parent, modal);
         ddaten = dd;
         initComponents();
         this.setTitle("Film Speichern");
-        if (ddaten.listePgruppe.getListeSpeichern().size() == 0) {
+        if (ddaten.listePset.getListeSpeichern().size() == 0) {
             JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
             beenden();
         } else {
             jTextFieldSender.setText(film.arr[DatenFilm.FILM_SENDER_NR]);
             jTextFieldTitel.setText(film.arr[DatenFilm.FILM_TITEL_NR]);
-            jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel(ddaten.listePgruppe.getListeSpeichern().getObjectDataCombo()));
-            if (ddaten.listePgruppe.getListeSpeichern().size() == 1) {
+            jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel(ddaten.listePset.getListeSpeichern().getObjectDataCombo()));
+            if (ddaten.listePset.getListeSpeichern().size() == 1) {
                 // macht dann keinen Sinn
                 jComboBoxPgr.setVisible(false);
-                jLabelPgruppe.setVisible(false);
+                jLabelPset.setVisible(false);
             } else {
                 jComboBoxPgr.addActionListener(new BeobComboProgramm());
             }
@@ -90,8 +90,8 @@ public class DialogPgruppeSpeichern extends javax.swing.JDialog {
     }
     
     private void setGruppe() {
-        if (ddaten.listePgruppe.getListeSpeichern().size() > 0) {
-            gruppe = ddaten.listePgruppe.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
+        if (ddaten.listePset.getListeSpeichern().size() > 0) {
+            gruppe = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
         } else {
             gruppe = null;
         }
@@ -116,7 +116,7 @@ public class DialogPgruppeSpeichern extends javax.swing.JDialog {
         jTextFieldSender = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jTextFieldTitel = new javax.swing.JTextField();
-        jLabelPgruppe = new javax.swing.JLabel();
+        jLabelPset = new javax.swing.JLabel();
         jComboBoxPgr = new javax.swing.JComboBox();
         jCheckBoxStarten = new javax.swing.JCheckBox();
 
@@ -138,7 +138,7 @@ public class DialogPgruppeSpeichern extends javax.swing.JDialog {
         jTextFieldTitel.setEditable(false);
         jTextFieldTitel.setText("jTextField2");
 
-        jLabelPgruppe.setText("Programmgruppe zum Aufzeichnen");
+        jLabelPset.setText("Programmgruppe zum Aufzeichnen");
 
         jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -168,7 +168,7 @@ public class DialogPgruppeSpeichern extends javax.swing.JDialog {
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(15, 15, 15))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabelPgruppe)
+                        .addComponent(jLabelPset)
                         .addContainerGap(243, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -183,7 +183,7 @@ public class DialogPgruppeSpeichern extends javax.swing.JDialog {
                     .addComponent(jLabel3)
                     .addComponent(jTextFieldTitel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jLabelPgruppe)
+                .addComponent(jLabelPset)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jComboBoxPgr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -232,7 +232,7 @@ public class DialogPgruppeSpeichern extends javax.swing.JDialog {
     private javax.swing.JComboBox jComboBoxPgr;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabelPgruppe;
+    private javax.swing.JLabel jLabelPset;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTextField jTextFieldSender;
     private javax.swing.JTextField jTextFieldTitel;

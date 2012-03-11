@@ -25,7 +25,7 @@ import javax.swing.JOptionPane;
 import mediathek.Daten;
 import mediathek.controller.io.starter.Starts;
 import mediathek.gui.GuiDownloads;
-import mediathek.gui.dialog.DialogPgruppeSpeichern;
+import mediathek.gui.dialog.DialogPsetSpeichern;
 import mediathek.tool.TModel;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
@@ -101,7 +101,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // ist eine URL schon vorhanden,Sender,Thema,Titel aktualisieren,
         // es wird der aktuellere Eintrag verwendet
         DatenDownload download = new DatenDownload(film, Starts.QUELLE_DOWNLOAD);
-        DialogPgruppeSpeichern dialog = new DialogPgruppeSpeichern(null, true, ddaten, film);
+        DialogPsetSpeichern dialog = new DialogPsetSpeichern(null, true, ddaten, film);
         dialog.setVisible(true);
         if (dialog.ok && dialog.gruppe != null) {
             download.aufrufBauen(dialog.gruppe, null);
@@ -150,10 +150,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 DDaten.setGeaendert();
                 //wenn nicht doppelt, dann in die Liste schreiben
                 DatenDownload download = new DatenDownload(film, Starts.QUELLE_ABO);
-                DatenPgruppe gruppe = ddaten.listePgruppe.getPgruppeAbo(abo.arr[DatenAbo.ABO_PGRUPPE_NR]);
-                if (!abo.arr[DatenAbo.ABO_PGRUPPE_NR].equals(gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR])) {
+                DatenPset gruppe = ddaten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET_NR]);
+                if (!abo.arr[DatenAbo.ABO_PSET_NR].equals(gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR])) {
                     // abändern
-                    abo.arr[DatenAbo.ABO_PGRUPPE_NR] = gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
+                    abo.arr[DatenAbo.ABO_PSET_NR] = gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR];
                 }
                 if (gruppe != null) {
                     download.aufrufBauen(gruppe, abo);

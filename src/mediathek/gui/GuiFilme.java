@@ -68,7 +68,7 @@ public class GuiFilme extends PanelVorlage {
         extra();
         tabelleBauen(); //Filme laden
         GuiFunktionen.spaltenFilmSetzen(jTable1, false /* ziel */);
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, GuiFilme.class.getSimpleName()) {
+        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
 
             @Override
             public void ping() {
@@ -110,7 +110,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     public void filmAbspielen() {
-        DatenPgruppe gruppe = ddaten.listePgruppe.getPgruppeAbspielen();
+        DatenPset gruppe = ddaten.listePset.getPsetAbspielen();
         if (gruppe != null) {
             open(gruppe);
         } else {
@@ -246,7 +246,7 @@ public class GuiFilme extends PanelVorlage {
         //sonst ein Button
         jPanelExtraInnen.removeAll();
         jPanelExtraInnen.updateUI();
-        ListePgruppe listeButton = ddaten.listePgruppe.getListeButton();
+        ListePset listeButton = ddaten.listePset.getListeButton();
         int maxSpalten = 4; //Anzahl der Spalten der Schalter
         buttonArray = new JButton[listeButton.size()];
         GridBagLayout gridbag = new GridBagLayout();
@@ -276,13 +276,13 @@ public class GuiFilme extends PanelVorlage {
         jPanelExtraInnen.add(label);
     }
 
-    private Component addExtraFeld(int i, int spalte, int zeile, GridBagLayout gridbag, GridBagConstraints c, JPanel panel, ListePgruppe liste) {
+    private Component addExtraFeld(int i, int spalte, int zeile, GridBagLayout gridbag, GridBagConstraints c, JPanel panel, ListePset liste) {
         Component ret;
         JButton button;
         c.gridx = spalte;
         c.gridy = zeile;
         if (liste.get(i).isLable()) {
-            JLabel label = new JLabel(liste.get(i).arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR]);
+            JLabel label = new JLabel(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME_NR]);
             Color col = liste.get(i).getFarbe(ddaten);
             if (col != null) {
                 label.setForeground(col);
@@ -291,7 +291,7 @@ public class GuiFilme extends PanelVorlage {
             panel.add(label);
             ret = label;
         } else {
-            button = new JButton(liste.get(i).arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR]);
+            button = new JButton(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME_NR]);
             button.addActionListener(new BeobOpen(liste.get(i)));
             Color col = liste.get(i).getFarbe(ddaten);
             if (col != null) {
@@ -413,7 +413,7 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    private void open(DatenPgruppe gruppe) {
+    private void open(DatenPset gruppe) {
         // Url mit Prognr. starten
         if (jTable1.getSelectedRow() == -1) {
             new HinweisKeineAuswahl().zeigen();
@@ -775,9 +775,9 @@ public class GuiFilme extends PanelVorlage {
     private class BeobOpen implements ActionListener {
         //ext. Programme starten
 
-        DatenPgruppe gruppe;
+        DatenPset gruppe;
 
-        public BeobOpen(DatenPgruppe p) {
+        public BeobOpen(DatenPset p) {
             gruppe = p;
         }
 
@@ -1023,17 +1023,17 @@ public class GuiFilme extends PanelVorlage {
             //Programme einblenden
             JMenu submenue = new JMenu("Film mit Programm starten:");
             jPopupMenu.add(submenue);
-            ListePgruppe liste = ddaten.listePgruppe.getListeButton();
+            ListePset liste = ddaten.listePset.getListeButton();
             for (int i = 0; i < liste.size(); ++i) {
-                DatenPgruppe pgruppe = liste.get(i);
-                Color col = pgruppe.getFarbe(ddaten);
-                item = new JMenuItem(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR]);
-                if (pgruppe.getListeProg().isEmpty()) {
+                DatenPset pset = liste.get(i);
+                Color col = pset.getFarbe(ddaten);
+                item = new JMenuItem(pset.arr[DatenPset.PROGRAMMSET_NAME_NR]);
+                if (pset.getListeProg().isEmpty()) {
                     if (col != null) {
                         item.setForeground(col);
                     }
                 } else {
-                    item.addActionListener(new BeobOpen(pgruppe));
+                    item.addActionListener(new BeobOpen(pset));
                     if (col != null) {
                         item.setBackground(col);
                     }
@@ -1188,7 +1188,7 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (ddaten.listePgruppe.getListeAbo().size() == 0) {
+                if (ddaten.listePset.getListeAbo().size() == 0) {
                     JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                             "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                 } else {

@@ -14,12 +14,12 @@ import mediathek.Log;
  */
 public class GetFile {
 
-    String PFAD_PGRUPPE_LINUX = "/mediathek/file/pgr_linux.xml";
-    String PFAD_PGRUPPE_WINDOWS = "/mediathek/file/pgr_windows.xml";
-    String PFAD_PGRUPPE_MAC = "/mediathek/file/pgr_mac.xml";
+    String PFAD_PSET_LINUX = "/mediathek/file/pset_linux.xml";
+    String PFAD_PSET_WINDOWS = "/mediathek/file/pset_windows.xml";
+    String PFAD_PSET_MAC = "/mediathek/file/pset_mac.xml";
     public static String PFAD_HILFETEXT_SUCHEN = "/mediathek/file/hilfetext_suchen.txt";
     public static String PFAD_HILFETEXT_PRGRAMME = "/mediathek/file/hilfetext_programme.txt";
-    public static String PFAD_HILFETEXT_STANDARD_PGRUPPEN = "hilfetext_standardPgruppen.txt";
+    public static String PFAD_HILFETEXT_STANDARD_PSET = "hilfetext_standardPset.txt";
 
     public String getHilfeSuchen(String pfad) {
         String ret = "";
@@ -40,7 +40,7 @@ public class GetFile {
 
     public InputStream getLinux() {
         try {
-            return getClass().getResource(PFAD_PGRUPPE_LINUX).openStream();
+            return getClass().getResource(PFAD_PSET_LINUX).openStream();
         } catch (IOException ex) {
             Log.fehlerMeldung(this.getClass().getSimpleName() + ".getLinux", ex);
         }
@@ -49,7 +49,7 @@ public class GetFile {
 
     public InputStream getWindows() {
         try {
-            return getClass().getResource(PFAD_PGRUPPE_WINDOWS).openStream();
+            return getClass().getResource(PFAD_PSET_WINDOWS).openStream();
         } catch (IOException ex) {
             Log.fehlerMeldung(this.getClass().getSimpleName() + ".getWindows", ex);
         }
@@ -58,7 +58,7 @@ public class GetFile {
 
     public InputStream getMac() {
         try {
-            return getClass().getResource(PFAD_PGRUPPE_MAC).openStream();
+            return getClass().getResource(PFAD_PSET_MAC).openStream();
         } catch (IOException ex) {
             Log.fehlerMeldung(this.getClass().getSimpleName() + ".getMac", ex);
         }

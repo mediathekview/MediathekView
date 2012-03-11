@@ -53,14 +53,14 @@ public class IoXmlSchreiben {
         daten.history.speichern();
     }
 
-    public synchronized void exportPgruppe(DatenPgruppe[] pGruppe, String datei) {
+    public synchronized void exportPset(DatenPset[] pSet, String datei) {
         try {
-            Log.systemMeldung("Pgruppe exportieren");
+            Log.systemMeldung("Pset exportieren");
             xmlSchreibenStart(datei);
-            xmlSchreibenPGruppe(pGruppe);
+            xmlSchreibenPset(pSet);
             xmlSchreibenEnde(datei);
         } catch (Exception ex) {
-            Log.fehlerMeldung("IoXmlSchreiben.exportPgruppe", ex, "nach: " + datei);
+            Log.fehlerMeldung("IoXmlSchreiben.exportPset", ex, "nach: " + datei);
         }
     }
 
@@ -108,26 +108,26 @@ public class IoXmlSchreiben {
     }
 
     private void xmlSchreibenProg(DDaten daten) {
-        ListIterator<DatenPgruppe> iterator;
+        ListIterator<DatenPset> iterator;
         //Proggruppen schreiben
-        DatenPgruppe datenPgruppe;
+        DatenPset datenPset;
         ListIterator<DatenProg> it;
-        iterator = daten.listePgruppe.listIterator();
+        iterator = daten.listePset.listIterator();
         while (iterator.hasNext()) {
-            datenPgruppe = iterator.next();
-            xmlSchreibenDaten(DatenPgruppe.PROGRAMMGRUPPE, DatenPgruppe.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe.arr);
-            it = datenPgruppe.getListeProg().listIterator();
+            datenPset = iterator.next();
+            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.PROGRAMMSET_COLUMN_NAMES, datenPset.arr);
+            it = datenPset.getListeProg().listIterator();
             while (it.hasNext()) {
                 xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, it.next().arr);
             }
         }
     }
 
-    private void xmlSchreibenPGruppe(DatenPgruppe[] datenPgruppe) {
+    private void xmlSchreibenPset(DatenPset[] datenPset) {
         ListIterator<DatenProg> it;
-        for (int i = 0; i < datenPgruppe.length; ++i) {
-            xmlSchreibenDaten(DatenPgruppe.PROGRAMMGRUPPE, DatenPgruppe.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe[i].arr);
-            it = datenPgruppe[i].getListeProg().listIterator();
+        for (int i = 0; i < datenPset.length; ++i) {
+            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.PROGRAMMSET_COLUMN_NAMES, datenPset[i].arr);
+            it = datenPset[i].getListeProg().listIterator();
             while (it.hasNext()) {
                 xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, it.next().arr);
             }

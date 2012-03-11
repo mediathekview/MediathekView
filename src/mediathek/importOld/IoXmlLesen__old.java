@@ -46,33 +46,33 @@ public class IoXmlLesen__old {
             // Liste Buttons importieren
             for (int i = 0; i < listePgruppeButton.size(); ++i) {
                 DatenPgruppe__old gruppe = listePgruppeButton.get(i);
-                DatenPgruppe gruppeNeu = gruppe.getNewVersion();
-                gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_BUTTON_NR] = Boolean.TRUE.toString();
-                gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] = "Button" + String.valueOf(i) + "-" + gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
+                DatenPset gruppeNeu = gruppe.getNewVersion();
+                gruppeNeu.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR] = Boolean.TRUE.toString();
+                gruppeNeu.arr[DatenPset.PROGRAMMSET_NAME_NR] = "Button" + String.valueOf(i) + "-" + gruppeNeu.arr[DatenPset.PROGRAMMSET_NAME_NR];
                 ListeProg__old listeProg = gruppe.getListeProg();
                 for (int l = 0; l < listeProg.size(); ++l) {
                     DatenProg progNeu = listeProg.get(l).getNewVersion();
                     gruppeNeu.addProg(progNeu);
                 }
-                ddaten.listePgruppe.addPgruppe(gruppeNeu);
+                ddaten.listePset.addPset(gruppeNeu);
             }
             // erster Button=abspielen
-            ddaten.listePgruppe.getListeButton().getFirst().setAbspielen(ddaten);
+            ddaten.listePset.getListeButton().getFirst().setAbspielen(ddaten);
             // Liste Abos importieren
             for (int i = 0; i < listePgruppeAbo.size(); ++i) {
                 DatenPgruppe__old gruppe = listePgruppeAbo.get(i);
-                DatenPgruppe gruppeNeu = gruppe.getNewVersion();
-                gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABO_NR] = Boolean.TRUE.toString();
-                gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] = "PGruppeAbo" + String.valueOf(i) + "-" + gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
+                DatenPset gruppeNeu = gruppe.getNewVersion();
+                gruppeNeu.arr[DatenPset.PROGRAMMSET_IST_ABO_NR] = Boolean.TRUE.toString();
+                gruppeNeu.arr[DatenPset.PROGRAMMSET_NAME_NR] = "PGruppeAbo" + String.valueOf(i) + "-" + gruppeNeu.arr[DatenPset.PROGRAMMSET_NAME_NR];
                 ListeProg__old listeProg = gruppe.getListeProg();
                 for (int l = 0; l < listeProg.size(); ++l) {
                     DatenProg progNeu = listeProg.get(l).getNewVersion();
                     gruppeNeu.addProg(progNeu);
                 }
-                ddaten.listePgruppe.addPgruppe(gruppeNeu);
+                ddaten.listePset.addPset(gruppeNeu);
             }
             // ersters Abo=speichern
-            ddaten.listePgruppe.getListeAbo().getFirst().setSpeichern(true);
+            ddaten.listePset.getListeAbo().getFirst().setSpeichern(true);
             // Liste Abos importieren
             for (int i = 0; i < listeAbo.size(); ++i) {
                 DatenAbo__old abo = listeAbo.get(i);

@@ -20,7 +20,7 @@
 package mediathek.importOld;
 
 import java.util.ListIterator;
-import mediathek.daten.DatenPgruppe;
+import mediathek.daten.DatenPset;
 
 public class DatenPgruppe__old {
 
@@ -40,14 +40,14 @@ public class DatenPgruppe__old {
         arr[Konstanten__old.PROGRAMMGRUPPE_ZIEL_DATEINAME_NR] = zielDateiname;
     }
 
-    public DatenPgruppe getNewVersion() {
-        DatenPgruppe gruppeNeu = new DatenPgruppe();
-        gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_NAME_NR];
-        gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR];
-        gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_SUFFIX_DIREKT_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_SUFFIX_DIREKT_NR];
-        gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_FARBE_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_FARBE_NR];
-        gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_ZIEL_PFAD_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_ZIEL_PFAD_NR];
-        gruppeNeu.arr[DatenPgruppe.PROGRAMMGRUPPE_ZIEL_DATEINAME_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_ZIEL_DATEINAME_NR];
+    public DatenPset getNewVersion() {
+        DatenPset gruppeNeu = new DatenPset();
+        gruppeNeu.arr[DatenPset.PROGRAMMSET_NAME_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_NAME_NR];
+        gruppeNeu.arr[DatenPset.PROGRAMMSET_PRAEFIX_DIREKT_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR];
+        gruppeNeu.arr[DatenPset.PROGRAMMSET_SUFFIX_DIREKT_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_SUFFIX_DIREKT_NR];
+        gruppeNeu.arr[DatenPset.PROGRAMMSET_FARBE_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_FARBE_NR];
+        gruppeNeu.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_ZIEL_PFAD_NR];
+        gruppeNeu.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR] = this.arr[Konstanten__old.PROGRAMMGRUPPE_ZIEL_DATEINAME_NR];
         return gruppeNeu;
     }
 

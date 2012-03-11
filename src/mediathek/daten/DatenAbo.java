@@ -44,10 +44,10 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_ZIELPFAD_NR = 7;
     public static final String ABO_DOWN_DATUM = "letztes_Abo";
     public static final int ABO_DOWN_DATUM_NR = 8;
-    public static final String ABO_PGRUPPE = "Programmgruppe";
-    public static final int ABO_PGRUPPE_NR = 9;
+    public static final String ABO_PSET = "Programmset";
+    public static final int ABO_PSET_NR = 9;
     public static final String[] ABO_COLUMN_NAMES = {ABO_NR, ABO_EINGESCHALTET, ABO_NAME, ABO_SENDER, ABO_THEMA, ABO_TITEL, ABO_THEMA_TITEL,
-        ABO_ZIELPFAD, ABO_DOWN_DATUM, ABO_PGRUPPE};
+        ABO_ZIELPFAD, ABO_DOWN_DATUM, ABO_PSET};
     public String[] arr;
 
     public DatenAbo() {
@@ -61,7 +61,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         arr[ABO_THEMA_NR] = thema;
         arr[ABO_TITEL_NR] = titel;
         arr[ABO_ZIELPFAD_NR] = ziel;
-        arr[ABO_PGRUPPE_NR] = programmname;
+        arr[ABO_PSET_NR] = programmname;
     }
 
     public DatenAbo getCopy() {

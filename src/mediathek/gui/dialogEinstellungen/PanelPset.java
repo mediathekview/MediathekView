@@ -34,7 +34,7 @@ import mediathek.Daten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
-import mediathek.daten.DatenPgruppe;
+import mediathek.daten.DatenPset;
 import mediathek.daten.DatenProg;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
@@ -42,12 +42,12 @@ import mediathek.gui.beobachter.CellRendererPguppen;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.*;
 
-public class PanelPgruppen extends PanelVorlage {
+public class PanelPset extends PanelVorlage {
 
     private int neuZaehler = 0;
     private String exportPfad = "";
 
-    public PanelPgruppen(DDaten d) {
+    public PanelPset(DDaten d) {
         super(d);
         initComponents();
         init();
@@ -55,12 +55,12 @@ public class PanelPgruppen extends PanelVorlage {
 
     private void init() {
         //Programme
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, PanelPgruppen.class.getSimpleName()) {
+        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPset.class.getSimpleName()) {
 
             @Override
             public void ping() {
                 if (!stopBeob) {
-                    tabellePgruppe();
+                    tabellePset();
                 }
             }
         });
@@ -86,57 +86,56 @@ public class PanelPgruppen extends PanelVorlage {
         jButtonProgAb.addActionListener(new BeobProgAufAb(false));
         jButtonProgPfad.setEnabled(false);
         jCheckBoxRestart.addActionListener(new BeobProgRestart());
-        //Pgruppe
+        //Pset
         jButtonAbspielen.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getPgruppe().setAbspielen(ddaten);
-                nurtabellePgruppe();
-                notifyPgruppe();
+                getPset().setAbspielen(ddaten);
+                nurtabellePset();
+                notifyPset();
             }
         });
         jCheckBoxSpeichern.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getPgruppe().setSpeichern(jCheckBoxSpeichern.isSelected());
-                nurtabellePgruppe();
-                notifyPgruppe();
+                getPset().setSpeichern(jCheckBoxSpeichern.isSelected());
+                nurtabellePset();
+                notifyPset();
             }
         });
         jCheckBoxButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getPgruppe().setButton(jCheckBoxButton.isSelected());
-                nurtabellePgruppe();
-                notifyPgruppe();
+                getPset().setButton(jCheckBoxButton.isSelected());
+                nurtabellePset();
+                notifyPset();
             }
         });
         jCheckBoxAbo.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getPgruppe().setAbo(jCheckBoxAbo.isSelected());
-                nurtabellePgruppe();
-                notifyPgruppe();
+                getPset().setAbo(jCheckBoxAbo.isSelected());
+                nurtabellePset();
+                notifyPset();
             }
         });
         jCheckBoxLaenge.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getPgruppe().arr[DatenPgruppe.PROGRAMMGRUPPE_LAENGE_BESCHRAENKEN_NR] = Boolean.toString(jCheckBoxLaenge.isSelected());
-                nurtabellePgruppe();
+                getPset().arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = Boolean.toString(jCheckBoxLaenge.isSelected());
+                nurtabellePset();
             }
         });
         jSpinnerLaenge.addChangeListener(new ChangeListener() {
 
             @Override
             public void stateChanged(ChangeEvent e) {
-                getPgruppe().arr[DatenPgruppe.PROGRAMMGRUPPE_MAX_LAENGE_NR] = String.valueOf(((Number) jSpinnerLaenge.getModel().getValue()).intValue());
-//                nurtabellePgruppe();
+                getPset().arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = String.valueOf(((Number) jSpinnerLaenge.getModel().getValue()).intValue());
             }
         });
         jButtonGruppeNeu.addActionListener(new BeobGruppeNeu());
@@ -148,16 +147,16 @@ public class PanelPgruppen extends PanelVorlage {
         jButtonGruppeDuplizieren.addActionListener(new BeobGruppeDuplizieren());
         jButtonExport.addActionListener(new BeobGruppeExport());
         jButtonGruppePfad.addActionListener(new BeobDateiDialogPfad());
-        jTextFieldGruppeName.getDocument().addDocumentListener(new BeobGruppenDoc(jTextFieldGruppeName, DatenPgruppe.PROGRAMMGRUPPE_NAME_NR));
-        jTextAreaBeschreibung.getDocument().addDocumentListener(new BeobGruppenDoc(jTextAreaBeschreibung, DatenPgruppe.PROGRAMMGRUPPE_BESCHREIBUNG_NR));
+        jTextFieldGruppeName.getDocument().addDocumentListener(new BeobGruppenDoc(jTextFieldGruppeName, DatenPset.PROGRAMMSET_NAME_NR));
+        jTextAreaBeschreibung.getDocument().addDocumentListener(new BeobGruppenDoc(jTextAreaBeschreibung, DatenPset.PROGRAMMSET_BESCHREIBUNG_NR));
         jTextFieldGruppeDirektSuffix.getDocument().addDocumentListener(
-                new BeobGruppenDoc(jTextFieldGruppeDirektSuffix, DatenPgruppe.PROGRAMMGRUPPE_SUFFIX_DIREKT_NR));
+                new BeobGruppenDoc(jTextFieldGruppeDirektSuffix, DatenPset.PROGRAMMSET_SUFFIX_DIREKT_NR));
         jTextFieldGruppeDirektPraefix.getDocument().addDocumentListener(
-                new BeobGruppenDoc(jTextFieldGruppeDirektPraefix, DatenPgruppe.PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR));
+                new BeobGruppenDoc(jTextFieldGruppeDirektPraefix, DatenPset.PROGRAMMSET_PRAEFIX_DIREKT_NR));
         jTextFieldGruppeZielName.getDocument().addDocumentListener(new BeobGruppenDoc(jTextFieldGruppeZielName,
-                DatenPgruppe.PROGRAMMGRUPPE_ZIEL_DATEINAME_NR));
+                DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR));
         jTextFieldGruppeZielPfad.getDocument().addDocumentListener(
-                new BeobGruppenDoc(jTextFieldGruppeZielPfad, DatenPgruppe.PROGRAMMGRUPPE_ZIEL_PFAD_NR));
+                new BeobGruppenDoc(jTextFieldGruppeZielPfad, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
         //rest
         jButtonHilfe.addActionListener(new ActionListener() {
 
@@ -167,88 +166,88 @@ public class PanelPgruppen extends PanelVorlage {
             }
         });
         jButtonPruefen.addActionListener(new BeobPuefen());
-        jTablePgruppen.setDefaultRenderer(Object.class, new CellRendererPguppen(ddaten));
-        jTablePgruppen.getSelectionModel().addListSelectionListener(new BeobTableSelectPgruppe());
-        tabellePgruppe();
+        jTablePset.setDefaultRenderer(Object.class, new CellRendererPguppen(ddaten));
+        jTablePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
+        tabellePset();
         spaltenSetzen();
-        if (jTablePgruppen.getRowCount() > 0) {
-            jTablePgruppen.setRowSelectionInterval(0, 0);
-            jTablePgruppen.scrollRectToVisible(jTablePgruppen.getCellRect(0, 0, false));
+        if (jTablePset.getRowCount() > 0) {
+            jTablePset.setRowSelectionInterval(0, 0);
+            jTablePset.scrollRectToVisible(jTablePset.getCellRect(0, 0, false));
         }
     }
 
-    private void tabellePgruppe() {
-        nurtabellePgruppe();
+    private void tabellePset() {
+        nurtabellePset();
         tabelleProgramme();
     }
 
-    private void nurtabellePgruppe() {
+    private void nurtabellePset() {
         stopBeob = true;
-        getSpalten(jTablePgruppen);
-        jTablePgruppen.setModel(ddaten.listePgruppe.getModel());
+        getSpalten(jTablePset);
+        jTablePset.setModel(ddaten.listePset.getModel());
         spaltenSetzen();
-        setSpalten(jTablePgruppen);
-        jTablePgruppen.updateUI();
+        setSpalten(jTablePset);
+        jTablePset.updateUI();
         stopBeob = false;
     }
 
     private void spaltenSetzen() {
-        for (int i = 0; i < jTablePgruppen.getColumnCount(); ++i) {
-            if (i == DatenPgruppe.PROGRAMMGRUPPE_NAME_NR) {
-                jTablePgruppen.getColumnModel().getColumn(i).setMinWidth(10);
-                jTablePgruppen.getColumnModel().getColumn(i).setMaxWidth(3000);
-                jTablePgruppen.getColumnModel().getColumn(i).setPreferredWidth(200);
-            } else if (i == DatenPgruppe.PROGRAMMGRUPPE_IST_SPEICHERN_NR
-                    || i == DatenPgruppe.PROGRAMMGRUPPE_IST_ABSPIELEN_NR
-                    || i == DatenPgruppe.PROGRAMMGRUPPE_IST_BUTTON_NR
-                    || i == DatenPgruppe.PROGRAMMGRUPPE_IST_ABO_NR) {
-                jTablePgruppen.getColumnModel().getColumn(i).setMinWidth(10);
-                jTablePgruppen.getColumnModel().getColumn(i).setMaxWidth(3000);
-                jTablePgruppen.getColumnModel().getColumn(i).setPreferredWidth(100);
+        for (int i = 0; i < jTablePset.getColumnCount(); ++i) {
+            if (i == DatenPset.PROGRAMMSET_NAME_NR) {
+                jTablePset.getColumnModel().getColumn(i).setMinWidth(10);
+                jTablePset.getColumnModel().getColumn(i).setMaxWidth(3000);
+                jTablePset.getColumnModel().getColumn(i).setPreferredWidth(200);
+            } else if (i == DatenPset.PROGRAMMSET_IST_SPEICHERN_NR
+                    || i == DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR
+                    || i == DatenPset.PROGRAMMSET_IST_BUTTON_NR
+                    || i == DatenPset.PROGRAMMSET_IST_ABO_NR) {
+                jTablePset.getColumnModel().getColumn(i).setMinWidth(10);
+                jTablePset.getColumnModel().getColumn(i).setMaxWidth(3000);
+                jTablePset.getColumnModel().getColumn(i).setPreferredWidth(100);
             } else {
-                jTablePgruppen.getColumnModel().getColumn(i).setMinWidth(0);
-                jTablePgruppen.getColumnModel().getColumn(i).setMaxWidth(0);
-                jTablePgruppen.getColumnModel().getColumn(i).setPreferredWidth(0);
+                jTablePset.getColumnModel().getColumn(i).setMinWidth(0);
+                jTablePset.getColumnModel().getColumn(i).setMaxWidth(0);
+                jTablePset.getColumnModel().getColumn(i).setPreferredWidth(0);
             }
         }
     }
 
     private void tabelleProgramme() {
         //Tabelle mit den Programmen füllen
-        DatenPgruppe pgruppe = getPgruppe();
+        DatenPset pSet = getPset();
         stopBeob = true;
-        jTextFieldGruppeName.setEnabled(pgruppe != null);
-        jTextFieldGruppeDirektSuffix.setEnabled(pgruppe != null);
-        jTextFieldGruppeDirektPraefix.setEnabled(pgruppe != null);
-        jTextFieldGruppeZielName.setEnabled(pgruppe != null);
-        jTextFieldGruppeZielPfad.setEnabled(pgruppe != null);
-        jTextAreaBeschreibung.setEnabled(pgruppe != null);
-        jButtonGruppePfad.setEnabled(pgruppe != null);
-        jButtonAbspielen.setEnabled(pgruppe != null);
-        jCheckBoxSpeichern.setEnabled(pgruppe != null);
-        jCheckBoxButton.setEnabled(pgruppe != null);
-        jCheckBoxAbo.setEnabled(pgruppe != null);
-        jCheckBoxLaenge.setEnabled(pgruppe != null);
-        jSpinnerLaenge.setEnabled(pgruppe != null);
-        if (pgruppe != null) {
-            if (pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_MAX_LAENGE_NR].equals("")) {
+        jTextFieldGruppeName.setEnabled(pSet != null);
+        jTextFieldGruppeDirektSuffix.setEnabled(pSet != null);
+        jTextFieldGruppeDirektPraefix.setEnabled(pSet != null);
+        jTextFieldGruppeZielName.setEnabled(pSet != null);
+        jTextFieldGruppeZielPfad.setEnabled(pSet != null);
+        jTextAreaBeschreibung.setEnabled(pSet != null);
+        jButtonGruppePfad.setEnabled(pSet != null);
+        jButtonAbspielen.setEnabled(pSet != null);
+        jCheckBoxSpeichern.setEnabled(pSet != null);
+        jCheckBoxButton.setEnabled(pSet != null);
+        jCheckBoxAbo.setEnabled(pSet != null);
+        jCheckBoxLaenge.setEnabled(pSet != null);
+        jSpinnerLaenge.setEnabled(pSet != null);
+        if (pSet != null) {
+            if (pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
                 jSpinnerLaenge.setValue(GuiKonstanten.LAENGE_DATEINAME);
-                pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_MAX_LAENGE_NR] = String.valueOf(GuiKonstanten.LAENGE_DATEINAME);
+                pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = String.valueOf(GuiKonstanten.LAENGE_DATEINAME);
             } else {
-                jSpinnerLaenge.setValue(Integer.parseInt(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_MAX_LAENGE_NR]));
+                jSpinnerLaenge.setValue(Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]));
             }
-            jCheckBoxLaenge.setSelected(Boolean.parseBoolean(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_LAENGE_BESCHRAENKEN_NR]));
-            jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
-            jTabbedPane.setTitleAt(0, pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR]);
-            jTextFieldGruppeName.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR]);
-            jTextFieldGruppeDirektSuffix.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_SUFFIX_DIREKT_NR]);
-            jTextFieldGruppeDirektPraefix.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR]);
-            jTextFieldGruppeZielName.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_ZIEL_DATEINAME_NR]);
-            jTextFieldGruppeZielPfad.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_ZIEL_PFAD_NR]);
-            jTextAreaBeschreibung.setText(pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_BESCHREIBUNG_NR]);
-            jCheckBoxSpeichern.setSelected(pgruppe.istSpeichern());
-            jCheckBoxButton.setSelected(pgruppe.istButton());
-            jCheckBoxAbo.setSelected(pgruppe.istAbo());
+            jCheckBoxLaenge.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR]));
+            jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, pSet.arr[DatenPset.PROGRAMMSET_NAME_NR], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
+            jTabbedPane.setTitleAt(0, pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
+            jTextFieldGruppeName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
+            jTextFieldGruppeDirektSuffix.setText(pSet.arr[DatenPset.PROGRAMMSET_SUFFIX_DIREKT_NR]);
+            jTextFieldGruppeDirektPraefix.setText(pSet.arr[DatenPset.PROGRAMMSET_PRAEFIX_DIREKT_NR]);
+            jTextFieldGruppeZielName.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR]);
+            jTextFieldGruppeZielPfad.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR]);
+            jTextAreaBeschreibung.setText(pSet.arr[DatenPset.PROGRAMMSET_BESCHREIBUNG_NR]);
+            jCheckBoxSpeichern.setSelected(pSet.istSpeichern());
+            jCheckBoxButton.setSelected(pSet.istButton());
+            jCheckBoxAbo.setSelected(pSet.istAbo());
         } else {
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTabbedPane.setTitleAt(0, "           ");
@@ -261,8 +260,8 @@ public class PanelPgruppen extends PanelVorlage {
             jTextFieldGruppeZielPfad.setText("");
             jTextAreaBeschreibung.setText("");
         }
-        if (pgruppe != null) {
-            jTableProgramme.setModel(pgruppe.getListeProg().getModel());
+        if (pSet != null) {
+            jTableProgramme.setModel(pSet.getListeProg().getModel());
             if (jTableProgramme.getRowCount() > 0) {
                 spaltenSetzenProgramme();
                 jTableProgramme.setRowSelectionInterval(0, 0);
@@ -291,8 +290,8 @@ public class PanelPgruppen extends PanelVorlage {
         }
     }
 
-    private void notifyPgruppe() {
-        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, PanelPgruppen.class.getSimpleName());
+    private void notifyPset() {
+        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPset.class.getSimpleName());
     }
 
     private void fillTextProgramme() {
@@ -309,7 +308,7 @@ public class PanelPgruppen extends PanelVorlage {
         jButtonProgPfad.setEnabled(row != -1);
         jCheckBoxRestart.setEnabled(row != -1);
         if (row != -1) {
-            DatenProg prog = getPgruppe().getProg(jTableProgramme.convertRowIndexToModel(row));
+            DatenProg prog = getPset().getProg(jTableProgramme.convertRowIndexToModel(row));
             jTextFieldProgPfad.setText(prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]);
             jTextFieldProgSchalter.setText(prog.arr[DatenProg.PROGRAMM_SCHALTER_NR]);
             jTextFieldProgZielDateiName.setText(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR]);
@@ -330,25 +329,25 @@ public class PanelPgruppen extends PanelVorlage {
         stopBeob = false;
     }
 
-    //Pgruppe
-    private DatenPgruppe getPgruppe() {
-        DatenPgruppe ret = null;
-        int row = jTablePgruppen.getSelectedRow();
+    //Pset
+    private DatenPset getPset() {
+        DatenPset ret = null;
+        int row = jTablePset.getSelectedRow();
         if (row != -1) {
-            ret = ddaten.listePgruppe.get(jTablePgruppen.convertRowIndexToModel(row));
+            ret = ddaten.listePset.get(jTablePset.convertRowIndexToModel(row));
         }
         return ret;
     }
 
-    private void gruppenNamePruefen() {
+    private void setNamePruefen() {
         //doppelte Gruppennamen suchen
-        int row = jTablePgruppen.getSelectedRow();
+        int row = jTablePset.getSelectedRow();
         if (row != -1) {
             int foundgruppe = 0;
-            Iterator<DatenPgruppe> it = ddaten.listePgruppe.iterator();
+            Iterator<DatenPset> it = ddaten.listePset.iterator();
             while (it.hasNext()) {
-                DatenPgruppe gruppe = it.next();
-                if (jTextFieldGruppeName.getText().equals(gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR])) {
+                DatenPset gruppe = it.next();
+                if (jTextFieldGruppeName.getText().equals(gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR])) {
                     ++foundgruppe;
                 }
             }
@@ -360,74 +359,73 @@ public class PanelPgruppen extends PanelVorlage {
         }
     }
 
-    private void gruppeAufAb(boolean auf) {
-        int row = jTablePgruppen.getSelectedRow();
+    private void setAufAb(boolean auf) {
+        int row = jTablePset.getSelectedRow();
         if (row != -1) {
-            int neu = ddaten.listePgruppe.auf(row, auf);
-            tabellePgruppe();
-            jTablePgruppen.setRowSelectionInterval(neu, neu);
-            jTablePgruppen.scrollRectToVisible(jTablePgruppen.getCellRect(neu, 0, false));
+            int neu = ddaten.listePset.auf(row, auf);
+            tabellePset();
+            jTablePset.setRowSelectionInterval(neu, neu);
+            jTablePset.scrollRectToVisible(jTablePset.getCellRect(neu, 0, false));
             Daten.setGeaendert();
-            notifyPgruppe();
+            notifyPset();
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
     }
 
-    private void gruppeNeu() {
-        //DatenPgruppe(String name, String suffix, String farbe, String zielPfad, String zielDateiname) {
-        ddaten.listePgruppe.addPgruppe(new DatenPgruppe("Neu-" + ++neuZaehler));
-        tabellePgruppe();
-        notifyPgruppe();
+    private void setNeu() {
+        ddaten.listePset.addPset(new DatenPset("Neu-" + ++neuZaehler));
+        tabellePset();
+        notifyPset();
     }
 
-    private void gruppeLoeschen() {
-        int rows[] = jTablePgruppen.getSelectedRows();
+    private void setLoeschen() {
+        int rows[] = jTablePset.getSelectedRows();
         if (rows.length > 0) {
-            DatenPgruppe pGruppe;
+            DatenPset pSet;
             String text;
             if (rows.length == 1) {
-                pGruppe = ddaten.listePgruppe.get(jTablePgruppen.convertRowIndexToModel(rows[0]));
-                text = pGruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
+                pSet = ddaten.listePset.get(jTablePset.convertRowIndexToModel(rows[0]));
+                text = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
             } else {
                 text = rows.length + " Programmgruppen löschen?";
             }
             int ret = JOptionPane.showConfirmDialog(null, text, "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
                 for (int i = rows.length - 1; i >= 0; --i) {
-                    int delRow = jTablePgruppen.convertRowIndexToModel(rows[i]);
-                    ((TModel) jTablePgruppen.getModel()).removeRow(delRow);
-                    ddaten.listePgruppe.remove(delRow);
+                    int delRow = jTablePset.convertRowIndexToModel(rows[i]);
+                    ((TModel) jTablePset.getModel()).removeRow(delRow);
+                    ddaten.listePset.remove(delRow);
                 }
-                tabellePgruppe();
-                notifyPgruppe();
+                tabellePset();
+                notifyPset();
             }
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
     }
 
-    private void gruppeExport() {
-        LinkedList<DatenPgruppe> liste = new LinkedList<DatenPgruppe>();
-        int rows[] = jTablePgruppen.getSelectedRows();
+    private void setExport() {
+        LinkedList<DatenPset> liste = new LinkedList<DatenPset>();
+        int rows[] = jTablePset.getSelectedRows();
         if (rows.length > 0) {
-            DatenPgruppe pGruppe;
+            DatenPset pSet;
             for (int i = 0; i < rows.length; ++i) {
                 String name;
-                int delRow = jTablePgruppen.convertRowIndexToModel(rows[i]);
-                pGruppe = ddaten.listePgruppe.get(delRow);
-                if (pGruppe != null) {
-                    liste.add(pGruppe);
+                int delRow = jTablePset.convertRowIndexToModel(rows[i]);
+                pSet = ddaten.listePset.get(delRow);
+                if (pSet != null) {
+                    liste.add(pSet);
                 }
             }
-            String name = liste.getFirst().arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] + ".xml";
+            String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR] + ".xml";
             DialogZiel dialogZiel = new DialogZiel(null, true, exportPfad, GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */));
             dialogZiel.setVisible(true);
             if (dialogZiel.ok) {
                 if (dialogZiel.ziel.contains(File.separator)) {
                     exportPfad = dialogZiel.ziel.substring(0, dialogZiel.ziel.lastIndexOf(File.separator));
                 }
-                ddaten.ioXmlSchreiben.exportPgruppe(liste.toArray(new DatenPgruppe[0]), dialogZiel.ziel);
+                ddaten.ioXmlSchreiben.exportPset(liste.toArray(new DatenPset[0]), dialogZiel.ziel);
             }
         } else {
             new HinweisKeineAuswahl().zeigen();
@@ -435,7 +433,7 @@ public class PanelPgruppen extends PanelVorlage {
     }
 
     private void progNeueZeile(DatenProg prog) {
-        DatenPgruppe gruppe = getPgruppe();
+        DatenPset gruppe = getPset();
         if (gruppe != null) {
             gruppe.addProg(prog);
             tabelleProgramme();
@@ -447,7 +445,7 @@ public class PanelPgruppen extends PanelVorlage {
         int rows = jTableProgramme.getSelectedRow();
         if (rows != -1) {
             int row = jTableProgramme.convertRowIndexToModel(rows);
-            int neu = getPgruppe().getListeProg().auf(row, auf);
+            int neu = getPset().getListeProg().auf(row, auf);
             tabelleProgramme();
             jTableProgramme.setRowSelectionInterval(neu, neu);
             jTableProgramme.scrollRectToVisible(jTableProgramme.getCellRect(neu, 0, true));
@@ -469,9 +467,9 @@ public class PanelPgruppen extends PanelVorlage {
         jButtonHilfe = new javax.swing.JButton();
         jButtonPruefen = new javax.swing.JButton();
         jTabbedPane = new javax.swing.JTabbedPane();
-        jPanelPgruppe = new javax.swing.JPanel();
+        jPanelPset = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTablePgruppen = new javax.swing.JTable();
+        jTablePset = new javax.swing.JTable();
         jPanel6 = new javax.swing.JPanel();
         jButtonGruppeNeu = new javax.swing.JButton();
         jButtonGruppeLoeschen = new javax.swing.JButton();
@@ -535,9 +533,9 @@ public class PanelPgruppen extends PanelVorlage {
         jButtonPruefen.setText("Prüfen");
         jButtonPruefen.setToolTipText("Programmpfade prüfen");
 
-        jPanelPgruppe.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanelPset.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jTablePgruppen.setModel(new javax.swing.table.DefaultTableModel(
+        jTablePset.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -545,8 +543,8 @@ public class PanelPgruppen extends PanelVorlage {
 
             }
         ));
-        jTablePgruppen.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        jScrollPane3.setViewportView(jTablePgruppen);
+        jTablePset.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jScrollPane3.setViewportView(jTablePset);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -628,20 +626,20 @@ public class PanelPgruppen extends PanelVorlage {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jPanelPgruppeLayout = new javax.swing.GroupLayout(jPanelPgruppe);
-        jPanelPgruppe.setLayout(jPanelPgruppeLayout);
-        jPanelPgruppeLayout.setHorizontalGroup(
-            jPanelPgruppeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelPgruppeLayout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelPsetLayout = new javax.swing.GroupLayout(jPanelPset);
+        jPanelPset.setLayout(jPanelPsetLayout);
+        jPanelPsetLayout.setHorizontalGroup(
+            jPanelPsetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelPsetLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanelPgruppeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanelPsetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 631, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        jPanelPgruppeLayout.setVerticalGroup(
-            jPanelPgruppeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelPgruppeLayout.createSequentialGroup()
+        jPanelPsetLayout.setVerticalGroup(
+            jPanelPsetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelPsetLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -649,7 +647,7 @@ public class PanelPgruppen extends PanelVorlage {
                 .addContainerGap())
         );
 
-        jTabbedPane.addTab("Programmgruppe", jPanelPgruppe);
+        jTabbedPane.addTab("Programmgruppe", jPanelPset);
 
         jPanelDetails.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -986,7 +984,7 @@ public class PanelPgruppen extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+                .addComponent(jTabbedPane)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonHilfe)
@@ -1034,17 +1032,17 @@ public class PanelPgruppen extends PanelVorlage {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanelDetails;
-    private javax.swing.JPanel jPanelPgruppe;
     private javax.swing.JPanel jPanelProgrammDetails;
     private javax.swing.JPanel jPanelProgramme;
+    private javax.swing.JPanel jPanelPset;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSpinner jSpinnerLaenge;
     private javax.swing.JTabbedPane jTabbedPane;
-    private javax.swing.JTable jTablePgruppen;
     private javax.swing.JTable jTableProgramme;
+    private javax.swing.JTable jTablePset;
     private javax.swing.JTextArea jTextAreaBeschreibung;
     private javax.swing.JTextField jTextFieldGruppeDirektPraefix;
     private javax.swing.JTextField jTextFieldGruppeDirektSuffix;
@@ -1068,7 +1066,7 @@ public class PanelPgruppen extends PanelVorlage {
                 int rows = jTableProgramme.getSelectedRow();
                 if (rows != -1) {
                     int row = jTableProgramme.convertRowIndexToModel(rows);
-                    DatenProg prog = getPgruppe().getListeProg().get(row);
+                    DatenProg prog = getPset().getListeProg().get(row);
                     prog.arr[DatenProg.PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBoxRestart.isSelected());
                     jTableProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART_NR);
                 }
@@ -1100,7 +1098,7 @@ public class PanelPgruppen extends PanelVorlage {
                 int rows = jTableProgramme.getSelectedRow();
                 if (rows != -1) {
                     int row = jTableProgramme.convertRowIndexToModel(rows);
-                    DatenProg prog = getPgruppe().getListeProg().get(row);
+                    DatenProg prog = getPset().getListeProg().get(row);
                     prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = jTextFieldProgPfad.getText();
                     prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = jTextFieldProgSchalter.getText();
                     prog.arr[DatenProg.PROGRAMM_NAME_NR] = jTextFieldProgName.getText();
@@ -1119,7 +1117,7 @@ public class PanelPgruppen extends PanelVorlage {
         }
     }
 
-    private class BeobTableSelectPgruppe implements ListSelectionListener {
+    private class BeobTableSelectPset implements ListSelectionListener {
 
         @Override
         public void valueChanged(ListSelectionEvent event) {
@@ -1147,7 +1145,7 @@ public class PanelPgruppen extends PanelVorlage {
                     String str = chooser.getSelectedFile().getPath();
                     jTextFieldProgPfad.setText(str);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("PanelPgruppen.BeobDateiDialogProg", ex);
+                    Log.fehlerMeldung("PanelPset.BeobDateiDialogProg", ex);
                 }
             }
         }
@@ -1169,7 +1167,7 @@ public class PanelPgruppen extends PanelVorlage {
                     String str = chooser.getSelectedFile().getPath();
                     jTextFieldGruppeZielPfad.setText(str);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("PanelPgruppen.BeobDateiDialogPfad", ex);
+                    Log.fehlerMeldung("PanelPset.BeobDateiDialogPfad", ex);
                 }
             }
         }
@@ -1191,7 +1189,7 @@ public class PanelPgruppen extends PanelVorlage {
             int rows = jTableProgramme.getSelectedRow();
             if (rows != -1) {
                 int row = jTableProgramme.convertRowIndexToModel(rows);
-                DatenProg prog = getPgruppe().getListeProg().get(row);
+                DatenProg prog = getPset().getListeProg().get(row);
                 progNeueZeile(prog.copy());
             } else {
                 new HinweisKeineAuswahl().zeigen();
@@ -1232,28 +1230,28 @@ public class PanelPgruppen extends PanelVorlage {
 
         private void eingabe() {
             if (!stopBeob) {
-                DatenPgruppe gruppe;
-                int row = jTablePgruppen.getSelectedRow();
+                DatenPset gruppe;
+                int row = jTablePset.getSelectedRow();
                 if (row != -1) {
-                    gruppe = ddaten.listePgruppe.get(jTablePgruppen.convertRowIndexToModel(row));
+                    gruppe = ddaten.listePset.get(jTablePset.convertRowIndexToModel(row));
                     stopBeob = true;
                     if (textfeld != null) {
                         gruppe.arr[nr] = textfeld.getText();
                     } else {
                         gruppe.arr[nr] = textArea.getText();
                     }
-                    if (nr == DatenPgruppe.PROGRAMMGRUPPE_NAME_NR) {
-                        jTablePgruppen.getModel().setValueAt(jTextFieldGruppeName.getText(), row, DatenPgruppe.PROGRAMMGRUPPE_NAME_NR);
-                        jTabbedPane.setTitleAt(0, gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR]);
+                    if (nr == DatenPset.PROGRAMMSET_NAME_NR) {
+                        jTablePset.getModel().setValueAt(jTextFieldGruppeName.getText(), row, DatenPset.PROGRAMMSET_NAME_NR);
+                        jTabbedPane.setTitleAt(0, gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR]);
                     }
-                    notifyPgruppe();
+                    notifyPset();
                     Daten.setGeaendert();
                     stopBeob = false;
                 } else {
                     new HinweisKeineAuswahl().zeigen();
                 }
             }
-            gruppenNamePruefen();
+            setNamePruefen();
         }
     }
 
@@ -1261,12 +1259,12 @@ public class PanelPgruppen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            DatenPgruppe gruppe = null;
-            int row = jTablePgruppen.getSelectedRow();
+            DatenPset gruppe = null;
+            int row = jTablePset.getSelectedRow();
             if (row != -1) {
-                gruppe = ddaten.listePgruppe.get(jTablePgruppen.convertRowIndexToModel(row));
-                ddaten.listePgruppe.addPgruppe(gruppe.copy());
-                tabellePgruppe();
+                gruppe = ddaten.listePset.get(jTablePset.convertRowIndexToModel(row));
+                ddaten.listePset.addPset(gruppe.copy());
+                tabellePset();
                 Daten.setGeaendert();
             } else {
                 new HinweisKeineAuswahl().zeigen();
@@ -1280,11 +1278,11 @@ public class PanelPgruppen extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             int rows[] = jTableProgramme.getSelectedRows();
             if (rows.length > 0) {
-                DatenPgruppe pGruppe = getPgruppe();
+                DatenPset pSet = getPset();
                 String text;
                 if (rows.length == 1) {
                     int delRow = jTableProgramme.convertRowIndexToModel(rows[0]);
-                    text = pGruppe.getProg(delRow).arr[DatenProg.PROGRAMM_NAME_NR];
+                    text = pSet.getProg(delRow).arr[DatenProg.PROGRAMM_NAME_NR];
                 } else {
                     text = rows.length + " Programme löschen?";
                 }
@@ -1292,7 +1290,7 @@ public class PanelPgruppen extends PanelVorlage {
                 if (ret == JOptionPane.OK_OPTION) {
                     for (int i = rows.length - 1; i >= 0; --i) {
                         int delRow = jTableProgramme.convertRowIndexToModel(rows[i]);
-                        pGruppe.getListeProg().remove(delRow);
+                        pSet.getListeProg().remove(delRow);
                     }
                     tabelleProgramme();
                     Daten.setGeaendert();
@@ -1335,7 +1333,7 @@ public class PanelPgruppen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            gruppeAufAb(auf);
+            setAufAb(auf);
         }
     }
 
@@ -1343,7 +1341,7 @@ public class PanelPgruppen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            gruppeNeu();
+            setNeu();
         }
     }
 
@@ -1351,7 +1349,7 @@ public class PanelPgruppen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            gruppeLoeschen();
+            setLoeschen();
         }
     }
 
@@ -1359,7 +1357,7 @@ public class PanelPgruppen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            gruppeExport();
+            setExport();
         }
     }
 
@@ -1367,15 +1365,15 @@ public class PanelPgruppen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            DatenPgruppe pgruppe = getPgruppe();
-            if (pgruppe != null) {
+            DatenPset pSet = getPset();
+            if (pSet != null) {
                 DialogFarbe dialog = new DialogFarbe(null, true);
                 dialog.setVisible(true);
                 if (dialog.farbe != null) {
-                    pgruppe.setFarbe(dialog.farbe);
-                    tabellePgruppe();
+                    pSet.setFarbe(dialog.farbe);
+                    tabellePset();
                     Daten.setGeaendert();
-                    notifyPgruppe();
+                    notifyPset();
                 }
             }
 
@@ -1386,12 +1384,12 @@ public class PanelPgruppen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            DatenPgruppe pgruppe = getPgruppe();
-            if (pgruppe != null) {
-                pgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_FARBE_NR] = "";
-                tabellePgruppe();
+            DatenPset pSet = getPset();
+            if (pSet != null) {
+                pSet.arr[DatenPset.PROGRAMMSET_FARBE_NR] = "";
+                tabellePset();
                 Daten.setGeaendert();
-                notifyPgruppe();
+                notifyPset();
             }
 
         }

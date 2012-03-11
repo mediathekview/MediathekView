@@ -34,7 +34,7 @@ public final class DDaten extends Daten {
     // Listen
     public static ListeFilme listeFilmeNachBlackList = null;
     public ListeBlacklist listeBlacklist;
-    public ListePgruppe listePgruppe = null;
+    public ListePset listePset = null;
     public ListeAbo listeAbo = null;
     public ListeDownloads listeDownloads = null;
     public History history = null;
@@ -58,7 +58,7 @@ public final class DDaten extends Daten {
         super(basis);
         listeFilmeNachBlackList = new ListeFilme();
         listeBlacklist = new ListeBlacklist();
-        listePgruppe = new ListePgruppe();
+        listePset = new ListePset();
 //        listeProgVorlagen = new ListeProg();
         listeAbo = new ListeAbo(this);
         listeDownloads = new ListeDownloads(this);
