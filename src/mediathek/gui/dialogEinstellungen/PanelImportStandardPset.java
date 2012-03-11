@@ -35,19 +35,19 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 
-public class PanelImportStandardPgruppe extends PanelVorlage {
+public class PanelImportStandardPset extends PanelVorlage {
 
     public JDialog dialog = null;
     private boolean helpModal = false;
 
-    public PanelImportStandardPgruppe(DDaten d) {
+    public PanelImportStandardPset(DDaten d) {
         super(d);
         initComponents();
         init();
         initBeob();
     }
 
-    public PanelImportStandardPgruppe(DDaten d, boolean m) {
+    public PanelImportStandardPset(DDaten d, boolean m) {
         super(d);
         initComponents();
         helpModal = m;
@@ -119,7 +119,7 @@ public class PanelImportStandardPgruppe extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, helpModal, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_STANDARD_PGRUPPEN)).setVisible(true);
+                new DialogHilfe(null, helpModal, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_STANDARD_PSET)).setVisible(true);
             }
         });
     }

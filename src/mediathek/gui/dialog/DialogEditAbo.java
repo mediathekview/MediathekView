@@ -30,7 +30,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
-import mediathek.daten.DatenPgruppe;
+import mediathek.daten.DatenPset;
 import mediathek.gui.beobachter.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 
@@ -58,7 +58,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         initComponents();
         ddaten = d;
         aktAbo = aktA;
-        comboboxProgramm.setModel(new javax.swing.DefaultComboBoxModel(ddaten.listePgruppe.getListeAbo().getObjectDataCombo()));
+        comboboxProgramm.setModel(new javax.swing.DefaultComboBoxModel(ddaten.listePset.getListeAbo().getObjectDataCombo()));
         comboboxSender.setModel(new javax.swing.DefaultComboBoxModel(GuiFunktionen.addLeerListe(DDaten.filmeLaden.getSenderNamen())));
         jButtonBeenden.addActionListener(new ActionListener() {
 
@@ -117,15 +117,15 @@ public class DialogEditAbo extends javax.swing.JDialog {
         //Textfeld
         c.gridx = 1;
         c.weightx = 10;
-        if (i == DatenAbo.ABO_PGRUPPE_NR) {
-            if (ddaten.listePgruppe.getListeAbo().size() <= 1) {
+        if (i == DatenAbo.ABO_PSET_NR) {
+            if (ddaten.listePset.getListeAbo().size() <= 1) {
                 // dann nur ein Texfeld und nicht veränderbar
-                DatenPgruppe gruppe = ddaten.listePgruppe.getListeAbo().getFirst();
+                DatenPset gruppe = ddaten.listePset.getListeAbo().getFirst();
                 JTextField textfeld = new JTextField();
                 textfeldListe[i] = textfeld;
                 if (item[i].equals("")) {
                     if (gruppe != null) {
-                        aktAbo.arr[DatenAbo.ABO_PGRUPPE_NR] = gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
+                        aktAbo.arr[DatenAbo.ABO_PSET_NR] = gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR];
                     }
                 }
                 textfeld.setText(item[i]);
@@ -135,7 +135,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
             } else {
                 comboboxProgramm.setSelectedItem(item[i]);
                 //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
-                aktAbo.arr[DatenAbo.ABO_PGRUPPE_NR] = comboboxProgramm.getSelectedItem().toString();
+                aktAbo.arr[DatenAbo.ABO_PSET_NR] = comboboxProgramm.getSelectedItem().toString();
                 comboboxProgramm.addActionListener(new BeobComboProgramm());
                 gridbag.setConstraints(comboboxProgramm, c);
                 panel.add(comboboxProgramm);
@@ -288,7 +288,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             ddaten.setGeaendertPanel();
-            aktAbo.arr[DatenAbo.ABO_PGRUPPE_NR] = comboboxProgramm.getSelectedItem().toString();
+            aktAbo.arr[DatenAbo.ABO_PSET_NR] = comboboxProgramm.getSelectedItem().toString();
         }
     }
 

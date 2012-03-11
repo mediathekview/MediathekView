@@ -32,7 +32,7 @@ import mediathek.Log;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.DatenPgruppe;
+import mediathek.daten.DatenPset;
 import mediathek.tool.TModel;
 
 public class StarterClass {
@@ -70,7 +70,7 @@ public class StarterClass {
      * @param ersterFilm
      * @return
      */
-    public synchronized Starts urlStarten(DatenPgruppe gruppe, DatenFilm ersterFilm) {
+    public synchronized Starts urlStarten(DatenPset gruppe, DatenFilm ersterFilm) {
         // url mit dem Programm mit der Nr. starten (Button oder Doppelklick)
         // Quelle ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
         Starts s = null;

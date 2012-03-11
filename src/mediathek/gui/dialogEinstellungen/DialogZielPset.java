@@ -29,7 +29,7 @@ import mediathek.gui.beobachter.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 
-public class DialogZielPgruppe extends javax.swing.JDialog {
+public class DialogZielPset extends javax.swing.JDialog {
 
     public boolean ok = false;
     public String zielPfad = "";
@@ -43,7 +43,7 @@ public class DialogZielPgruppe extends javax.swing.JDialog {
      * @param pfad
      * @param name
      */
-    public DialogZielPgruppe(java.awt.Frame parent, boolean modal, String pfad) {
+    public DialogZielPset(java.awt.Frame parent, boolean modal, String pfad) {
         super(parent, modal);
         initComponents();
         jButtonOk.addActionListener(new OkBeobachter());
@@ -224,7 +224,7 @@ public class DialogZielPgruppe extends javax.swing.JDialog {
                 try {
                     jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("DialogZielPgruppe.ZielBeobachter", ex);
+                    Log.fehlerMeldung("DialogZielPset.ZielBeobachter", ex);
                 }
             }
         }

@@ -25,7 +25,7 @@ public class MediathekListener implements EventListener {
 
     public static final int EREIGNIS_BLACKLIST_ADD = 1;
     public static final int EREIGNIS_BLACKLIST_DEL = 2;
-    public static final int EREIGNIS_LISTE_PGRUPPE = 3;
+    public static final int EREIGNIS_LISTE_PSET = 3;
     public static final int EREIGNIS_FILMLISTE_NEU = 4;
     public static final int EREIGNIS_ANZAHL_DOWNLOADS = 5;
     public static final int EREIGNIS_LISTE_UPDATESERVER = 6;

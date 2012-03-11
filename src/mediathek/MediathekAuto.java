@@ -35,7 +35,7 @@ import mediathek.controller.io.starter.StartListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.DatenPgruppe;
+import mediathek.daten.DatenPset;
 import mediathek.gui.OSXAdapter;
 import mediathek.gui.beobachter.CellRendererFilme;
 import mediathek.tool.GuiFunktionen;
@@ -311,7 +311,7 @@ public class MediathekAuto extends javax.swing.JFrame {
         }
     }
 
-    private void open(DatenPgruppe gruppe) {
+    private void open(DatenPset gruppe) {
 ////        DatenFilm ersterFilm = new DatenFilm();
 ////        int select = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
 ////        for (int i = 0; i < DatenFilm.FILME_MAX_ELEM; ++i) {
@@ -622,7 +622,7 @@ public class MediathekAuto extends javax.swing.JFrame {
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
                 if (arg0.getClickCount() > 1) {
-            DatenPgruppe gruppe = daten.listePgruppe.getPgruppeAbspielen();
+            DatenPset gruppe = daten.listePset.getPsetAbspielen();
             if (gruppe != null) {
                 open(gruppe);
                     } else {

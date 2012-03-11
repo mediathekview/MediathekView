@@ -48,7 +48,7 @@ public class DatenAbo__old implements Comparable<DatenAbo__old> {
         abo.arr[DatenAbo.ABO_TITEL_NR] = this.arr[Konstanten__old.ABO_TITEL_NR];
         abo.arr[DatenAbo.ABO_ZIELPFAD_NR] = this.arr[Konstanten__old.ABO_ZIELPFAD_NR];
         abo.arr[DatenAbo.ABO_DOWN_DATUM_NR] = this.arr[Konstanten__old.ABO_DOWN_DATUM_NR];
-        abo.arr[DatenAbo.ABO_PGRUPPE_NR] = this.arr[Konstanten__old.ABO_PGRUPPE_NR];
+        abo.arr[DatenAbo.ABO_PSET_NR] = this.arr[Konstanten__old.ABO_PGRUPPE_NR];
         return abo;
     }
 

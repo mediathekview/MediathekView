@@ -100,7 +100,7 @@
                           <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jLabelPgruppe" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabelPset" min="-2" max="-2" attributes="0"/>
                           <EmptySpace pref="243" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -121,7 +121,7 @@
                       <Component id="jTextFieldTitel" linkSize="3" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="jLabelPgruppe" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelPset" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jComboBoxPgr" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -154,7 +154,7 @@
             <Property name="text" type="java.lang.String" value="jTextField2"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabelPgruppe">
+        <Component class="javax.swing.JLabel" name="jLabelPset">
           <Properties>
             <Property name="text" type="java.lang.String" value="Programmgruppe zum Aufzeichnen"/>
           </Properties>

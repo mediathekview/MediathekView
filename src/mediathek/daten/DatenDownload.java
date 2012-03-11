@@ -58,8 +58,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_URL_AUTH_NR = 8;
     public static final String DOWNLOAD_URL_RTMP = "URL-rtmp";
     public static final int DOWNLOAD_URL_RTMP_NR = 9;
-    public static final String DOWNLOAD_PROGRAMMGRUPPE = "Programmgruppe";
-    public static final int DOWNLOAD_PROGRAMMGRUPPDE_NR = 10;
+    public static final String DOWNLOAD_PROGRAMMSET = "Programmset";
+    public static final int DOWNLOAD_PROGRAMMSET_NR = 10;
     public static final String DOWNLOAD_PROGRAMM = "Programm";
     public static final int DOWNLOAD_PROGRAMM_NR = 11;
     public static final String DOWNLOAD_PROGRAMM_AUFRUF = "Programmaufruf";
@@ -78,7 +78,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_QUELLE_NR = 18;
     public static final String[] DOWNLOAD_COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_URL, DOWNLOAD_URL_AUTH, DOWNLOAD_URL_RTMP,
-        DOWNLOAD_PROGRAMMGRUPPE, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
+        DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE};
     public String[] arr;
 
@@ -143,7 +143,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART_NR]);
     }
 
-    public void aufrufBauen(DatenPgruppe gruppe, DatenAbo abo) {
+    public void aufrufBauen(DatenPset gruppe, DatenAbo abo) {
         //zieldatei und pfad bauen und eintragen
         //und gibt die Zieldatei mit Pfad zurück
         try {
@@ -155,7 +155,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 zielPfad = GuiFunktionen.addsPfad(zielPfad, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
                 arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
             }
-            arr[DOWNLOAD_PROGRAMMGRUPPDE_NR] = gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
+            arr[DOWNLOAD_PROGRAMMSET_NR] = gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR];
             int art = gruppe.checkDownloadDirekt(arr[DOWNLOAD_URL_NR]);
             arr[DOWNLOAD_ART_NR] = String.valueOf(art);
             if (art == Starts.ART_DOWNLOAD) {
@@ -173,7 +173,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
-    private void dateinamePfadBauen(DatenPgruppe gruppe) {
+    private void dateinamePfadBauen(DatenPset gruppe) {
         String name = arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR];
         String pfad = arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
         // ##############################################
@@ -247,11 +247,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
             pfad = pfad.substring(0, pfad.length() - 1);
         }
         // Kürzen
-        if (Boolean.parseBoolean(gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_LAENGE_BESCHRAENKEN_NR])) {
+        if (Boolean.parseBoolean(gruppe.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR])) {
             // nur dann ist was zu tun
             int laenge = GuiKonstanten.LAENGE_DATEINAME;
-            if (!gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_MAX_LAENGE_NR].equals("")) {
-                laenge = Integer.parseInt(gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_MAX_LAENGE_NR]);
+            if (!gruppe.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
+                laenge = Integer.parseInt(gruppe.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]);
             }
             if (name.length() > laenge) {
                 name = name.substring(0, laenge - 4) + name.substring(name.length() - 4);

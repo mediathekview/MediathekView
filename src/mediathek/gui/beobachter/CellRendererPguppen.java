@@ -24,7 +24,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.Log;
 import mediathek.daten.DDaten;
-import mediathek.daten.DatenPgruppe;
+import mediathek.daten.DatenPset;
 import mediathek.tool.GuiKonstanten;
 
 public class CellRendererPguppen extends DefaultTableCellRenderer {
@@ -52,11 +52,11 @@ public class CellRendererPguppen extends DefaultTableCellRenderer {
         try {
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
-            DatenPgruppe gruppe = daten.listePgruppe.get(r);
-            if (c == DatenPgruppe.PROGRAMMGRUPPE_NAME_NR) {
+            DatenPset gruppe = daten.listePset.get(r);
+            if (c == DatenPset.PROGRAMMSET_NAME_NR) {
                 setForeground(gruppe.getFarbe(daten));
             }
-            if (c == DatenPgruppe.PROGRAMMGRUPPE_IST_ABSPIELEN_NR) {
+            if (c == DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR) {
                 if (gruppe.istAbspielen()) {
                     if (isSelected) {
                         setBackground(GuiKonstanten.ABO_SEL);
@@ -73,7 +73,7 @@ public class CellRendererPguppen extends DefaultTableCellRenderer {
                     setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
                 }
             }
-            if (c == DatenPgruppe.PROGRAMMGRUPPE_IST_SPEICHERN_NR) {
+            if (c == DatenPset.PROGRAMMSET_IST_SPEICHERN_NR) {
                 if (gruppe.istSpeichern()) {
                     if (isSelected) {
                         setBackground(GuiKonstanten.ABO_SEL);
@@ -90,7 +90,7 @@ public class CellRendererPguppen extends DefaultTableCellRenderer {
                     setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
                 }
             }
-            if (c == DatenPgruppe.PROGRAMMGRUPPE_IST_BUTTON_NR) {
+            if (c == DatenPset.PROGRAMMSET_IST_BUTTON_NR) {
                 if (gruppe.istButton()) {
                     if (isSelected) {
                         setBackground(GuiKonstanten.ABO_SEL);
@@ -107,7 +107,7 @@ public class CellRendererPguppen extends DefaultTableCellRenderer {
                     setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
                 }
             }
-            if (c == DatenPgruppe.PROGRAMMGRUPPE_IST_ABO_NR) {
+            if (c == DatenPset.PROGRAMMSET_IST_ABO_NR) {
                 if (gruppe.istAbo()) {
                     if (isSelected) {
                         setBackground(GuiKonstanten.ABO_SEL);

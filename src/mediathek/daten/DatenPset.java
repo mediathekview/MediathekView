@@ -27,51 +27,51 @@ import mediathek.Log;
 import mediathek.controller.io.starter.Starts;
 import mediathek.tool.GuiFunktionenProgramme;
 
-public class DatenPgruppe {
+public class DatenPset {
 
     //Tags Programmgruppen
-    public static final String PROGRAMMGRUPPE = "Programmgruppe";
-    public static final int PROGRAMMGRUPPE_MAX_ELEM = 13;
-    public static final String PROGRAMMGRUPPE_NAME = "Name";
-    public static final int PROGRAMMGRUPPE_NAME_NR = 0;
-    public static final String PROGRAMMGRUPPE_PRAEFIX_DIREKT = "Praefix";
-    public static final int PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR = 1;
-    public static final String PROGRAMMGRUPPE_SUFFIX_DIREKT = "Suffix";
-    public static final int PROGRAMMGRUPPE_SUFFIX_DIREKT_NR = 2;
-    public static final String PROGRAMMGRUPPE_FARBE = "Farbe";
-    public static final int PROGRAMMGRUPPE_FARBE_NR = 3;
-    public static final String PROGRAMMGRUPPE_ZIEL_PFAD = "Zielpfad";
-    public static final int PROGRAMMGRUPPE_ZIEL_PFAD_NR = 4;
-    public static final String PROGRAMMGRUPPE_ZIEL_DATEINAME = "Zieldateiname";
-    public static final int PROGRAMMGRUPPE_ZIEL_DATEINAME_NR = 5;
-    public static final String PROGRAMMGRUPPE_IST_ABSPIELEN = "Abspielen";
-    public static final int PROGRAMMGRUPPE_IST_ABSPIELEN_NR = 6;
-    public static final String PROGRAMMGRUPPE_IST_SPEICHERN = "Speichern";
-    public static final int PROGRAMMGRUPPE_IST_SPEICHERN_NR = 7;
-    public static final String PROGRAMMGRUPPE_IST_BUTTON = "Button";
-    public static final int PROGRAMMGRUPPE_IST_BUTTON_NR = 8;
-    public static final String PROGRAMMGRUPPE_IST_ABO = "Abo";
-    public static final int PROGRAMMGRUPPE_IST_ABO_NR = 9;
-    public static final String PROGRAMMGRUPPE_LAENGE_BESCHRAENKEN = "Laenge";
-    public static final int PROGRAMMGRUPPE_LAENGE_BESCHRAENKEN_NR = 10;
-    public static final String PROGRAMMGRUPPE_MAX_LAENGE = "max-Laenge";
-    public static final int PROGRAMMGRUPPE_MAX_LAENGE_NR = 11;
-    public static final String PROGRAMMGRUPPE_BESCHREIBUNG = "Beschreibung";
-    public static final int PROGRAMMGRUPPE_BESCHREIBUNG_NR = 12;
-    public static final String[] PROGRAMMGRUPPE_COLUMN_NAMES = {PROGRAMMGRUPPE_NAME, PROGRAMMGRUPPE_PRAEFIX_DIREKT, PROGRAMMGRUPPE_SUFFIX_DIREKT,
-        PROGRAMMGRUPPE_FARBE, PROGRAMMGRUPPE_ZIEL_PFAD, PROGRAMMGRUPPE_ZIEL_DATEINAME,
-        PROGRAMMGRUPPE_IST_ABSPIELEN, PROGRAMMGRUPPE_IST_SPEICHERN, PROGRAMMGRUPPE_IST_BUTTON, PROGRAMMGRUPPE_IST_ABO,
-        PROGRAMMGRUPPE_LAENGE_BESCHRAENKEN, PROGRAMMGRUPPE_MAX_LAENGE, PROGRAMMGRUPPE_BESCHREIBUNG};
+    public static final String PROGRAMMSET = "Programmset";
+    public static final int PROGRAMMSET_MAX_ELEM = 13;
+    public static final String PROGRAMMSET_NAME = "Name";
+    public static final int PROGRAMMSET_NAME_NR = 0;
+    public static final String PROGRAMMSET_PRAEFIX_DIREKT = "Praefix";
+    public static final int PROGRAMMSET_PRAEFIX_DIREKT_NR = 1;
+    public static final String PROGRAMMSET_SUFFIX_DIREKT = "Suffix";
+    public static final int PROGRAMMSET_SUFFIX_DIREKT_NR = 2;
+    public static final String PROGRAMMSET_FARBE = "Farbe";
+    public static final int PROGRAMMSET_FARBE_NR = 3;
+    public static final String PROGRAMMSET_ZIEL_PFAD = "Zielpfad";
+    public static final int PROGRAMMSET_ZIEL_PFAD_NR = 4;
+    public static final String PROGRAMMSET_ZIEL_DATEINAME = "Zieldateiname";
+    public static final int PROGRAMMSET_ZIEL_DATEINAME_NR = 5;
+    public static final String PROGRAMMSET_IST_ABSPIELEN = "Abspielen";
+    public static final int PROGRAMMSET_IST_ABSPIELEN_NR = 6;
+    public static final String PROGRAMMSET_IST_SPEICHERN = "Speichern";
+    public static final int PROGRAMMSET_IST_SPEICHERN_NR = 7;
+    public static final String PROGRAMMSET_IST_BUTTON = "Button";
+    public static final int PROGRAMMSET_IST_BUTTON_NR = 8;
+    public static final String PROGRAMMSET_IST_ABO = "Abo";
+    public static final int PROGRAMMSET_IST_ABO_NR = 9;
+    public static final String PROGRAMMSET_LAENGE_BESCHRAENKEN = "Laenge";
+    public static final int PROGRAMMSET_LAENGE_BESCHRAENKEN_NR = 10;
+    public static final String PROGRAMMSET_MAX_LAENGE = "max-Laenge";
+    public static final int PROGRAMMSET_MAX_LAENGE_NR = 11;
+    public static final String PROGRAMMSET_BESCHREIBUNG = "Beschreibung";
+    public static final int PROGRAMMSET_BESCHREIBUNG_NR = 12;
+    public static final String[] PROGRAMMSET_COLUMN_NAMES = {PROGRAMMSET_NAME, PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
+        PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME,
+        PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
+        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_BESCHREIBUNG};
     public String[] arr;
     private ListeProg listeProg = new ListeProg();
 
-    public DatenPgruppe() {
+    public DatenPset() {
         makeArray();
     }
 
-    public DatenPgruppe(String name) {
+    public DatenPset(String name) {
         makeArray();
-        arr[PROGRAMMGRUPPE_NAME_NR] = name;
+        arr[PROGRAMMSET_NAME_NR] = name;
     }
 
     // public
@@ -92,7 +92,7 @@ public class DatenPgruppe {
         // er nicht mit "%p" abgefragt wird
         // und beim Programmschalter mit "**" eingesetzt werden soll
         boolean ret = false;
-        if (!this.arr[PROGRAMMGRUPPE_ZIEL_DATEINAME_NR].contains("%p")) {
+        if (!this.arr[PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%p")) {
             Iterator<DatenProg> it = listeProg.iterator();
             DatenProg prog;
             while (it.hasNext()) {
@@ -107,25 +107,25 @@ public class DatenPgruppe {
     }
 
     public boolean istAbspielen() {
-        return Boolean.parseBoolean(arr[PROGRAMMGRUPPE_IST_ABSPIELEN_NR]);
+        return Boolean.parseBoolean(arr[PROGRAMMSET_IST_ABSPIELEN_NR]);
     }
 
     public boolean istSpeichern() {
-        return Boolean.parseBoolean(arr[PROGRAMMGRUPPE_IST_SPEICHERN_NR]);
+        return Boolean.parseBoolean(arr[PROGRAMMSET_IST_SPEICHERN_NR]);
     }
 
     public boolean istButton() {
-        return Boolean.parseBoolean(arr[PROGRAMMGRUPPE_IST_BUTTON_NR]);
+        return Boolean.parseBoolean(arr[PROGRAMMSET_IST_BUTTON_NR]);
     }
 
     public boolean istAbo() {
-        return Boolean.parseBoolean(arr[PROGRAMMGRUPPE_IST_ABO_NR]);
+        return Boolean.parseBoolean(arr[PROGRAMMSET_IST_ABO_NR]);
     }
 
     public boolean isLable() {
         // wenn die Programmliste leer ist und einen Namen hat, ist es ein Lable
         if (this.listeProg.isEmpty()) {
-            if (!this.arr[PROGRAMMGRUPPE_NAME_NR].equals("")) {
+            if (!this.arr[PROGRAMMSET_NAME_NR].equals("")) {
                 return true;
             }
         }
@@ -134,7 +134,7 @@ public class DatenPgruppe {
 
     public boolean isFreeLine() {
         //Wenn die Programmgruppe keinen Namen hat, leere Zeile
-        if (this.arr[PROGRAMMGRUPPE_NAME_NR].equals("")) {
+        if (this.arr[PROGRAMMSET_NAME_NR].equals("")) {
             return true;
         } else {
             return false;
@@ -142,24 +142,24 @@ public class DatenPgruppe {
     }
 
     public void setAbspielen(DDaten ddaten) {
-        Iterator<DatenPgruppe> it = ddaten.listePgruppe.iterator();
+        Iterator<DatenPset> it = ddaten.listePset.iterator();
         while (it.hasNext()) {
-            DatenPgruppe datenPgruppe = it.next();
-            datenPgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
+            DatenPset datenPset = it.next();
+            datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
         }
-        arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABSPIELEN_NR] = Boolean.TRUE.toString();
+        arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.TRUE.toString();
     }
 
     public void setSpeichern(boolean set) {
-        arr[DatenPgruppe.PROGRAMMGRUPPE_IST_SPEICHERN_NR] = Boolean.toString(set);
+        arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.toString(set);
     }
 
     public void setButton(boolean set) {
-        arr[DatenPgruppe.PROGRAMMGRUPPE_IST_BUTTON_NR] = Boolean.toString(set);
+        arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR] = Boolean.toString(set);
     }
 
     public void setAbo(boolean set) {
-        arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABO_NR] = Boolean.toString(set);
+        arr[DatenPset.PROGRAMMSET_IST_ABO_NR] = Boolean.toString(set);
     }
 
     public DatenProg getProgUrl(String url) {
@@ -192,7 +192,7 @@ public class DatenPgruppe {
     public String getZielDateiname(String url) {
         //gibt den Zieldateinamen für den Film zurück
         DatenProg prog = this.getProgUrl(url);
-        String ret = arr[PROGRAMMGRUPPE_ZIEL_DATEINAME_NR];
+        String ret = arr[PROGRAMMSET_ZIEL_DATEINAME_NR];
         if ((checkDownloadDirekt(url) != Starts.ART_DOWNLOAD) && prog != null) {
             // nur wenn kein direkter Download und ein passendes Programm
             if (!prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].equals("")) {
@@ -204,17 +204,17 @@ public class DatenPgruppe {
 
     public String getZielPfad() {
         //gibt den Zielpfad für den Film zurück
-        return arr[PROGRAMMGRUPPE_ZIEL_PFAD_NR];
+        return arr[PROGRAMMSET_ZIEL_PFAD_NR];
     }
 
-    public DatenPgruppe copy() {
-        DatenPgruppe ret = new DatenPgruppe();
+    public DatenPset copy() {
+        DatenPset ret = new DatenPset();
         for (int i = 0; i < arr.length; ++i) {
             ret.arr[i] = new String(this.arr[i]);
         }
         //es darf nur einen geben!
-        ret.arr[PROGRAMMGRUPPE_NAME_NR] = "Kopie-" + arr[PROGRAMMGRUPPE_NAME_NR];
-        ret.arr[PROGRAMMGRUPPE_IST_ABSPIELEN_NR] = Boolean.toString(false);
+        ret.arr[PROGRAMMSET_NAME_NR] = "Kopie-" + arr[PROGRAMMSET_NAME_NR];
+        ret.arr[PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.toString(false);
         ListIterator<DatenProg> it = getListeProg().listIterator(0);
         while (it.hasNext()) {
             ret.addProg(it.next().copy());
@@ -225,11 +225,11 @@ public class DatenPgruppe {
     public Color getFarbe(DDaten daten) {
         Color ret = null;
         String r, g, b;
-        if (!arr[PROGRAMMGRUPPE_FARBE_NR].equals("")) {
-            r = arr[PROGRAMMGRUPPE_FARBE_NR].substring(0, arr[PROGRAMMGRUPPE_FARBE_NR].indexOf(","));
-            g = arr[PROGRAMMGRUPPE_FARBE_NR].substring(arr[PROGRAMMGRUPPE_FARBE_NR].indexOf(",") + 1,
-                    arr[PROGRAMMGRUPPE_FARBE_NR].lastIndexOf(","));
-            b = arr[PROGRAMMGRUPPE_FARBE_NR].substring(arr[PROGRAMMGRUPPE_FARBE_NR].lastIndexOf(",") + 1);
+        if (!arr[PROGRAMMSET_FARBE_NR].equals("")) {
+            r = arr[PROGRAMMSET_FARBE_NR].substring(0, arr[PROGRAMMSET_FARBE_NR].indexOf(","));
+            g = arr[PROGRAMMSET_FARBE_NR].substring(arr[PROGRAMMSET_FARBE_NR].indexOf(",") + 1,
+                    arr[PROGRAMMSET_FARBE_NR].lastIndexOf(","));
+            b = arr[PROGRAMMSET_FARBE_NR].substring(arr[PROGRAMMSET_FARBE_NR].lastIndexOf(",") + 1);
             try {
                 ret = new Color(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
             } catch (Exception ex) {
@@ -240,17 +240,17 @@ public class DatenPgruppe {
     }
 
     public void setFarbe(Color farbe) {
-        arr[PROGRAMMGRUPPE_FARBE_NR] =
+        arr[PROGRAMMSET_FARBE_NR] =
                 String.valueOf(farbe.getRed()) + "," + String.valueOf(farbe.getGreen()) + "," + String.valueOf(farbe.getBlue());
     }
 
     public int checkDownloadDirekt(String url) {
         int ret = Starts.ART_PROGRAMM;
         //auf direkte prüfen, pref oder suf: wenn angegeben dann muss es stimmen
-        if (!this.arr[PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR].equals("")
-                || !this.arr[PROGRAMMGRUPPE_SUFFIX_DIREKT_NR].equals("")) {
-            if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMGRUPPE_PRAEFIX_DIREKT_NR], url, true)
-                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMGRUPPE_SUFFIX_DIREKT_NR], url, false)) {
+        if (!this.arr[PROGRAMMSET_PRAEFIX_DIREKT_NR].equals("")
+                || !this.arr[PROGRAMMSET_SUFFIX_DIREKT_NR].equals("")) {
+            if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_PRAEFIX_DIREKT_NR], url, true)
+                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_SUFFIX_DIREKT_NR], url, false)) {
                 ret = Starts.ART_DOWNLOAD;
             }
         }
@@ -261,13 +261,13 @@ public class DatenPgruppe {
     // Private
     //===================================
     private void makeArray() {
-        arr = new String[PROGRAMMGRUPPE_MAX_ELEM];
+        arr = new String[PROGRAMMSET_MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }
-        arr[PROGRAMMGRUPPE_IST_ABSPIELEN_NR] = Boolean.toString(false);
-        arr[PROGRAMMGRUPPE_IST_SPEICHERN_NR] = Boolean.toString(false);
-        arr[PROGRAMMGRUPPE_IST_BUTTON_NR] = Boolean.toString(false);
-        arr[PROGRAMMGRUPPE_IST_ABO_NR] = Boolean.toString(false);
+        arr[PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.toString(false);
+        arr[PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.toString(false);
+        arr[PROGRAMMSET_IST_BUTTON_NR] = Boolean.toString(false);
+        arr[PROGRAMMSET_IST_ABO_NR] = Boolean.toString(false);
     }
 }

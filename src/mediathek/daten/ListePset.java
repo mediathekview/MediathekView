@@ -24,55 +24,55 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
-import mediathek.gui.dialog.DialogPgruppeSpeichern;
+import mediathek.gui.dialog.DialogPsetSpeichern;
 import mediathek.tool.TModel;
 
-public class ListePgruppe extends LinkedList<DatenPgruppe> {
+public class ListePset extends LinkedList<DatenPset> {
 
     public boolean nameExists(String name) {
         boolean ret = false;
-        ListIterator<DatenPgruppe> it = this.listIterator(0);
+        ListIterator<DatenPset> it = this.listIterator(0);
         while (it.hasNext()) {
-            if (it.next().arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR].equals(name)) {
+            if (it.next().arr[DatenPset.PROGRAMMSET_NAME_NR].equals(name)) {
                 ret = true;
             }
         }
         return ret;
     }
 
-    public DatenPgruppe getPgruppeAbspielen() {
+    public DatenPset getPsetAbspielen() {
         //Programmgruppe zum Abspielen
-        Iterator<DatenPgruppe> it = this.iterator();
+        Iterator<DatenPset> it = this.iterator();
         while (it.hasNext()) {
-            DatenPgruppe datenPgruppe = it.next();
-            if (Boolean.parseBoolean(datenPgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABSPIELEN_NR])) {
-                return datenPgruppe;
+            DatenPset datenPset = it.next();
+            if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR])) {
+                return datenPset;
             }
         }
         return null;
     }
 
-    public DatenPgruppe getPgruppeAbo(String name) {
+    public DatenPset getPsetAbo(String name) {
         //liefert mit dem Namen eines Abos die passende Programmgruppe zurück
         //wird nichts gefunden, wird die erste Programmgruppe (der Abos) genommen
-        DatenPgruppe ret = null;
+        DatenPset ret = null;
         if (this.size() == 0) {
             ret = null;
         } else if (this.size() == 1) {
             ret = this.getFirst();
         } else {
-            ListIterator<DatenPgruppe> it = this.listIterator(0);
+            ListIterator<DatenPset> it = this.listIterator(0);
             while (it.hasNext()) {
-                DatenPgruppe gruppe;
+                DatenPset gruppe;
                 gruppe = it.next();
                 if (gruppe.istAbo()) {
-                    if (gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR].equals(name)) {
+                    if (gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR].equals(name)) {
                         ret = gruppe;
                     }
                 }
             }
             if (ret == null) {
-                // die erste Pgruppe der Abos
+                // die erste Pset der Abos
                 ret = getListeAbo().getFirst();
                 if (ret == null) {
                     // dann die erste Prgruppe
@@ -83,57 +83,57 @@ public class ListePgruppe extends LinkedList<DatenPgruppe> {
         return ret;
     }
 
-    public ListePgruppe getListeSpeichern() {
-        ListePgruppe liste = new ListePgruppe();
-        Iterator<DatenPgruppe> it = this.iterator();
+    public ListePset getListeSpeichern() {
+        ListePset liste = new ListePset();
+        Iterator<DatenPset> it = this.iterator();
         while (it.hasNext()) {
-            DatenPgruppe datenPgruppe = it.next();
-            if (Boolean.parseBoolean(datenPgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_SPEICHERN_NR])) {
-                liste.add(datenPgruppe);
+            DatenPset datenPset = it.next();
+            if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR])) {
+                liste.add(datenPset);
             }
         }
         return liste;
     }
 
-    public ListePgruppe getListeButton() {
-        ListePgruppe liste = new ListePgruppe();
-        Iterator<DatenPgruppe> it = this.iterator();
+    public ListePset getListeButton() {
+        ListePset liste = new ListePset();
+        Iterator<DatenPset> it = this.iterator();
         while (it.hasNext()) {
-            DatenPgruppe datenPgruppe = it.next();
-            if (Boolean.parseBoolean(datenPgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_BUTTON_NR])) {
-                liste.add(datenPgruppe);
+            DatenPset datenPset = it.next();
+            if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR])) {
+                liste.add(datenPset);
             }
         }
         return liste;
     }
 
-    public ListePgruppe getListeAbo() {
-        ListePgruppe liste = new ListePgruppe();
-        Iterator<DatenPgruppe> it = this.iterator();
+    public ListePset getListeAbo() {
+        ListePset liste = new ListePset();
+        Iterator<DatenPset> it = this.iterator();
         while (it.hasNext()) {
-            DatenPgruppe datenPgruppe = it.next();
-            if (Boolean.parseBoolean(datenPgruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABO_NR])) {
-                liste.add(datenPgruppe);
+            DatenPset datenPset = it.next();
+            if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_ABO_NR])) {
+                liste.add(datenPset);
             }
         }
         return liste;
     }
 
     public String[] getObjectDataCombo() {
-        //liefert eine Liste aller Pgruppen
+        //liefert eine Liste aller Pset
         String[] object;
         int i = 0;
-        ListIterator<DatenPgruppe> it = this.listIterator(0);
+        ListIterator<DatenPset> it = this.listIterator(0);
         object = new String[this.size()];
         while (it.hasNext()) {
-            object[i] = it.next().arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
+            object[i] = it.next().arr[DatenPset.PROGRAMMSET_NAME_NR];
             ++i;
         }
         return object;
     }
 
     public int auf(int idx, boolean auf) {
-        DatenPgruppe prog = this.remove(idx);
+        DatenPset prog = this.remove(idx);
         int neu = idx;
         if (auf) {
             if (neu > 0) {
@@ -145,30 +145,30 @@ public class ListePgruppe extends LinkedList<DatenPgruppe> {
             }
         }
         this.add(neu, prog);
-        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PGRUPPE, ListePgruppe.class.getSimpleName());
+        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
         return neu;
     }
 
-    public boolean addPgruppe(DatenPgruppe gruppe) {
+    public boolean addPset(DatenPset gruppe) {
         boolean abspielen = false;
-        Iterator<DatenPgruppe> it = this.iterator();
+        Iterator<DatenPset> it = this.iterator();
         while (it.hasNext()) {
-            if (Boolean.parseBoolean(it.next().arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABSPIELEN_NR])) {
+            if (Boolean.parseBoolean(it.next().arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR])) {
                 abspielen = true;
                 break;
             }
         }
         if (abspielen) {
-            gruppe.arr[DatenPgruppe.PROGRAMMGRUPPE_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
+            gruppe.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
         }
         boolean ret = add(gruppe);
         return ret;
     }
 
-    public boolean addPgruppe(DatenPgruppe[] gruppe) {
+    public boolean addPset(DatenPset[] gruppe) {
         boolean ret = true;
         for (int i = 0; i < gruppe.length; ++i) {
-            if (!addPgruppe(gruppe[i])) {
+            if (!addPset(gruppe[i])) {
                 ret = false;
             }
         }
@@ -178,19 +178,19 @@ public class ListePgruppe extends LinkedList<DatenPgruppe> {
     public TModel getModel() {
         TModel model;
         Object[][] object;
-        DatenPgruppe daten;
+        DatenPset daten;
         int i = 0;
         if (this.size() > 0) {
-            ListIterator<DatenPgruppe> iterator = this.listIterator(0);
-            object = new Object[this.size()][DatenPgruppe.PROGRAMMGRUPPE_MAX_ELEM];
+            ListIterator<DatenPset> iterator = this.listIterator(0);
+            object = new Object[this.size()][DatenPset.PROGRAMMSET_MAX_ELEM];
             while (iterator.hasNext()) {
                 daten = iterator.next();
-                object[i][DatenPgruppe.PROGRAMMGRUPPE_NAME_NR] = daten.arr[DatenPgruppe.PROGRAMMGRUPPE_NAME_NR];
+                object[i][DatenPset.PROGRAMMSET_NAME_NR] = daten.arr[DatenPset.PROGRAMMSET_NAME_NR];
                 ++i;
             }
-            model = new TModel(object, DatenPgruppe.PROGRAMMGRUPPE_COLUMN_NAMES);
+            model = new TModel(object, DatenPset.PROGRAMMSET_COLUMN_NAMES);
         } else {
-            model = new TModel(new Object[0][DatenPgruppe.PROGRAMMGRUPPE_MAX_ELEM], DatenPgruppe.PROGRAMMGRUPPE_COLUMN_NAMES);
+            model = new TModel(new Object[0][DatenPset.PROGRAMMSET_MAX_ELEM], DatenPset.PROGRAMMSET_COLUMN_NAMES);
         }
         return model;
     }

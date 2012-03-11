@@ -42,8 +42,8 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private PanelBlacklist panelBlacklist;
     private PanelHistory panelHistory;
     private PanelLogfile panelLogfile;
-    private PanelPgruppen panelPgruppen;
-    private PanelImportPgruppe panelImportProgramme;
+    private PanelPset panelPset;
+    private PanelPsetVorlagen panelPsetVorlagen;
     // Infos
     private PanelInfo panelInfo;
     private PanelInfoStarts panelStarts;
@@ -81,27 +81,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                 beenden();
             }
         };
-        jToggleButton1.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (jToggleButton1.isSelected()) {
-                    jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/tree-zu_50.png")));
-                    int row = 0;
-                    while (row < jTree1.getRowCount()) {
-                        jTree1.expandRow(row);
-                        row++;
-                    }
-                } else {
-                    jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/tree-auf_50.png")));
-                    int row = 1;
-                    while (row < jTree1.getRowCount()) {
-                        jTree1.collapseRow(row);
-                        row++;
-                    }
-                }
-            }
-        });
     }
 
     private void init() {
@@ -113,8 +92,8 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         panelBlacklist = new PanelBlacklist(ddaten);
         panelHistory = new PanelHistory(ddaten);
         panelLogfile = new PanelLogfile(ddaten);
-        panelPgruppen = new PanelPgruppen(ddaten);
-        panelImportProgramme = new PanelImportPgruppe(ddaten);
+        panelPset = new PanelPset(ddaten);
+        panelPsetVorlagen = new PanelPsetVorlagen(ddaten);
         // Infos
         panelInfo = new PanelInfo(ddaten);
         panelStarts = new PanelInfoStarts(ddaten);
@@ -130,8 +109,8 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         final String NAME_senderLaden = "Sender aktualisieren";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";
-        final String NAME_programme = "Programme";
-        final String NAME_programmeImportieren = "Importieren";
+        final String NAME_programmset = "Programmset";
+        final String NAME_programmsetImportieren = "Set importieren";
         // Infos
         final String NAME_allgemeineInfos = "Pfade";
         final String NAME_infosStarts = "laufende Programme";
@@ -163,9 +142,9 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         treeNodeStart.add(treeNodeFilme);
         // ########### Programme ##############
         DefaultMutableTreeNode treeNodeDownloads = new DefaultMutableTreeNode("Videoplayer");
-        DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programme);
+        DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
         treeNodeDownloads.add(treeNodeProgramme);
-        DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmeImportieren);
+        DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
         treeNodeDownloads.add(treeNodeImportProgramme);
         treeNodeStart.add(treeNodeDownloads);
         // ####### Infos #########
@@ -227,12 +206,12 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                     } else if (name.equals(NAME_logfile)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelLogfile);
-                    } else if (name.equals(NAME_programme)) {
+                    } else if (name.equals(NAME_programmset)) {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelPgruppen);
-                    } else if (name.equals(NAME_programmeImportieren)) {
+                        jPanelExtra.add(panelPset);
+                    } else if (name.equals(NAME_programmsetImportieren)) {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelImportProgramme);
+                        jPanelExtra.add(panelPsetVorlagen);
                     } else if (name.equals(NAME_allgemeineInfos)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelInfo);
@@ -257,6 +236,10 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                 jPanelExtra.updateUI();
             }
         });
+        // und jetzt noch aufklappen
+        for (int i = 0; i < jTree1.getRowCount(); ++i) {
+            jTree1.expandRow(i);
+        }
     }
 
     private void beenden() {
@@ -272,16 +255,12 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
         jButtonBeenden = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         jPanelExtra = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
-        jPanel2 = new javax.swing.JPanel();
-        jToggleButton1 = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -299,41 +278,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
 
         jScrollPane1.setViewportView(jTree1);
 
-        jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/tree-auf_50.png"))); // NOI18N
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE))
-        );
-
-        jSplitPane1.setLeftComponent(jPanel1);
+        jSplitPane1.setLeftComponent(jScrollPane1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -344,7 +289,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 884, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(12, 781, Short.MAX_VALUE)
                         .addComponent(jButtonBeenden)))
                 .addContainerGap())
         );
@@ -352,8 +297,8 @@ public class DialogEinstellungen extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonBeenden)
                 .addGap(6, 6, 6))
         );
@@ -364,15 +309,11 @@ public class DialogEinstellungen extends javax.swing.JDialog {
      * @param args the command line arguments
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonBeenden;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }

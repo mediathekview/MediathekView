@@ -59,7 +59,7 @@ public class IoXmlLesen {
         return false;
     }
 
-    public static DatenPgruppe[] importPgruppe(String dateiUrl, boolean log) {
+    public static DatenPset[] importPset(String dateiUrl, boolean log) {
         int timeout = 10000; //10 Sekunden
         try {
             if (GuiFunktionen.istUrl(dateiUrl)) {
@@ -68,21 +68,21 @@ public class IoXmlLesen {
                 conn.setConnectTimeout(timeout);
                 conn.setReadTimeout(timeout);
                 conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                return importPgruppe(conn.getInputStream(), log);
+                return importPset(conn.getInputStream(), log);
             } else {
-                return importPgruppe(new FileInputStream(dateiUrl), log);
+                return importPset(new FileInputStream(dateiUrl), log);
             }
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung("IoXml.importPgruppe", ex);
+                Log.fehlerMeldung("IoXml.importPset", ex);
             }
             return null;
         }
     }
 
-    public static DatenPgruppe[] importPgruppe(InputStream datei, boolean log) {
-        DatenPgruppe datenPgruppe = null;
-        LinkedList<DatenPgruppe> liste = new LinkedList<DatenPgruppe>();
+    public static DatenPset[] importPset(InputStream datei, boolean log) {
+        DatenPset datenPset = null;
+        LinkedList<DatenPset> liste = new LinkedList<DatenPset>();
         try {
             int event;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
@@ -95,26 +95,26 @@ public class IoXmlLesen {
                 event = parser.next();
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     //String t = parser.getLocalName();
-                    if (parser.getLocalName().equals(DatenPgruppe.PROGRAMMGRUPPE)) {
-                        datenPgruppe = new DatenPgruppe();
-                        if (!get(parser, event, DatenPgruppe.PROGRAMMGRUPPE, DatenPgruppe.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe.arr, false)) {
-                            datenPgruppe = null;
+                    if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
+                        datenPset = new DatenPset();
+                        if (!get(parser, event, DatenPset.PROGRAMMSET, DatenPset.PROGRAMMSET_COLUMN_NAMES, datenPset.arr, false)) {
+                            datenPset = null;
                         } else {
-                            liste.add(datenPgruppe);
+                            liste.add(datenPset);
                         }
                     } else if (parser.getLocalName().equals(Konstanten__old.PROGRAMMGRUPPE_BUTTON)) {
                         DatenPgruppe__old datenPgruppe__old = new DatenPgruppe__old();
                         if (!get(parser, event, Konstanten__old.PROGRAMMGRUPPE_BUTTON, Konstanten__old.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe__old.arr, false)) {
-                            datenPgruppe = null;
+                            datenPset = null;
                         } else {
-                            datenPgruppe = datenPgruppe__old.getNewVersion();
-                            liste.add(datenPgruppe);
+                            datenPset = datenPgruppe__old.getNewVersion();
+                            liste.add(datenPset);
                         }
                     } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
-                        if (datenPgruppe != null) {
+                        if (datenPset != null) {
                             DatenProg datenProg = new DatenProg();
                             if (get(parser, event, DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, datenProg.arr, false)) {
-                                datenPgruppe.addProg(datenProg);
+                                datenPset.addProg(datenProg);
                             }
                         }
                     }
@@ -122,20 +122,20 @@ public class IoXmlLesen {
             }
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung("IoXml.importPgruppe", ex);
+                Log.fehlerMeldung("IoXml.importPset", ex);
             }
             return null;
         }
         if (liste.size() == 0) {
             return null;
         } else {
-            return liste.toArray(new DatenPgruppe[0]);
+            return liste.toArray(new DatenPset[0]);
         }
     }
 
-    public static DatenPgruppe[] importPgruppeText(String text, boolean log) {
-        DatenPgruppe datenPgruppe = null;
-        LinkedList<DatenPgruppe> liste = new LinkedList<DatenPgruppe>();
+    public static DatenPset[] importPsetText(String text, boolean log) {
+        DatenPset datenPset = null;
+        LinkedList<DatenPset> liste = new LinkedList<DatenPset>();
         try {
             int event;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
@@ -147,26 +147,26 @@ public class IoXmlLesen {
                 event = parser.next();
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     //String t = parser.getLocalName();
-                    if (parser.getLocalName().equals(DatenPgruppe.PROGRAMMGRUPPE)) {
-                        datenPgruppe = new DatenPgruppe();
-                        if (!get(parser, event, DatenPgruppe.PROGRAMMGRUPPE, DatenPgruppe.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe.arr, false)) {
-                            datenPgruppe = null;
+                    if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
+                        datenPset = new DatenPset();
+                        if (!get(parser, event, DatenPset.PROGRAMMSET, DatenPset.PROGRAMMSET_COLUMN_NAMES, datenPset.arr, false)) {
+                            datenPset = null;
                         } else {
-                            liste.add(datenPgruppe);
+                            liste.add(datenPset);
                         }
                     } else if (parser.getLocalName().equals(Konstanten__old.PROGRAMMGRUPPE_BUTTON)) {
                         DatenPgruppe__old datenPgruppe__old = new DatenPgruppe__old();
                         if (!get(parser, event, Konstanten__old.PROGRAMMGRUPPE_BUTTON, Konstanten__old.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe__old.arr, false)) {
-                            datenPgruppe = null;
+                            datenPset = null;
                         } else {
-                            datenPgruppe = datenPgruppe__old.getNewVersion();
-                            liste.add(datenPgruppe);
+                            datenPset = datenPgruppe__old.getNewVersion();
+                            liste.add(datenPset);
                         }
                     } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
-                        if (datenPgruppe != null) {
+                        if (datenPset != null) {
                             DatenProg datenProg = new DatenProg();
                             if (get(parser, event, DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, datenProg.arr, false)) {
-                                datenPgruppe.addProg(datenProg);
+                                datenPset.addProg(datenProg);
                             }
                         }
                     }
@@ -174,14 +174,14 @@ public class IoXmlLesen {
             }
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung("IoXml.importPgruppe", ex);
+                Log.fehlerMeldung("IoXml.importPset", ex);
             }
             return null;
         }
         if (liste.size() == 0) {
             return null;
         } else {
-            return liste.toArray(new DatenPgruppe[0]);
+            return liste.toArray(new DatenPset[0]);
         }
     }
 
@@ -199,7 +199,7 @@ public class IoXmlLesen {
                 inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
                 XMLStreamReader parser;
                 InputStreamReader in;
-                DatenPgruppe datenPgruppe = null;
+                DatenPset datenPset = null;
                 in = new InputStreamReader(new FileInputStream(datei), Konstanten.KODIERUNG_UTF);
                 parser = inFactory.createXMLStreamReader(in);
                 while (parser.hasNext()) {
@@ -209,16 +209,16 @@ public class IoXmlLesen {
                         if (parser.getLocalName().equals(Konstanten.SYSTEM)) {
                             //System
                             get(parser, event, Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, DDaten.system);
-                        } else if (parser.getLocalName().equals(DatenPgruppe.PROGRAMMGRUPPE)) {
+                        } else if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
                             //Programmgruppen
-                            datenPgruppe = new DatenPgruppe();
-                            if (get(parser, event, DatenPgruppe.PROGRAMMGRUPPE, DatenPgruppe.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe.arr)) {
-                                ddaten.listePgruppe.add(datenPgruppe);
+                            datenPset = new DatenPset();
+                            if (get(parser, event, DatenPset.PROGRAMMSET, DatenPset.PROGRAMMSET_COLUMN_NAMES, datenPset.arr)) {
+                                ddaten.listePset.add(datenPset);
                             }
                         } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
                             DatenProg datenProg = new DatenProg();
                             if (get(parser, event, DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, datenProg.arr)) {
-                                datenPgruppe.addProg(datenProg);
+                                datenPset.addProg(datenProg);
                             }
                             //ende Programgruppen
                         } else if (parser.getLocalName().equals(DatenAbo.ABO)) {
