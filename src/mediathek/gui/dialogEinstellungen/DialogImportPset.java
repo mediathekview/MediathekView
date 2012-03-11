@@ -45,6 +45,7 @@ public class DialogImportPset extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         pSet = ps;
+        this.setTitle("Programmset");
         jButtonOk.addActionListener(new OkBeobachter());
         new EscBeenden(this) {
 
@@ -62,21 +63,32 @@ public class DialogImportPset extends javax.swing.JDialog {
     private void extra() {
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
-        c.weightx = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(4, 10, 4, 10);
+        c.weightx = 1;
+        c.weighty = 1;
+        c.gridx = 0;
         c.gridy = 0;
-        int zeile = 0;
         String name;
         jPanelExtra.setLayout(gridbag);
         if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].contains(MUSTER_PFAD)) {
-            zeile = setFeld(gridbag, c, zeile, "Zielpfad", pSet.arr, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR);
+            JPanel panel = new JPanel();
+            panel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 255), 3), "Set"));
+            setFeld(panel, "Zielpfad", pSet.arr, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR);
+            gridbag.setConstraints(panel, c);
+            jPanelExtra.add(panel);
+            ++c.gridy;
         }
         for (int i = 0; i < pSet.getListeProg().size(); ++i) {
             DatenProg prog = pSet.getProg(i);
             if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD)) {
-                name = prog.arr[DatenProg.PROGRAMM_NAME_NR];
-                zeile = setFeld(gridbag, c, zeile, name, prog.arr, DatenProg.PROGRAMM_PROGRAMMPFAD_NR);
+                name = "Programmpfad";
+                JPanel panel = new JPanel();
+                panel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 255), 1), prog.arr[DatenProg.PROGRAMM_NAME_NR]));
+                setFeld(panel, name, prog.arr, DatenProg.PROGRAMM_PROGRAMMPFAD_NR);
+                gridbag.setConstraints(panel, c);
+                jPanelExtra.add(panel);
+                ++c.gridy;
             }
 //////            if (prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD)) {
 //////                name = "Programmschalter";
@@ -84,14 +96,21 @@ public class DialogImportPset extends javax.swing.JDialog {
 //////            }
         }// for
         c.weighty = 10;
-        c.gridx = 1;
-        c.gridy = zeile;
         JLabel label = new JLabel();
         gridbag.setConstraints(label, c);
         jPanelExtra.add(label);
     }
 
-    private int setFeld(GridBagLayout gridbag, GridBagConstraints c, int zeile, String name, String[] arr, int idx) {
+    private void setFeld(JPanel panel, String name, String[] arr, int idx) {
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        panel.setLayout(gridbag);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(4, 10, 4, 10);
+        c.weightx = 1;
+        c.weighty = 1;
+        c.gridx = 0;
+        c.gridy = 0;
         arr[idx] = arr[idx].replace(MUSTER_PFAD, "");
         String vorgabe = "";
         String text = "";
@@ -107,37 +126,45 @@ public class DialogImportPset extends javax.swing.JDialog {
             arr[idx] = vorgabe;
         }
         if (!text.equals("")) {
-            c.gridy = zeile;
-            zeile += 4;
+            // Array einbauen
             c.gridx = 0;
-            c.weightx = 1;
+            c.weightx = 10;
             c.gridwidth = 3;
-            c.gridheight = 4;
             JTextArea area = new JTextArea(text);
             area.setRows(4);
             gridbag.setConstraints(area, c);
-            jPanelExtra.add(area);
+            panel.add(area);
+            ++c.gridy;
         }
+        // Label
+        c.gridx = 0;
+        c.weightx = 0;
         c.gridwidth = 1;
-        c.gridheight = 1;
-        c.gridy = zeile;
         JLabel label = new JLabel(name + ": ");
         gridbag.setConstraints(label, c);
-        jPanelExtra.add(label);
+        panel.add(label);
+        // Textfeld
         c.gridx = 1;
         c.weightx = 10;
         JTextField textField = new JTextField(arr[idx]);
         textField.getDocument().addDocumentListener(new BeobDoc(textField, arr, idx));
         gridbag.setConstraints(textField, c);
-        jPanelExtra.add(textField);
+        panel.add(textField);
+        // Button
         c.gridx = 2;
-        c.weightx = 1;
+        c.weightx = 0;
         JButton button = new JButton();
         button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png")));
         button.addActionListener(new ZielBeobachter(false, textField, arr, idx));
         gridbag.setConstraints(button, c);
-        jPanelExtra.add(button);
-        return ++zeile;
+        panel.add(button);
+        ++c.gridy;
+        // schieben
+        c.gridx = 0;
+        c.weighty = 10;
+        label = new JLabel();
+        gridbag.setConstraints(label, c);
+        jPanelExtra.add(label);
     }
 
     private boolean check() {
@@ -200,11 +227,11 @@ public class DialogImportPset extends javax.swing.JDialog {
         jPanelExtra.setLayout(jPanelExtraLayout);
         jPanelExtraLayout.setHorizontalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 412, Short.MAX_VALUE)
+            .addGap(0, 522, Short.MAX_VALUE)
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 395, Short.MAX_VALUE)
+            .addGap(0, 422, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(jPanelExtra);
@@ -216,7 +243,7 @@ public class DialogImportPset extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -234,7 +261,7 @@ public class DialogImportPset extends javax.swing.JDialog {
                     .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonOk)
                 .addContainerGap())
