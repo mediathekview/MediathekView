@@ -170,10 +170,10 @@ public class PanelPset extends PanelVorlage {
         jTablePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
         tabellePset();
         spaltenSetzen();
-        if (jTablePset.getRowCount() > 0) {
-            jTablePset.setRowSelectionInterval(0, 0);
-            jTablePset.scrollRectToVisible(jTablePset.getCellRect(0, 0, false));
-        }
+//        if (jTablePset.getRowCount() > 0) {
+//            jTablePset.setRowSelectionInterval(0, 0);
+//            jTablePset.scrollRectToVisible(jTablePset.getCellRect(0, 0, false));
+//        }
     }
 
     private void tabellePset() {
@@ -238,7 +238,7 @@ public class PanelPset extends PanelVorlage {
             }
             jCheckBoxLaenge.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR]));
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, pSet.arr[DatenPset.PROGRAMMSET_NAME_NR], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
-            jTabbedPane.setTitleAt(0, pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
+            jTabbedPane.setTitleAt(0, "Set: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
             jTextFieldGruppeName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
             jTextFieldGruppeDirektSuffix.setText(pSet.arr[DatenPset.PROGRAMMSET_SUFFIX_DIREKT_NR]);
             jTextFieldGruppeDirektPraefix.setText(pSet.arr[DatenPset.PROGRAMMSET_PRAEFIX_DIREKT_NR]);
@@ -250,7 +250,7 @@ public class PanelPset extends PanelVorlage {
             jCheckBoxAbo.setSelected(pSet.istAbo());
         } else {
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
-            jTabbedPane.setTitleAt(0, "           ");
+            jTabbedPane.setTitleAt(0, "Programmsets");
             //jSpinnerLaenge.setValue(GuiKonstanten.MAX_LAENGE_DATEINAME); Exception!
             jCheckBoxLaenge.setSelected(false);
             jTextFieldGruppeName.setText("");
@@ -647,7 +647,7 @@ public class PanelPset extends PanelVorlage {
                 .addContainerGap())
         );
 
-        jTabbedPane.addTab("Programmgruppe", jPanelPset);
+        jTabbedPane.addTab("Programmset", jPanelPset);
 
         jPanelDetails.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 

@@ -43,7 +43,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private PanelHistory panelHistory;
     private PanelLogfile panelLogfile;
     private PanelPset panelPset;
-    private PanelPsetVorlagen panelPsetVorlagen;
+    private PanelImportPset panelPsetVorlagen;
     // Infos
     private PanelInfo panelInfo;
     private PanelInfoStarts panelStarts;
@@ -93,7 +93,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         panelHistory = new PanelHistory(ddaten);
         panelLogfile = new PanelLogfile(ddaten);
         panelPset = new PanelPset(ddaten);
-        panelPsetVorlagen = new PanelPsetVorlagen(ddaten);
+        panelPsetVorlagen = new PanelImportPset(ddaten);
         // Infos
         panelInfo = new PanelInfo(ddaten);
         panelStarts = new PanelInfoStarts(ddaten);
@@ -109,7 +109,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         final String NAME_senderLaden = "Sender aktualisieren";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";
-        final String NAME_programmset = "Programmset";
+        final String NAME_programmset = "Programmsets";
         final String NAME_programmsetImportieren = "Set importieren";
         // Infos
         final String NAME_allgemeineInfos = "Pfade";
@@ -287,9 +287,9 @@ public class DialogEinstellungen extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 884, Short.MAX_VALUE)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 989, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 781, Short.MAX_VALUE)
+                        .addGap(12, 886, Short.MAX_VALUE)
                         .addComponent(jButtonBeenden)))
                 .addContainerGap())
         );
@@ -297,7 +297,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonBeenden)
                 .addGap(6, 6, 6))
