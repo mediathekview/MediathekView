@@ -581,7 +581,7 @@ public class PanelImportStandardPset extends PanelVorlage {
 
         jTabbedPane1.addTab("Zielpfad", jPanel4);
 
-        jButtonUebernehmen.setText("Programme hinzufügen");
+        jButtonUebernehmen.setText("Programmset hinzufügen");
 
         jButtonReset.setText("Reset");
 

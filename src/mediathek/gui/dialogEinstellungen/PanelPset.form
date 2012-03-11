@@ -75,8 +75,8 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Programmgruppe">
-                <Property name="tabTitle" type="java.lang.String" value="Programmgruppe"/>
+              <JTabbedPaneConstraints tabName="Programmset">
+                <Property name="tabTitle" type="java.lang.String" value="Programmset"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
