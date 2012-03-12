@@ -37,6 +37,7 @@ import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.ListePsetVorlagen;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenPset;
+import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.tool.GuiFunktionen;
@@ -116,11 +117,12 @@ public class PanelImportPset extends PanelVorlage {
         DatenPset[] pSet;
         pSet = IoXmlLesen.importPset(datei, true);
         if (pSet != null) {
-            pfadePruefen(pSet);
-            if (ddaten.listePset.addPset(pSet)) {
-                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelImportPset.class.getSimpleName());
-                JOptionPane.showMessageDialog(null, pSet.length + " Programmset importiert!",
-                        "Ok", JOptionPane.INFORMATION_MESSAGE);
+            if (pfadePruefen(pSet)) {
+                if (ddaten.listePset.addPset(pSet)) {
+                    Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelImportPset.class.getSimpleName());
+                    JOptionPane.showMessageDialog(null, pSet.length + " Programmset importiert!",
+                            "Ok", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         } else {
             JOptionPane.showMessageDialog(null, "Die Datei konnte nicht importiert werden!",
@@ -132,11 +134,12 @@ public class PanelImportPset extends PanelVorlage {
         DatenPset[] pSet;
         pSet = IoXmlLesen.importPsetText(jTextAreaImport.getText(), true);
         if (pSet != null) {
-            pfadePruefen(pSet);
-            if (ddaten.listePset.addPset(pSet)) {
-                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelImportPset.class.getSimpleName());
-                JOptionPane.showMessageDialog(null, pSet.length + " Programmset importiert!",
-                        "Ok", JOptionPane.INFORMATION_MESSAGE);
+            if (pfadePruefen(pSet)) {
+                if (ddaten.listePset.addPset(pSet)) {
+                    Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelImportPset.class.getSimpleName());
+                    JOptionPane.showMessageDialog(null, pSet.length + " Programmset importiert!",
+                            "Ok", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         } else {
             JOptionPane.showMessageDialog(null, "Der Import war nicht möglich!",
@@ -144,16 +147,12 @@ public class PanelImportPset extends PanelVorlage {
         }
     }
 
-    private void pfadePruefen(DatenPset[] pSet) {
-        if (pSet == null) {
-            return;
-        } else {
-            for (int p = 0; p < pSet.length; ++p) {
-                DatenPset pg = pSet[p];
-                DialogImportPset dialog = new DialogImportPset(null, true, pg);
-                dialog.setVisible(true);
-            }// for
-        }// else
+    private boolean pfadePruefen(DatenPset[] pSet) {
+        ListePset listePset = new ListePset();
+        listePset.addPset(pSet);
+        DialogImportPset dialog = new DialogImportPset(null, true, ddaten, listePset);
+        dialog.setVisible(true);
+        return dialog.ok;
     }
 
     private void tabelleLaden() {
@@ -387,7 +386,7 @@ public class PanelImportPset extends PanelVorlage {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonImportStandard)
-                .addContainerGap(384, Short.MAX_VALUE))
+                .addContainerGap(399, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Standardset", jPanel5);
