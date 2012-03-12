@@ -35,19 +35,19 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 
-public class PanelImportStandardPset extends PanelVorlage {
+public class PanelPsetImportStandard extends PanelVorlage {
 
     public JDialog dialog = null;
     private boolean helpModal = false;
 
-    public PanelImportStandardPset(DDaten d) {
+    public PanelPsetImportStandard(DDaten d) {
         super(d);
         initComponents();
         init();
         initBeob();
     }
 
-    public PanelImportStandardPset(DDaten d, boolean m) {
+    public PanelPsetImportStandard(DDaten d, boolean m) {
         super(d);
         initComponents();
         helpModal = m;

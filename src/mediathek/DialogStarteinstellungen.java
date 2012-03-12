@@ -26,7 +26,7 @@ import javax.swing.JFileChooser;
 import mediathek.daten.DDaten;
 import mediathek.gui.beobachter.EscBeenden;
 import mediathek.gui.dialog.DialogLeer;
-import mediathek.gui.dialogEinstellungen.PanelImportStandardPset;
+import mediathek.gui.dialogEinstellungen.PanelPsetImportStandard;
 import mediathek.importOld.IoXmlLesen__old;
 import mediathek.tool.GuiFunktionenProgramme;
 
@@ -78,7 +78,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private void standard() {
         if (!GuiFunktionenProgramme.getPfadVlc().equals("") && !GuiFunktionenProgramme.getPfadFlv().equals("")) {
             // nur dann automatisch Standardprogramme einrichten, sonst fragen
-            new PanelImportStandardPset(ddaten).uebernehmen();
+            new PanelPsetImportStandard(ddaten).uebernehmen();
         }
         beenden();
     }
@@ -93,7 +93,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private void beenden() {
         if (ddaten.listePset.size() == 0) {
             // dann mit Standardwerten füllen
-            PanelImportStandardPset panel = new PanelImportStandardPset(ddaten, true /* modal Helpdialog */);
+            PanelPsetImportStandard panel = new PanelPsetImportStandard(ddaten, true /* modal Helpdialog */);
             DialogLeer dialog = new DialogLeer(null, true, panel, "Videoplayer einrichten");
             panel.dialog = dialog;
             dialog.setVisible(true);

@@ -43,11 +43,11 @@ import mediathek.gui.dialog.DialogLeer;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TModel;
 
-public class PanelImportPset extends PanelVorlage {
+public class PanelPsetImport extends PanelVorlage {
 
     ListePsetVorlagen listeVorlagen = new ListePsetVorlagen();
 
-    public PanelImportPset(DDaten d) {
+    public PanelPsetImport(DDaten d) {
         super(d);
         initComponents();
         init();
@@ -104,42 +104,36 @@ public class PanelImportPset extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                PanelImportStandardPset panel = new PanelImportStandardPset(ddaten, true /* modal Helpdialog */);
+                PanelPsetImportStandard panel = new PanelPsetImportStandard(ddaten, true /* modal Helpdialog */);
                 DialogLeer dialog = new DialogLeer(null, true, panel, "Videoplayer einrichten");
                 panel.dialog = dialog;
                 dialog.setVisible(true);
-                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelImportPset.class.getSimpleName());
+                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetImport.class.getSimpleName());
             }
         });
     }
 
     private void importDatei(String datei) {
-        DatenPset[] pSet;
-        pSet = IoXmlLesen.importPset(datei, true);
-        if (pSet != null) {
-            if (pfadePruefen(pSet)) {
-                if (ddaten.listePset.addPset(pSet)) {
-                    Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelImportPset.class.getSimpleName());
-                    JOptionPane.showMessageDialog(null, pSet.length + " Programmset importiert!",
-                            "Ok", JOptionPane.INFORMATION_MESSAGE);
-                }
+        ListePset pSet = IoXmlLesen.importPset(datei, true);
+        if (pfadePruefen(pSet)) {
+            if (ddaten.listePset.addPset(pSet)) {
+                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetImport.class.getSimpleName());
+                JOptionPane.showMessageDialog(null, pSet.size() + " Programmset importiert!",
+                        "Ok", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Die Datei konnte nicht importiert werden!",
+            JOptionPane.showMessageDialog(null, "Die Datei wurde nicht importiert!",
                     "Fehler", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void importText() {
-        DatenPset[] pSet;
-        pSet = IoXmlLesen.importPsetText(jTextAreaImport.getText(), true);
-        if (pSet != null) {
-            if (pfadePruefen(pSet)) {
-                if (ddaten.listePset.addPset(pSet)) {
-                    Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelImportPset.class.getSimpleName());
-                    JOptionPane.showMessageDialog(null, pSet.length + " Programmset importiert!",
-                            "Ok", JOptionPane.INFORMATION_MESSAGE);
-                }
+        ListePset pSet = IoXmlLesen.importPsetText(jTextAreaImport.getText(), true);
+        if (pfadePruefen(pSet)) {
+            if (ddaten.listePset.addPset(pSet)) {
+                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetImport.class.getSimpleName());
+                JOptionPane.showMessageDialog(null, pSet.size() + " Programmset importiert!",
+                        "Ok", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(null, "Der Import war nicht möglich!",
@@ -147,10 +141,11 @@ public class PanelImportPset extends PanelVorlage {
         }
     }
 
-    private boolean pfadePruefen(DatenPset[] pSet) {
-        ListePset listePset = new ListePset();
-        listePset.addPset(pSet);
-        DialogImportPset dialog = new DialogImportPset(null, true, ddaten, listePset);
+    private boolean pfadePruefen(ListePset pSet) {
+        if (pSet == null) {
+            return false;
+        }
+        DialogImportPset dialog = new DialogImportPset(null, true, ddaten, pSet);
         dialog.setVisible(true);
         return dialog.ok;
     }

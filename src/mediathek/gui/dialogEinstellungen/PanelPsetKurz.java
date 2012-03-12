@@ -42,7 +42,6 @@ public class PanelPsetKurz extends PanelVorlage {
     public boolean ok = false;
     public String zielPfad = "";
     private DatenPset pSet;
-    private static final String MUSTER_PFAD = "PFAD";
     private ListePset listePset;
 
     public PanelPsetKurz(DDaten d, ListePset llistePset) {
@@ -56,33 +55,42 @@ public class PanelPsetKurz extends PanelVorlage {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     pSet = listePset.get(jComboBoxPset.getSelectedIndex());
+                    init();
                 }
             });
             pSet = listePset.getFirst();
-            jTextFieldName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
-            jTextFieldName.getDocument().addDocumentListener(new BeobDoc(jTextFieldName, pSet.arr, DatenPset.PROGRAMMSET_NAME_NR));
-            jTextArea1.setText(pSet.arr[DatenPset.PROGRAMMSET_BESCHREIBUNG_NR]);
-            if (!pSet.istAbspielen() && !pSet.istSpeichern() && pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
-                // dann Zielpfad ausblenden
-                jLabel2.setVisible(false);
-                jTextFieldZiel.setVisible(false);
-                jButtonZiel.setVisible(false);
-            } else {
-                // Zielpfad muss gesetzt werden
-                if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].contains(MUSTER_PFAD)) {
-                    pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD, "");
-                } else if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
-                    pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = GuiFunktionen.getHomePath();
-                }
-                jTextFieldZiel.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR]);
-                jTextFieldZiel.getDocument().addDocumentListener(new BeobDoc(jTextFieldZiel, pSet.arr, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
-                jButtonZiel.addActionListener(new ZielBeobachter(false, jTextFieldZiel, pSet.arr, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
+            init();
+            initBeob();
+        }
+    }
+
+    private void initBeob() {
+//        jTextFieldName.getDocument().addDocumentListener(new BeobDocName(pSet.arr, DatenPset.PROGRAMMSET_NAME_NR));
+        jTextFieldZiel.getDocument().addDocumentListener(new BeobDoc(jTextFieldZiel, pSet.arr, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
+        jButtonZiel.addActionListener(new ZielBeobachter(false, jTextFieldZiel, pSet.arr, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
+    }
+
+    private void init() {
+        jTextFieldName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
+        jTextArea1.setText(pSet.arr[DatenPset.PROGRAMMSET_BESCHREIBUNG_NR]);
+        if (!pSet.istAbspielen() && !pSet.istSpeichern() && pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
+            jTextFieldZiel.setEditable(false);
+            jButtonZiel.setEnabled(false);
+        } else {
+            jTextFieldZiel.setEditable(true);
+            jButtonZiel.setEnabled(true);
+            // Zielpfad muss gesetzt werden
+            if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
+                pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = GuiFunktionen.getHomePath();
             }
+            jTextFieldZiel.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR]);
         }
         extra();
     }
 
     private void extra() {
+        jPanelExtra.removeAll();
+        jPanelExtra.updateUI();
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -95,15 +103,13 @@ public class PanelPsetKurz extends PanelVorlage {
         jPanelExtra.setLayout(gridbag);
         for (int i = 0; i < pSet.getListeProg().size(); ++i) {
             DatenProg prog = pSet.getProg(i);
-            if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD)) {
-                name = "Programmpfad";
-                JPanel panel = new JPanel();
-                panel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new Color(80, 80, 80), 1), prog.arr[DatenProg.PROGRAMM_NAME_NR]));
-                setFeld(panel, name, prog.arr, DatenProg.PROGRAMM_PROGRAMMPFAD_NR);
-                gridbag.setConstraints(panel, c);
-                jPanelExtra.add(panel);
-                ++c.gridy;
-            }
+            name = "Programmpfad";
+            JPanel panel = new JPanel();
+            panel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new Color(80, 80, 80), 1), prog.arr[DatenProg.PROGRAMM_NAME_NR]));
+            setFeld(panel, name, prog.arr, DatenProg.PROGRAMM_PROGRAMMPFAD_NR);
+            gridbag.setConstraints(panel, c);
+            jPanelExtra.add(panel);
+            ++c.gridy;
 //////            if (prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD)) {
 //////                name = "Programmschalter";
 //////                setFeld(gridbag, c, ++zeile, name, prog.arr, DatenProg.PROGRAMM_SCHALTER_NR);
@@ -125,7 +131,6 @@ public class PanelPsetKurz extends PanelVorlage {
         c.weighty = 0;
         c.gridx = 0;
         c.gridy = 0;
-        arr[idx] = arr[idx].replace(MUSTER_PFAD, "");
         String vorgabe;
         if (arr[idx].contains("[") && arr[idx].contains("]")) {
             vorgabe = arr[idx].substring(arr[idx].indexOf("["), arr[idx].indexOf("]"));
@@ -214,7 +219,7 @@ public class PanelPsetKurz extends PanelVorlage {
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 81, Short.MAX_VALUE)
+            .addGap(0, 84, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -252,8 +257,13 @@ public class PanelPsetKurz extends PanelVorlage {
 
         jLabel2.setText("Zielpfad:");
 
+        jTextFieldName.setEditable(false);
+
         jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
 
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("TextField.selectionBackground")));
+
+        jTextArea1.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.inactiveBackground"));
         jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
         jTextArea1.setRows(8);
@@ -294,10 +304,11 @@ public class PanelPsetKurz extends PanelVorlage {
                     .addComponent(jLabel1)
                     .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextFieldZiel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonZiel))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonZiel)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(jTextFieldZiel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -407,6 +418,39 @@ public class PanelPsetKurz extends PanelVorlage {
 
         private void set() {
             arr[idx] = textField.getText();
+        }
+    }
+
+    private class BeobDocName implements DocumentListener {
+
+        String[] arr;
+        int idx;
+
+        public BeobDocName(String[] aarr, int iidx) {
+            arr = aarr;
+            idx = iidx;
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            set();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            set();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            set();
+        }
+
+        private void set() {
+            arr[idx] = jTextFieldName.getText();
+//            int idx = jComboBoxPset.getSelectedIndex();
+//            jComboBoxPset.setModel(new DefaultComboBoxModel(listePset.getObjectDataCombo()));
+//            jComboBoxPset.setSelectedIndex(idx);
         }
     }
 }

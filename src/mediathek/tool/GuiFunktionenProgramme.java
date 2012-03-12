@@ -29,6 +29,7 @@ import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenPset;
 import mediathek.daten.DatenProg;
+import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 
@@ -118,7 +119,7 @@ public class GuiFunktionenProgramme {
         String MUSTER_ZIELPFAD = "ZIELPFAD";
         boolean ret = false;
         String pfadScript;
-        DatenPset[] pSet;
+        ListePset pSet;
         InputStream datei;
         if (System.getProperty("os.name").toLowerCase().contains("linux")) {
             pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_LINUX_SCRIPT;
@@ -137,8 +138,8 @@ public class GuiFunktionenProgramme {
                     "Fehler", JOptionPane.ERROR_MESSAGE);
         } else {
             // und anpassen
-            for (int p = 0; p < pSet.length; ++p) {
-                DatenPset pg = pSet[p];
+            for (int p = 0; p < pSet.size(); ++p) {
+                DatenPset pg = pSet.get(p);
                 if (!zielpfad.equals("")) {
                     pg.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pg.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_ZIELPFAD, zielpfad);
                 }
