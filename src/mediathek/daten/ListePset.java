@@ -24,9 +24,15 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.TModel;
 
 public class ListePset extends LinkedList<DatenPset> {
+
+    public static final String MUSTER_PFAD_ZIEL = "ZIELPFAD";
+    public static final String MUSTER_PFAD_VLC = "PFAD_VLC";
+    public static final String MUSTER_PFAD_FLV = "PFAD_FLVSTREAMER";
 
     public boolean nameExists(String name) {
         boolean ret = false;
@@ -164,14 +170,41 @@ public class ListePset extends LinkedList<DatenPset> {
         return ret;
     }
 
-    public boolean addPset(DatenPset[] gruppe) {
+    public boolean addPset(ListePset liste) {
         boolean ret = true;
-        for (int i = 0; i < gruppe.length; ++i) {
-            if (!addPset(gruppe[i])) {
+        Iterator<DatenPset> it = liste.iterator();
+        while (it.hasNext()) {
+            if (!addPset(it.next())) {
                 ret = false;
             }
         }
         return ret;
+    }
+
+    public boolean addVorlage(ListePset liste) {
+        boolean ret = true;
+        Iterator<DatenPset> it = liste.iterator();
+        while (it.hasNext()) {
+            DatenPset pSet = it.next();
+            if (!addVorlage(pSet)) {
+                ret = false;
+            }
+        }
+        return ret;
+    }
+
+    private boolean addVorlage(DatenPset pSet) {
+        pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getHomePath());
+        for (int p = 0; p < pSet.getListeProg().size(); ++p) {
+            DatenProg prog = pSet.getProg(p);
+            // VLC
+            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_VLC, GuiFunktionenProgramme.getPfadVlc());
+            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_VLC, GuiFunktionenProgramme.getPfadVlc());
+            // flvstreamer
+            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_FLV, GuiFunktionenProgramme.getPfadFlv());
+            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_FLV, GuiFunktionenProgramme.getPfadFlv());
+        }
+        return addPset(pSet);
     }
 
     public TModel getModel() {
@@ -194,5 +227,4 @@ public class ListePset extends LinkedList<DatenPset> {
         }
         return model;
     }
-
 }

@@ -43,7 +43,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private PanelHistory panelHistory;
     private PanelLogfile panelLogfile;
     private PanelPset panelPset;
-    private PanelImportPset panelPsetVorlagen;
+    private PanelPsetImport panelPsetVorlagen;
     // Infos
     private PanelInfo panelInfo;
     private PanelInfoStarts panelStarts;
@@ -93,7 +93,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         panelHistory = new PanelHistory(ddaten);
         panelLogfile = new PanelLogfile(ddaten);
         panelPset = new PanelPset(ddaten);
-        panelPsetVorlagen = new PanelImportPset(ddaten);
+        panelPsetVorlagen = new PanelPsetImport(ddaten);
         // Infos
         panelInfo = new PanelInfo(ddaten);
         panelStarts = new PanelInfoStarts(ddaten);

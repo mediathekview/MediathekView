@@ -59,7 +59,7 @@ public class IoXmlLesen {
         return false;
     }
 
-    public static DatenPset[] importPset(String dateiUrl, boolean log) {
+    public static ListePset importPset(String dateiUrl, boolean log) {
         int timeout = 10000; //10 Sekunden
         try {
             if (GuiFunktionen.istUrl(dateiUrl)) {
@@ -80,9 +80,9 @@ public class IoXmlLesen {
         }
     }
 
-    public static DatenPset[] importPset(InputStream datei, boolean log) {
+    public static ListePset importPset(InputStream datei, boolean log) {
         DatenPset datenPset = null;
-        LinkedList<DatenPset> liste = new LinkedList<DatenPset>();
+        ListePset liste = new ListePset();
         try {
             int event;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
@@ -129,13 +129,15 @@ public class IoXmlLesen {
         if (liste.size() == 0) {
             return null;
         } else {
-            return liste.toArray(new DatenPset[0]);
+            ListePset ll = new ListePset();
+            ll.addVorlage(liste);
+            return ll;
         }
     }
 
-    public static DatenPset[] importPsetText(String text, boolean log) {
+    public static ListePset importPsetText(String text, boolean log) {
         DatenPset datenPset = null;
-        LinkedList<DatenPset> liste = new LinkedList<DatenPset>();
+        ListePset liste = new ListePset();
         try {
             int event;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
@@ -181,7 +183,9 @@ public class IoXmlLesen {
         if (liste.size() == 0) {
             return null;
         } else {
-            return liste.toArray(new DatenPset[0]);
+            ListePset ll = new ListePset();
+            ll.addVorlage(liste);
+            return ll;
         }
     }
 
