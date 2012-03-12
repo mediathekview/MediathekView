@@ -34,8 +34,9 @@ import mediathek.Daten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
-import mediathek.daten.DatenPset;
 import mediathek.daten.DatenProg;
+import mediathek.daten.DatenPset;
+import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.beobachter.CellRendererPguppen;
@@ -46,10 +47,19 @@ public class PanelPset extends PanelVorlage {
 
     private int neuZaehler = 0;
     private String exportPfad = "";
+    private ListePset listePset;
 
     public PanelPset(DDaten d) {
         super(d);
         initComponents();
+        listePset = ddaten.listePset;
+        init();
+    }
+
+    public PanelPset(DDaten d, ListePset llistePset) {
+        super(d);
+        initComponents();
+        listePset = llistePset;
         init();
     }
 
@@ -170,10 +180,10 @@ public class PanelPset extends PanelVorlage {
         jTablePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
         tabellePset();
         spaltenSetzen();
-//        if (jTablePset.getRowCount() > 0) {
-//            jTablePset.setRowSelectionInterval(0, 0);
-//            jTablePset.scrollRectToVisible(jTablePset.getCellRect(0, 0, false));
-//        }
+        if (jTablePset.getRowCount() > 0) {
+            jTablePset.setRowSelectionInterval(0, 0);
+            jTablePset.scrollRectToVisible(jTablePset.getCellRect(0, 0, false));
+        }
     }
 
     private void tabellePset() {
@@ -184,7 +194,7 @@ public class PanelPset extends PanelVorlage {
     private void nurtabellePset() {
         stopBeob = true;
         getSpalten(jTablePset);
-        jTablePset.setModel(ddaten.listePset.getModel());
+        jTablePset.setModel(listePset.getModel());
         spaltenSetzen();
         setSpalten(jTablePset);
         jTablePset.updateUI();
@@ -334,7 +344,7 @@ public class PanelPset extends PanelVorlage {
         DatenPset ret = null;
         int row = jTablePset.getSelectedRow();
         if (row != -1) {
-            ret = ddaten.listePset.get(jTablePset.convertRowIndexToModel(row));
+            ret = listePset.get(jTablePset.convertRowIndexToModel(row));
         }
         return ret;
     }
@@ -344,7 +354,7 @@ public class PanelPset extends PanelVorlage {
         int row = jTablePset.getSelectedRow();
         if (row != -1) {
             int foundgruppe = 0;
-            Iterator<DatenPset> it = ddaten.listePset.iterator();
+            Iterator<DatenPset> it = listePset.iterator();
             while (it.hasNext()) {
                 DatenPset gruppe = it.next();
                 if (jTextFieldGruppeName.getText().equals(gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR])) {
@@ -362,7 +372,7 @@ public class PanelPset extends PanelVorlage {
     private void setAufAb(boolean auf) {
         int row = jTablePset.getSelectedRow();
         if (row != -1) {
-            int neu = ddaten.listePset.auf(row, auf);
+            int neu = listePset.auf(row, auf);
             tabellePset();
             jTablePset.setRowSelectionInterval(neu, neu);
             jTablePset.scrollRectToVisible(jTablePset.getCellRect(neu, 0, false));
@@ -374,7 +384,7 @@ public class PanelPset extends PanelVorlage {
     }
 
     private void setNeu() {
-        ddaten.listePset.addPset(new DatenPset("Neu-" + ++neuZaehler));
+       listePset.addPset(new DatenPset("Neu-" + ++neuZaehler));
         tabellePset();
         notifyPset();
     }
@@ -385,7 +395,7 @@ public class PanelPset extends PanelVorlage {
             DatenPset pSet;
             String text;
             if (rows.length == 1) {
-                pSet = ddaten.listePset.get(jTablePset.convertRowIndexToModel(rows[0]));
+                pSet = listePset.get(jTablePset.convertRowIndexToModel(rows[0]));
                 text = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
             } else {
                 text = rows.length + " Programmgruppen löschen?";
@@ -395,7 +405,7 @@ public class PanelPset extends PanelVorlage {
                 for (int i = rows.length - 1; i >= 0; --i) {
                     int delRow = jTablePset.convertRowIndexToModel(rows[i]);
                     ((TModel) jTablePset.getModel()).removeRow(delRow);
-                    ddaten.listePset.remove(delRow);
+                    listePset.remove(delRow);
                 }
                 tabellePset();
                 notifyPset();
@@ -413,7 +423,7 @@ public class PanelPset extends PanelVorlage {
             for (int i = 0; i < rows.length; ++i) {
                 String name;
                 int delRow = jTablePset.convertRowIndexToModel(rows[i]);
-                pSet = ddaten.listePset.get(delRow);
+                pSet = listePset.get(delRow);
                 if (pSet != null) {
                     liste.add(pSet);
                 }
@@ -1233,7 +1243,7 @@ public class PanelPset extends PanelVorlage {
                 DatenPset gruppe;
                 int row = jTablePset.getSelectedRow();
                 if (row != -1) {
-                    gruppe = ddaten.listePset.get(jTablePset.convertRowIndexToModel(row));
+                    gruppe = listePset.get(jTablePset.convertRowIndexToModel(row));
                     stopBeob = true;
                     if (textfeld != null) {
                         gruppe.arr[nr] = textfeld.getText();
@@ -1262,8 +1272,8 @@ public class PanelPset extends PanelVorlage {
             DatenPset gruppe = null;
             int row = jTablePset.getSelectedRow();
             if (row != -1) {
-                gruppe = ddaten.listePset.get(jTablePset.convertRowIndexToModel(row));
-                ddaten.listePset.addPset(gruppe.copy());
+                gruppe = listePset.get(jTablePset.convertRowIndexToModel(row));
+                listePset.addPset(gruppe.copy());
                 tabellePset();
                 Daten.setGeaendert();
             } else {

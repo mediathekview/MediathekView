@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
-import mediathek.gui.dialog.DialogPsetSpeichern;
 import mediathek.tool.TModel;
 
 public class ListePset extends LinkedList<DatenPset> {
@@ -185,6 +184,7 @@ public class ListePset extends LinkedList<DatenPset> {
             object = new Object[this.size()][DatenPset.PROGRAMMSET_MAX_ELEM];
             while (iterator.hasNext()) {
                 daten = iterator.next();
+                //////////////////??????
                 object[i][DatenPset.PROGRAMMSET_NAME_NR] = daten.arr[DatenPset.PROGRAMMSET_NAME_NR];
                 ++i;
             }
@@ -194,4 +194,5 @@ public class ListePset extends LinkedList<DatenPset> {
         }
         return model;
     }
+
 }
