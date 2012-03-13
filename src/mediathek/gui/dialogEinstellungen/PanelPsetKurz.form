@@ -55,12 +55,10 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jTextField1" alignment="0" max="32767" attributes="0"/>
-                      <Component id="jPanelExtra" alignment="0" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="jTextField1" pref="452" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
+              <Component id="jPanelExtra" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -70,7 +68,6 @@
                   <Component id="jTextField1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jPanelExtra" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -87,13 +84,6 @@
           </Properties>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanelExtra">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                <LineBorder/>
-              </Border>
-            </Property>
-          </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -103,7 +93,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="84" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="98" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -216,9 +206,6 @@
         <Component class="javax.swing.JTextField" name="jTextFieldZiel">
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldName">
-          <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonZiel">
           <Properties>
