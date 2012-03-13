@@ -180,6 +180,8 @@ public class PanelPset extends PanelVorlage {
         jTablePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
         tabellePset();
         spaltenSetzen();
+//        this.validate();
+//        jTablePset.updateUI();
         if (jTablePset.getRowCount() > 0) {
             jTablePset.setRowSelectionInterval(0, 0);
             jTablePset.scrollRectToVisible(jTablePset.getCellRect(0, 0, false));
@@ -384,7 +386,7 @@ public class PanelPset extends PanelVorlage {
     }
 
     private void setNeu() {
-       listePset.addPset(new DatenPset("Neu-" + ++neuZaehler));
+        listePset.addPset(new DatenPset("Neu-" + ++neuZaehler));
         tabellePset();
         notifyPset();
     }
