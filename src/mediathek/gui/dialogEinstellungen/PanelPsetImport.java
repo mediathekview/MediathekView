@@ -25,22 +25,18 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.Daten;
 import mediathek.Log;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.ListePsetVorlagen;
 import mediathek.daten.DDaten;
-import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.dialog.DialogLeer;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.TModel;
 
 public class PanelPsetImport extends PanelVorlage {
@@ -104,50 +100,19 @@ public class PanelPsetImport extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                PanelPsetImportStandard panel = new PanelPsetImportStandard(ddaten, true /* modal Helpdialog */);
-                DialogLeer dialog = new DialogLeer(null, true, panel, "Videoplayer einrichten");
-                panel.dialog = dialog;
-                dialog.setVisible(true);
-                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetImport.class.getSimpleName());
+                GuiFunktionenProgramme.addStandardprogramme(ddaten, false /* auto */);
             }
         });
     }
 
     private void importDatei(String datei) {
         ListePset pSet = IoXmlLesen.importPset(datei, true);
-        if (pfadePruefen(pSet)) {
-            if (ddaten.listePset.addPset(pSet)) {
-                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetImport.class.getSimpleName());
-                JOptionPane.showMessageDialog(null, pSet.size() + " Programmset importiert!",
-                        "Ok", JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Die Datei wurde nicht importiert!",
-                    "Fehler", JOptionPane.ERROR_MESSAGE);
-        }
+        GuiFunktionenProgramme.addVorlagen(ddaten, pSet, false /* auto */);
     }
 
     private void importText() {
         ListePset pSet = IoXmlLesen.importPsetText(jTextAreaImport.getText(), true);
-        if (pfadePruefen(pSet)) {
-            if (ddaten.listePset.addPset(pSet)) {
-                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetImport.class.getSimpleName());
-                JOptionPane.showMessageDialog(null, pSet.size() + " Programmset importiert!",
-                        "Ok", JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Der Import war nicht möglich!",
-                    "Fehler", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private boolean pfadePruefen(ListePset pSet) {
-        if (pSet == null) {
-            return false;
-        }
-        DialogImportPset dialog = new DialogImportPset(null, true, ddaten, pSet);
-        dialog.setVisible(true);
-        return dialog.ok;
+        GuiFunktionenProgramme.addVorlagen(ddaten, pSet, false /* auto */);
     }
 
     private void tabelleLaden() {
@@ -215,13 +180,10 @@ public class PanelPsetImport extends PanelVorlage {
 
         jTableVorlagen.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         jScrollPane2.setViewportView(jTableVorlagen);
@@ -297,7 +259,7 @@ public class PanelPsetImport extends PanelVorlage {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonImportVorlage)
                 .addContainerGap())
@@ -381,7 +343,7 @@ public class PanelPsetImport extends PanelVorlage {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonImportStandard)
-                .addContainerGap(399, Short.MAX_VALUE))
+                .addContainerGap(414, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Standardset", jPanel5);
@@ -476,7 +438,7 @@ public class PanelPsetImport extends PanelVorlage {
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Set imporieren", jPanel1);

@@ -33,6 +33,7 @@ public class ListePset extends LinkedList<DatenPset> {
     public static final String MUSTER_PFAD_ZIEL = "ZIELPFAD";
     public static final String MUSTER_PFAD_VLC = "PFAD_VLC";
     public static final String MUSTER_PFAD_FLV = "PFAD_FLVSTREAMER";
+    public static final String MUSTER_PFAD_SCRIPT = "PFAD_SCRIPT";
 
     public boolean nameExists(String name) {
         boolean ret = false;
@@ -203,6 +204,9 @@ public class ListePset extends LinkedList<DatenPset> {
             // flvstreamer
             prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_FLV, GuiFunktionenProgramme.getPfadFlv());
             prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_FLV, GuiFunktionenProgramme.getPfadFlv());
+            // script
+            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_SCRIPT, GuiFunktionenProgramme.getPfadScript());
+            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_SCRIPT, GuiFunktionenProgramme.getPfadScript());
         }
         return addPset(pSet);
     }
