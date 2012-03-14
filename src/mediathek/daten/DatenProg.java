@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 
 public class DatenProg {

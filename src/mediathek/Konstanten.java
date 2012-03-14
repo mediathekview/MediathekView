@@ -31,8 +31,8 @@ public class Konstanten {
     public static final String ADRESSE_ANLEITUNG = "http://zdfmediathk.sourceforge.net";
     public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen.xml";
     // ProgrammUrls
-    public static final String ADRESSE_VLC = "http://www.videolan.org/";
-    public static final String ADRESSE_FLVSTREAMER = "https://savannah.nongnu.org/projects/flvstreamer/";
+    public static final String ADRESSE_WEBSITE_VLC = "http://www.videolan.org/";
+    public static final String ADRESSE_WEBSITE_FLVSTREAMER = "https://savannah.nongnu.org/projects/flvstreamer/";
     // Dateien/Verzeichnisse
     public static final String MEDIATHEK_VIEW_VERZEICHNISS = ".mediathek3";
     public static final String LOG_DATEI_DOWNLOAD_ABOS = "downloadAbos.txt";

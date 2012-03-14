@@ -24,7 +24,10 @@ import java.io.InputStream;
 import java.security.CodeSource;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
+import mediathek.Daten;
+import mediathek.Konstanten;
 import mediathek.Main;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenPset;
@@ -32,6 +35,10 @@ import mediathek.daten.DatenProg;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialogEinstellungen.DialogImportPset;
+import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
+import mediathek.gui.dialogEinstellungen.PanelPsetImport;
 
 public class GuiFunktionenProgramme {
 
@@ -77,6 +84,10 @@ public class GuiFunktionenProgramme {
     }
 
     public static String getPfadVlc() {
+        ///////////////////////
+        if (!Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
+            return Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR];
+        }
         final String PFAD_LINUX_VLC = "/usr/bin/vlc";
         final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
         String pfad = "";
@@ -95,6 +106,10 @@ public class GuiFunktionenProgramme {
     }
 
     public static String getPfadFlv() {
+        /////////////////////
+        if (!Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
+            return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
+        }
         final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
         final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
         String pfad = "";
@@ -110,60 +125,56 @@ public class GuiFunktionenProgramme {
         }
     }
 
-    public static boolean addStandardprogramme(DDaten ddaten, String pfadVLC, String pfadFlv, String zielpfad) {
+    public static String getPfadScript() {
+        String pfadScript;
         final String PFAD_LINUX_SCRIPT = "bin/flv.sh";
         final String PFAD_WINDOWS_SCRIPT = "bin\\flv.bat";
-        String MUSTER_PFAD_VLC = "PFAD_VLC";
-        String MUSTER_PFAD_FLV = "PFAD_FLVSTREAMER";
-        String MUSTER_PFAD_SCRIPT = "PFAD_SCRIPT";
-        String MUSTER_ZIELPFAD = "ZIELPFAD";
-        boolean ret = false;
-        String pfadScript;
+        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_LINUX_SCRIPT;
+        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_LINUX_SCRIPT;
+        } else {
+            pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_WINDOWS_SCRIPT;
+        }
+        return pfadScript;
+    }
+
+    public static boolean addStandardprogramme(DDaten ddaten, boolean auto) {
         ListePset pSet;
         InputStream datei;
         if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_LINUX_SCRIPT;
-            datei = new GetFile().getLinux();
+            datei = new GetFile().getPsetVorlageLinux();
         } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_LINUX_SCRIPT;
-            datei = new GetFile().getMac();
+            datei = new GetFile().getPsetVorlageMac();
         } else {
-            pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_WINDOWS_SCRIPT;
-            datei = new GetFile().getWindows();
+            datei = new GetFile().getPsetVorlageWindows();
         }
         // Standardgruppen laden
         pSet = IoXmlLesen.importPset(datei, true);
-        if (pSet == null) {
-            JOptionPane.showMessageDialog(null, "Die Programme konnten nicht importiert werden!",
-                    "Fehler", JOptionPane.ERROR_MESSAGE);
-        } else {
-            // und anpassen
-            for (int p = 0; p < pSet.size(); ++p) {
-                DatenPset pg = pSet.get(p);
-                if (!zielpfad.equals("")) {
-                    pg.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pg.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_ZIELPFAD, zielpfad);
-                }
-                for (int i = 0; i < pg.getListeProg().size(); ++i) {
-                    DatenProg prog = pg.getProg(i);
-                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replace(MUSTER_PFAD_SCRIPT, pfadScript);
-                    prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replace(MUSTER_PFAD_SCRIPT, pfadScript);
-                    if (!pfadVLC.equals("")) {
-                        prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replace(MUSTER_PFAD_VLC, pfadVLC);
-                        prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replace(MUSTER_PFAD_VLC, pfadVLC);
-                    }
-                    if (!pfadFlv.equals("")) {
-                        prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replace(MUSTER_PFAD_FLV, pfadFlv);
-                        prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replace(MUSTER_PFAD_FLV, pfadFlv);
-                    }
+        return addVorlagen(ddaten, pSet, auto);
+    }
+
+    public static boolean addVorlagen(DDaten ddaten, ListePset pSet, boolean auto) {
+        // Standardgruppen laden
+        if (pSet != null) {
+            if (!auto) {
+                DialogImportPset dialog = new DialogImportPset(null, true, ddaten, pSet);
+                dialog.setVisible(true);
+                if (!dialog.ok) {
+                    return false;
                 }
             }
-            // und jetzt in die Liste der Pset schreiben
-            ddaten.listePset.addPset(pSet);
-            JOptionPane.showMessageDialog(null, "Die Programme wurden hinzugefügt!",
-                    "", JOptionPane.INFORMATION_MESSAGE);
-            ret = true;
+            if (ddaten.listePset.addPset(pSet)) {
+                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetImport.class.getSimpleName());
+                JOptionPane.showMessageDialog(null, pSet.size() + " Programmset importiert!",
+                        "Ok", JOptionPane.INFORMATION_MESSAGE);
+            }
+            return true;
+        } else {
+            JOptionPane.showMessageDialog(null, "Die Datei wurde nicht importiert!",
+                    "Fehler", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
-        return ret;
     }
 
     public static boolean praefixTesten(String str, String uurl, boolean praefix) {

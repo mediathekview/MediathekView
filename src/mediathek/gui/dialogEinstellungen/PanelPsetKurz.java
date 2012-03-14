@@ -72,23 +72,41 @@ public class PanelPsetKurz extends PanelVorlage {
         jTextFieldName.getDocument().addDocumentListener(new BeobDocName());
         jTextFieldZiel.getDocument().addDocumentListener(new BeobDoc(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
         jButtonZiel.addActionListener(new ZielBeobachter(false, jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
+        jCheckBoxFragen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jTextFieldZiel.setEnabled(!jCheckBoxFragen.isSelected());
+                jButtonZiel.setEnabled(!jCheckBoxFragen.isSelected());
+                if (jCheckBoxFragen.isSelected()) {
+                    jTextFieldZiel.setText("%p");
+                } else {
+                    jTextFieldZiel.setText(GuiFunktionen.getHomePath());
+                }
+            }
+        });
     }
 
     private void init() {
         jTextFieldName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
         jTextArea1.setText(pSet.arr[DatenPset.PROGRAMMSET_BESCHREIBUNG_NR]);
-        if (!pSet.istAbspielen() && !pSet.istSpeichern() && pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
+        if (!pSet.istSpeichern() && pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
             jTextFieldZiel.setEditable(false);
             jButtonZiel.setEnabled(false);
+            jCheckBoxFragen.setEnabled(false);
         } else {
             jTextFieldZiel.setEditable(true);
             jButtonZiel.setEnabled(true);
+            jCheckBoxFragen.setEnabled(true);
+            jCheckBoxFragen.setSelected(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("%p"));
+            jTextFieldZiel.setEnabled(!jCheckBoxFragen.isSelected());
+            jButtonZiel.setEnabled(!jCheckBoxFragen.isSelected());
             // Zielpfad muss gesetzt werden
             if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
                 pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = GuiFunktionen.getHomePath();
             }
-            jTextFieldZiel.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR]);
         }
+        jTextFieldZiel.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR]);
         extra();
     }
 
@@ -196,6 +214,7 @@ public class PanelPsetKurz extends PanelVorlage {
         jButtonZiel = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        jCheckBoxFragen = new javax.swing.JCheckBox();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255)));
 
@@ -212,7 +231,7 @@ public class PanelPsetKurz extends PanelVorlage {
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 98, Short.MAX_VALUE)
+            .addGap(0, 65, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -258,6 +277,8 @@ public class PanelPsetKurz extends PanelVorlage {
         jTextArea1.setRows(8);
         jScrollPane2.setViewportView(jTextArea1);
 
+        jCheckBoxFragen.setText("Bei jedem Film nach dem Pfad fragen");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -267,6 +288,7 @@ public class PanelPsetKurz extends PanelVorlage {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField2)
                     .addComponent(jComboBoxPset, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -274,11 +296,13 @@ public class PanelPsetKurz extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jCheckBoxFragen)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jTextFieldZiel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonZiel))
-                            .addComponent(jTextFieldName)))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE))
+                            .addComponent(jTextFieldName))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -298,9 +322,11 @@ public class PanelPsetKurz extends PanelVorlage {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
                         .addComponent(jTextFieldZiel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxFragen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2)
+                .addContainerGap())
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonZiel, jTextFieldName, jTextFieldZiel});
@@ -313,7 +339,7 @@ public class PanelPsetKurz extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -328,6 +354,7 @@ public class PanelPsetKurz extends PanelVorlage {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonZiel;
+    private javax.swing.JCheckBox jCheckBoxFragen;
     private javax.swing.JComboBox jComboBoxPset;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

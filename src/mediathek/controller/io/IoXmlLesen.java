@@ -22,7 +22,6 @@ package mediathek.controller.io;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.LinkedList;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;

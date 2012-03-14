@@ -4,7 +4,10 @@
  */
 package mediathek.file;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import mediathek.Konstanten;
 import mediathek.Log;
 
@@ -38,7 +41,7 @@ public class GetFile {
         return ret;
     }
 
-    public InputStream getLinux() {
+    public InputStream getPsetVorlageLinux() {
         try {
             return getClass().getResource(PFAD_PSET_LINUX).openStream();
         } catch (IOException ex) {
@@ -47,7 +50,7 @@ public class GetFile {
         return null;
     }
 
-    public InputStream getWindows() {
+    public InputStream getPsetVorlageWindows() {
         try {
             return getClass().getResource(PFAD_PSET_WINDOWS).openStream();
         } catch (IOException ex) {
@@ -56,7 +59,7 @@ public class GetFile {
         return null;
     }
 
-    public InputStream getMac() {
+    public InputStream getPsetVorlageMac() {
         try {
             return getClass().getResource(PFAD_PSET_MAC).openStream();
         } catch (IOException ex) {

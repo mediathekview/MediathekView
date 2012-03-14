@@ -25,8 +25,8 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import mediathek.daten.DDaten;
 import mediathek.gui.beobachter.EscBeenden;
-import mediathek.gui.dialog.DialogLeer;
-import mediathek.gui.dialogEinstellungen.PanelPsetImportStandard;
+import mediathek.gui.dialog.DialogOk;
+import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.importOld.IoXmlLesen__old;
 import mediathek.tool.GuiFunktionenProgramme;
 
@@ -76,10 +76,15 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     }
 
     private void standard() {
-        if (!GuiFunktionenProgramme.getPfadVlc().equals("") && !GuiFunktionenProgramme.getPfadFlv().equals("")) {
-            // nur dann automatisch Standardprogramme einrichten, sonst fragen
-            new PanelPsetImportStandard(ddaten).uebernehmen();
-        }
+//////        Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = getPfadVlc();
+//////        Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = getPfadFlv();
+//////        if (!Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("") && !Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
+//////            // nur dann automatisch Standardprogramme einrichten, sonst fragen
+//////            // dann mit Standardwerten füllen
+//////            GuiFunktionenProgramme.addStandardprogramme(ddaten, true /* auto */);
+//////        } else {
+        new DialogOk(null, true, new PanelProgrammPfade(), "Pfade Standardprogramme").setVisible(true);
+//////////        }
         beenden();
     }
 
@@ -93,12 +98,69 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private void beenden() {
         if (ddaten.listePset.size() == 0) {
             // dann mit Standardwerten füllen
-            PanelPsetImportStandard panel = new PanelPsetImportStandard(ddaten, true /* modal Helpdialog */);
-            DialogLeer dialog = new DialogLeer(null, true, panel, "Videoplayer einrichten");
-            panel.dialog = dialog;
-            dialog.setVisible(true);
+            GuiFunktionenProgramme.addStandardprogramme(ddaten, false /* auto */);
         }
         this.dispose();
+    }
+
+    private String getPfadVlc() {
+        final String PFAD_LINUX_VLC = "/usr/bin/vlc";
+        final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
+        String pfad = "";
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            pfad = getWindowsVlcPath();
+        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            pfad = PFAD_LINUX_VLC;
+        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            pfad = PFAD_MAC_VLC;
+        }
+        if (new File(pfad).exists()) {
+            return pfad;
+        } else {
+            return "";
+        }
+    }
+
+    private static String getWindowsVlcPath() {
+        //Für Windows den Pfad des VLC ermitteln
+        //sonst den deutschen Defaultpfad für Programme verwenden verwenden
+        final String PFAD_WIN_VLC_DEFAULT = "C:\\Programme\\VideoLAN\\VLC\\vlc.exe";
+        final String PFAD_WIN_VLC = "\\VideoLAN\\VLC\\vlc.exe";
+        String vlcPfad = "";
+        try {
+            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                if (System.getenv("ProgramFiles") != null) {
+                    vlcPfad = System.getenv("ProgramFiles") + PFAD_WIN_VLC;
+                    if (new File(vlcPfad).exists()) {
+                        return vlcPfad;
+                    }
+                }
+            }
+            if (System.getenv("ProgramFiles(x86)") != null) {
+                vlcPfad = System.getenv("ProgramFiles(x86)") + PFAD_WIN_VLC;
+                if (new File(vlcPfad).exists()) {
+                    return vlcPfad;
+                }
+            }
+        } catch (Exception ex) {
+        }
+        return PFAD_WIN_VLC_DEFAULT;
+    }
+
+    private String getPfadFlv() {
+        final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
+        final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
+        String pfad = "";
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            pfad = GuiFunktionenProgramme.getPathJar() + PFAD_WINDOWS_FLV;
+        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            pfad = PFAD_LINUX_FLV;
+        }
+        if (new File(pfad).exists()) {
+            return pfad;
+        } else {
+            return "";
+        }
     }
 
     /** This method is called from within the constructor to
