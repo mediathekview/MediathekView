@@ -30,12 +30,12 @@ import mediathek.Main;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
-import mediathek.daten.DatenPset;
 import mediathek.daten.DatenProg;
+import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.dialogEinstellungen.PanelPsetImport;
@@ -83,11 +83,7 @@ public class GuiFunktionenProgramme {
         return PFAD_WIN_VLC_DEFAULT;
     }
 
-    public static String getPfadVlc() {
-        ///////////////////////
-        if (!Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
-            return Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR];
-        }
+    public static String getMusterPfadVlc() {
         final String PFAD_LINUX_VLC = "/usr/bin/vlc";
         final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
         String pfad = "";
@@ -105,11 +101,7 @@ public class GuiFunktionenProgramme {
         }
     }
 
-    public static String getPfadFlv() {
-        /////////////////////
-        if (!Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
-            return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
-        }
+    public static String getMusterPfadFlv() {
         final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
         final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
         String pfad = "";
@@ -123,6 +115,20 @@ public class GuiFunktionenProgramme {
         } else {
             return "";
         }
+    }
+
+    public static String getPfadVlc() {
+        if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
+            new DialogOk(null, true, new PanelProgrammPfade(), "Pfade Standardprogramme").setVisible(true);
+        }
+        return Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR];
+    }
+
+    public static String getPfadFlv() {
+        if (Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
+            new DialogOk(null, true, new PanelProgrammPfade(), "Pfade Standardprogramme").setVisible(true);
+        }
+        return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
     }
 
     public static String getPfadScript() {

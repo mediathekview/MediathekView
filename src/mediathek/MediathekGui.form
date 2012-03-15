@@ -204,6 +204,11 @@
                 <Property name="text" type="java.lang.String" value="Anleitung im Web &#xf6;ffnen"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemProgrammlog">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Programmlog in Datei schreiben"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuDebug">

@@ -29,6 +29,8 @@ import java.io.File;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import mediathek.Log;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenProg;
@@ -48,15 +50,16 @@ public class PanelPsetKurz extends PanelVorlage {
         super(d);
         initComponents();
         listePset = llistePset;
-        jComboBoxPset.setModel(new DefaultComboBoxModel(listePset.getObjectDataCombo()));
+        jListPset.setModel(new DefaultComboBoxModel(listePset.getObjectDataCombo()));
         if (listePset.size() > 0) {
-            jComboBoxPset.addActionListener(new ActionListener() {
+            jListPset.setSelectedIndex(0);
+            jListPset.addListSelectionListener(new ListSelectionListener() {
 
                 @Override
-                public void actionPerformed(ActionEvent e) {
+                public void valueChanged(ListSelectionEvent e) {
                     if (!stopBeob) {
                         stopBeob = true;
-                        pSet = listePset.get(jComboBoxPset.getSelectedIndex());
+                        pSet = listePset.get(jListPset.getSelectedIndex());
                         init();
                         stopBeob = false;
                     }
@@ -206,7 +209,6 @@ public class PanelPsetKurz extends PanelVorlage {
         jPanelExtra = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jTextField2 = new javax.swing.JTextField();
-        jComboBoxPset = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jTextFieldZiel = new javax.swing.JTextField();
@@ -215,6 +217,8 @@ public class PanelPsetKurz extends PanelVorlage {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jCheckBoxFragen = new javax.swing.JCheckBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jListPset = new javax.swing.JList();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255)));
 
@@ -231,7 +235,7 @@ public class PanelPsetKurz extends PanelVorlage {
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 65, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -261,8 +265,6 @@ public class PanelPsetKurz extends PanelVorlage {
         jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField2.setText("Programmset");
 
-        jComboBoxPset.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel1.setText("Setname:");
 
         jLabel2.setText("Zielpfad:");
@@ -279,6 +281,13 @@ public class PanelPsetKurz extends PanelVorlage {
 
         jCheckBoxFragen.setText("Bei jedem Film nach dem Pfad fragen");
 
+        jListPset.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(jListPset);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -286,9 +295,8 @@ public class PanelPsetKurz extends PanelVorlage {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
                     .addComponent(jTextField2)
-                    .addComponent(jComboBoxPset, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -297,12 +305,13 @@ public class PanelPsetKurz extends PanelVorlage {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jCheckBoxFragen)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addGap(0, 87, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jTextFieldZiel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonZiel))
-                            .addComponent(jTextFieldName))))
+                            .addComponent(jTextFieldName)))
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -310,8 +319,8 @@ public class PanelPsetKurz extends PanelVorlage {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jComboBoxPset, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -324,9 +333,9 @@ public class PanelPsetKurz extends PanelVorlage {
                         .addComponent(jTextFieldZiel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxFragen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonZiel, jTextFieldName, jTextFieldZiel});
@@ -339,7 +348,7 @@ public class PanelPsetKurz extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -355,12 +364,13 @@ public class PanelPsetKurz extends PanelVorlage {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonZiel;
     private javax.swing.JCheckBox jCheckBoxFragen;
-    private javax.swing.JComboBox jComboBoxPset;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JList jListPset;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelExtra;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
@@ -483,9 +493,9 @@ public class PanelPsetKurz extends PanelVorlage {
             if (!stopBeob) {
                 stopBeob = true;
                 pSet.arr[ DatenPset.PROGRAMMSET_NAME_NR] = jTextFieldName.getText();
-                int i = jComboBoxPset.getSelectedIndex();
-                jComboBoxPset.setModel(new DefaultComboBoxModel(listePset.getObjectDataCombo()));
-                jComboBoxPset.setSelectedIndex(i);
+                int i = jListPset.getSelectedIndex();
+                jListPset.setModel(new DefaultComboBoxModel(listePset.getObjectDataCombo()));
+                jListPset.setSelectedIndex(i);
                 stopBeob = false;
             }
         }

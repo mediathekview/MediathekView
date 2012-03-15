@@ -32,6 +32,7 @@ import mediathek.gui.dialog.DialogDatenFilm;
 
 public final class DDaten extends Daten {
     // Listen
+
     public static ListeFilme listeFilmeNachBlackList = null;
     public ListeBlacklist listeBlacklist;
     public ListePset listePset = null;
@@ -53,6 +54,9 @@ public final class DDaten extends Daten {
     public GuiDebug guiDebug = null;
     // Dialoge
     public DialogDatenFilm dialogDatenFilm = null;
+    public StringBuffer textSystem = new StringBuffer();
+    public StringBuffer textProgramm = new StringBuffer();
+    public StringBuffer textFehler = new StringBuffer();
 
     public DDaten(String basis) {
         super(basis);
@@ -110,5 +114,4 @@ public final class DDaten extends Daten {
         panelListe.aendernSofort();
         Daten.setGeaendert();
     }
-
 }

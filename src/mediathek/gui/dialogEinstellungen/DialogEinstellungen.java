@@ -97,9 +97,9 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         // Infos
         panelInfo = new PanelInfo(ddaten);
         panelStarts = new PanelInfoStarts(ddaten);
-        panelMeldungenFehler = new PanelMeldungen(ddaten, Log.LOG_FEHLER, "Fehlermeldungen");
-        panelMeldungenSystem = new PanelMeldungen(ddaten, Log.LOG_SYSTEM, "Systemmeldungen");
-        panelMeldungenPlayer = new PanelMeldungen(ddaten, Log.LOG_PLAYER, "Meldungen Videoplayer");
+        panelMeldungenFehler = new PanelMeldungen(ddaten, ddaten.textFehler, Log.LOG_FEHLER, "Fehlermeldungen");
+        panelMeldungenSystem = new PanelMeldungen(ddaten, ddaten.textSystem, Log.LOG_SYSTEM, "Systemmeldungen");
+        panelMeldungenPlayer = new PanelMeldungen(ddaten, ddaten.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer");
     }
 
     private void initTree() {
@@ -118,7 +118,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         final String NAME_logfile = "erledigte Abos";
         final String NAME_systemmeldungen = "Systemmeldungen";
         final String NAME_fehlermeldungen = "Fehlermeldungen";
-        final String NAME_meldungenProgramme = "Programmeldungen";
+        final String NAME_meldungenProgramme = "Programmausgabe";
         //
         DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode("Programm");
         // ######## Einstellulngen ############
@@ -162,8 +162,10 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         DefaultMutableTreeNode treeNodeSystem = new DefaultMutableTreeNode("Meldungen");
         DefaultMutableTreeNode treeNodeSystemmeldungen = new DefaultMutableTreeNode(NAME_systemmeldungen);
         treeNodeSystem.add(treeNodeSystemmeldungen);
-        DefaultMutableTreeNode treeNodeFehlermeldungen = new DefaultMutableTreeNode(NAME_fehlermeldungen);
-        treeNodeSystem.add(treeNodeFehlermeldungen);
+        if (ddaten.debug) {
+            DefaultMutableTreeNode treeNodeFehlermeldungen = new DefaultMutableTreeNode(NAME_fehlermeldungen);
+            treeNodeSystem.add(treeNodeFehlermeldungen);
+        }
         DefaultMutableTreeNode treeNodeProgrammmeldungen = new DefaultMutableTreeNode(NAME_meldungenProgramme);
         treeNodeSystem.add(treeNodeProgrammmeldungen);
         treeNodeStart.add(treeNodeSystem);

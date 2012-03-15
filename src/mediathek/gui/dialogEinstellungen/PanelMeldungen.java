@@ -28,7 +28,7 @@ import mediathek.gui.PanelVorlage;
 
 public class PanelMeldungen extends PanelVorlage {
 
-    private StringBuffer text = new StringBuffer();
+    private StringBuffer text;
     private final int MAX_LAENGE_1 = 30000;
     private final int MAX_LAENGE_2 = 20000;
     private String logArt;
@@ -38,9 +38,10 @@ public class PanelMeldungen extends PanelVorlage {
      *
      * @param d
      */
-    public PanelMeldungen(DDaten d, String llogArt, String header) {
+    public PanelMeldungen(DDaten d, StringBuffer ttext, String llogArt, String header) {
         super(d);
         initComponents();
+        text = ttext;
         jLabelHeader.setText(header);
         logArt = llogArt;
         //init
@@ -59,7 +60,7 @@ public class PanelMeldungen extends PanelVorlage {
     public void addText(String texte) {
         cut(text);
         text.append(texte);
-        text.append("\n");
+        text.append(System.getProperty("line.separator"));
         jTextArea.setText(text.toString());
         setTextArea();
     }

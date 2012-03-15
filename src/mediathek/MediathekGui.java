@@ -34,6 +34,7 @@ import mediathek.controller.filme.FilmListenerElement;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.CheckUpdate;
 import mediathek.controller.io.IoXmlLesen;
+import mediathek.controller.io.ProgrammLog;
 import mediathek.daten.DDaten;
 import mediathek.gui.*;
 import mediathek.gui.beobachter.BeobWeb;
@@ -74,7 +75,7 @@ public final class MediathekGui extends javax.swing.JFrame {
                 }
             }
             for (int i = 0; i < ar.length; ++i) {
-                if (ar[i].equals("-D")) {
+                if (ar[i].equalsIgnoreCase("-D")) {
                     debug = true;
                 }
                 if (ar[i].equals("-M")) {
@@ -518,6 +519,13 @@ public final class MediathekGui extends javax.swing.JFrame {
         });
         // Hilfe
         jMenuItemAnleitung.addActionListener(new BeobWeb(Konstanten.ADRESSE_ANLEITUNG));
+        jMenuItemProgrammlog.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ProgrammLog.zeileSchreiben(ddaten);
+            }
+        });
         // Debug
         if (!DDaten.debug) {
             jMenuDebug.setVisible(false);
@@ -674,6 +682,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         jCheckBoxMenuItemVideoplayer = new javax.swing.JCheckBoxMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
+        jMenuItemProgrammlog = new javax.swing.JMenuItem();
         jMenuDebug = new javax.swing.JMenu();
         jMenuItemLoeschen = new javax.swing.JMenuItem();
 
@@ -882,6 +891,9 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenuItemAnleitung.setText("Anleitung im Web öffnen");
         jMenu3.add(jMenuItemAnleitung);
 
+        jMenuItemProgrammlog.setText("Programmlog in Datei schreiben");
+        jMenu3.add(jMenuItemProgrammlog);
+
         jMenuBar1.add(jMenu3);
 
         jMenuDebug.setText("Debug");
@@ -897,7 +909,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1083, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -952,6 +964,7 @@ public final class MediathekGui extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
     private javax.swing.JMenuItem jMenuItemFilmlisteLaden;
     private javax.swing.JMenuItem jMenuItemLoeschen;
+    private javax.swing.JMenuItem jMenuItemProgrammlog;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelInfo;
     private javax.swing.JPopupMenu.Separator jSeparator2;

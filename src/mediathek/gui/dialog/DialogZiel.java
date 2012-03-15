@@ -24,12 +24,11 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import mediathek.Log;
-import mediathek.daten.DDaten;
 import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.GuiFunktionen;
 
-public class DialogExportAbos extends javax.swing.JDialog {
+public class DialogZiel extends javax.swing.JDialog {
 
-    DDaten daten;
     public boolean ok = false;
     public String ziel;
 
@@ -40,10 +39,9 @@ public class DialogExportAbos extends javax.swing.JDialog {
      * @param d
      * @param zziel
      */
-    public DialogExportAbos(java.awt.Frame parent, boolean modal, DDaten d, String zziel) {
+    public DialogZiel(java.awt.Frame parent, boolean modal, String zziel) {
         super(parent, modal);
         initComponents();
-        daten = d;
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
         jButtonZiel.addActionListener(new ZielBeobachter());
@@ -60,6 +58,7 @@ public class DialogExportAbos extends javax.swing.JDialog {
     }
 
     void check() {
+        ////////////////////////////Datei existiert
         boolean ret = false;
         String pfad = jTextFieldPfad.getText();
         if (!pfad.equals("")) {
@@ -195,6 +194,8 @@ public class DialogExportAbos extends javax.swing.JDialog {
             JFileChooser chooser = new JFileChooser();
             if (!jTextFieldPfad.getText().equals("")) {
                 chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
+            } else {
+                chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
             }
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             returnVal = chooser.showOpenDialog(null);

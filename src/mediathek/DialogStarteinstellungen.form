@@ -38,7 +38,7 @@
                       </Group>
                   </Group>
                   <Component id="jTextField2" alignment="0" max="32767" attributes="0"/>
-                  <Component id="filler2" alignment="1" pref="773" max="32767" attributes="0"/>
+                  <Component id="filler2" alignment="1" pref="630" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -86,7 +86,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jCheckBoxSuchen" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="318" max="32767" attributes="0"/>
+                  <EmptySpace pref="175" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

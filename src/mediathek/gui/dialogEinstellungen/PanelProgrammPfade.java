@@ -32,7 +32,6 @@ import javax.swing.event.DocumentListener;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.daten.DDaten;
 import mediathek.file.GetFile;
 import mediathek.gui.beobachter.BeobWeb;
 import mediathek.gui.dialog.DialogHilfe;
@@ -50,15 +49,15 @@ public class PanelProgrammPfade extends JPanel {
         initBeob();
     }
 
-//    public PanelProgrammPfade( boolean m) {
-//        initComponents();
-//        helpModal = m;
-//        init();
-//        initBeob();
-//    }
     private void init() {
-        jTextFieldVlc.setText(GuiFunktionenProgramme.getPfadVlc());
-        jTextFieldFlv.setText(GuiFunktionenProgramme.getPfadFlv());
+        if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
+            Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = GuiFunktionenProgramme.getMusterPfadVlc();
+        }
+        if (Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
+            Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = GuiFunktionenProgramme.getMusterPfadFlv();
+        }
+        jTextFieldVlc.setText(Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR]);
+        jTextFieldFlv.setText(Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR]);
     }
 
     private void initBeob() {
@@ -75,7 +74,7 @@ public class PanelProgrammPfade extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = "";
-                jTextFieldVlc.setText(GuiFunktionenProgramme.getPfadVlc());
+                jTextFieldVlc.setText(GuiFunktionenProgramme.getMusterPfadVlc());
             }
         });
         jButtonFlvSuchen.addActionListener(new ActionListener() {
@@ -83,7 +82,7 @@ public class PanelProgrammPfade extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = "";
-                jTextFieldFlv.setText(GuiFunktionenProgramme.getPfadFlv());
+                jTextFieldFlv.setText(GuiFunktionenProgramme.getMusterPfadFlv());
             }
         });
         jButtonHilfe.addActionListener(new ActionListener() {
