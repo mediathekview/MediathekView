@@ -76,15 +76,15 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     }
 
     private void standard() {
-//////        Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = getPfadVlc();
-//////        Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = getPfadFlv();
-//////        if (!Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("") && !Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
-//////            // nur dann automatisch Standardprogramme einrichten, sonst fragen
-//////            // dann mit Standardwerten füllen
-//////            GuiFunktionenProgramme.addStandardprogramme(ddaten, true /* auto */);
-//////        } else {
-        new DialogOk(null, true, new PanelProgrammPfade(), "Pfade Standardprogramme").setVisible(true);
-//////////        }
+        Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = GuiFunktionenProgramme.getMusterPfadVlc();
+        Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = GuiFunktionenProgramme.getMusterPfadFlv();
+        if (!Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("") && !Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
+            // nur dann automatisch Standardprogramme einrichten, sonst fragen
+            // dann mit Standardwerten füllen
+            GuiFunktionenProgramme.addStandardprogramme(ddaten, true /* auto */);
+        } else {
+            new DialogOk(null, true, new PanelProgrammPfade(), "Pfade Standardprogramme").setVisible(true);
+        }
         beenden();
     }
 
@@ -101,66 +101,6 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             GuiFunktionenProgramme.addStandardprogramme(ddaten, false /* auto */);
         }
         this.dispose();
-    }
-
-    private String getPfadVlc() {
-        final String PFAD_LINUX_VLC = "/usr/bin/vlc";
-        final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
-        String pfad = "";
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            pfad = getWindowsVlcPath();
-        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            pfad = PFAD_LINUX_VLC;
-        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            pfad = PFAD_MAC_VLC;
-        }
-        if (new File(pfad).exists()) {
-            return pfad;
-        } else {
-            return "";
-        }
-    }
-
-    private static String getWindowsVlcPath() {
-        //Für Windows den Pfad des VLC ermitteln
-        //sonst den deutschen Defaultpfad für Programme verwenden verwenden
-        final String PFAD_WIN_VLC_DEFAULT = "C:\\Programme\\VideoLAN\\VLC\\vlc.exe";
-        final String PFAD_WIN_VLC = "\\VideoLAN\\VLC\\vlc.exe";
-        String vlcPfad = "";
-        try {
-            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-                if (System.getenv("ProgramFiles") != null) {
-                    vlcPfad = System.getenv("ProgramFiles") + PFAD_WIN_VLC;
-                    if (new File(vlcPfad).exists()) {
-                        return vlcPfad;
-                    }
-                }
-            }
-            if (System.getenv("ProgramFiles(x86)") != null) {
-                vlcPfad = System.getenv("ProgramFiles(x86)") + PFAD_WIN_VLC;
-                if (new File(vlcPfad).exists()) {
-                    return vlcPfad;
-                }
-            }
-        } catch (Exception ex) {
-        }
-        return PFAD_WIN_VLC_DEFAULT;
-    }
-
-    private String getPfadFlv() {
-        final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
-        final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
-        String pfad = "";
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            pfad = GuiFunktionenProgramme.getPathJar() + PFAD_WINDOWS_FLV;
-        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            pfad = PFAD_LINUX_FLV;
-        }
-        if (new File(pfad).exists()) {
-            return pfad;
-        } else {
-            return "";
-        }
     }
 
     /** This method is called from within the constructor to
@@ -199,7 +139,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jCheckBoxSuchen)
-                .addContainerGap(318, Short.MAX_VALUE))
+                .addContainerGap(175, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -279,7 +219,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                             .addComponent(jButtonAnpassen, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jButtonAlt, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addComponent(jTextField2)
-                    .addComponent(filler2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 773, Short.MAX_VALUE))
+                    .addComponent(filler2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE))
                 .addContainerGap())
         );
 

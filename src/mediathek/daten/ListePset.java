@@ -22,6 +22,7 @@ package mediathek.daten;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.regex.Matcher;
 import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.tool.GuiFunktionen;
@@ -199,14 +200,20 @@ public class ListePset extends LinkedList<DatenPset> {
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             // VLC
-            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_VLC, GuiFunktionenProgramme.getPfadVlc());
-            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_VLC, GuiFunktionenProgramme.getPfadVlc());
+            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] =
+                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_VLC, Matcher.quoteReplacement(GuiFunktionenProgramme.getPfadVlc()));
+            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] =
+                    prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_VLC, Matcher.quoteReplacement(GuiFunktionenProgramme.getPfadVlc()));
             // flvstreamer
-            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_FLV, GuiFunktionenProgramme.getPfadFlv());
-            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_FLV, GuiFunktionenProgramme.getPfadFlv());
+            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] =
+                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_FLV, Matcher.quoteReplacement(GuiFunktionenProgramme.getPfadFlv()));
+            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] =
+                    prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_FLV, Matcher.quoteReplacement(GuiFunktionenProgramme.getPfadFlv()));
             // script
-            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_SCRIPT, GuiFunktionenProgramme.getPfadScript());
-            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_SCRIPT, GuiFunktionenProgramme.getPfadScript());
+            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] =
+                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(GuiFunktionenProgramme.getPfadScript()));
+            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] =
+                    prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(GuiFunktionenProgramme.getPfadScript()));
         }
         return addPset(pSet);
     }
@@ -221,8 +228,7 @@ public class ListePset extends LinkedList<DatenPset> {
             object = new Object[this.size()][DatenPset.PROGRAMMSET_MAX_ELEM];
             while (iterator.hasNext()) {
                 daten = iterator.next();
-                //////////////////??????
-                object[i][DatenPset.PROGRAMMSET_NAME_NR] = daten.arr[DatenPset.PROGRAMMSET_NAME_NR];
+                object[i] = daten.arr;
                 ++i;
             }
             model = new TModel(object, DatenPset.PROGRAMMSET_COLUMN_NAMES);

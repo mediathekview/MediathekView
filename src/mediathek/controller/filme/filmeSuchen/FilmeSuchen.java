@@ -37,7 +37,7 @@ import mediathek.daten.ListeFilme;
 import mediathek.tool.DatumZeit;
 
 public class FilmeSuchen {
-    
+
     public LinkedList<MediathekReader> mediathekListe = new LinkedList<MediathekReader>();
     public boolean allesLaden = true;
     public ListeFilme listeFilmeNeu; // neu angelegte Lise und da kommen die neu gesuchten Filme rein
@@ -66,7 +66,7 @@ public class FilmeSuchen {
         allesLaden = aallesLaden;
         initStart(alteListe);
         listeFilmeNeu.liveStreamEintragen();
-        Iterator<MediathekReader> it = mediathekListe.iterator();
+        Iterator<MediathekReader> it;
         MediathekReader mr;
         it = mediathekListe.iterator();
         while (it.hasNext()) {
@@ -74,7 +74,7 @@ public class FilmeSuchen {
             new Thread(mr).start();
         }
     }
-    
+
     public void updateSender(String sender, ListeFilme alteListe) {
         // nur für den Mauskontext "Sender aktualisieren"
         allesLaden = false;
@@ -84,7 +84,7 @@ public class FilmeSuchen {
             new Thread(reader).start();
         }
     }
-    
+
     private void initStart(ListeFilme alteListe) {
         fertigMeldung.clear();
         listeFilmeAlt = alteListe;
@@ -92,7 +92,7 @@ public class FilmeSuchen {
         listeFilmeNeu.setInfo(alteListe.infos);
         GetUrl.resetSeitenZaehler();
     }
-    
+
     public boolean senderAn(String sender) {
         MediathekReader r = getMediathekReader(sender);
         if (r != null) {
@@ -102,7 +102,7 @@ public class FilmeSuchen {
         }
         return false;
     }
-    
+
     public void addAdListener(FilmListener listener) {
         listeners.add(FilmListener.class, listener);
     }
@@ -130,7 +130,7 @@ public class FilmeSuchen {
         mediathekListe.add(new MediathekSfPod(this));
         mediathekListe.add(new MediathekOrf(this));
     }
-    
+
     private MediathekReader getMediathekReader(String sender) {
         MediathekReader ret = null;
         if (!sender.equals("")) {
@@ -144,7 +144,7 @@ public class FilmeSuchen {
         }
         return ret;
     }
-    
+
     public synchronized void melden(String sender, int max, int progress, String text) {
         RunSender runSender = listeSenderLaufen.getSender(sender);
         if (runSender != null) {
@@ -162,10 +162,10 @@ public class FilmeSuchen {
         notifyProgress(new FilmListenerElement(sender, text, listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
         progressBar();
     }
-    
+
     public void meldenFertig(String sender) {
         //wird ausgeführt wenn Sender beendet ist
-        int MAX_SENDER = 15, MAX1 = 22, MAX2 = 15, MAX3 = 20;
+        int MAX_SENDER = 25, MAX1 = 22, MAX2 = 15, MAX3 = 20;
         Log.systemMeldung("Fertig " + sender + ": " + DatumZeit.getJetzt_HH_MM_SS());
         RunSender run = listeSenderLaufen.senderFertig(sender);
         if (run != null) {
@@ -194,7 +194,7 @@ public class FilmeSuchen {
             notifyProgress(new FilmListenerElement(sender, "", listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
         }
     }
-    
+
     private void progressBar() {
         int max = listeSenderLaufen.getMax();
         int progress = listeSenderLaufen.getProgress();
@@ -219,7 +219,7 @@ public class FilmeSuchen {
             Log.progress(text);
         }
     }
-    
+
     private void metaDatenSchreiben() {
         // FilmlisteMetaDaten
         listeFilmeNeu.metaDaten = ListeFilme.newMetaDaten();
@@ -241,7 +241,7 @@ public class FilmeSuchen {
             Log.fehlerMeldung("FilmeSuchen.metaDatenSchreiben", ex);
         }
     }
-    
+
     private String textLaenge(int max, String text) {
         if (text.length() > max) {
             //text = text.substring(0, MAX);
@@ -252,24 +252,24 @@ public class FilmeSuchen {
         }
         return text;
     }
-    
+
     private void notifyStart(FilmListenerElement filmListenerElement) {
         for (FilmListener l : listeners.getListeners(FilmListener.class)) {
             l.start(filmListenerElement);
         }
     }
-    
+
     private void notifyProgress(FilmListenerElement filmListenerElement) {
         for (FilmListener l : listeners.getListeners(FilmListener.class)) {
             l.progress(filmListenerElement);
         }
-        
+
     }
-    
+
     private void notifyFertig(FilmListenerElement filmListenerElement) {
         for (FilmListener l : listeners.getListeners(FilmListener.class)) {
             l.fertig(filmListenerElement);
         }
-        
+
     }
 }
