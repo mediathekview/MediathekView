@@ -39,6 +39,8 @@ import mediathek.daten.DDaten;
 import mediathek.gui.*;
 import mediathek.gui.beobachter.BeobWeb;
 import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialog.DialogOk;
+import mediathek.gui.dialog.PanelHilfe;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.GuiFunktionen;
@@ -518,12 +520,20 @@ public final class MediathekGui extends javax.swing.JFrame {
             }
         });
         // Hilfe
-        jMenuItemAnleitung.addActionListener(new BeobWeb(Konstanten.ADRESSE_ANLEITUNG));
+        jMenuItemAnleitung.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                DialogOk dialogOk = new DialogOk(null, true, new PanelHilfe(ddaten), "Hilfe zum Programm");
+                dialogOk.setVisible(true);
+            }
+        });
         jMenuItemProgrammlog.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                ProgrammLog.zeileSchreiben(ddaten);
+                ProgrammLog.LogDateiSchreiben(ddaten);
             }
         });
         // Debug
@@ -888,7 +898,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenu3.setText("Hilfe");
 
         jMenuItemAnleitung.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/agt_support.png"))); // NOI18N
-        jMenuItemAnleitung.setText("Anleitung im Web öffnen");
+        jMenuItemAnleitung.setText("Hilfe und Fragen zum Programm");
         jMenu3.add(jMenuItemAnleitung);
 
         jMenuItemProgrammlog.setText("Programmlog in Datei schreiben");

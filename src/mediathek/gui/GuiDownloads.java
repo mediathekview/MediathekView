@@ -225,6 +225,27 @@ public class GuiDownloads extends PanelVorlage {
         }
     }
 
+    private void stopWartende() {
+        // es werden alle noch nicht gestarteten Downloads gelöscht
+        for (int i = 0; i < jTable1.getRowCount(); ++i) {
+            int delRow = jTable1.convertRowIndexToModel(i);
+            String url = jTable1.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
+            Starts s = ddaten.starterClass.getStart(url);
+            if (s != null) {
+                if (s.status < Starts.STATUS_RUN) {
+                    //daten.starterClass.delStart(url);
+                    ddaten.starterClass.filmLoeschen(url);
+                    if (s.download.istAbo()) {
+                        ///////////////// kann das sein??
+                        // bei Abos Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
+                        ddaten.log.urlAusLogfileLoeschen(url);
+                    }
+                }
+            }
+            setInfo();
+        }
+    }
+
     private void tabelleAufraeumen() {
         for (int i = 0; i < jTable1.getModel().getRowCount(); ++i) {
             int delRow = jTable1.convertRowIndexToModel(i);
@@ -536,6 +557,16 @@ public class GuiDownloads extends PanelVorlage {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     stopAll();
+                }
+            });
+            JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads löschen");
+            itemWartendeStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
+            menu.add(itemWartendeStoppen);
+            itemWartendeStoppen.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    stopWartende();
                 }
             });
             JMenuItem itemAktualisieren = new JMenuItem("Liste der Downloads aktualisieren");

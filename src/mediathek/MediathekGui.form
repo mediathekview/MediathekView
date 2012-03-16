@@ -201,7 +201,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/agt_support.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Anleitung im Web &#xf6;ffnen"/>
+                <Property name="text" type="java.lang.String" value="Hilfe und Fragen zum Programm"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemProgrammlog">

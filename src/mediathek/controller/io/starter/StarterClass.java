@@ -171,12 +171,6 @@ public class StarterClass {
         notifyStartEvent();
     }
 
-    /** Gibt den Status eines Downloads zurück*
-     * ziel: ist die Zieldatei
-     *
-     * @param url
-     * @return Status des Downloads
-     */
     public synchronized int getState(String url) {
         int ret = 0;
         Iterator<Starts> it = listeStarts.getIt();
