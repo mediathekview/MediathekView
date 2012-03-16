@@ -36,7 +36,7 @@ import mediathek.tool.GuiFunktionen;
 
 public class ProgrammLog {
 
-    public static void zeileSchreiben(DDaten ddaten) {
+    public static void LogDateiSchreiben(DDaten ddaten) {
         DialogZiel dialog = new DialogZiel(null, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log");
         dialog.setVisible(true);
         if (dialog.ok) {
@@ -50,6 +50,8 @@ public class ProgrammLog {
                     bw.write(DatumZeit.getJetzt_ddMMyyyy_HHmm());
                     bw.newLine();
                     bw.write("Version: " + Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + " vom: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
+                    bw.newLine();
+                    bw.write("Betriebssystem: " + System.getProperty("os.name"));
                     bw.newLine();
                     bw.newLine();
                     //

@@ -138,7 +138,13 @@ public class LogDownload {
         LinkedList<String> liste = new LinkedList<String>();
         LineNumberReader in = null;
         try {
-            in = new LineNumberReader(new InputStreamReader(new FileInputStream(new File(Daten.getBasisVerzeichnis(false) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS))));
+            File file = new File(Daten.getBasisVerzeichnis(false) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
+            if (!file.exists()) {
+                // beim Programmstart ist die Datei noch nicht da
+                gefunden = false;
+                return false;
+            }
+            in = new LineNumberReader(new InputStreamReader(new FileInputStream(file)));
             while ((zeile = in.readLine()) != null) {
                 if (getUrlAusZeile(zeile).equals(urlFilm)) {
                     gefunden = true; //nur dann muss das Logfile auch geschrieben werden
@@ -151,7 +157,9 @@ public class LogDownload {
             Log.fehlerMeldung("LogDownload.urlAusLogfileLoeschen-1", ex);
         } finally {
             try {
-                in.close();
+                if (in != null) {
+                    in.close();
+                }
             } catch (Exception ex) {
                 Log.fehlerMeldung("LogDownload.urlAusLogfileLoeschen-2", ex);
             }
