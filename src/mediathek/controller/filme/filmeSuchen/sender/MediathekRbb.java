@@ -21,9 +21,9 @@ package mediathek.controller.filme.filmeSuchen.sender;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import mediathek.daten.DatenFilm;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
 import mediathek.Log;
+import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
+import mediathek.daten.DatenFilm;
 
 public class MediathekRbb extends MediathekReader implements Runnable {
 
@@ -56,66 +56,52 @@ public class MediathekRbb extends MediathekReader implements Runnable {
     void laden() {
         StringBuffer seite = new StringBuffer();
         int pos = 0;
-        int pos1 = 0;
-        int pos2 = 0;
-        String url = "";
-        String thema = "";
-        String datum = "";
-        String titel = "";
-        final String ITEM_1 = "<div class=\"teaserFlash\">";
-        final String MUSTER_URL = "verpasst.html\" href=\""; //href="/ozon/ozon_20110131_sdg_MP4H264_m_16_9_512x288.mp4">Das Geheimnis der Indios - Kohle als Klimachance?</a>
+        int pos1;
+        int pos2;
+        String url;
+        String titel;
+        String datum;
         final String ADRESSE = "http://www.rbb-online.de/doku/videothek/den_film_im_tv_verpasst.html";
+        final String DATUM = "id=\"rbbheadTitle\">";
+        final String TITEL = "<span id=\"caption\">";
+        final String MUSTER_URL = "'file': 'http:";
+        // Datum: <div id="rbbheadTitle">Himmel und Erde, 17.03.12</div>
+        // URL: 'file': 'http://http-stream.rbb-online.de/rbb/himmelunderde/doku/himmelunderde_20120317_groesse_zeigen_m_16_9_512x288.mp4',
+        // Titel: <span id="caption">Mehr als 1000 Worte - Was unsere Stimme verrät</span>
         meldungProgress(ADRESSE);
         try {
             seite = getUrlIo.getUri_Utf(senderName, ADRESSE, seite, "");
-            while ((pos = seite.indexOf(ITEM_1, pos)) != -1) {
-                pos += ITEM_1.length();
+            while ((pos = seite.indexOf(DATUM, pos)) != -1) {
+                pos += DATUM.length();
                 url = "";
-                thema = "";
-                datum = "";
                 titel = "";
+                datum = "";
                 pos1 = pos;
+                if ((pos2 = seite.indexOf("</", pos)) != -1) {
+                    datum = seite.substring(pos1, pos2);
+                    datum = datum.substring(datum.lastIndexOf(",") + 1).trim();
+                    datum = convertDatum(datum);
+                }
                 if ((pos1 = seite.indexOf(MUSTER_URL, pos)) != -1) {
                     pos1 += MUSTER_URL.length();
-                    if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
+                    if ((pos2 = seite.indexOf("'", pos1)) != -1) {
                         url = seite.substring(pos1, pos2);
+                    }
+                }
+                if ((pos1 = seite.indexOf(TITEL, pos)) != -1) {
+                    pos1 += TITEL.length();
+                    if ((pos2 = seite.indexOf("<", pos1)) != -1) {
+                        titel = seite.substring(pos1, pos2);
                     }
                 }
                 if (url.equals("")) {
                     Log.fehlerMeldung("MediathekRbb.laden", "keine URL");
                 } else {
-                    if ((pos1 = seite.indexOf(">", pos2)) != -1) {
-                        pos1 += 1;
-                        if ((pos2 = seite.indexOf("</", pos1)) != -1) {
-                            thema = seite.substring(pos1, pos2);
-                            titel = thema;
-                        }
-                    }
-                    if ((pos1 = url.indexOf("201")) != -1) {
-                        if (url.length() > pos1 + 8) {
-                            datum = convertDatum(url.substring(pos1, pos1 + 8));
-                        }
-                    } else if ((pos1 = url.indexOf("200")) != -1) {
-                        //für 2009
-                        if (url.length() > pos1 + 8) {
-                            datum = convertDatum(url.substring(pos1, pos1 + 8));
-                        }
-                    }
+                    url = "http:" + url;
+                    // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
+                    DatenFilm film = new DatenFilm(senderName, titel, ADRESSE, titel, url, datum, ""/* zeit */);
+                    addFilm(film);
                 }
-                // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
-                //DatenFilm film = new DatenFilm(daten, sender, thema, ADRESSE, titel, Funktionen.addsUrl(daten, "rtmp://stream5.rbb-online.de/rbb", url), datum, ""/*zeit*/);
-                //mit den anderen flvstreamer-Einstellungen
-                //String urlRtmp = "--host stream5.rbb-online.de --app=rbb/ --playpath=mp4:" + url;
-                String urlRtmp;
-                if (url.endsWith("mp4")) {
-                    urlRtmp = "--host stream5.rbb-online.de --app rbb/ --playpath mp4:" + url;
-                } else {
-                    urlRtmp = "--host stream5.rbb-online.de --app rbb/ --playpath " + url;
-                }
-                String urlOrg = addsUrl("rtmp://stream5.rbb-online.de/rbb", url);
-                // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String datum, String zeit, boolean alt)
-                DatenFilm film = new DatenFilm(senderName, thema, ADRESSE, titel, urlRtmp, urlOrg, urlRtmp, datum, ""/* zeit */);
-                addFilm(film);
             } //while, die ganz große Schleife
         } catch (Exception ex) {
             Log.fehlerMeldung("MediathekRbb.laden", ex);
@@ -124,7 +110,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
 
     public String convertDatum(String datum) {
         try {
-            SimpleDateFormat sdfIn = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat sdfIn = new SimpleDateFormat("dd.mm.yy");
             Date filmDate = sdfIn.parse(datum);
             SimpleDateFormat sdfOut;
             sdfOut = new SimpleDateFormat("dd.MM.yyyy");
