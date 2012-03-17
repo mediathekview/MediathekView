@@ -221,7 +221,9 @@ public class IoXmlLesen {
                         } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
                             DatenProg datenProg = new DatenProg();
                             if (get(parser, event, DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, datenProg.arr)) {
-                                datenPset.addProg(datenProg);
+                                if (datenPset != null) {
+                                    datenPset.addProg(datenProg);
+                                }
                             }
                             //ende Programgruppen
                         } else if (parser.getLocalName().equals(DatenAbo.ABO)) {
