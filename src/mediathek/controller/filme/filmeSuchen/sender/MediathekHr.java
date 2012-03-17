@@ -20,10 +20,10 @@
 package mediathek.controller.filme.filmeSuchen.sender;
 
 import mediathek.Daten;
-import mediathek.daten.DatenFilm;
+import mediathek.Log;
 import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
 import mediathek.controller.io.GetUrl;
-import mediathek.Log;
+import mediathek.daten.DatenFilm;
 
 /**
  *
@@ -51,9 +51,9 @@ public class MediathekHr extends MediathekReader implements Runnable {
         listeThemen.clear();
         seite = getUrlIo.getUri_Utf(senderName, "http://www.hr-online.de/website/fernsehen/sendungen/index.jsp", seite, "");
         int pos = 0;
-        int pos1 = 0;
-        int pos2 = 0;
-        String url = "";
+        int pos1;
+        int pos2;
+        String url;
         while ((pos = seite.indexOf(MUSTER, pos)) != -1) {
             pos += MUSTER.length();
             pos1 = pos;
@@ -83,7 +83,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
 
     private class HrThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl( senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
         //private StringBuffer seite2 = new StringBuffer();
 
@@ -113,16 +113,14 @@ public class MediathekHr extends MediathekReader implements Runnable {
             seite1 = getUrl.getUri_Utf(senderName, strUrlFeed, seite1, "");
             try {
                 int posItem1 = 0;
-                int posItem2 = 0;
-                int pos = 0;
-                int pos1 = 0;
-                int pos2 = 0;
-                String url = "";
-                String url1 = "";
-                String url2 = "";
+                int pos1;
+                int pos2;
+                String url;
+                String url1;
+                String url2;
                 String datum = "";
                 String titel = "";
-                while (!Daten.filmeLaden.getStop()&& (posItem1 = seite1.indexOf(MUSTER_ITEM_1, posItem1)) != -1) {
+                while (!Daten.filmeLaden.getStop() && (posItem1 = seite1.indexOf(MUSTER_ITEM_1, posItem1)) != -1) {
                     posItem1 += MUSTER_ITEM_1.length();
                     //posItem2 = seite1.indexOf(MUSTER_ITEM_2, posItem1);
                     if ((pos1 = seite1.indexOf(MUSTER_DATUM, posItem1)) != -1) {
@@ -148,8 +146,9 @@ public class MediathekHr extends MediathekReader implements Runnable {
                                     if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
                                         url2 = seite1.substring(pos1, pos2);
                                         url = addsUrl(url1, url2);
-                                        // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                                        DatenFilm film = new DatenFilm(senderName, thema, strUrlFeed, titel, url, datum, "");
+                                        String furl = "-r " + url + " -y " + url2;
+                                        // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String datum, String zeit) {
+                                        DatenFilm film = new DatenFilm(senderName, thema, strUrlFeed, titel, url, url, furl, datum, "");
                                         addFilm(film);
                                     } else {
                                         Log.fehlerMeldung("MediathekHr.addFilme", "keine URL");
