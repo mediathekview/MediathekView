@@ -27,11 +27,11 @@ import mediathek.daten.DDaten;
 import mediathek.daten.DatenPset;
 import mediathek.tool.GuiKonstanten;
 
-public class CellRendererPguppen extends DefaultTableCellRenderer {
+public class CellRendererPset extends DefaultTableCellRenderer {
 
     DDaten daten;
 
-    public CellRendererPguppen(DDaten d) {
+    public CellRendererPset(DDaten d) {
         daten = d;
     }
 
@@ -57,6 +57,7 @@ public class CellRendererPguppen extends DefaultTableCellRenderer {
                 setForeground(gruppe.getFarbe(daten));
             }
             if (c == DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR) {
+                setText(""); // nur das Icon anzeigen
                 if (gruppe.istAbspielen()) {
                     if (isSelected) {
                         setBackground(GuiKonstanten.ABO_SEL);
@@ -74,6 +75,7 @@ public class CellRendererPguppen extends DefaultTableCellRenderer {
                 }
             }
             if (c == DatenPset.PROGRAMMSET_IST_SPEICHERN_NR) {
+                setText(""); // nur das Icon anzeigen
                 if (gruppe.istSpeichern()) {
                     if (isSelected) {
                         setBackground(GuiKonstanten.ABO_SEL);
@@ -91,6 +93,7 @@ public class CellRendererPguppen extends DefaultTableCellRenderer {
                 }
             }
             if (c == DatenPset.PROGRAMMSET_IST_BUTTON_NR) {
+                setText(""); // nur das Icon anzeigen
                 if (gruppe.istButton()) {
                     if (isSelected) {
                         setBackground(GuiKonstanten.ABO_SEL);
@@ -108,6 +111,7 @@ public class CellRendererPguppen extends DefaultTableCellRenderer {
                 }
             }
             if (c == DatenPset.PROGRAMMSET_IST_ABO_NR) {
+                setText(""); // nur das Icon anzeigen
                 if (gruppe.istAbo()) {
                     if (isSelected) {
                         setBackground(GuiKonstanten.ABO_SEL);

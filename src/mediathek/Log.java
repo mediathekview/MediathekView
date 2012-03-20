@@ -19,8 +19,12 @@
  */
 package mediathek;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.tool.GuiFunktionenProgramme;
 
 public class Log {
 
@@ -32,6 +36,30 @@ public class Log {
 
     public static void addAdListener(MediathekListener listener) {
         listeners.add(MediathekListener.class, listener);
+    }
+
+    public static synchronized void startMeldungen(String classname) {
+        Log.systemMeldung("###########################################################");
+        try {
+            //Version
+            Log.systemMeldung(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
+            Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
+            Log.systemMeldung("Compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
+        } catch (IOException ex) {
+        }
+        Log.systemMeldung("Klassenname: " + classname);
+        Log.systemMeldung("");
+        Log.systemMeldung("Programmpfad: " + GuiFunktionenProgramme.getPathJar());
+        Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getBasisVerzeichnis());
+        Log.systemMeldung("Useragent: " + Daten.getUserAgent());
+        Log.systemMeldung("");
+        long totalMem = Runtime.getRuntime().totalMemory();
+        Log.systemMeldung("totalMemory: " + totalMem / (1024L * 1024L) + " MB");
+        long maxMem = Runtime.getRuntime().maxMemory();
+        Log.systemMeldung("maxMemory: " + maxMem / (1024L * 1024L) + " MB");
+        long freeMem = Runtime.getRuntime().freeMemory();
+        Log.systemMeldung("freeMemory: " + freeMem / (1024L * 1024L) + " MB");
+        Log.systemMeldung("###########################################################");
     }
 
     public static synchronized void fehlerMeldung(String klasse, Exception ex) {

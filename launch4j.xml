@@ -2,7 +2,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>MediathekView.jar</jar>
-  <outfile>/mnt/daten/software/java/Mediathek_3/bin/Starten_Windows.exe</outfile>
+  <outfile>/mnt/daten/software/java/Mediathek_3/bin/MediathekVew.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir></chdir>

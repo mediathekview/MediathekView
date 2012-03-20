@@ -131,6 +131,7 @@ public class PanelExportFilmliste extends PanelVorlage {
         jTextArea1.setEditable(false);
         jTextArea1.setRows(7);
         jTextArea1.setText("Es kann die programmeigene Liste mit den Filmen exportiert werden.\n\nDabei werden Dateinamen mit einer Endung\n\".zip\" als Zip-Dateien und \n\".bz2\" als Bzip2-Dateien\n\nund alle anderen Dateien als unkomprimierte Dateien verwendet.");
+        jTextArea1.setMargin(new java.awt.Insets(4, 4, 4, 4));
         jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -156,7 +157,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonExportieren)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

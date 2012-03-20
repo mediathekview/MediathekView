@@ -56,7 +56,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             }
         });
         jRadioButtonUpdateAus.addActionListener(new BeobOption());
-        jRadioButtonUrl.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
         jTable1.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
@@ -75,9 +74,11 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void init() {
-        jRadioButtonAuto.setSelected(GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO);
-        jRadioButtonUrl.setSelected(GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_URL);
-        jRadioButtonUpdateAus.setSelected(GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUS);
+        if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUS) {
+            jRadioButtonUpdateAus.setSelected(true);
+        } else {
+            jRadioButtonAuto.setSelected(true);
+        }
         jTextFieldUrl.setText(Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
         tabelleLaden();
         setPanelTabelle(jRadioButtonUpdateAus.isSelected());
@@ -149,10 +150,9 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel3 = new javax.swing.JPanel();
-        jRadioButtonAuto = new javax.swing.JRadioButton();
-        jRadioButtonUrl = new javax.swing.JRadioButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jPanel2 = new javax.swing.JPanel();
-        jRadioButtonUpdateAus = new javax.swing.JRadioButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
@@ -161,14 +161,19 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jTextFieldUrl = new javax.swing.JTextField();
         jButtonDateiAuswaehlen = new javax.swing.JButton();
         jButtonFilmeLaden = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
+        jRadioButtonAuto = new javax.swing.JRadioButton();
+        jRadioButtonUpdateAus = new javax.swing.JRadioButton();
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Filmliste (URL) automatisch wählen"));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Die Filmliste automatisch laden"));
 
-        buttonGroup1.add(jRadioButtonAuto);
-        jRadioButtonAuto.setText("zusätzlich beim Programmstart laden, wenn die Filmliste älter als 3h ist");
-
-        buttonGroup1.add(jRadioButtonUrl);
-        jRadioButtonUrl.setText("das Laden der Filme von Hand anstoßen, die URL automatisch wählen");
+        jTextArea1.setColumns(20);
+        jTextArea1.setEditable(false);
+        jTextArea1.setRows(3);
+        jTextArea1.setText("Die Filmliste wird beim Programmstart automatisch geladen (wenn sie\nälter als 3h ist). Zusätzlich kann sie über den Button \"Neue Filmliste laden\"\ngeladen werden.");
+        jTextArea1.setMargin(new java.awt.Insets(4, 4, 4, 4));
+        jScrollPane2.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -176,25 +181,17 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButtonUrl)
-                    .addComponent(jRadioButtonAuto))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane2)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jRadioButtonUrl)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButtonAuto)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Filmliste (URL/Datei) manuell wählen und diesen Dialog anzeigen"));
-
-        buttonGroup1.add(jRadioButtonUpdateAus);
-        jRadioButtonUpdateAus.setText("Alles manuell");
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Filmliste nur manuell laden"));
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -222,6 +219,13 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jButtonFilmeLaden.setText("Filme jetzt laden");
 
+        jTextArea2.setColumns(20);
+        jTextArea2.setEditable(false);
+        jTextArea2.setRows(3);
+        jTextArea2.setText("Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\"\ngeladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum\nLaden ausgewählt werden.");
+        jTextArea2.setMargin(new java.awt.Insets(4, 4, 4, 4));
+        jScrollPane3.setViewportView(jTextArea2);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -229,13 +233,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jRadioButtonUpdateAus)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonUpdate))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -244,18 +242,25 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                         .addComponent(jButtonDateiAuswaehlen))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonFilmeLaden)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonUpdate))
+                            .addComponent(jButtonFilmeLaden, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addComponent(jScrollPane3))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jRadioButtonUpdateAus)
                     .addComponent(jLabel2)
                     .addComponent(jButtonUpdate))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -268,12 +273,20 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonDateiAuswaehlen, jLabel1, jTextFieldUrl});
 
+        buttonGroup1.add(jRadioButtonAuto);
+
+        buttonGroup1.add(jRadioButtonUpdateAus);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jRadioButtonAuto)
+                    .addComponent(jRadioButtonUpdateAus))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -283,9 +296,15 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jRadioButtonAuto)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jRadioButtonUpdateAus)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -300,9 +319,12 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JRadioButton jRadioButtonAuto;
     private javax.swing.JRadioButton jRadioButtonUpdateAus;
-    private javax.swing.JRadioButton jRadioButtonUrl;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextField jTextFieldUrl;
     // End of variables declaration//GEN-END:variables
 
@@ -322,8 +344,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 setPanelTabelle(jRadioButtonUpdateAus.isSelected());
                 if (jRadioButtonUpdateAus.isSelected()) {
                     Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUS);
-                } else if (jRadioButtonUrl.isSelected()) {
-                    Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_URL);
                 } else {
                     Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO);
                 }

@@ -85,11 +85,9 @@ public final class MediathekGui extends javax.swing.JFrame {
                 }
             }
         }
-        Log.systemMeldung("this.getClass().getName(): " + this.getClass().getName());
-        Log.systemMeldung("System.getProperty(\"user.dir\"): " + System.getProperty("user.dir"));
-        Log.systemMeldung("Programmpfad: " + GuiFunktionenProgramme.getPathJar());
         ddaten = new DDaten(pfad);
         DDaten.debug = debug;
+        Log.startMeldungen(this.getClass().getName());
         jPanelInfo.setLayout(new BorderLayout());
         jPanelInfo.add(ddaten.infoPanel, BorderLayout.CENTER);
         if (IoXmlLesen.einstellungenExistieren()) {

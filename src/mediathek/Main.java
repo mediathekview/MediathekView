@@ -19,13 +19,12 @@
  */
 package mediathek;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class Main {
+
     /*
      * Aufruf:
      * java -jar Mediathek [Pfad zur Konfigdatei, sonst homeverzeichnis] [Schalter]
+     *
      * Programmschalter:
      *
      * -D Debugmode
@@ -34,32 +33,7 @@ public class Main {
      * -noGui ohne GUI starten und die Filmliste laden
      *
      * */
-
     public Main() {
-    }
-
-    /**
-     * Displays the total amount of memory, the maximal amount of memory
-     * and the total amount of free memory in the Java Virtual Machine.
-     */
-    public static void displayStartInfos() {
-        try {
-            //Version
-            Log.systemMeldung(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
-            //Compiledate
-            Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-            Log.systemMeldung("compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
-            //Display the total amount of memory in the Java virtual machine.
-            long totalMem = Runtime.getRuntime().totalMemory();
-            Log.systemMeldung("totalMemory: " + totalMem / (1024L * 1024L) + " MB");
-            //Display the maximum amount of memory that the Java virtual machine will attempt to use.
-            long maxMem = Runtime.getRuntime().maxMemory();
-            Log.systemMeldung("maxMemory: " + maxMem / (1024L * 1024L) + " MB");
-            //Display the amount of free memory in the Java Virtual Machine.
-            long freeMem = Runtime.getRuntime().freeMemory();
-            Log.systemMeldung("freeMemory: " + freeMem / (1024L * 1024L) + " MB");
-        } catch (Exception ex) {
-        }
     }
 
     /**
@@ -76,7 +50,6 @@ public class Main {
 
             @Override
             public void run() {
-                Main.displayStartInfos();
                 if (ar != null) {
                     for (int i = 0; i < ar.length; ++i) {
                         if (ar[i].equals("-A")) {
@@ -91,14 +64,14 @@ public class Main {
                     }
                 }
                 switch (state) {
-                    case NORMAL:
-                        new MediathekGui(ar).setVisible(true);
-                        break;
                     case AUTO:
                         new MediathekAuto(ar).setVisible(true);
                         break;
                     case NOGUI:
                         new MediathekNoGui(ar).starten();
+                        break;
+                    default:
+                        new MediathekGui(ar).setVisible(true);
                         break;
                 }
             }

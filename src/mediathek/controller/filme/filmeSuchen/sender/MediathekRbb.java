@@ -110,7 +110,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
 
     public String convertDatum(String datum) {
         try {
-            SimpleDateFormat sdfIn = new SimpleDateFormat("dd.mm.yy");
+            SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.yy");
             Date filmDate = sdfIn.parse(datum);
             SimpleDateFormat sdfOut;
             sdfOut = new SimpleDateFormat("dd.MM.yyyy");
