@@ -39,7 +39,8 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.beobachter.CellRendererPguppen;
+import mediathek.gui.beobachter.CellRendererProgramme;
+import mediathek.gui.beobachter.CellRendererPset;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.*;
 
@@ -75,7 +76,6 @@ public class PanelPset extends PanelVorlage {
             }
         });
         BeobProgDoc beobDoc = new BeobProgDoc();
-        jTableProgramme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
         jTextFieldProgPfad.getDocument().addDocumentListener(beobDoc);
         jTextFieldProgSchalter.getDocument().addDocumentListener(beobDoc);
         jTextFieldProgName.getDocument().addDocumentListener(beobDoc);
@@ -176,12 +176,12 @@ public class PanelPset extends PanelVorlage {
             }
         });
         jButtonPruefen.addActionListener(new BeobPuefen());
-        jTablePset.setDefaultRenderer(Object.class, new CellRendererPguppen(ddaten));
+        jTableProgramme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
+        jTableProgramme.setDefaultRenderer(Object.class, new CellRendererProgramme(ddaten));
+        jTablePset.setDefaultRenderer(Object.class, new CellRendererPset(ddaten));
         jTablePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
         tabellePset();
         spaltenSetzen();
-//        this.validate();
-//        jTablePset.updateUI();
         if (jTablePset.getRowCount() > 0) {
             jTablePset.setRowSelectionInterval(0, 0);
             jTablePset.scrollRectToVisible(jTablePset.getCellRect(0, 0, false));

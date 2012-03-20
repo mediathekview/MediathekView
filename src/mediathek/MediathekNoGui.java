@@ -80,13 +80,12 @@ public class MediathekNoGui {
             Daten.setUserAgentManuel(userAgent);
         }
         // Infos schreiben
+        Log.startMeldungen(this.getClass().getName());
         if (allesLaden) {
             Log.systemMeldung("Programmstart: alles laden");
         } else {
             Log.systemMeldung("Programmstart: nur update laden");
         }
-        Log.systemMeldung("Basisverzeichnis: " + Daten.getBasisVerzeichnis());
-        Log.systemMeldung("Useragent: " + Daten.getUserAgent());
         Log.systemMeldung("ImportUrl: " + importUrl);
         Log.systemMeldung("Outputfile: " + output);
     }

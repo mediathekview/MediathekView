@@ -228,7 +228,8 @@ public class ListePset extends LinkedList<DatenPset> {
             object = new Object[this.size()][DatenPset.PROGRAMMSET_MAX_ELEM];
             while (iterator.hasNext()) {
                 daten = iterator.next();
-                object[i] = daten.arr;
+                object[i][DatenPset.PROGRAMMSET_NAME_NR] = daten.arr[DatenPset.PROGRAMMSET_NAME_NR];
+//                object[i] = daten.arr;
                 ++i;
             }
             model = new TModel(object, DatenPset.PROGRAMMSET_COLUMN_NAMES);
