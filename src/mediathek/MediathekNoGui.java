@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.controller.filme.BeobFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
-import mediathek.controller.filme.filmeExportieren.FilmeExportieren;
+import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.ListeFilme;
 
 public class MediathekNoGui {
@@ -114,7 +114,9 @@ public class MediathekNoGui {
             // wenn eine ImportUrl angegeben, dann noch eine Liste importieren
             addImportListe(importUrl);
         }
-        new FilmeExportieren().filmeSchreiben(Daten.listeFilme);
+
+        new IoXmlFilmlisteSchreiben().filmeSchreiben(Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, Daten.listeFilme);
+
         if (!output.equals("")) {
             LinkedList<String> out = new LinkedList<String>();
             String tmp;
@@ -133,7 +135,7 @@ public class MediathekNoGui {
             Iterator<String> it = out.iterator();
             while (it.hasNext()) {
                 //datei schreiben
-                Daten.ioXmlFilmlisteSchreiben.filmeSchreiben(it.next(), Daten.listeFilme);
+                new IoXmlFilmlisteSchreiben().filmeSchreiben(it.next(), Daten.listeFilme);
             }
         }
         stopZeit = new Date(System.currentTimeMillis());

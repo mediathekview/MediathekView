@@ -26,16 +26,13 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import javax.swing.event.EventListenerList;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.gui.beobachter.Listener;
 
 public class GetUrl {
 
     public static final long UrlWartenBasis = 500;//ms, Basiswert zu dem dann der Faktor multipliziert wird
-    static EventListenerList listeners = new EventListenerList();
     private int faktorWarten = 1;
     private int timeout = 10000;
     private long wartenBasis = UrlWartenBasis;
@@ -76,10 +73,6 @@ public class GetUrl {
         return getUri(sender, addr, seite, Konstanten.KODIERUNG_ISO15, timeout, meldung);
     }
 
-    public static void addAdListener(Listener listener) {
-        listeners.add(Listener.class, listener);
-    }
-
     public static int getSeitenZaehler(String sender) {
         Iterator<Seitenzaehler> it = listeSeitenZaehler.iterator();
         Seitenzaehler sz;
@@ -113,14 +106,14 @@ public class GetUrl {
         return 0;
     }
 
-    public static synchronized int getSeitenZaehlerFehler() {
-        int ret = 0;
-        Iterator<Seitenzaehler> it = listeSeitenZaehlerFehler.iterator();
-        while (it.hasNext()) {
-            ret += it.next().seitenAnzahl;
-        }
-        return ret;
-    }
+//    public static synchronized int getSeitenZaehlerFehler() {
+//        int ret = 0;
+//        Iterator<Seitenzaehler> it = listeSeitenZaehlerFehler.iterator();
+//        while (it.hasNext()) {
+//            ret += it.next().seitenAnzahl;
+//        }
+//        return ret;
+//    }
 
     public static synchronized void resetSeitenZaehler() {
         listeSeitenZaehler.clear();
@@ -164,12 +157,6 @@ public class GetUrl {
         }
     }
 
-    private synchronized void gibBescheid() {
-        for (Listener l : listeners.getListeners(Listener.class)) {
-            l.progress();
-        }
-    }
-
     private synchronized StringBuffer getUri(String sender, String addr, StringBuffer seite, String kodierung, int timeout, String meldung) {
         char[] zeichen = new char[1];
         try {
@@ -179,7 +166,6 @@ public class GetUrl {
             Log.fehlerMeldung("GetUrl.getUri", ex);
         }
         incSeitenZaehler(sender);
-        gibBescheid();
         seite.setLength(0);
         URLConnection conn;
         InputStream in = null;

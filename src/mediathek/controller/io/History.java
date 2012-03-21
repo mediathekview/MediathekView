@@ -21,6 +21,8 @@ package mediathek.controller.io;
 import java.io.*;
 import java.util.HashSet;
 import java.util.Iterator;
+import mediathek.Daten;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 
 public class History extends HashSet<String> {
 
@@ -28,6 +30,13 @@ public class History extends HashSet<String> {
 
     public History(String history_datei) {
         datei = history_datei;
+    }
+
+    @Override
+    public boolean add(String url) {
+        boolean ret = super.add(url);
+        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_HISTORY, History.class.getSimpleName());
+        return ret;
     }
 
     public void laden() {
@@ -73,6 +82,7 @@ public class History extends HashSet<String> {
             return;
         }
         file.delete();
+        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_HISTORY, History.class.getSimpleName());
     }
 
     public Object[][] getObjectData() {

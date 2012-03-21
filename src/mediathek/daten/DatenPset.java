@@ -23,6 +23,7 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
+import mediathek.Daten;
 import mediathek.Log;
 import mediathek.controller.io.starter.Starts;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -257,9 +258,25 @@ public class DatenPset {
         return ret;
     }
 
+    @Override
+    public String toString() {
+        String ret = "";
+        ret += "================================================" + Daten.LINE_SEPARATOR;
+        ret += "| Programmset" + Daten.LINE_SEPARATOR;
+        for (int i = 0; i < PROGRAMMSET_MAX_LAENGE_NR; ++i) {
+            ret += "| " + PROGRAMMSET_COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+        }
+        for (int i = 0; i < listeProg.size(); ++i) {
+            ret += "|" + Daten.LINE_SEPARATOR;
+            ret += listeProg.get(i).toString();
+        }
+        ret += "|_______________________________________________" + Daten.LINE_SEPARATOR;
+        return ret;
+    }
     //===================================
     // Private
     //===================================
+
     private void makeArray() {
         arr = new String[PROGRAMMSET_MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {

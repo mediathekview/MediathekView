@@ -60,37 +60,9 @@ public class PanelInfoStarts extends PanelVorlage {
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         init();
     }
-    //===================================
-    // Public
-    //===================================
-
-    @Override
-    public void neuLaden() {
-    }
-    //===================================
-    // Private
-    //===================================
 
     private synchronized void init() {
         tModel = ddaten.starterClass.getStarterModell(tModel);
-//        if (tModel != null) {
-//            jTable1.setModel(tModel);
-//        } else {
-//            int max = Konstanten.FILME_MAX_ELEM + 1;
-//            String[] titel = new String[max];
-//            String[] titel2 = new String[max];
-//            for (int i = 0; i < max; ++i) {
-//                if (i < Konstanten.FILME_MAX_ELEM) {
-//                    titel[i] = Konstanten.FILME_COLUMN_NAMES[i];
-//                    titel2[i] = "";
-//                } else {
-//                    titel[i] = "Art";
-//                    titel2[i] = "";
-//                }
-//            }
-//            tModel = new TModel(new Object[][]{titel2}, titel);
-//            jTable1.setModel(tModel);
-//        }
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
             if (i > DatenFilm.FILM_URL_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(0);

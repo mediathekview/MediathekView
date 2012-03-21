@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.JOptionPane;
 import mediathek.Daten;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.dialog.DialogPsetSpeichern;
@@ -34,7 +35,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     /**
      *
-     * @param ddaten
+     *  @param ddaten
      */
     public ListeDownloads(DDaten ddaten) {
         this.ddaten = ddaten;
@@ -119,7 +120,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 // und evtl. auch gleich starten
                 ddaten.starterClass.addStarts(new Starts(download));
             }
-            ddaten.guiDownloads.akualisieren();
+            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_DOWNLOADS, ListeDownloads.class.getSimpleName());
         }
     }
 
@@ -138,7 +139,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 continue;
             } else if (!abo.aboIstEingeschaltet()) {
                 continue;
-            } else if (ddaten.log.urlPruefen(film.arr[DatenFilm.FILM_URL_NR])) {
+            } else if (ddaten.erledigteAbos.urlPruefen(film.arr[DatenFilm.FILM_URL_NR])) {
                 // ist schon im Logfile, weiter
                 continue;
             } else if (checkListe(film.arr[DatenFilm.FILM_URL_NR])) {

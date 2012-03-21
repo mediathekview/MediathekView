@@ -19,12 +19,12 @@
  */
 package mediathek.tool;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 
 public class HinweisKeineAuswahl {
 
     public void zeigen() {
-        JOptionPane.showMessageDialog(null, "Zeilen ausw\u00e4hlen",
+        JOptionPane.showMessageDialog(null, "Zeile auswählen",
                 "keine Auswahl", JOptionPane.INFORMATION_MESSAGE);
     }
 }

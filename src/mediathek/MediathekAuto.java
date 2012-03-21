@@ -299,7 +299,7 @@ public class MediathekAuto extends javax.swing.JFrame {
                 int delRow = jTable1.convertRowIndexToModel(rows[i]);
                 if (dauerhaft) {
                     // boolean zeileSchreiben(String datum, String thema, String titel, String url, String logdatei) {
-                    daten.log.zeileSchreiben(tModel.getValueAt(delRow, DatenFilm.FILM_THEMA_NR).toString(),
+                    daten.erledigteAbos.zeileSchreiben(tModel.getValueAt(delRow, DatenFilm.FILM_THEMA_NR).toString(),
                             tModel.getValueAt(delRow, DatenFilm.FILM_TITEL_NR).toString(),
                             tModel.getValueAt(delRow, DatenFilm.FILM_URL_NR).toString());
                 }

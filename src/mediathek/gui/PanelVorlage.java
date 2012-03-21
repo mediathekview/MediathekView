@@ -27,22 +27,19 @@ import mediathek.daten.DDaten;
 public class PanelVorlage extends javax.swing.JPanel {
 
     public DDaten ddaten;
-    public boolean geaendert = false;
     public boolean stopBeob = false;
     private int[] breite = null;
     private int[] reihe = null;
     private List<? extends javax.swing.RowSorter.SortKey> listeSort = null;
     private int sel;
     private int rows;
-    boolean erstesMal = false;
-
+    
     /**
      *
-     *  @param d
+     *   @param d
      */
     public PanelVorlage(DDaten d) {
         ddaten = d;
-        ddaten.panelListe.addPanel(this);
         addComponentListener(new java.awt.event.ComponentAdapter() {
 
             @Override
@@ -54,24 +51,6 @@ public class PanelVorlage extends javax.swing.JPanel {
 
     public void isShown() {
         // immer wenn isShown
-        if (!erstesMal) {
-            erstesIsShown();
-        }
-        if (geaendert) {
-            geaendert = false;
-            neuLaden();
-        }
-    }
-
-    void erstesIsShown() {
-    }
-
-    public void neuLaden() {
-        //nur wenn geändert
-    }
-
-    public void neuLadenSofort() {
-        //nur wenn geändert
     }
 
     public void getSpalten(JTable tabelle) {

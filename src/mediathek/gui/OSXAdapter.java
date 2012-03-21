@@ -29,7 +29,10 @@ package mediathek.gui;
  *
  * @author patrick
  */
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 public class OSXAdapter implements InvocationHandler {
 
@@ -60,7 +63,6 @@ public class OSXAdapter implements InvocationHandler {
             System.err.println("This version of Mac OS X does not support the Apple EAWT.  ApplicationEvent handling has been disabled (" + cnfe + ")");
         } catch (Exception ex) {  // Likely a NoSuchMethodException or an IllegalAccessException loading/invoking eawt.Application methods
             System.err.println("Mac OS X Adapter could not talk to EAWT:");
-            ex.printStackTrace();
         }
     }
 
@@ -111,7 +113,6 @@ public class OSXAdapter implements InvocationHandler {
                 setHandledMethod.invoke(event, new Object[]{Boolean.valueOf(handled)});
             } catch (Exception ex) {
                 System.err.println("OSXAdapter was unable to handle an ApplicationEvent: " + event);
-                ex.printStackTrace();
             }
         }
     }

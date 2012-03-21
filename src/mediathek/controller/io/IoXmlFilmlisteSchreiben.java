@@ -19,7 +19,6 @@
  */
 package mediathek.controller.io;
 
-import mediathek.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -29,9 +28,10 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 import mediathek.Konstanten;
-import mediathek.tool.GuiKonstanten;
+import mediathek.Log;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
+import mediathek.tool.GuiKonstanten;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 public class IoXmlFilmlisteSchreiben {
@@ -91,7 +91,7 @@ public class IoXmlFilmlisteSchreiben {
         ListIterator<DatenFilm> iterator;
         DatenFilm datenFilm;
         DatenFilm datenFilmAlt = new DatenFilm();
-        DatenFilm kopie = new DatenFilm();
+        DatenFilm kopie;
         iterator = listeFilme.listIterator();
         while (iterator.hasNext()) {
             datenFilm = iterator.next();

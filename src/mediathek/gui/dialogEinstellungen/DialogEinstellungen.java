@@ -41,7 +41,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private PanelSenderLaden panelSenderLaden;
     private PanelBlacklist panelBlacklist;
     private PanelHistory panelHistory;
-    private PanelLogfile panelLogfile;
+    private PanelErledigteAbos panelErledigteAbos;
     private PanelPset panelPset;
     private PanelPsetImport panelPsetVorlagen;
     // Infos
@@ -91,7 +91,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         panelSenderLaden = new PanelSenderLaden(ddaten);
         panelBlacklist = new PanelBlacklist(ddaten);
         panelHistory = new PanelHistory(ddaten);
-        panelLogfile = new PanelLogfile(ddaten);
+        panelErledigteAbos = new PanelErledigteAbos(ddaten);
         panelPset = new PanelPset(ddaten);
         panelPsetVorlagen = new PanelPsetImport(ddaten);
         // Infos
@@ -207,7 +207,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                         jPanelExtra.add(panelHistory);
                     } else if (name.equals(NAME_logfile)) {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelLogfile);
+                        jPanelExtra.add(panelErledigteAbos);
                     } else if (name.equals(NAME_programmset)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelPset);
@@ -246,7 +246,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
 
     private void beenden() {
         this.dispose();
-        ddaten.setGeaendertPanelSofort();
     }
 
     /** This method is called from within the constructor to

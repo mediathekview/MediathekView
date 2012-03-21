@@ -52,6 +52,30 @@ public class ProgrammLog {
                     bw.write("Version: " + Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + " vom: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
                     bw.newLine();
                     bw.write("Betriebssystem: " + System.getProperty("os.name"));
+                    if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                        if (System.getenv("ProgramFiles(x86)") != null) {
+                            // dann 64Bit
+                            bw.write("[64Bit]");
+                        } else {
+                            bw.write("[32Bit]");
+                        }
+                    }
+                    bw.newLine();
+                    bw.newLine();
+                    //
+                    bw.write("#####################################################");
+                    bw.newLine();
+                    bw.write("## Programmsets ##################################");
+                    bw.newLine();
+                    bw.write("#####################################################");
+                    bw.newLine();
+                    bw.newLine();
+                    for (int i = 0; i < ddaten.listePset.size(); ++i) {
+                        bw.write(ddaten.listePset.get(i).toString());
+                        bw.newLine();
+                    }
+                    bw.newLine();
+                    bw.newLine();
                     bw.newLine();
                     bw.newLine();
                     //
@@ -87,7 +111,6 @@ public class ProgrammLog {
                     try {
                         bw.close();
                     } catch (Exception ex) {
-                        Log.fehlerMeldung("ProgrammLog.zeileSchreiben-2", ex);
                     }
                 }
             } else {

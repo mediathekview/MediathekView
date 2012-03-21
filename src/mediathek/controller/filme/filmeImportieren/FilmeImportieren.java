@@ -25,7 +25,7 @@ import mediathek.Log;
 import mediathek.controller.filme.FilmListener;
 import mediathek.controller.filme.FilmListenerElement;
 import mediathek.controller.filme.FilmeLaden;
-import mediathek.controller.filme.filmeImportieren.filmUpdateServer.FilmUpdateServer;
+import mediathek.controller.filme.filmUpdateServer.FilmUpdateServer;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.daten.ListeFilme;
 
