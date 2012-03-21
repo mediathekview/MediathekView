@@ -30,6 +30,7 @@ import javax.swing.event.DocumentListener;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
+import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 
@@ -65,7 +66,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 }
                 if (ret == JOptionPane.OK_OPTION) {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                    Daten.ioXmlFilmlisteSchreiben.filmeSchreiben(d, Daten.listeFilme);
+                    new IoXmlFilmlisteSchreiben().filmeSchreiben(d, Daten.listeFilme);
                     if (!new File(d).exists()) {
                         JOptionPane.showMessageDialog(null, "Datei:  " + "\"" + d + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }

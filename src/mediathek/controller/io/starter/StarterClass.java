@@ -629,7 +629,7 @@ public class StarterClass {
             Log.fehlerMeldung("StartetClass.pruefen-2", "Download fehlgeschlagen: " + starts.download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else {
             if (starts.download.istAbo()) {
-                ddaten.log.zeileSchreiben(starts.download.arr[DatenDownload.DOWNLOAD_THEMA_NR],
+                ddaten.erledigteAbos.zeileSchreiben(starts.download.arr[DatenDownload.DOWNLOAD_THEMA_NR],
                         starts.download.arr[DatenDownload.DOWNLOAD_TITEL_NR],
                         starts.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
             }

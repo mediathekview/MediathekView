@@ -278,7 +278,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
         }
 
         private void eingabe() {
-            ddaten.setGeaendertPanel();
             aktAbo.arr[nr] = textfeldListe[nr].getText().trim();
         }
     }
@@ -287,7 +286,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ddaten.setGeaendertPanel();
             aktAbo.arr[DatenAbo.ABO_PSET_NR] = comboboxProgramm.getSelectedItem().toString();
         }
     }
@@ -296,7 +294,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ddaten.setGeaendertPanel();
             aktAbo.arr[DatenAbo.ABO_SENDER_NR] = comboboxSender.getSelectedItem().toString();
         }
     }
@@ -305,8 +302,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ddaten.setGeaendertPanel();
-//            aktAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR] = Boolean.toString(checkBoxExakt.isSelected());
             aktAbo.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(checkBoxEingeschaltet.isSelected());
         }
     }

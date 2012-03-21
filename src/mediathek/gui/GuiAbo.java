@@ -22,7 +22,9 @@ package mediathek.gui;
 import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.*;
+import mediathek.Daten;
 import mediathek.MediathekGui;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.beobachter.CellRendererAbo;
@@ -52,11 +54,6 @@ public class GuiAbo extends PanelVorlage {
         ddaten.infoPanel.setIdx(InfoPanel.IDX_GUI_ABO);
     }
 
-    @Override
-    public void neuLaden() {
-        load();
-    }
-
     public void aendern() {
         aboAendern();
     }
@@ -73,6 +70,13 @@ public class GuiAbo extends PanelVorlage {
     //private
     //===================================
     private void initBeobachter() {
+        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName()) {
+
+            @Override
+            public void ping() {
+                load();
+            }
+        });
         jTable1.addMouseListener(new BeobMausTabelle1(jTable1));
         jTable1.setDefaultRenderer(Object.class, new CellRendererAbo(ddaten));
         jTable1.setDefaultRenderer(Datum.class, new CellRendererAbo(ddaten));

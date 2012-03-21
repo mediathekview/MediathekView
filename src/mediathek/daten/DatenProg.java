@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.Daten;
 import mediathek.tool.GuiFunktionenProgramme;
 
 public class DatenProg {
@@ -94,6 +95,19 @@ public class DatenProg {
 
     public String getProgrammAufruf() {
         return arr[PROGRAMM_PROGRAMMPFAD_NR] + " " + arr[PROGRAMM_SCHALTER_NR];
+    }
+
+    @Override
+    public String toString() {
+        String ret = "";
+        for (int i = 0; i < PROGRAMM_MAX_ELEM; ++i) {
+            if (i == 0) {
+                ret += "| ***|" + PROGRAMM_COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+            } else {
+                ret += "|    |" + PROGRAMM_COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+            }
+        }
+        return ret;
     }
 
     //===================================

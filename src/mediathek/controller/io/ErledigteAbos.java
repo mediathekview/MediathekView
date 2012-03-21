@@ -25,26 +25,41 @@ import java.util.LinkedList;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
 
-public class LogDownload {
+public class ErledigteAbos {
 
     private DDaten ddaten;
     private final String TRENNER = "  |###|  ";
     private final String PAUSE = " |#| ";
 
-    public LogDownload(DDaten d) {
+    public ErledigteAbos(DDaten d) {
         ddaten = d;
     }
     private LinkedList<String> logListeZdf = null;
+
+    public synchronized boolean alleLoeschen() {
+        boolean ret = false;
+        clearLogList();
+        File f = new File(Daten.getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
+        if (f != null) {
+            if (f.exists()) {
+                ret = f.delete();
+            } else {
+                ret = true;
+            }
+        }
+        return ret;
+    }
 
     public synchronized boolean zeileSchreiben(String thema, String titel, String url) {
         boolean ret = false;
         String text;
         Daten.setGeaendert();
-        ddaten.log.clearLogList();
+        ddaten.erledigteAbos.clearLogList();
         File f = new File(Daten.getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
         if (f != null) {
             OutputStreamWriter writer = null;
@@ -62,10 +77,10 @@ public class LogDownload {
                 try {
                     writer.close();
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("LogDownload.zeileSchreiben-2", ex);
                 }
             }
         }
+        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         return ret;
     }
 
@@ -123,7 +138,6 @@ public class LogDownload {
                         in.close();
                     }
                 } catch (Exception ex) {
-                    System.err.println("Log.listeBauen-2: " + ex.getMessage());
                 }
             }
         }
@@ -161,7 +175,6 @@ public class LogDownload {
                     in.close();
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung("LogDownload.urlAusLogfileLoeschen-2", ex);
             }
         }
         //und jetzt wieder schreiben, wenn nötig
@@ -186,7 +199,8 @@ public class LogDownload {
                     }
                 }
             }
-            ddaten.log.clearLogList();
+            ddaten.erledigteAbos.clearLogList();
+            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         }
         return gefunden;
     }

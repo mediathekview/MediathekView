@@ -23,7 +23,6 @@ import java.io.File;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
-import mediathek.controller.filme.filmeImportieren.filmUpdateServer.DatenFilmUpdateServer;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.ListeFilme;
@@ -31,9 +30,6 @@ import mediathek.daten.ListeFilme;
 public class Daten {
 
     // Konstanten
-    public final static int GESTARTET_ALS_GUI = 1; // Programm läuft als GUI-Version
-    public final static int GESTARTET_ALS_AUTO = 2; // als auto
-    public final static int GESTARTET_ALS_NOGUI = 3; // als noGui nur zum Laden der Filmliste
     // Systemeinstellungen
     public static String[] system = new String[Konstanten.SYSTEM_MAX_ELEM];
     // flags
@@ -43,9 +39,9 @@ public class Daten {
     // Klassen
     public static FilmeLaden filmeLaden;
     public static IoXmlFilmlisteLesen ioXmlFilmlisteLesen = null;
-    public static IoXmlFilmlisteSchreiben ioXmlFilmlisteSchreiben = null;
     public static ListeFilme listeFilme = null;
     private static EventListenerList listeners = new EventListenerList();
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     public Daten(String pfad) {
         basisverzeichnis = pfad;
@@ -66,7 +62,6 @@ public class Daten {
         system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
         listeFilme = new ListeFilme();
         ioXmlFilmlisteLesen = new IoXmlFilmlisteLesen();
-        ioXmlFilmlisteSchreiben = new IoXmlFilmlisteSchreiben();
         filmeLaden = new FilmeLaden();
     }
 
@@ -116,10 +111,6 @@ public class Daten {
         geaendert = true;
     }
 
-    public void setGeaendertPanelSofort() {
-        geaendert = true;
-    }
-
     public static void setGeaendert() {
         geaendert = true;
     }
@@ -161,7 +152,7 @@ public class Daten {
     }
 
     public void allesSpeichern() {
-        ioXmlFilmlisteSchreiben.filmeSchreiben(getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, listeFilme);
+        new IoXmlFilmlisteSchreiben().filmeSchreiben(getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, listeFilme);
     }
 
     public void allesAbbrechen() {

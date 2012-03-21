@@ -25,7 +25,7 @@ import mediathek.MediathekGui;
 import mediathek.controller.io.History;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.IoXmlSchreiben;
-import mediathek.controller.io.LogDownload;
+import mediathek.controller.io.ErledigteAbos;
 import mediathek.controller.io.starter.StarterClass;
 import mediathek.gui.*;
 import mediathek.gui.dialog.DialogDatenFilm;
@@ -39,8 +39,8 @@ public final class DDaten extends Daten {
     public ListeAbo listeAbo = null;
     public ListeDownloads listeDownloads = null;
     public History history = null;
-    public PanelListe panelListe = new PanelListe();
-    public LogDownload log = null;
+//    public PanelListe panelListe = new PanelListe();
+    public ErledigteAbos erledigteAbos = null;
     // globale Objekte
     public IoXmlLesen ioXmlLesen = null;
     public IoXmlSchreiben ioXmlSchreiben = null;
@@ -66,7 +66,7 @@ public final class DDaten extends Daten {
 //        listeProgVorlagen = new ListeProg();
         listeAbo = new ListeAbo(this);
         listeDownloads = new ListeDownloads(this);
-        log = new LogDownload(this);
+        erledigteAbos = new ErledigteAbos(this);
         //initialisieren
         ioXmlLesen = new IoXmlLesen();
         ioXmlSchreiben = new IoXmlSchreiben();
@@ -100,18 +100,5 @@ public final class DDaten extends Daten {
             starterClass.abbrechenNachFilm();
         }
     }
-    // geändert
 
-    @Override
-    public void setGeaendertPanel() {
-        panelListe.aendern();
-        Daten.setGeaendert();
-    }
-
-    @Override
-    public void setGeaendertPanelSofort() {
-        panelListe.aendern();
-        panelListe.aendernSofort();
-        Daten.setGeaendert();
-    }
 }

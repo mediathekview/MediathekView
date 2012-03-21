@@ -32,8 +32,8 @@ import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
-import mediathek.controller.filme.filmeImportieren.filmUpdateServer.DatenFilmUpdateServer;
-import mediathek.controller.filme.filmeImportieren.filmUpdateServer.FilmUpdateServer;
+import mediathek.controller.filme.filmUpdateServer.DatenFilmUpdateServer;
+import mediathek.controller.filme.filmUpdateServer.FilmUpdateServer;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
@@ -66,11 +66,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 tabelleLaden();
             }
         });
-    }
-
-    @Override
-    public void neuLaden() {
-        init();
     }
 
     private void init() {
@@ -126,7 +121,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             //jRadioButtonUpdateAus.setSelected(true);
             //daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(Konstanten.UPDATE_FILME_AUS);
             jTextFieldUrl.setText(aktUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR]);
-            ddaten.setGeaendertPanelSofort();
             Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR] = aktUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR];
         }
         stopBeob = false;

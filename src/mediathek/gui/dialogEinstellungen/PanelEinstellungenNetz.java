@@ -51,10 +51,6 @@ public class PanelEinstellungenNetz extends PanelVorlage {
         //
     }
 
-    @Override
-    public void neuLaden() {
-    }
-
     private void setProxy() {
         Daten.system[Konstanten.SYSTEM_PROXY_ON_NR] = Boolean.toString(jCheckBoxProxy.isSelected());
         //textfelder setzen

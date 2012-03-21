@@ -29,9 +29,9 @@ import mediathek.gui.beobachter.BeobWeb;
 public class PanelInfo extends PanelVorlage {
 
     /**
-     * Creates new form GuiFeed
+     *  Creates new form GuiFeed
      *
-     * @param d
+     *  @param d
      */
     public PanelInfo(DDaten d) {
         super(d);
@@ -41,17 +41,6 @@ public class PanelInfo extends PanelVorlage {
         //init
         jButtonAnleitung.addActionListener(new BeobWeb(Konstanten.ADRESSE_ANLEITUNG));
     }
-    //===================================
-    // Public
-    //===================================
-
-    @Override
-    public void neuLaden() {
-        setText();
-    }
-    //===================================
-    // Private
-    //===================================
 
     private void setText() {
         String abos = Daten.getBasisVerzeichnis(false) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS;

@@ -48,11 +48,6 @@ public class PanelSenderLaden extends PanelVorlage {
         jSpinnerWarten.addChangeListener(new BeobSpinnerWarten());
     }
 
-    @Override
-    public void neuLaden() {
-        init();
-    }
-
     private void init() {
         sender = Daten.filmeLaden.getSenderNamen();
         buttonSender = new JButton[sender.length];
