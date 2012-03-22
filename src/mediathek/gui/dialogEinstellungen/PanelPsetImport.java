@@ -100,7 +100,7 @@ public class PanelPsetImport extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                GuiFunktionenProgramme.addStandardprogramme(ddaten, false /* auto */);
+                GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
             }
         });
     }

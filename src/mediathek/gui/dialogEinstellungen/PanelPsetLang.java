@@ -44,20 +44,20 @@ import mediathek.gui.beobachter.CellRendererPset;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.*;
 
-public class PanelPset extends PanelVorlage {
+public class PanelPsetLang extends PanelVorlage {
 
     private int neuZaehler = 0;
     private String exportPfad = "";
     private ListePset listePset;
 
-    public PanelPset(DDaten d) {
+    public PanelPsetLang(DDaten d) {
         super(d);
         initComponents();
         listePset = ddaten.listePset;
         init();
     }
 
-    public PanelPset(DDaten d, ListePset llistePset) {
+    public PanelPsetLang(DDaten d, ListePset llistePset) {
         super(d);
         initComponents();
         listePset = llistePset;
@@ -66,7 +66,7 @@ public class PanelPset extends PanelVorlage {
 
     private void init() {
         //Programme
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPset.class.getSimpleName()) {
+        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
 
             @Override
             public void ping() {
@@ -303,7 +303,7 @@ public class PanelPset extends PanelVorlage {
     }
 
     private void notifyPset() {
-        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPset.class.getSimpleName());
+        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName());
     }
 
     private void fillTextProgramme() {

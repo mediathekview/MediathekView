@@ -68,7 +68,7 @@ public class DialogImportPset extends javax.swing.JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (jCheckBoxAlleEinstellungen.isSelected()) {
-                    jScrollPane1.setViewportView(new PanelPset(ddaten, liste));
+                    jScrollPane1.setViewportView(new PanelPsetLang(ddaten, liste));
                 } else {
                     jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, liste));
                 }
