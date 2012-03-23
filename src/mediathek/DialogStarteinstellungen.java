@@ -22,6 +22,7 @@ package mediathek;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import mediathek.daten.DDaten;
 import mediathek.daten.ListePset;
@@ -50,15 +51,8 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                jCheckBoxAnpassen.setVisible(false);
                 weiter();
-            }
-        });
-        jButtonAnpassen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                status = STAT_PFAD;
-                statusPfade();
             }
         });
         jButtonAlt.addActionListener(new ActionListener() {
@@ -121,8 +115,9 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
 
     private void statusStart() {
         jButtonStandard.setText("Weiter");
-        status = STAT_PSET;
         if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("") || Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
+            status = STAT_PFAD;
+        } else if (jCheckBoxAnpassen.isSelected()) {
             status = STAT_PFAD;
         } else {
             // nur dann automatisch Standardprogramme einrichten, sonst fragen
@@ -130,6 +125,8 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             if (pSet != null) {
                 ddaten.listePset.addPset(pSet);
                 status = STAT_FERTIG;
+            } else {
+                status = STAT_PSET;
             }
         }
         weiter();
@@ -137,29 +134,27 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
 
     private void statusPfade() {
         // erst Programmpfad prüfen
-        jScrollPane1.setViewportView(new PanelProgrammPfade());
+        jCheckBoxAnpassen.setVisible(false);
+        jCheckBoxAlleEinstellungen.setVisible(false);
+        jScrollPane1.setViewportView(new PanelProgrammPfade(true /* vlc */, true /* flvstreamer */, false /* mplayer */));
         status = STAT_PSET;
         jButtonStandard.setText("Weiter");
     }
 
     private void statusPset() {
+        jCheckBoxAnpassen.setVisible(false);
         jCheckBoxAlleEinstellungen.setVisible(true);
-        if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("") || Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
-            status = STAT_PFAD;
-            weiter();
-        } else {
-            if (ddaten.listePset.size() == 0) {
-                // Standardset hinzufügen
-                ddaten.listePset.addPset(GuiFunktionenProgramme.getStandardprogramme(ddaten));
-            }
-            if (jCheckBoxAlleEinstellungen.isSelected()) {
-                jScrollPane1.setViewportView(new PanelPsetLang(ddaten, ddaten.listePset));
-            } else {
-                jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, ddaten.listePset));
-            }
-            status = STAT_FERTIG;
-            jButtonStandard.setText("Weiter");
+        if (ddaten.listePset.size() == 0) {
+            // Standardset hinzufügen
+            ddaten.listePset.addPset(GuiFunktionenProgramme.getStandardprogramme(ddaten));
         }
+        if (jCheckBoxAlleEinstellungen.isSelected()) {
+            jScrollPane1.setViewportView(new PanelPsetLang(ddaten, ddaten.listePset));
+        } else {
+            jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, ddaten.listePset));
+        }
+        status = STAT_FERTIG;
+        jButtonStandard.setText("Weiter");
     }
 
     private void beenden() {
@@ -177,27 +172,27 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         jPanel2 = new javax.swing.JPanel();
         jButtonStandard = new javax.swing.JButton();
         jCheckBoxAlleEinstellungen = new javax.swing.JCheckBox();
+        jCheckBoxAnpassen = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanelExtra = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jCheckBoxSuchen = new javax.swing.JCheckBox();
-        jTextField1 = new javax.swing.JTextField();
-        jButtonAnpassen = new javax.swing.JButton();
         jTextField2 = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jButtonZiel = new javax.swing.JButton();
         jTextFieldPfad = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jButtonAlt = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255), 3));
 
         jButtonStandard.setText("Mit Standardeinstellungen starten");
 
         jCheckBoxAlleEinstellungen.setText("alle Einstellungen anzeigen");
+
+        jCheckBoxAnpassen.setText("vorher anpassen");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -207,6 +202,8 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jCheckBoxAlleEinstellungen)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jCheckBoxAnpassen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonStandard)
                 .addContainerGap())
         );
@@ -216,7 +213,8 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonStandard)
-                    .addComponent(jCheckBoxAlleEinstellungen))
+                    .addComponent(jCheckBoxAlleEinstellungen)
+                    .addComponent(jCheckBoxAnpassen))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -240,14 +238,6 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                 .addComponent(jCheckBoxSuchen)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        jTextField1.setBackground(new java.awt.Color(204, 204, 255));
-        jTextField1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("Standardeinstellungen");
-
-        jButtonAnpassen.setText("Einstellungen vorher anpassen");
-        jButtonAnpassen.setContentAreaFilled(false);
 
         jTextField2.setBackground(new java.awt.Color(204, 204, 204));
         jTextField2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -300,36 +290,23 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField1)
                     .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSeparator1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExtraLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonAlt, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButtonAnpassen, javax.swing.GroupLayout.Alignment.TRAILING))))
+                        .addComponent(jButtonAlt)))
                 .addContainerGap())
         );
-
-        jPanelExtraLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAlt, jButtonAnpassen});
-
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExtraLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonAnpassen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButtonAlt)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 78, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 217, Short.MAX_VALUE)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -343,7 +320,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -351,7 +328,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                .addComponent(jScrollPane1)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -364,10 +341,10 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAlt;
-    private javax.swing.JButton jButtonAnpassen;
     private javax.swing.JButton jButtonStandard;
     private javax.swing.JButton jButtonZiel;
     private javax.swing.JCheckBox jCheckBoxAlleEinstellungen;
+    private javax.swing.JCheckBox jCheckBoxAnpassen;
     private javax.swing.JCheckBox jCheckBoxSuchen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
@@ -375,8 +352,6 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextFieldPfad;
     // End of variables declaration//GEN-END:variables

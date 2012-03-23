@@ -119,14 +119,14 @@ public class GuiFunktionenProgramme {
 
     public static String getPfadVlc() {
         if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(true /* vlc */, false /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR];
     }
 
     public static String getPfadFlv() {
         if (Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(false /* vlc */, true /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
     }
@@ -174,7 +174,6 @@ public class GuiFunktionenProgramme {
 //        pSet = IoXmlLesen.importPset(datei, true);
 //        return addVorlagen(ddaten, pSet, auto);
 //    }
-
     public static boolean addVorlagen(DDaten ddaten, ListePset pSet, boolean auto) {
         // Standardgruppen laden
         if (pSet != null) {

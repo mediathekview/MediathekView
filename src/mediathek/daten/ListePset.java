@@ -197,23 +197,26 @@ public class ListePset extends LinkedList<DatenPset> {
 
     private boolean addVorlage(DatenPset pSet) {
         pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getHomePath());
+        String vlc = GuiFunktionenProgramme.getPfadVlc();
+        String flvstreamer = GuiFunktionenProgramme.getPfadFlv();
+        String skript = GuiFunktionenProgramme.getPfadScript();
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             // VLC
             prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] =
-                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_VLC, Matcher.quoteReplacement(GuiFunktionenProgramme.getPfadVlc()));
+                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_VLC, Matcher.quoteReplacement(vlc));
             prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] =
-                    prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_VLC, Matcher.quoteReplacement(GuiFunktionenProgramme.getPfadVlc()));
+                    prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_VLC, Matcher.quoteReplacement(vlc));
             // flvstreamer
             prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] =
-                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_FLV, Matcher.quoteReplacement(GuiFunktionenProgramme.getPfadFlv()));
+                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_FLV, Matcher.quoteReplacement(flvstreamer));
             prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] =
-                    prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_FLV, Matcher.quoteReplacement(GuiFunktionenProgramme.getPfadFlv()));
+                    prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_FLV, Matcher.quoteReplacement(flvstreamer));
             // script
             prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] =
-                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(GuiFunktionenProgramme.getPfadScript()));
+                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(skript));
             prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] =
-                    prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(GuiFunktionenProgramme.getPfadScript()));
+                    prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(skript));
         }
         return addPset(pSet);
     }
