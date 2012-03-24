@@ -57,30 +57,74 @@ public class GuiFunktionenProgramme {
         return propFile.getAbsolutePath().replace(pFilePath, "");
     }
 
-    private static String getWindowsVlcPath() {
+    private static String getWindowsMplayerPath() {
         //Für Windows den Pfad des VLC ermitteln
         //sonst den deutschen Defaultpfad für Programme verwenden verwenden
-        final String PFAD_WIN_VLC_DEFAULT = "C:\\Programme\\VideoLAN\\VLC\\vlc.exe";
-        final String PFAD_WIN_VLC = "\\VideoLAN\\VLC\\vlc.exe";
+        final String PFAD_WIN_DEFAULT = "C:\\Program Files\\SMPlayer\\mplayer\\mplayer.exe";
+        final String PFAD_WIN = "\\SMPlayer\\mplayer\\mplayer.exe";
         String vlcPfad = "";
         try {
             if (System.getProperty("os.name").toLowerCase().contains("windows")) {
                 if (System.getenv("ProgramFiles") != null) {
-                    vlcPfad = System.getenv("ProgramFiles") + PFAD_WIN_VLC;
+                    vlcPfad = System.getenv("ProgramFiles") + PFAD_WIN;
                     if (new File(vlcPfad).exists()) {
                         return vlcPfad;
                     }
                 }
             }
             if (System.getenv("ProgramFiles(x86)") != null) {
-                vlcPfad = System.getenv("ProgramFiles(x86)") + PFAD_WIN_VLC;
+                vlcPfad = System.getenv("ProgramFiles(x86)") + PFAD_WIN;
                 if (new File(vlcPfad).exists()) {
                     return vlcPfad;
                 }
             }
         } catch (Exception ex) {
         }
-        return PFAD_WIN_VLC_DEFAULT;
+        return PFAD_WIN_DEFAULT;
+    }
+
+    private static String getWindowsVlcPath() {
+        //Für Windows den Pfad des VLC ermitteln
+        //sonst den deutschen Defaultpfad für Programme verwenden verwenden
+        final String PFAD_WIN_DEFAULT = "C:\\Programme\\VideoLAN\\VLC\\vlc.exe";
+        final String PFAD_WIN = "\\VideoLAN\\VLC\\vlc.exe";
+        String vlcPfad = "";
+        try {
+            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                if (System.getenv("ProgramFiles") != null) {
+                    vlcPfad = System.getenv("ProgramFiles") + PFAD_WIN;
+                    if (new File(vlcPfad).exists()) {
+                        return vlcPfad;
+                    }
+                }
+            }
+            if (System.getenv("ProgramFiles(x86)") != null) {
+                vlcPfad = System.getenv("ProgramFiles(x86)") + PFAD_WIN;
+                if (new File(vlcPfad).exists()) {
+                    return vlcPfad;
+                }
+            }
+        } catch (Exception ex) {
+        }
+        return PFAD_WIN_DEFAULT;
+    }
+
+    public static String getMusterPfadMplayer() {
+        final String PFAD_LINUX = "/usr/bin/mplayer";
+        final String PFAD_MAC = "/Applications/VLC.app/Contents/MacOS/VLC";
+        String pfad = "";
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            pfad = getWindowsMplayerPath();
+        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            pfad = PFAD_LINUX;
+        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            pfad = PFAD_MAC;
+        }
+        if (new File(pfad).exists()) {
+            return pfad;
+        } else {
+            return "";
+        }
     }
 
     public static String getMusterPfadVlc() {
@@ -115,6 +159,13 @@ public class GuiFunktionenProgramme {
         } else {
             return "";
         }
+    }
+
+    public static String getPfadMplayer() {
+        if (Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR].equals("")) {
+            new DialogOk(null, true, new PanelProgrammPfade(false /* vlc */, false /* flvstreamer */, true /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+        }
+        return Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR];
     }
 
     public static String getPfadVlc() {

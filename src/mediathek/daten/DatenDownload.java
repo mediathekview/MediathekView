@@ -25,6 +25,7 @@ import mediathek.Log;
 import mediathek.controller.filme.filmeSuchen.sender.Mediathek3Sat;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekNdr;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekZdf;
+import mediathek.controller.io.AsxLesen;
 import mediathek.controller.io.starter.Starts;
 import mediathek.gui.dialog.DialogZielDatei;
 import mediathek.tool.DatumZeit;
@@ -268,6 +269,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         befehlsString = befehlsString.replace("%f", arr[DOWNLOAD_URL_NR]);
         befehlsString = befehlsString.replace("%F", getUrlFlvstreamer());
         befehlsString = befehlsString.replace("%k", getUrlLow());
+        befehlsString = befehlsString.replace("%x", AsxLesen.lesen(arr[DOWNLOAD_URL_NR]));
         //Auth eintragen
         if (arr[DOWNLOAD_URL_AUTH_NR].equals("")) {
             befehlsString = befehlsString.replace("%a", "");

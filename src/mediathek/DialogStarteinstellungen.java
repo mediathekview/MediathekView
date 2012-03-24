@@ -84,6 +84,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
         String dateiAlt = IoXmlLesen__old.altExistiert();
         jTextFieldPfad.setText(dateiAlt);
+        Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = GuiFunktionenProgramme.getMusterPfadMplayer();
         Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = GuiFunktionenProgramme.getMusterPfadVlc();
         Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = GuiFunktionenProgramme.getMusterPfadFlv();
     }
