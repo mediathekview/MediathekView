@@ -32,6 +32,7 @@ import mediathek.tool.TModel;
 public class ListePset extends LinkedList<DatenPset> {
 
     public static final String MUSTER_PFAD_ZIEL = "ZIELPFAD";
+    public static final String MUSTER_PFAD_MPLAYER = "PFAD_MPLAYER";
     public static final String MUSTER_PFAD_VLC = "PFAD_VLC";
     public static final String MUSTER_PFAD_FLV = "PFAD_FLVSTREAMER";
     public static final String MUSTER_PFAD_SCRIPT = "PFAD_SCRIPT";
@@ -197,11 +198,17 @@ public class ListePset extends LinkedList<DatenPset> {
 
     private boolean addVorlage(DatenPset pSet) {
         pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getHomePath());
+        String mplayer = GuiFunktionenProgramme.getPfadMplayer();
         String vlc = GuiFunktionenProgramme.getPfadVlc();
         String flvstreamer = GuiFunktionenProgramme.getPfadFlv();
         String skript = GuiFunktionenProgramme.getPfadScript();
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
+            // mplayer
+            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] =
+                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_MPLAYER, Matcher.quoteReplacement(mplayer));
+            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] =
+                    prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_MPLAYER, Matcher.quoteReplacement(mplayer));
             // VLC
             prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] =
                     prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_VLC, Matcher.quoteReplacement(vlc));

@@ -21,11 +21,9 @@ package mediathek.daten;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import javax.swing.JOptionPane;
 import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.starter.Starts;
-import mediathek.gui.GuiDownloads;
 import mediathek.gui.dialog.DialogPsetSpeichern;
 import mediathek.tool.TModel;
 
