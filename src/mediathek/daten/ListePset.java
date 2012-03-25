@@ -198,10 +198,32 @@ public class ListePset extends LinkedList<DatenPset> {
 
     private boolean addVorlage(DatenPset pSet) {
         pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getHomePath());
-        String mplayer = GuiFunktionenProgramme.getPfadMplayer();
-        String vlc = GuiFunktionenProgramme.getPfadVlc();
-        String flvstreamer = GuiFunktionenProgramme.getPfadFlv();
+        String mplayer = "";
+        String vlc = "";
+        String flvstreamer = "";
         String skript = GuiFunktionenProgramme.getPfadScript();
+        // damit nur die Variablen abgefragt werden, die auch verwendet werden
+        for (int p = 0; p < pSet.getListeProg().size(); ++p) {
+            DatenProg prog = pSet.getProg(p);
+            if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_MPLAYER) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_MPLAYER)) {
+                mplayer = GuiFunktionenProgramme.getPfadMplayer();
+                break;
+            }
+        }
+        for (int p = 0; p < pSet.getListeProg().size(); ++p) {
+            DatenProg prog = pSet.getProg(p);
+            if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_VLC) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_VLC)) {
+                vlc = GuiFunktionenProgramme.getPfadVlc();
+                break;
+            }
+        }
+        for (int p = 0; p < pSet.getListeProg().size(); ++p) {
+            DatenProg prog = pSet.getProg(p);
+            if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_FLV) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_FLV)) {
+                flvstreamer = GuiFunktionenProgramme.getPfadFlv();
+                break;
+            }
+        }
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             // mplayer
