@@ -35,11 +35,13 @@ class RuntimeExec {
     Thread clearIn;
     Thread clearOut;
     private Process process = null;
+    Starts s;
 
     /**
      * Neue Klasse instanzieren
      */
-    public RuntimeExec(Starts s) {
+    public RuntimeExec(Starts st) {
+        s = st;
         prog = s.download.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
     }
 
@@ -58,9 +60,11 @@ class RuntimeExec {
      */
     public Process exec() {
         try {
-            Log.systemMeldung("========================================");
-            Log.systemMeldung("Programm starten:");
-            Log.systemMeldung(prog);
+            Log.systemMeldung("----------------------------------------------------------------------------");
+            Log.systemMeldung("| Programm starten");
+            Log.systemMeldung("| Programmset: " + s.download.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
+            Log.systemMeldung("| "+prog);
+            Log.systemMeldung("----------------------------------------------------------------------------");
             process = Runtime.getRuntime().exec(prog);
             clearIn = new Thread(new ClearInOut(INPUT, process));
             clearOut = new Thread(new ClearInOut(ERROR, process));

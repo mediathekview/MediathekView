@@ -567,7 +567,7 @@ public class GuiDownloads extends PanelVorlage {
                     stopAll();
                 }
             });
-            JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads löschen");
+            JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
             itemWartendeStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
             menu.add(itemWartendeStoppen);
             itemWartendeStoppen.addActionListener(new ActionListener() {

@@ -100,7 +100,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         GuiFunktionen.setLook(this);
         init();
         setSize(max);
-        dialogEinstellungen = new DialogEinstellungen(this, false, ddaten);
+        dialogEinstellungen = new DialogEinstellungen(null, false, ddaten);
         // Set up our application to respond to the Mac OS X application menu
         registerForMacOSXEvents();
         new CheckUpdate(this, ddaten).suchen();
