@@ -19,105 +19,151 @@
  */
 package mediathek.controller.filme.filmeSuchen.sender;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import mediathek.Daten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
+import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
 
 public class MediathekRbb extends MediathekReader implements Runnable {
 
     public static final String SENDER = "RBB";
+    final String ROOTADR = "http://mediathek.rbb-online.de";
 
     public MediathekRbb(FilmeSuchen ssearch) {
         super(ssearch, /* name */ SENDER, /* text */ "RBB  (ca. 3 MB, 50 Filme)", /* threads */ 2, /* urlWarten */ 500);
     }
 
-    private class ThemaLaden implements Runnable {
-
-        @Override
-        public synchronized void run() {
-            meldungStart(1);
-            meldungAddThread();
-            try {
-                laden();
-            } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekRbb.ThemaLaden.run", ex);
-            }
-            meldungThreadUndFertig();
-        }
-    }
-
     @Override
     void addToList() {
-        new Thread(new ThemaLaden()).start();
-    }
-
-    void laden() {
-        StringBuffer seite = new StringBuffer();
-        int pos = 0;
-        int pos1;
-        int pos2;
-        String url;
-        String titel;
-        String datum;
-        final String ADRESSE = "http://www.rbb-online.de/doku/videothek/den_film_im_tv_verpasst.html";
-        final String DATUM = "id=\"rbbheadTitle\">";
-        final String TITEL = "<span id=\"caption\">";
-        final String MUSTER_URL = "'file': 'http:";
-        // Datum: <div id="rbbheadTitle">Himmel und Erde, 17.03.12</div>
-        // URL: 'file': 'http://http-stream.rbb-online.de/rbb/himmelunderde/doku/himmelunderde_20120317_groesse_zeigen_m_16_9_512x288.mp4',
-        // Titel: <span id="caption">Mehr als 1000 Worte - Was unsere Stimme verrät</span>
-        meldungProgress(ADRESSE);
+        int pos1 = 0;
+        int pos2 = 0;
+        StringBuffer seite1 = new StringBuffer();
+        StringBuffer seite2 = new StringBuffer();
+        final String ADRESSE = "http://mediathek.rbb-online.de/fernsehen";
+        final String ITEM_1 = "<a href=\"/rbb/servlet/ajax-cache/";
+        final String ITEM_URL = "http://mediathek.rbb-online.de/rbb/servlet/ajax-cache/";
         try {
-            seite = getUrlIo.getUri_Utf(senderName, ADRESSE, seite, "");
-            while ((pos = seite.indexOf(DATUM, pos)) != -1) {
-                pos += DATUM.length();
-                url = "";
-                titel = "";
-                datum = "";
-                pos1 = pos;
-                if ((pos2 = seite.indexOf("</", pos)) != -1) {
-                    datum = seite.substring(pos1, pos2);
-                    datum = datum.substring(datum.lastIndexOf(",") + 1).trim();
-                    datum = convertDatum(datum);
-                }
-                if ((pos1 = seite.indexOf(MUSTER_URL, pos)) != -1) {
-                    pos1 += MUSTER_URL.length();
-                    if ((pos2 = seite.indexOf("'", pos1)) != -1) {
-                        url = seite.substring(pos1, pos2);
+            seite1 = getUrlIo.getUri_Utf(senderName, ADRESSE, seite1, "");
+            while ((pos1 = seite1.indexOf(ITEM_1, pos1)) != -1) {
+                pos1 = pos1 + ITEM_1.length();
+                if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                    String url = ITEM_URL + seite1.substring(pos1, pos2).replace("view=switch", "view=list");
+                    if (!url.equals("")) {
+                        seite2 = getUrlIo.getUri_Utf(senderName, url, seite2, "");
+                        int lpos1 = 0;
+                        int lpos2 = 0;
+                        final String LIST_ITEM = "<h3 class=\"mt-title\"><a href=\"";
+                        while ((lpos1 = seite2.indexOf(LIST_ITEM, lpos1)) != -1) {
+                            lpos1 = lpos1 + LIST_ITEM.length();
+                            lpos2 = seite2.indexOf("\"", lpos1);
+                            String listurl = ROOTADR + seite2.substring(lpos1, lpos2);
+                            if (!listurl.equals("")) {
+                                String[] add = new String[]{listurl, ""};
+                                if (!istInListe(listeThemen, url, 0)) {
+                                    listeThemen.add(add);
+                                }
+                            }
+                        }
                     }
-                }
-                if ((pos1 = seite.indexOf(TITEL, pos)) != -1) {
-                    pos1 += TITEL.length();
-                    if ((pos2 = seite.indexOf("<", pos1)) != -1) {
-                        titel = seite.substring(pos1, pos2);
-                    }
-                }
-                if (url.equals("")) {
-                    Log.fehlerMeldung("MediathekRbb.laden", "keine URL");
                 } else {
-                    url = "http:" + url;
-                    // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
-                    DatenFilm film = new DatenFilm(senderName, titel, ADRESSE, titel, url, datum, ""/* zeit */);
-                    addFilm(film);
+                    Log.fehlerMeldung("MediathekRBB.addToList", "keine URL");
                 }
-            } //while, die ganz große Schleife
+            }
         } catch (Exception ex) {
-            Log.fehlerMeldung("MediathekRbb.laden", ex);
+            Log.fehlerMeldung("MediathekRBB.addToList", ex);
+        }
+        if (!Daten.filmeLaden.getStop()) {
+            if (listeThemen.size() > 0) {
+                meldungStart(listeThemen.size());
+                listeSort(listeThemen, 1);
+                for (int t = 0; t < senderMaxThread; ++t) {
+                    new Thread(new ThemaLaden()).start();
+                }
+            }
         }
     }
 
-    public String convertDatum(String datum) {
-        try {
-            SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.yy");
-            Date filmDate = sdfIn.parse(datum);
-            SimpleDateFormat sdfOut;
-            sdfOut = new SimpleDateFormat("dd.MM.yyyy");
-            datum = sdfOut.format(filmDate);
-        } catch (Exception ex) {
-            Log.fehlerMeldung("MediathekRbb.convertDatum", ex);
+    private class ThemaLaden implements Runnable {
+
+        GetUrl getUrl = new GetUrl();
+        private StringBuffer seite1 = new StringBuffer();
+        private StringBuffer seite2 = new StringBuffer();
+        private StringBuffer seite3 = new StringBuffer();
+
+        @Override
+        public void run() {
+            try {
+                meldungAddThread();
+                String link[];
+                while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
+                    meldungProgress(link[0]);
+                    addFilme(link[0] /* url */);
+                }
+                meldungThreadUndFertig();
+            } catch (Exception ex) {
+                Log.fehlerMeldung("MediathekRBB.ThemaLaden.run", ex);
+            }
         }
-        return datum;
+
+        void addFilme(String url) {
+            try {
+                // Hierin nun einen RSS feed URL extrahieren
+                final String RSS_ITEM = "<a href=\"/rbb/servlet/export/rss/";
+                seite1.setLength(0);
+                seite1 = getUrlIo.getUri_Utf(senderName, url, seite1, "");
+                int rpos = seite1.indexOf(RSS_ITEM);
+                if (rpos > 0) {
+                    int rpos1 = rpos + 9;
+                    int rpos2 = seite1.indexOf("\"", rpos1);
+                    String rssurl = ROOTADR + seite1.substring(rpos1, rpos2);
+
+                    // Diesen RSS feed laden
+                    seite2.setLength(0);
+                    seite2 = getUrlIo.getUri_Utf(senderName, rssurl, seite2, "");
+
+                    rpos = 0;
+                    int count = 0;
+                    while ((rpos = seite2.indexOf("<link>", rpos)) != -1) {
+                        if (!suchen.allesLaden) {
+                            // beim Update nur die neuesten Laden
+                            ++count;
+                            if (count > 10) {
+                                break;
+                            }
+                        }
+                        rpos1 = rpos + 6;
+                        rpos2 = seite2.indexOf("</link>", rpos1);
+                        String showurl = seite2.substring(rpos1, rpos2);
+
+                        // Wir haben den URL der Sendung
+                        seite3.setLength(0);
+                        seite3 = getUrlIo.getUri_Utf(senderName, showurl, seite3, "");
+                        meldung("*" + showurl);
+
+                        // Titel
+                        int tpos = seite3.indexOf("<title>");
+                        if (tpos > 0) {
+                            int tpos2 = seite3.indexOf("</title>", tpos);
+                            String title = seite3.substring(tpos + 7, tpos2);
+                            title = title.substring(15); // " rbb Mediathek: " abschneiden
+                            String datum = title.substring(title.length() - 26, title.length() - 16);
+                            String thema = title.substring(0, title.indexOf(" - "));
+                            title = title.substring(title.indexOf(" - ") + 3, title.indexOf(" - ", thema.length() + 3));
+
+                            int mpos = seite3.indexOf("mp4:");
+                            int mpos2 = seite3.indexOf("\"", mpos);
+                            String filmurl = seite3.substring(mpos, mpos2);
+                            String urlRtmp = "--host ondemand.rbb-online.de --app ondemand/ --playpath " + filmurl;
+                            String urlOrg = addsUrl("rtmp://ondemand.rbb-online.de/ondemand/", filmurl);
+                            DatenFilm film = new DatenFilm(senderName, thema, showurl, title, urlOrg, urlOrg, urlRtmp, datum, ""/* zeit */);
+                            addFilm(film);
+                        }
+                        rpos = rpos2; // hinter Element gehts weiter
+                    }
+                }
+            } catch (Exception ex) {
+            }
+        }
     }
 }
