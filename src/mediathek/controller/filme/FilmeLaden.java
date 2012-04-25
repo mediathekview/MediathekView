@@ -165,9 +165,9 @@ public class FilmeLaden {
     // ###########################
     // Listener
     // ###########################
-    public void addListener(MediathekListener listener) {
-        listeners.add(MediathekListener.class, listener);
-    }
+//    public void addListener(MediathekListener listener) {
+//        listeners.add(MediathekListener.class, listener);
+//    }
 
     public void addAdListener(FilmListener listener) {
         listeners.add(FilmListener.class, listener);
