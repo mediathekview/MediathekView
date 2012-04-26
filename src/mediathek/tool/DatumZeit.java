@@ -26,6 +26,7 @@ import java.util.Locale;
 import mediathek.Daten;
 import mediathek.Log;
 import mediathek.daten.DDaten;
+import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 
@@ -215,6 +216,23 @@ public class DatumZeit {
                     tmp.setTime(sdf_datum_zeit.parse(film.arr[DatenFilm.FILM_DATUM_NR] + film.arr[DatenFilm.FILM_ZEIT_NR]).getTime());
                 } else {
                     tmp.setTime(sdf_datum.parse(film.arr[DatenFilm.FILM_DATUM_NR]).getTime());
+                }
+            } catch (ParseException ex) {
+            }
+        }
+        return tmp;
+    }
+
+    public static Datum getDatumForObject(DatenDownload datenDownload) {
+        SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
+        SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
+        Datum tmp = new Datum(0);
+        if (!datenDownload.arr[DatenDownload.DOWNLOAD_DATUM_NR].equals("")) {
+            try {
+                if (!datenDownload.arr[DatenDownload.DOWNLOAD_ZEIT_NR].equals("")) {
+                    tmp.setTime(sdf_datum_zeit.parse(datenDownload.arr[DatenDownload.DOWNLOAD_DATUM_NR] + datenDownload.arr[DatenDownload.DOWNLOAD_ZEIT_NR]).getTime());
+                } else {
+                    tmp.setTime(sdf_datum.parse(datenDownload.arr[DatenDownload.DOWNLOAD_DATUM_NR]).getTime());
                 }
             } catch (ParseException ex) {
             }
