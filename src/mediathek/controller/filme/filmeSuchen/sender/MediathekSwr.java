@@ -26,7 +26,7 @@ import mediathek.daten.ListeFilme;
 import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
 import mediathek.controller.io.GetUrl;
 import mediathek.Log;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *
@@ -102,7 +102,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                 pos2 = strSeite.indexOf("\"", pos);
                 if (pos1 != -1 && pos2 != -1) {
                     thema = strSeite.substring(pos1, pos2);
-                    thema = StringEscapeUtils.unescapeHtml(thema.trim()); //wird gleich benutzt und muss dann schon stimmen
+                    thema = StringEscapeUtils.unescapeHtml4(thema.trim()); //wird gleich benutzt und muss dann schon stimmen
                     if (!themaLaden(senderName, thema)) {
                         //nur Abos laden
                         continue;

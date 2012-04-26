@@ -25,7 +25,8 @@ import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.gui.dialog.DialogPsetSpeichern;
-import mediathek.tool.TModel;
+import mediathek.tool.DatumZeit;
+import mediathek.tool.TModelDownload;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
 
@@ -33,7 +34,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     /**
      *
-     *  @param ddaten
+     * @param ddaten
      */
     public ListeDownloads(DDaten ddaten) {
         this.ddaten = ddaten;
@@ -70,7 +71,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return false;
     }
 
-    public synchronized void getModel(TModel tModel, boolean abos, boolean downloads) {
+    public synchronized void getModel(TModelDownload tModel, boolean abos, boolean downloads) {
         tModel.setRowCount(0);
         Object[] object;
         DatenDownload download;
@@ -80,13 +81,15 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 download = iterator.next();
                 boolean istAbo = download.istAbo();
                 if (abos && istAbo || downloads && !istAbo) {
-                    DatenDownload d = download.getCopy();
-                    object = new String[DatenDownload.DOWNLOAD_MAX_ELEM];
+                    DatenDownload datenDownload = download.getCopy();
+                    object = new Object[DatenDownload.DOWNLOAD_MAX_ELEM];
                     for (int i = 0; i < DatenDownload.DOWNLOAD_MAX_ELEM; ++i) {
                         if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                             object[i] = "";
+                        } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
+                            object[i] = DatumZeit.getDatumForObject(datenDownload);
                         } else {
-                            object[i] = d.arr[i];
+                            object[i] = datenDownload.arr[i];
                         }
                     }
                     tModel.addRow(object);

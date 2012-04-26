@@ -27,7 +27,7 @@ import mediathek.controller.filme.filmeSuchen.sender.*;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TModelFilm;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class ListeFilme extends LinkedList<DatenFilm> {
 
@@ -126,8 +126,8 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         // nur für die MediathekReader
         // ist eine URL,Sender,Thema,Titel schon vorhanden, wird sie verworfen, die aktuellste bleibt erhalten
         DatenFilm f = null;
-        film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml(film.arr[DatenFilm.FILM_THEMA_NR].trim());
-        film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeHtml(film.arr[DatenFilm.FILM_TITEL_NR].trim());
+        film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
+        film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_TITEL_NR].trim());
         // erst mal schauen obs das schon gibt
         Iterator<DatenFilm> it = this.iterator();
         while (it.hasNext()) {
@@ -195,8 +195,8 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     }
 
     public synchronized boolean addWithNr(DatenFilm film) {
-        film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml(film.arr[DatenFilm.FILM_THEMA_NR].trim());
-        film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeHtml(film.arr[DatenFilm.FILM_TITEL_NR].trim());
+        film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
+        film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_TITEL_NR].trim());
         film.arr[DatenFilm.FILM_NR_NR] = getNr(nr++);
         film.arr[DatenFilm.FILM_URL_NR] = film.getUrlOrg();
         return add(film);
@@ -404,7 +404,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     // private
     //===================================
     private void addObjectDataTabFilme(DDaten ddaten, TModelFilm model) {
-        Object[] object = null;
+        Object[] object;
         DatenFilm film;
         DatenAbo datenAbo;
         if (this.size() > 0) {
