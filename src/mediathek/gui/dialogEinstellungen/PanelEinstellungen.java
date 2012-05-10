@@ -153,7 +153,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jComboBoxLook.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jLabel3.setText("max. parallele Downloads beim Laden der Abos:");
+        jLabel3.setText("max. parallele Downloads beim Laden der Downloads:");
 
         jSpinnerDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
 
@@ -177,7 +177,7 @@ public class PanelEinstellungen extends PanelVorlage {
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 74, Short.MAX_VALUE)))
+                        .addGap(0, 30, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(

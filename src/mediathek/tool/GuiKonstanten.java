@@ -75,5 +75,9 @@ public class GuiKonstanten {
     public static Color DOWNLOAD_FARBE_ABO = new Color(0, 50, 120);
     public static Color DOWNLOAD_FARBE_DOWNLOAD = new Color(0, 90, 0);
     public static Color DOWNLOAD_FARBE_LIVE = new Color(130, 0, 0);
+    // Filter wenn RegEx
+    public static Color FILTER_REGEX = new Color(153,214,255);
+    // Filter wenn RegEx, bei einem Fehler
+    public static Color FILTER_REGEX_FEHLER = Color.RED;
 
 }
