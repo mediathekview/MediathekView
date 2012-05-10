@@ -37,14 +37,12 @@ import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.ProgrammLog;
 import mediathek.daten.DDaten;
 import mediathek.gui.*;
-import mediathek.gui.beobachter.BeobWeb;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.PanelHilfe;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
 
 public final class MediathekGui extends javax.swing.JFrame {
@@ -805,7 +803,7 @@ public final class MediathekGui extends javax.swing.JFrame {
 
         jMenuItemEinstellungen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
         jMenuItemEinstellungen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png"))); // NOI18N
-        jMenuItemEinstellungen.setText("Optionen");
+        jMenuItemEinstellungen.setText("Einstellungen");
         jMenuItemEinstellungen.setToolTipText("allgemeine Programmeinstellungen");
         jMenu1.add(jMenuItemEinstellungen);
         jMenu1.add(jSeparator2);
