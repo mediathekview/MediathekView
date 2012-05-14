@@ -219,12 +219,7 @@ public class GuiDownloads extends PanelVorlage {
             Starts s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 if (s.status <= Starts.STATUS_RUN) {
-                    //daten.starterClass.delStart(url);
                     ddaten.starterClass.filmLoeschen(url);
-                    if (s.download.istAbo()) {
-                        // bei Abos Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                        ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
-                    }
                 }
             }
             setInfo();
@@ -239,13 +234,7 @@ public class GuiDownloads extends PanelVorlage {
             Starts s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 if (s.status < Starts.STATUS_RUN) {
-                    //daten.starterClass.delStart(url);
                     ddaten.starterClass.filmLoeschen(url);
-                    if (s.download.istAbo()) {
-                        ///////////////// kann das sein??
-                        // bei Abos Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                        ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
-                    }
                 }
             }
             setInfo();

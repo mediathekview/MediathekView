@@ -1,8 +1,10 @@
 /*
- * MediathekView
- * Copyright (C) 2008 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
+ *    MediathekView
+ *    Copyright (C) 2008 - 2012     W. Xaver
+ *                              &   thausherr
+ * 
+ *    W.Xaver[at]googlemail.com
+ *    http://zdfmediathk.sourceforge.net/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +33,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
     final String ROOTADR = "http://mediathek.rbb-online.de";
 
     public MediathekRbb(FilmeSuchen ssearch) {
-        super(ssearch, /* name */ SENDER, /* text */ "RBB  (ca. 3 MB, 50 Filme)", /* threads */ 2, /* urlWarten */ 500);
+        super(ssearch, /* name */ SENDER, /* text */ "RBB  (ca. 3 MB, 3000 Filme)", /* threads */ 2, /* urlWarten */ 500);
     }
 
     @Override

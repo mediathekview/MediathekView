@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import mediathek.Log;
 import mediathek.gui.beobachter.EscBeenden;
 import mediathek.tool.GuiFunktionen;
@@ -58,12 +59,23 @@ public class DialogZiel extends javax.swing.JDialog {
     }
 
     void check() {
-        ////////////////////////////Datei existiert
         boolean ret = false;
         String pfad = jTextFieldPfad.getText();
         if (!pfad.equals("")) {
-            ziel = pfad;
-            ret = true;
+            try {
+                int ook;
+                if (new File(pfad).exists()) {
+                    ook = JOptionPane.showConfirmDialog(null, "Datei:  " + "\"" + pfad + "\"" + "  existiert bereits", "Überschreiben?",
+                            JOptionPane.YES_NO_OPTION);
+                } else {
+                    ook = JOptionPane.OK_OPTION;
+                }
+                if (ook == JOptionPane.OK_OPTION) {
+                    ziel = pfad;
+                    ret = true;
+                }
+            } catch (Exception ex) {
+            }
         }
         ok = ret;
     }
