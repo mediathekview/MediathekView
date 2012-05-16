@@ -126,40 +126,15 @@ public class StarterClass {
         return ret;
     }
 
-    /**
-     * Liefert ein TModell mit den aktuelen Starts
-     *
-     * @return
-     */
     public synchronized TModel getStarterModell(TModel model) {
         return listeStarts.getModel(model);
 
     }
 
-    /**
-     * Listener hinzufügen, informiert über Änderungen am Status der Downloads
-     *
-     * @param listener
-     */
     public void addListener(StartListener listener) {
         listeners.add(StartListener.class, listener);
     }
 
-//    /** Eine liste mit Downloads wird an die Auftragsliste angehängt
-//     *
-//     * @param starts
-//     */
-//    public synchronized void addListe(LinkedList<Starts> starts) {
-//        //add: Liste an die Liste anhängen
-//        allesStop = false;
-//        if (starts != null) {
-//            ListIterator<Starts> it = starts.listIterator(0);
-//            while (it.hasNext()) {
-//                Starts s = it.next();
-//                addStarts(s);
-//            }
-//        }
-//    }
     public synchronized void addStarts(Starts starts) {
         //add: Neues Element an die Liste anhängen
         allesStop = false;
@@ -201,11 +176,13 @@ public class StarterClass {
         listeStarts.delStart(url);
     }
 
-    /** Alle erledigten Downloads werden aus der Liste gelöscht,
-     * StartEvent wird ausgelöst
-     *
-     * @param startArt
-     */
+    public synchronized int getAlleStarts() {
+        // für "Auto", wenn alle abgearbeitet sind, dann fertig
+        listeStarts.aufraeumen();
+        notifyStartEvent();
+        return listeStarts.size();
+    }
+
     public synchronized void aufraeumen() {
         listeStarts.aufraeumen();
         notifyStartEvent();
@@ -269,7 +246,7 @@ public class StarterClass {
             }
         } else {
             if (listeStarts.size() >= 0
-                    && listeStarts.getDown() < Integer.parseInt(ddaten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR])) {
+                    && listeStarts.getDown() < Integer.parseInt(DDaten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR])) {
                 Starts s = naechsterStart();
                 if (s != null) {
                     if (s.status == Starts.STATUS_INIT) {
@@ -576,8 +553,15 @@ public class StarterClass {
 
         @Override
         public void run() {
-            InputStream input = null;
-            OutputStream destStream = null;
+            Log.systemMeldung("----------------------------------------------------------------------------");
+            Log.systemMeldung("| Download starten");
+            Log.systemMeldung("| Programmset: " + starts.download.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
+            Log.systemMeldung("| direkter Download");
+            Log.systemMeldung("| URL: " + starts.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
+            Log.systemMeldung("| Zieldatei: " + starts.download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.systemMeldung("----------------------------------------------------------------------------");
+            InputStream input;
+            OutputStream destStream;
             try {
                 int len;
                 new File(starts.download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();

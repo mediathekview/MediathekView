@@ -52,8 +52,8 @@ public class Main {
             public void run() {
                 if (ar != null) {
                     for (int i = 0; i < ar.length; ++i) {
-                        if (ar[i].equals("-A")) {
-                            ////state = AUTO;
+                        if (ar[i].equalsIgnoreCase("-auto")) {
+                            state = AUTO;
                         }
                         if (ar[i].equalsIgnoreCase("-noGui")) {
                             state = NOGUI;
@@ -65,7 +65,7 @@ public class Main {
                 }
                 switch (state) {
                     case AUTO:
-                        new MediathekAuto(ar).setVisible(true);
+                        new MediathekAuto(ar).starten();
                         break;
                     case NOGUI:
                         new MediathekNoGui(ar).starten();
