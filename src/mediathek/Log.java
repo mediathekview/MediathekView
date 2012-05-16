@@ -28,6 +28,7 @@ import mediathek.tool.GuiFunktionenProgramme;
 
 public class Log {
 
+    public static boolean playerMeldungenAus = false;
     public static final String LOG_FEHLER = "fehler";
     public static final String LOG_SYSTEM = "system";
     public static final String LOG_PLAYER = "player";
@@ -90,7 +91,9 @@ public class Log {
     }
 
     public static synchronized void playerMeldung(String text) {
-        playermeldung(new String[]{text});
+        if (!playerMeldungenAus) {
+            playermeldung(new String[]{text});
+        }
     }
 
     public static synchronized void progress(String texte) {

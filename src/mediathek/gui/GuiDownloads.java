@@ -30,6 +30,8 @@ import mediathek.controller.io.starter.StartListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
+import mediathek.daten.DatenFilm;
+import mediathek.daten.DatenPset;
 import mediathek.gui.beobachter.BeobMpanel;
 import mediathek.gui.beobachter.CellRendererDownloads;
 import mediathek.gui.dialog.DialogEditDownload;
@@ -588,8 +590,8 @@ public class GuiDownloads extends PanelVorlage {
             menu.addSeparator();
             //#######################################
             //url
-            JMenuItem itemVor = new JMenuItem("URL kopieren");
-            itemVor.addActionListener(new ActionListener() {
+            JMenuItem itemUrl = new JMenuItem("URL kopieren");
+            itemUrl.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -601,7 +603,31 @@ public class GuiDownloads extends PanelVorlage {
                     }
                 }
             });
-            menu.add(itemVor);
+            menu.add(itemUrl);
+            //Player
+            JMenuItem itemPlayer = new JMenuItem("Film abspielen");
+            itemPlayer.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int nr = jTable1.rowAtPoint(p);
+                    if (nr >= 0) {
+                        DatenPset gruppe = ddaten.listePset.getPsetAbspielen();
+                        if (gruppe != null) {
+                            int selectedModelRow = jTable1.convertRowIndexToModel(nr);
+                            DatenFilm film = DDaten.listeFilmeNachBlackList.getFilmByUrl(jTable1.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                            // in die History eintragen
+                            ddaten.history.add(film.getUrlOrg());
+                            // und starten
+                            ddaten.starterClass.urlStarten(gruppe, film);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
+                                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                }
+            });
+            menu.add(itemPlayer);
             //Menü anzeigen
             menu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
