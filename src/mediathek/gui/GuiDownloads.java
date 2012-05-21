@@ -615,7 +615,7 @@ public class GuiDownloads extends PanelVorlage {
                         DatenPset gruppe = ddaten.listePset.getPsetAbspielen();
                         if (gruppe != null) {
                             int selectedModelRow = jTable1.convertRowIndexToModel(nr);
-                            DatenFilm film = DDaten.listeFilmeNachBlackList.getFilmByUrl(jTable1.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                            DatenFilm film = Daten.listeFilme.getFilmByUrl(jTable1.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
                             // in die History eintragen
                             ddaten.history.add(film.getUrlOrg());
                             // und starten
