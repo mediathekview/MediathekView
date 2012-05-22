@@ -183,7 +183,8 @@ public class MediathekArd extends MediathekReader implements Runnable {
             boolean ret = false;
             boolean gefunden = false;
             final String TITEL = "\">";
-            final String MUSTER = "<h3 class=\"mt-title\"><a href=\"";
+            //final String MUSTER = "<h3 class=\"mt-title\"><a href=\"";
+            final String MUSTER = "<a href=\"";
             final String MUSTER_SET = "http://www.ardmediathek.de";
             final String MUSTER_DATUM_1 = "<span class=\"mt-icon mt-icon-toggle_arrows\"></span>";
             final String MUSTER_DATUM_2 = "</a>";
