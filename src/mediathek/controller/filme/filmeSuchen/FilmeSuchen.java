@@ -112,7 +112,7 @@ public class FilmeSuchen {
     //===================================
     private void initMediathekReader() {
         //Reader laden Spaltenweises Laden
-//        mediathekListe.add(new MediathekArd(this));
+        mediathekListe.add(new MediathekArd(this));
         mediathekListe.add(new MediathekArdPodcast(this));
         mediathekListe.add(new MediathekZdf(this));
         mediathekListe.add(new MediathekArte7(this, true /* de */));

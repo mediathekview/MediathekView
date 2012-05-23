@@ -76,6 +76,7 @@ public class MediathekNoGui {
             }
         }
         daten = new Daten(pfad);
+        Daten.nogui = true;
         if (!userAgent.equals("")) {
             Daten.setUserAgentManuel(userAgent);
         }

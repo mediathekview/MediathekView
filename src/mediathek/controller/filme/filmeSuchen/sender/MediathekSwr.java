@@ -55,7 +55,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             suchen.listeFilmeNeu.infos[ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR] = "0";
         }
         startThema = Integer.parseInt(suchen.listeFilmeNeu.infos[ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR]);
-        if (suchen.allesLaden) {
+        if (Daten.nogui) {
             //Theman suchen
             seiten = 0;
             listeThemen.clear();

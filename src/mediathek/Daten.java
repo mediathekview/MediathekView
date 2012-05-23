@@ -34,6 +34,7 @@ public class Daten {
     public static String[] system = new String[Konstanten.SYSTEM_MAX_ELEM];
     // flags
     public static boolean debug = false;
+    public static boolean nogui = false;
     private static boolean geaendert = false;
     private static String basisverzeichnis = "";
     // Klassen
