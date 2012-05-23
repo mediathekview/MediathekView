@@ -39,7 +39,14 @@ public class Log {
         listeners.add(MediathekListener.class, listener);
     }
 
-    public static synchronized void startMeldungen(String classname) {
+    public static synchronized void versionsMeldungen(String classname) {
+        Log.systemMeldung("###########################################################");
+        long totalMem = Runtime.getRuntime().totalMemory();
+        Log.systemMeldung("totalMemory: " + totalMem / (1024L * 1024L) + " MB");
+        long maxMem = Runtime.getRuntime().maxMemory();
+        Log.systemMeldung("maxMemory: " + maxMem / (1024L * 1024L) + " MB");
+        long freeMem = Runtime.getRuntime().freeMemory();
+        Log.systemMeldung("freeMemory: " + freeMem / (1024L * 1024L) + " MB");
         Log.systemMeldung("###########################################################");
         try {
             //Version
@@ -49,18 +56,17 @@ public class Log {
         } catch (IOException ex) {
         }
         Log.systemMeldung("Klassenname: " + classname);
-        Log.systemMeldung("");
+        Log.systemMeldung("###########################################################");
+    }
+
+    public static synchronized void startMeldungen(String classname) {
+        versionsMeldungen(classname);
         Log.systemMeldung("Programmpfad: " + GuiFunktionenProgramme.getPathJar());
         Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getBasisVerzeichnis());
         Log.systemMeldung("Useragent: " + Daten.getUserAgent());
-        Log.systemMeldung("");
-        long totalMem = Runtime.getRuntime().totalMemory();
-        Log.systemMeldung("totalMemory: " + totalMem / (1024L * 1024L) + " MB");
-        long maxMem = Runtime.getRuntime().maxMemory();
-        Log.systemMeldung("maxMemory: " + maxMem / (1024L * 1024L) + " MB");
-        long freeMem = Runtime.getRuntime().freeMemory();
-        Log.systemMeldung("freeMemory: " + freeMem / (1024L * 1024L) + " MB");
         Log.systemMeldung("###########################################################");
+        Log.systemMeldung("");
+        Log.systemMeldung("");
     }
 
     public static synchronized void fehlerMeldung(String klasse, Exception ex) {

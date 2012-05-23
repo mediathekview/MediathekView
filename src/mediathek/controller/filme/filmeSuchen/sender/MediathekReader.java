@@ -37,6 +37,7 @@ public class MediathekReader implements Runnable {
     String senderText = "";
     String senderName = "";
     int senderMaxThread = 4;
+    int senderMaxThreadARD = 6;
     long senderWartenSeiteLaden = 500;//ms, Basiswert zu dem dann der Faktor multipliziert wird
     boolean senderOn = true;
     boolean updateOn = false;

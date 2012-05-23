@@ -59,6 +59,7 @@ public class Main {
                             state = NOGUI;
                         }
                         if (ar[i].equalsIgnoreCase("-v")) {
+                            Log.versionsMeldungen(this.getClass().getName());
                             System.exit(0);
                         }
                     }
