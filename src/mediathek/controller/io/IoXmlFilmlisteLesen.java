@@ -66,6 +66,11 @@ public class IoXmlFilmlisteLesen {
         int timeout = 10000; //10 Sekunden
         URLConnection conn;
         try {
+            if (!istUrl) {
+                if (!new File(datei).exists()) {
+                    return false;
+                }
+            }
             if (istUrl && datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
                 // da wird eine temp-Datei benutzt
                 this.notifyStart(1000);

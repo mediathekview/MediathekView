@@ -19,16 +19,16 @@
  */
 package mediathek.controller.filme.filmeSuchen.sender;
 
+import java.util.LinkedList;
 import mediathek.Daten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
-import mediathek.tool.DatumZeit;
 
 /**
  *
- * @author
+ *         @author
  */
 public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
@@ -36,7 +36,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *          @param ddaten
      */
     public MediathekArdPodcast(FilmeSuchen ssearch) {
         super(ssearch, /* name */ SENDER, /* text */ "ARD-Podcasts  (bis ca. 12 MB, bis 3600 Filme)", /* threads */ 4, /* urlWarten */ 500);
@@ -78,6 +78,10 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 if (url.equals("")) {
                     continue;
                 }
+                if (!url.startsWith("/podcast/")) {
+                    // nur dann ARD.Podcast
+                    continue;
+                }
                 String[] add = new String[]{MUSTER_SET + url, thema};
                 if (!istInListe(listeThemen, url, 0)) {
                     listeThemen.add(add);
@@ -90,7 +94,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
             if (listeThemen.size() > 0) {
                 meldungStart(listeThemen.size());
                 listeSort(listeThemen, 1);
-                for (int t = 0; t < senderMaxThread; ++t) {
+                for (int t = 0; t < senderMaxThreadARD; ++t) {
                     new Thread(new ArdThemaLaden()).start();
                 }
             }
@@ -101,6 +105,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
         GetUrl getUrl = new GetUrl();
         private StringBuffer seite = new StringBuffer();
+        private StringBuffer seite2 = new StringBuffer();
 
         @Override
         public synchronized void run() {
@@ -120,12 +125,18 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
         private void feedEinerSeiteSuchen(String strUrlFeed, String thema) {
             //Feed eines Themas laden
             //<a class="mt-box_preload mt-box-overflow" href="/ard/servlet/ajax-cache/3516938/view=switch/documentId=427262/index.html">
-            final String MUSTER = "<a class=\"mt-box_preload mt-box-overflow\" href=\"";
-            final String MUSTER_SET = "http://www.ardmediathek.de";
-            seite = getUrl.getUri_Utf(senderName, strUrlFeed, seite, "Thema: " + thema);
             int pos = 0;
             int pos1 = 0;
             int pos2 = 0;
+            final String MUSTER = "<a class=\"mt-box_preload mt-box-overflow\" href=\"";
+            final String MUSTER_SET = "http://www.ardmediathek.de";
+            LinkedList<String> listeWeiter = new LinkedList<String>();
+            boolean weiter = false;
+            final String MUSTER_WEITER = "<option value=\"";
+            seite = getUrl.getUri_Utf(senderName, strUrlFeed, seite, "Thema: " + thema);
+            pos = 0;
+            pos1 = 0;
+            pos2 = 0;
             String url = "";
             //++++++++++++++++++++++++++++++++++ 1te Seite
             if ((pos = seite.indexOf(MUSTER, pos)) != -1) {
@@ -144,95 +155,140 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     //<h3 class="mt-title"><a href="/ard/servlet/content/3516968?documentId=1441144"
                     //final String MUSTER_2a = "<h3 class=\"mt-title\"><a href=\"";
                     final String MUSTER_2a = "<a href=\"";
+                    final String MUSTER_2b = "\" class=\"mt-btt_rss\" onclick=\"";
                     String tmpUrl = url;
                     seite.setLength(0);
                     seite = getUrl.getUri_Utf(senderName, url, seite, "Thema: " + thema);
                     pos = 0;
                     pos1 = 0;
                     pos2 = 0;
-                    url = "";
-                    if ((pos = seite.indexOf(MUSTER_2a, pos)) != -1) {
-                        pos += MUSTER_2a.length();
+                    while ((pos = seite.indexOf(MUSTER_WEITER, pos)) != -1) {
+                        pos += MUSTER_WEITER.length();
                         pos1 = pos;
                         pos2 = seite.indexOf("\"", pos);
                         if (pos1 != -1 && pos2 != -1) {
-                            url = seite.substring(pos1, pos2);
+                            String tmpWeiter = MUSTER_SET + seite.substring(pos1, pos2);
+                            listeWeiter.add(tmpWeiter);
                         }
-                        if (url.equals("")) {
-                            //<a href="/ard/servlet/content/3517244?documentId=590570" class="mt-btt_rss" onclick="
-                            final String MUSTER_2b = "\" class=\"mt-btt_rss\" onclick=\"";
-                            pos = 0;
-                            pos1 = 0;
-                            pos2 = 0;
-                            url = "";
-                            String temp = "";
-                            if ((pos = seite.indexOf(MUSTER_2b, pos)) != -1) {
-                                temp = seite.substring(0, pos);
-                                pos1 = seite.lastIndexOf("\"");
-                                if (pos1 != -1) {
-                                    url = seite.substring(pos1);
-                                }
+                    }
+                    do {
+                        pos = 0;
+                        pos1 = 0;
+                        pos2 = 0;
+                        url = "";
+                        while ((pos = seite.indexOf(MUSTER_2a, pos)) != -1) {
+                            pos += MUSTER_2a.length();
+                            pos1 = pos;
+                            pos2 = seite.indexOf("\"", pos);
+                            if (pos1 != -1 && pos2 != -1) {
+                                url = seite.substring(pos1, pos2);
                             }
-                        }
-                        if (url.equals("#")) {
-                            Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + tmpUrl);
-                        } else if (url.equals("")) {
-                            //-------------
-                            Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-2", "keine URL für: " + strUrlFeed);
-                        } else {
-                            url = MUSTER_SET + url;
-                            final String MUSTER_ = "http://www.ardmediathek.de/ard/servlet/content/3517244";
-                            if (url.contains("?")) {
-                                //3517136 ersetzen mit 3517244
-                                //http://www.ardmediathek.de/ard/servlet/content/3516968?documentId=2584998
-                                //
-                                url = MUSTER_ + url.substring(url.indexOf("?"));
-                                //++++++++++++++++++++++++++++++++++ 3te Seite
-                                //<input name="" type="text" value="http://www1.swr.de/podcast/xml/swr-fernsehen/60-jahre-rlp.xml" />
-                                //final String MUSTER_3 = "<input name=\"\" type=\"text\" value=\"";
-                                final String MUSTER_3 = "addMediaStream(0, 1, \"\", \"";
-                                tmpUrl = url;
-                                seite.setLength(0);
-                                seite = getUrl.getUri_Utf(senderName, url, seite, "Thema: " + thema);
+                            if (url.equals("")) {
+                                //<a href="/ard/servlet/content/3517244?documentId=590570" class="mt-btt_rss" onclick="
                                 pos = 0;
                                 pos1 = 0;
                                 pos2 = 0;
                                 url = "";
-                                if ((pos = seite.indexOf(MUSTER_3, pos)) != -1) {
-                                    pos += MUSTER_3.length();
-                                    pos1 = pos;
-                                    pos2 = seite.indexOf("\"", pos);
-                                    if (pos1 != -1 && pos2 != -1) {
-                                        url = seite.substring(pos1, pos2);
+                                if ((pos = seite.indexOf(MUSTER_2b, pos)) != -1) {
+                                    pos1 = seite.lastIndexOf("\"");
+                                    if (pos1 != -1) {
+                                        url = seite.substring(pos1);
                                     }
-                                    if (url.equals("")) {
-                                        //-------------
-                                        Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + tmpUrl);
-                                        Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + strUrlFeed);
-                                    } else {
-//////                                        filmLaden(strUrlFeed, url, thema);
-                                        //<title>ARD Mediathek: DiD-Folge 925: Die Dünnbrett-Bohrer - 16.05.2012 | Bayerisches Fernsehen</title>
-                                        //<title>ARD Mediathek: 28 Stunden Ausnahmezustand in Freiburg | SWR Fernsehen BW</title>
-                                        //<title>ARD Mediathek: Die Wahrheit über Deutschland: Leidenschaft | DW-TV</title>
-                                        //<title>ARD Mediathek: Gipfeltreffen mit Ilse Neubauer - 17.05.2012 | Bayerisches Fernsehen</title>
-                                        final String MUSTER_TITEL = "<title>";
-                                        if ((pos1 = seite.indexOf(MUSTER_TITEL, 0)) != -1) {
-                                            pos1 += MUSTER_TITEL.length();
-                                            if ((pos2 = seite.indexOf("<", pos1)) != -1) {
-                                                String titel = seite.substring(pos1, pos2);
-                                                if (titel.startsWith("ARD Mediathek:")) {
-                                                    titel = titel.replaceFirst("ARD Mediathek:", "").trim();
-                                                    if (titel.contains("|")) {
-                                                        titel = titel.substring(0, titel.lastIndexOf("|") );
-                                                        titel = titel.trim();
-                                                        //    public DatenFilm( ddaten,  ssender,  tthema,  urlThema,  ttitel,  uurl,  uurlorg,  uurlRtmp, uurlHd) {
-                                                        addFilm(new DatenFilm(senderName, thema, strUrlFeed, titel, url, "", ""));
-                                                    }
+                                }
+                            }
+                            if (url.equals("#")) {
+                                Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + tmpUrl);
+                            } else if (url.equals("")) {
+                                //-------------
+                                Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-2", "keine URL für: " + strUrlFeed);
+                            } else {
+                                url = MUSTER_SET + url;
+                                filmLaden(strUrlFeed, url, thema);
+                            }
+                        }
+                        if (listeWeiter.size() > 0) {
+                            url = listeWeiter.pollFirst();
+                            seite = getUrl.getUri_Utf(senderName, url, seite, "Thema: " + thema);
+                            weiter = true;
+                        } else {
+                            weiter = false;
+                        }
+                    } while (weiter);
+                }
+            }
 
+        }
+
+        private void filmLaden(String strUrlFeed, String url, String thema) {
+            int pos = 0;
+            int pos1 = 0;
+            int pos2 = 0;
+            final String MUSTER_ = "http://www.ardmediathek.de/ard/servlet/content/3517244";
+            if (url.contains("?")) {
+                //3517136 ersetzen mit 3517244
+                //http://www.ardmediathek.de/ard/servlet/content/3516968?documentId=2584998
+                //
+                url = MUSTER_ + url.substring(url.indexOf("?"));
+                //++++++++++++++++++++++++++++++++++ 3te Seite
+                //<input name="" type="text" value="http://www1.swr.de/podcast/xml/swr-fernsehen/60-jahre-rlp.xml" />
+                //final String MUSTER_3 = "<input name=\"\" type=\"text\" value=\"";
+                final String MUSTER_3 = "addMediaStream(0, 1, \"\", \"";
+                String tmpUrl = url;
+                seite2.setLength(0);
+                seite2 = getUrl.getUri_Utf(senderName, url, seite2, "Thema: " + thema);
+                pos = 0;
+                pos1 = 0;
+                pos2 = 0;
+                url = "";
+                if ((pos = seite2.indexOf(MUSTER_3, pos)) != -1) {
+                    pos += MUSTER_3.length();
+                    pos1 = pos;
+                    pos2 = seite2.indexOf("\"", pos);
+                    if (pos1 != -1 && pos2 != -1) {
+                        url = seite2.substring(pos1, pos2);
+                    }
+                    if (url.equals("")) {
+                        //-------------
+                        Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + tmpUrl);
+                        Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + strUrlFeed);
+                    } else {
+                        //<title>ARD Mediathek: DiD-Folge 925: Die Dünnbrett-Bohrer - 16.05.2012 | Bayerisches Fernsehen</title>
+                        //<title>ARD Mediathek: 28 Stunden Ausnahmezustand in Freiburg | SWR Fernsehen BW</title>
+                        //<title>ARD Mediathek: Die Alpenüberquerung - Hoffentlich schwindelfrei | SWR Fernsehen</title>
+                        //<title>ARD Mediathek: Die Wahrheit über Deutschland: Leidenschaft | DW-TV</title>
+                        //<title>ARD Mediathek: Gipfeltreffen mit Ilse Neubauer - 17.05.2012 | Bayerisches Fernsehen</title>
+                        //<title>ARD Mediathek: Angeklickt: 18.05.2012, Es muss nicht immer Facebook sein | WDR Fernsehen</title>
+                        final String MUSTER_TITEL = "<title>";
+                        if ((pos1 = seite2.indexOf(MUSTER_TITEL, 0)) != -1) {
+                            pos1 += MUSTER_TITEL.length();
+                            if ((pos2 = seite2.indexOf("<", pos1)) != -1) {
+                                String titel = seite2.substring(pos1, pos2);
+                                if (titel.startsWith("ARD Mediathek:")) {
+                                    titel = titel.replaceFirst("ARD Mediathek:", "").trim();
+                                    if (titel.contains("|")) {
+                                        titel = titel.substring(0, titel.lastIndexOf("|"));
+                                        titel = titel.trim();
+                                        String datum = "";
+                                        if (titel.contains(" - ") && titel.contains("20")) {
+                                            datum = titel.substring(titel.lastIndexOf(" - ") + 3).trim();
+                                            if (datum.length() != 10) {
+                                                //noch ein Versuch
+                                                if (titel.contains(".20")) {
+                                                    int p = titel.indexOf(".20");
+                                                    if (p > 6 && (p + 6) < titel.length()) {
+                                                        datum = titel.substring(titel.indexOf(".20") - 5, titel.indexOf(".20") + 5);
+                                                        titel = titel.replace(datum, "").trim();
+                                                    }
                                                 }
+                                            } else {
+                                                titel = titel.substring(0, titel.lastIndexOf(" - ")).trim();
                                             }
                                         }
+                                        //  DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
+                                        meldung(url);
+                                        addFilm(new DatenFilm(senderName, thema, strUrlFeed, titel, url, datum, ""));
                                     }
+
                                 }
                             }
                         }
@@ -241,85 +297,4 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
             }
         }
     }
-////        boolean filmLaden(String urlThema, String urlFeed, String thema) {
-////            //<item>
-////            //<title>angeklickt: 26.11.2010, Zeitung lesen auf dem Tablet-PC</title>
-////            //<link>http://medien.wdr.de/m/1290794400/angeklickt/wdr_fernsehen_angeklickt_20101126.mp4</link>
-////            //<pubDate>Fri, 26 Nov 2010 19:00:00 +0100</pubDate>
-////            //
-////            //<description>Immer mehr Menschen lesen Zeitungen, Zeitschriften und Bücher auf elektronischen Lesegeräten. Diese Woche hat ein großer Medienkonzern sogar eine tägliche Zeitung angekündigt, die ausschließlich auf dem iPad erscheinen wird. Ein Trend? ; © WDR VideoPodcast</description>
-////            //<guid isPermaLink="false">/wdr_fernsehen_angeklickt_20101126.mp4</guid>
-////            //<enclosure url="http://medien.wdr.de/m/1290794400/angeklickt/wdr_fernsehen_angeklickt_20101126.mp4" length="15522707" type="video/mp4" />
-////            //</item>
-////
-////            final String MUSTER_ITEM = "<item>";
-////            final String MUSTER_ITEM_ENDE = "</item>";
-////            final String MUSTER_TITEL = "<title>";
-////            final String MUSTER_URL = "<enclosure url=\"";
-////            final String MUSTER_DATUM = "<pubDate>";
-////            boolean ret = false;
-////            seite = getUrl.getUri_Utf(senderName, urlFeed, seite, "Thema: " + thema);
-////            int posItem = 0;
-////            int posItemEnde = 0;
-////            int pos = 0;
-////            int pos1 = 0;
-////            int pos2 = 0;
-////            String url = "";
-////            String titel = "";
-////            String datum = "";
-////            String zeit = "";
-////            String tmp = "";
-////            while (!Daten.filmeLaden.getStop() && (posItem = seite.indexOf(MUSTER_ITEM, posItem)) != -1) {
-////                posItem += MUSTER_ITEM.length();
-////                pos = posItem;
-////                posItemEnde = seite.indexOf(MUSTER_ITEM_ENDE, posItem);
-////                url = "";
-////                titel = "";
-////                datum = "";
-////                zeit = "";
-////                tmp = "";
-////                if ((pos1 = seite.indexOf(MUSTER_TITEL, pos)) != -1) {
-////                    pos1 += MUSTER_TITEL.length();
-////                    if ((pos2 = seite.indexOf("</title>", pos1)) != -1) {
-////                        titel = seite.substring(pos1, pos2);
-////                        titel = titel.replace("<![CDATA", "");
-////                        titel = titel.replace("[", "");
-////                        titel = titel.replace("]", "");
-////                        titel = titel.replace("<", "");
-////                        titel = titel.replace(">", "");
-////                    }
-////                    if (titel.equals("")) {
-////                        Log.fehlerMeldung("MediathekArdPodcast.filmeLaden", "kein Titel: " + urlFeed);
-////                    }
-////                }
-////                if ((pos1 = seite.indexOf(MUSTER_DATUM, pos)) != -1) {
-////                    pos1 += MUSTER_DATUM.length();
-////                    if ((pos2 = seite.indexOf("<", pos1)) != -1) {
-////                        //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
-////                        tmp = seite.substring(pos1, pos2);
-////                        if (tmp.equals("")) {
-////                            Log.fehlerMeldung("MediathekArdPodcast.filmeLaden", "keine Datum" + urlFeed);
-////                        } else {
-////                            datum = DatumZeit.convertDatum(tmp);
-////                            zeit = DatumZeit.convertTime(tmp);
-////                        }
-////                    }
-////                }
-////                if ((pos1 = seite.indexOf(MUSTER_URL, pos)) != -1) {
-////                    pos1 += MUSTER_URL.length();
-////                    if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
-////                        url = seite.substring(pos1, pos2);
-////                        if (url.equals("")) {
-////                            Log.fehlerMeldung("MediathekArdPodcast.filmeLaden", "keine URL: " + urlFeed);
-////                        } else {
-////                            //    public DatenFilm( ddaten,  ssender,  tthema,  urlThema,  ttitel,  uurl,  uurlorg,  uurlRtmp, uurlHd) {
-////                            addFilm(new DatenFilm(senderName, thema, urlThema, titel, url, datum, zeit));
-////                            ret = true;
-////                        }
-////                    }
-////                }
-////            }
-////            return ret;
-////        }
-////    }
 }

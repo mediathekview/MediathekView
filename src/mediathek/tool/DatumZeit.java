@@ -23,12 +23,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import mediathek.Daten;
 import mediathek.Log;
-import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.ListeFilme;
 
 public class DatumZeit {
 

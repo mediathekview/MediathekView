@@ -24,7 +24,6 @@ import mediathek.Log;
 import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
-import mediathek.tool.DatumZeit;
 
 /**
  *
@@ -68,6 +67,14 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         continue;
                     }
                 }
+                pos2 = seite.indexOf("}", pos);
+                if (pos1 != -1 && pos2 != -1) {
+                    String tmp = seite.substring(pos1, pos2);
+                    if (tmp.contains("/podcast/")) {
+                        // ist dann auch im ARD.Podcast
+                        continue;
+                    }
+                }
                 pos1 = seite.indexOf(MUSTER_URL, pos);
                 pos1 = pos1 + MUSTER_URL.length();
                 pos2 = seite.indexOf("\"", pos1);
@@ -89,7 +96,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             if (listeThemen.size() > 0) {
                 meldungStart(listeThemen.size());
                 listeSort(listeThemen, 1);
-                for (int t = 0; t < senderMaxThread; ++t) {
+                for (int t = 0; t < senderMaxThreadARD; ++t) {
                     new Thread(new ArdThemaLaden()).start();
                 }
             }
