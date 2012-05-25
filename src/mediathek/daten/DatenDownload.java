@@ -193,7 +193,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             name = name.replace("%s", arr[DOWNLOAD_SENDER_NR]);
             name = name.replace("%H", DatumZeit.getHeute_yyyyMMdd());
             name = name.replace("%h", DatumZeit.getJetzt_HHMMSS());
-            name = name.replace("%n", GuiFunktionen.getDateiName(arr[DOWNLOAD_URL_NR])); //vorsichtshalber
+//            name = name.replace("%n", GuiFunktionen.getDateiName(arr[DOWNLOAD_URL_NR])); //vorsichtshalber
             name = name.replace("%N", GuiFunktionen.getDateiName(arr[DOWNLOAD_URL_NR]));
             // prüfen ob das Suffix 2x vorkommt
             if (name.length() > 8) {
@@ -212,13 +212,19 @@ public class DatenDownload implements Comparable<DatenDownload> {
         // ##############################################
         // abfragen wenn %p oder %n
         // ##############################################
-        if (name.contains("%p") || pfad.contains("%p")) {
-            if (name.equals("%p")) {
+        if (name.contains("%p") || name.contains("%n")|| pfad.contains("%p")  || pfad.contains("%n")) {
+            // %n und %p werden jetzt gleich verwendet, es wird immer ein Dialog angezeigt in dem beides (Name und Pfad) geändert werden kann
+            if (name.equals("%p") || name.equals("%n")) {
                 name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
-            } else {
-                name = name.replace("%p", "-_-");
             }
+            if (pfad.equals("%p") || pfad.equals("%n")) {
+                pfad = GuiFunktionen.getHomePath();
+            }
+            // und dann noch vorsichtshalber putzen
+            name = name.replace("%p", "");
+            name = name.replace("%n", "");
             pfad = pfad.replace("%p", "");
+            pfad = pfad.replace("%n", "");
             name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */);
             DialogZielDatei dialog = new DialogZielDatei(null, true, pfad, name);
             dialog.setVisible(true);
@@ -229,17 +235,30 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 name = dialog.zielDateiname;
                 pfad = dialog.zielPfad;
             }
-        } else if (name.contains("%n")) {
-            if (name.equals("%n")) {
-                name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
-            } else {
-                name = name.replace("%n", "-_-");
-            }
-            name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */);
-            name = JOptionPane.showInputDialog("Dateiname eingeben", name);
-            if (name == null) {
-                name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
-            }
+//        } else if (name.contains("%n") || pfad.contains("%n")) {
+//            if (name.equals("%n")) {
+//                name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+//            }
+//            if (pfad.equals("%n")) {
+//                pfad = GuiFunktionen.getHomePath();
+//            }
+//            // vorsichtshalber putzen
+//            name = name.replace("%p", "");
+//            name = name.replace("%n", "");
+//            pfad = pfad.replace("%p", "");
+//            pfad = pfad.replace("%n", "");
+//
+//            
+//            if (name.equals("%p")) {
+//                name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+//            } else {
+//                name = name.replace("%n", "");
+//            }
+//            name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */);
+//            name = JOptionPane.showInputDialog("Dateiname eingeben", name);
+//            if (name == null) {
+//                name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+//            }
         }
         // ##############################################
         // und jetzt noch den Pfad aufbauen
