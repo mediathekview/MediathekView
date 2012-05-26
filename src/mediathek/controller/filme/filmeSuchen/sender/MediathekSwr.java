@@ -42,7 +42,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
     private int seiten = 0;
 
     public MediathekSwr(FilmeSuchen ssearch) {
-        super(ssearch, /* name */ SENDER, /* text */ "SWR (bis ca. 300 MB, bis 1200 Filme)", /* threads */ 1, /* urlWarten */ 5000);
+        super(ssearch, /* name */ SENDER, /* text */ "SWR (bis ca. 300 MB, bis 1200 Filme)", /* threads */ 1, /* urlWarten */ 1000);
     }
 
     //===================================
@@ -83,13 +83,11 @@ public class MediathekSwr extends MediathekReader implements Runnable {
         StringBuffer strSeite = new StringBuffer();
         strSeite = getUrlIo.getUri_Utf(senderName, ADRESSE, strSeite, "");
         int pos = 0;
-        int pos1 = 0;
-        int pos2 = 0;
-        String url = "";
+        int pos1;
+        int pos2;
+        String url;
         String thema = "";
         while (!Daten.filmeLaden.getStop() && (pos = strSeite.indexOf(MUSTER_URL, pos)) != -1) {
-            url = "";
-            thema = "";
             pos += MUSTER_URL.length();
             pos1 = pos;
             pos2 = strSeite.indexOf("\"", pos);
@@ -172,9 +170,9 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         meldungProgress(link[0]);
                         meldungAddMax(1);
                     }
+                    suchen.listeFilmeNeu.setInfo(ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR, String.valueOf(nrListe));
                     meldungThreadUndFertig();
                 }
-                suchen.listeFilmeNeu.setInfo(ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR, String.valueOf(nrListe));
             } catch (Exception ex) {
                 Log.fehlerMeldung("MediathekSwr.SenderThemaLaden.run", ex);
             }
@@ -186,11 +184,10 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             strSeite1 = getUrl.getUri_Utf(senderName, strUrlFeed, strSeite1, thema);
             ++seiten;
             int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
-            String url = "";
+            int pos1;
+            int pos2;
+            String url;
             while (!Daten.filmeLaden.getStop() && (pos = strSeite1.indexOf(MUSTER_URL, pos)) != -1) {
-                url = "";
                 pos += MUSTER_URL.length();
                 pos1 = pos;
                 pos2 = strSeite1.indexOf("\"", pos);
@@ -227,11 +224,11 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             meldung("*" + urlFilm);
             strSeite2 = getUrl.getUri_Utf(senderName, urlFilm, strSeite2, "");
             ++seiten;
-            int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
+            int pos;
+            int pos1;
+            int pos2;
             String url = "";
-            String titel = "";
+            String titel;
             String datum = "";
             String zeit = "";
             String tmp = "";
@@ -239,8 +236,6 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             if ((pos = strSeite2.indexOf(MUSTER_DATUM_1)) != -1) {
                 pos += MUSTER_DATUM_1.length();
                 try {
-                    pos1 = 0;
-                    pos2 = 0;
                     if ((pos1 = strSeite2.indexOf(MUSTER_DATUM_2, pos)) != -1) {
                         datum = strSeite2.substring(pos, pos1).trim();
                         if (datum.length() < 10) {
@@ -264,8 +259,6 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             if ((pos = strSeite2.indexOf(MUSTER_ZEIT_1)) != -1) {
                 pos += MUSTER_ZEIT_1.length();
                 try {
-                    pos1 = 0;
-                    pos2 = 0;
                     if ((pos1 = strSeite2.indexOf(MUSTER_ZEIT_2, pos)) != -1) {
                         zeit = strSeite2.substring(pos, pos1).trim();
                         if (!zeit.equals("")) {
@@ -295,8 +288,6 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                 }
             }
             pos = 0;
-            pos1 = 0;
-            pos2 = 0;
             //url suchen
             if ((pos = strSeite2.indexOf(MUSTER_URL, pos)) != -1) {
                 pos += MUSTER_URL.length();
@@ -307,8 +298,6 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                 }
             }
             pos = 0;
-            pos1 = 0;
-            pos2 = 0;
             //Titel
             if ((pos = strSeite2.indexOf(MUSTER_TITEL, pos)) != -1) {
                 pos += MUSTER_TITEL.length();

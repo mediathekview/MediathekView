@@ -174,6 +174,12 @@ public class IoXmlFilmlisteLesen {
                         }
                     }
                 }
+                //FilmeInfos
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    if (parser.getLocalName().equals(ListeFilme.FILMLISTE_INFOS)) {
+                        get(parser, event, ListeFilme.FILMLISTE_INFOS, ListeFilme.FILMLISTE_INFOS_COLUMN_NAMES, listeFilme.infos);
+                    }
+                }
                 //Filme
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     if (parser.getLocalName().equals(filmTag)) {
