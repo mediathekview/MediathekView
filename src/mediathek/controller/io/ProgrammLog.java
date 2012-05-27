@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.Main;
@@ -33,6 +34,7 @@ import mediathek.daten.DDaten;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiFunktionenProgramme;
 
 public class ProgrammLog {
 
@@ -47,9 +49,14 @@ public class ProgrammLog {
                     bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
                     // Programminfos
                     Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-                    bw.write(DatumZeit.getJetzt_ddMMyyyy_HHmm());
+                    bw.write("#####################################################");
                     bw.newLine();
-                    bw.write("Version: " + Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + " vom: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
+                    bw.write("Erstellt: " + DatumZeit.getJetzt_ddMMyyyy_HHmm());
+                    bw.newLine();
+                    bw.write("#####################################################");
+                    bw.newLine();
+                    bw.newLine();
+                    bw.write("Programmversion: " + Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + " vom: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
                     bw.newLine();
                     bw.write("Betriebssystem: " + System.getProperty("os.name"));
                     if (System.getProperty("os.name").toLowerCase().contains("windows")) {
@@ -60,6 +67,11 @@ public class ProgrammLog {
                             bw.write("[32Bit]");
                         }
                     }
+                    bw.newLine();
+                    bw.write("Programmpfad: " + GuiFunktionenProgramme.getPathJar());
+                    bw.newLine();
+                    bw.write("Verzeichnis Einstellungen: " + Daten.getBasisVerzeichnis());
+                    bw.newLine();
                     bw.newLine();
                     bw.newLine();
                     //

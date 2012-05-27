@@ -112,23 +112,23 @@ public class FilmeSuchen {
     //===================================
     private void initMediathekReader() {
         //Reader laden Spaltenweises Laden
-//        mediathekListe.add(new MediathekArd(this));
-//        mediathekListe.add(new MediathekArdPodcast(this));
-//        mediathekListe.add(new MediathekZdf(this));
-//        mediathekListe.add(new MediathekArte7(this, true /* de */));
-//        mediathekListe.add(new MediathekArte7(this, false));
-//        mediathekListe.add(new Mediathek3Sat(this));
+        mediathekListe.add(new MediathekArd(this));
+        mediathekListe.add(new MediathekArdPodcast(this));
+        mediathekListe.add(new MediathekZdf(this));
+        mediathekListe.add(new MediathekArte7(this, true /* de */));
+        mediathekListe.add(new MediathekArte7(this, false));
+        mediathekListe.add(new Mediathek3Sat(this));
         mediathekListe.add(new MediathekSwr(this));
-//        mediathekListe.add(new MediathekNdr(this));
-////        // Spalte 2
-//        mediathekListe.add(new MediathekMdr(this));
-//        mediathekListe.add(new MediathekWdr(this));
-//        mediathekListe.add(new MediathekHr(this));
-//        mediathekListe.add(new MediathekRbb(this));
-//        mediathekListe.add(new MediathekBr(this));
-//        mediathekListe.add(new MediathekSf(this));
-//        mediathekListe.add(new MediathekSfPod(this));
-//        mediathekListe.add(new MediathekOrf(this));
+        mediathekListe.add(new MediathekNdr(this));
+        // Spalte 2
+        mediathekListe.add(new MediathekMdr(this));
+        mediathekListe.add(new MediathekWdr(this));
+        mediathekListe.add(new MediathekHr(this));
+        mediathekListe.add(new MediathekRbb(this));
+        mediathekListe.add(new MediathekBr(this));
+        mediathekListe.add(new MediathekSf(this));
+        mediathekListe.add(new MediathekSfPod(this));
+        mediathekListe.add(new MediathekOrf(this));
     }
 
     private MediathekReader getMediathekReader(String sender) {
