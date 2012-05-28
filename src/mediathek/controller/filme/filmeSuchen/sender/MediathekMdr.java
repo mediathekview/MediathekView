@@ -24,10 +24,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.Daten;
-import mediathek.daten.DatenFilm;
+import mediathek.Log;
 import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
 import mediathek.controller.io.GetUrl;
-import mediathek.Log;
+import mediathek.daten.DatenFilm;
 
 /**
  *
@@ -36,31 +36,36 @@ import mediathek.Log;
 public class MediathekMdr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "MDR";
-    private String addr = "http://www.mdr.de/mediathek/fernsehen/a-z/sendungenabisz100.html";
+    private LinkedList<String> listeTage = new LinkedList<String>();
+    private LinkedList<String[]> listeGesucht = new LinkedList<String[]>(); //thema,titel,datum,zeit
 
     /**
-     * 
+     *
      * @param ddaten
      */
     public MediathekMdr(FilmeSuchen ssearch) {
-        super(ssearch, /* name */ SENDER, /* text */ "MDR  (ca. 3 MB, 1000 Filme)", /* threads */ 2, /* urlWarten */ 1000);
+        super(ssearch, /* name */ SENDER, /* text */ "MDR  (ca. 30 MB, 500 Filme)", /* threads */ 4, /* urlWarten */ 1000);
     }
 
     /**
-     * 
+     *
      */
     @Override
     public void addToList() {
-        //final String MUSTER = "<a href=\"/mediathek/fernsehen/a-z/5841479-";
-        //final String MUSTER_ADD = "http://www.mdr.de/mediathek/fernsehen/a-z/5841479-";
+        final String URL_SENDUNGEN = "http://www.mdr.de/mediathek/fernsehen/a-z/sendungenabisz100.html";
+        final String URL_TAGE = "http://www.mdr.de/mediathek/fernsehen/index.html";
         final String MUSTER = "<a href=\"/mediathek/fernsehen/a-z/sendungenabisz100_letter-";
         final String MUSTER_ADD = "http://www.mdr.de/mediathek/fernsehen/a-z/sendungenabisz100_letter-";
+        final String MUSTER_TAGE = "<a href=\"/mediathek/fernsehen/sendungverpasst100-multiGroupClosed_boxIndex-";
+        final String MUSTER_ADD_TAGE = "http://www.mdr.de/mediathek/fernsehen/sendungverpasst100-multiGroupClosed_boxIndex-";
         StringBuffer seite = new StringBuffer();
         listeThemen.clear();
-        seite = getUrlIo.getUri_Utf(senderName, addr, seite, "");
+        listeTage.clear();
+        listeGesucht.clear();
+        seite = getUrlIo.getUri_Utf(senderName, URL_SENDUNGEN, seite, "");
         int pos = 0;
-        int pos1 = 0;
-        int pos2 = 0;
+        int pos1;
+        int pos2;
         String url = "";
         while ((pos = seite.indexOf(MUSTER, pos)) != -1) {
             pos += MUSTER.length();
@@ -78,9 +83,28 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                 }
             }
         }
+        seite = getUrlIo.getUri_Utf(senderName, URL_TAGE, seite, "");
+        pos = 0;
+        url = "";
+        while ((pos = seite.indexOf(MUSTER_TAGE, pos)) != -1) {
+            pos += MUSTER_TAGE.length();
+            pos1 = pos;
+            pos2 = seite.indexOf("\"", pos);
+            if (pos1 != -1 && pos2 != -1) {
+                url = seite.substring(pos1, pos2);
+            }
+            if (url.equals("")) {
+                Log.fehlerMeldung("MediathekMdr.addToList-2", "keine URL");
+            } else {
+                url = MUSTER_ADD_TAGE + url;
+                if (!istInListe(listeTage, url)) {
+                    listeTage.add(url);
+                }
+            }
+        }
         if (!Daten.filmeLaden.getStop()) {
             if (listeThemen.size() > 0) {
-                meldungStart(listeThemen.size());
+                meldungStart(listeThemen.size() + listeTage.size());
                 listeSort(listeThemen, 0);
                 for (int t = 0; t < senderMaxThread; ++t) {
                     new Thread(new MdrThemaLaden()).start();
@@ -91,7 +115,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
 
     private class MdrThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl( senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
         private StringBuffer seite2 = new StringBuffer();
         private StringBuffer seite3 = new StringBuffer();
@@ -106,6 +130,11 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                     meldungProgress(link[0]);
                     addThema(link[0]);
                 }
+                String url;
+                while (!Daten.filmeLaden.getStop() && (url = getListeTage()) != null) {
+                    meldungProgress(url);
+                    addTage(url);
+                }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldung("MediathekMdr.MdrThemaLaden.run", ex);
@@ -113,22 +142,17 @@ public class MediathekMdr extends MediathekReader implements Runnable {
         }
 
         void addThema(String strUrlFeed) {
-            //<h2><a href="/mediathek/fernsehen/a-z/6946914.html" class="pfeil">artour<span class="otype"> | Videos</span></a></h2>
-            //final String MUSTER_TITEL = "class=\"pfeil\">";
             final String MUSTER_TITEL = "title=\"Alle verfügbaren Sendungen anzeigen\">";
-            //final String MUSTER_URL = "<h2><a href=\"/mediathek/fernsehen/a-z/";
-            //final String MUSTER_ADD = "http://www.mdr.de/mediathek/fernsehen/a-z/";
             final String MUSTER_URL = "<h3><a href=\"/mediathek/fernsehen/a-z/";
             final String MUSTER_ADD = "http://www.mdr.de/mediathek/fernsehen/a-z/";
 
             int pos = 0;
-            int pos2 = 0;
+            int pos2;
             String thema = "";
-            String url = "";
+            String url;
             try {
                 seite1 = getUrl.getUri_Utf(senderName, strUrlFeed, seite1, "");
                 while ((pos = seite1.indexOf(MUSTER_URL, pos)) != -1) {
-                    url = "";
                     pos += MUSTER_URL.length();
                     pos2 = seite1.indexOf("\"", pos);
                     if (pos != -1 && pos2 != -1) {
@@ -140,10 +164,6 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                             if (pos != -1 && pos2 != -1) {
                                 thema = seite1.substring(pos, pos2);
                                 pos = pos2;
-                                if (!themaLaden(senderName, thema)) {
-                                    //nur Abos laden
-                                    continue;
-                                }
                             }
                             if (url.equals("")) {
                                 Log.fehlerMeldung("MediathekMdr.addThema", "keine URL: " + strUrlFeed);
@@ -159,16 +179,14 @@ public class MediathekMdr extends MediathekReader implements Runnable {
         }
 
         private void addSendug(String strUrlFeed, String thema, String urlThema) {
-            //final String MUSTER = "<li><a href=\"http://www.mdr.de/Media/stream/";
-            //final String MUSTER_ADD = "http://www.mdr.de/Media/stream/";
             final String MUSTER_START = "<span class=\"ressortHead\">Sendungen von A bis Z</span>";
             final String MUSTER = "<a href=\"/mediathek/fernsehen/a-z/";
             final String MUSTER_ADD = "http://www.mdr.de/mediathek/fernsehen/a-z/";
             LinkedList<String> tmpListe = new LinkedList<String>();
             seite2 = getUrl.getUri_Utf(senderName, urlThema, seite2, "Thema: " + thema);
-            int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
+            int pos;
+            int pos1;
+            int pos2;
             String url = "";
             if ((pos = seite2.indexOf(MUSTER_START)) != -1) {
                 while ((pos = seite2.indexOf(MUSTER, pos)) != -1) {
@@ -200,10 +218,10 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             final String MUSTER_URL = "<a href=\"/mediathek/fernsehen/a-z/";
             final String MUSTER_ADD = "http://www.mdr.de/mediathek/fernsehen/a-z/";
             LinkedList<String> tmpListe = new LinkedList<String>();
-            int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
-            String url = "";
+            int pos;
+            int pos1;
+            int pos2;
+            String url;
             try {
                 seite3 = getUrl.getUri_Utf(senderName, urlFilm, seite3, "Thema: " + thema);
                 if ((pos = seite3.indexOf(MUSTER_START)) != -1) {
@@ -235,15 +253,95 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             }
         }
 
+        void addTage(String urlSeite) {
+            final String MUSTER_START_1 = "<div class=\"teaserImage\">";
+            final String MUSTER_START_2 = "<h3>";
+            final String MUSTER_URL = "<a href=\"/mediathek/fernsehen/";
+            final String MUSTER_URL_ADD = "http://www.mdr.de/mediathek/fernsehen/";
+            final String MUSTER_TITEL = "\">";
+            int pos = 0;
+            int pos2;
+            String url;
+            String thema = "";
+            try {
+                seite1 = getUrl.getUri_Utf(senderName, urlSeite, seite1, "");
+                while ((pos = seite1.indexOf(MUSTER_START_1, pos)) != -1) {
+                    pos += MUSTER_START_1.length();
+                    if ((pos = seite1.indexOf(MUSTER_START_2, pos)) == -1) {
+                        break;
+                    }
+                    pos += MUSTER_START_2.length();
+                    if ((pos = seite1.indexOf(MUSTER_URL, pos)) == -1) {
+                        break;
+                    }
+                    pos += MUSTER_URL.length();
+                    if ((pos2 = seite1.indexOf("\"", pos)) != -1) {
+                        url = seite1.substring(pos, pos2);
+                        pos = pos2;
+                        if ((pos = seite1.indexOf(MUSTER_TITEL, pos)) == -1) {
+                            break;
+                        }
+                        pos += MUSTER_TITEL.length();
+                        pos2 = seite1.indexOf("<", pos);
+                        if (pos2 != -1) {
+                            thema = seite1.substring(pos, pos2).trim();
+                            pos = pos2;
+                        }
+                        if (url.equals("")) {
+                            Log.fehlerMeldung("MediathekMdr.addThema", "keine URL: " + urlSeite);
+                        } else {
+                            url = MUSTER_URL_ADD + url;
+                            addTage2(urlSeite, url, thema);
+                        }
+                    }
+                }// while
+            } catch (Exception ex) {
+                Log.fehlerMeldung("MediathekMdr.addThema", ex);
+            }
+        }
+
+        void addTage2(String urlFeed, String urlSeite, String thema) {
+            //<div class="teaserImage">
+            //<a href="/mediathek/fernsehen/video57930_zc-7931f8bf_zs-2d7967f4.html" title="Video starten">            final String MUSTER_START_1 = "<div class=\"teaserImage\">";
+            final String MUSTER_START = "<div class=\"teaserImage\">";
+            final String MUSTER_URL = "<a href=\"/mediathek/fernsehen/";
+            final String MUSTER_URL_ADD = "http://www.mdr.de/mediathek/fernsehen/";
+            int pos = 0;
+            int pos2;
+            String url;
+            try {
+                seite2 = getUrl.getUri_Utf(senderName, urlSeite, seite2, "");
+                while ((pos = seite2.indexOf(MUSTER_START, pos)) != -1) {
+                    pos += MUSTER_START.length();
+                    if ((pos = seite2.indexOf(MUSTER_URL, pos)) == -1) {
+                        break;
+                    }
+                    pos += MUSTER_URL.length();
+                    if ((pos2 = seite2.indexOf("\"", pos)) != -1) {
+                        url = seite2.substring(pos, pos2);
+                        pos = pos2;
+                        if (url.equals("")) {
+                            Log.fehlerMeldung("MediathekMdr.addThema", "keine URL: " + urlSeite);
+                        } else {
+                            url = MUSTER_URL_ADD + url;
+                            addFilme2(urlFeed, thema, url);
+                        }
+                    }
+                }// while
+            } catch (Exception ex) {
+                Log.fehlerMeldung("MediathekMdr.addThema", ex);
+            }
+        }
+
         void addFilme2(String strUrlFeed, String thema, String urlFilm) {
             final String MUSTER_TITEL = "<title>";
             final String MUSTER_URL = "<a class=\"avWmLink\" href=\"";
             final String MUSTER_DATUM = "<meta name=\"date\" content=\"";
-            int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
+            int pos;
+            int pos1;
+            int pos2;
             String titel = "";
-            String url = "";
+            String url;
             String datum = "";
             try {
                 seite4 = getUrl.getUri_Utf(senderName, urlFilm, seite4, "Thema: " + thema);
@@ -280,42 +378,68 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                                 }
                             }
                         }
-                        //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                        addFilm(new DatenFilm(senderName, thema, strUrlFeed, titel,
-                                url, convertDatum(datum)/* datum */, convertTime(datum)/* zeit */));
+                        String ddatum = convertDatum(datum);
+                        String zeit = convertTime(datum);
+                        if (!istInListe(thema, titel, ddatum, zeit)) {
+                            addInListe(thema, titel, ddatum, zeit);
+                            meldung(url);
+                            //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
+                            addFilm(new DatenFilm(senderName, thema, strUrlFeed, titel, url, ddatum, zeit));
+                        } else {
+                            Log.systemMeldung("MDR: Film doppelt");
+                        }
                     }
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung("MediathekMdr.addFilme2", ex);
             }
         }
+    }
 
-        private String convertDatum(String datum) {
-            //<meta name="date" content="2011-06-30T23:05:13+02:00"/>
-            try {
-                SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                Date filmDate = sdfIn.parse(datum);
-                SimpleDateFormat sdfOut;
-                sdfOut = new SimpleDateFormat("dd.MM.yyyy");
-                datum = sdfOut.format(filmDate);
-            } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekMdr.convertDatum", ex);
-            }
-            return datum;
+    private String convertDatum(String datum) {
+        //<meta name="date" content="2011-06-30T23:05:13+02:00"/>
+        try {
+            SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date filmDate = sdfIn.parse(datum);
+            SimpleDateFormat sdfOut;
+            sdfOut = new SimpleDateFormat("dd.MM.yyyy");
+            datum = sdfOut.format(filmDate);
+        } catch (Exception ex) {
+            Log.fehlerMeldung("MediathekMdr.convertDatum", ex);
         }
+        return datum;
+    }
 
-        private String convertTime(String datum) {
-            //<meta name="date" content="2011-06-30T23:05:13+02:00"/>
-            try {
-                SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                Date filmDate = sdfIn.parse(datum);
-                SimpleDateFormat sdfOut;
-                sdfOut = new SimpleDateFormat("HH:mm:ss");
-                datum = sdfOut.format(filmDate);
-            } catch (Exception ex) {
-                Log.fehlerMeldung("MediatheMdr.convertTime", ex);
-            }
-            return datum;
+    private String convertTime(String datum) {
+        //<meta name="date" content="2011-06-30T23:05:13+02:00"/>
+        try {
+            SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date filmDate = sdfIn.parse(datum);
+            SimpleDateFormat sdfOut;
+            sdfOut = new SimpleDateFormat("HH:mm:ss");
+            datum = sdfOut.format(filmDate);
+        } catch (Exception ex) {
+            Log.fehlerMeldung("MediatheMdr.convertTime", ex);
         }
+        return datum;
+    }
+
+    private synchronized String getListeTage() {
+        return listeTage.pollFirst();
+    }
+
+    private synchronized boolean istInListe(String thema, String titel, String datum, String zeit) {
+        Iterator<String[]> it = listeGesucht.iterator();
+        while (it.hasNext()) {
+            String[] k = it.next();
+            if (k[0].equalsIgnoreCase(thema) && k[1].equalsIgnoreCase(titel) && k[2].equalsIgnoreCase(datum) && k[3].equalsIgnoreCase(zeit)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void addInListe(String thema, String titel, String datum, String zeit) {
+        listeGesucht.add(new String[]{thema, titel, datum, zeit});
     }
 }

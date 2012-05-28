@@ -38,7 +38,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekArd(FilmeSuchen ssearch) {
-        super(ssearch, /* name */ SENDER, /* text */ "ARD  (bis ca. 550 MB, bis 10.000 Filme)", /* threads */ 4, /* urlWarten */ 500);
+        super(ssearch, /* name */ SENDER, /* text */ "ARD  (bis ca. 550 MB, bis 10.000 Filme)", /* threads */ 6, /* urlWarten */ 500);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             if (listeThemen.size() > 0) {
                 meldungStart(listeThemen.size());
                 listeSort(listeThemen, 1);
-                for (int t = 0; t < senderMaxThreadARD; ++t) {
+                for (int t = 0; t < senderMaxThread; ++t) {
                     new Thread(new ArdThemaLaden()).start();
                 }
             }
