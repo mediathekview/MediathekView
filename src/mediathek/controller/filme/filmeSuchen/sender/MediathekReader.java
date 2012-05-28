@@ -37,7 +37,6 @@ public class MediathekReader implements Runnable {
     String senderText = "";
     String senderName = "";
     int senderMaxThread = 4;
-    int senderMaxThreadARD = 6;
     long senderWartenSeiteLaden = 500;//ms, Basiswert zu dem dann der Faktor multipliziert wird
     boolean senderOn = true;
     boolean updateOn = false;
@@ -105,6 +104,18 @@ public class MediathekReader implements Runnable {
         Iterator<String[]> it = liste.listIterator();
         while (it.hasNext()) {
             if (it.next()[nr].equals(str)) {
+                ret = true;
+                break;
+            }
+        }
+        return ret;
+    }
+
+    boolean istInListe(LinkedList<String> liste, String str) {
+        boolean ret = false;
+        Iterator<String> it = liste.listIterator();
+        while (it.hasNext()) {
+            if (it.next().equals(str)) {
                 ret = true;
                 break;
             }
