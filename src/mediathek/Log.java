@@ -35,6 +35,18 @@ public class Log {
     private static EventListenerList listeners = new EventListenerList();
     private static boolean prog = false;
 
+    public static String getCompileDate() {
+        String ret = "";
+        try {
+            //Version
+            Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
+            ret = Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + " - Compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d);
+        } catch (Exception ex) {
+            Log.fehlerMeldung("Log.getCompileDate: ", ex);
+        }
+        return ret;
+    }
+
     public static void addAdListener(MediathekListener listener) {
         listeners.add(MediathekListener.class, listener);
     }
@@ -48,13 +60,8 @@ public class Log {
         long freeMem = Runtime.getRuntime().freeMemory();
         Log.systemMeldung("freeMemory: " + freeMem / (1024L * 1024L) + " MB");
         Log.systemMeldung("###########################################################");
-        try {
-            //Version
-            Log.systemMeldung(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
-            Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-            Log.systemMeldung("Compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
-        } catch (IOException ex) {
-        }
+        //Version
+        Log.systemMeldung(getCompileDate());
         Log.systemMeldung("Klassenname: " + classname);
         Log.systemMeldung("###########################################################");
     }
