@@ -234,12 +234,7 @@ public class FilmeSuchen {
         }
         listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR] = String.valueOf(listeFilmeNeu.size());
         listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
-        try {
-            Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-            listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = "compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d);
-        } catch (IOException ex) {
-            Log.fehlerMeldung("FilmeSuchen.metaDatenSchreiben", ex);
-        }
+        listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = Log.getCompileDate();
     }
 
     private String textLaenge(int max, String text) {

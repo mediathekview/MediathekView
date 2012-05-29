@@ -35,7 +35,6 @@ import mediathek.daten.ListeFilme;
 public class MediathekBr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "BR";
-    private int anzahl = 0;
 
     public MediathekBr(FilmeSuchen ssearch) {
         super(ssearch, /* name */ SENDER, /* text */ "BR  (ca. 3 MB, 100 Filme)", /* threads */ 2, /* urlWarten */ 500);
@@ -200,8 +199,6 @@ public class MediathekBr extends MediathekReader implements Runnable {
                     // DatenFilm(ddaten, ssender, tthema, urlThema,  ttitel, uurl, uurlorg, uurlRtmp, datum, zeit, alt)
                     DatenFilm film = new DatenFilm(senderName, thema, link, titel, urlOrg, datum, zeit);
                     addFilm(film);
-                    ++anzahl;
-                    setInfo(ListeFilme.FILMLISTE_INFOS_test_NR, String.valueOf(anzahl));
                 }
             } //while, die ganz große Schleife
         } catch (Exception ex) {

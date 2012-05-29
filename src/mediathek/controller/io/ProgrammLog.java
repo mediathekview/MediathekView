@@ -23,13 +23,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.swing.JOptionPane;
 import mediathek.Daten;
-import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.Main;
 import mediathek.daten.DDaten;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.tool.DatumZeit;
@@ -48,7 +44,6 @@ public class ProgrammLog {
                 try {
                     bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
                     // Programminfos
-                    Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
                     bw.write("#####################################################");
                     bw.newLine();
                     bw.write("Erstellt: " + DatumZeit.getJetzt_ddMMyyyy_HHmm());
@@ -56,7 +51,7 @@ public class ProgrammLog {
                     bw.write("#####################################################");
                     bw.newLine();
                     bw.newLine();
-                    bw.write("Programmversion: " + Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + " vom: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
+                    bw.write(Log.getCompileDate());
                     bw.newLine();
                     bw.write("Betriebssystem: " + System.getProperty("os.name"));
                     if (System.getProperty("os.name").toLowerCase().contains("windows")) {
