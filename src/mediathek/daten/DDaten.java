@@ -34,18 +34,17 @@ public final class DDaten extends Daten {
     // Listen
 
     public static ListeFilme listeFilmeNachBlackList = null;
-    public ListeBlacklist listeBlacklist;
+    public ListeBlacklist listeBlacklist=null;
     public ListePset listePset = null;
     public ListeAbo listeAbo = null;
     public ListeDownloads listeDownloads = null;
     public History history = null;
-//    public PanelListe panelListe = new PanelListe();
     public ErledigteAbos erledigteAbos = null;
     // globale Objekte
     public IoXmlLesen ioXmlLesen = null;
     public IoXmlSchreiben ioXmlSchreiben = null;
     public StarterClass starterClass = null;
-    public InfoPanel infoPanel = new InfoPanel();
+    public InfoPanel infoPanel=null;
     // Panel
     public MediathekGui mediathekGui = null;
     public GuiFilme guiFilme = null;
@@ -53,17 +52,15 @@ public final class DDaten extends Daten {
     public GuiAbo guiAbo = null;
     public GuiDebug guiDebug = null;
     // Dialoge
-    public DialogDatenFilm dialogDatenFilm = null;
     public StringBuffer textSystem = new StringBuffer();
     public StringBuffer textProgramm = new StringBuffer();
     public StringBuffer textFehler = new StringBuffer();
 
-    public DDaten(String basis) {
+    public DDaten(String basis, boolean gui) {
         super(basis);
         listeFilmeNachBlackList = new ListeFilme();
         listeBlacklist = new ListeBlacklist();
         listePset = new ListePset();
-//        listeProgVorlagen = new ListeProg();
         listeAbo = new ListeAbo(this);
         listeDownloads = new ListeDownloads(this);
         erledigteAbos = new ErledigteAbos(this);
@@ -71,8 +68,10 @@ public final class DDaten extends Daten {
         ioXmlLesen = new IoXmlLesen();
         ioXmlSchreiben = new IoXmlSchreiben();
         history = new History(getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_HISTORY);
-        dialogDatenFilm = new DialogDatenFilm(null, false, this);
         starterClass = new StarterClass(this);
+        if (gui) {
+            infoPanel = new InfoPanel();
+        }
     }
 
     @Override
@@ -100,5 +99,4 @@ public final class DDaten extends Daten {
             starterClass.abbrechenNachFilm();
         }
     }
-
 }

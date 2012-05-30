@@ -51,7 +51,7 @@ public class MediathekAuto {
     }
 
     public void starten() {
-        ddaten = new DDaten(pfad);
+        ddaten = new DDaten(pfad, false);
         Log.startMeldungen(this.getClass().getName());
         if (IoXmlLesen.einstellungenExistieren()) {
             ddaten.allesLaden();
@@ -93,14 +93,16 @@ public class MediathekAuto {
                 ddaten.starterClass.addStarts(s);
                 this.wait(5000);
             }
-            while (ddaten.starterClass.getAlleStarts() > 0) {
+            while (ddaten.starterClass.getStartsWaiting() > 0) {
                 //alle 5 Sekunden nachschauen ob schon fertig
                 this.wait(5000);
             }
         } catch (Exception ex) {
             Log.fehlerMeldung("MediathekAuto.filmeLaden", ex);
         }
+        ddaten.listeDownloads.listePutzen();
         ddaten.listeDownloads.abosLoschen();
+        ddaten.allesSpeichern();
         undTschuess();
     }
 

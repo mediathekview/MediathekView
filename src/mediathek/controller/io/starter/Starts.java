@@ -25,7 +25,7 @@ public class Starts {
 
     public int status = STATUS_INIT;
     public int startcounter = 0;
-    public DatenDownload download = null;
+    public DatenDownload datenDownload = null;
     public Process process = null; //Prozess des Download
     public boolean stoppen = false;
     // Quelle - start über einen Button - Download - Abo
@@ -58,6 +58,6 @@ public class Starts {
      * @param rrestart
      */
     public Starts(DatenDownload d) {
-        download = d;
+        datenDownload = d;
     }
 }

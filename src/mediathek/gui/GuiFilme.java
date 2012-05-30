@@ -43,6 +43,7 @@ import mediathek.daten.*;
 import mediathek.file.GetFile;
 import mediathek.gui.beobachter.BeobMpanel;
 import mediathek.gui.beobachter.CellRendererFilme;
+import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.*;
 
@@ -52,6 +53,7 @@ public class GuiFilme extends PanelVorlage {
     private final String[] COMBO_ZEIT = new String[]{"alles", "1 Tag", "2 Tage", "3 Tage", "4 Tage", "5 Tage", "10 Tage", "15 Tage", "20 Tage", "30 Tage"};
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 4, 5, 10, 15, 20, 30};
     private BeobMausTabelle beobMausTabelle;
+    private DialogDatenFilm dialogDatenFilm = null;
 
     /**
      * Creates new form GuiFeed
@@ -61,6 +63,7 @@ public class GuiFilme extends PanelVorlage {
     public GuiFilme(DDaten d) {
         super(d);
         initComponents();
+        dialogDatenFilm = new DialogDatenFilm(null, false, ddaten);
         init(); //alles einrichten, Beobachter anhängen
         extra();
         tabelleBauen(); //Filme laden
@@ -404,7 +407,7 @@ public class GuiFilme extends PanelVorlage {
             for (int i = 0; i < DatenFilm.FILME_MAX_ELEM; ++i) {
                 aktFilm.arr[i] = jTable1.getModel().getValueAt(selectedModelRow, i).toString();
             }
-            ddaten.dialogDatenFilm.setAktFilm(aktFilm);
+            dialogDatenFilm.setAktFilm(aktFilm);
         }
     }
 
@@ -844,7 +847,7 @@ public class GuiFilme extends PanelVorlage {
                 while (it.hasNext()) {
                     Starts s = it.next();
                     // dann läuft er noch
-                    item = new JMenuItem("Beenden: [" + s.download.arr[DatenDownload.DOWNLOAD_SENDER_NR] + "]  " + s.download.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+                    item = new JMenuItem("Beenden: [" + s.datenDownload.arr[DatenDownload.DOWNLOAD_SENDER_NR] + "]  " + s.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
                     item.addActionListener(new BeobProgramm(s));
                     jPopupMenu.add(item);
                 }
@@ -1054,7 +1057,7 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                ddaten.dialogDatenFilm.setVis();
+                dialogDatenFilm.setVis();
             }
         }
 

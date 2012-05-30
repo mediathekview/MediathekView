@@ -47,6 +47,20 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         Collections.<DatenDownload>sort(this);
     }
 
+    public synchronized void listePutzen() {
+        // beim Programmende fertige Downloads löschen
+        LinkedList<Starts> s = ddaten.starterClass.getStarts(Starts.QUELLE_ALLE);
+        Iterator<Starts> it = s.iterator();
+        while (it.hasNext()) {
+            Starts st = it.next();
+            if (st != null) {
+                if (st.status >= Starts.STATUS_FERTIG) {
+                    ddaten.listeDownloads.delDownloadByUrl(st.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                }
+            }
+        }
+    }
+
     public synchronized DatenDownload getDownloadByUrl(String url) {
         DatenDownload ret = null;
         ListIterator<DatenDownload> it = this.listIterator(0);
