@@ -42,7 +42,7 @@ class RuntimeExec {
      */
     public RuntimeExec(Starts st) {
         s = st;
-        prog = s.download.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
+        prog = s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
     }
 
     /**
@@ -62,8 +62,8 @@ class RuntimeExec {
         try {
             Log.systemMeldung("----------------------------------------------------------------------------");
             Log.systemMeldung("| Programm starten");
-            Log.systemMeldung("| Programmset: " + s.download.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
-            Log.systemMeldung("| "+prog);
+            Log.systemMeldung("| Programmset: " + s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
+            Log.systemMeldung("| " + prog);
             Log.systemMeldung("----------------------------------------------------------------------------");
             process = Runtime.getRuntime().exec(prog);
             clearIn = new Thread(new ClearInOut(INPUT, process));
@@ -74,7 +74,7 @@ class RuntimeExec {
             //bescheid geben
             if (process == null) {
             }
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Fehler beim Starten", JOptionPane.ERROR_MESSAGE);
+            Log.fehlerMeldung("RuntimeExec.exec", ex, "Fehler beim Starten");
         }
         return process;
     }

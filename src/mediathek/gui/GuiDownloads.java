@@ -198,7 +198,7 @@ public class GuiDownloads extends PanelVorlage {
                 if (starten && s.status > Starts.STATUS_RUN || !starten && s.status <= Starts.STATUS_RUN) {
                     //daten.starterClass.delStart(url);
                     ddaten.starterClass.filmLoeschen(url);
-                    if (s.download.istAbo()) {
+                    if (s.datenDownload.istAbo()) {
                         // bei Abos Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                         ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
                     }

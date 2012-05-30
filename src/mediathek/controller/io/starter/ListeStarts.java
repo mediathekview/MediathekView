@@ -22,9 +22,9 @@ package mediathek.controller.io.starter;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import mediathek.tool.TModel;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.TModel;
 
 public class ListeStarts extends LinkedList<Starts> {
 
@@ -44,7 +44,7 @@ public class ListeStarts extends LinkedList<Starts> {
         ListIterator<Starts> it = this.listIterator(0);
         while (it.hasNext()) {
             Starts s = it.next();
-            if (s.download.arr[DatenDownload.DOWNLOAD_URL_NR].equals(starts.download.arr[DatenDownload.DOWNLOAD_URL_NR])) {
+            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR])) {
                 ret = true;
                 break;
             }
@@ -56,7 +56,7 @@ public class ListeStarts extends LinkedList<Starts> {
         ListIterator<Starts> it = this.listIterator(0);
         while (it.hasNext()) {
             Starts s = it.next();
-            if (s.download.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
+            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
                 s.stoppen = true;
                 it.remove();
                 break;
@@ -127,9 +127,9 @@ public class ListeStarts extends LinkedList<Starts> {
                 start = iterator.next();
                 for (int k = 0; k < objLen; ++k) {
                     if (k < DatenDownload.DOWNLOAD_MAX_ELEM) {
-                        object[k] = start.download.arr[k];
+                        object[k] = start.datenDownload.arr[k];
                     } else {
-                        if (start.download.istAbo()) {
+                        if (start.datenDownload.istAbo()) {
                             object[k] = "Abo";
                         } else {
                             object[k] = "";

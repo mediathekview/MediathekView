@@ -83,7 +83,7 @@ public final class MediathekGui extends javax.swing.JFrame {
                 }
             }
         }
-        ddaten = new DDaten(pfad);
+        ddaten = new DDaten(pfad, true);
         DDaten.debug = debug;
         Log.startMeldungen(this.getClass().getName());
         jPanelInfo.setLayout(new BorderLayout());
@@ -549,6 +549,7 @@ public final class MediathekGui extends javax.swing.JFrame {
     }
 
     private void beenden() {
+        ddaten.listeDownloads.listePutzen();
         ddaten.allesAbbrechen();
         //int t = this.getExtendedState();
         if (this.getExtendedState() == JFrame.MAXIMIZED_BOTH) {

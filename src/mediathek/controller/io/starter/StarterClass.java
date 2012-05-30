@@ -91,7 +91,7 @@ public class StarterClass {
         Iterator<Starts> it = listeStarts.getIt();
         while (it.hasNext()) {
             Starts s = it.next();
-            if (s.download.getQuelle() == quelle || quelle == Starts.QUELLE_ALLE) {
+            if (s.datenDownload.getQuelle() == quelle || quelle == Starts.QUELLE_ALLE) {
                 ret.add(s);
             }
         }
@@ -103,7 +103,7 @@ public class StarterClass {
         Iterator<Starts> it = listeStarts.getIt();
         while (it.hasNext()) {
             Starts s = it.next();
-            if (s.download.getQuelle() == Starts.QUELLE_ABO || s.download.getQuelle() == Starts.QUELLE_DOWNLOAD) {
+            if (s.datenDownload.getQuelle() == Starts.QUELLE_ABO || s.datenDownload.getQuelle() == Starts.QUELLE_DOWNLOAD) {
                 if (s.status == Starts.STATUS_INIT) {
                     ++ret;
                 }
@@ -117,7 +117,7 @@ public class StarterClass {
         Iterator<Starts> it = listeStarts.getIt();
         while (it.hasNext()) {
             Starts s = it.next();
-            if (s.download.getQuelle() == Starts.QUELLE_ABO || s.download.getQuelle() == Starts.QUELLE_DOWNLOAD) {
+            if (s.datenDownload.getQuelle() == Starts.QUELLE_ABO || s.datenDownload.getQuelle() == Starts.QUELLE_DOWNLOAD) {
                 if (s.status == Starts.STATUS_RUN) {
                     ++ret;
                 }
@@ -151,7 +151,7 @@ public class StarterClass {
         Iterator<Starts> it = listeStarts.getIt();
         while (it.hasNext()) {
             Starts s = it.next();
-            if (s.download.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
+            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
                 ret = s.status;
                 break;
             }
@@ -164,7 +164,7 @@ public class StarterClass {
         Iterator<Starts> it = listeStarts.getIt();
         while (it.hasNext()) {
             Starts s = it.next();
-            if (s.download.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
+            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
                 ret = s;
                 break;
             }
@@ -176,11 +176,9 @@ public class StarterClass {
         listeStarts.delStart(url);
     }
 
-    public synchronized int getAlleStarts() {
+    public synchronized int getStartsWaiting() {
         // für "Auto", wenn alle abgearbeitet sind, dann fertig
-        listeStarts.aufraeumen();
-        notifyStartEvent();
-        return listeStarts.size();
+        return listeStarts.getmax();
     }
 
     public synchronized void aufraeumen() {
@@ -264,7 +262,7 @@ public class StarterClass {
         Iterator<Starts> it = listeStarts.getIt();
         while (it.hasNext()) {
             Starts s = it.next();
-            if (s.download.getQuelle() == Starts.QUELLE_BUTTON) {
+            if (s.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
                 if (s.status != Starts.STATUS_RUN) {
                     // dann ist er fertig oder abgebrochen
                     it.remove();
@@ -334,7 +332,7 @@ public class StarterClass {
         String host = "";
         try {
             try {
-                String uurl = s.download.arr[DatenDownload.DOWNLOAD_URL_NR];
+                String uurl = s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR];
                 // die funktion "getHost()" kann nur das Protokoll "http" ??!??
                 if (uurl.startsWith("rtmpt:")) {
                     uurl = uurl.toLowerCase().replace("rtmpt:", "http:");
@@ -402,7 +400,7 @@ public class StarterClass {
         }
 
         public void startStarten(Starts starts) {
-            switch (starts.download.getArt()) {
+            switch (starts.datenDownload.getArt()) {
                 case Starts.ART_PROGRAMM:
                     StartenProgramm zdfStarten = new StartenProgramm(starts);
                     new Thread(zdfStarten).start();
@@ -428,7 +426,7 @@ public class StarterClass {
             starts.status = Starts.STATUS_RUN;
             notifyStartEvent();
             try {
-                new File(starts.download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
+                new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
             } catch (Exception ex) {
                 Log.fehlerMeldung("StarterClass.StartenProgramm-1", ex);
             }
@@ -464,7 +462,7 @@ public class StarterClass {
                         if (starts.process != null) {
                             starts.process.destroy();
                             //Anzeige ändern - fertig
-                            if (starts.download.getQuelle() == Starts.QUELLE_BUTTON) {
+                            if (starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
                                 //für die direkten Starts mit dem Button
                                 starts.status = Starts.STATUS_FERTIG;
                             } else {
@@ -475,11 +473,11 @@ public class StarterClass {
                         }
                     } else { //Exitvalue vom Prozess prüfen und ggf. neu Starten
                         if (k != 0) {
-                            if (starts.download.isRestart()) {
+                            if (starts.datenDownload.isRestart()) {
                                 //Download wieder starten
                                 if (filesize == -1) {
                                     //erstes Mal
-                                    File file = new File(starts.download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                                    File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                                     if (file.exists()) {
                                         filesize = file.length();
                                         startOk = true;
@@ -489,7 +487,7 @@ public class StarterClass {
                                     }
                                 } else {
                                     //jetzt muss das File wachsen, sonst kein Restart
-                                    File file = new File(starts.download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                                    File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                                     if (file.exists()) {
                                         if (file.length() > filesize) {
                                             //nur weitermachen wenn die Datei tasächlich wächst
@@ -508,7 +506,7 @@ public class StarterClass {
                                 //Anzeige ändern - fertig
                                 starts.status = Starts.STATUS_ERR;
                             }
-                        } else if (starts.download.getQuelle() == Starts.QUELLE_BUTTON) {
+                        } else if (starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
                             //für die direkten Starts mit dem Button
                             starts.status = Starts.STATUS_FERTIG;
                         } else if (pruefen(starts)) {
@@ -555,20 +553,20 @@ public class StarterClass {
         public void run() {
             Log.systemMeldung("----------------------------------------------------------------------------");
             Log.systemMeldung("| Download starten");
-            Log.systemMeldung("| Programmset: " + starts.download.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
+            Log.systemMeldung("| Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
             Log.systemMeldung("| direkter Download");
-            Log.systemMeldung("| URL: " + starts.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
-            Log.systemMeldung("| Zieldatei: " + starts.download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.systemMeldung("| URL: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+            Log.systemMeldung("| Zieldatei: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
             Log.systemMeldung("----------------------------------------------------------------------------");
             InputStream input;
             OutputStream destStream;
             try {
                 int len;
-                new File(starts.download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
-                URL feedUrl = new URL(starts.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
+                URL feedUrl = new URL(starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 input = feedUrl.openStream();
                 byte[] buffer = new byte[1024];
-                destStream = new FileOutputStream(starts.download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                destStream = new FileOutputStream(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 while ((len = input.read(buffer)) != -1) {
                     destStream.write(buffer, 0, len);
                     if (allesStop || starts.stoppen) {
@@ -585,7 +583,7 @@ public class StarterClass {
                     //mit dem flvstreamer könnte man weitermachen, wennd das File noch da wäre
                     //new File(starts.film.arr[Konstanten.FILM_ZIEL_PFAD_DATEI_NR]).delete();
                 } else {
-                    if (starts.download.getQuelle() == Starts.QUELLE_BUTTON) {
+                    if (starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
                         // direkter Start mit dem Button
                         starts.status = Starts.STATUS_FERTIG;
                     } else if (pruefen(starts)) {
@@ -606,16 +604,16 @@ public class StarterClass {
     private boolean pruefen(Starts starts) {
         //prüfen ob der Downoad geklappt hat und die Datei existiert und eine min. Grüße hat
         boolean ret = false;
-        File file = new File(starts.download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         if (!file.exists()) {
-            Log.fehlerMeldung("StartetClass.pruefen-1", "Download fehlgeschlagen: " + starts.download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung("StartetClass.pruefen-1", "Download fehlgeschlagen: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_KB * 1024) {
-            Log.fehlerMeldung("StartetClass.pruefen-2", "Download fehlgeschlagen: " + starts.download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung("StartetClass.pruefen-2", "Download fehlgeschlagen: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else {
-            if (starts.download.istAbo()) {
-                ddaten.erledigteAbos.zeileSchreiben(starts.download.arr[DatenDownload.DOWNLOAD_THEMA_NR],
-                        starts.download.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                        starts.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
+            if (starts.datenDownload.istAbo()) {
+                ddaten.erledigteAbos.zeileSchreiben(starts.datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
+                        starts.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
+                        starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
             }
             ret = true;
         }

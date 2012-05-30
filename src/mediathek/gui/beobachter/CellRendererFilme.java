@@ -60,7 +60,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             boolean live = table.getModel().getValueAt(r, DatenFilm.FILM_THEMA_NR).equals(ListeFilme.THEMA_LIVE);
             Starts s = ddaten.starterClass.getStart(url);
             if (s != null) {
-                if (s.download.getQuelle() == Starts.QUELLE_BUTTON) {
+                if (s.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
                     switch (s.status) {
                         case Starts.STATUS_INIT:
                             if (isSelected) {

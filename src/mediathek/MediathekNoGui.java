@@ -115,9 +115,7 @@ public class MediathekNoGui {
             // wenn eine ImportUrl angegeben, dann noch eine Liste importieren
             addImportListe(importUrl);
         }
-
         new IoXmlFilmlisteSchreiben().filmeSchreiben(Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, Daten.listeFilme);
-
         if (!output.equals("")) {
             LinkedList<String> out = new LinkedList<String>();
             String tmp;
