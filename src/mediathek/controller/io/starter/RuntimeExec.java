@@ -23,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import javax.swing.JOptionPane;
 import mediathek.Log;
 import mediathek.daten.DatenDownload;
 
@@ -70,7 +69,7 @@ class RuntimeExec {
             clearOut = new Thread(new ClearInOut(ERROR, process));
             clearIn.start();
             clearOut.start();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             //bescheid geben
             if (process == null) {
             }
