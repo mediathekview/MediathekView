@@ -269,19 +269,14 @@ public class GuiFunktionen {
         }
     }
 
-    public static String textLaenge(String text) {
-        if (text.length() != 80) {
-            return textLaenge(80, text);
-        } else {
-            return text;
-        }
-    }
-
-    public static String textLaenge(int max, String text) {
+    public static String textLaenge(int max, String text, boolean mitte) {
         final int MAX = max;
         if (text.length() > MAX) {
-            //text = text.substring(0, MAX);
-            text = text.substring(0, MAX - 1);
+            if (mitte) {
+                text = text.substring(0, 25) + " .... " + text.substring(text.length() - (MAX - 31));
+            } else {
+                text = text.substring(0, MAX - 1);
+            }
         }
         while (text.length() < MAX) {
             text = text + " ";
@@ -303,14 +298,4 @@ public class GuiFunktionen {
     public static boolean istUrl(String dateiUrl) {
         return dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
     }
-    //    public static void checkFlash(DDaten daten, String url, String befehlsString) {
-//        if (!System.getProperty("os.name").toLowerCase().contains("linux")) {
-//            // bei Linux klappts inzwischen meist auch mit anderen Playern
-//            if (url.startsWith("-r") || url.startsWith("rtmp") || url.startsWith("--host")) {
-//                if (!(befehlsString.contains("flvstreamer") || befehlsString.contains("rtmpdump"))) {
-//                    new Hinweis(daten).hinweisFlash();
-//                }
-//            }
-//        }
-//    }
 }

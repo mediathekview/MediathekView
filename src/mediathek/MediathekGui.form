@@ -78,20 +78,31 @@
             <Property name="text" type="java.lang.String" value="Downloads"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsAktualisieren">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/view-refresh_16.png"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="aktualisieren"/>
-              </Properties>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsStarten">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/next_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="alle starten"/>
+                <Property name="text" type="java.lang.String" value="alle Downloads starten"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadAlleStoppen">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/player_stop_16.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="alle stoppen"/>
+                <Property name="toolTipText" type="java.lang.String" value="alle Downloads stoppen"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadStoppen">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/player_stop_16.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Download stoppen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsZurueckstellen">
@@ -99,7 +110,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/undo_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="zur&#xfc;ckstellen"/>
+                <Property name="text" type="java.lang.String" value="Download zur&#xfc;ckstellen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsLoeschen">
@@ -107,7 +118,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/del_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="l&#xf6;schen"/>
+                <Property name="text" type="java.lang.String" value="Download l&#xf6;schen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadAendern">
@@ -115,7 +126,17 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/configure_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="&#xe4;ndern"/>
+                <Property name="text" type="java.lang.String" value="Download &#xe4;ndern"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator3">
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsAktualisieren">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/view-refresh_16.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Downloads aktualisieren"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsAufraeumen">
@@ -123,7 +144,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/edit-clear_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="aufr&#xe4;umen"/>
+                <Property name="text" type="java.lang.String" value="Downloads aufr&#xe4;umen"/>
               </Properties>
             </MenuItem>
           </SubComponents>

@@ -35,7 +35,6 @@ import mediathek.controller.filme.FilmListenerElement;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.DatumZeit;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
@@ -147,7 +146,6 @@ public class IoXmlFilmlisteLesen {
     private boolean datenFilmlisteLesen(XMLStreamReader parser, String text, ListeFilme listeFilme) {
         boolean ret = true;
         int count = 0;
-        text = GuiFunktionen.textLaenge(text);
         DatenFilm datenFilm;
         DatenFilm datenFilmAlt = new DatenFilm();
         try {

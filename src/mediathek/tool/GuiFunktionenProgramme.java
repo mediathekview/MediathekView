@@ -211,20 +211,6 @@ public class GuiFunktionenProgramme {
         return pSet;
     }
 
-//    public static boolean addStandardprogramme(DDaten ddaten, boolean auto) {
-//        ListePset pSet;
-//        InputStream datei;
-//        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-//            datei = new GetFile().getPsetVorlageLinux();
-//        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-//            datei = new GetFile().getPsetVorlageMac();
-//        } else {
-//            datei = new GetFile().getPsetVorlageWindows();
-//        }
-//        // Standardgruppen laden
-//        pSet = IoXmlLesen.importPset(datei, true);
-//        return addVorlagen(ddaten, pSet, auto);
-//    }
     public static boolean addVorlagen(DDaten ddaten, ListePset pSet, boolean auto) {
         // Standardgruppen laden
         if (pSet != null) {

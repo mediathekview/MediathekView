@@ -34,6 +34,7 @@ import mediathek.controller.filme.BeobFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.GuiFunktionen;
 
 public class PanelSenderLaden extends PanelVorlage {
 
@@ -61,6 +62,13 @@ public class PanelSenderLaden extends PanelVorlage {
         } else {
             jSpinnerWarten.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_WARTEN_NR]));
         }
+        jButtonStop.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.filmeLaden.setStop();
+            }
+        });
         addSender();
         DDaten.filmeLaden.addAdListener(new BeobFilmeLaden() {
 
@@ -74,7 +82,7 @@ public class PanelSenderLaden extends PanelVorlage {
                 jProgressBar1.setMinimum(0);
                 jProgressBar1.setValue(filmListenerElement.progress);
                 jProgressBar1.setStringPainted(true);
-                jLabelProgress.setText(filmListenerElement.text);
+                jLabelProgress.setText(GuiFunktionen.textLaenge(80, filmListenerElement.text, true /* mitte */));
             }
 
             @Override
@@ -146,6 +154,7 @@ public class PanelSenderLaden extends PanelVorlage {
         jLabel1 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
         jLabelProgress = new javax.swing.JLabel();
+        jButtonStop = new javax.swing.JButton();
 
         panelSender.setBorder(javax.swing.BorderFactory.createTitledBorder("Sender"));
 
@@ -191,6 +200,9 @@ public class PanelSenderLaden extends PanelVorlage {
 
         jLabelProgress.setText(" ");
 
+        jButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/stop_16.png"))); // NOI18N
+        jButtonStop.setToolTipText("Abbrechen");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -200,11 +212,14 @@ public class PanelSenderLaden extends PanelVorlage {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelSender, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabelProgress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabelProgress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonStop)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -217,14 +232,20 @@ public class PanelSenderLaden extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonStop))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelProgress)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonStop, jProgressBar1});
+
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton jButtonStop;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabelProgress;

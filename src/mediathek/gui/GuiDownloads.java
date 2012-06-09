@@ -92,6 +92,14 @@ public class GuiDownloads extends PanelVorlage {
         downloadAendern();
     }
 
+    public void stoppen() {
+        filmStartenWiederholenStoppen(false /* starten */);
+    }
+
+    public void alleStoppen() {
+        stopAll();
+    }
+
     //===================================
     //private
     //===================================

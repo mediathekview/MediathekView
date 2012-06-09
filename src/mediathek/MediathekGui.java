@@ -20,12 +20,13 @@
 package mediathek;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
-import javax.accessibility.Accessible;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -133,6 +134,8 @@ public final class MediathekGui extends javax.swing.JFrame {
                 jButtonDownloadZurueckstellen.setEnabled(true);
                 jButtonDownloadLoeschen.setEnabled(true);
                 jButtonDownloadAufraeumen.setEnabled(true);
+                jMenuItemDownloadStoppen.setEnabled(true);
+                jMenuItemDownloadAlleStoppen.setEnabled(true);
                 jMenuItemDownloadsAktualisieren.setEnabled(true);
                 jMenuItemDownloadsAufraeumen.setEnabled(true);
                 jMenuItemDownloadsLoeschen.setEnabled(true);
@@ -178,6 +181,8 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenuItemDownloadsAufraeumen.setEnabled(false);
         jMenuItemDownloadsLoeschen.setEnabled(false);
         jMenuItemDownloadsStarten.setEnabled(false);
+        jMenuItemDownloadStoppen.setEnabled(false);
+        jMenuItemDownloadAlleStoppen.setEnabled(false);
         jMenuItemDownloadAendern.setEnabled(false);
         jMenuItemDownloadsZurueckstellen.setEnabled(false);
         jSpinnerAnzahl.setEnabled(false);
@@ -310,6 +315,13 @@ public final class MediathekGui extends javax.swing.JFrame {
                 ddaten.guiDownloads.starten();
             }
         });
+        jButtonDownloadStarten.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.guiDownloads.starten();
+            }
+        });
         jButtonDownloadZurueckstellen.addActionListener(new ActionListener() {
 
             @Override
@@ -322,6 +334,20 @@ public final class MediathekGui extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.aendern();
+            }
+        });
+        jMenuItemDownloadAlleStoppen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.guiDownloads.alleStoppen();
+            }
+        });
+        jMenuItemDownloadStoppen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.guiDownloads.stoppen();
             }
         });
         // Tab Abo
@@ -608,34 +634,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         }
     }
 
-    public class JMenuItemSpinner extends JSpinner implements Accessible, MenuElement {
-
-        @Override
-        public void processMouseEvent(MouseEvent event, MenuElement[] path, MenuSelectionManager manager) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void processKeyEvent(KeyEvent event, MenuElement[] path, MenuSelectionManager manager) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void menuSelectionChanged(boolean isIncluded) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public MenuElement[] getSubElements() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Component getComponent() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -672,11 +670,15 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenuItemFilmAbspielen = new javax.swing.JMenuItem();
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
         jMenuDownload = new javax.swing.JMenu();
-        jMenuItemDownloadsAktualisieren = new javax.swing.JMenuItem();
         jMenuItemDownloadsStarten = new javax.swing.JMenuItem();
+        jMenuItemDownloadAlleStoppen = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemDownloadStoppen = new javax.swing.JMenuItem();
         jMenuItemDownloadsZurueckstellen = new javax.swing.JMenuItem();
         jMenuItemDownloadsLoeschen = new javax.swing.JMenuItem();
         jMenuItemDownloadAendern = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemDownloadsAktualisieren = new javax.swing.JMenuItem();
         jMenuItemDownloadsAufraeumen = new javax.swing.JMenuItem();
         jMenu9 = new javax.swing.JMenu();
         jMenuItemAbosEinschalten = new javax.swing.JMenuItem();
@@ -831,28 +833,39 @@ public final class MediathekGui extends javax.swing.JFrame {
 
         jMenuDownload.setText("Downloads");
 
-        jMenuItemDownloadsAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png"))); // NOI18N
-        jMenuItemDownloadsAktualisieren.setText("aktualisieren");
-        jMenuDownload.add(jMenuItemDownloadsAktualisieren);
-
         jMenuItemDownloadsStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_16.png"))); // NOI18N
-        jMenuItemDownloadsStarten.setText("alle starten");
+        jMenuItemDownloadsStarten.setText("alle Downloads starten");
         jMenuDownload.add(jMenuItemDownloadsStarten);
 
+        jMenuItemDownloadAlleStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png"))); // NOI18N
+        jMenuItemDownloadAlleStoppen.setText("alle stoppen");
+        jMenuItemDownloadAlleStoppen.setToolTipText("alle Downloads stoppen");
+        jMenuDownload.add(jMenuItemDownloadAlleStoppen);
+        jMenuDownload.add(jSeparator1);
+
+        jMenuItemDownloadStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png"))); // NOI18N
+        jMenuItemDownloadStoppen.setText("Download stoppen");
+        jMenuDownload.add(jMenuItemDownloadStoppen);
+
         jMenuItemDownloadsZurueckstellen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_16.png"))); // NOI18N
-        jMenuItemDownloadsZurueckstellen.setText("zurückstellen");
+        jMenuItemDownloadsZurueckstellen.setText("Download zurückstellen");
         jMenuDownload.add(jMenuItemDownloadsZurueckstellen);
 
         jMenuItemDownloadsLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
-        jMenuItemDownloadsLoeschen.setText("löschen");
+        jMenuItemDownloadsLoeschen.setText("Download löschen");
         jMenuDownload.add(jMenuItemDownloadsLoeschen);
 
         jMenuItemDownloadAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png"))); // NOI18N
-        jMenuItemDownloadAendern.setText("ändern");
+        jMenuItemDownloadAendern.setText("Download ändern");
         jMenuDownload.add(jMenuItemDownloadAendern);
+        jMenuDownload.add(jSeparator3);
+
+        jMenuItemDownloadsAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png"))); // NOI18N
+        jMenuItemDownloadsAktualisieren.setText("Downloads aktualisieren");
+        jMenuDownload.add(jMenuItemDownloadsAktualisieren);
 
         jMenuItemDownloadsAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/edit-clear_16.png"))); // NOI18N
-        jMenuItemDownloadsAufraeumen.setText("aufräumen");
+        jMenuItemDownloadsAufraeumen.setText("Downloads aufräumen");
         jMenuDownload.add(jMenuItemDownloadsAufraeumen);
 
         jMenuBar1.add(jMenuDownload);
@@ -961,6 +974,8 @@ public final class MediathekGui extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemAnleitung;
     private javax.swing.JMenuItem jMenuItemBeenden;
     private javax.swing.JMenuItem jMenuItemDownloadAendern;
+    private javax.swing.JMenuItem jMenuItemDownloadAlleStoppen;
+    private javax.swing.JMenuItem jMenuItemDownloadStoppen;
     private javax.swing.JMenuItem jMenuItemDownloadsAktualisieren;
     private javax.swing.JMenuItem jMenuItemDownloadsAufraeumen;
     private javax.swing.JMenuItem jMenuItemDownloadsLoeschen;
@@ -974,7 +989,9 @@ public final class MediathekGui extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemProgrammlog;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelInfo;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JToolBar jToolBar;
     // End of variables declaration//GEN-END:variables
