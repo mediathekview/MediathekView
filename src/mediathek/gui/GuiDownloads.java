@@ -22,6 +22,8 @@ package mediathek.gui;
 import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import mediathek.Daten;
 import mediathek.MediathekGui;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
@@ -34,14 +36,18 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.gui.beobachter.BeobMpanel;
 import mediathek.gui.beobachter.CellRendererDownloads;
+import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.tool.*;
 
 public class GuiDownloads extends PanelVorlage {
 
+    private DialogDatenFilm dialogDatenFilm = null;
+
     public GuiDownloads(DDaten d) {
         super(d);
         initComponents();
+        dialogDatenFilm = new DialogDatenFilm(null, false, ddaten);
         init();
         load();
         GuiFunktionen.spaltenDownloadSetzen(jTable1);
@@ -103,6 +109,7 @@ public class GuiDownloads extends PanelVorlage {
         jTable1.setDefaultRenderer(Datum.class, new CellRendererDownloads(ddaten));
         jTable1.setModel(new TModelDownload(new Object[][]{}, DatenDownload.DOWNLOAD_COLUMN_NAMES));
         jTable1.addMouseListener(new BeobMausTabelle());
+        jTable1.getSelectionModel().addListSelectionListener(new BeobachterTableSelect1());
         //aendern
         ActionMap am = jTable1.getActionMap();
         am.put("aendern", new BeobAbstractAction());
@@ -312,6 +319,19 @@ public class GuiDownloads extends PanelVorlage {
         ddaten.infoPanel.setTextLinks(InfoPanel.IDX_GUI_DOWNLOAD, textLinks);
     }
 
+    private void table1Select() {
+        DatenFilm aktFilm = new DatenFilm();
+        int selectedTableRow = jTable1.getSelectedRow();
+        if (selectedTableRow >= 0) {
+            int selectedModelRow = jTable1.convertRowIndexToModel(selectedTableRow);
+            DatenFilm film = Daten.listeFilme.getFilmByUrl(jTable1.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+            if (film != null) {
+                aktFilm = film;
+            }
+        }
+        dialogDatenFilm.setAktFilm(aktFilm);
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -436,6 +456,18 @@ public class GuiDownloads extends PanelVorlage {
         @Override
         public void starter(StartEvent ev) {
             panelUpdate();
+        }
+    }
+
+    private class BeobachterTableSelect1 implements ListSelectionListener {
+
+        public int selectedModelRow = -1;
+
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            if (!event.getValueIsAdjusting()) {
+                table1Select();
+            }
         }
     }
 
@@ -604,6 +636,16 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             menu.add(itemUrl);
+            //Infos
+            JMenuItem itemInfo = new JMenuItem("Infos anzeigen");
+            itemInfo.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dialogDatenFilm.setVis();
+                }
+            });
+            menu.add(itemInfo);
             //Player
             JMenuItem itemPlayer = new JMenuItem("Film abspielen");
             itemPlayer.addActionListener(new ActionListener() {
@@ -616,10 +658,12 @@ public class GuiDownloads extends PanelVorlage {
                         if (gruppe != null) {
                             int selectedModelRow = jTable1.convertRowIndexToModel(nr);
                             DatenFilm film = Daten.listeFilme.getFilmByUrl(jTable1.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
-                            // in die History eintragen
-                            ddaten.history.add(film.getUrlOrg());
-                            // und starten
-                            ddaten.starterClass.urlStarten(gruppe, film);
+                            if (film != null) {
+                                // in die History eintragen
+                                ddaten.history.add(film.getUrlOrg());
+                                // und starten
+                                ddaten.starterClass.urlStarten(gruppe, film);
+                            }
                         } else {
                             JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
                                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
