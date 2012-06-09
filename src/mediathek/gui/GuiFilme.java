@@ -230,7 +230,6 @@ public class GuiFilme extends PanelVorlage {
         // Filter erst mal ausblenden
         jCheckBoxFilter.addActionListener(new BeobMpanel(jCheckBoxFilter, jPanelFilter, "Filter"));
         jCheckBoxProgamme.addActionListener(new BeobMpanel(jCheckBoxProgamme, jPanelExtra, "weitere Videoplayer"));
-//        jPanelExtra.addMouseListener(new BeobMausProgramme());
     }
 
     // ############################################
@@ -925,7 +924,6 @@ public class GuiFilme extends PanelVorlage {
             String filmThema = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
             String filmSender = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_SENDER_NR).toString();
             String filmTitel = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_TITEL_NR).toString();
-//            String url = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr), DatenFilm.FILM_URL_NR).toString();
             JPopupMenu jPopupMenu = new JPopupMenu();
 
             //Thema laden
