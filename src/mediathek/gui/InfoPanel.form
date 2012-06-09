@@ -68,6 +68,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/mediathek/res/stop_16.png"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Abbrechen"/>
         <Property name="iconTextGap" type="int" value="1"/>
         <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
           <Insets value="[0, 10, 0, 10]"/>

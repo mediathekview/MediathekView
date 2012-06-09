@@ -28,7 +28,7 @@ import mediathek.daten.DatenFilm;
 
 /**
  *
- *         @author
+ * @author
  */
 public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
@@ -36,7 +36,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
     /**
      *
-     *          @param ddaten
+     * @param ddaten
      */
     public MediathekArdPodcast(FilmeSuchen ssearch) {
         super(ssearch, /* name */ SENDER, /* text */ "ARD-Podcasts  (bis ca. 12 MB, bis 3600 Filme)", /* threads */ 6, /* urlWarten */ 500);
@@ -176,7 +176,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                         pos1 = 0;
                         pos2 = 0;
                         url = "";
-                        while ((pos = seite.indexOf(MUSTER_2a, pos)) != -1) {
+                        while (!Daten.filmeLaden.getStop() && (pos = seite.indexOf(MUSTER_2a, pos)) != -1) {
                             pos += MUSTER_2a.length();
                             pos1 = pos;
                             pos2 = seite.indexOf("\"", pos);

@@ -65,8 +65,8 @@ public class ErledigteAbos {
             OutputStreamWriter writer = null;
             try {
                 writer = new OutputStreamWriter(new FileOutputStream(f, true));
-                thema = GuiFunktionen.textLaenge(25, putzen(thema));
-                titel = GuiFunktionen.textLaenge(30, putzen(titel));
+                thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */);
+                titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */);
                 text = DatumZeit.getHeute_dd_MM_yyyy() + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
                 writer.write(text);
                 writer.close();

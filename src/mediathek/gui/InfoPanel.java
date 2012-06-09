@@ -117,6 +117,7 @@ public final class InfoPanel extends javax.swing.JPanel {
         jLabelRechts.setText("jLabel1");
 
         jButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/stop_16.png"))); // NOI18N
+        jButtonStop.setToolTipText("Abbrechen");
         jButtonStop.setIconTextGap(1);
         jButtonStop.setMargin(new java.awt.Insets(0, 10, 0, 10));
 
