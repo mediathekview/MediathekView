@@ -27,8 +27,10 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.event.EventListenerList;
+import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
@@ -141,6 +143,8 @@ public class StarterClass {
         if (starts != null) {
             if (!listeStarts.contain(starts)) {
                 listeStarts.add(starts);
+                // gestartete Filme auch in die History eintragen
+                ddaten.history.add(starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
             }
         }
         notifyStartEvent();
