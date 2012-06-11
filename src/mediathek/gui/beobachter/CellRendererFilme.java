@@ -58,9 +58,11 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             int r = table.convertRowIndexToModel(row);
             String url = table.getModel().getValueAt(r, DatenFilm.FILM_URL_NR).toString();
             boolean live = table.getModel().getValueAt(r, DatenFilm.FILM_THEMA_NR).equals(ListeFilme.THEMA_LIVE);
+            boolean start = false;
             Starts s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 if (s.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
+                    start = true;
                     switch (s.status) {
                         case Starts.STATUS_INIT:
                             if (isSelected) {
@@ -92,9 +94,10 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                             break;
                     }
                 }
-            } else {
-                // nur wenn kein Start vorhanden, also der Film gerade nicht läuft
-                if (!live /* bei livestreams kein gesehen anzeigen */) {
+            }
+            if (!start) {
+                if (!live) {
+                    // bei livestreams keine History anzeigen
                     if (history.contains(DatenFilm.getUrlOrg(table.getModel().getValueAt(r, DatenFilm.FILM_URL_RTMP_NR).toString(),
                             table.getModel().getValueAt(r, DatenFilm.FILM_URL_ORG_NR).toString(),
                             table.getModel().getValueAt(r, DatenFilm.FILM_URL_NR).toString()))) {
@@ -104,7 +107,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                             setBackground(GuiKonstanten.FARBE_GRAU);
                         }
                     }
-                } else if (live) {
+                } else {
                     setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
                     setForeground(GuiKonstanten.DOWNLOAD_FARBE_LIVE);
                 }
