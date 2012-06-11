@@ -71,11 +71,18 @@ public class ListeRunSender extends LinkedList<RunSender> {
     }
 
     public int getProgress() {
-        int ret = 0;
+        int prog = 0;
+        int max = 0;
+        RunSender run = null;
         Iterator<RunSender> it = iterator();
         while (it.hasNext()) {
-            ret += it.next().progress;
+            run = it.next();
+            prog += run.progress;
+            max += run.max;
         }
-        return ret;
+        if (prog >= max && max >= 1) {
+            prog = max - 1;
+        }
+        return prog;
     }
 }
