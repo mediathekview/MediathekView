@@ -58,6 +58,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             }
             addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209122"); // zdf-neo
             addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209120"); // zdf-info
+            addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1317640"); // zdf-kultur
         }
         if (!Daten.filmeLaden.getStop() && listeThemen.size() > 0) {
             meldungStart(listeThemen.size());
