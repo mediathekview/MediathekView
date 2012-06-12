@@ -105,7 +105,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
 
     private class ArdThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl();
+        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
 
         public ArdThemaLaden() {
         }

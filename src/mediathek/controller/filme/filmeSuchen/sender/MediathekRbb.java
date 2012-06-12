@@ -88,7 +88,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
 
     private class ThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl();
+        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
         private StringBuffer seite2 = new StringBuffer();
         private StringBuffer seite3 = new StringBuffer();
