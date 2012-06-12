@@ -50,9 +50,8 @@ public class GetUrl {
         }
     }
 
-    public GetUrl() {
-    }
-
+//    public GetUrl() {
+//    }
     public GetUrl(int ttimeout, long wwartenBasis) {
         timeout = ttimeout;
         wartenBasis = wwartenBasis;
@@ -71,6 +70,29 @@ public class GetUrl {
 
     public StringBuffer getUri_Iso(String sender, String addr, StringBuffer seite, String meldung) {
         return getUri(sender, addr, seite, Konstanten.KODIERUNG_ISO15, timeout, meldung);
+    }
+
+    public StringBuffer getUri(String sender, String addr, String kodierung, int ttimeout, int versuche, StringBuffer seite, String meldung) {
+        int timeo = ttimeout;
+        for (int i = 0; i < versuche; ++i) {
+            // wäre doch gelacht, wenns nicht irgendwann geht!
+            seite = getUri(sender, addr, seite, kodierung, timeo, meldung);
+            if (seite.length() == 0) {
+                // Timeout um 5 Sekunden verlängern
+                timeo += 5000;
+            } else {
+                break;
+            }
+        }
+        return seite;
+    }
+
+    public void setTimeout(int ttimeout) {
+        timeout = ttimeout;
+    }
+
+    public int getTimeout() {
+        return timeout;
     }
 
     public static int getSeitenZaehler(String sender) {
@@ -114,7 +136,6 @@ public class GetUrl {
 //        }
 //        return ret;
 //    }
-
     public static synchronized void resetSeitenZaehler() {
         listeSeitenZaehler.clear();
         listeSeitenZaehlerFehler.clear();

@@ -103,7 +103,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
     private class ArdThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl();
+        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
         private StringBuffer seite = new StringBuffer();
         private StringBuffer seite2 = new StringBuffer();
 

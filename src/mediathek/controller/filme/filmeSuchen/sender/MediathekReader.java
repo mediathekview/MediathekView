@@ -53,11 +53,11 @@ public class MediathekReader implements Runnable {
      */
     public MediathekReader(FilmeSuchen ssearch, String name, String text, int ssenderMaxThread, int ssenderWartenSeiteLaden) {
         suchen = ssearch;
-        getUrlIo = new GetUrl();
+        senderWartenSeiteLaden = ssenderWartenSeiteLaden;
+        getUrlIo = new GetUrl(ssenderWartenSeiteLaden);
         senderText = text;
         senderName = name;
         senderMaxThread = ssenderMaxThread;
-        senderWartenSeiteLaden = ssenderWartenSeiteLaden;
     }
     //===================================
     // public 
