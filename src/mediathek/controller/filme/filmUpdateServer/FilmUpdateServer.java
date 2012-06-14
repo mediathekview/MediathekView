@@ -65,6 +65,8 @@ public class FilmUpdateServer {
         }
         if (listeUpdateServer.size() == 0) {
             listeUpdateServer.add(new DatenFilmUpdateServer("http://178.77.79.81/mediathek4/Mediathek_14.bz2", "1"));
+            listeUpdateServer.add(new DatenFilmUpdateServer("http://178.77.79.81/mediathek2/Mediathek_13.zip", "1"));
+            listeUpdateServer.add(new DatenFilmUpdateServer("http://178.77.79.81/mediathek3/Mediathek_12.bz2", "1"));
             listeUpdateServer.add(new DatenFilmUpdateServer("http://178.77.79.81/mediathek3/Mediathek_10.bz2", "1"));
             listeUpdateServer.add(new DatenFilmUpdateServer("http://178.77.79.81/mediathek2/Mediathek_08.zip", "1"));
         }
