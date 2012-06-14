@@ -1278,6 +1278,7 @@ public class PanelPsetLang extends PanelVorlage {
                 listePset.addPset(gruppe.copy());
                 tabellePset();
                 Daten.setGeaendert();
+                notifyPset();
             } else {
                 new HinweisKeineAuswahl().zeigen();
             }

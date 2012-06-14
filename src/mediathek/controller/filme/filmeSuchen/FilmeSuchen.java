@@ -19,16 +19,12 @@
  */
 package mediathek.controller.filme.filmeSuchen;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.event.EventListenerList;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.Main;
 import mediathek.controller.filme.FilmListener;
 import mediathek.controller.filme.FilmListenerElement;
 import mediathek.controller.filme.filmeSuchen.sender.*;
@@ -51,7 +47,6 @@ public class FilmeSuchen {
      * @param ddaten
      */
     public FilmeSuchen() {
-        //beobLaden = new BeobLaden();
         initMediathekReader();
     }
     // ###########################################################################################################
