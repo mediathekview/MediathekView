@@ -41,7 +41,6 @@ import mediathek.tool.GuiFunktionenProgramme;
 public class PanelProgrammPfade extends JPanel {
 
     public JDialog dialog = null;
-    private boolean helpModal = false;
     private boolean vlc, flvstreamer, mplayer;
 
     public PanelProgrammPfade(boolean vvlc, boolean fflvstreamer, boolean mmplayer) {
@@ -112,7 +111,7 @@ public class PanelProgrammPfade extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, helpModal, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_STANDARD_PSET)).setVisible(true);
+                new DialogHilfe(null, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_STANDARD_PSET)).setVisible(true);
             }
         });
     }
