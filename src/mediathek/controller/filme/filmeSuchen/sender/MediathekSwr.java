@@ -101,10 +101,6 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                 if (pos1 != -1 && pos2 != -1) {
                     thema = strSeite.substring(pos1, pos2);
                     thema = StringEscapeUtils.unescapeHtml4(thema.trim()); //wird gleich benutzt und muss dann schon stimmen
-                    if (!themaLaden(senderName, thema)) {
-                        //nur Abos laden
-                        continue;
-                    }
                 }
                 if (url.equals("")) {
                     Log.fehlerMeldung("MediathekSwr.addToList__", "keine URL");

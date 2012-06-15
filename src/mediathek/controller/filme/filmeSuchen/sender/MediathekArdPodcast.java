@@ -64,10 +64,10 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 pos2 = seite.indexOf("\"", pos);
                 if (pos1 != -1 && pos2 != -1) {
                     thema = seite.substring(pos1, pos2);
-                    if (!themaLaden(senderName, thema)) {
-                        //nur Abos laden
-                        continue;
-                    }
+//                    if (!themaLaden(senderName, thema)) {
+//                        //nur Abos laden
+//                        continue;
+//                    }
                 }
                 pos1 = seite.indexOf(MUSTER_URL, pos);
                 pos1 = pos1 + MUSTER_URL.length();

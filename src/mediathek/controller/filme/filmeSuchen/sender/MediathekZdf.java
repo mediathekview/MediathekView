@@ -78,11 +78,11 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             Log.fehlerMeldung("MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
         }
         int pos = 0;
-        int pos1 = 0;
-        int pos2 = 0;
-        int pos3 = 0;
+        int pos1;
+        int pos2;
+        int pos3;
         String url = "";
-        String urlorg = "";
+        String urlorg;
         String thema = "";
         while ((pos = seite.indexOf(MUSTER_URL, pos)) != -1) {
             pos += MUSTER_URL.length();
@@ -97,10 +97,6 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             pos2 = seite.indexOf("<", pos);
             if (pos1 != -1 && pos2 != -1) {
                 thema = seite.substring(pos1 + 2, pos2);
-                if (!themaLaden(senderName, thema)) {
-                    //nur Abos laden
-                    continue;
-                }
             }
             if (url.equals("")) {
                 Log.fehlerMeldung("MediathekZdf.addToList_addr", "keine URL: " + addr);

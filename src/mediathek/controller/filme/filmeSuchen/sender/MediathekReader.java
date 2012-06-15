@@ -34,11 +34,11 @@ import mediathek.tool.GermanStringSorter;
  */
 public class MediathekReader implements Runnable {
 
-    String senderText = "";
+//    String senderText = "";
     String senderName = "";
     int senderMaxThread = 4;
     long senderWartenSeiteLaden = 500;//ms, Basiswert zu dem dann der Faktor multipliziert wird
-    boolean senderOn = true;
+    //boolean senderOn = true;
     boolean updateOn = false;
     int threads = 0;
     int max = 0;
@@ -55,7 +55,7 @@ public class MediathekReader implements Runnable {
         suchen = ssearch;
         senderWartenSeiteLaden = ssenderWartenSeiteLaden;
         getUrlIo = new GetUrl(ssenderWartenSeiteLaden);
-        senderText = text;
+//        senderText = text;
         senderName = name;
         senderMaxThread = ssenderMaxThread;
     }
@@ -63,16 +63,19 @@ public class MediathekReader implements Runnable {
     // public 
     //===================================
 
-    public boolean istSenderAn() {
-        return senderOn;
+//    public boolean istSenderAn() {
+//        return senderOn;
+//    }
+//
+//    public void setSenderAn(boolean an) {
+//        senderOn = an;
+//    }
+    public boolean checkSenderName(String name) {
+        return senderName.equalsIgnoreCase(name);
     }
 
-    public void setSenderAn(boolean an) {
-        senderOn = an;
-    }
-
-    public String getSenderName() {
-        return senderName;
+    public String[] getListeSenderName() {
+        return new String[]{senderName};
     }
 
     @Override
@@ -127,11 +130,10 @@ public class MediathekReader implements Runnable {
         return listeThemen.pollFirst();
     }
 
-    boolean themaLaden(String sender, String thema) {
-        boolean ret = true;
-        return ret;
-    }
-
+//    boolean themaLaden(String sender, String thema) {
+//        boolean ret = true;
+//        return ret;
+//    }
     // Meldungen
     synchronized void meldungStart(int mmax) {
         max = mmax;

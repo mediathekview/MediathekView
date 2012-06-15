@@ -20,6 +20,7 @@
 package mediathek.controller.filme;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import javax.swing.event.EventListenerList;
 import mediathek.Konstanten;
 import mediathek.controller.filme.filmUpdateServer.ListeFilmUpdateServer;
@@ -96,12 +97,17 @@ public class FilmeLaden {
     }
 
     public String[] getSenderNamen() {
-        String[] ret = new String[filmeSuchen.mediathekListe.size()];
+        LinkedList<String> liste = new LinkedList<String>();
         Iterator<MediathekReader> it = filmeSuchen.mediathekListe.iterator();
-        int i = 0;
         while (it.hasNext()) {
-            ret[i] = it.next().getSenderName();
-            ++i;
+            String[] s = it.next().getListeSenderName();
+            for (int i = 0; i < s.length; ++i) {
+                liste.add(s[i]);
+            }
+        }
+        String[] ret = new String[liste.size()];
+        for (int i = 0; i < liste.size(); ++i) {
+            ret[i] = liste.get(i);
         }
         return ret;
     }
@@ -167,7 +173,6 @@ public class FilmeLaden {
 //    public void addListener(MediathekListener listener) {
 //        listeners.add(MediathekListener.class, listener);
 //    }
-
     public void addAdListener(FilmListener listener) {
         listeners.add(FilmListener.class, listener);
     }

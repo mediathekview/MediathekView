@@ -69,10 +69,6 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     pos2 = seite.indexOf("</a>", pos);
                     if (pos1 != -1 && pos2 != -1) {
                         thema = seite.substring(pos1 + 1, pos2);
-                        if (!themaLaden(senderName, thema)) {
-                            //nur Abos laden
-                            continue;
-                        }
                     }
                     String[] add = new String[]{"http://www.videoportal.sf.tv/rss/sendung?id=" + url, thema};
                     if (!istInListe(listeThemen, url, 0)) {
