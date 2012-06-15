@@ -89,10 +89,6 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                         if (thema.endsWith(" aufrufen...")) {
                             thema = thema.replace(" aufrufen...", "");
                         }
-                        if (!themaLaden(senderName, thema)) {
-                            //nur Abos laden
-                            continue;
-                        }
                     }
                     if (url.equals("")) {
                         continue;

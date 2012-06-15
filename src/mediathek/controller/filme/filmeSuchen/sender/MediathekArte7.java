@@ -38,15 +38,12 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
 
     public static final String SENDER_ARTE_DE = "ARTE.DE";
     public static final String SENDER_ARTE_FR = "ARTE.FR";
-    static boolean arte_de = true;
-    static boolean arte_fr = true;
-    static boolean lSchon = false;
+    public static final String SENDER_ARTE = "ARTE";
     private final String THEMA_ARTE_7 = "Arte+7";
     private int themenLaufen = 0;
-    private int MAX_SEITEN = 15;
+    private int MAX_SEITEN = 15; // Seiten bei den Themen //////////////////////////
     private LinkedList<String[]> listeFilmseiten = new LinkedList<String[]>();
     private LinkedList<String[]> listeFilmseitenFertig = new LinkedList<String[]>();
-    private boolean de;
     private Semaphore sem = new Semaphore(1);
 
     /**
@@ -54,42 +51,29 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
      * @param ddaten
      * @param dde
      */
-    public MediathekArte7(FilmeSuchen ssearch, boolean dde) {
+    public MediathekArte7(FilmeSuchen ssearch) {
         super(ssearch, /* name */ "", /* text */ "", /* threads */ 6, /* urlWarten */ 500);
-        de = dde;
-        if (de) {
-            senderText = "Arte DE (bis ca. 200 MB, bis 2000 Filme)";
-            senderName = SENDER_ARTE_DE;
-        } else {
-            senderText = "Arte FR (bis ca. 200 MB, bis 2000 Filme)";
-            senderName = SENDER_ARTE_FR;
-        }
+        senderName = SENDER_ARTE;
     }
 
     //===================================
     // public
     //===================================
     @Override
+    public String[] getListeSenderName() {
+        return new String[]{SENDER_ARTE_DE, SENDER_ARTE_FR};
+    }
+
+    @Override
+    public boolean checkSenderName(String name) {
+        return SENDER_ARTE_DE.equalsIgnoreCase(name) || SENDER_ARTE_FR.equalsIgnoreCase(name);
+    }
+
+    @Override
     public synchronized void addToList() {
-        if (!laufeSchon()) {
-            addToList_de_fr();
-        }
-    }
-
-    private static synchronized boolean laufeSchon() {
-        if (!lSchon) {
-            lSchon = true;
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private void addToList_de_fr() {
         try {
-            threads = 0;
-            arte_de = suchen.senderAn(SENDER_ARTE_DE);
-            arte_fr = suchen.senderAn(SENDER_ARTE_FR);
+//            arte_de = suchen.senderAn(SENDER_ARTE_DE);
+//            arte_fr = suchen.senderAn(SENDER_ARTE_FR);
             listeThemen.clear();
             listeFilmseiten.clear();
             listeFilmseitenFertig.clear();
@@ -103,7 +87,8 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 addToList__("http://videos.arte.tv/de/videos/alleVideos");
             }
             meldungStart(listeThemen.size());
-            new Thread(new ArteThemaLaden()).start(); // da reicht einer
+            // für die Themenseiten
+            new Thread(new ArteThemaLaden()).start(); // 
         } catch (Exception ex) {
             Log.fehlerMeldung("MediathekArte7.addToList_de_fr", ex);
         }
@@ -150,10 +135,6 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                     }
                     if (pos1 != -1 && pos2 != -1) {
                         thema = strSeite.substring(pos1 + 2, pos2);
-                        //nur Abos laden
-                        if (arte_de && !themaLaden(SENDER_ARTE_DE, thema) || arte_fr && !themaLaden(SENDER_ARTE_FR, thema)) {
-                            continue;
-                        }
                     }
                     if (url.equals("")) {
                         Log.fehlerMeldung("MediathekArte.addToList__", "keine URL" + senderName + thema);
@@ -182,24 +163,20 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
         @Override
         public void run() {
             try {
-                getSem();
-                ++themenLaufen;
-                ++threads;
+                meldungAddThread(); // im ThemenThread gesetzt
+                getAddThemenLaufen(1);
                 meldung("");
-                relSem();
-                // dieser Thread läuft nur 1x
+                // für die Filmseiten
                 for (int t = 0; t < senderMaxThread; ++t) {
                     new Thread(new ArteFilmseitenLaden()).start();
                 }
+                //
                 while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
                     themenSeitenSuchen(link[0] /* url */, link[1] /* Thema */);
                     meldungProgress(link[0]);
                 }
-                getSem();
-                --threads;
-                --themenLaufen;
+                getAddThemenLaufen(-1);
                 meldung("");
-                relSem();
             } catch (Exception ex) {
                 Log.fehlerMeldung("MediathekArte7.ArteThemaLaden.run", ex);
             }
@@ -321,10 +298,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
         @Override
         public synchronized void run() {
             try {
-                getSem();
-                ++threads;
                 meldung("");
-                relSem();
                 String[] filmseite;
                 do {
                     try {
@@ -338,12 +312,9 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                     } catch (Exception ex) {
                         Log.fehlerMeldung("MediathekArte7.ArteFilmseitenLaden.run", ex);
                     }
-                } while (!Daten.filmeLaden.getStop() && themenLaufen > 0);
-                getSem();
-                --threads;
+                } while (!Daten.filmeLaden.getStop() && getAddThemenLaufen(0) > 0);
                 meldung("");
-                meldungThreadUndFertig();
-                relSem();
+                meldungThreadUndFertig(); // und im SeitenThread gelöscht
             } catch (Exception ex) {
                 Log.fehlerMeldung("MediathekArte7.ArteFilmseitenLaden.run", ex);
             }
@@ -362,7 +333,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             if (thema.startsWith(THEMA_ARTE_7)) {
                 //strSeite2 = getUrl7.getUri_Utf(senderName, urlFilm, strSeite2, "");
                 strSeite2 = getUrl7.getUri(senderName, urlFilm, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 3 /* versuche */, strSeite2, "" /* Meldung */);
-           } else {
+            } else {
                 //strSeite2 = getUrl.getUri_Utf(senderName, urlFilm, strSeite2, "");
                 strSeite2 = getUrl.getUri(senderName, urlFilm, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 3 /* versuche */, strSeite2, "" /* Meldung */);
             }
@@ -420,43 +391,44 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 //strSeite2 = getUrl.getUri_Utf(senderName, urlFilm, strSeite2, "");
                 strSeite2 = getUrl.getUri(senderName, urlFilm, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 3 /* versuche */, strSeite2, "" /* Meldung */);
             }
-            int pos = 0;
             int pos1;
             int pos2;
             String url;
             String MUSTER_URL;
-            if (!Daten.filmeLaden.getStop() && arte_de) {
+            if (!Daten.filmeLaden.getStop()) {
+                // ARTE.DE
                 MUSTER_URL = MUSTER_URL_DE;
-                if ((pos = strSeite2.indexOf(MUSTER_URL, pos)) != -1) {
-                    pos += MUSTER_URL.length();
-                    pos1 = pos;
-                    pos2 = strSeite2.indexOf("\"", pos);
-                    if (pos1 != -1 && pos2 != -1 && pos1 != pos2) {
+                if ((pos1 = strSeite2.indexOf(MUSTER_URL)) != -1) {
+                    pos1 += MUSTER_URL.length();
+                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
                         url = strSeite2.substring(pos1, pos2);
                         if (!url.equals("")) {
                             //weiter gehts jetzt wirklich zum Film
                             addFilme4(SENDER_ARTE_DE, strUrlFeed, thema, titel, url, authurl);
                         } else {
-                            Log.fehlerMeldung("MediathekArte.addFilme3-1", "keine Url" + senderName + thema);
+                            Log.fehlerMeldung("MediathekArte.addFilme3-1", "keine Url " + SENDER_ARTE_DE + " " + urlFilm);
                         }
                     }
+                } else {
+                    Log.fehlerMeldung("MediathekArte.addFilme3-1", "keine Url " + SENDER_ARTE_DE + " " + urlFilm);
                 }
             }
-            if (!Daten.filmeLaden.getStop() && arte_fr) {
+            if (!Daten.filmeLaden.getStop()) {
+                // ARTE.FR
                 MUSTER_URL = MUSTER_URL_FR;
-                if ((pos = strSeite2.indexOf(MUSTER_URL, pos)) != -1) {
-                    pos += MUSTER_URL.length();
-                    pos1 = pos;
-                    pos2 = strSeite2.indexOf("\"", pos);
-                    if (pos1 != -1 && pos2 != -1 && pos1 != pos2) {
+                if ((pos1 = strSeite2.indexOf(MUSTER_URL)) != -1) {
+                    pos1 += MUSTER_URL.length();
+                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
                         url = strSeite2.substring(pos1, pos2);
                         if (!url.equals("")) {
                             //weiter gehts jetzt wirklich zum Film
                             addFilme4(SENDER_ARTE_FR, strUrlFeed, thema, titel, url, authurl);
                         } else {
-                            Log.fehlerMeldung("MediathekArte.addFilme3-2", "keine Url" + senderName + thema);
+                            Log.fehlerMeldung("MediathekArte.addFilme3-2", "keine Url " + SENDER_ARTE_FR + " " + urlFilm);
                         }
                     }
+                } else {
+                    Log.fehlerMeldung("MediathekArte.addFilme3-2", "keine Url " + SENDER_ARTE_FR + " " + urlFilm);
                 }
             }
         }
@@ -471,8 +443,10 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             String tmp;
             String datum = "";
             String zeit = "";
+            String name = "";
             final String MUSTER_DATUM = "<dateVideo>";
             final String MUSTER_URL = "<url quality=\"hd\">";
+            final String MUSTER_NAME = "<name>";
             if (thema.startsWith(THEMA_ARTE_7)) {
                 //strSeite3 = getUrl7.getUri_Utf(senderName, urlFilm, strSeite3, "");
                 strSeite3 = getUrl7.getUri(senderName, urlFilm, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 3 /* versuche */, strSeite3, "" /* Meldung */);
@@ -480,41 +454,55 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 //strSeite3 = getUrl.getUri_Utf(senderName, urlFilm, strSeite3, "");
                 strSeite3 = getUrl.getUri(senderName, urlFilm, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 3 /* versuche */, strSeite3, "" /* Meldung */);
             }
-            int pos = 0;
             int pos1;
             int pos2;
             String url;
-            if ((pos = strSeite3.indexOf(MUSTER_DATUM, pos)) != -1) {
-                pos1 = pos + MUSTER_DATUM.length();
+            if ((pos1 = strSeite3.indexOf(MUSTER_NAME)) != -1) {
+                pos1 += MUSTER_NAME.length();
+                if ((pos2 = strSeite3.indexOf("<", pos1)) != -1) {
+                    //<name>Au détour d'un chantier</name>
+                    tmp = strSeite3.substring(pos1, pos2);
+                    if (tmp.equals("")) {
+                        Log.fehlerMeldung("MediathekArte.addFilme4-1", "keine Name: " + senderArte + " " + urlFilm);
+                        name = titel;
+                    } else {
+                        name = tmp;
+                    }
+                }
+            }
+            if ((pos1 = strSeite3.indexOf(MUSTER_DATUM)) != -1) {
+                pos1 += MUSTER_DATUM.length();
                 if ((pos2 = strSeite3.indexOf("<", pos1)) != -1) {
                     //<dateVideo>Thu, 25 Nov 2010 18:06:32 +0100</dateVideo>
                     tmp = strSeite3.substring(pos1, pos2);
                     if (tmp.equals("")) {
-                        Log.fehlerMeldung("MediathekArte.addFilme4-1", "keine Datum" + senderName + thema);
+                        Log.fehlerMeldung("MediathekArte.addFilme4-1", "keine Datum: " + senderArte + " " + urlFilm);
                     } else {
                         datum = DatumZeit.convertDatum(tmp);
                         zeit = DatumZeit.convertTime(tmp);
                     }
                 }
             }
-            pos = 0;
-            if ((pos = strSeite3.indexOf(MUSTER_URL, pos)) != -1) {
-                pos += MUSTER_URL.length();
-                pos1 = pos;
-                pos2 = strSeite3.indexOf("</url>", pos);
-                if (pos1 != -1 && pos2 != -1 && pos1 != pos2) {
+            if ((pos1 = strSeite3.indexOf(MUSTER_URL)) != -1) {
+                pos1 += MUSTER_URL.length();
+                if ((pos2 = strSeite3.indexOf("</url>", pos1)) != -1) {
                     url = strSeite3.substring(pos1, pos2);
-                    if (!url.equals("")) {
+                    if (url.equals("")) {
+                        Log.fehlerMeldung("MediathekArte.addfilme4-2", "keine Url: " + senderArte + " " + urlFilm);
+                    } else {
                         // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                        DatenFilm film = new DatenFilm(senderArte, thema, strUrlFeed, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit);
+                        DatenFilm film = new DatenFilm(senderArte, thema, strUrlFeed, name, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit);
                         film.arr[DatenFilm.FILM_URL_AUTH_NR] = authurl;
                         addFilm(film);
-                    } else {
-                        Log.fehlerMeldung("MediathekArte.addfilme4-2", "keine Url" + senderName + thema);
                     }
                 }
             }
         }
+    }
+
+    private synchronized int getAddThemenLaufen(int addThema) {
+        themenLaufen += addThema;
+        return themenLaufen;
     }
 
     private synchronized String[] getAddListeFilmseiten(String[] add) {
@@ -538,26 +526,5 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             }
         }
         return ret;
-    }
-
-    @Override
-    void meldungThreadUndFertig() {
-        //wird erst ausgeführt wenn alle Threads beendet sind
-        if (threads <= 0) { // sonst läuft noch was
-            lSchon = false;
-        }
-        super.meldungThreadUndFertig();
-    }
-
-    private void getSem() {
-        try {
-            sem.acquire();
-        } catch (InterruptedException ex) {
-            Log.fehlerMeldung("MediathekArte7.getSem", ex, senderName);
-        }
-    }
-
-    private void relSem() {
-        sem.release();
     }
 }

@@ -44,7 +44,7 @@ public class FilmeSuchen {
 
     /**
      *
-     *  @param ddaten
+     * @param ddaten
      */
     public FilmeSuchen() {
         initMediathekReader();
@@ -88,16 +88,15 @@ public class FilmeSuchen {
         GetUrl.resetSeitenZaehler();
     }
 
-    public boolean senderAn(String sender) {
-        MediathekReader r = getMediathekReader(sender);
-        if (r != null) {
-            if (r.istSenderAn()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+//    public boolean senderAn(String sender) {
+//        MediathekReader r = getMediathekReader(sender);
+//        if (r != null) {
+//            if (r.istSenderAn()) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
     public void addAdListener(FilmListener listener) {
         listeners.add(FilmListener.class, listener);
     }
@@ -110,8 +109,7 @@ public class FilmeSuchen {
         mediathekListe.add(new MediathekArd(this));
         mediathekListe.add(new MediathekArdPodcast(this));
         mediathekListe.add(new MediathekZdf(this));
-        mediathekListe.add(new MediathekArte7(this, true /* de */));
-        mediathekListe.add(new MediathekArte7(this, false));
+        mediathekListe.add(new MediathekArte7(this));
         mediathekListe.add(new Mediathek3Sat(this));
         mediathekListe.add(new MediathekSwr(this));
         mediathekListe.add(new MediathekNdr(this));
@@ -132,7 +130,7 @@ public class FilmeSuchen {
             Iterator<MediathekReader> it = mediathekListe.iterator();
             while (it.hasNext()) {
                 ret = it.next();
-                if (ret.getSenderName().equalsIgnoreCase(sender)) {
+                if (ret.checkSenderName(sender)) {
                     break;
                 }
             }

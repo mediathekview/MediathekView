@@ -62,10 +62,6 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 pos2 = seite.indexOf("\"", pos);
                 if (pos1 != -1 && pos2 != -1) {
                     thema = seite.substring(pos1, pos2);
-                    if (!themaLaden(senderName, thema)) {
-                        //nur Abos laden
-                        continue;
-                    }
                 }
                 pos2 = seite.indexOf("}", pos);
                 if (pos1 != -1 && pos2 != -1) {

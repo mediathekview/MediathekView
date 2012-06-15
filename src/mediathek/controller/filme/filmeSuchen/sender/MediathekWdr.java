@@ -101,10 +101,6 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     pos2 = strSeite.indexOf("<", pos);
                     if (pos1 != -1 && pos2 != -1) {
                         thema = strSeite.substring(pos1 + 2, pos2).trim();
-                        if (!themaLaden(senderName, thema)) {
-                            //nur Abos laden
-                            continue;
-                        }
                     }
                     if (url.equals("")) {
                         Log.fehlerMeldung("MediathekWdr.addToList__", "keine URL");

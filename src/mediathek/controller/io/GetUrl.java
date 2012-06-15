@@ -135,6 +135,7 @@ public class GetUrl {
         }
         return 0;
     }
+
     public static int getSeitenZaehlerFehlerVersuche(String sender) {
         Iterator<Seitenzaehler> it = listeSeitenZaehlerFehlerVersuche.iterator();
         Seitenzaehler sz;
@@ -215,7 +216,6 @@ public class GetUrl {
         } catch (Exception ex) {
             Log.fehlerMeldung("GetUrl.getUri", ex);
         }
-        incSeitenZaehler(sender);
         seite.setLength(0);
         URLConnection conn;
         InputStream in = null;
@@ -233,6 +233,8 @@ public class GetUrl {
             while (!Daten.filmeLaden.getStop() && inReader.read(zeichen) != -1) {
                 seite.append(zeichen);
             }
+            // nur dann zählen
+            incSeitenZaehler(sender);
         } catch (Exception ex) {
             if (!meldung.equals("")) {
                 Log.fehlerMeldung("GetUrl.getUri für: ", meldung);

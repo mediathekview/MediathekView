@@ -168,10 +168,10 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                                 thema = posTh.substring(0, posTh.indexOf("/"));
                             }
                         }
-                        if (!themaLaden(senderName, thema)) {
-                            //nur Abos laden
-                            continue;
-                        }
+//                        if (!themaLaden(senderName, thema)) {
+//                            //nur Abos laden
+//                            continue;
+//                        }
                         if (url.equals("")) {
                             continue;
                         }
