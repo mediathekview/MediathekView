@@ -195,18 +195,6 @@ public class MediathekReader implements Runnable {
         return ret;
     }
 
-//    public boolean nurAboLaden() {
-//        // liefert true, wenn nur abos geladen werden sollen
-//        boolean ret = false;
-//            //wenn Abo eingeschaltet
-//            if (Boolean.parseBoolean(daten.system[Konstanten.SYSTEM_ABO_NR])) {
-//                //und NurAboLaden eingeschaltet
-//                if (Boolean.parseBoolean(daten.system[Konstanten.SYSTEM_NUR_ABO_NR])) {
-//                    ret = true;
-//                }
-//        }
-//        return ret;
-//    }
     static void listeSort(LinkedList<String[]> liste, int stelle) {
         //Stringliste alphabetisch sortieren
         GermanStringSorter sorter = GermanStringSorter.getInstance();

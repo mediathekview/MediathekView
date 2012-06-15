@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 import mediathek.Daten;
+import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
 import mediathek.controller.io.GetUrl;
@@ -39,7 +40,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     public static final String SENDER_ARTE_FR = "ARTE.FR";
     static boolean arte_de = true;
     static boolean arte_fr = true;
-    static boolean laufeSchon = false;
+    static boolean lSchon = false;
     private final String THEMA_ARTE_7 = "Arte+7";
     private int themenLaufen = 0;
     private int MAX_SEITEN = 15;
@@ -54,7 +55,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
      * @param dde
      */
     public MediathekArte7(FilmeSuchen ssearch, boolean dde) {
-        super(ssearch, /* name */ "", /* text */ "", /* threads */ 4, /* urlWarten */ 500);
+        super(ssearch, /* name */ "", /* text */ "", /* threads */ 6, /* urlWarten */ 500);
         de = dde;
         if (de) {
             senderText = "Arte DE (bis ca. 200 MB, bis 2000 Filme)";
@@ -70,13 +71,21 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     //===================================
     @Override
     public synchronized void addToList() {
-        if (!laufeSchon) {
-            laufeSchon = true;
+        if (!laufeSchon()) {
             addToList_de_fr();
         }
     }
 
-    void addToList_de_fr() {
+    private static synchronized boolean laufeSchon() {
+        if (!lSchon) {
+            lSchon = true;
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void addToList_de_fr() {
         try {
             threads = 0;
             arte_de = suchen.senderAn(SENDER_ARTE_DE);
@@ -114,7 +123,8 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
 //        de = Boolean.parseBoolean(daten.system[Konstanten.SYSTEM_ARTE_DE_NR]);
 //        fr = Boolean.parseBoolean(daten.system[Konstanten.SYSTEM_ARTE_FR_NR]);
         StringBuffer strSeite = new StringBuffer();
-        strSeite = getUrlIo.getUri_Utf(senderName, ADRESSE, strSeite, "");
+        //strSeite = getUrlIo.getUri_Utf(senderName, ADRESSE, strSeite, "");
+        strSeite = getUrlIo.getUri(senderName, ADRESSE, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 5 /* versuche */, strSeite, "" /* Meldung */);
         int pos = 0;
         int pos1;
         int pos2;
@@ -233,9 +243,11 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                     gefunden = false;
                     meldung("*" + seite);
                     if (thema.startsWith(THEMA_ARTE_7)) {
-                        strSeite1 = getUrl7.getUri_Utf(senderName, seite, strSeite1, "");
+                        //strSeite1 = getUrl7.getUri_Utf(senderName, seite, strSeite1, "");
+                        strSeite1 = getUrl7.getUri(senderName, seite, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 5 /* versuche */, strSeite1, "" /* Meldung */);
                     } else {
-                        strSeite1 = getUrl.getUri_Utf(senderName, seite, strSeite1, "");
+                        //strSeite1 = getUrl.getUri_Utf(senderName, seite, strSeite1, "");
+                        strSeite1 = getUrl.getUri(senderName, seite, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 5 /* versuche */, strSeite1, "" /* Meldung */);
                     }
                     if ((start = strSeite1.indexOf(MUSTER_THEMA_START)) != -1) {
                         ende = strSeite1.indexOf(MUSTER_THEMA_STOP);
@@ -266,9 +278,11 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             while (!Daten.filmeLaden.getStop() && it.hasNext()) {
                 seite = it.next();
                 if (thema.startsWith(THEMA_ARTE_7)) {
-                    strSeite1 = getUrl7.getUri_Utf(senderName, seite, strSeite1, "");
+                    //strSeite1 = getUrl7.getUri_Utf(senderName, seite, strSeite1, "");
+                    strSeite1 = getUrl7.getUri(senderName, seite, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 5 /* versuche */, strSeite1, "" /* Meldung */);
                 } else {
-                    strSeite1 = getUrl.getUri_Utf(senderName, seite, strSeite1, "");
+                    //strSeite1 = getUrl.getUri_Utf(senderName, seite, strSeite1, "");
+                    strSeite1 = getUrl.getUri(senderName, seite, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 5 /* versuche */, strSeite1, "" /* Meldung */);
                 }
                 while (!Daten.filmeLaden.getStop() && (pos = strSeite1.indexOf(MUSTER_URL, pos)) != -1) {
                     pos += MUSTER_URL.length();
@@ -346,9 +360,11 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             final String MUSTER_AUTH = "var url_player = \"";
             meldung("*" + urlFilm);
             if (thema.startsWith(THEMA_ARTE_7)) {
-                strSeite2 = getUrl7.getUri_Utf(senderName, urlFilm, strSeite2, "");
-            } else {
-                strSeite2 = getUrl.getUri_Utf(senderName, urlFilm, strSeite2, "");
+                //strSeite2 = getUrl7.getUri_Utf(senderName, urlFilm, strSeite2, "");
+                strSeite2 = getUrl7.getUri(senderName, urlFilm, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 3 /* versuche */, strSeite2, "" /* Meldung */);
+           } else {
+                //strSeite2 = getUrl.getUri_Utf(senderName, urlFilm, strSeite2, "");
+                strSeite2 = getUrl.getUri(senderName, urlFilm, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 3 /* versuche */, strSeite2, "" /* Meldung */);
             }
             int pos = 0;
             int pos1;
@@ -398,9 +414,11 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             final String MUSTER_URL_DE = "<video lang=\"de\" ref=\"";
             final String MUSTER_URL_FR = "<video lang=\"fr\" ref=\"";
             if (thema.startsWith(THEMA_ARTE_7)) {
-                strSeite2 = getUrl7.getUri_Utf(senderName, urlFilm, strSeite2, "");
+                //strSeite2 = getUrl7.getUri_Utf(senderName, urlFilm, strSeite2, "");
+                strSeite2 = getUrl7.getUri(senderName, urlFilm, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 3 /* versuche */, strSeite2, "" /* Meldung */);
             } else {
-                strSeite2 = getUrl.getUri_Utf(senderName, urlFilm, strSeite2, "");
+                //strSeite2 = getUrl.getUri_Utf(senderName, urlFilm, strSeite2, "");
+                strSeite2 = getUrl.getUri(senderName, urlFilm, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 3 /* versuche */, strSeite2, "" /* Meldung */);
             }
             int pos = 0;
             int pos1;
@@ -456,9 +474,11 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             final String MUSTER_DATUM = "<dateVideo>";
             final String MUSTER_URL = "<url quality=\"hd\">";
             if (thema.startsWith(THEMA_ARTE_7)) {
-                strSeite3 = getUrl7.getUri_Utf(senderName, urlFilm, strSeite3, "");
+                //strSeite3 = getUrl7.getUri_Utf(senderName, urlFilm, strSeite3, "");
+                strSeite3 = getUrl7.getUri(senderName, urlFilm, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 3 /* versuche */, strSeite3, "" /* Meldung */);
             } else {
-                strSeite3 = getUrl.getUri_Utf(senderName, urlFilm, strSeite3, "");
+                //strSeite3 = getUrl.getUri_Utf(senderName, urlFilm, strSeite3, "");
+                strSeite3 = getUrl.getUri(senderName, urlFilm, Konstanten.KODIERUNG_UTF, 3000 /* timeout */, 3 /* versuche */, strSeite3, "" /* Meldung */);
             }
             int pos = 0;
             int pos1;
@@ -524,7 +544,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     void meldungThreadUndFertig() {
         //wird erst ausgeführt wenn alle Threads beendet sind
         if (threads <= 0) { // sonst läuft noch was
-            laufeSchon = false;
+            lSchon = false;
         }
         super.meldungThreadUndFertig();
     }
