@@ -38,6 +38,8 @@ public class GetUrl {
     private long wartenBasis = UrlWartenBasis;
     private static LinkedList<Seitenzaehler> listeSeitenZaehler = new LinkedList<Seitenzaehler>();
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehler = new LinkedList<Seitenzaehler>();
+    private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehlerVersuche = new LinkedList<Seitenzaehler>();
+    private Exception exeption = null;
 
     private class Seitenzaehler {
 
@@ -65,11 +67,11 @@ public class GetUrl {
     // public
     //===================================
     public StringBuffer getUri_Utf(String sender, String addr, StringBuffer seite, String meldung) {
-        return getUri(sender, addr, seite, Konstanten.KODIERUNG_UTF, timeout, meldung);
+        return getUri(sender, addr, Konstanten.KODIERUNG_UTF, timeout, 1 /* versuche */, seite, meldung);
     }
 
     public StringBuffer getUri_Iso(String sender, String addr, StringBuffer seite, String meldung) {
-        return getUri(sender, addr, seite, Konstanten.KODIERUNG_ISO15, timeout, meldung);
+        return getUri(sender, addr, Konstanten.KODIERUNG_ISO15, timeout, 1 /* versuche */, seite, meldung);
     }
 
     public StringBuffer getUri(String sender, String addr, String kodierung, int ttimeout, int versuche, StringBuffer seite, String meldung) {
@@ -83,6 +85,12 @@ public class GetUrl {
             } else {
                 break;
             }
+        }
+        if (exeption != null) {
+            incSeitenZaehlerFehler(sender);
+            incSeitenZaehlerFehlerVersuche(sender, versuche);
+            Log.fehlerMeldung("GetUrl.getUri, Versuche: " + versuche + ", ", exeption, addr);
+            exeption = null;
         }
         return seite;
     }
@@ -127,15 +135,18 @@ public class GetUrl {
         }
         return 0;
     }
+    public static int getSeitenZaehlerFehlerVersuche(String sender) {
+        Iterator<Seitenzaehler> it = listeSeitenZaehlerFehlerVersuche.iterator();
+        Seitenzaehler sz;
+        while (it.hasNext()) {
+            sz = it.next();
+            if (sz.senderName.equals(sender)) {
+                return sz.seitenAnzahl;
+            }
+        }
+        return 0;
+    }
 
-//    public static synchronized int getSeitenZaehlerFehler() {
-//        int ret = 0;
-//        Iterator<Seitenzaehler> it = listeSeitenZaehlerFehler.iterator();
-//        while (it.hasNext()) {
-//            ret += it.next().seitenAnzahl;
-//        }
-//        return ret;
-//    }
     public static synchronized void resetSeitenZaehler() {
         listeSeitenZaehler.clear();
         listeSeitenZaehlerFehler.clear();
@@ -178,7 +189,25 @@ public class GetUrl {
         }
     }
 
+    private synchronized void incSeitenZaehlerFehlerVersuche(String sender, int v) {
+        boolean gefunden = false;
+        Iterator<Seitenzaehler> it = listeSeitenZaehlerFehlerVersuche.iterator();
+        Seitenzaehler sz;
+        while (it.hasNext()) {
+            sz = it.next();
+            if (sz.senderName.equals(sender)) {
+                sz.seitenAnzahl += v;
+                gefunden = true;
+                break;
+            }
+        }
+        if (!gefunden) {
+            listeSeitenZaehlerFehlerVersuche.add(new Seitenzaehler(sender));
+        }
+    }
+
     private synchronized StringBuffer getUri(String sender, String addr, StringBuffer seite, String kodierung, int timeout, String meldung) {
+        exeption = null;
         char[] zeichen = new char[1];
         try {
             long w = wartenBasis * faktorWarten;
@@ -205,11 +234,10 @@ public class GetUrl {
                 seite.append(zeichen);
             }
         } catch (Exception ex) {
-            incSeitenZaehlerFehler(sender);
             if (!meldung.equals("")) {
                 Log.fehlerMeldung("GetUrl.getUri für: ", meldung);
             }
-            Log.fehlerMeldung("GetUrl.getUri", ex, addr);
+            exeption = ex;
         } finally {
             try {
                 if (in != null) {

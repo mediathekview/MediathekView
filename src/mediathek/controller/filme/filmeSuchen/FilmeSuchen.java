@@ -44,7 +44,7 @@ public class FilmeSuchen {
 
     /**
      *
-     * @param ddaten
+     *  @param ddaten
      */
     public FilmeSuchen() {
         initMediathekReader();
@@ -169,6 +169,7 @@ public class FilmeSuchen {
             zeile += textLaenge(MAX1, " Laufzeit: " + run.getLaufzeitMinuten() + " Min.");
             zeile += textLaenge(MAX2, " Seiten: " + GetUrl.getSeitenZaehler(run.sender));
             zeile += textLaenge(MAX3, " Ladefehler: " + GetUrl.getSeitenZaehlerFehler(run.sender));
+            zeile += textLaenge(MAX3, " Fehlversuche: " + GetUrl.getSeitenZaehlerFehlerVersuche(run.sender));
             zeile += textLaenge(MAX3, " Filme: " + listeFilmeNeu.countSender(run.sender));
             fertigMeldung.add(zeile);
         }
