@@ -71,7 +71,7 @@ public class GuiFunktionen {
             }
             ret = true;
         } catch (Exception e) {
-            Log.fehlerMeldung("GuiFunktionen.setLook", e, "Kann das Look and Feel nicht ändern!");
+            Log.fehlerMeldung(305964198,"GuiFunktionen.setLook", e, "Kann das Look and Feel nicht ändern!");
         }
         return ret;
     }
@@ -133,7 +133,7 @@ public class GuiFunktionen {
             }
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung("GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
+            Log.fehlerMeldung(283946015,"GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
         }
         return ret;
     }
@@ -153,7 +153,7 @@ public class GuiFunktionen {
             ret = ret.substring(0, ret.indexOf("&"));
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung("GuiFunktionen.getDateiName", pfad);
+            Log.fehlerMeldung(395019631,"GuiFunktionen.getDateiName", pfad);
         }
         return ret;
     }

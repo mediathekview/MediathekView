@@ -86,7 +86,7 @@ public class MediathekReader implements Runnable {
             threads = 0;
             addToList();
         } catch (Exception ex) {
-            Log.fehlerMeldung("MediathekReader.run", ex, senderName);
+            Log.fehlerMeldung(-397543600,"MediathekReader.run", ex, senderName);
         }
     }
 
@@ -192,7 +192,7 @@ public class MediathekReader implements Runnable {
             }
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung("MediathekReader.addsUrl", pfad1 + " " + pfad2);
+            Log.fehlerMeldung(-469872800,"MediathekReader.addsUrl", pfad1 + " " + pfad2);
         }
         return ret;
     }

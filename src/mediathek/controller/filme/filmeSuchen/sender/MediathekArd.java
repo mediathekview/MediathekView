@@ -85,7 +85,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     listeThemen.add(add);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekArd.addToList", ex, "kein Thema");
+                Log.fehlerMeldung(-698732167,"MediathekArd.addToList", ex, "kein Thema");
             }
         }
         if (!Daten.filmeLaden.getStop()) {
@@ -121,7 +121,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekArdThemaLaden.run", ex);
+                Log.fehlerMeldung(-487326921,"MediathekArdThemaLaden.run", ex);
             }
 
         }
@@ -164,7 +164,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         seiteWeiter = getUrl.getUri_Utf(senderName, "http://www.ardmediathek.de" + url, seiteWeiter, "Thema: " + thema);
                         feedEinerSeiteSuchen(seiteWeiter, strUrlFeed, thema, true);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung("MediathekArd.feedSuchen", ex, "Weitere Seiten suchen");
+                        Log.fehlerMeldung(-497321681,"MediathekArd.feedSuchen", ex, "Weitere Seiten suchen");
                     }
                 }
             }
@@ -246,7 +246,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         gefunden = true;
                         ret = filmLaden(strUrlFeed, MUSTER_SET + url, thema, titel, datum, zeit, alt);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung("MediathekArd.feedEinerSeiteSuchen-1", ex, "Thema hat keine Links");
+                        Log.fehlerMeldung(-321648296,"MediathekArd.feedEinerSeiteSuchen-1", ex, "Thema hat keine Links");
                     }
                 }
             }
@@ -286,7 +286,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         }
                         ret = filmLaden(strUrlFeed, MUSTER_SET + url, thema, titel, datum, zeit, alt);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung("MediathekArd.feedEinerSeiteSuchen-2", ex, "Thema hat keine Links");
+                        Log.fehlerMeldung(-487369532,"MediathekArd.feedEinerSeiteSuchen-2", ex, "Thema hat keine Links");
                     }
                 }
 
@@ -412,7 +412,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 addFilm(film);
                 ret = true;
             } else {
-                Log.fehlerMeldung("MediathekArd.filmLaden", "keine Url für: " + urlFilm);
+                Log.fehlerMeldung(-673219867,"MediathekArd.filmLaden", "keine Url für: " + urlFilm);
             }
             return ret;
         }

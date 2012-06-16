@@ -75,7 +75,7 @@ public class FilmeImportieren {
             }
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {
                 JOptionPane.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                Log.fehlerMeldung("Filme laden", "Es konnten keine Filme geladen werden!");
+                Log.fehlerMeldung(951235497,"Filme laden", "Es konnten keine Filme geladen werden!");
             }
         }
     }
@@ -121,7 +121,7 @@ public class FilmeImportieren {
                 ret = ioXmlFilmlisteLesen.filmlisteLesen(dateiUrl, istUrl, listeFilme);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung("ImportListe.urlLaden: ", ex);
+            Log.fehlerMeldung(965412378,"ImportListe.urlLaden: ", ex);
         }
         return ret;
     }

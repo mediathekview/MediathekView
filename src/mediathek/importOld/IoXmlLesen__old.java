@@ -85,7 +85,7 @@ public class IoXmlLesen__old {
             }
             return true;
         } catch (Exception ex) {
-            Log.fehlerMeldung("IoXmlLesen__old.import__old", ex);
+            Log.fehlerMeldung(632691145,"IoXmlLesen__old.import__old", ex);
         }
         return false;
     }

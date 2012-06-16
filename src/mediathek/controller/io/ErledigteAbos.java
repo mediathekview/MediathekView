@@ -72,7 +72,7 @@ public class ErledigteAbos {
                 writer.close();
                 ret = true;
             } catch (Exception ex) {
-                Log.fehlerMeldung("LogDownload.zeileSchreiben-1", ex);
+                Log.fehlerMeldung(945258023,"LogDownload.zeileSchreiben-1", ex);
             } finally {
                 try {
                     writer.close();
@@ -168,7 +168,7 @@ public class ErledigteAbos {
             }
             in.close();
         } catch (Exception ex) {
-            Log.fehlerMeldung("LogDownload.urlAusLogfileLoeschen-1", ex);
+            Log.fehlerMeldung(281006874,"LogDownload.urlAusLogfileLoeschen-1", ex);
         } finally {
             try {
                 if (in != null) {
@@ -190,12 +190,12 @@ public class ErledigteAbos {
                     }
                     writer.close();
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("LogDownload.urlAusLogfileLoeschen-3", ex);
+                    Log.fehlerMeldung(566277080,"LogDownload.urlAusLogfileLoeschen-3", ex);
                 } finally {
                     try {
                         writer.close();
                     } catch (Exception ex) {
-                        Log.fehlerMeldung("LogDownload.urlAusLogfileLoeschen-4", ex);
+                        Log.fehlerMeldung(256648801,"LogDownload.urlAusLogfileLoeschen-4", ex);
                     }
                 }
             }
@@ -218,7 +218,7 @@ public class ErledigteAbos {
                 url = zeile;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung("LogDownload.getUrlAusZeile: " + zeile, ex);
+            Log.fehlerMeldung(398853224,"LogDownload.getUrlAusZeile: " + zeile, ex);
         }
         return url;
     }

@@ -66,8 +66,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                         listeThemen.add(add);
                     }
                 } else {
-                    Log.fehlerMeldung("MediathekHr.addToList", "keine URL");
-
+                    Log.fehlerMeldung(-456933258, "MediathekHr.addToList", "keine URL");
                 }
             }
         }
@@ -99,7 +98,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekHr.HrThemaLaden.run", ex);
+                Log.fehlerMeldung(-894330854, "MediathekHr.HrThemaLaden.run", ex);
             }
         }
 
@@ -151,7 +150,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                                         DatenFilm film = new DatenFilm(senderName, thema, strUrlFeed, titel, url, url, furl, datum, "");
                                         addFilm(film);
                                     } else {
-                                        Log.fehlerMeldung("MediathekHr.addFilme", "keine URL");
+                                        Log.fehlerMeldung(-649882036, "MediathekHr.addFilme", "keine URL");
                                     }
                                 }
                             }
@@ -159,7 +158,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekHr.addFilme", ex);
+                Log.fehlerMeldung(-487774126, "MediathekHr.addFilme", ex);
             }
         }
     }

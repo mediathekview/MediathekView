@@ -53,7 +53,7 @@ public class FilmUpdateServer {
         try {
             FilmUpdateServerSuchen.getListe(Konstanten.ADRESSE_UPDATE_SERVER, tmp);
         } catch (Exception ex) {
-            Log.fehlerMeldung("FilmUpdateServer.suchen", ex);
+            Log.fehlerMeldung(347895642,"FilmUpdateServer.suchen", ex);
         }
         if (tmp.isEmpty()) {
             Log.systemMeldung(new String[]{"Es ist ein Fehler aufgetreten!",

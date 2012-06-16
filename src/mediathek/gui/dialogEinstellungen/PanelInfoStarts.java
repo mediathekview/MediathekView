@@ -175,7 +175,7 @@ public class PanelInfoStarts extends PanelVorlage {
             try {
                 init();
             } catch (Exception ex) {
-                Log.fehlerMeldung("PanelInfoStarts.BeobStart", ex);
+                Log.fehlerMeldung(280046329,"PanelInfoStarts.BeobStart", ex);
             }
         }
     }

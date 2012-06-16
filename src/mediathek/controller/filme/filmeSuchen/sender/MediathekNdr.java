@@ -111,12 +111,12 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                   meldungProgress(link[0]);
                         finden(link[0] /* url */);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung("MediathekNdr.ThemaLaden.run.1", ex);
+                        Log.fehlerMeldung(-685011466,"MediathekNdr.ThemaLaden.run.1", ex);
                     }
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekNdr.ThemaLaden.run.2", ex);
+                Log.fehlerMeldung(-894632580,"MediathekNdr.ThemaLaden.run.2", ex);
             }
         }
 
@@ -181,7 +181,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                         }
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("MediathekNdr.finden", ex);
+                    Log.fehlerMeldung(-211036709,"MediathekNdr.finden", ex);
                 }
             }
         }
@@ -229,12 +229,12 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                             }
                             addFilm(new DatenFilm(senderName, thema, urlFilm, titel, url, datum, zeit));
                         } else {
-                            Log.fehlerMeldung("MediathekNdr.feedEinerSeiteSuchen", "keine Url: " + urlFilm);
+                            Log.fehlerMeldung(-671055877,"MediathekNdr.feedEinerSeiteSuchen", "keine Url: " + urlFilm);
                         }
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekNdr.feedEinerSeiteSuchen", ex);
+                Log.fehlerMeldung(-698032157,"MediathekNdr.feedEinerSeiteSuchen", ex);
             }
         }
     }

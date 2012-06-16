@@ -68,7 +68,7 @@ public class DatenFilmUpdateServer implements Comparable<DatenFilmUpdateServer> 
             Date d_du = sdf.parse(du);
             ret = d_du.compareTo(d_ich);
         } catch (ParseException ex) {
-            Log.fehlerMeldung(this.getClass().getName(), ex);
+            Log.fehlerMeldung(936542876,this.getClass().getName(), ex);
         }
         return ret;
     }
@@ -84,7 +84,7 @@ public class DatenFilmUpdateServer implements Comparable<DatenFilmUpdateServer> 
             cal.add(Calendar.DATE, -tage);
             ret = d_ich.before(cal.getTime());
         } catch (ParseException ex) {
-            Log.fehlerMeldung(this.getClass().getName(), ex);
+            Log.fehlerMeldung(915468973,this.getClass().getName(), ex);
         }
         return ret;
     }

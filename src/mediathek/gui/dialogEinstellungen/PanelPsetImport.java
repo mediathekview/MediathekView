@@ -577,7 +577,7 @@ public class PanelPsetImport extends PanelVorlage {
                 try {
                     jTextFieldDatei.setText(chooser.getSelectedFile().getAbsolutePath());
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("PanelImportPset.BeobPfad", ex);
+                    Log.fehlerMeldung(925004992,"PanelImportPset.BeobPfad", ex);
                 }
             }
         }

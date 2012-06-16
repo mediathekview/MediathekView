@@ -74,7 +74,7 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(this.getClass().getName(), ex);
+            Log.fehlerMeldung(630365892,this.getClass().getName(), ex);
         }
         return this;
     }

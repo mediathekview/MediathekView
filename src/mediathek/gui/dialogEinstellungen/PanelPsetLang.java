@@ -1157,7 +1157,7 @@ public class PanelPsetLang extends PanelVorlage {
                     String str = chooser.getSelectedFile().getPath();
                     jTextFieldProgPfad.setText(str);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("PanelPset.BeobDateiDialogProg", ex);
+                    Log.fehlerMeldung(825630443,"PanelPset.BeobDateiDialogProg", ex);
                 }
             }
         }
@@ -1179,7 +1179,7 @@ public class PanelPsetLang extends PanelVorlage {
                     String str = chooser.getSelectedFile().getPath();
                     jTextFieldGruppeZielPfad.setText(str);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("PanelPset.BeobDateiDialogPfad", ex);
+                    Log.fehlerMeldung(319860075,"PanelPset.BeobDateiDialogPfad", ex);
                 }
             }
         }

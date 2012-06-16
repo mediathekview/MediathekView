@@ -52,7 +52,7 @@ public class IoXmlFilmlisteSchreiben {
             xmlSchreibenFilmliste(listeFilme);
             xmlSchreibenEnde(datei);
         } catch (Exception ex) {
-            Log.fehlerMeldung("IoXmlSchreiben.FilmeSchreiben", ex, "nach: " + datei);
+            Log.fehlerMeldung(846930145,"IoXmlSchreiben.FilmeSchreiben", ex, "nach: " + datei);
         }
     }
 
@@ -121,7 +121,7 @@ public class IoXmlFilmlisteSchreiben {
             writer.writeEndElement();
             writer.writeCharacters("\n");//neue Zeile
         } catch (Exception ex) {
-            Log.fehlerMeldung("IoXmlSchreiben.xmlSchreibenFeldInfo", ex);
+            Log.fehlerMeldung(638214005,"IoXmlSchreiben.xmlSchreibenFeldInfo", ex);
         }
     }
 
@@ -139,7 +139,7 @@ public class IoXmlFilmlisteSchreiben {
             writer.writeEndElement();
             writer.writeCharacters("\n");//neue Zeile
         } catch (Exception ex) {
-            Log.fehlerMeldung("IoXmlSchreiben.xmlSchreibenDaten", ex);
+            Log.fehlerMeldung(649703620,"IoXmlSchreiben.xmlSchreibenDaten", ex);
         }
     }
 

@@ -131,7 +131,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 return false;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung("ListeBlacklist.checkDate: ", ex);
+            Log.fehlerMeldung(462558700,"ListeBlacklist.checkDate: ", ex);
         }
         return true;
     }

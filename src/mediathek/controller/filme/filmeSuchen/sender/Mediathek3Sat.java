@@ -80,7 +80,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                     listeThemen.add(add);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung("Mediathek3sat.addToList", ex);
+                Log.fehlerMeldung(-498653287,"Mediathek3sat.addToList", ex);
             }
         }
         if (!Daten.filmeLaden.getStop()) {
@@ -108,7 +108,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                     laden(link[0] /* url */, link[1] /* Thema */);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung("Mediathek3Sat.ThemaLaden.run", ex);
+                Log.fehlerMeldung(-987452384,"Mediathek3Sat.ThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
         }
@@ -172,7 +172,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                             //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
                             tmp = seite.substring(pos1, pos2);
                             if (tmp.equals("")) {
-                                Log.fehlerMeldung("Mediathek3Sat.addToList", "keine Datum");
+                                Log.fehlerMeldung(-987453983,"Mediathek3Sat.addToList", "keine Datum");
                             } else {
                                 datum = DatumZeit.convertDatum(tmp);
                                 zeit = DatumZeit.convertTime(tmp);
@@ -193,14 +193,14 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                         }
                     }
                     if (url.equals("")) {
-                        Log.fehlerMeldung("Mediathek3Sat.addToList", "keine URL");
+                        Log.fehlerMeldung(-532169764,"Mediathek3Sat.addToList", "keine URL");
                     } else {
                         url = url.replace("/300/", "/veryhigh/");
                         //    public DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum) {
                         addFilm(new DatenFilm(senderName, (thema_rss.equals("") ? thema : thema_rss), link, titel, url, datum, zeit));
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("Mediathek3Sat.laden", ex);
+                    Log.fehlerMeldung(-823694892,"Mediathek3Sat.laden", ex);
                 }
             } //while, die ganz große Schleife
         }

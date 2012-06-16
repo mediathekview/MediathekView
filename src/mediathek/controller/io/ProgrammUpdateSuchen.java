@@ -73,7 +73,7 @@ public class ProgrammUpdateSuchen {
                 new DialogHinweisUpdate(null, true, "Es ist ein Fehler aufgetreten!" + "\n\n" + "", "Fehler bei der Versionsprüfung!").setVisible(true);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung("FilmUpdateServer.checkVersion", ex);
+            Log.fehlerMeldung(159002583,"FilmUpdateServer.checkVersion", ex);
         }
         return neueVersion;
     }
@@ -88,7 +88,7 @@ public class ProgrammUpdateSuchen {
                 return true;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung("FilmUpdateServer.checkObNeueVersion", ex);
+            Log.fehlerMeldung(683021193,"FilmUpdateServer.checkObNeueVersion", ex);
         }
         return false;
     }

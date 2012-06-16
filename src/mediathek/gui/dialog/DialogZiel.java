@@ -215,7 +215,7 @@ public class DialogZiel extends javax.swing.JDialog {
                 try {
                     jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("DialogExport.ZielBeobachter", ex);
+                    Log.fehlerMeldung(642109058,"DialogExport.ZielBeobachter", ex);
                 }
             }
         }

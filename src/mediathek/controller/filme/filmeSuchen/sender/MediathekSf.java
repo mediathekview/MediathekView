@@ -75,7 +75,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                         listeThemen.add(add);
                     }
                 } else {
-                    Log.fehlerMeldung("MediathekSf.addToList", "keine URL");
+                    Log.fehlerMeldung(-198620778,"MediathekSf.addToList", "keine URL");
 
                 }
             }
@@ -108,7 +108,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekSf.SfThemaLaden.run", ex);
+                Log.fehlerMeldung(-832002877,"MediathekSf.SfThemaLaden.run", ex);
             }
         }
 
@@ -164,7 +164,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                                         titel = seite1.substring(pos1, pos2);
                                         addFilme2(thema, strUrlFeed, "http://www.videoportal.sf.tv/cvis/segment/" + url + "/.json", titel, datum, zeit);
                                     } else {
-                                        Log.fehlerMeldung("MediathekSf.addFilme", "keine URL: " + strUrlFeed);
+                                        Log.fehlerMeldung(-499556023,"MediathekSf.addFilme", "keine URL: " + strUrlFeed);
                                     }
                                 }
                             }
@@ -172,7 +172,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekSf.addFilme", ex);
+                Log.fehlerMeldung(-795638103,"MediathekSf.addFilme", ex);
             }
         }
 
@@ -196,12 +196,12 @@ public class MediathekSf extends MediathekReader implements Runnable {
                             DatenFilm film = new DatenFilm(senderName, thema, strUrlFeed, titel, url, datum, zeit);
                             addFilm(film);
                         } else {
-                            Log.fehlerMeldung("MediathekSf.addFilme2", "keine URL" + url);
+                            Log.fehlerMeldung(-698325618,"MediathekSf.addFilme2", "keine URL" + url);
                         }
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekSf.addFilme2", ex);
+                Log.fehlerMeldung(-556320087,"MediathekSf.addFilme2", ex);
             }
         }
     }

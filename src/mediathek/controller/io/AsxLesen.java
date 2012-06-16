@@ -59,7 +59,7 @@ public class AsxLesen {
                 url = datei;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung("AsxLesen.lesen", ex, datei);
+            Log.fehlerMeldung(946201406,"AsxLesen.lesen", ex, datei);
         } finally {
             try {
                 if (in != null) {
