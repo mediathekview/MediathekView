@@ -42,7 +42,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
     private int seiten = 0;
 
     public MediathekSwr(FilmeSuchen ssearch) {
-        super(ssearch, /* name */ SENDER, /* text */ "SWR (bis ca. 300 MB, bis 1200 Filme)", /* threads */ 1, /* urlWarten */ 1000);
+        super(ssearch, /* name */ SENDER,  /* threads */ 1, /* urlWarten */ 1000);
     }
 
     //===================================
@@ -61,7 +61,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             listeThemen.clear();
             meldungStart(0);
             addToList__("http://www.swrmediathek.de/tvlist.htm");
-            suchen.listeFilmeNeu.alteThemenLöschen(senderName, listeThemen);
+            suchen.listeFilmeNeu.alteThemenLöschen(senderNameMReader, listeThemen);
             if (!Daten.filmeLaden.getStop() && listeThemen.size() > 0) {
                 for (int t = 0; t < senderMaxThread; ++t) {
                     new Thread(new SenderThemaLaden()).start();
@@ -81,7 +81,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
         final String MUSTER_URL = "<a href=\"tvshow.htm?show=";
         final String MUSTER_THEMA = "title=\"";
         StringBuffer strSeite = new StringBuffer();
-        strSeite = getUrlIo.getUri_Utf(senderName, ADRESSE, strSeite, "");
+        strSeite = getUrlIo.getUri_Utf(senderNameMReader, ADRESSE, strSeite, "");
         int pos = 0;
         int pos1;
         int pos2;
@@ -177,7 +177,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
         private void themenSeitenSuchen(String strUrlFeed, String thema) {
             final String MUSTER_URL = "<a class=\"plLink\" href=\"player.htm?show=";
             LinkedList<String> urls = new LinkedList<String>();
-            strSeite1 = getUrl.getUri_Utf(senderName, strUrlFeed, strSeite1, thema);
+            strSeite1 = getUrl.getUri_Utf(senderNameMReader, strUrlFeed, strSeite1, thema);
             ++seiten;
             int pos = 0;
             int pos1;
@@ -218,7 +218,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             //<p><span class="group_title">2+Leif</span> vom <span class="entry_pdatehd">22.11.2010</span> | <span class="entry_pdateht">23.00</span> Uhr</p>
 //            urlFilm = "http://www.swrmediathek.de/player.htm?show=3791f560-fb1d-11df-8817-0026b975f2e6";
             meldung("*" + urlFilm);
-            strSeite2 = getUrl.getUri_Utf(senderName, urlFilm, strSeite2, "");
+            strSeite2 = getUrl.getUri_Utf(senderNameMReader, urlFilm, strSeite2, "");
             ++seiten;
             int pos;
             int pos1;
@@ -303,7 +303,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     titel = strSeite2.substring(pos1, pos2);
                     if (!url.equals("")) {
                         // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                        DatenFilm film = new DatenFilm(senderName, thema, strUrlFeed, titel, url, datum, zeit);
+                        DatenFilm film = new DatenFilm(senderNameMReader, thema, strUrlFeed, titel, url, datum, zeit);
                         addFilm(film);
                     } else {
                         Log.fehlerMeldung(-468200690,"MediathekSwr.addFilme2-4", thema + " " + urlFilm);

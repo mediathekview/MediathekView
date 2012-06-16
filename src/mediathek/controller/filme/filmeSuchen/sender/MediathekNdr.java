@@ -41,7 +41,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekNdr(FilmeSuchen ssearch) {
-        super(ssearch, /* name */ SENDER, /* text */ "NDR  (ca. 6 MB, 500 Filme)", /* threads */ 2, /* urlWarten */ 1000);
+        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         int pos2 = 0;
         String url = "";
         String max = "";
-        seite = getUrlIo.getUri_Utf(senderName, ADRESSE, seite, "");
+        seite = getUrlIo.getUri_Utf(senderNameMReader, ADRESSE, seite, "");
         if (suchen.allesLaden) {
             // wenn alle Seiten ermitteln und gesamtzahl noch nicht bekannt
             if ((pos = seite.lastIndexOf(MUSTER_ANZAHL)) != -1) {
@@ -137,7 +137,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             String url = "";
             String thema = "";
             //Podcasts auslesen
-            seite1 = getUrl1.getUri_Utf(senderName, urlSeite, seite1, "");
+            seite1 = getUrl1.getUri_Utf(senderNameMReader, urlSeite, seite1, "");
             while ((pos = seite1.indexOf(MUSTER_DATUM, pos)) != -1) {
                 datum = "";
                 zeit = "";
@@ -194,7 +194,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
 
             final String MUSTER_URL = "<span class='footer_link'><a href=\"";
             final String MUSTER_TITEL = "<title>";
-            seite2 = getUrl2.getUri_Utf(senderName, urlFilm, seite2, "strUrlFilm: " + urlFilm);
+            seite2 = getUrl2.getUri_Utf(senderNameMReader, urlFilm, seite2, "strUrlFilm: " + urlFilm);
             int pos = 0;
             int pos1 = 0;
             int pos2 = 0;
@@ -227,7 +227,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                             if (thema.equals("")) {
                                 thema = titel;
                             }
-                            addFilm(new DatenFilm(senderName, thema, urlFilm, titel, url, datum, zeit));
+                            addFilm(new DatenFilm(senderNameMReader, thema, urlFilm, titel, url, datum, zeit));
                         } else {
                             Log.fehlerMeldung(-671055877,"MediathekNdr.feedEinerSeiteSuchen", "keine Url: " + urlFilm);
                         }

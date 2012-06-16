@@ -44,7 +44,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekMdr(FilmeSuchen ssearch) {
-        super(ssearch, /* name */ SENDER, /* text */ "MDR  (ca. 30 MB, 500 Filme)", /* threads */ 4, /* urlWarten */ 1000);
+        super(ssearch, /* name */ SENDER,  /* threads */ 4, /* urlWarten */ 1000);
     }
 
     /**
@@ -62,7 +62,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
         listeThemen.clear();
         listeTage.clear();
         listeGesucht.clear();
-        seite = getUrlIo.getUri_Utf(senderName, URL_SENDUNGEN, seite, "");
+        seite = getUrlIo.getUri_Utf(senderNameMReader, URL_SENDUNGEN, seite, "");
         int pos = 0;
         int pos1;
         int pos2;
@@ -83,7 +83,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                 }
             }
         }
-        seite = getUrlIo.getUri_Utf(senderName, URL_TAGE, seite, "");
+        seite = getUrlIo.getUri_Utf(senderNameMReader, URL_TAGE, seite, "");
         pos = 0;
         url = "";
         while ((pos = seite.indexOf(MUSTER_TAGE, pos)) != -1) {
@@ -151,7 +151,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             String thema = "";
             String url;
             try {
-                seite1 = getUrl.getUri_Utf(senderName, strUrlFeed, seite1, "");
+                seite1 = getUrl.getUri_Utf(senderNameMReader, strUrlFeed, seite1, "");
                 while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_URL, pos)) != -1) {
                     pos += MUSTER_URL.length();
                     pos2 = seite1.indexOf("\"", pos);
@@ -184,7 +184,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             final String MUSTER = "<a href=\"/mediathek/fernsehen/a-z/";
             final String MUSTER_ADD = "http://www.mdr.de/mediathek/fernsehen/a-z/";
             LinkedList<String> tmpListe = new LinkedList<String>();
-            seite2 = getUrl.getUri_Utf(senderName, urlThema, seite2, "Thema: " + thema);
+            seite2 = getUrl.getUri_Utf(senderNameMReader, urlThema, seite2, "Thema: " + thema);
             int pos;
             int pos1;
             int pos2;
@@ -224,7 +224,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             int pos2;
             String url;
             try {
-                seite3 = getUrl.getUri_Utf(senderName, urlFilm, seite3, "Thema: " + thema);
+                seite3 = getUrl.getUri_Utf(senderNameMReader, urlFilm, seite3, "Thema: " + thema);
                 if ((pos = seite3.indexOf(MUSTER_START)) != -1) {
                     while ((pos = seite3.indexOf(MUSTER_URL, pos)) != -1) {
                         url = "";
@@ -265,7 +265,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             String url;
             String thema = "";
             try {
-                seite1 = getUrl.getUri_Utf(senderName, urlSeite, seite1, "");
+                seite1 = getUrl.getUri_Utf(senderNameMReader, urlSeite, seite1, "");
                 while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_START_1, pos)) != -1) {
                     pos += MUSTER_START_1.length();
                     if ((pos = seite1.indexOf(MUSTER_START_2, pos)) == -1) {
@@ -312,7 +312,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             int pos2;
             String url;
             try {
-                seite2 = getUrl.getUri_Utf(senderName, urlSeite, seite2, "");
+                seite2 = getUrl.getUri_Utf(senderNameMReader, urlSeite, seite2, "");
                 while (!Daten.filmeLaden.getStop() && (pos = seite2.indexOf(MUSTER_START, pos)) != -1) {
                     pos += MUSTER_START.length();
                     if ((pos = seite2.indexOf(MUSTER_URL, pos)) == -1) {
@@ -347,7 +347,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             String url;
             String datum = "";
             try {
-                seite4 = getUrl.getUri_Utf(senderName, urlFilm, seite4, "Thema: " + thema);
+                seite4 = getUrl.getUri_Utf(senderNameMReader, urlFilm, seite4, "Thema: " + thema);
                 if ((pos = seite4.indexOf(MUSTER_URL)) != -1) {
                     url = "";
                     pos += MUSTER_URL.length();
@@ -387,7 +387,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                             addInListe(thema, titel, ddatum, zeit);
                             meldung(url);
                             //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                            addFilm(new DatenFilm(senderName, thema, strUrlFeed, titel, url, ddatum, zeit));
+                            addFilm(new DatenFilm(senderNameMReader, thema, strUrlFeed, titel, url, ddatum, zeit));
                         } else {
                             Log.systemMeldung("MDR: Film doppelt");
                         }
