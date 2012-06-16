@@ -74,7 +74,16 @@ public class FilmeSuchen {
         // nur für den Mauskontext "Sender aktualisieren"
         allesLaden = false;
         initStart(alteListe);
-        MediathekReader reader = getMediathekReader(sender);
+        MediathekReader reader = null;
+        if (!sender.equals("")) {
+            Iterator<MediathekReader> it = mediathekListe.iterator();
+            while (it.hasNext()) {
+                reader = it.next();
+                if (reader.checkSenderNameAngezeigt(sender)) {
+                    break;
+                }
+            }
+        }
         if (reader != null) {
             new Thread(reader).start();
         }
@@ -88,15 +97,6 @@ public class FilmeSuchen {
         GetUrl.resetSeitenZaehler();
     }
 
-//    public boolean senderAn(String sender) {
-//        MediathekReader r = getMediathekReader(sender);
-//        if (r != null) {
-//            if (r.istSenderAn()) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
     public void addAdListener(FilmListener listener) {
         listeners.add(FilmListener.class, listener);
     }
@@ -122,20 +122,6 @@ public class FilmeSuchen {
         mediathekListe.add(new MediathekSf(this));
         mediathekListe.add(new MediathekSfPod(this));
         mediathekListe.add(new MediathekOrf(this));
-    }
-
-    private MediathekReader getMediathekReader(String sender) {
-        MediathekReader ret = null;
-        if (!sender.equals("")) {
-            Iterator<MediathekReader> it = mediathekListe.iterator();
-            while (it.hasNext()) {
-                ret = it.next();
-                if (ret.checkSenderName(sender)) {
-                    break;
-                }
-            }
-        }
-        return ret;
     }
 
     public synchronized void melden(String sender, int max, int progress, String text) {

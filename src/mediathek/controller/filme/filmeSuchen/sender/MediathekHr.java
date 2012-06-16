@@ -39,7 +39,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekHr(FilmeSuchen ssearch) {
-        super(ssearch, /* name */ SENDER, /* text */ "HR (ca. 3 MB, 30 Filme)", /* threads */ 2, /* urlWarten */ 1000);
+        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 1000);
     }
 
     /**
@@ -49,7 +49,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
     public void addToList() {
         final String MUSTER = "sendEvent('load','";
         listeThemen.clear();
-        seite = getUrlIo.getUri_Utf(senderName, "http://www.hr-online.de/website/fernsehen/sendungen/index.jsp", seite, "");
+        seite = getUrlIo.getUri_Utf(senderNameMReader, "http://www.hr-online.de/website/fernsehen/sendungen/index.jsp", seite, "");
         int pos = 0;
         int pos1;
         int pos2;
@@ -109,7 +109,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
             final String MUSTER_ITEM_1 = "<item>";
             final String MUSTER_DATUM = "<pubDate>"; //<pubDate>03.01.2011</pubDate>
             meldung("*" + strUrlFeed);
-            seite1 = getUrl.getUri_Utf(senderName, strUrlFeed, seite1, "");
+            seite1 = getUrl.getUri_Utf(senderNameMReader, strUrlFeed, seite1, "");
             try {
                 int posItem1 = 0;
                 int pos1;
@@ -147,7 +147,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                                         url = addsUrl(url1, url2);
                                         String furl = "-r " + url + " -y " + url2;
                                         // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String datum, String zeit) {
-                                        DatenFilm film = new DatenFilm(senderName, thema, strUrlFeed, titel, url, url, furl, datum, "");
+                                        DatenFilm film = new DatenFilm(senderNameMReader, thema, strUrlFeed, titel, url, url, furl, datum, "");
                                         addFilm(film);
                                     } else {
                                         Log.fehlerMeldung(-649882036, "MediathekHr.addFilme", "keine URL");

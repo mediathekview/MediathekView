@@ -40,7 +40,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekSf(FilmeSuchen ssearch) {
-        super(ssearch, /* name */ SENDER, /* text */ "SF (ca. 25 MB, 1300 Filme)", /* threads */ 2, /* urlWarten */ 1000);
+        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 1000);
     }
 
     /**
@@ -52,7 +52,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
         //<a class="sendung_name" href="/sendung?id=6fd27ab0-d10f-450f-aaa9-836f1cac97bd">1 gegen 100</a><p class="az_description">Gameshow, in der ein Kandidat gegen 100 Kontrahenten antritt.</p></div>
         final String MUSTER = "sendung_name\" href=\"/sendung?id=";
         listeThemen.clear();
-        seite = getUrlIo.getUri_Utf(senderName, "http://www.videoportal.sf.tv/sendungen", seite, "");
+        seite = getUrlIo.getUri_Utf(senderNameMReader, "http://www.videoportal.sf.tv/sendungen", seite, "");
         int pos = 0;
         int pos1 = 0;
         int pos2 = 0;
@@ -122,7 +122,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
             final String MUSTER_ITEM_2 = "</item>";
             final String MUSTER_DATUM = "<title>";
             meldung("*" + strUrlFeed);
-            seite1 = getUrl.getUri_Utf(senderName, strUrlFeed, seite1, "");
+            seite1 = getUrl.getUri_Utf(senderNameMReader, strUrlFeed, seite1, "");
             try {
                 int counter = 0;
                 int posItem1 = 0;
@@ -179,7 +179,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
         private void addFilme2(String thema, String strUrlFeed, String url, String titel, String datum, String zeit) {
             final String MUSTER_URL = "\"url\":\""; //bis zum "
             meldung("*" + url);
-            seite2 = getUrl.getUri_Utf(senderName, url, seite2, "");
+            seite2 = getUrl.getUri_Utf(senderNameMReader, url, seite2, "");
             try {
                 int pos = 0;
                 int pos1 = 0;
@@ -193,7 +193,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                         if (!url.equals("")) {
                             url = url.replace("\\", "");
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                            DatenFilm film = new DatenFilm(senderName, thema, strUrlFeed, titel, url, datum, zeit);
+                            DatenFilm film = new DatenFilm(senderNameMReader, thema, strUrlFeed, titel, url, datum, zeit);
                             addFilm(film);
                         } else {
                             Log.fehlerMeldung(-698325618,"MediathekSf.addFilme2", "keine URL" + url);

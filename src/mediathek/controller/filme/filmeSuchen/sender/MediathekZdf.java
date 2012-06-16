@@ -42,7 +42,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekZdf(FilmeSuchen ssearch) {
-        super(ssearch, /* name */ SENDER, /* text */ "ZDF  (bis ca. 130 MB, bis 15.000 Filme)", 4 /* threads */, 500 /* urlWarten */);
+        super(ssearch, /* name */ SENDER,  4 /* threads */, 500 /* urlWarten */);
     }
 
     /**
@@ -73,7 +73,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         final String MUSTER_URL = "<p><b><a href=\"/ZDFmediathek/kanaluebersicht/aktuellste/";
         //GetUrl(int ttimeout, long wwartenBasis) {
         GetUrl getUrl = new GetUrl(5000, senderWartenSeiteLaden);
-        seite = getUrl.getUri(senderName, addr, Konstanten.KODIERUNG_UTF, 2000 /* timeout */, 6 /* versuche */, seite, "" /* Meldung */);
+        seite = getUrl.getUri(senderNameMReader, addr, Konstanten.KODIERUNG_UTF, 2000 /* timeout */, 6 /* versuche */, seite, "" /* Meldung */);
         if (seite.length() == 0) {
             Log.fehlerMeldung(-596004563,"MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
         }
@@ -164,7 +164,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             int anz = 0;
             try {
                 //seite1 = getUrl.getUri(urlThema + "?bc=saz", seite1);
-                seite1 = getUrl.getUri_Utf(senderName, urlThema, seite1, "Thema: " + thema);
+                seite1 = getUrl.getUri_Utf(senderNameMReader, urlThema, seite1, "Thema: " + thema);
                 while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_URL_1, pos)) != -1) {
                     ++anz;
                     if (!suchen.allesLaden) {
@@ -216,7 +216,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             int pos2 = 0;
             try {
                 meldung("*" + urlFilm);
-                seite2 = getUrl.getUri_Utf(senderName, urlFilm, seite2, "urlThema: " + urlThema);
+                seite2 = getUrl.getUri_Utf(senderNameMReader, urlFilm, seite2, "urlThema: " + urlThema);
                 if (titel.equals("")) {
                     //<title>Neu im Kino - &quot;Fair Game&quot; - ZDFneo - ZDFmediathek - ZDF Mediathek</title>
                     //<title>Trinkwasser aus dem Eisberg - Abenteuer Wissen - ZDFmediathek - ZDF Mediathek</title>
@@ -282,7 +282,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
 //                            daten.filmeLaden.listeFilmeSchattenliste.addSenderRtmp(new DatenFilm(daten, Konstanten.SENDER_ZDF,
 //                                    thema, urlThema, titel,
 //                                    leitungAendern__(daten, url, urlHd), url/*urlOrg*/, ""/*urlRtmp*/, urlHd, alt));
-                            addFilm(new DatenFilm(senderName,
+                            addFilm(new DatenFilm(senderNameMReader,
                                     thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
                         }
                     }

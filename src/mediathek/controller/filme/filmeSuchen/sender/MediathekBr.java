@@ -30,14 +30,13 @@ import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.ListeFilme;
 
 public class MediathekBr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "BR";
 
     public MediathekBr(FilmeSuchen ssearch) {
-        super(ssearch, /* name */ SENDER, /* text */ "BR  (ca. 3 MB, 100 Filme)", /* threads */ 2, /* urlWarten */ 500);
+        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 500);
     }
 
     private class ThemaLaden implements Runnable {
@@ -197,7 +196,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
 //                    String urlRtmp = "--host " + host + " --app " + app + " --playpath mp4:" + play;
                     String urlOrg = "rtmp://" + host + "/" + app + "/" + play;
                     // DatenFilm(ddaten, ssender, tthema, urlThema,  ttitel, uurl, uurlorg, uurlRtmp, datum, zeit, alt)
-                    DatenFilm film = new DatenFilm(senderName, thema, link, titel, urlOrg, datum, zeit);
+                    DatenFilm film = new DatenFilm(senderNameMReader, thema, link, titel, urlOrg, datum, zeit);
                     addFilm(film);
                 }
             } //while, die ganz große Schleife
