@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -44,7 +45,7 @@ public class Log {
             Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
             ret = Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + " - Compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d);
         } catch (Exception ex) {
-            Log.fehlerMeldung(569614756,"Log.getCompileDate: ", ex);
+            Log.fehlerMeldung(569614756, "Log.getCompileDate: ", ex);
         }
         return ret;
     }
@@ -82,23 +83,23 @@ public class Log {
         Log.systemMeldung("");
     }
 
-    public static synchronized void fehlerMeldung(int fehlerNummer,String klasse, Exception ex) {
-        fehlermeldung(fehlerNummer,klasse, new String[]{ex.getMessage(), ""});
+    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex) {
+        fehlermeldung(fehlerNummer, klasse, new String[]{ex.getMessage(), ""});
     }
 
-    public static synchronized void fehlerMeldung(int fehlerNummer,String klasse, Exception ex, String text) {
+    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex, String text) {
         String[] str = new String[2];
         str[0] = ex.getLocalizedMessage();
         str[1] = text;
         fehlermeldung(fehlerNummer, klasse, str);
     }
 
-    public static synchronized void fehlerMeldung(int fehlerNummer,String klasse, String text) {
-        fehlermeldung(fehlerNummer,klasse, new String[]{text});
+    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String text) {
+        fehlermeldung(fehlerNummer, klasse, new String[]{text});
     }
 
-    public static synchronized void fehlerMeldung(int fehlerNummer,String klasse, String[] text) {
-        fehlermeldung(fehlerNummer,klasse, text);
+    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String[] text) {
+        fehlermeldung(fehlerNummer, klasse, text);
     }
 
     public static synchronized void systemMeldung(String[] text) {
@@ -119,6 +120,37 @@ public class Log {
         prog = true;
         texte += "\r";
         System.out.print(texte);
+    }
+
+    public static void printFehlerNummer() {
+        final String z = "*";
+        if (fehlerListe.size() == 0) {
+            System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
+            System.out.println(z + " " + "Keine Fehler");
+            System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
+            return;
+        }
+        int i_1;
+        int i_2;
+        for (int i = 1; i < fehlerListe.size(); ++i) {
+            for (int k = i; k > 0; --k) {
+                i_1 = fehlerListe.get(k - 1)[1];
+                i_2 = fehlerListe.get(k)[1];
+                // if (str1.compareToIgnoreCase(str2) > 0) {
+                if (i_1 < i_2) {
+                    fehlerListe.add(k - 1, fehlerListe.remove(k));
+                } else {
+                    break;
+                }
+            }
+        }
+        System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
+        Iterator<Integer[]> it = fehlerListe.iterator();
+        while (it.hasNext()) {
+            Integer[] integers = it.next();
+            System.out.println(z + " " + "Fehlernummer: " + integers[0] + " Anzahl: " + integers[1]);
+        }
+        System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
     }
 
     private static void addFehlerNummer(int nr) {

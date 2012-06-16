@@ -145,6 +145,7 @@ public class MediathekNoGui {
         } catch (Exception ex) {
             minuten = -1;
         }
+        Log.printFehlerNummer();
         Log.systemMeldung(new String[]{
                     "========================================",
                     "  " + Daten.filmeLaden.getSeitenGeladen() + " Seiten geladen",
