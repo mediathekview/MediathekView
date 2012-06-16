@@ -115,6 +115,7 @@ public class MediathekAuto {
         } catch (Exception ex) {
             minuten = -1;
         }
+        Log.printFehlerNummer();
         Log.systemMeldung(new String[]{
                     "========================================",
                     "  --> Beginn: " + sdf.format(startZeit),
