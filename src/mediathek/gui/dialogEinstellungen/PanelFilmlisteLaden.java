@@ -376,7 +376,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 try {
                     jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("PanelImportFilme.BeobPfad", ex);
+                    Log.fehlerMeldung(733025319,"PanelImportFilme.BeobPfad", ex);
                 }
             }
         }

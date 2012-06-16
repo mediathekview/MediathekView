@@ -63,7 +63,7 @@ public class MediathekAuto {
             }
         } else {
             // Programm erst mit der GuiVersion einrichten
-            Log.fehlerMeldung("MediathekAuto", "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
+            Log.fehlerMeldung(834986137,"MediathekAuto", "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
             System.exit(0);
         }
     }
@@ -98,7 +98,7 @@ public class MediathekAuto {
                 this.wait(5000);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung("MediathekAuto.filmeLaden", ex);
+            Log.fehlerMeldung(769325469,"MediathekAuto.filmeLaden", ex);
         }
         ddaten.listeDownloads.listePutzen();
         ddaten.listeDownloads.abosLoschen();

@@ -103,7 +103,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                     break; //TH muss sein da muster 2 manchmal nicht fündig - dann Endlosschleife
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekOrf.addToList", ex);
+                Log.fehlerMeldung(-469732500,"MediathekOrf.addToList", ex);
             }
         }
         if (!Daten.filmeLaden.getStop()) {
@@ -132,12 +132,12 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                         meldungProgress(link[0]);
                         feedEinerSeiteSuchen(link[0] /* url */, link[1] /* Thema */);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung("MediathekOrf.OrfThemaLaden.run", ex);
+                        Log.fehlerMeldung(-795633581,"MediathekOrf.OrfThemaLaden.run", ex);
                     }
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekOrf.OrfThemaLaden.run", ex);
+                Log.fehlerMeldung(-554012398,"MediathekOrf.OrfThemaLaden.run", ex);
             }
         }
 
@@ -189,7 +189,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                         addFilm(new DatenFilm(senderName, thema, strUrlFeed, titel, MUSTER_SET + url, datum, zeit));
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("MediathekOrf.feedEinerSeiteSuchen", ex);
+                    Log.fehlerMeldung(-336987510,"MediathekOrf.feedEinerSeiteSuchen", ex);
                 }
             }
         }

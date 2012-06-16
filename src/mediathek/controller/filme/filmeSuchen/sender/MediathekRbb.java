@@ -69,11 +69,11 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                         }
                     }
                 } else {
-                    Log.fehlerMeldung("MediathekRBB.addToList", "keine URL");
+                    Log.fehlerMeldung(-894562036,"MediathekRBB.addToList", "keine URL");
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung("MediathekRBB.addToList", ex);
+            Log.fehlerMeldung(-398214058,"MediathekRBB.addToList", ex);
         }
         if (!Daten.filmeLaden.getStop()) {
             if (listeThemen.size() > 0) {
@@ -104,7 +104,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekRBB.ThemaLaden.run", ex);
+                Log.fehlerMeldung(-794625882,"MediathekRBB.ThemaLaden.run", ex);
             }
         }
 

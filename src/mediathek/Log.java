@@ -19,9 +19,10 @@
  */
 package mediathek;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -33,6 +34,7 @@ public class Log {
     public static final String LOG_SYSTEM = "system";
     public static final String LOG_PLAYER = "player";
     private static EventListenerList listeners = new EventListenerList();
+    private static LinkedList<Integer[]> fehlerListe = new LinkedList<Integer[]>(); // [Fehlernummer, Anzahl]
     private static boolean prog = false;
 
     public static String getCompileDate() {
@@ -42,9 +44,13 @@ public class Log {
             Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
             ret = Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + " - Compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d);
         } catch (Exception ex) {
-            Log.fehlerMeldung("Log.getCompileDate: ", ex);
+            Log.fehlerMeldung(569614756,"Log.getCompileDate: ", ex);
         }
         return ret;
+    }
+
+    public void resetFehlerListe() {
+        fehlerListe.clear();
     }
 
     public static void addAdListener(MediathekListener listener) {
@@ -76,23 +82,23 @@ public class Log {
         Log.systemMeldung("");
     }
 
-    public static synchronized void fehlerMeldung(String klasse, Exception ex) {
-        fehlermeldung(klasse, new String[]{ex.getMessage(), ""});
+    public static synchronized void fehlerMeldung(int fehlerNummer,String klasse, Exception ex) {
+        fehlermeldung(fehlerNummer,klasse, new String[]{ex.getMessage(), ""});
     }
 
-    public static synchronized void fehlerMeldung(String klasse, Exception ex, String text) {
+    public static synchronized void fehlerMeldung(int fehlerNummer,String klasse, Exception ex, String text) {
         String[] str = new String[2];
         str[0] = ex.getLocalizedMessage();
         str[1] = text;
-        fehlermeldung(klasse, str);
+        fehlermeldung(fehlerNummer, klasse, str);
     }
 
-    public static synchronized void fehlerMeldung(String klasse, String text) {
-        fehlermeldung(klasse, new String[]{text});
+    public static synchronized void fehlerMeldung(int fehlerNummer,String klasse, String text) {
+        fehlermeldung(fehlerNummer,klasse, new String[]{text});
     }
 
-    public static synchronized void fehlerMeldung(String klasse, String[] text) {
-        fehlermeldung(klasse, text);
+    public static synchronized void fehlerMeldung(int fehlerNummer,String klasse, String[] text) {
+        fehlermeldung(fehlerNummer,klasse, text);
     }
 
     public static synchronized void systemMeldung(String[] text) {
@@ -115,7 +121,21 @@ public class Log {
         System.out.print(texte);
     }
 
-    private static void fehlermeldung(String klasse, String[] texte) {
+    private static void addFehlerNummer(int nr) {
+        Iterator<Integer[]> it = fehlerListe.iterator();
+        while (it.hasNext()) {
+            Integer[] i = it.next();
+            if (i[0].intValue() == nr) {
+                i[1]++;
+                return;
+            }
+        }
+        // dann gibts die Nummer noch nicht
+        fehlerListe.add(new Integer[]{new Integer(nr), new Integer(1)});
+    }
+
+    private static void fehlermeldung(int fehlerNummer, String klasse, String[] texte) {
+        addFehlerNummer(fehlerNummer);
         if (prog) {
             // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
             System.out.print("                                                                            \r");

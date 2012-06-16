@@ -110,7 +110,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung("VorlageProgrammgruppen.getListe", ex);
+            Log.fehlerMeldung(398001963,"VorlageProgrammgruppen.getListe", ex);
             return false;
         }
         return true;
@@ -141,7 +141,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
         } catch (Exception ex) {
             ret = false;
-            Log.fehlerMeldung("VorlageProgrammgruppen.get", ex);
+            Log.fehlerMeldung(467256394,"VorlageProgrammgruppen.get", ex);
         }
         return ret;
     }

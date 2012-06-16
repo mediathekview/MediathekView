@@ -25,8 +25,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.Log;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenProg;
-import mediathek.daten.DatenPset;
-import mediathek.tool.GuiKonstanten;
 
 public class CellRendererProgramme extends DefaultTableCellRenderer {
 
@@ -58,7 +56,7 @@ public class CellRendererProgramme extends DefaultTableCellRenderer {
                 setText("");
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(this.getClass().getName(), ex);
+            Log.fehlerMeldung(338740095,this.getClass().getName(), ex);
         }
         return this;
     }

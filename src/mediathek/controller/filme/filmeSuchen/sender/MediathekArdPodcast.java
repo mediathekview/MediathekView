@@ -87,7 +87,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     listeThemen.add(add);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekArdPodcast.addToList", ex, "kein Thema");
+                Log.fehlerMeldung(-764238903,"MediathekArdPodcast.addToList", ex, "kein Thema");
             }
         }
         if (!Daten.filmeLaden.getStop()) {
@@ -118,7 +118,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekArdPodcast.ArdThemaLaden.run", ex);
+                Log.fehlerMeldung(-460287629,"MediathekArdPodcast.ArdThemaLaden.run", ex);
             }
         }
 
@@ -148,7 +148,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 }
                 if (url.equals("")) {
                     //-------------
-                    Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-1", "keine URL für: " + strUrlFeed);
+                    Log.fehlerMeldung(-643188097,"MediathekArdPodcast.filmeEinerSeiteSuchen-1", "keine URL für: " + strUrlFeed);
                 } else {
                     url = MUSTER_SET + url;
                     //++++++++++++++++++++++++++++++++++ 2te Seite
@@ -197,10 +197,10 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                                 }
                             }
                             if (url.equals("#")) {
-                                Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + tmpUrl);
+                                Log.fehlerMeldung(-698025468,"MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + tmpUrl);
                             } else if (url.equals("")) {
                                 //-------------
-                                Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-2", "keine URL für: " + strUrlFeed);
+                                Log.fehlerMeldung(-456903578,"MediathekArdPodcast.filmeEinerSeiteSuchen-2", "keine URL für: " + strUrlFeed);
                             } else {
                                 url = MUSTER_SET + url;
                                 filmLaden(strUrlFeed, url, thema);
@@ -249,8 +249,8 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     }
                     if (url.equals("")) {
                         //-------------
-                        Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + tmpUrl);
-                        Log.fehlerMeldung("MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + strUrlFeed);
+                        Log.fehlerMeldung(-789628694,"MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + tmpUrl);
+                        Log.fehlerMeldung(-495623876,"MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + strUrlFeed);
                     } else {
                         //<title>ARD Mediathek: DiD-Folge 925: Die Dünnbrett-Bohrer - 16.05.2012 | Bayerisches Fernsehen</title>
                         //<title>ARD Mediathek: 28 Stunden Ausnahmezustand in Freiburg | SWR Fernsehen BW</title>

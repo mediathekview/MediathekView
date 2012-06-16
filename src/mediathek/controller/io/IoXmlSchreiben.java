@@ -60,7 +60,7 @@ public class IoXmlSchreiben {
             xmlSchreibenPset(pSet);
             xmlSchreibenEnde(datei);
         } catch (Exception ex) {
-            Log.fehlerMeldung("IoXmlSchreiben.exportPset", ex, "nach: " + datei);
+            Log.fehlerMeldung(392846204,"IoXmlSchreiben.exportPset", ex, "nach: " + datei);
         }
     }
 
@@ -81,7 +81,7 @@ public class IoXmlSchreiben {
             xmlSchreibenFilmUpdateServer(daten);
             xmlSchreibenEnde();
         } catch (Exception ex) {
-            Log.fehlerMeldung("IoXml.xmlDatenSchreiben", ex);
+            Log.fehlerMeldung(656328109,"IoXml.xmlDatenSchreiben", ex);
         }
     }
 
@@ -194,7 +194,7 @@ public class IoXmlSchreiben {
             writer.writeEndElement();
             writer.writeCharacters("\n");//neue Zeile
         } catch (Exception ex) {
-            Log.fehlerMeldung("IoXmlSchreiben.xmlSchreibenDaten", ex);
+            Log.fehlerMeldung(198325017,"IoXmlSchreiben.xmlSchreibenDaten", ex);
         }
     }
 

@@ -372,7 +372,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                 try {
                     jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
                 } catch (Exception ex) {
-                    Log.fehlerMeldung("DialogImportOld.ZielBeobachter", ex);
+                    Log.fehlerMeldung(926487463,"DialogImportOld.ZielBeobachter", ex);
                 }
             }
         }

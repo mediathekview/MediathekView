@@ -49,7 +49,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
             try {
                 laden();
             } catch (Exception ex) {
-                Log.fehlerMeldung("MediathekBr.ThemaLaden.run", ex);
+                Log.fehlerMeldung(-761355948,"MediathekBr.ThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
         }
@@ -202,7 +202,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                 }
             } //while, die ganz große Schleife
         } catch (Exception ex) {
-            Log.fehlerMeldung("MediathekBr.laden", ex);
+            Log.fehlerMeldung(-963486054,"MediathekBr.laden", ex);
         }
     }
 
@@ -215,7 +215,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
             sdfOut = new SimpleDateFormat("dd.MM.yyyy");
             datum = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung("MediathekBr.convertDatum", ex);
+            Log.fehlerMeldung(-210365944,"MediathekBr.convertDatum", ex);
         }
         return datum;
     }
@@ -229,7 +229,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
             sdfOut = new SimpleDateFormat("HH:mm:ss");
             datum = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung("MediatheBr.convertTime", ex);
+            Log.fehlerMeldung(-573690176,"MediatheBr.convertTime", ex);
         }
         return datum;
     }

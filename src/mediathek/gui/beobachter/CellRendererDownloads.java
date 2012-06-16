@@ -124,7 +124,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(this.getClass().getName(), ex);
+            Log.fehlerMeldung(758200166,this.getClass().getName(), ex);
         }
         return this;
     }
