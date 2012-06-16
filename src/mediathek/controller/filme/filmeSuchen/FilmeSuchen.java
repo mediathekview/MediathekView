@@ -36,7 +36,7 @@ public class FilmeSuchen {
 
     public LinkedList<MediathekReader> mediathekListe = new LinkedList<MediathekReader>();
     public boolean allesLaden = true;
-    public ListeFilme listeFilmeNeu; // neu angelegte Lise und da kommen die neu gesuchten Filme rein
+    public ListeFilme listeFilmeNeu; // neu angelegte Liste und da kommen die neu gesuchten Filme rein
     private ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
     private EventListenerList listeners = new EventListenerList();
     private ListeRunSender listeSenderLaufen = new ListeRunSender();

@@ -77,6 +77,9 @@ public class GetUrl {
     public StringBuffer getUri(String sender, String addr, String kodierung, int ttimeout, int versuche, StringBuffer seite, String meldung) {
         int timeo = ttimeout;
         for (int i = 0; i < versuche; ++i) {
+            if (Daten.filmeLaden.getStop()) {
+                break;
+            }
             // wäre doch gelacht, wenns nicht irgendwann geht!
             seite = getUri(sender, addr, seite, kodierung, timeo, meldung);
             if (seite.length() == 0) {
@@ -89,7 +92,7 @@ public class GetUrl {
         if (exeption != null) {
             incSeitenZaehlerFehler(sender);
             incSeitenZaehlerFehlerVersuche(sender, versuche);
-            Log.fehlerMeldung(894120069,"GetUrl.getUri, Versuche: " + versuche + ", ", exeption, addr);
+            Log.fehlerMeldung(894120069, "GetUrl.getUri, Versuche: " + versuche + ", ", exeption, addr);
             exeption = null;
         }
         return seite;
@@ -214,7 +217,7 @@ public class GetUrl {
             long w = wartenBasis * faktorWarten;
             this.wait(w);
         } catch (Exception ex) {
-            Log.fehlerMeldung(462800147,"GetUrl.getUri", ex);
+            Log.fehlerMeldung(462800147, "GetUrl.getUri", ex);
         }
         seite.setLength(0);
         URLConnection conn;
@@ -237,7 +240,7 @@ public class GetUrl {
             incSeitenZaehler(sender);
         } catch (Exception ex) {
             if (!meldung.equals("")) {
-                Log.fehlerMeldung(642069083,"GetUrl.getUri für: ", meldung);
+                Log.fehlerMeldung(642069083, "GetUrl.getUri für: ", meldung);
             }
             exeption = ex;
         } finally {
