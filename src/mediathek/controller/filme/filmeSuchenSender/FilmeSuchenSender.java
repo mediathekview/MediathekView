@@ -43,13 +43,13 @@ public class FilmeSuchenSender {
     private LinkedList<String> fertigMeldung = new LinkedList<String>();
 
     /**
-     *    ###########################################################################################################
-     *    Ablauf:
-     *    die gefundenen Filme kommen in die "listeFilme"
-     *    -> bei einem vollen Suchlauf: passiert nichts weiter
-     *    -> bei einem Update: "listeFilme" mit alter Filmliste auffüllen, URLs die es schon gibt werden verworfen
-     *    "listeFilme" ist dann die neue komplette Liste mit Filmen
-     *    ##########################################################################################################
+     *   ###########################################################################################################
+     *   Ablauf:
+     *   die gefundenen Filme kommen in die "listeFilme"
+     *   -> bei einem vollen Suchlauf: passiert nichts weiter
+     *   -> bei einem Update: "listeFilme" mit alter Filmliste auffüllen, URLs die es schon gibt werden verworfen
+     *   "listeFilme" ist dann die neue komplette Liste mit Filmen
+     *   ##########################################################################################################
      */
     public FilmeSuchenSender() {
         //Reader laden Spaltenweises Laden
@@ -169,8 +169,17 @@ public class FilmeSuchenSender {
             zeile += textLaenge(MAX2, " Seiten: " + GetUrl.getSeitenZaehler(run.sender));
             zeile += textLaenge(MAX3, " Ladefehler: " + GetUrl.getSeitenZaehlerFehler(run.sender));
             zeile += textLaenge(MAX3, " Fehlversuche: " + GetUrl.getSeitenZaehlerFehlerVersuche(run.sender));
-            zeile += textLaenge(MAX3, " Filme: " + listeFilmeNeu.countSender(run.sender));
-            fertigMeldung.add(zeile);
+            String nameFilmliste[] = getMReaderNameSenderMreader(run.sender).getNameSenderFilmliste();
+            if (nameFilmliste.length == 1) {
+                zeile += textLaenge(MAX3, " Filme " + nameFilmliste[0] + ": " + listeFilmeNeu.countSender(nameFilmliste[0]));
+                fertigMeldung.add(zeile);
+            } else {
+                fertigMeldung.add(zeile);
+                for (int i = 0; i < nameFilmliste.length; i++) {
+                    zeile = "   -->  Filme [" + nameFilmliste[i] + "]: " + listeFilmeNeu.countSender(nameFilmliste[i]);
+                    fertigMeldung.add(zeile);
+                }
+            }
         }
         // wird einmal aufgerufen, wenn der Sender fertig ist
         if (listeSenderLaufen.listeFertig()) {

@@ -74,6 +74,17 @@ public class Log {
     }
 
     public static synchronized void startMeldungen(String classname) {
+        Date startZeit = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        Log.systemMeldung("");
+        Log.systemMeldung("");
+        Log.systemMeldung("");
+        Log.systemMeldung("");
+        Log.systemMeldung("");
+        Log.systemMeldung("###########################################################");
+        Log.systemMeldung("###########################################################");
+        Log.systemMeldung("Programmstart: " + sdf.format(startZeit));
+        Log.systemMeldung("###########################################################");
         versionsMeldungen(classname);
         Log.systemMeldung("Programmpfad: " + GuiFunktionenProgramme.getPathJar());
         Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getBasisVerzeichnis());
