@@ -31,7 +31,7 @@ import mediathek.tool.DatumZeit;
 
 /**
  *
- *   @author
+ *       @author
  */
 public class MediathekArte7 extends MediathekReader implements Runnable {
 
@@ -44,14 +44,16 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     private int MAX_SEITEN = 10;
     private LinkedList<String[]> listeFilmseiten = new LinkedList<String[]>();
     private LinkedList<String[]> listeFilmseitenFertig = new LinkedList<String[]>();
+    private static final int MAX_THREADS_ALLES = 6;
+    private static final int MAX_THREADS_UPDATE = 2;
 
     /**
      *
-     *   @param ddaten
-     *   @param dde
+     *       @param ddaten
+     *       @param dde
      */
     public MediathekArte7(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ "", /* threads */ 6, /* urlWarten */ 500);
+        super(ssearch, /* name */ "", /* threads */ MAX_THREADS_ALLES, /* urlWarten */ 500);
         nameSenderMReader = SENDER_ARTE;
     }
 
@@ -79,9 +81,12 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             listeThemen.add(add);
             //und der Rest nur auf Wunsch
             if (suchen.allesLaden) {
+                this.maxThreadLaufen = MAX_THREADS_ALLES;
                 //erst mal alle Themen suchen um die Filme nicht doppelt zu suchen
                 addToList__("http://videos.arte.tv/de/videos/sendungen");
                 addToList__("http://videos.arte.tv/de/videos/alleVideos");
+            } else {
+                this.maxThreadLaufen = MAX_THREADS_UPDATE;
             }
             meldungStart(listeThemen.size());
             // für die Themenseiten
@@ -152,8 +157,8 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     //===================================
     private class ArteThemaLaden implements Runnable {
 
-        GetUrl getUrl7 = new GetUrl(senderWartenSeiteLaden);
-        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
+        GetUrl getUrl7 = new GetUrl(wartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         String[] link = null;
         private StringBuffer strSeite1 = new StringBuffer();
 
@@ -164,7 +169,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 getAddThemenLaufen(1);
                 meldung("");
                 // für die Filmseiten
-                for (int t = 0; t < senderMaxThread; ++t) {
+                for (int t = 0; t < maxThreadLaufen; ++t) {
                     new Thread(new ArteFilmseitenLaden()).start();
                 }
                 //
@@ -287,8 +292,8 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
 
     private class ArteFilmseitenLaden implements Runnable {
 
-        GetUrl getUrl7 = new GetUrl(senderWartenSeiteLaden);
-        GetUrl getUrl = new GetUrl(5000, senderWartenSeiteLaden);
+        GetUrl getUrl7 = new GetUrl(wartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(5000, wartenSeiteLaden);
         private StringBuffer strSeite2 = new StringBuffer();
         private StringBuffer strSeite3 = new StringBuffer();
 

@@ -88,7 +88,7 @@ public class DatumZeit {
             sdfOut = new SimpleDateFormat("dd.MM.yyyy");
             datum = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung(649600299,"DatumDatum.convertDatum", ex);
+            Log.fehlerMeldung(649600299, "DatumDatum.convertDatum", ex);
         }
         return datum;
     }
@@ -102,7 +102,7 @@ public class DatumZeit {
             sdfOut = new SimpleDateFormat("HH:mm:ss");
             zeit = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung(663259004,"DatumZeit.convertTime", ex);
+            Log.fehlerMeldung(663259004, "DatumZeit.convertTime", ex);
         }
         return zeit;
     }
@@ -115,11 +115,11 @@ public class DatumZeit {
             return "";
         }
         if (!ret.contains(".")) {
-            Log.fehlerMeldung(591143690,"DatumZeit.CheckDatum-1", datum + " " + fehlermeldung);
+            Log.fehlerMeldung(591143690, "DatumZeit.CheckDatum-1 [", datum + "] " + fehlermeldung);
             return "";
         }
         if (ret.length() != 10) {
-            Log.fehlerMeldung(507629943,"DatumZeit.CheckDatum-2", datum + " " + fehlermeldung);
+            Log.fehlerMeldung(507629943, "DatumZeit.CheckDatum-2 [", datum + "] " + fehlermeldung);
             return "";
         }
         try {
@@ -127,17 +127,17 @@ public class DatumZeit {
             Date filmDate = sdfIn.parse(ret);
             if (filmDate.getTime() < 0) {
                 //Datum vor 1970
-                Log.fehlerMeldung(930665317,"DatumZeit.CheckDatum-3", "Unsinniger Wert: " + datum + " " + fehlermeldung);
+                Log.fehlerMeldung(930665317, "DatumZeit.CheckDatum-3", "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
                 ret = "";
             }
             if ((new Date().getTime() + MAX) < filmDate.getTime()) {
-                Log.fehlerMeldung(632088649,"DatumZeit.CheckDatum-4", "Unsinniger Wert: " + datum + " " + fehlermeldung);
+                Log.fehlerMeldung(632088649, "DatumZeit.CheckDatum-4", "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
                 ret = "";
             }
         } catch (Exception ex) {
             ret = "";
-            Log.fehlerMeldung(794630593,"DatumZeit.checkDatum-5", ex);
-            Log.fehlerMeldung(946301596,"DatumZeit.CheckDatum-6", datum + " " + fehlermeldung);
+            Log.fehlerMeldung(794630593, "DatumZeit.checkDatum-5", ex);
+            Log.fehlerMeldung(946301596, "DatumZeit.CheckDatum-6 [", datum + "] " + fehlermeldung);
         }
         if (ret.equals("")) {
         }
@@ -158,7 +158,7 @@ public class DatumZeit {
                     ret = "";
                 }
                 if (ret.equals("")) {
-                    Log.fehlerMeldung(392865321,"DatumZeit.CheckZeit", zeit + " " + text);
+                    Log.fehlerMeldung(392865321, "DatumZeit.CheckZeit [", zeit + "] " + text);
                 }
             }
         }
@@ -176,7 +176,7 @@ public class DatumZeit {
                     ret = tmp;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(293561086,"DatumZeit.datumDrehen", ex);
+                Log.fehlerMeldung(293561086, "DatumZeit.datumDrehen", ex);
             }
 
         }

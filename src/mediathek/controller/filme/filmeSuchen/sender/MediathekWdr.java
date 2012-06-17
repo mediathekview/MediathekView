@@ -43,7 +43,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
      * @param dde
      */
     public MediathekWdr(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 500);
+        super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500);
     }
 
     //===================================
@@ -60,7 +60,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         if (!Daten.filmeLaden.getStop()) {
             if (listeThemen.size() > 0) {
                 meldungStart(listeThemen.size());
-                for (int t = 0; t < senderMaxThread; ++t) {
+                for (int t = 0; t < maxThreadLaufen; ++t) {
                     new Thread(new SenderThemaLaden()).start();
                 }
             }
@@ -120,7 +120,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
 
     private class SenderThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer strSeite1 = new StringBuffer();
         private StringBuffer strSeite2 = new StringBuffer();
 

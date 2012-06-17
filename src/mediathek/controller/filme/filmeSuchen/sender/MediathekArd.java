@@ -92,7 +92,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             if (listeThemen.size() > 0) {
                 meldungStart(listeThemen.size());
                 listeSort(listeThemen, 1);
-                for (int t = 0; t < senderMaxThread; ++t) {
+                for (int t = 0; t < maxThreadLaufen; ++t) {
                     new Thread(new ArdThemaLaden()).start();
                 }
             }
@@ -101,7 +101,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
 
     private class ArdThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
 
         public ArdThemaLaden() {
         }

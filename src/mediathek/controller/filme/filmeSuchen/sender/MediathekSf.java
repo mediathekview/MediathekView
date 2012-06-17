@@ -20,10 +20,10 @@
 package mediathek.controller.filme.filmeSuchen.sender;
 
 import mediathek.Daten;
-import mediathek.daten.DatenFilm;
+import mediathek.Log;
 import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
-import mediathek.Log;
+import mediathek.daten.DatenFilm;
 
 /**
  *
@@ -83,7 +83,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
         if (!Daten.filmeLaden.getStop()) {
             if (listeThemen.size() > 0) {
                 meldungStart(listeThemen.size());
-                for (int t = 0; t < senderMaxThread; ++t) {
+                for (int t = 0; t < maxThreadLaufen; ++t) {
                     new Thread(new SfThemaLaden()).start();
                 }
             }
@@ -92,7 +92,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
 
     private class SfThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl( senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl( wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
         private StringBuffer seite2 = new StringBuffer();
 

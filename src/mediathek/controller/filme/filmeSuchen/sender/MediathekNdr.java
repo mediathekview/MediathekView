@@ -87,7 +87,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         if (!Daten.filmeLaden.getStop()) {
             if (listeThemen.size() > 0) {
                 meldungStart(listeThemen.size());
-                for (int t = 0; t < senderMaxThread; ++t) {
+                for (int t = 0; t < maxThreadLaufen; ++t) {
                     new Thread(new ThemaLaden()).start();
                 }
             }
@@ -96,8 +96,8 @@ public class MediathekNdr extends MediathekReader implements Runnable {
 
     private class ThemaLaden implements Runnable {
 
-        GetUrl getUrl1 = new GetUrl( senderWartenSeiteLaden);
-        GetUrl getUrl2 = new GetUrl( senderWartenSeiteLaden);
+        GetUrl getUrl1 = new GetUrl( wartenSeiteLaden);
+        GetUrl getUrl2 = new GetUrl( wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
         private StringBuffer seite2 = new StringBuffer();
 

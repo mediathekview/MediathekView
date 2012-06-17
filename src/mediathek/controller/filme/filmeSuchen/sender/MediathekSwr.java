@@ -63,7 +63,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             addToList__("http://www.swrmediathek.de/tvlist.htm");
             suchen.listeFilmeNeu.alteThemenLöschen(nameSenderMReader, listeThemen);
             if (!Daten.filmeLaden.getStop() && listeThemen.size() > 0) {
-                for (int t = 0; t < senderMaxThread; ++t) {
+                for (int t = 0; t < maxThreadLaufen; ++t) {
                     new Thread(new SenderThemaLaden()).start();
                 }
             }
@@ -117,7 +117,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
 
     private class SenderThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer strSeite1 = new StringBuffer();
         private StringBuffer strSeite2 = new StringBuffer();
 

@@ -110,7 +110,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
             if (listeThemen.size() > 0) {
                 meldungStart(listeThemen.size());
                 listeSort(listeThemen, 1);
-                for (int t = 0; t < senderMaxThread; ++t) {
+                for (int t = 0; t < maxThreadLaufen; ++t) {
                     new Thread(new OrfThemaLaden()).start();
                 }
             }
@@ -119,7 +119,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
 
     private class OrfThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl( senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl( wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
 
         @Override
