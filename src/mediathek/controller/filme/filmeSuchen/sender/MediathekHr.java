@@ -38,8 +38,8 @@ public class MediathekHr extends MediathekReader implements Runnable {
      *
      * @param ddaten
      */
-    public MediathekHr(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 1000);
+    public MediathekHr(FilmeSuchenSender ssearch, int startPrio) {
+        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 1000, startPrio);
     }
 
     /**

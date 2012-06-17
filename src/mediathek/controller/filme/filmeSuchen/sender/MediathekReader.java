@@ -29,7 +29,7 @@ import mediathek.tool.GermanStringSorter;
 
 /**
  *
- * @author
+ *    @author
  */
 public class MediathekReader implements Runnable {
 
@@ -42,21 +42,23 @@ public class MediathekReader implements Runnable {
     int threads = 0;
     int max = 0;
     int progress = 0;
+    int startPrio = 1; // es gibt die Werte: 0->startet sofort, 1->später und 2->zuletzt
     LinkedList<String[]> listeThemen = new LinkedList<String[]>();
     GetUrl getUrlIo;
     FilmeSuchenSender suchen;
 
     /**
      *
-     * @param ddaten
+     *    @param ddaten
      */
-    public MediathekReader(FilmeSuchenSender ssearch, String nameMreader, int ssenderMaxThread, int ssenderWartenSeiteLaden) {
+    public MediathekReader(FilmeSuchenSender ssearch, String nameMreader, int ssenderMaxThread, int ssenderWartenSeiteLaden, int sstartPrio) {
         suchen = ssearch;
         wartenSeiteLaden = ssenderWartenSeiteLaden;
         getUrlIo = new GetUrl(ssenderWartenSeiteLaden);
         nameSenderFilmliste = nameMreader; // ist meist gleich, wenn nicht muss er im MReader geändert werden
         nameSenderMReader = nameMreader;
         maxThreadLaufen = ssenderMaxThread;
+        startPrio = sstartPrio;
     }
     //===================================
     // public 
@@ -69,6 +71,10 @@ public class MediathekReader implements Runnable {
 //    public void setSenderAn(boolean an) {
 //        senderOn = an;
 //    }
+    public int getStartPrio() {
+        return startPrio;
+    }
+
     public boolean checkNameSenderFilmliste(String name) {
         // ist der Name der in der Tabelle Filme angezeigt wird
         // ARTE hat hier 2 Namen: ARTE.DE, ARTE.FR

@@ -41,8 +41,8 @@ public class MediathekZdf extends MediathekReader implements Runnable {
      *
      * @param ddaten
      */
-    public MediathekZdf(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ SENDER,  6 /* threads */, 500 /* urlWarten */);
+    public MediathekZdf(FilmeSuchenSender ssearch, int startPrio) {
+        super(ssearch, /* name */ SENDER,  6 /* threads */, 500 /* urlWarten */, startPrio);
     }
 
     /**

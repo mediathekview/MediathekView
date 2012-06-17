@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.ListIterator;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -76,9 +75,6 @@ public class Log {
     public static synchronized void startMeldungen(String classname) {
         Date startZeit = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        Log.systemMeldung("");
-        Log.systemMeldung("");
-        Log.systemMeldung("");
         Log.systemMeldung("");
         Log.systemMeldung("");
         Log.systemMeldung("###########################################################");
