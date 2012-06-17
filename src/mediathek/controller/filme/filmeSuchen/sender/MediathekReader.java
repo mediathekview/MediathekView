@@ -174,7 +174,6 @@ public class MediathekReader implements Runnable {
     synchronized void meldungFertig() {
         //wird erst ausgeführt wenn alle Threads beendet sind
         if (threads <= 0) { // sonst läuft noch was
-            Log.systemMeldung("Fertig " + nameSenderMReader + ": " + DatumZeit.getJetzt_HH_MM_SS());
             suchen.meldenFertig(nameSenderMReader);
         } else {
             suchen.melden(nameSenderMReader, max, progress, "" /* text */);
