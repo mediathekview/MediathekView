@@ -20,8 +20,6 @@
 package mediathek;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.controller.filme.BeobFilmeLaden;
@@ -39,8 +37,6 @@ public class MediathekNoGui {
     private String importUrl = "";
     private String userAgent = "";
     private boolean allesLaden = false;
-    private Date startZeit = new Date(System.currentTimeMillis());
-    private Date stopZeit = null;
     private String pfad = "";
     private Daten daten;
 
@@ -139,23 +135,7 @@ public class MediathekNoGui {
                 new IoXmlFilmlisteSchreiben().filmeSchreiben(it.next(), Daten.listeFilme);
             }
         }
-        stopZeit = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        int minuten;
-        try {
-            minuten = Math.round((stopZeit.getTime() - startZeit.getTime()) / (1000 * 60));
-        } catch (Exception ex) {
-            minuten = -1;
-        }
         Log.printFehlerNummer();
-        Log.systemMeldung(new String[]{
-                    "========================================",
-                    "  " + Daten.filmeLaden.getSeitenGeladen() + " Seiten geladen",
-                    "  " + Daten.listeFilme.size() + " Filme gesamt",
-                    "  --> Beginn: " + sdf.format(startZeit),
-                    "  --> Fertig: " + sdf.format(stopZeit), "  --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten),
-                    "========================================"});
-
         if (Daten.listeFilme.isEmpty()) {
             //Satz mit x, war wohl nix
             System.exit(1);

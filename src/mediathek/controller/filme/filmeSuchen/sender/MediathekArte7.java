@@ -52,8 +52,8 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
      *       @param ddaten
      *       @param dde
      */
-    public MediathekArte7(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ "", /* threads */ MAX_THREADS_ALLES, /* urlWarten */ 500);
+    public MediathekArte7(FilmeSuchenSender ssearch, int startPrio) {
+        super(ssearch, /* name */ "", /* threads */ MAX_THREADS_ALLES, /* urlWarten */ 500, startPrio);
         nameSenderMReader = SENDER_ARTE;
     }
 

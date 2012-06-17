@@ -38,8 +38,8 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
      * 
      * @param ddaten
      */
-    public MediathekSfPod(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000);
+    public MediathekSfPod(FilmeSuchenSender ssearch, int startPrio) {
+        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
     }
 
     /**

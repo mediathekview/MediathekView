@@ -35,8 +35,8 @@ public class MediathekBr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "BR";
 
-    public MediathekBr(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 500);
+    public MediathekBr(FilmeSuchenSender ssearch, int startPrio) {
+        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 500, startPrio);
     }
 
     private class ThemaLaden implements Runnable {

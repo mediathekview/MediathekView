@@ -47,48 +47,62 @@ public class FilmeSuchenSender {
     private Date stopZeit = null;
 
     /**
-     *      ###########################################################################################################
-     *      Ablauf:
-     *      die gefundenen Filme kommen in die "listeFilme"
-     *      -> bei einem vollen Suchlauf: passiert nichts weiter
-     *      -> bei einem Update: "listeFilme" mit alter Filmliste auffüllen, URLs die es schon gibt werden verworfen
-     *      "listeFilme" ist dann die neue komplette Liste mit Filmen
-     *      ##########################################################################################################
+     * ###########################################################################################################
+     * Ablauf:
+     * die gefundenen Filme kommen in die "listeFilme"
+     * -> bei einem vollen Suchlauf: passiert nichts weiter
+     * -> bei einem Update: "listeFilme" mit alter Filmliste auffüllen, URLs die es schon gibt werden verworfen
+     * "listeFilme" ist dann die neue komplette Liste mit Filmen
+     * ##########################################################################################################
      */
     public FilmeSuchenSender() {
         //Reader laden Spaltenweises Laden
-        mediathekListe.add(new MediathekArd(this));
-        mediathekListe.add(new MediathekArdPodcast(this));
-        mediathekListe.add(new MediathekZdf(this));
-        mediathekListe.add(new MediathekArte7(this));
-        mediathekListe.add(new Mediathek3Sat(this));
-        mediathekListe.add(new MediathekSwr(this));
-        mediathekListe.add(new MediathekNdr(this));
+        mediathekListe.add(new MediathekArd(this, 0));
+        mediathekListe.add(new MediathekArdPodcast(this, 0));
+        mediathekListe.add(new MediathekZdf(this, 0));
+        mediathekListe.add(new MediathekArte7(this, 1));
+        mediathekListe.add(new Mediathek3Sat(this, 2));
+        mediathekListe.add(new MediathekSwr(this, 1));
+        mediathekListe.add(new MediathekNdr(this, 1));
         // Spalte 2
-        mediathekListe.add(new MediathekMdr(this));
-        mediathekListe.add(new MediathekWdr(this));
-        mediathekListe.add(new MediathekHr(this));
-        mediathekListe.add(new MediathekRbb(this));
-        mediathekListe.add(new MediathekBr(this));
-        mediathekListe.add(new MediathekSf(this));
-        mediathekListe.add(new MediathekSfPod(this));
-        mediathekListe.add(new MediathekOrf(this));
+        mediathekListe.add(new MediathekMdr(this, 1));
+        mediathekListe.add(new MediathekWdr(this, 0));
+        mediathekListe.add(new MediathekHr(this, 2));
+        mediathekListe.add(new MediathekRbb(this, 1));
+        mediathekListe.add(new MediathekBr(this, 2));
+        mediathekListe.add(new MediathekSf(this, 1));
+        mediathekListe.add(new MediathekSfPod(this, 2));
+        mediathekListe.add(new MediathekOrf(this, 1));
     }
 
     public void addAdListener(FilmListener listener) {
         listeners.add(FilmListener.class, listener);
     }
 
-    public void filmeBeimSenderLaden(boolean aallesLaden, ListeFilme alteListe) {
+    public synchronized void filmeBeimSenderLaden(boolean aallesLaden, ListeFilme alteListe) {
         allesLaden = aallesLaden;
         initStart(alteListe);
         listeFilmeNeu.liveStreamEintragen();
-        Iterator<MediathekReader> it;
+        // die mReader nach Prio starten
+        mrStarten(0);
+        mrStarten(1);
+        mrStarten(2);
+    }
+
+    private synchronized void mrStarten(int prio) {
         MediathekReader mr;
-        it = mediathekListe.iterator();
+        Iterator<MediathekReader> it = mediathekListe.iterator();
+        // Prio 0 laden
         while (it.hasNext()) {
             mr = it.next();
-            new Thread(mr).start();
+            if (mr.getStartPrio() == prio) {
+                new Thread(mr).start();
+            }
+        }
+        try {
+            this.wait(2 * 60 * 1000); // 2 Min. warten, Sender nach der Gesamtlaufzeit starten
+        } catch (Exception ex) {
+            Log.fehlerMeldung(952210369, "FilmeSuchenSender.mrStarten", ex);
         }
     }
 
@@ -213,8 +227,8 @@ public class FilmeSuchenSender {
             Log.systemMeldung("");
             Log.systemMeldung("Seiten geladen:   " + GetUrl.getSeitenZaehler());
             Log.systemMeldung("Summe geladen:    " + GetUrl.getSumByte() / 1024 / 1024 + " MByte");
-            Log.systemMeldung("  --> Beginn:     " + sdf.format(startZeit));
-            Log.systemMeldung("  --> Fertig:     " + sdf.format(stopZeit));
+            Log.systemMeldung("  --> Start:      " + sdf.format(startZeit));
+            Log.systemMeldung("  --> Ende:       " + sdf.format(stopZeit));
             Log.systemMeldung("  --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten));
             Log.systemMeldung("");
             Log.systemMeldung("============================================================");

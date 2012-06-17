@@ -38,8 +38,8 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
      *
      *  @param ddaten
      */
-    public MediathekArdPodcast(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500);
+    public MediathekArdPodcast(FilmeSuchenSender ssearch, int startPrio) {
+        super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
     }
 
     @Override

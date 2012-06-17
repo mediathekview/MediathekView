@@ -32,8 +32,8 @@ public class MediathekRbb extends MediathekReader implements Runnable {
     public static final String SENDER = "RBB";
     final String ROOTADR = "http://mediathek.rbb-online.de";
 
-    public MediathekRbb(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 500);
+    public MediathekRbb(FilmeSuchenSender ssearch, int startPrio) {
+        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 500, startPrio);
     }
 
     @Override

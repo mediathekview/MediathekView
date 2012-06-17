@@ -41,8 +41,8 @@ public class MediathekSwr extends MediathekReader implements Runnable {
     public final int MAX_THEMEN_ALLES = 10;
     private int seiten = 0;
 
-    public MediathekSwr(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ SENDER,  /* threads */ 1, /* urlWarten */ 1000);
+    public MediathekSwr(FilmeSuchenSender ssearch, int startPrio) {
+        super(ssearch, /* name */ SENDER,  /* threads */ 1, /* urlWarten */ 1000, startPrio);
     }
 
     //===================================

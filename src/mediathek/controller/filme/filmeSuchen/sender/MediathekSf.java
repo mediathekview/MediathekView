@@ -39,8 +39,8 @@ public class MediathekSf extends MediathekReader implements Runnable {
      * 
      * @param ddaten
      */
-    public MediathekSf(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 1000);
+    public MediathekSf(FilmeSuchenSender ssearch, int startPrio) {
+        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 1000, startPrio);
     }
 
     /**
