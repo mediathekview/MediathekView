@@ -25,7 +25,7 @@ import javax.swing.event.EventListenerList;
 import mediathek.Konstanten;
 import mediathek.controller.filme.filmUpdateServer.ListeFilmUpdateServer;
 import mediathek.controller.filme.filmeImportieren.FilmeImportieren;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
+import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekReader;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DDaten;
@@ -44,13 +44,13 @@ public class FilmeLaden {
     private boolean stop = false;
     private ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
     private ListeFilme listeFilmeNeu = null; //ist eine NEUE ungefilterte Liste, wird beim Laden NEU erstellt
-    private FilmeSuchen filmeSuchen;
+    private FilmeSuchenSender filmeSuchen;
     private FilmeImportieren filmeImportieren;
     private EventListenerList listeners = new EventListenerList();
     private boolean istAmLaufen = false;
 
     public FilmeLaden() {
-        filmeSuchen = new FilmeSuchen();
+        filmeSuchen = new FilmeSuchenSender();
         filmeImportieren = new FilmeImportieren();
         filmeSuchen.addAdListener(new BeobLadenSuchen());
         filmeImportieren.addAdListener(new BeobLadenImportieren());
@@ -97,19 +97,7 @@ public class FilmeLaden {
     }
 
     public String[] getSenderNamen() {
-        LinkedList<String> liste = new LinkedList<String>();
-        Iterator<MediathekReader> it = filmeSuchen.mediathekListe.iterator();
-        while (it.hasNext()) {
-            String[] s = it.next().getListeSenderName();
-            for (int i = 0; i < s.length; ++i) {
-                liste.add(s[i]);
-            }
-        }
-        String[] ret = new String[liste.size()];
-        for (int i = 0; i < liste.size(); ++i) {
-            ret[i] = liste.get(i);
-        }
-        return ret;
+        return filmeSuchen.getNamenSenderFilmliste();
     }
 
     // #########################################################

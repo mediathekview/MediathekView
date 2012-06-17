@@ -23,7 +23,7 @@ package mediathek.controller.filme.filmeSuchen.sender;
 
 import mediathek.Daten;
 import mediathek.Log;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
+import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
 
@@ -32,7 +32,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
     public static final String SENDER = "RBB";
     final String ROOTADR = "http://mediathek.rbb-online.de";
 
-    public MediathekRbb(FilmeSuchen ssearch) {
+    public MediathekRbb(FilmeSuchenSender ssearch) {
         super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 500);
     }
 
@@ -46,13 +46,13 @@ public class MediathekRbb extends MediathekReader implements Runnable {
         final String ITEM_1 = "<a href=\"/rbb/servlet/ajax-cache/";
         final String ITEM_URL = "http://mediathek.rbb-online.de/rbb/servlet/ajax-cache/";
         try {
-            seite1 = getUrlIo.getUri_Utf(senderNameMReader, ADRESSE, seite1, "");
+            seite1 = getUrlIo.getUri_Utf(nameSenderMReader, ADRESSE, seite1, "");
             while ((pos1 = seite1.indexOf(ITEM_1, pos1)) != -1) {
                 pos1 = pos1 + ITEM_1.length();
                 if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
                     String url = ITEM_URL + seite1.substring(pos1, pos2).replace("view=switch", "view=list");
                     if (!url.equals("")) {
-                        seite2 = getUrlIo.getUri_Utf(senderNameMReader, url, seite2, "");
+                        seite2 = getUrlIo.getUri_Utf(nameSenderMReader, url, seite2, "");
                         int lpos1 = 0;
                         int lpos2 = 0;
                         final String LIST_ITEM = "<h3 class=\"mt-title\"><a href=\"";
@@ -113,7 +113,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                 // Hierin nun einen RSS feed URL extrahieren
                 final String RSS_ITEM = "<a href=\"/rbb/servlet/export/rss/";
                 seite1.setLength(0);
-                seite1 = getUrlIo.getUri_Utf(senderNameMReader, url, seite1, "");
+                seite1 = getUrlIo.getUri_Utf(nameSenderMReader, url, seite1, "");
                 int rpos = seite1.indexOf(RSS_ITEM);
                 if (rpos > 0) {
                     int rpos1 = rpos + 9;
@@ -122,7 +122,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
 
                     // Diesen RSS feed laden
                     seite2.setLength(0);
-                    seite2 = getUrlIo.getUri_Utf(senderNameMReader, rssurl, seite2, "");
+                    seite2 = getUrlIo.getUri_Utf(nameSenderMReader, rssurl, seite2, "");
 
                     rpos = 0;
                     int count = 0;
@@ -140,7 +140,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
 
                         // Wir haben den URL der Sendung
                         seite3.setLength(0);
-                        seite3 = getUrlIo.getUri_Utf(senderNameMReader, showurl, seite3, "");
+                        seite3 = getUrlIo.getUri_Utf(nameSenderMReader, showurl, seite3, "");
                         meldung("*" + showurl);
 
                         // Titel
@@ -158,7 +158,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                             String filmurl = seite3.substring(mpos, mpos2);
                             String urlRtmp = "--host ondemand.rbb-online.de --app ondemand/ --playpath " + filmurl;
                             String urlOrg = addsUrl("rtmp://ondemand.rbb-online.de/ondemand/", filmurl);
-                            DatenFilm film = new DatenFilm(senderNameMReader, thema, showurl, title, urlOrg, urlOrg, urlRtmp, datum, ""/* zeit */);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlOrg, urlOrg, urlRtmp, datum, ""/* zeit */);
                             addFilm(film);
                         }
                         rpos = rpos2; // hinter Element gehts weiter
