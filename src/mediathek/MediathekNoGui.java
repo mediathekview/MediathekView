@@ -89,6 +89,8 @@ public class MediathekNoGui {
         }
         Log.systemMeldung("ImportUrl: " + importUrl);
         Log.systemMeldung("Outputfile: " + output);
+        Log.systemMeldung("");
+        Log.systemMeldung("");
     }
 
     public void starten() {

@@ -50,6 +50,11 @@ public class GetUrl {
             senderName = ssenderName;
             seitenAnzahl = 1;
         }
+
+        public Seitenzaehler(String ssenderName, int sseitenAnzahl) {
+            senderName = ssenderName;
+            seitenAnzahl = sseitenAnzahl;
+        }
     }
 
 //    public GetUrl() {
@@ -206,7 +211,7 @@ public class GetUrl {
             }
         }
         if (!gefunden) {
-            listeSeitenZaehlerFehlerVersuche.add(new Seitenzaehler(sender));
+            listeSeitenZaehlerFehlerVersuche.add(new Seitenzaehler(sender, v));
         }
     }
 
