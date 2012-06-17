@@ -25,7 +25,7 @@ import javax.swing.event.EventListenerList;
 import mediathek.Konstanten;
 import mediathek.controller.filme.filmUpdateServer.ListeFilmUpdateServer;
 import mediathek.controller.filme.filmeImportieren.FilmeImportieren;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
+import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekReader;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DDaten;

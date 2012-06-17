@@ -21,7 +21,7 @@ package mediathek.controller.filme.filmeSuchen.sender;
 
 import mediathek.Daten;
 import mediathek.daten.DatenFilm;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
+import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.Log;
 
