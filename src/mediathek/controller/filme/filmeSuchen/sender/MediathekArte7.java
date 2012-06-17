@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
+import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.DatumZeit;

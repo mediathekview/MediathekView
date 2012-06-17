@@ -28,7 +28,7 @@ import java.util.zip.ZipInputStream;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
+import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
 import mediathek.daten.DatenFilm;
 
 public class MediathekBr extends MediathekReader implements Runnable {
