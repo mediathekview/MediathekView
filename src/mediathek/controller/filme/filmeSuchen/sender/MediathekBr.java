@@ -28,14 +28,14 @@ import java.util.zip.ZipInputStream;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
+import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
 import mediathek.daten.DatenFilm;
 
 public class MediathekBr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "BR";
 
-    public MediathekBr(FilmeSuchen ssearch) {
+    public MediathekBr(FilmeSuchenSender ssearch) {
         super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 500);
     }
 
@@ -196,7 +196,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
 //                    String urlRtmp = "--host " + host + " --app " + app + " --playpath mp4:" + play;
                     String urlOrg = "rtmp://" + host + "/" + app + "/" + play;
                     // DatenFilm(ddaten, ssender, tthema, urlThema,  ttitel, uurl, uurlorg, uurlRtmp, datum, zeit, alt)
-                    DatenFilm film = new DatenFilm(senderNameMReader, thema, link, titel, urlOrg, datum, zeit);
+                    DatenFilm film = new DatenFilm(nameSenderMReader, thema, link, titel, urlOrg, datum, zeit);
                     addFilm(film);
                 }
             } //while, die ganz große Schleife

@@ -32,7 +32,7 @@ import mediathek.controller.io.GetUrl;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.DatumZeit;
 
-public class FilmeSuchen {
+public class FilmeSuchenSender {
 
     public LinkedList<MediathekReader> mediathekListe = new LinkedList<MediathekReader>();
     public boolean allesLaden = true;
@@ -43,68 +43,15 @@ public class FilmeSuchen {
     private LinkedList<String> fertigMeldung = new LinkedList<String>();
 
     /**
-     *
-     * @param ddaten
+     *    ###########################################################################################################
+     *    Ablauf:
+     *    die gefundenen Filme kommen in die "listeFilme"
+     *    -> bei einem vollen Suchlauf: passiert nichts weiter
+     *    -> bei einem Update: "listeFilme" mit alter Filmliste auffüllen, URLs die es schon gibt werden verworfen
+     *    "listeFilme" ist dann die neue komplette Liste mit Filmen
+     *    ##########################################################################################################
      */
-    public FilmeSuchen() {
-        initMediathekReader();
-    }
-    // ###########################################################################################################
-    // Ablauf:
-    // die gefundenen Filme kommen in die "listeFilme"
-    //  -> bei einem vollen Suchlauf: passiert nichts weiter
-    //  -> bei einem Update: "listeFilme" mit alter Filmliste auffüllen, URLs die es schon gibt werden verworfen
-    // "listeFilme" ist dann die neue komplette Liste mit Filmen
-    // ##########################################################################################################
-
-    public void filmeBeimSenderLaden(boolean aallesLaden, ListeFilme alteListe) {
-        allesLaden = aallesLaden;
-        initStart(alteListe);
-        listeFilmeNeu.liveStreamEintragen();
-        Iterator<MediathekReader> it;
-        MediathekReader mr;
-        it = mediathekListe.iterator();
-        while (it.hasNext()) {
-            mr = it.next();
-            new Thread(mr).start();
-        }
-    }
-
-    public void updateSender(String sender, ListeFilme alteListe) {
-        // nur für den Mauskontext "Sender aktualisieren"
-        allesLaden = false;
-        initStart(alteListe);
-        MediathekReader reader = null;
-        if (!sender.equals("")) {
-            Iterator<MediathekReader> it = mediathekListe.iterator();
-            while (it.hasNext()) {
-                reader = it.next();
-                if (reader.checkSenderNameAngezeigt(sender)) {
-                    break;
-                }
-            }
-        }
-        if (reader != null) {
-            new Thread(reader).start();
-        }
-    }
-
-    private void initStart(ListeFilme alteListe) {
-        fertigMeldung.clear();
-        listeFilmeAlt = alteListe;
-        listeFilmeNeu = new ListeFilme();
-        listeFilmeNeu.setInfo(alteListe.infos);
-        GetUrl.resetSeitenZaehler();
-    }
-
-    public void addAdListener(FilmListener listener) {
-        listeners.add(FilmListener.class, listener);
-    }
-
-    //===================================
-    // private
-    //===================================
-    private void initMediathekReader() {
+    public FilmeSuchenSender() {
         //Reader laden Spaltenweises Laden
         mediathekListe.add(new MediathekArd(this));
         mediathekListe.add(new MediathekArdPodcast(this));
@@ -122,6 +69,74 @@ public class FilmeSuchen {
         mediathekListe.add(new MediathekSf(this));
         mediathekListe.add(new MediathekSfPod(this));
         mediathekListe.add(new MediathekOrf(this));
+    }
+
+    public void addAdListener(FilmListener listener) {
+        listeners.add(FilmListener.class, listener);
+    }
+
+    public void filmeBeimSenderLaden(boolean aallesLaden, ListeFilme alteListe) {
+        allesLaden = aallesLaden;
+        initStart(alteListe);
+        listeFilmeNeu.liveStreamEintragen();
+        Iterator<MediathekReader> it;
+        MediathekReader mr;
+        it = mediathekListe.iterator();
+        while (it.hasNext()) {
+            mr = it.next();
+            new Thread(mr).start();
+        }
+    }
+
+    public void updateSender(String nameSenderFilmliste, ListeFilme alteListe) {
+        // nur für den Mauskontext "Sender aktualisieren"
+        allesLaden = false;
+        initStart(alteListe);
+        MediathekReader reader = getMReaderNameSenderFilmliste(nameSenderFilmliste);
+        if (reader != null) {
+            new Thread(reader).start();
+        }
+    }
+
+    public MediathekReader getMReaderNameSenderFilmliste(String nameSenderFilmliste) {
+        // liefert den MediathekReader für den Sender mit dem in der Filmliste angezeigten Namen
+        Iterator<MediathekReader> it = mediathekListe.iterator();
+        while (it.hasNext()) {
+            MediathekReader reader = it.next();
+            if (reader.checkNameSenderFilmliste(nameSenderFilmliste)) {
+                return reader;
+            }
+        }
+        return null;
+    }
+
+    public MediathekReader getMReaderNameSenderMreader(String nameSenderMreader) {
+        // liefert den MediathekReader mit dem Namen
+        Iterator<MediathekReader> it = mediathekListe.iterator();
+        while (it.hasNext()) {
+            MediathekReader reader = it.next();
+            if (reader.getNameSenderMreader().equals(nameSenderMreader)) {
+                return reader;
+            }
+        }
+        return null;
+    }
+
+    public String[] getNamenSenderFilmliste() {
+        // liefert eine Array mit den in der Filmliste angezeigten Sendernamen
+        LinkedList<String> liste = new LinkedList<String>();
+        Iterator<MediathekReader> it = mediathekListe.iterator();
+        while (it.hasNext()) {
+            String[] s = it.next().getNameSenderFilmliste();
+            for (int i = 0; i < s.length; ++i) {
+                liste.add(s[i]);
+            }
+        }
+        String[] ret = new String[liste.size()];
+        for (int i = 0; i < liste.size(); ++i) {
+            ret[i] = liste.get(i);
+        }
+        return ret;
     }
 
     public synchronized void melden(String sender, int max, int progress, String text) {
@@ -173,6 +188,17 @@ public class FilmeSuchen {
             //nur ein Sender fertig
             notifyProgress(new FilmListenerElement(sender, "", listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
         }
+    }
+
+    //===================================
+    // private
+    //===================================
+    private void initStart(ListeFilme alteListe) {
+        fertigMeldung.clear();
+        listeFilmeAlt = alteListe;
+        listeFilmeNeu = new ListeFilme();
+        listeFilmeNeu.setInfo(alteListe.infos);
+        GetUrl.resetSeitenZaehler();
     }
 
     private void progressBar() {

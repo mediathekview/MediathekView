@@ -21,7 +21,7 @@ package mediathek.controller.filme.filmeSuchen.sender;
 
 import mediathek.Daten;
 import mediathek.Log;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
+import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
 
@@ -37,7 +37,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
      *
      * @param ddaten
      */
-    public MediathekArd(FilmeSuchen ssearch) {
+    public MediathekArd(FilmeSuchenSender ssearch) {
         super(ssearch, /* name */ SENDER, /* threads */ 6, /* urlWarten */ 500);
     }
 
@@ -49,7 +49,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
         listeThemen.clear();
         StringBuffer seite = new StringBuffer();
         //seite = new GetUrl(daten).getUriArd(ADRESSE, seite, "");
-        seite = getUrlIo.getUri_Utf(senderNameMReader, ADRESSE, seite, "");
+        seite = getUrlIo.getUri_Utf(nameSenderMReader, ADRESSE, seite, "");
         int pos = 0;
         int pos1;
         int pos2;
@@ -132,7 +132,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             //<option value="/ard/servlet/ajax-cache/3516962/view=list/documentId=1175574/goto=2/index.html">2</option>
             //URL: http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=4106/index.html
             final String MUSTER = "<option value=\"";
-            seite1 = getUrl.getUri_Utf(senderNameMReader, strUrlFeed, seite1, "Thema: " + thema);
+            seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "Thema: " + thema);
             int pos;
             int pos1;
             int pos2;
@@ -142,7 +142,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 // http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=3322404/index.html
                 // http://www.ardmediathek.de/ard/servlet/ajax-cache/3516992/view=switch/documentId=3322404/index.html
                 String tmp = strUrlFeed.replace("ajax-cache/3516962/view=list", "ajax-cache/3516992/view=switch");
-                seiteFehler = getUrl.getUri_Utf(senderNameMReader, tmp, seiteFehler, "Thema: " + thema);
+                seiteFehler = getUrl.getUri_Utf(nameSenderMReader, tmp, seiteFehler, "Thema: " + thema);
                 feedEinerSeiteSuchen(seiteFehler, tmp, thema, false);
             }
             //nach weitern Seiten schauen
@@ -161,7 +161,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         if (url.equals("")) {
                             continue;
                         }
-                        seiteWeiter = getUrl.getUri_Utf(senderNameMReader, "http://www.ardmediathek.de" + url, seiteWeiter, "Thema: " + thema);
+                        seiteWeiter = getUrl.getUri_Utf(nameSenderMReader, "http://www.ardmediathek.de" + url, seiteWeiter, "Thema: " + thema);
                         feedEinerSeiteSuchen(seiteWeiter, strUrlFeed, thema, true);
                     } catch (Exception ex) {
                         Log.fehlerMeldung(-497321681,"MediathekArd.feedSuchen", ex, "Weitere Seiten suchen");
@@ -321,7 +321,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
 
             boolean ret = false;
             meldung("*" + urlFilm);
-            seite2 = getUrl.getUri_Utf(senderNameMReader, urlFilm, seite2, "urlFeed: " + urlFeed);
+            seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "urlFeed: " + urlFeed);
             int pos1;
             int pos1Tmp;
             int pos1a;
@@ -405,9 +405,9 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     String urlRtmp = "--host " + url1a + " --app " + url1b + " --playpath " + url2;
                     //flvstreamer --host vod.daserste.de --app ardfs --playpath mp4:videoportal/Film/c_100000/106579/format106899.f4v > bla.flv
                     //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
-                    film = new DatenFilm(senderNameMReader, thema, urlFeed, titel, urlOrg, urlOrg /* orgUrl */, urlRtmp, datum, zeit);
+                    film = new DatenFilm(nameSenderMReader, thema, urlFeed, titel, urlOrg, urlOrg /* orgUrl */, urlRtmp, datum, zeit);
                 } else {
-                    film = new DatenFilm(senderNameMReader, thema, urlFeed, titel, url2 /* url */, ""/* urlOrg */, "" /* urlRtmp */, datum, zeit);
+                    film = new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url2 /* url */, ""/* urlOrg */, "" /* urlRtmp */, datum, zeit);
                 }
                 addFilm(film);
                 ret = true;

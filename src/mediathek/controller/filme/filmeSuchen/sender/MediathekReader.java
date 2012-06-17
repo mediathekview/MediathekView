@@ -22,7 +22,7 @@ package mediathek.controller.filme.filmeSuchen.sender;
 import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.Log;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
+import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.DatumZeit;
@@ -34,8 +34,8 @@ import mediathek.tool.GermanStringSorter;
  */
 public class MediathekReader implements Runnable {
 
-    String senderNameFilmliste = ""; // ist der Sendername in der Filmliste, bei ARTE gibt es da 2 Namen,
-    String senderNameMReader = ""; // ist der Name, den der Mediathekreader auch hat, der ist eindeutig!
+    String nameSenderFilmliste = ""; // ist der Sendername in der Filmliste, bei ARTE gibt es da 2 Namen,
+    String nameSenderMReader = ""; // ist der Name, den der Mediathekreader hat, der ist eindeutig und meist identisch mit dem "nameSenderFilmliste"
     int senderMaxThread = 4;
     long senderWartenSeiteLaden = 500;//ms, Basiswert zu dem dann der Faktor multipliziert wird
     //boolean senderOn = true;
@@ -45,18 +45,18 @@ public class MediathekReader implements Runnable {
     int progress = 0;
     LinkedList<String[]> listeThemen = new LinkedList<String[]>();
     GetUrl getUrlIo;
-    FilmeSuchen suchen;
+    FilmeSuchenSender suchen;
 
     /**
      *
      * @param ddaten
      */
-    public MediathekReader(FilmeSuchen ssearch, String nameMreader, int ssenderMaxThread, int ssenderWartenSeiteLaden) {
+    public MediathekReader(FilmeSuchenSender ssearch, String nameMreader, int ssenderMaxThread, int ssenderWartenSeiteLaden) {
         suchen = ssearch;
         senderWartenSeiteLaden = ssenderWartenSeiteLaden;
         getUrlIo = new GetUrl(ssenderWartenSeiteLaden);
-        senderNameFilmliste = nameMreader; // ist meist gleich, wenn nicht muss er im MReader geändert werden
-        senderNameMReader = nameMreader;
+        nameSenderFilmliste = nameMreader; // ist meist gleich, wenn nicht muss er im MReader geändert werden
+        nameSenderMReader = nameMreader;
         senderMaxThread = ssenderMaxThread;
     }
     //===================================
@@ -70,14 +70,18 @@ public class MediathekReader implements Runnable {
 //    public void setSenderAn(boolean an) {
 //        senderOn = an;
 //    }
-    public boolean checkSenderNameAngezeigt(String name) {
+    public boolean checkNameSenderFilmliste(String name) {
         // ist der Name der in der Tabelle Filme angezeigt wird
         // ARTE hat hier 2 Namen: ARTE.DE, ARTE.FR
-        return senderNameMReader.equalsIgnoreCase(name);
+        return nameSenderMReader.equalsIgnoreCase(name);
     }
 
-    public String[] getListeSenderName() {
-        return new String[]{senderNameMReader};
+    public String[] getNameSenderFilmliste() {
+        return new String[]{nameSenderFilmliste};
+    }
+
+    public String getNameSenderMreader() {
+        return nameSenderMReader;
     }
 
     @Override
@@ -88,7 +92,7 @@ public class MediathekReader implements Runnable {
             threads = 0;
             addToList();
         } catch (Exception ex) {
-            Log.fehlerMeldung(-397543600, "MediathekReader.run", ex, senderNameMReader);
+            Log.fehlerMeldung(-397543600, "MediathekReader.run", ex, nameSenderMReader);
         }
     }
 
@@ -140,26 +144,26 @@ public class MediathekReader implements Runnable {
     synchronized void meldungStart(int mmax) {
         max = mmax;
         progress = 0;
-        suchen.melden(senderNameMReader, max, progress, "" /* text */);
+        suchen.melden(nameSenderMReader, max, progress, "" /* text */);
     }
 
     synchronized void meldungAddMax(int mmax) {
         max += mmax;
-        suchen.melden(senderNameMReader, max, progress, "" /* text */);
+        suchen.melden(nameSenderMReader, max, progress, "" /* text */);
     }
 
     synchronized void meldungAddThread() {
         ++threads;
-        suchen.melden(senderNameMReader, max, progress, "" /* text */);
+        suchen.melden(nameSenderMReader, max, progress, "" /* text */);
     }
 
     synchronized void meldungProgress(String text) {
         ++progress;
-        suchen.melden(senderNameMReader, max, progress, text);
+        suchen.melden(nameSenderMReader, max, progress, text);
     }
 
     synchronized void meldung(String text) {
-        suchen.melden(senderNameMReader, max, progress, text);
+        suchen.melden(nameSenderMReader, max, progress, text);
     }
 
     synchronized void meldungThreadUndFertig() {
@@ -170,10 +174,10 @@ public class MediathekReader implements Runnable {
     synchronized void meldungFertig() {
         //wird erst ausgeführt wenn alle Threads beendet sind
         if (threads <= 0) { // sonst läuft noch was
-            Log.systemMeldung("Fertig " + senderNameMReader + ": " + DatumZeit.getJetzt_HH_MM_SS());
-            suchen.meldenFertig(senderNameMReader);
+            Log.systemMeldung("Fertig " + nameSenderMReader + ": " + DatumZeit.getJetzt_HH_MM_SS());
+            suchen.meldenFertig(nameSenderMReader);
         } else {
-            suchen.melden(senderNameMReader, max, progress, "" /* text */);
+            suchen.melden(nameSenderMReader, max, progress, "" /* text */);
         }
     }
 

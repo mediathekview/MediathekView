@@ -22,7 +22,7 @@ package mediathek.controller.filme.filmeSuchen.sender;
 import java.util.LinkedList;
 import mediathek.Daten;
 import mediathek.Log;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
+import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
 
@@ -38,7 +38,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
      *
      * @param ddaten
      */
-    public MediathekArdPodcast(FilmeSuchen ssearch) {
+    public MediathekArdPodcast(FilmeSuchenSender ssearch) {
         super(ssearch, /* name */ SENDER,  /* threads */ 6, /* urlWarten */ 500);
     }
 
@@ -50,7 +50,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
         final String MUSTER_SET = "http://www.ardmediathek.de";
         listeThemen.clear();
         StringBuffer seite = new StringBuffer();
-        seite = getUrlIo.getUri_Utf(senderNameMReader, ADRESSE, seite, "");
+        seite = getUrlIo.getUri_Utf(nameSenderMReader, ADRESSE, seite, "");
         int pos = 0;
         int pos1;
         int pos2;
@@ -133,7 +133,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
             LinkedList<String> listeWeiter = new LinkedList<String>();
             boolean weiter = false;
             final String MUSTER_WEITER = "<option value=\"";
-            seite = getUrl.getUri_Utf(senderNameMReader, strUrlFeed, seite, "Thema: " + thema);
+            seite = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite, "Thema: " + thema);
             pos = 0;
             pos1 = 0;
             pos2 = 0;
@@ -158,7 +158,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     final String MUSTER_2b = "\" class=\"mt-btt_rss\" onclick=\"";
                     String tmpUrl = url;
                     seite.setLength(0);
-                    seite = getUrl.getUri_Utf(senderNameMReader, url, seite, "Thema: " + thema);
+                    seite = getUrl.getUri_Utf(nameSenderMReader, url, seite, "Thema: " + thema);
                     pos = 0;
                     pos1 = 0;
                     pos2 = 0;
@@ -208,7 +208,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                         }
                         if (listeWeiter.size() > 0) {
                             url = listeWeiter.pollFirst();
-                            seite = getUrl.getUri_Utf(senderNameMReader, url, seite, "Thema: " + thema);
+                            seite = getUrl.getUri_Utf(nameSenderMReader, url, seite, "Thema: " + thema);
                             weiter = true;
                         } else {
                             weiter = false;
@@ -235,7 +235,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 final String MUSTER_3 = "addMediaStream(0, 1, \"\", \"";
                 String tmpUrl = url;
                 seite2.setLength(0);
-                seite2 = getUrl.getUri_Utf(senderNameMReader, url, seite2, "Thema: " + thema);
+                seite2 = getUrl.getUri_Utf(nameSenderMReader, url, seite2, "Thema: " + thema);
                 pos = 0;
                 pos1 = 0;
                 pos2 = 0;
@@ -286,7 +286,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                                         }
                                         //  DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
                                         meldung(url);
-                                        addFilm(new DatenFilm(senderNameMReader, thema, strUrlFeed, titel, url, datum, ""));
+                                        addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""));
                                     }
 
                                 }

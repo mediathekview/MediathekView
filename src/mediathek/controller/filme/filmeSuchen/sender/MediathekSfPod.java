@@ -21,7 +21,7 @@ package mediathek.controller.filme.filmeSuchen.sender;
 
 import mediathek.Daten;
 import mediathek.daten.DatenFilm;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
+import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.Log;
 
@@ -38,7 +38,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
      * 
      * @param ddaten
      */
-    public MediathekSfPod(FilmeSuchen ssearch) {
+    public MediathekSfPod(FilmeSuchenSender ssearch) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000);
     }
 
@@ -53,7 +53,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
         final String MUSTER = "class=\"\" href=\"/Podcasts/";
         String addr1 = "http://www.podcast.sf.tv/";
         listeThemen.clear();
-        seite = getUrlIo.getUri_Utf(senderNameMReader, addr1, seite, "");
+        seite = getUrlIo.getUri_Utf(nameSenderMReader, addr1, seite, "");
         int pos = 0;
         int pos1 = 0;
         int pos2 = 0;
@@ -124,7 +124,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
             String datum = "";
             try {
                 meldung("*" + strUrlFeed);
-                seite = getUrl.getUri_Utf(senderNameMReader, strUrlFeed, seite, "Thema: " + thema);
+                seite = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite, "Thema: " + thema);
                 pos = seite.indexOf(MUSTER_THEMA_1);
                 if (pos != -1) {
                     pos = pos + MUSTER_THEMA_1.length();
@@ -165,7 +165,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                             Log.fehlerMeldung(-463820049,"MediathekSfPod.addFilme", "keine URL: " + strUrlFeed);
                         } else {
 //                            urlorg = urlorg.replace("%20", "\u0020;");
-                            addFilm(new DatenFilm(senderNameMReader, thema, strUrlFeed, titel, url, datum, ""/* zeit */));
+                            addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""/* zeit */));
                         }
                     }
                 }

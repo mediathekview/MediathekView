@@ -25,7 +25,7 @@ package mediathek.controller.filme.filmeSuchen.sender;
 
 import mediathek.Daten;
 import mediathek.daten.DatenFilm;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
+import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.Log;
 
@@ -41,7 +41,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
      *
      * @param ddaten
      */
-    public MediathekOrf(FilmeSuchen ssearch) {
+    public MediathekOrf(FilmeSuchenSender ssearch) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000);
     }
 
@@ -53,7 +53,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
         final String MUSTER_URL2b = "/topics/"; //TH
         listeThemen.clear();
         StringBuffer seite = new StringBuffer();
-        seite = getUrlIo.getUri_Utf(senderNameMReader, ADRESSE, seite, "");
+        seite = getUrlIo.getUri_Utf(nameSenderMReader, ADRESSE, seite, "");
         int pos = 0;
         int pos1 = 0;
         int pos2 = 0;
@@ -148,7 +148,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
             final String MUSTER_SET = "http://tvthek.orf.at";
             final String MUSTER_DATUM_1 = "<span>"; //TH
             final String MUSTER_DATUM_2 = "Uhr</span>"; //TH
-            seite1 = getUrl.getUri_Utf(senderNameMReader, strUrlFeed, seite1, "Thema: " + thema);
+            seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "Thema: " + thema);
             int pos = 0;
             int pos1 = 0;
             int pos2 = 0;
@@ -186,7 +186,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                             titel = thema.substring(dp + 2);
                             thema = thema.substring(0, dp);
                         }//TH titel und thema getrennt
-                        addFilm(new DatenFilm(senderNameMReader, thema, strUrlFeed, titel, MUSTER_SET + url, datum, zeit));
+                        addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, MUSTER_SET + url, datum, zeit));
                     }
                 } catch (Exception ex) {
                     Log.fehlerMeldung(-336987510,"MediathekOrf.feedEinerSeiteSuchen", ex);

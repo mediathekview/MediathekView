@@ -21,7 +21,7 @@ package mediathek.controller.filme.filmeSuchen.sender;
 
 import mediathek.Daten;
 import mediathek.Log;
-import mediathek.controller.filme.filmeSuchen.FilmeSuchen;
+import mediathek.controller.filme.filmeSuchen.FilmeSuchenSender;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.DatumZeit;
 
@@ -29,7 +29,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
 
     public static final String SENDER = "3Sat";
 
-    public Mediathek3Sat(FilmeSuchen ssearch) {
+    public Mediathek3Sat(FilmeSuchenSender ssearch) {
         super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 500);
     }
 
@@ -41,7 +41,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
         listeThemen.clear();
         StringBuffer seite = new StringBuffer();
         //seite = new GetUrl(daten).getUriArd(ADRESSE, seite, "");
-        seite = getUrlIo.getUri_Iso(senderNameMReader, ADRESSE, seite, "");
+        seite = getUrlIo.getUri_Iso(nameSenderMReader, ADRESSE, seite, "");
         int pos = 0;
         int pos1;
         int pos2;
@@ -118,7 +118,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
             final String MUSTER_TITEL = "<title>";
             final String MUSTER_DATUM = "<pubDate>";
             final String MUSTER_LINK = "<link>";
-            seite = getUrlIo.getUri_Utf(senderNameMReader, url_rss, seite, "");
+            seite = getUrlIo.getUri_Utf(nameSenderMReader, url_rss, seite, "");
             int pos = 0;
             int pos1 = 0;
             int pos2 = 0;
@@ -150,7 +150,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                     pos1 = pos;
                     if ((pos2 = seite.indexOf("<", pos1)) != -1) {
                         titel = seite.substring(pos1, pos2);
-                        thema = senderNameMReader;
+                        thema = nameSenderMReader;
                         if (titel.contains(":") && (titel.indexOf(":") + 1) < titel.length()) {
                             //enthält : und ist nicht das letztes zeichen
                             thema = titel.substring(0, titel.indexOf(":"));
@@ -197,7 +197,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                     } else {
                         url = url.replace("/300/", "/veryhigh/");
                         //    public DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum) {
-                        addFilm(new DatenFilm(senderNameMReader, (thema_rss.equals("") ? thema : thema_rss), link, titel, url, datum, zeit));
+                        addFilm(new DatenFilm(nameSenderMReader, (thema_rss.equals("") ? thema : thema_rss), link, titel, url, datum, zeit));
                     }
                 } catch (Exception ex) {
                     Log.fehlerMeldung(-823694892,"Mediathek3Sat.laden", ex);
