@@ -43,7 +43,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
      * @param dde
      */
     public MediathekWdr(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000);
+        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 500);
     }
 
     //===================================

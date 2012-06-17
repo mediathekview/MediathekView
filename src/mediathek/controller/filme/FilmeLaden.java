@@ -85,6 +85,7 @@ public class FilmeLaden {
     }
 
     public int getSeitenGeladen() {
+        ////////////////////??
         return GetUrl.getSeitenZaehler();
     }
 

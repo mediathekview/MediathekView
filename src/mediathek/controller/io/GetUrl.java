@@ -36,6 +36,7 @@ public class GetUrl {
     private int faktorWarten = 1;
     private int timeout = 10000;
     private long wartenBasis = UrlWartenBasis;
+    private static long sumByte = 0;
     private static LinkedList<Seitenzaehler> listeSeitenZaehler = new LinkedList<Seitenzaehler>();
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehler = new LinkedList<Seitenzaehler>();
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehlerVersuche = new LinkedList<Seitenzaehler>();
@@ -111,6 +112,10 @@ public class GetUrl {
         return timeout;
     }
 
+    public static long getSumByte() {
+        return sumByte;
+    }
+
     public static int getSeitenZaehler(String sender) {
         Iterator<Seitenzaehler> it = listeSeitenZaehler.iterator();
         Seitenzaehler sz;
@@ -156,9 +161,11 @@ public class GetUrl {
         return 0;
     }
 
-    public static synchronized void resetSeitenZaehler() {
+    public static synchronized void resetZaehler() {
         listeSeitenZaehler.clear();
         listeSeitenZaehlerFehler.clear();
+        listeSeitenZaehlerFehlerVersuche.clear();
+        sumByte = 0;
     }
 
     //===================================
@@ -240,6 +247,7 @@ public class GetUrl {
             inReader = new InputStreamReader(in, kodierung);
             while (!Daten.filmeLaden.getStop() && inReader.read(zeichen) != -1) {
                 seite.append(zeichen);
+                ++sumByte;
             }
             // nur dann zählen
             incSeitenZaehler(sender);

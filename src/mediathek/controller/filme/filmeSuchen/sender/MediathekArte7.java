@@ -31,7 +31,7 @@ import mediathek.tool.DatumZeit;
 
 /**
  *
- * @author
+ *   @author
  */
 public class MediathekArte7 extends MediathekReader implements Runnable {
 
@@ -47,8 +47,8 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
-     * @param dde
+     *   @param ddaten
+     *   @param dde
      */
     public MediathekArte7(FilmeSuchenSender ssearch) {
         super(ssearch, /* name */ "", /* threads */ 6, /* urlWarten */ 500);
