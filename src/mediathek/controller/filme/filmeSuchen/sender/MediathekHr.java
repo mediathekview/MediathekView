@@ -73,7 +73,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
         if (!Daten.filmeLaden.getStop()) {
             if (listeThemen.size() > 0) {
                 meldungStart(listeThemen.size());
-                for (int t = 0; t < senderMaxThread; ++t) {
+                for (int t = 0; t < maxThreadLaufen; ++t) {
                     new Thread(new HrThemaLaden()).start();
                 }
             }
@@ -82,7 +82,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
 
     private class HrThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
         //private StringBuffer seite2 = new StringBuffer();
 

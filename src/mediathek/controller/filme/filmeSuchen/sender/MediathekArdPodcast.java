@@ -39,7 +39,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
      *  @param ddaten
      */
     public MediathekArdPodcast(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ SENDER, /* threads */ 6, /* urlWarten */ 500);
+        super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
             if (listeThemen.size() > 0) {
                 meldungStart(listeThemen.size());
                 listeSort(listeThemen, 1);
-                for (int t = 0; t < senderMaxThread; ++t) {
+                for (int t = 0; t < maxThreadLaufen; ++t) {
                     new Thread(new ArdThemaLaden()).start();
                 }
             }
@@ -99,7 +99,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
     private class ArdThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite = new StringBuffer();
         private StringBuffer seite2 = new StringBuffer();
 

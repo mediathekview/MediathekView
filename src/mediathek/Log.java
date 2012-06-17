@@ -159,7 +159,11 @@ public class Log {
         Iterator<Integer[]> it = fehlerListe.iterator();
         while (it.hasNext()) {
             Integer[] integers = it.next();
-            System.out.println(z + " " + "Fehlernummer: " + integers[0] + " Anzahl: " + integers[1]);
+            if (integers[0] < 0) {
+                System.out.println(z + " " + "Fehlernummer: " + integers[0] + " Anzahl: " + integers[1]);
+            } else {
+                System.out.println(z + " " + "Fehlernummer:  " + integers[0] + " Anzahl: " + integers[1]);
+            }
         }
         System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
     }

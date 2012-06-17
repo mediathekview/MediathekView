@@ -25,7 +25,6 @@ import mediathek.Log;
 import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
 
 /**
@@ -36,8 +35,8 @@ public class MediathekReader implements Runnable {
 
     String nameSenderFilmliste = ""; // ist der Sendername in der Filmliste, bei ARTE gibt es da 2 Namen,
     String nameSenderMReader = ""; // ist der Name, den der Mediathekreader hat, der ist eindeutig und meist identisch mit dem "nameSenderFilmliste"
-    int senderMaxThread = 4;
-    long senderWartenSeiteLaden = 500;//ms, Basiswert zu dem dann der Faktor multipliziert wird
+    int maxThreadLaufen = 4;
+    long wartenSeiteLaden = 500;//ms, Basiswert zu dem dann der Faktor multipliziert wird
     //boolean senderOn = true;
     boolean updateOn = false;
     int threads = 0;
@@ -53,11 +52,11 @@ public class MediathekReader implements Runnable {
      */
     public MediathekReader(FilmeSuchenSender ssearch, String nameMreader, int ssenderMaxThread, int ssenderWartenSeiteLaden) {
         suchen = ssearch;
-        senderWartenSeiteLaden = ssenderWartenSeiteLaden;
+        wartenSeiteLaden = ssenderWartenSeiteLaden;
         getUrlIo = new GetUrl(ssenderWartenSeiteLaden);
         nameSenderFilmliste = nameMreader; // ist meist gleich, wenn nicht muss er im MReader geändert werden
         nameSenderMReader = nameMreader;
-        senderMaxThread = ssenderMaxThread;
+        maxThreadLaufen = ssenderMaxThread;
     }
     //===================================
     // public 

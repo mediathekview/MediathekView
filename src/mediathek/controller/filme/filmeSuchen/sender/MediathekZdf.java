@@ -42,7 +42,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekZdf(FilmeSuchenSender ssearch) {
-        super(ssearch, /* name */ SENDER,  4 /* threads */, 500 /* urlWarten */);
+        super(ssearch, /* name */ SENDER,  6 /* threads */, 500 /* urlWarten */);
     }
 
     /**
@@ -63,7 +63,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         if (!Daten.filmeLaden.getStop() && listeThemen.size() > 0) {
             meldungStart(listeThemen.size());
             //alles auswerten
-            for (int t = 0; t < senderMaxThread; ++t) {
+            for (int t = 0; t < maxThreadLaufen; ++t) {
                 new Thread(new ZdfThemaLaden()).start();
             }
         }
@@ -72,7 +72,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
     private void addToList_addr(String addr) {
         final String MUSTER_URL = "<p><b><a href=\"/ZDFmediathek/kanaluebersicht/aktuellste/";
         //GetUrl(int ttimeout, long wwartenBasis) {
-        GetUrl getUrl = new GetUrl(5000, senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(5000, wartenSeiteLaden);
         seite = getUrl.getUri(nameSenderMReader, addr, Konstanten.KODIERUNG_UTF, 2000 /* timeout */, 6 /* versuche */, seite, "" /* Meldung */);
         if (seite.length() == 0) {
             Log.fehlerMeldung(-596004563,"MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
@@ -133,7 +133,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
 
     private class ZdfThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl(senderWartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
         private StringBuffer seite2 = new StringBuffer();
 
