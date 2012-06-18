@@ -206,7 +206,7 @@ public class Log {
         }
     }
 
-    private static void fehlermeldung_getUrl(int fehlerNummer, String sender, Exception ex, String texte) {
+    private static void fehlermeldung_getUrl(int fehlerNummer, String sender, Exception ex, String text) {
         addFehlerNummer(fehlerNummer);
         if (prog) {
             // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
@@ -215,10 +215,10 @@ public class Log {
         }
         final String FEHLER = "GetUrl: ";
         final String z = "  ++>";
-        System.out.println(z + " " + FEHLER + sender);
+        System.out.println(z + " " + FEHLER + sender + " " + ex.getMessage());
         notifyMediathekListener(LOG_FEHLER, FEHLER + sender + " - " + ex.getMessage());
-        System.out.println(z + "           " + texte);
-        notifyMediathekListener(LOG_FEHLER, texte);
+        System.out.println(z + "           " + text);
+        notifyMediathekListener(LOG_FEHLER, text);
     }
 
     private static void fehlermeldung_(int fehlerNummer, String klasse, String[] texte) {
