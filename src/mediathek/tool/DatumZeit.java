@@ -107,64 +107,6 @@ public class DatumZeit {
         return zeit;
     }
 
-    public static String checkDatum(String datum, String fehlermeldung) {
-        //Datum max. 50 Tage in der Zukunft
-        final long MAX = 1000L * 60L * 60L * 24L * 50L;
-        String ret = datum.trim();
-        if (ret.equals("")) {
-            return "";
-        }
-        if (!ret.contains(".")) {
-            Log.fehlerMeldung(591143690, "DatumZeit.CheckDatum-1 [", datum + "] " + fehlermeldung);
-            return "";
-        }
-        if (ret.length() != 10) {
-            Log.fehlerMeldung(507629943, "DatumZeit.CheckDatum-2 [", datum + "] " + fehlermeldung);
-            return "";
-        }
-        try {
-            SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.yyyy");
-            Date filmDate = sdfIn.parse(ret);
-            if (filmDate.getTime() < 0) {
-                //Datum vor 1970
-                Log.fehlerMeldung(930665317, "DatumZeit.CheckDatum-3", "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
-                ret = "";
-            }
-            if ((new Date().getTime() + MAX) < filmDate.getTime()) {
-                Log.fehlerMeldung(632088649, "DatumZeit.CheckDatum-4", "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
-                ret = "";
-            }
-        } catch (Exception ex) {
-            ret = "";
-            Log.fehlerMeldung(794630593, "DatumZeit.checkDatum-5", ex);
-            Log.fehlerMeldung(946301596, "DatumZeit.CheckDatum-6 [", datum + "] " + fehlermeldung);
-        }
-        if (ret.equals("")) {
-        }
-        return ret;
-    }
-
-    public static String checkZeit(String datum, String zeit, String text) {
-        String ret = zeit.trim();
-        if (datum.equals("")) {
-            //wenn kein Datum, macht die Zeit auch keinen Sinn
-            ret = "";
-        } else {
-            if (!ret.equals("")) {
-                if (!ret.contains(":")) {
-                    ret = "";
-                }
-                if (ret.length() != 8) {
-                    ret = "";
-                }
-                if (ret.equals("")) {
-                    Log.fehlerMeldung(392865321, "DatumZeit.CheckZeit [", zeit + "] " + text);
-                }
-            }
-        }
-        return ret;
-    }
-
     public static String datumDrehen(String datum) {
         String ret = "";
         if (!datum.equals("")) {
