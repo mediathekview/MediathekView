@@ -19,7 +19,9 @@
  */
 package mediathek.daten;
 
-import mediathek.tool.DatumZeit;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import mediathek.Log;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiKonstanten;
 
@@ -70,8 +72,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_THEMA_NR] = tthema;
         arr[FILM_TITEL_NR] = ttitel;
         arr[FILM_URL_NR] = uurl;
-        arr[FILM_DATUM_NR] = DatumZeit.checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
-        arr[FILM_ZEIT_NR] = DatumZeit.checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
+        arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
+        arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_URL_THEMA_NR] = urlThema;
     }
 
@@ -85,8 +87,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_URL_ORG_NR] = uurlorg;
         arr[FILM_URL_RTMP_NR] = uurlRtmp;
         arr[FILM_URL_THEMA_NR] = urlThema;
-        arr[FILM_DATUM_NR] = DatumZeit.checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
-        arr[FILM_ZEIT_NR] = DatumZeit.checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
+        arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
+        arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
     }
 
     public String getIndex() {
@@ -148,5 +150,63 @@ public class DatenFilm implements Comparable<DatenFilm> {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }
+    }
+
+    private static String checkDatum(String datum, String fehlermeldung) {
+        //Datum max. 50 Tage in der Zukunft
+        final long MAX = 1000L * 60L * 60L * 24L * 50L;
+        String ret = datum.trim();
+        if (ret.equals("")) {
+            return "";
+        }
+        if (!ret.contains(".")) {
+            Log.fehlerMeldungMReader(591143690, "DatenFilm.CheckDatum-1 [", datum + "] " + fehlermeldung);
+            return "";
+        }
+        if (ret.length() != 10) {
+            Log.fehlerMeldungMReader(507629943, "DatenFilm.CheckDatum-2 [", datum + "] " + fehlermeldung);
+            return "";
+        }
+        try {
+            SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.yyyy");
+            Date filmDate = sdfIn.parse(ret);
+            if (filmDate.getTime() < 0) {
+                //Datum vor 1970
+                Log.fehlerMeldungMReader(930665317, "DatenFilm.CheckDatum-3", "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
+                ret = "";
+            }
+            if ((new Date().getTime() + MAX) < filmDate.getTime()) {
+                Log.fehlerMeldungMReader(632088649, "DatenFilm.CheckDatum-4", "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
+                ret = "";
+            }
+        } catch (Exception ex) {
+            ret = "";
+            Log.fehlerMeldung(794630593, "DatenFilm.checkDatum-5", ex);
+            Log.fehlerMeldung(946301596, "DatenFilm.CheckDatum-6 [", datum + "] " + fehlermeldung);
+        }
+        if (ret.equals("")) {
+        }
+        return ret;
+    }
+
+    private static String checkZeit(String datum, String zeit, String text) {
+        String ret = zeit.trim();
+        if (datum.equals("")) {
+            //wenn kein Datum, macht die Zeit auch keinen Sinn
+            ret = "";
+        } else {
+            if (!ret.equals("")) {
+                if (!ret.contains(":")) {
+                    ret = "";
+                }
+                if (ret.length() != 8) {
+                    ret = "";
+                }
+                if (ret.equals("")) {
+                    Log.fehlerMeldungMReader(392865321, "DatenFilm.CheckZeit [", zeit + "] " + text);
+                }
+            }
+        }
+        return ret;
     }
 }
