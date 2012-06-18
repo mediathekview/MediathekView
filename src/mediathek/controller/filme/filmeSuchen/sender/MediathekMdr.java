@@ -75,7 +75,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                 url = seite.substring(pos1, pos2);
             }
             if (url.equals("")) {
-                Log.fehlerMeldung(-889216307, "MediathekMdr.addToList", "keine URL");
+                Log.fehlerMeldungMReader(-889216307, "MediathekMdr.addToList", "keine URL");
             } else {
                 url = MUSTER_ADD + url;
                 if (!istInListe(listeThemen, url, 0)) {
@@ -94,7 +94,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                 url = seite.substring(pos1, pos2);
             }
             if (url.equals("")) {
-                Log.fehlerMeldung(-461225808, "MediathekMdr.addToList-2", "keine URL");
+                Log.fehlerMeldungMReader(-461225808, "MediathekMdr.addToList-2", "keine URL");
             } else {
                 url = MUSTER_ADD_TAGE + url;
                 if (!istInListe(listeTage, url)) {
@@ -166,7 +166,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                                 pos = pos2;
                             }
                             if (url.equals("")) {
-                                Log.fehlerMeldung(-766250249, "MediathekMdr.addThema", "keine URL: " + strUrlFeed);
+                                Log.fehlerMeldungMReader(-766250249, "MediathekMdr.addThema", "keine URL: " + strUrlFeed);
                             } else {
                                 meldung(url);
                                 addSendug(strUrlFeed, thema, MUSTER_ADD + url);
@@ -289,7 +289,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                             pos = pos2;
                         }
                         if (url.equals("")) {
-                            Log.fehlerMeldung(-333620478, "MediathekMdr.addThema", "keine URL: " + urlSeite);
+                            Log.fehlerMeldungMReader(-333620478, "MediathekMdr.addThema", "keine URL: " + urlSeite);
                         } else {
                             url = MUSTER_URL_ADD + url;
                             meldung(url);
@@ -323,7 +323,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                         url = seite2.substring(pos, pos2);
                         pos = pos2;
                         if (url.equals("")) {
-                            Log.fehlerMeldung(-733652014, "MediathekMdr.addThema", "keine URL: " + urlSeite);
+                            Log.fehlerMeldungMReader(-733652014, "MediathekMdr.addThema", "keine URL: " + urlSeite);
                         } else {
                             url = MUSTER_URL_ADD + url;
                             meldung(url);

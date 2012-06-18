@@ -66,7 +66,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                         listeThemen.add(add);
                     }
                 } else {
-                    Log.fehlerMeldung(-456933258, "MediathekHr.addToList", "keine URL");
+                    Log.fehlerMeldungMReader(-456933258, "MediathekHr.addToList", "keine URL");
                 }
             }
         }
@@ -150,7 +150,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                                         DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, url, furl, datum, "");
                                         addFilm(film);
                                     } else {
-                                        Log.fehlerMeldung(-649882036, "MediathekHr.addFilme", "keine URL");
+                                        Log.fehlerMeldungMReader(-649882036, "MediathekHr.addFilme", "keine URL");
                                     }
                                 }
                             }

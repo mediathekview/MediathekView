@@ -172,7 +172,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                             //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
                             tmp = seite.substring(pos1, pos2);
                             if (tmp.equals("")) {
-                                Log.fehlerMeldung(-987453983, "Mediathek3Sat.addToList", "keine Datum");
+                                Log.fehlerMeldungMReader(-987453983, "Mediathek3Sat.addToList", "keine Datum");
                             } else {
                                 datum = DatumZeit.convertDatum(tmp);
                                 zeit = DatumZeit.convertTime(tmp);
@@ -193,7 +193,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                         }
                     }
                     if (url.equals("")) {
-                        Log.fehlerMeldung(-532169764, "Mediathek3Sat.addToList", "keine URL");
+                        Log.fehlerMeldungMReader(-532169764, "Mediathek3Sat.addToList", "keine URL");
                     } else {
                         url = url.replace("/300/", "/veryhigh/");
                         //    public DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum) {

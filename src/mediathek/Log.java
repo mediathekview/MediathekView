@@ -91,22 +91,37 @@ public class Log {
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex) {
-        fehlermeldung(fehlerNummer, klasse, new String[]{ex.getMessage(), ""});
+        fehlermeldung_(fehlerNummer, klasse, new String[]{ex.getMessage(), ""});
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex, String text) {
         String[] str = new String[2];
         str[0] = ex.getLocalizedMessage();
         str[1] = text;
-        fehlermeldung(fehlerNummer, klasse, str);
+        fehlermeldung_(fehlerNummer, klasse, str);
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String text) {
-        fehlermeldung(fehlerNummer, klasse, new String[]{text});
+        fehlermeldung_(fehlerNummer, klasse, new String[]{text});
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String[] text) {
-        fehlermeldung(fehlerNummer, klasse, text);
+        fehlermeldung_(fehlerNummer, klasse, text);
+    }
+
+    public static synchronized void fehlerMeldungMReader(int fehlerNummer, String klasse, String text) {
+        fehlermeldung_mReader(fehlerNummer, klasse, new String[]{text});
+    }
+
+    public static synchronized void fehlerMeldungMReader(int fehlerNummer, String sender, String[] text) {
+        fehlermeldung_mReader(fehlerNummer, sender, text);
+    }
+
+    public static synchronized void fehlerMeldungGetUrl(int fehlerNummer, Exception ex, String sender, String text) {
+        String[] str = new String[2];
+        str[0] = ex.getMessage();
+        str[1] = text;
+        fehlermeldung_getUrl(fehlerNummer, sender, str);
     }
 
     public static synchronized void systemMeldung(String[] text) {
@@ -177,7 +192,41 @@ public class Log {
         fehlerListe.add(new Integer[]{new Integer(nr), new Integer(1)});
     }
 
-    private static void fehlermeldung(int fehlerNummer, String klasse, String[] texte) {
+    private static void fehlermeldung_mReader(int fehlerNummer, String sender, String[] texte) {
+        addFehlerNummer(fehlerNummer);
+        if (prog) {
+            // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
+            System.out.print("                                                                            \r");
+            prog = false;
+        }
+        final String FEHLER = "MReader: ";
+        final String z = "  ==>";
+        System.out.println(z + " " + FEHLER + sender);
+        notifyMediathekListener(LOG_FEHLER, FEHLER + sender);
+        for (int i = 0; i < texte.length; ++i) {
+            System.out.println(z + "           " + texte[i]);
+            notifyMediathekListener(LOG_FEHLER, texte[i]);
+        }
+    }
+
+    private static void fehlermeldung_getUrl(int fehlerNummer, String sender, String[] texte) {
+        addFehlerNummer(fehlerNummer);
+        if (prog) {
+            // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
+            System.out.print("                                                                            \r");
+            prog = false;
+        }
+        final String FEHLER = "GetUrl: ";
+        final String z = "  ++>";
+        System.out.println(z + " " + FEHLER + sender);
+        notifyMediathekListener(LOG_FEHLER, FEHLER + sender);
+        for (int i = 0; i < texte.length; ++i) {
+            System.out.println(z + "           " + texte[i]);
+            notifyMediathekListener(LOG_FEHLER, texte[i]);
+        }
+    }
+
+    private static void fehlermeldung_(int fehlerNummer, String klasse, String[] texte) {
         addFehlerNummer(fehlerNummer);
         if (prog) {
             // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen

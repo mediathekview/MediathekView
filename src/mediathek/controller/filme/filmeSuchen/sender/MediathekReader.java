@@ -202,7 +202,7 @@ public class MediathekReader implements Runnable {
             }
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(-469872800, "MediathekReader.addsUrl", pfad1 + " " + pfad2);
+            Log.fehlerMeldungMReader(-469872800, "MediathekReader.addsUrl", pfad1 + " " + pfad2);
         }
         return ret;
     }
