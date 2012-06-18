@@ -412,7 +412,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 addFilm(film);
                 ret = true;
             } else {
-                Log.fehlerMeldung(-673219867, "MediathekArd.filmLaden", "keine Url für: " + urlFilm);
+                Log.fehlerMeldungMReader(-673219867, "MediathekArd.filmLaden", "keine Url für: " + urlFilm);
             }
             return ret;
         }

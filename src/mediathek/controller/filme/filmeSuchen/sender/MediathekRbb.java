@@ -69,7 +69,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                         }
                     }
                 } else {
-                    Log.fehlerMeldung(-894562036,"MediathekRBB.addToList", "keine URL");
+                    Log.fehlerMeldungMReader(-894562036,"MediathekRBB.addToList", "keine URL");
                 }
             }
         } catch (Exception ex) {

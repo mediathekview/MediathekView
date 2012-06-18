@@ -69,7 +69,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                 }
             }
             if (url.equals("")) {
-                Log.fehlerMeldung(-698875503,"MediathekSfPod.addToList", "keine URL");
+                Log.fehlerMeldungMReader(-698875503,"MediathekSfPod.addToList", "keine URL");
             } else {
                 String[] add = new String[]{url, ""};
                 if (!istInListe(listeThemen, url, 0)) {
@@ -162,7 +162,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                             url = seite.substring(pos, posEnd);
                         }
                         if (url.equals("")) {
-                            Log.fehlerMeldung(-463820049,"MediathekSfPod.addFilme", "keine URL: " + strUrlFeed);
+                            Log.fehlerMeldungMReader(-463820049,"MediathekSfPod.addFilme", "keine URL: " + strUrlFeed);
                         } else {
 //                            urlorg = urlorg.replace("%20", "\u0020;");
                             addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""/* zeit */));

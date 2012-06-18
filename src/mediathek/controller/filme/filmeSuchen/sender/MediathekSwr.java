@@ -103,7 +103,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     thema = StringEscapeUtils.unescapeHtml4(thema.trim()); //wird gleich benutzt und muss dann schon stimmen
                 }
                 if (url.equals("")) {
-                    Log.fehlerMeldung(-163255009,"MediathekSwr.addToList__", "keine URL");
+                    Log.fehlerMeldungMReader(-163255009,"MediathekSwr.addToList__", "keine URL");
                 } else {
                     //url = url.replace("&amp;", "&");
                     String[] add = new String[]{"http://swrmediathek.de/tvshow.htm?show=" + url, thema};
@@ -191,7 +191,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     url = strSeite1.substring(pos1, pos2);
                     pos = pos2;
                     if (url.equals("")) {
-                        Log.fehlerMeldung(-648522300,"MediathekSwr.themenSeiteSuchen", "keine URL, Thema: " + thema);
+                        Log.fehlerMeldungMReader(-648522300,"MediathekSwr.themenSeiteSuchen", "keine URL, Thema: " + thema);
                     } else {
                         url = "http://swrmediathek.de/player.htm?show=" + url;
                         if (!urls.contains(url)) {
@@ -306,7 +306,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
                         addFilm(film);
                     } else {
-                        Log.fehlerMeldung(-468200690,"MediathekSwr.addFilme2-4", thema + " " + urlFilm);
+                        Log.fehlerMeldungMReader(-468200690,"MediathekSwr.addFilme2-4", thema + " " + urlFilm);
                     }
                 }
             }

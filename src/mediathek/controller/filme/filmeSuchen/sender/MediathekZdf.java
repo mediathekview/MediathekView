@@ -75,7 +75,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         GetUrl getUrl = new GetUrl(5000, wartenSeiteLaden);
         seite = getUrl.getUri(nameSenderMReader, addr, Konstanten.KODIERUNG_UTF, 2000 /* timeout */, 6 /* versuche */, seite, "" /* Meldung */);
         if (seite.length() == 0) {
-            Log.fehlerMeldung(-596004563,"MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
+            Log.fehlerMeldungMReader(-596004563,"MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
         }
         int pos = 0;
         int pos1;
@@ -99,7 +99,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 thema = seite.substring(pos1 + 2, pos2);
             }
             if (url.equals("")) {
-                Log.fehlerMeldung(-946325890,"MediathekZdf.addToList_addr", "keine URL: " + addr);
+                Log.fehlerMeldungMReader(-946325890,"MediathekZdf.addToList_addr", "keine URL: " + addr);
             } else {
                 url = "http://www.zdf.de/ZDFmediathek/kanaluebersicht/aktuellste/" + url;
                 urlorg = url;
@@ -189,7 +189,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                         titel = seite1.substring(pos1 + 2, pos2);
                     }
                     if (url.equals("")) {
-                        Log.fehlerMeldung(-643269690,"MediathekZdf.addFilme", "keine URL: " + urlThema);
+                        Log.fehlerMeldungMReader(-643269690,"MediathekZdf.addFilme", "keine URL: " + urlThema);
                     } else {
                         url = "http://www.zdf.de/ZDFmediathek/beitrag/video/" + url;
                         filmHolen(thema, titel, urlorg, url);
@@ -267,11 +267,11 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                         url = seite2.substring(pos1, pos2);
                     }
                     if (url.equals("")) {
-                        Log.fehlerMeldung(-690048078,"MediathekZdf.filmHolen-1", "keine URL: " + urlFilm);
+                        Log.fehlerMeldungMReader(-690048078,"MediathekZdf.filmHolen-1", "keine URL: " + urlFilm);
                     } else {
                         url = "http://wstreaming.zdf.de/zdf/veryhigh/" + url;
                         if (!url.endsWith("asx")) {
-                            Log.fehlerMeldung(-200480752,"MediathekZdf.filmHolen-2", "keine URL: " + urlFilm);
+                            Log.fehlerMeldungMReader(-200480752,"MediathekZdf.filmHolen-2", "keine URL: " + urlFilm);
                         } else {
 //                            if (thema.equals("Terra X")) { //bisher einziges Thema
 //                                if (Funktionen.urlExists(url.replace("/veryhigh/", "/hd/"))) {

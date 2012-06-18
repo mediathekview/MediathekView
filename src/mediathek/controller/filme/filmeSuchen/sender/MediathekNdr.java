@@ -28,7 +28,7 @@ import mediathek.Log;
 
 /**
  *
- *     @author
+ * @author
  */
 public class MediathekNdr extends MediathekReader implements Runnable {
 
@@ -41,7 +41,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekNdr(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 3, /* urlWarten */ 1000, startPrio);
     }
 
     @Override
@@ -55,11 +55,10 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         int maxSeiten = MAX_SEITEN_KURZ;
         listeThemen.clear();
         StringBuffer seite = new StringBuffer();
-        int pos = 0;
-        int pos1 = 0;
-        int pos2 = 0;
-        String url = "";
-        String max = "";
+        int pos;
+        int pos1;
+        int pos2;
+        String maxS;
         seite = getUrlIo.getUri_Utf(nameSenderMReader, ADRESSE, seite, "");
         if (suchen.allesLaden) {
             // wenn alle Seiten ermitteln und gesamtzahl noch nicht bekannt
@@ -68,9 +67,9 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                 pos1 = pos;
                 if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
                     try {
-                        max = seite.substring(pos1, pos2);
-                        max = max.trim();
-                        maxSeiten = Integer.parseInt(max);
+                        maxS = seite.substring(pos1, pos2);
+                        maxS = maxS.trim();
+                        maxSeiten = Integer.parseInt(maxS);
                         if (maxSeiten > MAX_SEITEN_LANG) {
                             maxSeiten = MAX_SEITEN_LANG;
                         }
@@ -96,8 +95,8 @@ public class MediathekNdr extends MediathekReader implements Runnable {
 
     private class ThemaLaden implements Runnable {
 
-        GetUrl getUrl1 = new GetUrl( wartenSeiteLaden);
-        GetUrl getUrl2 = new GetUrl( wartenSeiteLaden);
+        GetUrl getUrl1 = new GetUrl(wartenSeiteLaden);
+        GetUrl getUrl2 = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
         private StringBuffer seite2 = new StringBuffer();
 
@@ -108,15 +107,15 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                 String[] link;
                 while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
                     try {
-                  meldungProgress(link[0]);
+                        meldungProgress(link[0]);
                         finden(link[0] /* url */);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(-685011466,"MediathekNdr.ThemaLaden.run.1", ex);
+                        Log.fehlerMeldung(-685011466, "MediathekNdr.ThemaLaden.run.1", ex);
                     }
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-894632580,"MediathekNdr.ThemaLaden.run.2", ex);
+                Log.fehlerMeldung(-894632580, "MediathekNdr.ThemaLaden.run.2", ex);
             }
         }
 
@@ -181,7 +180,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                         }
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(-211036709,"MediathekNdr.finden", ex);
+                    Log.fehlerMeldung(-211036709, "MediathekNdr.finden", ex);
                 }
             }
         }
@@ -196,9 +195,9 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             final String MUSTER_TITEL = "<title>";
             seite2 = getUrl2.getUri_Utf(nameSenderMReader, urlFilm, seite2, "strUrlFilm: " + urlFilm);
             int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
-            String url = "";
+            int pos1;
+            int pos2;
+            String url;
             String titel = "";
             //String tmp = seite2.toString();
             try {
@@ -229,12 +228,12 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                             }
                             addFilm(new DatenFilm(nameSenderMReader, thema, urlFilm, titel, url, datum, zeit));
                         } else {
-                            Log.fehlerMeldung(-671055877,"MediathekNdr.feedEinerSeiteSuchen", "keine Url: " + urlFilm);
+                            Log.fehlerMeldungMReader(-671055877, "MediathekNdr.feedEinerSeiteSuchen", "keine Url: " + urlFilm);
                         }
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-698032157,"MediathekNdr.feedEinerSeiteSuchen", ex);
+                Log.fehlerMeldung(-698032157, "MediathekNdr.feedEinerSeiteSuchen", ex);
             }
         }
     }

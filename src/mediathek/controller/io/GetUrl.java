@@ -98,7 +98,7 @@ public class GetUrl {
         if (exeption != null) {
             incSeitenZaehlerFehler(sender);
             incSeitenZaehlerFehlerVersuche(sender, versuche);
-            Log.fehlerMeldung(894120069, "GetUrl.getUri, Versuche: " + versuche + ", ", exeption, addr);
+            Log.fehlerMeldungGetUrl(894120069, exeption, sender, "GetUrl.getUri, Versuche: " + versuche + ", " + addr);
             exeption = null;
         }
         return seite;
@@ -229,7 +229,7 @@ public class GetUrl {
             long w = wartenBasis * faktorWarten;
             this.wait(w);
         } catch (Exception ex) {
-            Log.fehlerMeldung(462800147, "GetUrl.getUri", ex);
+            Log.fehlerMeldungGetUrl(462800147, ex, sender, "GetUrl.getUri");
         }
         seite.setLength(0);
         URLConnection conn;
@@ -253,7 +253,7 @@ public class GetUrl {
             incSeitenZaehler(sender);
         } catch (Exception ex) {
             if (!meldung.equals("")) {
-                Log.fehlerMeldung(642069083, "GetUrl.getUri für: ", meldung);
+                Log.fehlerMeldungGetUrl(642069083, ex, sender, "GetUrl.getUri für: " + meldung);
             }
             exeption = ex;
         } finally {
