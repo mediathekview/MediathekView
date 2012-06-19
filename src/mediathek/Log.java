@@ -136,11 +136,11 @@ public class Log {
     }
 
     public static synchronized void progress(String texte) {
-        if (!prog) {
-            // erst wieder eine Leerzeile
-            System.out.print("                                                                           \r");
-            prog = true;
-        }
+//        if (!prog) {
+//            // erst wieder eine Leerzeile
+//            System.out.println("                                                                           ");
+        prog = true;
+//        }
         texte += "\r";
         System.out.print(texte);
     }
