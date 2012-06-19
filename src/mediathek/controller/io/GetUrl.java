@@ -85,7 +85,7 @@ public class GetUrl {
         do {
             ++ver;
             try {
-                seite = getUri(sender, addr, seite, kodierung, ttimeout, meldung, versuche, (ver >= versuche) ? true : false);
+                seite = getUri(sender, addr, seite, kodierung, timeo, meldung, versuche, (ver >= versuche) ? true : false);
                 if (seite.length() == 0) {
                     // Timeout um 5 Sekunden verlängern und vor dem nächsten Versuch etwas warten
                     timeo += 5000;
