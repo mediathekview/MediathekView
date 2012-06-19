@@ -40,7 +40,6 @@ public class GetUrl {
     private static LinkedList<Seitenzaehler> listeSeitenZaehler = new LinkedList<Seitenzaehler>();
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehler = new LinkedList<Seitenzaehler>();
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehlerVersuche = new LinkedList<Seitenzaehler>();
-    private Exception exeption = null;
 
     private class Seitenzaehler {
 
@@ -80,27 +79,29 @@ public class GetUrl {
         return getUri(sender, addr, Konstanten.KODIERUNG_ISO15, timeout, 1 /* versuche */, seite, meldung);
     }
 
-    public StringBuffer getUri(String sender, String addr, String kodierung, int ttimeout, int versuche, StringBuffer seite, String meldung) {
+    public synchronized StringBuffer getUri(String sender, String addr, String kodierung, int ttimeout, int versuche, StringBuffer seite, String meldung) {
         int timeo = ttimeout;
-        for (int i = 0; i < versuche; ++i) {
-            if (Daten.filmeLaden.getStop()) {
-                break;
+        int ver = 0;
+        do {
+            ++ver;
+            try {
+                seite = getUri(sender, addr, seite, kodierung, ttimeout, meldung, versuche, (ver >= versuche) ? true : false);
+                if (seite.length() == 0) {
+                    // Timeout um 5 Sekunden verlängern und vor dem nächsten Versuch etwas warten
+                    timeo += 5000;
+                    this.wait(timeo);
+                } else {
+                    // und nix wie weiter 
+                    if (ver > 1) {
+                        String[] text = new String[]{sender + " ~~~~~~~~~~~~~~~~~~>", addr, "geklappt nach :" + ver + " Versuchen[" + versuche + "]"};
+                        Log.systemMeldung(text);
+                    }
+                    return seite;
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldungGetUrl(698963200, ex, sender, new String[]{"GetUrl.getUri"});
             }
-            // wäre doch gelacht, wenns nicht irgendwann geht!
-            seite = getUri(sender, addr, seite, kodierung, timeo, meldung);
-            if (seite.length() == 0) {
-                // Timeout um 5 Sekunden verlängern
-                timeo += 5000;
-            } else {
-                break;
-            }
-        }
-        if (exeption != null) {
-            incSeitenZaehlerFehler(sender);
-            incSeitenZaehlerFehlerVersuche(sender, versuche);
-            Log.fehlerMeldungGetUrl(894120069, exeption, sender, "GetUrl.getUri, Versuche: " + versuche + ", " + addr);
-            exeption = null;
-        }
+        } while (!Daten.filmeLaden.getStop() && ver < versuche);
         return seite;
     }
 
@@ -222,19 +223,21 @@ public class GetUrl {
         }
     }
 
-    private synchronized StringBuffer getUri(String sender, String addr, StringBuffer seite, String kodierung, int timeout, String meldung) {
-        exeption = null;
+    private synchronized StringBuffer getUri(String sender, String addr, StringBuffer seite, String kodierung, int timeout, String meldung, int versuch, boolean lVersuch) {
+        int timeo = timeout;
         char[] zeichen = new char[1];
-        try {
-            long w = wartenBasis * faktorWarten;
-            this.wait(w);
-        } catch (Exception ex) {
-            Log.fehlerMeldungGetUrl(462800147, ex, sender, "GetUrl.getUri");
-        }
         seite.setLength(0);
         URLConnection conn;
         InputStream in = null;
         InputStreamReader inReader = null;
+        // immer etwas bremsen
+        try {
+            long w = wartenBasis * faktorWarten;
+            this.wait(w);
+        } catch (Exception ex) {
+            Log.fehlerMeldungGetUrl(462800147, ex, sender, new String[]{"GetUrl.getUri"});
+        }
+        // ab hier Laden
         try {
             URL url = new URL(addr);
             conn = url.openConnection();
@@ -252,10 +255,18 @@ public class GetUrl {
             // nur dann zählen
             incSeitenZaehler(sender);
         } catch (Exception ex) {
-            if (!meldung.equals("")) {
-                Log.fehlerMeldungGetUrl(642069083, ex, sender, "GetUrl.getUri für: " + meldung);
+            if (lVersuch) {
+                // dann wars leider nichts
+                incSeitenZaehlerFehler(sender);
+                incSeitenZaehlerFehlerVersuche(sender, versuch);
+                String[] text;
+                if (meldung.equals("")) {
+                    text = new String[]{"timout: " + timeo + " Versuche: " + versuch, addr};
+                } else {
+                    text = new String[]{"timout: " + timeo + " Versuche: " + versuch, addr, meldung};
+                }
+                Log.fehlerMeldungGetUrl(894120069, ex, sender, text);
             }
-            exeption = ex;
         } finally {
             try {
                 if (in != null) {
@@ -264,6 +275,10 @@ public class GetUrl {
             } catch (IOException ex) {
             }
         }
+        // ende Laden
+        // -----------------------------------------------------------
+        // alle Ladeversuche sind durch
+        // ####################################################
         return seite;
     }
 }

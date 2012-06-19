@@ -29,10 +29,6 @@ import mediathek.daten.ListeFilme;
 
 public class MediathekNoGui {
 
-    public final String STARTP_ALLES = "-alles";
-    public final String STARTP_USER_AGENT = "-agent";
-    public final String STARTP_EXPORT_DATEI = "-o";
-    public final String STARTP_IMPORT_URL = "-i";
     private String output = "";
     private String importUrl = "";
     private String userAgent = "";
@@ -51,20 +47,20 @@ public class MediathekNoGui {
                 }
             }
             for (int i = 0; i < ar.length; ++i) {
-                if (ar[i].equals(STARTP_ALLES)) {
+                if (ar[i].equals(Main.STARTP_ALLES)) {
                     allesLaden = true;
                 }
-                if (ar[i].equalsIgnoreCase(STARTP_EXPORT_DATEI)) {
+                if (ar[i].equalsIgnoreCase(Main.STARTP_EXPORT_DATEI)) {
                     if (ar.length > i) {
                         output = ar[i + 1];
                     }
                 }
-                if (ar[i].equalsIgnoreCase(STARTP_IMPORT_URL)) {
+                if (ar[i].equalsIgnoreCase(Main.STARTP_IMPORT_URL)) {
                     if (ar.length > i) {
                         importUrl = ar[i + 1];
                     }
                 }
-                if (ar[i].equalsIgnoreCase(STARTP_USER_AGENT)) {
+                if (ar[i].equalsIgnoreCase(Main.STARTP_USER_AGENT)) {
                     if (ar.length > i) {
                         userAgent = ar[i + 1];
                     }

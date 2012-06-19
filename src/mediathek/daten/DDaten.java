@@ -22,13 +22,12 @@ package mediathek.daten;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.MediathekGui;
+import mediathek.controller.io.ErledigteAbos;
 import mediathek.controller.io.History;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.IoXmlSchreiben;
-import mediathek.controller.io.ErledigteAbos;
 import mediathek.controller.io.starter.StarterClass;
 import mediathek.gui.*;
-import mediathek.gui.dialog.DialogDatenFilm;
 
 public final class DDaten extends Daten {
     // Listen

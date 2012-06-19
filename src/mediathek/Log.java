@@ -117,7 +117,7 @@ public class Log {
         fehlermeldung_mReader(fehlerNummer, sender, text);
     }
 
-    public static synchronized void fehlerMeldungGetUrl(int fehlerNummer, Exception ex, String sender, String text) {
+    public static synchronized void fehlerMeldungGetUrl(int fehlerNummer, Exception ex, String sender, String text[]) {
         fehlermeldung_getUrl(fehlerNummer, sender, ex, text);
     }
 
@@ -136,7 +136,11 @@ public class Log {
     }
 
     public static synchronized void progress(String texte) {
-        prog = true;
+        if (!prog) {
+            // erst wieder eine Leerzeile
+            System.out.print("                                                                           \r");
+            prog = true;
+        }
         texte += "\r";
         System.out.print(texte);
     }
@@ -206,7 +210,7 @@ public class Log {
         }
     }
 
-    private static void fehlermeldung_getUrl(int fehlerNummer, String sender, Exception ex, String text) {
+    private static void fehlermeldung_getUrl(int fehlerNummer, String sender, Exception ex, String text[]) {
         addFehlerNummer(fehlerNummer);
         if (prog) {
             // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
@@ -217,8 +221,10 @@ public class Log {
         final String z = "  ++>";
         System.out.println(z + " " + FEHLER + sender + " " + ex.getMessage());
         notifyMediathekListener(LOG_FEHLER, FEHLER + sender + " - " + ex.getMessage());
-        System.out.println(z + "           " + text);
-        notifyMediathekListener(LOG_FEHLER, text);
+        for (int i = 0; i < text.length; ++i) {
+            System.out.println(z + "           " + text[i]);
+            notifyMediathekListener(LOG_FEHLER, text[i]);
+        }
     }
 
     private static void fehlermeldung_(int fehlerNummer, String klasse, String[] texte) {

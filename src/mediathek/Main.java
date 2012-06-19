@@ -21,6 +21,11 @@ package mediathek;
 
 public class Main {
 
+    public static final String STARTP_ALLES = "-alles";
+    public static final String STARTP_USER_AGENT = "-agent";
+    public static final String STARTP_EXPORT_DATEI = "-o";
+    public static final String STARTP_IMPORT_URL = "-i";
+
     /*
      * Aufruf:
      * java -jar Mediathek [Pfad zur Konfigdatei, sonst homeverzeichnis] [Schalter]
