@@ -88,8 +88,11 @@ public class GetUrl {
                 seite = getUri(sender, addr, seite, kodierung, timeo, meldung, versuche, (ver >= versuche) ? true : false);
                 if (seite.length() == 0) {
                     // Timeout um 5 Sekunden verlängern und vor dem nächsten Versuch etwas warten
-                    timeo += 5000;
-                    this.wait(timeo);
+                    if (ver < versuche) {
+                        // ansonsten wars das
+                        timeo += 5000;
+                        this.wait(timeo);
+                    }
                 } else {
                     // und nix wie weiter 
                     if (ver > 1) {
