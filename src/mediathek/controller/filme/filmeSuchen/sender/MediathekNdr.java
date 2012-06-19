@@ -21,10 +21,11 @@ package mediathek.controller.filme.filmeSuchen.sender;
 
 import java.util.LinkedList;
 import mediathek.Daten;
-import mediathek.daten.DatenFilm;
+import mediathek.Konstanten;
+import mediathek.Log;
 import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
-import mediathek.Log;
+import mediathek.daten.DatenFilm;
 
 /**
  *
@@ -33,7 +34,7 @@ import mediathek.Log;
 public class MediathekNdr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "NDR";
-    final int MAX_SEITEN_LANG = 150;
+    final int MAX_SEITEN_LANG = 250;
     final int MAX_SEITEN_KURZ = 20;
 
     /**
@@ -41,7 +42,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekNdr(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER, /* threads */ 3, /* urlWarten */ 1000, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 6, /* urlWarten */ 1500, startPrio);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         int pos1;
         int pos2;
         String maxS;
-        seite = getUrlIo.getUri_Utf(nameSenderMReader, ADRESSE, seite, "");
+        seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 3000, 5 /* versuche */, seite, ""/* meldung */);
         if (suchen.allesLaden) {
             // wenn alle Seiten ermitteln und gesamtzahl noch nicht bekannt
             if ((pos = seite.lastIndexOf(MUSTER_ANZAHL)) != -1) {
@@ -95,8 +96,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
 
     private class ThemaLaden implements Runnable {
 
-        GetUrl getUrl1 = new GetUrl(wartenSeiteLaden);
-        GetUrl getUrl2 = new GetUrl(wartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
         private StringBuffer seite2 = new StringBuffer();
 
@@ -127,51 +127,68 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             // http://www.ndr.de/fernsehen/sendungen/hallo_niedersachsen/media/hallonds159.html
             LinkedList<String> hammerSchon = new LinkedList<String>();
             final String MUSTER_DATUM = "<div class=\"subline\">";
-            final String MUSTER_URL1 = "<a href=\"/fernsehen/";
+            final String MUSTER_THEMA = "<div class=\"subline\">NDR Fernsehen:";
+            final String MUSTER_URL = "href=\"/fernsehen/";
             int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
-            String datum = "";
-            String zeit = "";
-            String url = "";
-            String thema = "";
-            //Podcasts auslesen
-            seite1 = getUrl1.getUri_Utf(nameSenderMReader, urlSeite, seite1, "");
-            while ((pos = seite1.indexOf(MUSTER_DATUM, pos)) != -1) {
-                datum = "";
-                zeit = "";
-                url = "";
-                thema = "";
-                pos += MUSTER_DATUM.length();
-                try {
-                    if ((pos1 = seite1.indexOf("|", pos)) != -1) {
-                        datum = seite1.substring(pos, pos1).trim();
-                    }
-                    if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
-                        zeit = seite1.substring(pos1 + 1, pos2).trim();
-                        if (zeit.contains("Uhr")) {
-                            zeit = zeit.replace("Uhr", "").trim() + ":00";
+            int pos1;
+            int pos2;
+            String datum;
+            String zeit;
+            String url;
+            String thema;
+            try {
+                seite1 = getUrlIo.getUri(nameSenderMReader, urlSeite, Konstanten.KODIERUNG_UTF, 5000, 4 /* versuche */, seite1, ""/* meldung */);
+                while ((pos = seite1.indexOf(MUSTER_DATUM, pos)) != -1) {
+                    datum = "";
+                    zeit = "";
+                    url = "";
+                    thema = "";
+                    pos += MUSTER_DATUM.length();
+                    pos1 = pos;
+                    // Datum/Zeit suchen
+                    if ((pos2 = seite1.indexOf("|", pos1)) == -1) {
+                        Log.fehlerMeldungMReader(-822560487, "MediathekNdr.finden", "kein Datum: " + urlSeite);
+                        continue;
+                    } else {
+                        pos = pos2;
+                        datum = seite1.substring(pos1, pos2).trim();
+                        pos1 = pos2;
+                        if ((pos2 = seite1.indexOf("<", pos1)) == -1) {
+                            Log.fehlerMeldungMReader(-336520198, "MediathekNdr.finden", "keine Zeit: " + urlSeite);
+                        } else {
+                            zeit = seite1.substring(pos1 + 1, pos2).trim();
+                            if (zeit.contains("Uhr")) {
+                                zeit = zeit.replace("Uhr", "").trim() + ":00";
+                            }
+                            pos = pos2;
+                            pos1 = pos2;
                         }
                     }
-                    pos1 = 0;
-                    pos2 = 0;
-                    if ((pos1 = seite1.indexOf(MUSTER_URL1, pos)) != -1) {
-                        pos1 += MUSTER_URL1.length();
-                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                    // Thema suchen
+                    if ((pos1 = seite1.indexOf(MUSTER_THEMA, pos1)) == -1) {
+                        Log.fehlerMeldungMReader(-462887302, "MediathekNdr.finden", "kein Thema: " + urlSeite);
+//                        thema = "NDR Fernsehen";
+                        pos1 = pos;
+                    } else {
+                        pos1 += MUSTER_THEMA.length();
+                        if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
+                            thema = seite1.substring(pos1, pos2).trim();
                             pos = pos2;
+                            pos1 = pos2;
+                        }
+                    }
+                    // URL suchen
+                    if ((pos1 = seite1.indexOf(MUSTER_URL, pos1)) == -1) {
+                        Log.fehlerMeldungMReader(-669120374, "MediathekNdr.finden", "keine URL: " + urlSeite);
+                        continue;
+                    } else {
+                        pos1 += MUSTER_URL.length();
+                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
                             url = seite1.substring(pos1, pos2);
                         }
-                        if (url.contains("/")) {
-                            String posTh = url.substring(url.indexOf("sendungen/") + "sendungen/".length());
-                            if (posTh.contains("/")) {
-                                thema = posTh.substring(0, posTh.indexOf("/"));
-                            }
-                        }
-//                        if (!themaLaden(senderName, thema)) {
-//                            //nur Abos laden
-//                            continue;
-//                        }
+                        pos = pos2;
                         if (url.equals("")) {
+                            Log.fehlerMeldungMReader(-462309664, "MediathekNdr.finden", "keine URL: " + urlSeite);
                             continue;
                         }
                         if (!hammerSchon.contains(url)) {
@@ -179,9 +196,9 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                             feedEinerSeiteSuchen("http://www.ndr.de/fernsehen/" + url, thema, datum, zeit);
                         }
                     }
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(-211036709, "MediathekNdr.finden", ex);
                 }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(-211036709, "MediathekNdr.finden", ex, urlSeite);
             }
         }
 
@@ -193,7 +210,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
 
             final String MUSTER_URL = "<span class='footer_link'><a href=\"";
             final String MUSTER_TITEL = "<title>";
-            seite2 = getUrl2.getUri_Utf(nameSenderMReader, urlFilm, seite2, "strUrlFilm: " + urlFilm);
+            seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "strUrlFilm: " + urlFilm);
             int pos = 0;
             int pos1;
             int pos2;
