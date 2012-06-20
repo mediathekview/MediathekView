@@ -177,7 +177,7 @@ public class FilmeSuchenSender {
 
     public void meldenFertig(String sender) {
         //wird ausgeführt wenn Sender beendet ist
-        int MAX_SENDER = 25, MAX1 = 22, MAX2 = 15, MAX3 = 20;
+        int MAX_SENDER = 25, MAX1 = 22, MAX2 = 15, MAX3 = 20, MAX4 = 30;
         Log.systemMeldung("Fertig " + sender + ": " + DatumZeit.getJetzt_HH_MM_SS());
         RunSender run = listeSenderLaufen.senderFertig(sender);
         if (run != null) {
@@ -187,6 +187,7 @@ public class FilmeSuchenSender {
             zeile += textLaenge(MAX2, " Seiten: " + GetUrl.getSeitenZaehler(run.sender));
             zeile += textLaenge(MAX3, " Ladefehler: " + GetUrl.getSeitenZaehlerFehler(run.sender));
             zeile += textLaenge(MAX3, " Fehlversuche: " + GetUrl.getSeitenZaehlerFehlerVersuche(run.sender));
+            zeile += textLaenge(MAX4, " Wartezeit Fehler[s]: " + GetUrl.getSeitenZaehlerWartezeitFehlerVersuche(run.sender));
             String nameFilmliste[] = getMReaderNameSenderMreader(run.sender).getNameSenderFilmliste();
             if (nameFilmliste.length == 1) {
                 zeile += textLaenge(MAX3, " Filme: " + listeFilmeNeu.countSender(nameFilmliste[0]));

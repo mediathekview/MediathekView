@@ -63,6 +63,9 @@ public class Main {
                         if (ar[i].equalsIgnoreCase("-noGui")) {
                             state = NOGUI;
                         }
+                        if (ar[i].equalsIgnoreCase("-d")) {
+                            Daten.debug = true;
+                        }
                         if (ar[i].equalsIgnoreCase("-v")) {
                             Log.versionsMeldungen(this.getClass().getName());
                             System.exit(0);

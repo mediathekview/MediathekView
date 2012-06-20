@@ -40,6 +40,7 @@ public class GetUrl {
     private static LinkedList<Seitenzaehler> listeSeitenZaehler = new LinkedList<Seitenzaehler>();
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehler = new LinkedList<Seitenzaehler>();
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehlerVersuche = new LinkedList<Seitenzaehler>();
+    private static LinkedList<Seitenzaehler> listeSeitenZaehlerWartezeitFehlerVersuche = new LinkedList<Seitenzaehler>(); // Wartezeit für Wiederholungen [s]
 
     private class Seitenzaehler {
 
@@ -57,13 +58,6 @@ public class GetUrl {
         }
     }
 
-//    public GetUrl() {
-//    }
-    public GetUrl(int ttimeout, long wwartenBasis) {
-        timeout = ttimeout;
-        wartenBasis = wwartenBasis;
-    }
-
     public GetUrl(long wwartenBasis) {
         wartenBasis = wwartenBasis;
     }
@@ -72,39 +66,59 @@ public class GetUrl {
     // public
     //===================================
     public StringBuffer getUri_Utf(String sender, String addr, StringBuffer seite, String meldung) {
-        return getUri(sender, addr, Konstanten.KODIERUNG_UTF, timeout, 1 /* versuche */, seite, meldung);
+        return getUri(sender, addr, Konstanten.KODIERUNG_UTF, 1 /* versuche */, seite, meldung);
     }
 
     public StringBuffer getUri_Iso(String sender, String addr, StringBuffer seite, String meldung) {
-        return getUri(sender, addr, Konstanten.KODIERUNG_ISO15, timeout, 1 /* versuche */, seite, meldung);
+        return getUri(sender, addr, Konstanten.KODIERUNG_ISO15, 1 /* versuche */, seite, meldung);
     }
 
-    public synchronized StringBuffer getUri(String sender, String addr, String kodierung, int ttimeout, int versuche, StringBuffer seite, String meldung) {
-        int timeo = ttimeout;
-        int ver = 0;
+    public synchronized StringBuffer getUri(String sender, String addr, String kodierung, int maxVersuche, StringBuffer seite, String meldung) {
+        final int PAUSE = 1000;
+        int aktTimeout = (maxVersuche > 1) ? timeout / 2 : timeout; // wenns mehrere Versuche gibt, dann der erste mit verkürztem Timeout
+//        int aktTimeout = timeout;
+        int aktVer = 0;
+        int wartezeit;
+        boolean letzterVersuch;
         do {
-            ++ver;
+            ++aktVer;
             try {
-                seite = getUri(sender, addr, seite, kodierung, timeo, meldung, versuche, (ver >= versuche) ? true : false);
-                if (seite.length() == 0) {
-                    // Timeout um 5 Sekunden verlängern und vor dem nächsten Versuch etwas warten
-                    if (ver < versuche) {
-                        // ansonsten wars das
-                        timeo += 5000;
-                        this.wait(timeo);
-                    }
-                } else {
+                if (aktVer >= maxVersuche) {
+                    // der letzte Versuch mit dem vollen Timeout
+                    aktTimeout = timeout;
+                }
+                if (aktVer > 1) {
+                    // und noch eine Pause vor dem nächsten Versuch
+                    this.wait(PAUSE);
+                }
+                letzterVersuch = (aktVer >= maxVersuche) ? true : false;
+                seite = getUri(sender, addr, seite, kodierung, aktTimeout, meldung, maxVersuche, letzterVersuch);
+                if (seite.length() > 0) {
                     // und nix wie weiter 
-                    if (ver > 1) {
-                        String[] text = new String[]{sender + " ~~~~~~~~~~~~~~~~~~>", addr, "geklappt nach :" + ver + " Versuchen[" + versuche + "]"};
+                    if (Daten.debug && aktVer > 1) {
+                        String text = sender + " [" + aktVer + "/" + maxVersuche + "] ~~~> " + addr;
                         Log.systemMeldung(text);
                     }
+                    // nur dann zählen
+                    incSeitenZaehler(sender);
                     return seite;
+                } else {
+                    if (aktVer > 1) {
+                        wartezeit = (aktTimeout + PAUSE);
+                    } else {
+                        wartezeit = (aktTimeout);
+                    }
+                    incSeitenZaehlerWartezeitFehlerVersuche(sender, wartezeit / 1000);
+                    if (letzterVersuch) {
+                        // dann wars leider nichts
+                        incSeitenZaehlerFehler(sender);
+                        incSeitenZaehlerFehlerVersuche(sender, maxVersuche);
+                    }
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldungGetUrl(698963200, ex, sender, new String[]{"GetUrl.getUri"});
             }
-        } while (!Daten.filmeLaden.getStop() && ver < versuche);
+        } while (!Daten.filmeLaden.getStop() && aktVer < maxVersuche);
         return seite;
     }
 
@@ -165,10 +179,23 @@ public class GetUrl {
         return 0;
     }
 
+    public static int getSeitenZaehlerWartezeitFehlerVersuche(String sender) {
+        Iterator<Seitenzaehler> it = listeSeitenZaehlerWartezeitFehlerVersuche.iterator();
+        Seitenzaehler sz;
+        while (it.hasNext()) {
+            sz = it.next();
+            if (sz.senderName.equals(sender)) {
+                return sz.seitenAnzahl;
+            }
+        }
+        return 0;
+    }
+
     public static synchronized void resetZaehler() {
         listeSeitenZaehler.clear();
         listeSeitenZaehlerFehler.clear();
         listeSeitenZaehlerFehlerVersuche.clear();
+        listeSeitenZaehlerWartezeitFehlerVersuche.clear();
         sumByte = 0;
     }
 
@@ -209,20 +236,37 @@ public class GetUrl {
         }
     }
 
-    private synchronized void incSeitenZaehlerFehlerVersuche(String sender, int v) {
+    private synchronized void incSeitenZaehlerFehlerVersuche(String sender, int versuche) {
         boolean gefunden = false;
         Iterator<Seitenzaehler> it = listeSeitenZaehlerFehlerVersuche.iterator();
         Seitenzaehler sz;
         while (it.hasNext()) {
             sz = it.next();
             if (sz.senderName.equals(sender)) {
-                sz.seitenAnzahl += v;
+                sz.seitenAnzahl += versuche;
                 gefunden = true;
                 break;
             }
         }
         if (!gefunden) {
-            listeSeitenZaehlerFehlerVersuche.add(new Seitenzaehler(sender, v));
+            listeSeitenZaehlerFehlerVersuche.add(new Seitenzaehler(sender, versuche));
+        }
+    }
+
+    private synchronized void incSeitenZaehlerWartezeitFehlerVersuche(String sender, int versuche) {
+        boolean gefunden = false;
+        Iterator<Seitenzaehler> it = listeSeitenZaehlerWartezeitFehlerVersuche.iterator();
+        Seitenzaehler sz;
+        while (it.hasNext()) {
+            sz = it.next();
+            if (sz.senderName.equals(sender)) {
+                sz.seitenAnzahl += versuche;
+                gefunden = true;
+                break;
+            }
+        }
+        if (!gefunden) {
+            listeSeitenZaehlerWartezeitFehlerVersuche.add(new Seitenzaehler(sender, versuche));
         }
     }
 
@@ -255,13 +299,8 @@ public class GetUrl {
                 seite.append(zeichen);
                 ++sumByte;
             }
-            // nur dann zählen
-            incSeitenZaehler(sender);
         } catch (Exception ex) {
             if (lVersuch) {
-                // dann wars leider nichts
-                incSeitenZaehlerFehler(sender);
-                incSeitenZaehlerFehlerVersuche(sender, versuch);
                 String[] text;
                 if (meldung.equals("")) {
                     text = new String[]{"timout: " + timeo + " Versuche: " + versuch, addr};

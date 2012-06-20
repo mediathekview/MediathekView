@@ -110,13 +110,14 @@ public class Log {
     }
 
     public static synchronized void fehlerMeldungMReader(int fehlerNummer, String klasse, String text) {
-        fehlermeldung_mReader(fehlerNummer, klasse, new String[]{text});
+        if (Daten.debug) {
+            fehlermeldung_mReader(fehlerNummer, klasse, new String[]{text});
+        }
     }
 
-    public static synchronized void fehlerMeldungMReader(int fehlerNummer, String sender, String[] text) {
-        fehlermeldung_mReader(fehlerNummer, sender, text);
-    }
-
+//    public static synchronized void fehlerMeldungMReader(int fehlerNummer, String sender, String[] text) {
+//        fehlermeldung_mReader(fehlerNummer, sender, text);
+//    }
     public static synchronized void fehlerMeldungGetUrl(int fehlerNummer, Exception ex, String sender, String text[]) {
         fehlermeldung_getUrl(fehlerNummer, sender, ex, text);
     }

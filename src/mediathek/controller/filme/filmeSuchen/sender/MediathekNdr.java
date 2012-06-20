@@ -60,7 +60,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         int pos1;
         int pos2;
         String maxS;
-        seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 3000, 5 /* versuche */, seite, ""/* meldung */);
+        seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, ""/* meldung */);
         if (suchen.allesLaden) {
             // wenn alle Seiten ermitteln und gesamtzahl noch nicht bekannt
             if ((pos = seite.lastIndexOf(MUSTER_ANZAHL)) != -1) {
@@ -81,7 +81,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             }
         }
         for (int i = 1; i < maxSeiten; ++i) {
-            String[] add = new String[]{ADRESSE_TEIL + i + ".html", ""};
+            String[] add = new String[]{String.valueOf(i), ADRESSE_TEIL + i + ".html"};
             listeThemen.add(add);
         }
         if (!Daten.filmeLaden.getStop()) {
@@ -107,8 +107,8 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                 String[] link;
                 while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
                     try {
-                        meldungProgress(link[0]);
-                        finden(link[0] /* url */);
+                        meldungProgress(link[1]);
+                        finden(Integer.parseInt(link[0]), link[1] /* url */);
                     } catch (Exception ex) {
                         Log.fehlerMeldung(-685011466, "MediathekNdr.ThemaLaden.run.1", ex);
                     }
@@ -119,7 +119,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             }
         }
 
-        private void finden(String urlSeite) {
+        private void finden(int nr, String urlSeite) {
             // http://www.ndr.de/mediathek/videoliste100_glossaryPage-1.html
             // erst: <div class="subline">28.11.2010 | 11:30 Uhr</div>
             // dann:
@@ -137,7 +137,12 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             String url;
             String thema;
             try {
-                seite1 = getUrlIo.getUri(nameSenderMReader, urlSeite, Konstanten.KODIERUNG_UTF, 5000, 4 /* versuche */, seite1, ""/* meldung */);
+                if (nr > 20) {
+                    seite1 = getUrlIo.getUri(nameSenderMReader, urlSeite, Konstanten.KODIERUNG_UTF, 2 /* versuche */, seite1, ""/* meldung */);
+                } else {
+                    // bei den aktuelleren etwas genauer
+                    seite1 = getUrlIo.getUri(nameSenderMReader, urlSeite, Konstanten.KODIERUNG_UTF, 3 /* versuche */, seite1, ""/* meldung */);
+                }
                 while ((pos = seite1.indexOf(MUSTER_DATUM, pos)) != -1) {
                     datum = "";
                     zeit = "";
