@@ -72,8 +72,8 @@ public class MediathekZdf extends MediathekReader implements Runnable {
     private void addToList_addr(String addr) {
         final String MUSTER_URL = "<p><b><a href=\"/ZDFmediathek/kanaluebersicht/aktuellste/";
         //GetUrl(int ttimeout, long wwartenBasis) {
-        GetUrl getUrl = new GetUrl(5000, wartenSeiteLaden);
-        seite = getUrl.getUri(nameSenderMReader, addr, Konstanten.KODIERUNG_UTF, 2000 /* timeout */, 6 /* versuche */, seite, "" /* Meldung */);
+        GetUrl getUrl = new GetUrl( wartenSeiteLaden);
+        seite = getUrl.getUri(nameSenderMReader, addr, Konstanten.KODIERUNG_UTF, 6 /* versuche */, seite, "" /* Meldung */);
         if (seite.length() == 0) {
             Log.fehlerMeldungMReader(-596004563,"MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
         }

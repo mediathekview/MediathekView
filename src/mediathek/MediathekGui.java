@@ -55,7 +55,6 @@ public final class MediathekGui extends javax.swing.JFrame {
     private DDaten ddaten;
     // Check that we are on Mac OS X.  This is crucial to loading and using the OSXAdapter class.
     public static boolean MAC_OS_X = (System.getProperty("os.name").toLowerCase().startsWith("mac os x"));
-    private boolean debug = false;
     private BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     private DialogEinstellungen dialogEinstellungen;
     private JSpinner jSpinnerAnzahl = new JSpinner(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
@@ -76,16 +75,12 @@ public final class MediathekGui extends javax.swing.JFrame {
                 }
             }
             for (int i = 0; i < ar.length; ++i) {
-                if (ar[i].equalsIgnoreCase("-D")) {
-                    debug = true;
-                }
                 if (ar[i].equals("-M")) {
                     max = true;
                 }
             }
         }
         ddaten = new DDaten(pfad, true);
-        DDaten.debug = debug;
         Log.startMeldungen(this.getClass().getName());
         jPanelInfo.setLayout(new BorderLayout());
         jPanelInfo.add(ddaten.infoPanel, BorderLayout.CENTER);
@@ -257,7 +252,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         jTabbedPane.addTab("Filme", ddaten.guiFilme);
         jTabbedPane.addTab("Downloads", ddaten.guiDownloads);
         jTabbedPane.addTab("Abos", ddaten.guiAbo);
-        if (debug) {
+        if (Daten.debug) {
             jTabbedPane.addTab("Debug", ddaten.guiDebug);
         }
     }

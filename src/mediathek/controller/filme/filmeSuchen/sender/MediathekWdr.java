@@ -54,9 +54,11 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         //Theman suchen
         listeThemen.clear();
         addToList__("http://www.wdr.de/mediathek/html/regional/index.xml");
-        //TH Rockpalast hinzu
-        String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
-        listeThemen.add(add);
+        if (suchen.allesLaden) {
+            //TH Rockpalast hinzu
+            String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
+            listeThemen.add(add);
+        }
         if (!Daten.filmeLaden.getStop()) {
             if (listeThemen.size() > 0) {
                 meldungStart(listeThemen.size());
@@ -103,10 +105,15 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                         thema = strSeite.substring(pos1 + 2, pos2).trim();
                     }
                     if (url.equals("")) {
-                        Log.fehlerMeldungMReader(-995122047,"MediathekWdr.addToList__", "keine URL");
+                        Log.fehlerMeldungMReader(-995122047, "MediathekWdr.addToList__", "keine URL");
                     } else {
                         url = url.replace("&amp;", "&");
-                        String[] add = new String[]{"http://www.wdr.de" + url + "&rankingcount=20", thema};
+                        String[] add;
+                        if (suchen.allesLaden) {
+                            add = new String[]{"http://www.wdr.de" + url + "&rankingcount=20", thema};
+                        } else {
+                            add = new String[]{"http://www.wdr.de" + url + "&rankingcount=10", thema};
+                        }
                         if (!istInListe(listeThemen, url, 0)) {
                             listeThemen.add(add);
                         }
@@ -114,7 +121,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 }
             }
         } else {
-            Log.fehlerMeldungMReader(-778521300,"MediathekWdr", "nix gefunden!!");
+            Log.fehlerMeldungMReader(-778521300, "MediathekWdr", "nix gefunden!!");
         }
     }
 
@@ -140,7 +147,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-633250489,"MediathekWdr.SenderThemaLaden.run", ex);
+                Log.fehlerMeldung(-633250489, "MediathekWdr.SenderThemaLaden.run", ex);
             }
         }
         //TH
@@ -170,7 +177,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     pos = pos3;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-469692500,"MediathekRbb.themenSeiteRockpalast", ex);
+                Log.fehlerMeldung(-469692500, "MediathekRbb.themenSeiteRockpalast", ex);
             }
         }
 
@@ -223,10 +230,10 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                                 }
                             }
                         } else {
-                            Log.fehlerMeldungMReader(-375862100,"MediathekWdr.themenSeiteSuchen-1", "keine Url" + thema);
+                            Log.fehlerMeldungMReader(-375862100, "MediathekWdr.themenSeiteSuchen-1", "keine Url" + thema);
                         }
                     } else {
-                        Log.fehlerMeldungMReader(-752589666,"MediathekWdr.themenSeiteSuchen-2", "keine Url" + thema);
+                        Log.fehlerMeldungMReader(-752589666, "MediathekWdr.themenSeiteSuchen-2", "keine Url" + thema);
                     }
                 }
                 if (suchen.allesLaden) {
@@ -295,12 +302,12 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""/* zeit */);
                             addFilm(film);
                         } else {
-                            Log.fehlerMeldungMReader(-763299001,"MediathekWdr.addFilme2-1", "keine Url" + thema);
+                            Log.fehlerMeldungMReader(-763299001, "MediathekWdr.addFilme2-1", "keine Url" + thema);
                         }
                     }
                 }
             } else {
-                Log.fehlerMeldungMReader(-596631004,"MediathekWdr.addFilme2-2", "keine Url" + thema);
+                Log.fehlerMeldungMReader(-596631004, "MediathekWdr.addFilme2-2", "keine Url" + thema);
             }
         }
     }
