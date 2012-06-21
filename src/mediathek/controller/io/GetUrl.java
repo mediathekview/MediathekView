@@ -32,20 +32,25 @@ import mediathek.Log;
 
 public class GetUrl {
 
-    public static final long UrlWartenBasis = 500;//ms, Basiswert zu dem dann der Faktor multipliziert wird
+    public static final int LISTE_SEITEN_ZAEHLER = 1;
+    public static final int LISTE_SEITEN_ZAEHLER_FEHlER = 2;
+    public static final int LISTE_SEITEN_ZAEHLER_FEHLERVERSUCHE = 3;
+    public static final int LISTE_SEITEN_ZAEHLER_WARTEZEIT_FEHLVERSUCHE = 4;
+    public static final int LISTE_SUMME_BYTE = 5;
+    private static final long UrlWartenBasis = 500;//ms, Basiswert zu dem dann der Faktor multipliziert wird
     private int faktorWarten = 1;
     private int timeout = 10000;
     private long wartenBasis = UrlWartenBasis;
-    private static long sumByte = 0;
     private static LinkedList<Seitenzaehler> listeSeitenZaehler = new LinkedList<Seitenzaehler>();
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehler = new LinkedList<Seitenzaehler>();
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehlerVersuche = new LinkedList<Seitenzaehler>();
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerWartezeitFehlerVersuche = new LinkedList<Seitenzaehler>(); // Wartezeit für Wiederholungen [s]
+    private static LinkedList<Seitenzaehler> listeSummeByte = new LinkedList<Seitenzaehler>(); // Summe Daten in Byte für jeden Sender
 
     private class Seitenzaehler {
 
         String senderName = "";
-        int seitenAnzahl = 0;
+        long seitenAnzahl = 0;
 
         public Seitenzaehler(String ssenderName) {
             senderName = ssenderName;
@@ -75,18 +80,18 @@ public class GetUrl {
 
     public synchronized StringBuffer getUri(String sender, String addr, String kodierung, int maxVersuche, StringBuffer seite, String meldung) {
         final int PAUSE = 1000;
-        int aktTimeout = (maxVersuche > 1) ? timeout / 2 : timeout; // wenns mehrere Versuche gibt, dann der erste mit verkürztem Timeout
-//        int aktTimeout = timeout;
+//        int aktTimeout = (maxVersuche > 1) ? timeout / 2 : timeout; // wenns mehrere Versuche gibt, dann der erste mit verkürztem Timeout
+        int aktTimeout = timeout;
         int aktVer = 0;
         int wartezeit;
         boolean letzterVersuch;
         do {
             ++aktVer;
             try {
-                if (aktVer >= maxVersuche) {
-                    // der letzte Versuch mit dem vollen Timeout
-                    aktTimeout = timeout;
-                }
+//                if (aktVer >= maxVersuche) {
+//                    // der letzte Versuch mit dem vollen Timeout
+//                    aktTimeout = timeout;
+//                }
                 if (aktVer > 1) {
                     // und noch eine Pause vor dem nächsten Versuch
                     this.wait(PAUSE);
@@ -100,19 +105,20 @@ public class GetUrl {
                         Log.systemMeldung(text);
                     }
                     // nur dann zählen
-                    incSeitenZaehler(sender);
+                    incSeitenZaehler(LISTE_SEITEN_ZAEHLER, sender, 1);
                     return seite;
                 } else {
+                    // hat nicht geklappt
                     if (aktVer > 1) {
                         wartezeit = (aktTimeout + PAUSE);
                     } else {
                         wartezeit = (aktTimeout);
                     }
-                    incSeitenZaehlerWartezeitFehlerVersuche(sender, wartezeit / 1000);
+                    incSeitenZaehler(LISTE_SEITEN_ZAEHLER_WARTEZEIT_FEHLVERSUCHE, sender, wartezeit / 1000);
+                    incSeitenZaehler(LISTE_SEITEN_ZAEHLER_FEHLERVERSUCHE, sender, 1);
                     if (letzterVersuch) {
                         // dann wars leider nichts
-                        incSeitenZaehlerFehler(sender);
-                        incSeitenZaehlerFehlerVersuche(sender, maxVersuche);
+                        incSeitenZaehler(LISTE_SEITEN_ZAEHLER_FEHlER, sender, 1);
                     }
                 }
             } catch (Exception ex) {
@@ -130,65 +136,36 @@ public class GetUrl {
         return timeout;
     }
 
-    public static long getSumByte() {
-        return sumByte;
-    }
-
-    public static int getSeitenZaehler(String sender) {
-        Iterator<Seitenzaehler> it = listeSeitenZaehler.iterator();
+    public static long getSeitenZaehler(int art, String sender) {
+        long ret = 0;
+        LinkedList<Seitenzaehler> liste = getListe(art);
+        Iterator<Seitenzaehler> it = liste.iterator();
         Seitenzaehler sz;
         while (it.hasNext()) {
             sz = it.next();
             if (sz.senderName.equals(sender)) {
-                return sz.seitenAnzahl;
+                ret = sz.seitenAnzahl;
             }
         }
-        return 0;
-    }
-
-    public static synchronized int getSeitenZaehler() {
-        int ret = 0;
-        Iterator<Seitenzaehler> it = listeSeitenZaehler.iterator();
-        while (it.hasNext()) {
-            ret += it.next().seitenAnzahl;
+        if (art == LISTE_SUMME_BYTE) {
+            // Byte in MByte
+            ret = ret / 1024 / 1024;
         }
         return ret;
     }
 
-    public static int getSeitenZaehlerFehler(String sender) {
-        Iterator<Seitenzaehler> it = listeSeitenZaehlerFehler.iterator();
-        Seitenzaehler sz;
+    public static synchronized int getSeitenZaehler(int art) {
+        int ret = 0;
+        LinkedList<Seitenzaehler> liste = getListe(art);
+        Iterator<Seitenzaehler> it = liste.iterator();
         while (it.hasNext()) {
-            sz = it.next();
-            if (sz.senderName.equals(sender)) {
-                return sz.seitenAnzahl;
-            }
+            ret += it.next().seitenAnzahl;
         }
-        return 0;
-    }
-
-    public static int getSeitenZaehlerFehlerVersuche(String sender) {
-        Iterator<Seitenzaehler> it = listeSeitenZaehlerFehlerVersuche.iterator();
-        Seitenzaehler sz;
-        while (it.hasNext()) {
-            sz = it.next();
-            if (sz.senderName.equals(sender)) {
-                return sz.seitenAnzahl;
-            }
+        if (art == LISTE_SUMME_BYTE) {
+            // Byte in MByte
+            ret = ret / 1024 / 1024;
         }
-        return 0;
-    }
-
-    public static int getSeitenZaehlerWartezeitFehlerVersuche(String sender) {
-        Iterator<Seitenzaehler> it = listeSeitenZaehlerWartezeitFehlerVersuche.iterator();
-        Seitenzaehler sz;
-        while (it.hasNext()) {
-            sz = it.next();
-            if (sz.senderName.equals(sender)) {
-                return sz.seitenAnzahl;
-            }
-        }
-        return 0;
+        return ret;
     }
 
     public static synchronized void resetZaehler() {
@@ -196,77 +173,44 @@ public class GetUrl {
         listeSeitenZaehlerFehler.clear();
         listeSeitenZaehlerFehlerVersuche.clear();
         listeSeitenZaehlerWartezeitFehlerVersuche.clear();
-        sumByte = 0;
+        listeSummeByte.clear();
     }
 
     //===================================
     // private
     //===================================
-    private synchronized void incSeitenZaehler(String sender) {
-        boolean gefunden = false;
-        Iterator<Seitenzaehler> it = listeSeitenZaehler.iterator();
-        Seitenzaehler sz;
-        while (it.hasNext()) {
-            sz = it.next();
-            if (sz.senderName.equals(sender)) {
-                ++sz.seitenAnzahl;
-                gefunden = true;
-                break;
-            }
-        }
-        if (!gefunden) {
-            listeSeitenZaehler.add(new Seitenzaehler(sender));
-        }
-    }
-
-    private synchronized void incSeitenZaehlerFehler(String sender) {
-        boolean gefunden = false;
-        Iterator<Seitenzaehler> it = listeSeitenZaehlerFehler.iterator();
-        Seitenzaehler sz;
-        while (it.hasNext()) {
-            sz = it.next();
-            if (sz.senderName.equals(sender)) {
-                ++sz.seitenAnzahl;
-                gefunden = true;
-                break;
-            }
-        }
-        if (!gefunden) {
-            listeSeitenZaehlerFehler.add(new Seitenzaehler(sender));
+    private static LinkedList<Seitenzaehler> getListe(int art) {
+        switch (art) {
+            case LISTE_SEITEN_ZAEHLER:
+                return listeSeitenZaehler;
+            case LISTE_SEITEN_ZAEHLER_FEHLERVERSUCHE:
+                return listeSeitenZaehlerFehlerVersuche;
+            case LISTE_SEITEN_ZAEHLER_FEHlER:
+                return listeSeitenZaehlerFehler;
+            case LISTE_SEITEN_ZAEHLER_WARTEZEIT_FEHLVERSUCHE:
+                return listeSeitenZaehlerWartezeitFehlerVersuche;
+            case LISTE_SUMME_BYTE:
+                return listeSummeByte;
+            default:
+                return null;
         }
     }
 
-    private synchronized void incSeitenZaehlerFehlerVersuche(String sender, int versuche) {
+    private synchronized void incSeitenZaehler(int art, String sender, int inc) {
         boolean gefunden = false;
-        Iterator<Seitenzaehler> it = listeSeitenZaehlerFehlerVersuche.iterator();
+        LinkedList<Seitenzaehler> liste = getListe(art);
+        Iterator<Seitenzaehler> it = liste.iterator();
         Seitenzaehler sz;
         while (it.hasNext()) {
             sz = it.next();
             if (sz.senderName.equals(sender)) {
-                sz.seitenAnzahl += versuche;
+                sz.seitenAnzahl += inc;
                 gefunden = true;
                 break;
             }
         }
         if (!gefunden) {
-            listeSeitenZaehlerFehlerVersuche.add(new Seitenzaehler(sender, versuche));
-        }
-    }
-
-    private synchronized void incSeitenZaehlerWartezeitFehlerVersuche(String sender, int versuche) {
-        boolean gefunden = false;
-        Iterator<Seitenzaehler> it = listeSeitenZaehlerWartezeitFehlerVersuche.iterator();
-        Seitenzaehler sz;
-        while (it.hasNext()) {
-            sz = it.next();
-            if (sz.senderName.equals(sender)) {
-                sz.seitenAnzahl += versuche;
-                gefunden = true;
-                break;
-            }
-        }
-        if (!gefunden) {
-            listeSeitenZaehlerWartezeitFehlerVersuche.add(new Seitenzaehler(sender, versuche));
+            liste.add(new Seitenzaehler(sender, inc));
         }
     }
 
@@ -284,7 +228,6 @@ public class GetUrl {
         } catch (Exception ex) {
             Log.fehlerMeldungGetUrl(462800147, ex, sender, new String[]{"GetUrl.getUri"});
         }
-        // ab hier Laden
         try {
             URL url = new URL(addr);
             conn = url.openConnection();
@@ -297,7 +240,7 @@ public class GetUrl {
             inReader = new InputStreamReader(in, kodierung);
             while (!Daten.filmeLaden.getStop() && inReader.read(zeichen) != -1) {
                 seite.append(zeichen);
-                ++sumByte;
+                incSeitenZaehler(LISTE_SUMME_BYTE, sender, 1);
             }
         } catch (Exception ex) {
             if (lVersuch) {
@@ -317,10 +260,6 @@ public class GetUrl {
             } catch (IOException ex) {
             }
         }
-        // ende Laden
-        // -----------------------------------------------------------
-        // alle Ladeversuche sind durch
-        // ####################################################
         return seite;
     }
 }

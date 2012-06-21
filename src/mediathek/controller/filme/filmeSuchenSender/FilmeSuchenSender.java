@@ -177,28 +177,33 @@ public class FilmeSuchenSender {
 
     public void meldenFertig(String sender) {
         //wird ausgeführt wenn Sender beendet ist
-        int MAX_SENDER = 25, MAX1 = 22, MAX2 = 15, MAX3 = 20, MAX4 = 30;
+        int MAX_SENDER = 15, MAX1 = 24, MAX2 = 30;
         Log.systemMeldung("Fertig " + sender + ": " + DatumZeit.getJetzt_HH_MM_SS());
         RunSender run = listeSenderLaufen.senderFertig(sender);
         if (run != null) {
-            String zeile = "";
-            zeile += textLaenge(MAX_SENDER, "Sender:   " + run.sender);
-            zeile += textLaenge(MAX1, " Laufzeit: " + run.getLaufzeitMinuten() + " Min.");
-            zeile += textLaenge(MAX2, " Seiten: " + GetUrl.getSeitenZaehler(run.sender));
-            zeile += textLaenge(MAX3, " Ladefehler: " + GetUrl.getSeitenZaehlerFehler(run.sender));
-            zeile += textLaenge(MAX3, " Fehlversuche: " + GetUrl.getSeitenZaehlerFehlerVersuche(run.sender));
-            zeile += textLaenge(MAX4, " Wartezeit Fehler[s]: " + GetUrl.getSeitenZaehlerWartezeitFehlerVersuche(run.sender));
+            // Zeile 1
+            String zeile = "==================================================================================================================";
+            fertigMeldung.add(zeile);
+            zeile = textLaenge(MAX_SENDER, run.sender);
+            zeile += textLaenge(MAX1, "Laufzeit[Min.]: " + run.getLaufzeitMinuten());
+            zeile += textLaenge(MAX1, "      Seiten: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER, run.sender));
             String nameFilmliste[] = getMReaderNameSenderMreader(run.sender).getNameSenderFilmliste();
             if (nameFilmliste.length == 1) {
-                zeile += textLaenge(MAX3, " Filme: " + listeFilmeNeu.countSender(nameFilmliste[0]));
-                fertigMeldung.add(zeile);
+                zeile += "Filme: " + listeFilmeNeu.countSender(nameFilmliste[0]);
             } else {
-                fertigMeldung.add(zeile);
                 for (int i = 0; i < nameFilmliste.length; i++) {
-                    zeile = "              -->  Filme [" + nameFilmliste[i] + "]: " + listeFilmeNeu.countSender(nameFilmliste[i]);
-                    fertigMeldung.add(zeile);
+                    zeile += "Filme [" + nameFilmliste[i] + "]: " + listeFilmeNeu.countSender(nameFilmliste[i]) + "  ";
                 }
             }
+            fertigMeldung.add(zeile);
+            // Zeile 2
+            zeile = textLaenge(MAX_SENDER, "");
+            zeile += textLaenge(MAX1, "    Ladefehler: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER_FEHlER, run.sender));
+            zeile += textLaenge(MAX1, "Fehlversuche: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER_FEHLERVERSUCHE, run.sender));
+            zeile += textLaenge(MAX2, "Wartezeit Fehler[s]: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER_WARTEZEIT_FEHLVERSUCHE, run.sender));
+            String groesse = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE, run.sender) == 0) ? "<1" : Long.toString(GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE, run.sender));
+            zeile += textLaenge(MAX1, "Daten[MByte]: " + groesse);
+            fertigMeldung.add(zeile);
         }
         // wird einmal aufgerufen, wenn alle Sender fertig sind
         if (listeSenderLaufen.listeFertig()) {
@@ -219,21 +224,20 @@ public class FilmeSuchenSender {
                 minuten = -1;
             }
             Log.systemMeldung("");
-            Log.systemMeldung("============================================================");
-            Log.systemMeldung("============================================================");
-            Log.systemMeldung("");
+            Log.systemMeldung("==================================================================================================================");
+            Log.systemMeldung("Sender ===========================================================================================================");
             Log.systemMeldung(fertigMeldung.toArray(new String[0]));
+            Log.systemMeldung("==================================================================================================================");
             Log.systemMeldung("");
-            Log.systemMeldung("============================================================");
+            Log.systemMeldung("      Seiten geladen: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER));
+            String groesse = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE) == 0) ? "<1" : Long.toString(GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE, run.sender));
+            Log.systemMeldung("Summe geladen[MByte]: " + groesse);
+            Log.systemMeldung("           --> Start: " + sdf.format(startZeit));
+            Log.systemMeldung("            --> Ende: " + sdf.format(stopZeit));
+            Log.systemMeldung("       --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten));
             Log.systemMeldung("");
-            Log.systemMeldung("Seiten geladen:   " + GetUrl.getSeitenZaehler());
-            Log.systemMeldung("Summe geladen:    " + GetUrl.getSumByte() / 1024 / 1024 + " MByte");
-            Log.systemMeldung("  --> Start:      " + sdf.format(startZeit));
-            Log.systemMeldung("  --> Ende:       " + sdf.format(stopZeit));
-            Log.systemMeldung("  --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten));
-            Log.systemMeldung("");
-            Log.systemMeldung("============================================================");
-            Log.systemMeldung("============================================================");
+            Log.systemMeldung("==================================================================================================================");
+            Log.systemMeldung("==================================================================================================================");
             notifyFertig(new FilmListenerElement(sender, "", listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
         } else {
             //nur ein Sender fertig
@@ -273,7 +277,7 @@ public class FilmeSuchenSender {
             for (int i = 0; i < (10 - a); ++i) {
                 text += "-";
             }
-            text += " ]  " + GetUrl.getSeitenZaehler() + " Seiten  /  " + proz + "% von " + max + " Themen  /  Filme: " + listeFilmeNeu.size();
+            text += " ]  " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER) + " Seiten  /  " + proz + "% von " + max + " Themen  /  Filme: " + listeFilmeNeu.size();
             Log.progress(text);
         }
     }

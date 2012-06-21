@@ -34,7 +34,7 @@ import mediathek.daten.DatenFilm;
 public class MediathekNdr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "NDR";
-    final int MAX_SEITEN_LANG = 250;
+    final int MAX_SEITEN_LANG = 200;
     final int MAX_SEITEN_KURZ = 20;
 
     /**
@@ -42,7 +42,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekNdr(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER, /* threads */ 6, /* urlWarten */ 1500, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 8, /* urlWarten */ 2000, startPrio);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             String url;
             String thema;
             try {
-                if (nr > 20) {
+                if (nr > 100) {
                     seite1 = getUrlIo.getUri(nameSenderMReader, urlSeite, Konstanten.KODIERUNG_UTF, 2 /* versuche */, seite1, ""/* meldung */);
                 } else {
                     // bei den aktuelleren etwas genauer

@@ -81,11 +81,6 @@ public class FilmeLaden {
         return filmeImportieren.filmUpdateServer.listeUpdateServer;
     }
 
-    public int getSeitenGeladen() {
-        ////////////////////??
-        return GetUrl.getSeitenZaehler();
-    }
-
     public ListeFilme getListeFilme() {
         if (listeFilmeNeu != null) {
             return listeFilmeNeu;
