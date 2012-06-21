@@ -206,7 +206,7 @@ public class Log {
         System.out.println(z + " " + FEHLER + sender);
         notifyMediathekListener(LOG_FEHLER, FEHLER + sender);
         for (int i = 0; i < texte.length; ++i) {
-            System.out.println(z + "           " + texte[i]);
+            System.out.println("                " + texte[i]);
             notifyMediathekListener(LOG_FEHLER, texte[i]);
         }
     }
@@ -223,7 +223,7 @@ public class Log {
         System.out.println(z + " " + FEHLER + sender + " " + ex.getMessage());
         notifyMediathekListener(LOG_FEHLER, FEHLER + sender + " - " + ex.getMessage());
         for (int i = 0; i < text.length; ++i) {
-            System.out.println(z + "           " + text[i]);
+            System.out.println("                " + text[i]);
             notifyMediathekListener(LOG_FEHLER, text[i]);
         }
     }
