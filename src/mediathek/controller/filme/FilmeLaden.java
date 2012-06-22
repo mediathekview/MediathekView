@@ -62,6 +62,10 @@ public class FilmeLaden {
         }
     }
 
+    public void setAllesLaden(boolean alles) {
+        filmeSuchen.allesLaden = alles;
+    }
+
     public synchronized void setStop() {
         stop = true;
     }

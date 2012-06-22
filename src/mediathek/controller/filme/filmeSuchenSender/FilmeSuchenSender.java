@@ -37,7 +37,7 @@ import mediathek.tool.DatumZeit;
 public class FilmeSuchenSender {
 
     public LinkedList<MediathekReader> mediathekListe = new LinkedList<MediathekReader>();
-    public boolean allesLaden = true;
+    public boolean allesLaden = false;
     public ListeFilme listeFilmeNeu; // neu angelegte Liste und da kommen die neu gesuchten Filme rein
     private ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
     private EventListenerList listeners = new EventListenerList();
@@ -64,6 +64,8 @@ public class FilmeSuchenSender {
         mediathekListe.add(new Mediathek3Sat(this, 2));
         mediathekListe.add(new MediathekSwr(this, 1));
         mediathekListe.add(new MediathekNdr(this, 1));
+        ////////////////////////
+        mediathekListe.add(new MediathekNdrFlash(this, 1));
         // Spalte 2
         mediathekListe.add(new MediathekMdr(this, 1));
         mediathekListe.add(new MediathekWdr(this, 0));
@@ -108,7 +110,7 @@ public class FilmeSuchenSender {
 
     public void updateSender(String nameSenderFilmliste, ListeFilme alteListe) {
         // nur für den Mauskontext "Sender aktualisieren"
-        allesLaden = false;
+//        allesLaden = false;
         initStart(alteListe);
         MediathekReader reader = getMReaderNameSenderFilmliste(nameSenderFilmliste);
         if (reader != null) {
@@ -164,7 +166,7 @@ public class FilmeSuchenSender {
             runSender.progress = progress;
         } else {
             // Sender startet
-            Log.systemMeldung("Starten " + sender + ": " + DatumZeit.getJetzt_HH_MM_SS());
+            Log.systemMeldung("Starten[" + ((allesLaden) ? "alles" : "update") + "] " + sender + ": " + DatumZeit.getJetzt_HH_MM_SS());
             listeSenderLaufen.add(new RunSender(sender, max, progress));
             //wird beim Start des Senders aufgerufen, 1x
             if (listeSenderLaufen.size() <= 1 /* erster Aufruf */) {
@@ -230,7 +232,7 @@ public class FilmeSuchenSender {
             Log.systemMeldung("==================================================================================================================");
             Log.systemMeldung("");
             Log.systemMeldung("      Seiten geladen: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER));
-            String groesse = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE) == 0) ? "<1" : Long.toString(GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE, run.sender));
+            String groesse = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE) == 0) ? "<1" : Long.toString(GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE));
             Log.systemMeldung("Summe geladen[MByte]: " + groesse);
             Log.systemMeldung("           --> Start: " + sdf.format(startZeit));
             Log.systemMeldung("            --> Ende: " + sdf.format(stopZeit));

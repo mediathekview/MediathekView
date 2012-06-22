@@ -21,6 +21,7 @@ package mediathek.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import mediathek.Daten;
 import mediathek.daten.DDaten;
 
 public class GuiDebug extends PanelVorlage {
@@ -35,6 +36,13 @@ public class GuiDebug extends PanelVorlage {
         initComponents();
         ddaten = d;
         jButtonSpeichern.addActionListener(new BeobAllesSpeichern());
+        jToggleButtonAllesLaden.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.filmeLaden.setAllesLaden(jToggleButtonAllesLaden.isSelected());
+            }
+        });
     }
     //===================================
     // Public
@@ -48,8 +56,9 @@ public class GuiDebug extends PanelVorlage {
 
         jButtonSpeichern = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
+        jToggleButtonAllesLaden = new javax.swing.JToggleButton();
 
-        jButtonSpeichern.setText("alles speichern");
+        jButtonSpeichern.setText("alles Speichern");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
@@ -64,6 +73,8 @@ public class GuiDebug extends PanelVorlage {
             .addGap(0, 104, Short.MAX_VALUE)
         );
 
+        jToggleButtonAllesLaden.setText("alles Laden");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -71,8 +82,10 @@ public class GuiDebug extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonSpeichern)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jToggleButtonAllesLaden, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonSpeichern, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(523, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -80,7 +93,9 @@ public class GuiDebug extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButtonSpeichern)
-                .addGap(158, 158, 158)
+                .addGap(18, 18, 18)
+                .addComponent(jToggleButtonAllesLaden)
+                .addGap(115, 115, 115)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(190, Short.MAX_VALUE))
         );
@@ -88,15 +103,15 @@ public class GuiDebug extends PanelVorlage {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonSpeichern;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JToggleButton jToggleButtonAllesLaden;
     // End of variables declaration//GEN-END:variables
 
     private class BeobAllesSpeichern implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-//            daten.speichern();
+//            DDaten.speichern();
 //            daten.ioXmlSchreiben.filmeSchreiben();
         }
     }
-
 }
