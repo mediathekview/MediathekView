@@ -19,8 +19,11 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jButtonSpeichern" alignment="0" min="-2" max="-2" attributes="1"/>
                   <Component id="jPanel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="jToggleButtonAllesLaden" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jButtonSpeichern" alignment="0" max="32767" attributes="1"/>
+                  </Group>
               </Group>
               <EmptySpace pref="523" max="32767" attributes="0"/>
           </Group>
@@ -31,7 +34,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jButtonSpeichern" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="158" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="jToggleButtonAllesLaden" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="115" max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="190" max="32767" attributes="0"/>
           </Group>
@@ -41,7 +46,7 @@
   <SubComponents>
     <Component class="javax.swing.JButton" name="jButtonSpeichern">
       <Properties>
-        <Property name="text" type="java.lang.String" value="alles speichern"/>
+        <Property name="text" type="java.lang.String" value="alles Speichern"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel1">
@@ -66,5 +71,10 @@
         </DimensionLayout>
       </Layout>
     </Container>
+    <Component class="javax.swing.JToggleButton" name="jToggleButtonAllesLaden">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="alles Laden"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>
