@@ -124,37 +124,43 @@ public final class JTableMed extends JTable {
             r = DDaten.system[nrDatenSystem].substring(DDaten.system[nrDatenSystem].indexOf(FELDTRENNER) + 1);
             arrLesen(b, breite);
             arrLesen(r, reihe);
+            setSpalten();
         } else {
-            // Standardwerte wetzen
-            switch (tabelle) {
-                case TABELLE_TAB_FILME:
-                    for (int i = 0; i < spaltenTabelle.length; ++i) {
-                        reihe[i] = i;
-                        breite[i] = 200;
-                        if (i == DatenFilm.FILM_NR_NR
-                                || i == DatenFilm.FILM_DATUM_NR
-                                || i == DatenFilm.FILM_ZEIT_NR
-                                || i == DatenFilm.FILM_SENDER_NR) {
-                            breite[i] = 100;
-                        } else if (i == DatenFilm.FILM_TITEL_NR) {
-                            breite[i] = 300;
-                        } else if (i == DatenFilm.FILM_URL_NR) {
-                            breite[i] = 500;
-                        } else if (!DDaten.debug) {
-                            if (i == DatenFilm.FILM_URL_ORG_NR
-                                    || i == DatenFilm.FILM_URL_RTMP_NR
-                                    || i == DatenFilm.FILM_URL_AUTH_NR
-                                    || i == DatenFilm.FILM_URL_THEMA_NR) {
-                                breite[i] = 0;
-                            }
+            resetTabelle();
+            // setSpalten wird im resetTabelle gemacht
+        }
+    }
+
+    public void resetTabelle() {
+        // Standardwerte wetzen
+        switch (tabelle) {
+            case TABELLE_TAB_FILME:
+                for (int i = 0; i < spaltenTabelle.length; ++i) {
+                    reihe[i] = i;
+                    breite[i] = 200;
+                    if (i == DatenFilm.FILM_NR_NR
+                            || i == DatenFilm.FILM_DATUM_NR
+                            || i == DatenFilm.FILM_ZEIT_NR
+                            || i == DatenFilm.FILM_SENDER_NR) {
+                        breite[i] = 100;
+                    } else if (i == DatenFilm.FILM_TITEL_NR) {
+                        breite[i] = 300;
+                    } else if (i == DatenFilm.FILM_URL_NR) {
+                        breite[i] = 500;
+                    } else if (!DDaten.debug) {
+                        if (i == DatenFilm.FILM_URL_ORG_NR
+                                || i == DatenFilm.FILM_URL_RTMP_NR
+                                || i == DatenFilm.FILM_URL_AUTH_NR
+                                || i == DatenFilm.FILM_URL_THEMA_NR) {
+                            breite[i] = 0;
                         }
                     }
-                    break;
-                case TABELLE_TAB_DOWNLOADS:
-                    break;
-                case TABELLE_TAB_ABOS:
-                    break;
-            }
+                }
+                break;
+            case TABELLE_TAB_DOWNLOADS:
+                break;
+            case TABELLE_TAB_ABOS:
+                break;
         }
         setSpalten();
     }
