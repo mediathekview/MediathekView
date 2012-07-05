@@ -12,3 +12,11 @@ rm /mnt/daten/software/java/Mediathek_3/dist/README.TXT
 rm -r /mnt/daten/software/java/Mediathek_3/dist/Anleitung
 
 cp /mnt/daten/software/java/Mediathek_3/src/mediathek/file/*.xml /mnt/daten/www/online/ZDFMediathekView/programmgruppen/
+
+cd /mnt/daten/software/java/Mediathek_3/dist/
+
+# zip erstellen
+
+datum=$(date +%Y.%m.%d )
+zip -r MediathekView_3.0.0_$datum.zip .
+ 

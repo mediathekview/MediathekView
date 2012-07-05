@@ -31,7 +31,7 @@ public class Konstanten {
     public static final String ADRESSE_ANLEITUNG = "http://zdfmediathk.sourceforge.net";
     public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen.xml";
     // ProgrammUrls
-    public static final String ADRESSE_WEBSITE_MPLAYER= "http://sourceforge.net/projects/smplayer/";
+    public static final String ADRESSE_WEBSITE_MPLAYER = "http://sourceforge.net/projects/smplayer/";
     public static final String ADRESSE_WEBSITE_VLC = "http://www.videolan.org/";
     public static final String ADRESSE_WEBSITE_FLVSTREAMER = "https://savannah.nongnu.org/projects/flvstreamer/";
     // Dateien/Verzeichnisse
@@ -104,35 +104,35 @@ public class Konstanten {
     public static final String SYSTEM_EXPORT_DATEI = "system-export-datei";
     public static final int SYSTEM_EXPORT_DATEI_NR = 23;
     //##############
-    public static final String SYSTEM_HINWEIS_ANZEIGEN = "Hinweis_anzeigen";
-//    public static final int SYSTEM_HINWEIS_ANZEIGEN_NR = 24;
     public static final String SYSTEM_WARTEN = "warten";
-    public static final int SYSTEM_WARTEN_NR = 25;
-    public static final String SYSTEM_ALTE_FILME = "alte-filme";
-//    public static final int SYSTEM_ALTE_FILME_NR = 26;
+    public static final int SYSTEM_WARTEN_NR = 24;
     public static final String SYSTEM_UDATE_SUCHEN = "update-suchen";
-    public static final int SYSTEM_UPDATE_SUCHEN_NR = 27;
+    public static final int SYSTEM_UPDATE_SUCHEN_NR = 25;
     public static final String SYSTEM_UPDATE_DATUM = "update-datum";
-    public static final int SYSTEM_UPDATE_DATUM_NR = 28;
-    public static final String SYSTEM_UPDATE_20 = "update-nach-20";
-//    public static final int SYSTEM_UPDATE_20_NR = 29;
+    public static final int SYSTEM_UPDATE_DATUM_NR = 26;
     public static final String SYSTEM_IMPORT_ART_FILME = "update-filme"; // url automatisch suchen - oder nur manuell
-    public static final int SYSTEM_IMPORT_ART_FILME_NR = 30;
+    public static final int SYSTEM_IMPORT_ART_FILME_NR = 27;
     // Filter
     public static final String SYSTEM_FILTER_TAGE = "system-filter-tage"; // index im Array GuiFilme.COMBO_ZEIT_INT
-    public static final int SYSTEM_FILTER_TAGE_NR = 31;
+    public static final int SYSTEM_FILTER_TAGE_NR = 28;
     public static final String SYSTEM_FILTER_KEINE_ABO = "system-filter-abo";
-    public static final int SYSTEM_FILTER_KEINE_ABO_NR = 32;
+    public static final int SYSTEM_FILTER_KEINE_ABO_NR = 29;
     public static final String SYSTEM_FILTER_KEINE_GESEHENE = "system-filter-gesehen";
-    public static final int SYSTEM_FILTER_KEINE_GESEHENE_NR = 33;
+    public static final int SYSTEM_FILTER_KEINE_GESEHENE_NR = 30;
     // Programmpfade
     public static final String SYSTEM_PFAD_VLC = "pfad-vlc";
-    public static final int SYSTEM_PFAD_VLC_NR = 34;
+    public static final int SYSTEM_PFAD_VLC_NR = 31;
     public static final String SYSTEM_PFAD_FLVSTREAMER = "pfad-flvstreamer";
-    public static final int SYSTEM_PFAD_FLVSTREAMER_NR = 35;
+    public static final int SYSTEM_PFAD_FLVSTREAMER_NR = 32;
     public static final String SYSTEM_PFAD_MPLAYER = "pfad-mplayer";
-    public static final int SYSTEM_PFAD_MPLAYER_NR = 36;
-    //
+    public static final int SYSTEM_PFAD_MPLAYER_NR = 33;
+    //#######################
+    public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_FILME = "Eigenschaften-Tabellen-Filme";
+    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR = 34;
+    public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS = "Eigenschaften-Tabellen-Downloads";
+    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR = 35;
+    public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS = "Eigenschaften-Tabellen-Abos";
+    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR = 36;
     public static final String SYSTEM = "system";
     public static final int SYSTEM_MAX_ELEM = 37;
     public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION, SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y,
@@ -140,9 +140,10 @@ public class Konstanten {
         SYSTEM_PROXY_SERVER, SYSTEM_PROXY_PORT, SYSTEM_PROXY_USER, SYSTEM_PROXY_PWD, SYSTEM_PROXY_ON,
         SYSTEM_MAX_DOWNLOAD, SYSTEM_LEITUNG_LOW, SYSTEM_RTMP_FLVSTREAMER,
         SYSTEM_SWR_LISTE, SYSTEM_PFAD_EXPORT_ABOS, SYSTEM_IMPORT_DATEI, SYSTEM_IMPORT_URL_AUTO, SYSTEM_IMPORT_URL_MANUELL,
-        SYSTEM_EXPORT_DATEI, SYSTEM_HINWEIS_ANZEIGEN, SYSTEM_WARTEN, SYSTEM_ALTE_FILME,
-        SYSTEM_UDATE_SUCHEN, SYSTEM_UPDATE_DATUM, SYSTEM_UPDATE_20, SYSTEM_IMPORT_ART_FILME,
+        SYSTEM_EXPORT_DATEI, SYSTEM_WARTEN, SYSTEM_UDATE_SUCHEN, SYSTEM_UPDATE_DATUM, SYSTEM_IMPORT_ART_FILME,
         SYSTEM_FILTER_TAGE, SYSTEM_FILTER_KEINE_ABO, SYSTEM_FILTER_KEINE_GESEHENE,
-        SYSTEM_PFAD_VLC, SYSTEM_PFAD_FLVSTREAMER, SYSTEM_PFAD_MPLAYER};
+        SYSTEM_PFAD_VLC, SYSTEM_PFAD_FLVSTREAMER, SYSTEM_PFAD_MPLAYER,
+        SYSTEM_EIGENSCHAFTEN_TABELLE_FILME, SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS, SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS
+    };
     //
 }
