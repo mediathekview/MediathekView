@@ -311,10 +311,10 @@ public class GuiFilme extends PanelVorlage {
     private synchronized void tabelleBauen() {
         try {
             boolean themaNichtDa = false;
-            TModelFilm tModel = new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES);
+            ////TModelFilm tModel = new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES);
             stopBeob = true;
             tabelle.getSpalten();
-            tabelle.setModel(tModel);
+            /////tabelle.setModel(tModel);
             String thema = jComboBoxFilterThema.getSelectedItem().toString();
             String sender = jComboBoxFilterSender.getSelectedItem().toString();
             boolean themaOpen = jComboBoxFilterThema.isPopupVisible();
@@ -326,7 +326,7 @@ public class GuiFilme extends PanelVorlage {
                 jComboBoxFilterThema.setSelectedIndex(0);
             } else {
                 //Filme neu laden
-                listeInModellLaden(tModel);
+                listeInModellLaden();
                 //Filter Sender
                 jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(DDaten.listeFilmeNachBlackList.getModelOfField(DatenFilm.FILM_SENDER_NR, "", 0)));
                 jComboBoxFilterSender.setSelectedIndex(0);
@@ -338,7 +338,7 @@ public class GuiFilme extends PanelVorlage {
                     if (jComboBoxFilterSender.getSelectedIndex() == 0) {
                         // war wohl nix, der gewählte Sender wurde in die Blacklist eingetragen
                         sender = "";
-                        listeInModellLaden(tModel);
+                        listeInModellLaden();
                     }
                 }
                 jComboBoxFilterSender.setPopupVisible(senderOpen);
@@ -360,11 +360,13 @@ public class GuiFilme extends PanelVorlage {
                     themaNichtDa = true;
                 }
                 jComboBoxFilterThema.setPopupVisible(themaOpen);
-                tabelle.setModel(tModel);
+                //////tabelle.setModel();
             }
             setInfo();
             tabelle.setSpalten();
-            this.validate();
+            Log.debugMeldung("Tabelle.model_feuer_1");
+            ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
+            //this.validate();
             stopBeob = false;
             //filtern
             if (themaNichtDa) {
@@ -377,19 +379,18 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    private void listeInModellLaden(TModelFilm tModel) {
+    private void listeInModellLaden() {
         Log.debugMeldung("Tabelle.model_laden_1");
-        DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, tModel, jComboBoxFilterSender.getSelectedItem().toString(),
+        DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), jComboBoxFilterSender.getSelectedItem().toString(),
                 jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText());
         Log.debugMeldung("Tabelle.model_laden_2");
-        if (tModel.getRowCount() > 0) {
+        if (((TModelFilm) tabelle.getModel()).getRowCount() > 0) {
             if (jCheckBoxKeineGesehenen.isSelected() || jCheckBoxKeineAbos.isSelected() || jToggleButtonLivestram.isSelected()) {
                 Log.debugMeldung("Tabelle.model_laden_3");
-                tModel.filter(ddaten, jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jToggleButtonLivestram.isSelected());
+                ((TModelFilm) tabelle.getModel()).filter(ddaten, jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jToggleButtonLivestram.isSelected());
                 Log.debugMeldung("Tabelle.model_laden_4");
             }
         }
-
     }
 
     private void filterLoeschen() {
@@ -968,6 +969,16 @@ public class GuiFilme extends PanelVorlage {
             //Drucken
             item = new JMenuItem("Tabelle Drucken");
             item.addActionListener(beobPrint);
+            jPopupMenu.add(item);
+            // Tabellenspalten zurücksetzen
+            item = new JMenuItem("Spalten der Tabelle zurücksetzen");
+            item.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    tabelle.resetTabelle();
+                }
+            });
             jPopupMenu.add(item);
             //Infos
             item = new JMenuItem("Infos anzeigen");
