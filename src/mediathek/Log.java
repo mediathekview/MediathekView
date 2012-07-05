@@ -90,6 +90,12 @@ public class Log {
         Log.systemMeldung("");
     }
 
+    public static synchronized void debugMeldung(String text) {
+        if (Daten.debug) {
+            debugmeldung(text);
+        }
+    }
+
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex) {
         fehlermeldung_(fehlerNummer, klasse, new String[]{ex.getMessage(), ""});
     }
@@ -245,6 +251,15 @@ public class Log {
             notifyMediathekListener(LOG_FEHLER, texte[i]);
         }
         System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
+    }
+
+    private static void debugmeldung(String texte) {
+        if (prog) {
+            // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
+            System.out.print("                                                                            \r");
+            prog = false;
+        }
+        System.out.println("|||| " + texte);
     }
 
     private static void meldung(String[] texte) {
