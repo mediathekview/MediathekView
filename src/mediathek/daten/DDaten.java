@@ -54,7 +54,12 @@ public final class DDaten extends Daten {
     public StringBuffer textSystem = new StringBuffer();
     public StringBuffer textProgramm = new StringBuffer();
     public StringBuffer textFehler = new StringBuffer();
-
+    // für die Tabellen
+    public String[] tabFilmeBreit = new String[DatenFilm.FILME_MAX_ELEM];
+    
+    
+    
+    
     public DDaten(String basis, boolean gui) {
         super(basis);
         listeFilmeNachBlackList = new ListeFilme();

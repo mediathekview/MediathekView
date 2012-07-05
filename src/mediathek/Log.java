@@ -150,7 +150,7 @@ public class Log {
         final String z = "*";
         if (fehlerListe.size() == 0) {
             System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
-            System.out.println(z + " " + "Keine Fehler");
+            System.out.println(z + " " + "Keine Fehler :)");
             System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
             return;
         }
