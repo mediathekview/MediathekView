@@ -362,7 +362,6 @@ public class GuiFilme extends PanelVorlage {
                 jComboBoxFilterThema.setPopupVisible(themaOpen);
                 tabelle.setModel(tModel);
             }
-//            GuiFunktionen.spaltenFilmLoeschen(tabelle, false /* ziel */, true /* zeit */, true /* datei */);
             setInfo();
             tabelle.setSpalten();
             this.validate();
@@ -379,11 +378,15 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void listeInModellLaden(TModelFilm tModel) {
+        Log.debugMeldung("Tabelle.model_laden_1");
         DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, tModel, jComboBoxFilterSender.getSelectedItem().toString(),
                 jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText());
+        Log.debugMeldung("Tabelle.model_laden_2");
         if (tModel.getRowCount() > 0) {
             if (jCheckBoxKeineGesehenen.isSelected() || jCheckBoxKeineAbos.isSelected() || jToggleButtonLivestram.isSelected()) {
+                Log.debugMeldung("Tabelle.model_laden_3");
                 tModel.filter(ddaten, jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jToggleButtonLivestram.isSelected());
+                Log.debugMeldung("Tabelle.model_laden_4");
             }
         }
 
