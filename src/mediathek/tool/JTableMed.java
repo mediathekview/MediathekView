@@ -64,7 +64,6 @@ public final class JTableMed extends JTable {
         reihe = getArray(spaltenTabelle.length);
         this.setAutoCreateRowSorter(true);
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        this.getColumnModel().addColumnModelListener(new BeobSpalten());
     }
 
     public void getSpalten() {
@@ -129,6 +128,7 @@ public final class JTableMed extends JTable {
         // erst die Breite, dann die Reihenfolge
         String b, r;
         if (!DDaten.system[nrDatenSystem].equals("")) {
+            String d = DDaten.system[nrDatenSystem];
             b = DDaten.system[nrDatenSystem].substring(0, DDaten.system[nrDatenSystem].indexOf(FELDTRENNER));
             r = DDaten.system[nrDatenSystem].substring(DDaten.system[nrDatenSystem].indexOf(FELDTRENNER) + 1);
             arrLesen(b, breite);
@@ -138,6 +138,8 @@ public final class JTableMed extends JTable {
             resetTabelle();
             // setSpalten wird im resetTabelle gemacht
         }
+        // und jetzt erst der Beobachter, damit Daten.system nich vorher schon überschrieben wird
+        this.getColumnModel().addColumnModelListener(new BeobSpalten());
     }
 
     public void resetTabelle() {
@@ -147,13 +149,14 @@ public final class JTableMed extends JTable {
                 for (int i = 0; i < spaltenTabelle.length; ++i) {
                     reihe[i] = i;
                     breite[i] = 200;
-                    if (i == DatenFilm.FILM_NR_NR
-                            || i == DatenFilm.FILM_DATUM_NR
+                    if (i == DatenFilm.FILM_NR_NR) {
+                        breite[i] = 75;
+                    } else if (i == DatenFilm.FILM_TITEL_NR) {
+                        breite[i] = 300;
+                    } else if (i == DatenFilm.FILM_DATUM_NR
                             || i == DatenFilm.FILM_ZEIT_NR
                             || i == DatenFilm.FILM_SENDER_NR) {
                         breite[i] = 100;
-                    } else if (i == DatenFilm.FILM_TITEL_NR) {
-                        breite[i] = 300;
                     } else if (i == DatenFilm.FILM_URL_NR) {
                         breite[i] = 500;
                     } else if (!DDaten.debug) {
@@ -170,23 +173,22 @@ public final class JTableMed extends JTable {
                 for (int i = 0; i < spaltenTabelle.length; ++i) {
                     reihe[i] = i;
                     breite[i] = 200;
-                    if (i == DatenDownload.DOWNLOAD_URL_AUTH_NR
-                            || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
-                            || i == DatenDownload.DOWNLOAD_ART_NR
-                            || i == DatenDownload.DOWNLOAD_QUELLE_NR) {
-                        breite[i] = 0;
-                    } else {
-                        if (i == DatenDownload.DOWNLOAD_NR_NR) {
-                            breite[i] = 50;
-                        } else if (i == DatenDownload.DOWNLOAD_DATUM_NR
-                                || i == DatenDownload.DOWNLOAD_SENDER_NR
-                                || i == DatenDownload.DOWNLOAD_THEMA_NR
-                                || i == DatenDownload.DOWNLOAD_ZEIT_NR
-                                || i == DatenDownload.DOWNLOAD_ABO_NR
-                                || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
-                            breite[i] = 100;
-                        } else {
-                            breite[i] = 200;
+                    if (i == DatenDownload.DOWNLOAD_NR_NR
+                            || i == DatenDownload.DOWNLOAD_ABO_NR
+                            || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+                        breite[i] = 75;
+                    } else if (i == DatenDownload.DOWNLOAD_TITEL_NR) {
+                        breite[i] = 300;
+                    } else if (i == DatenDownload.DOWNLOAD_DATUM_NR
+                            || i == DatenDownload.DOWNLOAD_ZEIT_NR
+                            || i == DatenDownload.DOWNLOAD_SENDER_NR) {
+                        breite[i] = 100;
+                    } else if (!DDaten.debug) {
+                        if (i == DatenDownload.DOWNLOAD_URL_AUTH_NR
+                                || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
+                                || i == DatenDownload.DOWNLOAD_ART_NR
+                                || i == DatenDownload.DOWNLOAD_QUELLE_NR) {
+                            breite[i] = 0;
                         }
                     }
                 }
@@ -195,15 +197,12 @@ public final class JTableMed extends JTable {
                 for (int i = 0; i < spaltenTabelle.length; ++i) {
                     reihe[i] = i;
                     breite[i] = 200;
-                    if (i == DatenAbo.ABO_NR_NR) {
-                        breite[i] = 50;
-                    } else if (i == DatenAbo.ABO_EINGESCHALTET_NR
-                            || i == DatenAbo.ABO_THEMA_NR
-                            || i == DatenAbo.ABO_DOWN_DATUM_NR
+                    if (i == DatenAbo.ABO_NR_NR
+                            || i == DatenAbo.ABO_EINGESCHALTET_NR) {
+                        breite[i] = 75;
+                    } else if (i == DatenAbo.ABO_DOWN_DATUM_NR
                             || i == DatenAbo.ABO_SENDER_NR) {
                         breite[i] = 100;
-                    } else {
-                        breite[i] = 200;
                     }
                 }
                 break;
