@@ -196,7 +196,6 @@ public class GuiFilme extends PanelVorlage {
         beobMausTabelle = new BeobMausTabelle();
         tabelle.addMouseListener(beobMausTabelle);
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect1());
-        tabelle.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         tabelle.setDefaultRenderer(Object.class, new CellRendererFilme(ddaten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererFilme(ddaten));
         //beobachter Filter
@@ -311,10 +310,8 @@ public class GuiFilme extends PanelVorlage {
     private synchronized void tabelleBauen() {
         try {
             boolean themaNichtDa = false;
-            ////TModelFilm tModel = new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES);
             stopBeob = true;
             tabelle.getSpalten();
-            /////tabelle.setModel(tModel);
             String thema = jComboBoxFilterThema.getSelectedItem().toString();
             String sender = jComboBoxFilterSender.getSelectedItem().toString();
             boolean themaOpen = jComboBoxFilterThema.isPopupVisible();
@@ -360,13 +357,11 @@ public class GuiFilme extends PanelVorlage {
                     themaNichtDa = true;
                 }
                 jComboBoxFilterThema.setPopupVisible(themaOpen);
-                //////tabelle.setModel();
             }
             setInfo();
-            tabelle.setSpalten();
             Log.debugMeldung("Tabelle.model_feuer_1");
             ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
-            //this.validate();
+            tabelle.setSpalten();
             stopBeob = false;
             //filtern
             if (themaNichtDa) {
@@ -955,38 +950,11 @@ public class GuiFilme extends PanelVorlage {
                 }
             });
             jPopupMenu.add(item);
+
             //##Trenner##
             jPopupMenu.addSeparator();
             //##Trenner##
 
-            //Sender laden
-            itemSenderLaden.addActionListener(beobSenderLaden);
-            jPopupMenu.add(itemSenderLaden);
-            //Url
-            item = new JMenuItem("URL kopieren");
-            item.addActionListener(beobUrl);
-            jPopupMenu.add(item);
-            //Drucken
-            item = new JMenuItem("Tabelle Drucken");
-            item.addActionListener(beobPrint);
-            jPopupMenu.add(item);
-            // Tabellenspalten zurücksetzen
-            item = new JMenuItem("Spalten der Tabelle zurücksetzen");
-            item.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    tabelle.resetTabelle();
-                }
-            });
-            jPopupMenu.add(item);
-            //Infos
-            item = new JMenuItem("Infos anzeigen");
-            item.addActionListener(beobInfo);
-            jPopupMenu.add(item);
-            //##Trenner##
-            jPopupMenu.addSeparator();
-            //##Trenner##
             JMenu submenueFilter = new JMenu("Filter");
             jPopupMenu.add(submenueFilter);
             //Filter löschen
@@ -1009,7 +977,7 @@ public class GuiFilme extends PanelVorlage {
             item = new JMenuItem("nach Sender, Thema und Titel filtern");
             item.addActionListener(beobSenderThemaTitel);
             submenueFilter.add(item);
-            //
+
             JMenu submenueAbo = new JMenu("Abo");
             jPopupMenu.add(submenueAbo);
             //Abo anlegen
@@ -1033,6 +1001,7 @@ public class GuiFilme extends PanelVorlage {
             submenueAbo.add(itemAboLoeschen);
             submenueAbo.add(itemAbo);
             submenueAbo.add(itemAboMitTitel);
+
             //Programme einblenden
             JMenu submenue = new JMenu("Film mit Programm starten:");
             jPopupMenu.add(submenue);
@@ -1064,6 +1033,37 @@ public class GuiFilme extends PanelVorlage {
             itemBlackSenderThema.addActionListener(boeobBlacklistSenderThema);
             submenueBlack.add(itemBlackSender);
             submenueBlack.add(itemBlackSenderThema);
+
+            //##Trenner##
+            jPopupMenu.addSeparator();
+            //##Trenner##
+
+            //Sender laden
+            itemSenderLaden.addActionListener(beobSenderLaden);
+            jPopupMenu.add(itemSenderLaden);
+            //Url
+            item = new JMenuItem("URL kopieren");
+            item.addActionListener(beobUrl);
+            jPopupMenu.add(item);
+            //Drucken
+            item = new JMenuItem("Tabelle Drucken");
+            item.addActionListener(beobPrint);
+            jPopupMenu.add(item);
+            //Infos
+            item = new JMenuItem("Infos anzeigen");
+            item.addActionListener(beobInfo);
+            jPopupMenu.add(item);
+            // Tabellenspalten zurücksetzen
+            item = new JMenuItem("Spalten zurücksetzen");
+            item.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    tabelle.resetTabelle();
+                }
+            });
+            jPopupMenu.add(item);
+
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }

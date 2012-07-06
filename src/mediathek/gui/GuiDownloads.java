@@ -43,14 +43,17 @@ import mediathek.tool.*;
 public class GuiDownloads extends PanelVorlage {
 
     private DialogDatenFilm dialogDatenFilm = null;
+    private JTableMed tabelle;
 
     public GuiDownloads(DDaten d) {
         super(d);
         initComponents();
+        tabelle = new JTableMed(JTableMed.TABELLE_TAB_DOWNLOADS);
+        jScrollPane1.setViewportView(tabelle);
         dialogDatenFilm = new DialogDatenFilm(null, false, ddaten);
         init();
         load();
-        GuiFunktionen.spaltenDownloadSetzen(jTable1);
+        tabelle.initTabelle();
     }
     //===================================
     //public
@@ -113,15 +116,15 @@ public class GuiDownloads extends PanelVorlage {
         });
         jRadioButtonAbos.setForeground(GuiKonstanten.ABO_FOREGROUND);
         jRadioButtonDownloads.setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
-        jTable1.setDefaultRenderer(Object.class, new CellRendererDownloads(ddaten));
-        jTable1.setDefaultRenderer(Datum.class, new CellRendererDownloads(ddaten));
-        jTable1.setModel(new TModelDownload(new Object[][]{}, DatenDownload.DOWNLOAD_COLUMN_NAMES));
-        jTable1.addMouseListener(new BeobMausTabelle());
-        jTable1.getSelectionModel().addListSelectionListener(new BeobachterTableSelect1());
+        tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads(ddaten));
+        tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads(ddaten));
+        tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.DOWNLOAD_COLUMN_NAMES));
+        tabelle.addMouseListener(new BeobMausTabelle());
+        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect1());
         //aendern
-        ActionMap am = jTable1.getActionMap();
+        ActionMap am = tabelle.getActionMap();
         am.put("aendern", new BeobAbstractAction());
-        InputMap im = jTable1.getInputMap();
+        InputMap im = tabelle.getInputMap();
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         im.put(enter, "aendern");
         //
@@ -135,8 +138,7 @@ public class GuiDownloads extends PanelVorlage {
     private void load() {
         //Filme laden
         boolean abo, download;
-        getSpalten(jTable1);
-        TModelDownload tModel = new TModelDownload(new Object[][]{}, DatenDownload.DOWNLOAD_COLUMN_NAMES);
+        getSpalten(tabelle);
         if (jRadioButtonAlles.isSelected()) {
             abo = true;
             download = true;
@@ -147,19 +149,18 @@ public class GuiDownloads extends PanelVorlage {
             abo = false;
             download = true;
         }
-        ddaten.listeDownloads.getModel(tModel, abo, download);
-        jTable1.setModel(tModel);
-        GuiFunktionen.spaltenDownloadSetzen(jTable1);
-        setSpalten(jTable1);
+        ddaten.listeDownloads.getModel((TModelDownload) tabelle.getModel(), abo, download);
+        ((TModelDownload) tabelle.getModel()).fireTableDataChanged();
+        setSpalten(tabelle);
         setInfo();
     }
 
     private void downloadAendern() {
-        int rows[] = jTable1.getSelectedRows();
+        int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int i = rows.length - 1; i >= 0; --i) {
-                int delRow = jTable1.convertRowIndexToModel(rows[i]);
-                String url = jTable1.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
+                int delRow = tabelle.convertRowIndexToModel(rows[i]);
+                String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
                 DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
                 DatenDownload d = download.getCopy();
                 DialogEditDownload dialog = new DialogEditDownload(null, true, d);
@@ -177,11 +178,11 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void downloadLoeschen(boolean dauerhaft) {
-        int rows[] = jTable1.getSelectedRows();
+        int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int i = rows.length - 1; i >= 0; --i) {
-                int delRow = jTable1.convertRowIndexToModel(rows[i]);
-                String url = jTable1.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
+                int delRow = tabelle.convertRowIndexToModel(rows[i]);
+                String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
                 DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
                 if (dauerhaft) {
                     if (download.istAbo()) {
@@ -192,8 +193,8 @@ public class GuiDownloads extends PanelVorlage {
                     }
                     ddaten.listeDownloads.delDownloadByUrl(url);
                 }
-                ddaten.starterClass.filmLoeschen(jTable1.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
-                ((TModelDownload) jTable1.getModel()).removeRow(delRow);
+                ddaten.starterClass.filmLoeschen(tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                ((TModelDownload) tabelle.getModel()).removeRow(delRow);
             }
             setInfo();
         } else {
@@ -204,10 +205,10 @@ public class GuiDownloads extends PanelVorlage {
     private void filmStartenWiederholenStoppen(boolean starten /* starten/wiederstarten oder stoppen */) {
         // ein Film der noch keinen Starts hat wird gestartet
         // ein Film dessen Starts schon auf fertig/fehler steht wird wieder gestartet
-        int row = jTable1.getSelectedRow();
+        int row = tabelle.getSelectedRow();
         if (row >= 0) {
-            int delRow = jTable1.convertRowIndexToModel(row);
-            String url = jTable1.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
+            int delRow = tabelle.convertRowIndexToModel(row);
+            String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
             Starts s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 if (starten && s.status > Starts.STATUS_RUN || !starten && s.status <= Starts.STATUS_RUN) {
@@ -230,9 +231,9 @@ public class GuiDownloads extends PanelVorlage {
 
     private void stopAll() {
         // es werden alle laufenden Downloads gestopt
-        for (int i = 0; i < jTable1.getRowCount(); ++i) {
-            int delRow = jTable1.convertRowIndexToModel(i);
-            String url = jTable1.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
+        for (int i = 0; i < tabelle.getRowCount(); ++i) {
+            int delRow = tabelle.convertRowIndexToModel(i);
+            String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
             Starts s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 if (s.status <= Starts.STATUS_RUN) {
@@ -245,9 +246,9 @@ public class GuiDownloads extends PanelVorlage {
 
     private void stopWartende() {
         // es werden alle noch nicht gestarteten Downloads gelöscht
-        for (int i = 0; i < jTable1.getRowCount(); ++i) {
-            int delRow = jTable1.convertRowIndexToModel(i);
-            String url = jTable1.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
+        for (int i = 0; i < tabelle.getRowCount(); ++i) {
+            int delRow = tabelle.convertRowIndexToModel(i);
+            String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
             Starts s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 if (s.status < Starts.STATUS_RUN) {
@@ -259,14 +260,14 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void tabelleAufraeumen() {
-        for (int i = 0; i < jTable1.getModel().getRowCount(); ++i) {
-            int delRow = jTable1.convertRowIndexToModel(i);
-            String url = jTable1.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
+        for (int i = 0; i < tabelle.getModel().getRowCount(); ++i) {
+            int delRow = tabelle.convertRowIndexToModel(i);
+            String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
             Starts s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 if (s.status >= Starts.STATUS_FERTIG) {
                     ddaten.listeDownloads.delDownloadByUrl(url);
-                    ((TModelDownload) jTable1.getModel()).removeRow(i);
+                    ((TModelDownload) tabelle.getModel()).removeRow(i);
                     --i;
                 }
             }
@@ -279,9 +280,9 @@ public class GuiDownloads extends PanelVorlage {
         // liefert false, wenn es nichts zu Laden gibt
         boolean ret = false;
         String url;
-        if (jTable1.getModel() != null) {
-            for (int i = 0; i < jTable1.getModel().getRowCount(); ++i) {
-                url = (jTable1.getModel().getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString());
+        if (tabelle.getModel() != null) {
+            for (int i = 0; i < tabelle.getModel().getRowCount(); ++i) {
+                url = (tabelle.getModel().getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString());
                 if (uurl.equals("") || uurl.equals(url)) {
                     //Start erstellen und zur Liste hinzufügen
                     DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
@@ -296,7 +297,7 @@ public class GuiDownloads extends PanelVorlage {
 
     private void panelUpdate() {
         setInfo();
-        jTable1.repaint();
+        tabelle.repaint();
         this.validate();
     }
 
@@ -305,7 +306,7 @@ public class GuiDownloads extends PanelVorlage {
         // Text links: Zeilen Tabelle
         int laufen = ddaten.starterClass.getDownloadsLaufen();
         int warten = ddaten.starterClass.getDownloadsWarten();
-        int gesamt = jTable1.getModel().getRowCount();
+        int gesamt = tabelle.getModel().getRowCount();
         if (gesamt == 1) {
             textLinks = "1 Download,";
         } else {
@@ -329,10 +330,10 @@ public class GuiDownloads extends PanelVorlage {
 
     private void table1Select() {
         DatenFilm aktFilm = new DatenFilm();
-        int selectedTableRow = jTable1.getSelectedRow();
+        int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
-            int selectedModelRow = jTable1.convertRowIndexToModel(selectedTableRow);
-            DatenFilm film = Daten.listeFilme.getFilmByUrl(jTable1.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+            int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
+            DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
             if (film != null) {
                 aktFilm = film;
             }
@@ -349,7 +350,7 @@ public class GuiDownloads extends PanelVorlage {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanelFilter = new javax.swing.JPanel();
         jCheckBoxFilter = new javax.swing.JCheckBox();
@@ -360,7 +361,7 @@ public class GuiDownloads extends PanelVorlage {
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jTable1);
 
         jPanelFilter.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
@@ -433,7 +434,7 @@ public class GuiDownloads extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
                     .addComponent(jPanelFilter, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -443,7 +444,7 @@ public class GuiDownloads extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jPanelFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -455,7 +456,7 @@ public class GuiDownloads extends PanelVorlage {
     private javax.swing.JRadioButton jRadioButtonAbos;
     private javax.swing.JRadioButton jRadioButtonAlles;
     private javax.swing.JRadioButton jRadioButtonDownloads;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
@@ -499,17 +500,17 @@ public class GuiDownloads extends PanelVorlage {
 
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
-            int nr = jTable1.rowAtPoint(p);
+            int nr = tabelle.rowAtPoint(p);
             if (nr >= 0) {
-                jTable1.setRowSelectionInterval(nr, nr);
+                tabelle.setRowSelectionInterval(nr, nr);
             }
-            JPopupMenu menu = new JPopupMenu();
+            JPopupMenu jPopupMenu = new JPopupMenu();
             //Film vorziehen
-            int row = jTable1.getSelectedRow();
+            int row = tabelle.getSelectedRow();
             boolean wartenOderLaufen = false;
             if (row >= 0) {
-                int delRow = jTable1.convertRowIndexToModel(row);
-                Starts s = ddaten.starterClass.getStart(jTable1.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                int delRow = tabelle.convertRowIndexToModel(row);
+                Starts s = ddaten.starterClass.getStart(tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
                 if (s != null) {
                     if (s.status <= Starts.STATUS_RUN) {
                         wartenOderLaufen = true;
@@ -519,7 +520,7 @@ public class GuiDownloads extends PanelVorlage {
             JMenuItem itemStarten = new JMenuItem("Download starten");
             itemStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_16.png")));
             itemStarten.setEnabled(!wartenOderLaufen);
-            menu.add(itemStarten);
+            jPopupMenu.add(itemStarten);
             itemStarten.addActionListener(new ActionListener() {
 
                 @Override
@@ -530,7 +531,7 @@ public class GuiDownloads extends PanelVorlage {
             JMenuItem itemStoppen = new JMenuItem("Download stoppen");
             itemStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
             itemStoppen.setEnabled(wartenOderLaufen);
-            menu.add(itemStoppen);
+            jPopupMenu.add(itemStoppen);
             itemStoppen.addActionListener(new ActionListener() {
 
                 @Override
@@ -538,12 +539,14 @@ public class GuiDownloads extends PanelVorlage {
                     filmStartenWiederholenStoppen(false /* starten */);
                 }
             });
+ 
             //#######################################
-            menu.addSeparator();
+            jPopupMenu.addSeparator();
             //#######################################
+            
             JMenuItem itemLoeschen = new JMenuItem("Download zurückstellen");
             itemLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_16.png")));
-            menu.add(itemLoeschen);
+            jPopupMenu.add(itemLoeschen);
             itemLoeschen.addActionListener(new ActionListener() {
 
                 @Override
@@ -554,7 +557,7 @@ public class GuiDownloads extends PanelVorlage {
             //dauerhaft löschen
             JMenuItem itemDauerhaftLoeschen = new JMenuItem("Download dauerhaft löschen");
             itemDauerhaftLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
-            menu.add(itemDauerhaftLoeschen);
+            jPopupMenu.add(itemDauerhaftLoeschen);
             itemDauerhaftLoeschen.addActionListener(new ActionListener() {
 
                 @Override
@@ -565,7 +568,7 @@ public class GuiDownloads extends PanelVorlage {
             //ändern
             JMenuItem itemAendern = new JMenuItem("Download Ändern");
             itemAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png")));
-            menu.add(itemAendern);
+            jPopupMenu.add(itemAendern);
             itemAendern.addActionListener(new ActionListener() {
 
                 @Override
@@ -573,12 +576,14 @@ public class GuiDownloads extends PanelVorlage {
                     downloadAendern();
                 }
             });
+
             //#######################################
-            menu.addSeparator();
+            jPopupMenu.addSeparator();
             //#######################################
+            
             JMenuItem itemAlleStarten = new JMenuItem("alle Downloads starten");
             itemAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_16.png")));
-            menu.add(itemAlleStarten);
+            jPopupMenu.add(itemAlleStarten);
             itemAlleStarten.addActionListener(new ActionListener() {
 
                 @Override
@@ -588,7 +593,7 @@ public class GuiDownloads extends PanelVorlage {
             });
             JMenuItem itemAlleStoppen = new JMenuItem("alle Downloads stoppen");
             itemAlleStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
-            menu.add(itemAlleStoppen);
+            jPopupMenu.add(itemAlleStoppen);
             itemAlleStoppen.addActionListener(new ActionListener() {
 
                 @Override
@@ -598,7 +603,7 @@ public class GuiDownloads extends PanelVorlage {
             });
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
             itemWartendeStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
-            menu.add(itemWartendeStoppen);
+            jPopupMenu.add(itemWartendeStoppen);
             itemWartendeStoppen.addActionListener(new ActionListener() {
 
                 @Override
@@ -608,7 +613,7 @@ public class GuiDownloads extends PanelVorlage {
             });
             JMenuItem itemAktualisieren = new JMenuItem("Liste der Downloads aktualisieren");
             itemAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png")));
-            menu.add(itemAktualisieren);
+            jPopupMenu.add(itemAktualisieren);
             itemAktualisieren.addActionListener(new ActionListener() {
 
                 @Override
@@ -618,7 +623,7 @@ public class GuiDownloads extends PanelVorlage {
             });
             JMenuItem itemAufraeumen = new JMenuItem("Liste Aufräumen");
             itemAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/edit-clear_16.png")));
-            menu.add(itemAufraeumen);
+            jPopupMenu.add(itemAufraeumen);
             itemAufraeumen.addActionListener(new ActionListener() {
 
                 @Override
@@ -626,46 +631,38 @@ public class GuiDownloads extends PanelVorlage {
                     aufraeumen();
                 }
             });
+
             //#######################################
-            menu.addSeparator();
+            jPopupMenu.addSeparator();
             //#######################################
+
             //url
             JMenuItem itemUrl = new JMenuItem("URL kopieren");
             itemUrl.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int nr = jTable1.rowAtPoint(p);
+                    int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {
                         GuiFunktionen.copyToClipboard(
-                                jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(nr),
+                                tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr),
                                 DatenDownload.DOWNLOAD_URL_NR).toString());
                     }
                 }
             });
-            menu.add(itemUrl);
-            //Infos
-            JMenuItem itemInfo = new JMenuItem("Infos anzeigen");
-            itemInfo.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    dialogDatenFilm.setVis();
-                }
-            });
-            menu.add(itemInfo);
+            jPopupMenu.add(itemUrl);
             //Player
             JMenuItem itemPlayer = new JMenuItem("Film abspielen");
             itemPlayer.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int nr = jTable1.rowAtPoint(p);
+                    int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {
                         DatenPset gruppe = ddaten.listePset.getPsetAbspielen();
                         if (gruppe != null) {
-                            int selectedModelRow = jTable1.convertRowIndexToModel(nr);
-                            DatenFilm film = Daten.listeFilme.getFilmByUrl(jTable1.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                            int selectedModelRow = tabelle.convertRowIndexToModel(nr);
+                            DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
                             if (film != null) {
                                 // in die History eintragen
                                 ddaten.history.add(film.getUrlOrg());
@@ -679,9 +676,29 @@ public class GuiDownloads extends PanelVorlage {
                     }
                 }
             });
-            menu.add(itemPlayer);
+            jPopupMenu.add(itemPlayer);
+            //Infos
+            JMenuItem itemInfo = new JMenuItem("Infos anzeigen");
+            itemInfo.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dialogDatenFilm.setVis();
+                }
+            });
+            jPopupMenu.add(itemInfo);
+            // Tabellenspalten zurücksetzen
+            JMenuItem item = new JMenuItem("Spalten zurücksetzen");
+            item.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    tabelle.resetTabelle();
+                }
+            });
+            jPopupMenu.add(item);
             //Menü anzeigen
-            menu.show(evt.getComponent(), evt.getX(), evt.getY());
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
 

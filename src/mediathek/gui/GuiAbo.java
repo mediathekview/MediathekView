@@ -30,18 +30,22 @@ import mediathek.daten.DatenAbo;
 import mediathek.gui.beobachter.CellRendererAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.Datum;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.JTableMed;
 import mediathek.tool.TModelAbo;
 
 public class GuiAbo extends PanelVorlage {
 
+    private JTableMed tabelle;
+
     public GuiAbo(DDaten d) {
         super(d);
         initComponents();
+        tabelle = new JTableMed(JTableMed.TABELLE_TAB_ABOS);
+        jScrollPane1.setViewportView(tabelle);
         initBeobachter();
         load();
-        GuiFunktionen.spaltenAboSetzen(jTable1);
+        tabelle.initTabelle();
     }
     //===================================
     //public
@@ -77,43 +81,40 @@ public class GuiAbo extends PanelVorlage {
                 load();
             }
         });
-        jTable1.addMouseListener(new BeobMausTabelle1(jTable1));
-        jTable1.setDefaultRenderer(Object.class, new CellRendererAbo(ddaten));
-        jTable1.setDefaultRenderer(Datum.class, new CellRendererAbo(ddaten));
-        jTable1.setModel(new TModelAbo(new Object[][]{}, DatenAbo.ABO_COLUMN_NAMES));
+        tabelle.addMouseListener(new BeobMausTabelle1());
+        tabelle.setDefaultRenderer(Object.class, new CellRendererAbo(ddaten));
+        tabelle.setDefaultRenderer(Datum.class, new CellRendererAbo(ddaten));
+        tabelle.setModel(new TModelAbo(new Object[][]{}, DatenAbo.ABO_COLUMN_NAMES));
         //aendern
-        ActionMap am = jTable1.getActionMap();
+        ActionMap am = tabelle.getActionMap();
         am.put("aendern", new BeobAbstractAction());
-        InputMap im = jTable1.getInputMap();
+        InputMap im = tabelle.getInputMap();
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         im.put(enter, "aendern");
     }
 
     private void load() {
-        getSpalten(jTable1);
-        TModelAbo tModelAbo = new TModelAbo(new Object[][]{}, DatenAbo.ABO_COLUMN_NAMES);
-        ddaten.listeAbo.addObjectData(tModelAbo);
-        jTable1.setModel(tModelAbo);
-        GuiFunktionen.spaltenAboSetzen(jTable1);
-        setSpalten(jTable1);
+        getSpalten(tabelle);
+        ddaten.listeAbo.addObjectData((TModelAbo) tabelle.getModel());
+        setSpalten(tabelle);
         setInfo();
     }
 
     private void aboLoeschen() {
-        int rows[] = jTable1.getSelectedRows();
+        int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
             String text;
             if (rows.length == 1) {
-                int delRow = jTable1.convertRowIndexToModel(rows[0]);
-                text = "\"" + jTable1.getModel().getValueAt(delRow, DatenAbo.ABO_NAME_NR).toString() + "\" löschen?";
+                int delRow = tabelle.convertRowIndexToModel(rows[0]);
+                text = "\"" + tabelle.getModel().getValueAt(delRow, DatenAbo.ABO_NAME_NR).toString() + "\" löschen?";
             } else {
                 text = rows.length + " Abos löschen?";
             }
             int ret = JOptionPane.showConfirmDialog(null, text, "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
                 for (int i = rows.length - 1; i >= 0; --i) {
-                    int delRow = jTable1.convertRowIndexToModel(rows[i]);
-                    ((TModelAbo) jTable1.getModel()).removeRow(delRow);
+                    int delRow = tabelle.convertRowIndexToModel(rows[i]);
+                    ((TModelAbo) tabelle.getModel()).removeRow(delRow);
                     ddaten.listeAbo.remove(delRow);
                 }
             }
@@ -125,9 +126,9 @@ public class GuiAbo extends PanelVorlage {
     }
 
     private void aboAendern() {
-        int row = jTable1.getSelectedRow();
+        int row = tabelle.getSelectedRow();
         if (row >= 0) {
-            int delRow = jTable1.convertRowIndexToModel(row);
+            int delRow = tabelle.convertRowIndexToModel(row);
             DatenAbo akt = ddaten.listeAbo.getAboNr(delRow);
             DatenAbo ret = akt.getCopy();
             DialogEditAbo dialog = new DialogEditAbo(null, true, ddaten, ret);
@@ -144,18 +145,18 @@ public class GuiAbo extends PanelVorlage {
     }
 
     private void aboEinAus(boolean ein) {
-        int[] rows = jTable1.getSelectedRows();
+        int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int i = 0; i < rows.length; ++i) {
-                int modelRow = jTable1.convertRowIndexToModel(rows[i]);
+                int modelRow = tabelle.convertRowIndexToModel(rows[i]);
                 DatenAbo akt = ddaten.listeAbo.getAboNr(modelRow);
                 akt.arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(ein);
             }
             DDaten.setGeaendert();
             load();
-            jTable1.clearSelection();
+            tabelle.clearSelection();
             for (int i = 0; i < rows.length; ++i) {
-                jTable1.addRowSelectionInterval(rows[i], rows[i]);
+                tabelle.addRowSelectionInterval(rows[i], rows[i]);
             }
             setInfo();
         } else {
@@ -167,9 +168,9 @@ public class GuiAbo extends PanelVorlage {
         String textLinks;
         int ein = 0;
         int aus = 0;
-        int gesamt = jTable1.getModel().getRowCount();
-        for (int i = 0; i < jTable1.getModel().getRowCount(); ++i) {
-            int modelRow = jTable1.convertRowIndexToModel(i);
+        int gesamt = tabelle.getModel().getRowCount();
+        for (int i = 0; i < tabelle.getModel().getRowCount(); ++i) {
+            int modelRow = tabelle.convertRowIndexToModel(i);
             DatenAbo akt = ddaten.listeAbo.getAboNr(modelRow);
             if (akt.aboIstEingeschaltet()) {
                 ++ein;
@@ -239,11 +240,6 @@ public class GuiAbo extends PanelVorlage {
     private class BeobMausTabelle1 extends MouseAdapter {
 
         private Point p;
-        private JTable tabelle;
-
-        public BeobMausTabelle1(JTable ttabelle) {
-            tabelle = ttabelle;
-        }
 
         @Override
         public void mousePressed(MouseEvent arg0) {
@@ -262,11 +258,11 @@ public class GuiAbo extends PanelVorlage {
             int nr = tabelle.rowAtPoint(p);
             if (nr >= 0) {
                 tabelle.setRowSelectionInterval(nr, nr);
-                int modelRow = jTable1.convertRowIndexToModel(nr);
+                int modelRow = tabelle.convertRowIndexToModel(nr);
                 DatenAbo akt = ddaten.listeAbo.getAboNr(modelRow);
                 ein = Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET_NR]);
             }
-            JPopupMenu menu = new JPopupMenu();
+            JPopupMenu jPopupMenu = new JPopupMenu();
             // Abo einschalten
             JMenuItem itemEinschalten = new JMenuItem("Abo einschalten");
             itemEinschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
@@ -278,7 +274,7 @@ public class GuiAbo extends PanelVorlage {
                     aboEinAus(true);
                 }
             });
-            menu.add(itemEinschalten);
+            jPopupMenu.add(itemEinschalten);
             // Abo deaktivieren
             JMenuItem itemDeaktivieren = new JMenuItem("Abo deaktivieren");
             itemDeaktivieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_16.png")));
@@ -290,7 +286,7 @@ public class GuiAbo extends PanelVorlage {
                     aboEinAus(false);
                 }
             });
-            menu.add(itemDeaktivieren);
+            jPopupMenu.add(itemDeaktivieren);
             //Abo lösschen
             JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
             itemLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
@@ -301,7 +297,7 @@ public class GuiAbo extends PanelVorlage {
                     aboLoeschen();
                 }
             });
-            menu.add(itemLoeschen);
+            jPopupMenu.add(itemLoeschen);
             //Abo ändern
             JMenuItem itemAendern = new JMenuItem("Abo ändern");
             itemAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png")));
@@ -312,9 +308,25 @@ public class GuiAbo extends PanelVorlage {
                     aboAendern();
                 }
             });
-            menu.add(itemAendern);
+            jPopupMenu.add(itemAendern);
+
+            //##Trenner##
+            jPopupMenu.addSeparator();
+            //##Trenner##
+            
+            // Tabellenspalten zurücksetzen
+            JMenuItem item = new JMenuItem("Spalten zurücksetzen");
+            item.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    tabelle.resetTabelle();
+                }
+            });
+            jPopupMenu.add(item);
+
             //Menü anzeigen
-            menu.show(evt.getComponent(), evt.getX(), evt.getY());
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
 }
