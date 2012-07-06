@@ -33,6 +33,11 @@ public class Log {
     public static final String LOG_FEHLER = "fehler";
     public static final String LOG_SYSTEM = "system";
     public static final String LOG_PLAYER = "player";
+    private static final int MAX_LAENGE_1 = 30000;
+    private static final int MAX_LAENGE_2 = 20000;
+    public static StringBuffer textSystem = new StringBuffer();
+    public static StringBuffer textProgramm = new StringBuffer();
+    public static StringBuffer textFehler = new StringBuffer();
     private static EventListenerList listeners = new EventListenerList();
     private static LinkedList<Integer[]> fehlerListe = new LinkedList<Integer[]>(); // [Fehlernummer, Anzahl]
     private static boolean prog = false;
@@ -293,9 +298,41 @@ public class Log {
         }
     }
 
-    private static void notifyMediathekListener(String art, String zeile) {
+    public static void clearText(String art) {
+        if (art.equals(LOG_FEHLER)) {
+            textFehler.setLength(0);
+        } else if (art.equals(LOG_SYSTEM)) {
+            textSystem.setLength(0);
+        } else if (art.equals(LOG_PLAYER)) {
+            textProgramm.setLength(0);
+        }
         for (MediathekListener l : listeners.getListeners(MediathekListener.class)) {
-            l.ping(art, zeile);
+            l.ping(art);
+        }
+    }
+
+    private static void notifyMediathekListener(String art, String zeile) {
+        if (art.equals(LOG_FEHLER)) {
+            addText(textFehler, zeile);
+        } else if (art.equals(LOG_SYSTEM)) {
+            addText(textSystem, zeile);
+        } else if (art.equals(LOG_PLAYER)) {
+            addText(textProgramm, zeile);
+        }
+        for (MediathekListener l : listeners.getListeners(MediathekListener.class)) {
+            l.ping(art);
+        }
+    }
+
+    private static void addText(StringBuffer text, String texte) {
+        cut(text);
+        text.append(texte);
+        text.append(System.getProperty("line.separator"));
+    }
+
+    private static void cut(StringBuffer buffer) {
+        if (buffer.length() > MAX_LAENGE_1) {
+            buffer.delete(0, MAX_LAENGE_2);
         }
     }
 }

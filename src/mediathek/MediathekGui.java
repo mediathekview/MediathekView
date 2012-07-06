@@ -43,6 +43,7 @@ import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.PanelHilfe;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
+import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 
@@ -252,6 +253,9 @@ public final class MediathekGui extends javax.swing.JFrame {
         jTabbedPane.addTab("Filme", ddaten.guiFilme);
         jTabbedPane.addTab("Downloads", ddaten.guiDownloads);
         jTabbedPane.addTab("Abos", ddaten.guiAbo);
+        jTabbedPane.add("Meldungen", new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                new PanelMeldungen(ddaten, Log.textSystem, Log.LOG_SYSTEM, "Systemmeldungen"),
+                new PanelMeldungen(ddaten, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer")));
         if (Daten.debug) {
             jTabbedPane.addTab("Debug", ddaten.guiDebug);
         }

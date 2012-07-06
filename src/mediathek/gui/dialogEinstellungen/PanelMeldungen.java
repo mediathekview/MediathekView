@@ -29,8 +29,6 @@ import mediathek.gui.PanelVorlage;
 public class PanelMeldungen extends PanelVorlage {
 
     private StringBuffer text;
-    private final int MAX_LAENGE_1 = 30000;
-    private final int MAX_LAENGE_2 = 20000;
     private String logArt;
 
     /**
@@ -44,42 +42,24 @@ public class PanelMeldungen extends PanelVorlage {
         text = ttext;
         jLabelHeader.setText(header);
         logArt = llogArt;
+        setText();
         //init
         Log.addAdListener(new MediathekListener() {
 
             @Override
-            public void ping(String fromm, String meldung) {
+            public void ping(String fromm) {
                 if (logArt.equals(fromm)) {
-                    addText(meldung);
+                    setText();
                 }
             }
         });
         jButtonLoeschen.addActionListener(new BeobLoeschen());
     }
 
-    public void addText(String texte) {
-        cut(text);
-        text.append(texte);
-        text.append(System.getProperty("line.separator"));
+    private void setText() {
         jTextArea.setText(text.toString());
-        setTextArea();
-    }
-
-    private void setTextArea() {
-        //pane.setViewportView(area);
         jScrollPane.getVerticalScrollBar().setValue(jScrollPane.getVerticalScrollBar().getMaximum());
         jScrollPane.repaint();
-    }
-
-    private void clear() {
-        text.setLength(0);
-        jTextArea.setText(text.toString());
-    }
-
-    private void cut(StringBuffer buffer) {
-        if (buffer.length() > MAX_LAENGE_1) {
-            buffer.delete(0, MAX_LAENGE_2);
-        }
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -104,9 +84,9 @@ public class PanelMeldungen extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 246, Short.MAX_VALUE)
+                    .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonLoeschen))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelHeader)
@@ -119,10 +99,10 @@ public class PanelMeldungen extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jLabelHeader)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonLoeschen)
-                .addGap(12, 12, 12))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -136,7 +116,7 @@ public class PanelMeldungen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            clear();
+            Log.clearText(logArt);
         }
     }
 }
