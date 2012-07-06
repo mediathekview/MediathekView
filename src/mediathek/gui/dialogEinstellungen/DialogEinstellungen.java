@@ -97,9 +97,9 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         // Infos
         panelInfo = new PanelInfo(ddaten);
 ////        panelStarts = new PanelInfoStarts(ddaten);
-        panelMeldungenFehler = new PanelMeldungen(ddaten, ddaten.textFehler, Log.LOG_FEHLER, "Fehlermeldungen");
-        panelMeldungenSystem = new PanelMeldungen(ddaten, ddaten.textSystem, Log.LOG_SYSTEM, "Systemmeldungen");
-        panelMeldungenPlayer = new PanelMeldungen(ddaten, ddaten.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer");
+        panelMeldungenFehler = new PanelMeldungen(ddaten, Log.textFehler, Log.LOG_FEHLER, "Fehlermeldungen");
+        panelMeldungenSystem = new PanelMeldungen(ddaten, Log.textSystem, Log.LOG_SYSTEM, "Systemmeldungen");
+        panelMeldungenPlayer = new PanelMeldungen(ddaten, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer");
     }
 
     private void initTree() {

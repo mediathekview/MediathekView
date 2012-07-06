@@ -50,10 +50,6 @@ public final class DDaten extends Daten {
     public GuiDownloads guiDownloads = null;
     public GuiAbo guiAbo = null;
     public GuiDebug guiDebug = null;
-    // Dialoge
-    public StringBuffer textSystem = new StringBuffer();
-    public StringBuffer textProgramm = new StringBuffer();
-    public StringBuffer textFehler = new StringBuffer();
     // für die Tabellen
     public String[] tabFilmeBreit = new String[DatenFilm.FILME_MAX_ELEM];
     

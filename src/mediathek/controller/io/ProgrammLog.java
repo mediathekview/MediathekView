@@ -93,7 +93,7 @@ public class ProgrammLog {
                     bw.write("#####################################################");
                     bw.newLine();
                     bw.newLine();
-                    bw.write(ddaten.textSystem.toString());
+                    bw.write(Log.textSystem.toString());
                     bw.newLine();
                     bw.newLine();
                     bw.newLine();
@@ -106,7 +106,7 @@ public class ProgrammLog {
                     bw.write("#####################################################");
                     bw.newLine();
                     bw.newLine();
-                    bw.write(ddaten.textProgramm.toString());
+                    bw.write(Log.textProgramm.toString());
                     bw.newLine();
                     bw.flush();
                     bw.close();
