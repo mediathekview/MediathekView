@@ -13,6 +13,8 @@ import javax.swing.event.TableColumnModelListener;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.daten.DDaten;
+import mediathek.daten.DatenAbo;
+import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 
 /**
@@ -45,16 +47,23 @@ public final class JTableMed extends JTable {
             case TABELLE_TAB_FILME:
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR;
                 spaltenTabelle = DatenFilm.FILME_COLUMN_NAMES;
+                this.setModel(new TModelFilm(new Object[][]{}, spaltenTabelle));
                 break;
             case TABELLE_TAB_DOWNLOADS:
+                nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR;
+                spaltenTabelle = DatenDownload.DOWNLOAD_COLUMN_NAMES;
+                this.setModel(new TModelDownload(new Object[][]{}, spaltenTabelle));
                 break;
             case TABELLE_TAB_ABOS:
+                nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR;
+                spaltenTabelle = DatenAbo.ABO_COLUMN_NAMES;
+                this.setModel(new TModelAbo(new Object[][]{}, spaltenTabelle));
                 break;
         }
         breite = getArray(spaltenTabelle.length);
         reihe = getArray(spaltenTabelle.length);
         this.setAutoCreateRowSorter(true);
-        this.setModel(new TModelFilm(new Object[][]{}, spaltenTabelle));
+        this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         this.getColumnModel().addColumnModelListener(new BeobSpalten());
     }
 
@@ -158,8 +167,45 @@ public final class JTableMed extends JTable {
                 }
                 break;
             case TABELLE_TAB_DOWNLOADS:
+                for (int i = 0; i < spaltenTabelle.length; ++i) {
+                    reihe[i] = i;
+                    breite[i] = 200;
+                    if (i == DatenDownload.DOWNLOAD_URL_AUTH_NR
+                            || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
+                            || i == DatenDownload.DOWNLOAD_ART_NR
+                            || i == DatenDownload.DOWNLOAD_QUELLE_NR) {
+                        breite[i] = 0;
+                    } else {
+                        if (i == DatenDownload.DOWNLOAD_NR_NR) {
+                            breite[i] = 50;
+                        } else if (i == DatenDownload.DOWNLOAD_DATUM_NR
+                                || i == DatenDownload.DOWNLOAD_SENDER_NR
+                                || i == DatenDownload.DOWNLOAD_THEMA_NR
+                                || i == DatenDownload.DOWNLOAD_ZEIT_NR
+                                || i == DatenDownload.DOWNLOAD_ABO_NR
+                                || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+                            breite[i] = 100;
+                        } else {
+                            breite[i] = 200;
+                        }
+                    }
+                }
                 break;
             case TABELLE_TAB_ABOS:
+                for (int i = 0; i < spaltenTabelle.length; ++i) {
+                    reihe[i] = i;
+                    breite[i] = 200;
+                    if (i == DatenAbo.ABO_NR_NR) {
+                        breite[i] = 50;
+                    } else if (i == DatenAbo.ABO_EINGESCHALTET_NR
+                            || i == DatenAbo.ABO_THEMA_NR
+                            || i == DatenAbo.ABO_DOWN_DATUM_NR
+                            || i == DatenAbo.ABO_SENDER_NR) {
+                        breite[i] = 100;
+                    } else {
+                        breite[i] = 200;
+                    }
+                }
                 break;
         }
         setSpalten();
