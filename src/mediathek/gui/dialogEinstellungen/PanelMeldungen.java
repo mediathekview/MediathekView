@@ -58,8 +58,9 @@ public class PanelMeldungen extends PanelVorlage {
 
     private void setText() {
         jTextArea.setText(text.toString());
-        jScrollPane.getVerticalScrollBar().setValue(jScrollPane.getVerticalScrollBar().getMaximum());
-        jScrollPane.repaint();
+        if (jCheckBoxAuto.isSelected()) {
+            jTextArea.setCaretPosition(jTextArea.getDocument().getLength());
+        }
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -68,6 +69,7 @@ public class PanelMeldungen extends PanelVorlage {
         jScrollPane = new javax.swing.JScrollPane();
         jTextArea = new javax.swing.JTextArea();
         jLabelHeader = new javax.swing.JLabel();
+        jCheckBoxAuto = new javax.swing.JCheckBox();
 
         jButtonLoeschen.setText("löschen");
 
@@ -76,6 +78,9 @@ public class PanelMeldungen extends PanelVorlage {
         jScrollPane.setViewportView(jTextArea);
 
         jLabelHeader.setText("jLabel1");
+
+        jCheckBoxAuto.setSelected(true);
+        jCheckBoxAuto.setText("Autoscroll");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -86,7 +91,8 @@ public class PanelMeldungen extends PanelVorlage {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jCheckBoxAuto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonLoeschen))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelHeader)
@@ -101,12 +107,15 @@ public class PanelMeldungen extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonLoeschen)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonLoeschen)
+                    .addComponent(jCheckBoxAuto))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonLoeschen;
+    private javax.swing.JCheckBox jCheckBoxAuto;
     private javax.swing.JLabel jLabelHeader;
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JTextArea jTextArea;
