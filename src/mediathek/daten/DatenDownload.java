@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import mediathek.Log;
 import mediathek.controller.filme.filmeSuchen.sender.Mediathek3Sat;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekNdr;
+import mediathek.controller.filme.filmeSuchen.sender.MediathekSwr;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekZdf;
 import mediathek.controller.io.AsxLesen;
 import mediathek.controller.io.starter.Starts;
@@ -123,7 +124,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         try {
             return Integer.parseInt(arr[DOWNLOAD_ART_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(946325800,this.getClass().getName(), ex);
+            Log.fehlerMeldung(946325800, this.getClass().getName(), ex);
             return Starts.ART_PROGRAMM;
         }
     }
@@ -132,7 +133,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         try {
             return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(649632580,this.getClass().getName(), ex);
+            Log.fehlerMeldung(649632580, this.getClass().getName(), ex);
             return Starts.QUELLE_BUTTON;
         }
     }
@@ -170,7 +171,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             dateinamePfadBauen(gruppe);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
-            Log.fehlerMeldung(825600145,this.getClass().getName(), ex);
+            Log.fehlerMeldung(825600145, this.getClass().getName(), ex);
         }
     }
 
@@ -212,7 +213,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         // ##############################################
         // abfragen wenn %p oder %n
         // ##############################################
-        if (name.contains("%p") || name.contains("%n")|| pfad.contains("%p")  || pfad.contains("%n")) {
+        if (name.contains("%p") || name.contains("%n") || pfad.contains("%p") || pfad.contains("%n")) {
             // %n und %p werden jetzt gleich verwendet, es wird immer ein Dialog angezeigt in dem beides (Name und Pfad) geändert werden kann
             if (name.equals("%p") || name.equals("%n")) {
                 name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
@@ -320,7 +321,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     private String getUrlLow() {
         String ret = "";
-        if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER)) {
+        if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
+            //swr
+            ret = arr[DOWNLOAD_URL_NR].replace(".m.mp4", ".l.mp4");
+        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER)) {
             //3Sat
             ret = arr[DOWNLOAD_URL_NR].replace("/veryhigh/", "/300/");
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
@@ -361,7 +365,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     ret = tmp;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006,"DatenFilm.datumDrehen", ex, datum);
+                Log.fehlerMeldung(775421006, "DatenFilm.datumDrehen", ex, datum);
             }
 
         }
