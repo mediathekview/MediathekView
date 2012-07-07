@@ -22,6 +22,8 @@ package mediathek.gui.dialogEinstellungen;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.event.DocumentEvent;
@@ -31,9 +33,9 @@ import javax.swing.event.ListSelectionListener;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.filme.filmUpdateServer.DatenFilmUpdateServer;
 import mediathek.controller.filme.filmUpdateServer.FilmUpdateServer;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
@@ -57,7 +59,8 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         });
         jRadioButtonUpdateAus.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
-        jTable1.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
+        //jTable1.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
+        jTable1.addMouseListener(new BeobachterTableSelect());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
         Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_UPDATESERVER, PanelFilmlisteLaden.class.getSimpleName()) {
 
@@ -109,7 +112,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         }
     }
 
-    private void table1Select() {
+    private void table1Select(boolean doppel) {
         stopBeob = true;
         DatenFilmUpdateServer aktUpdate = null;
         int selectedTableRow = jTable1.getSelectedRow();
@@ -122,6 +125,10 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             //daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(Konstanten.UPDATE_FILME_AUS);
             jTextFieldUrl.setText(aktUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR]);
             Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR] = aktUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR];
+            if (doppel) {
+                // dann wars ein Doppelklick, gleich laden
+                Daten.filmeLaden.filmeLaden(ddaten);
+            }
         }
         stopBeob = false;
     }
@@ -346,17 +353,39 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         }
     }
 
-    private class BeobachterTableSelect implements ListSelectionListener {
+    private class BeobachterTableSelect implements MouseListener {
 
-        public int selectedModelRow = -1;
-
-        @Override
         public void valueChanged(ListSelectionEvent event) {
             if (!stopBeob) {
                 if (!event.getValueIsAdjusting()) {
-                    table1Select();
+                    table1Select(false);
                 }
             }
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 2) {
+                table1Select(true);
+            } else {
+                table1Select(false);
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
         }
     }
 
@@ -376,7 +405,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 try {
                     jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(733025319,"PanelImportFilme.BeobPfad", ex);
+                    Log.fehlerMeldung(733025319, "PanelImportFilme.BeobPfad", ex);
                 }
             }
         }
