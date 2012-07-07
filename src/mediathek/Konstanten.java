@@ -65,31 +65,30 @@ public class Konstanten {
     public static final int SYSTEM_GROESSE_X_NR = 5;
     public static final String SYSTEM_GROESSE_Y = "GroesseY";
     public static final int SYSTEM_GROESSE_Y_NR = 6;
-    //abo
     public static final String SYSTEM_ICON_KLEIN = "system-icon-groesse";
     public static final int SYSTEM_ICON_KLEIN_NR = 7;
     public static final String SYSTEM_FENSTER_MAX = "programmfenster-maximieren";
     public static final int SYSTEM_FENSTER_MAX_NR = 8;
     public static final String SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN = "system-panel-videoplayer-anzeigen";
     public static final int SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR = 9;
+    public static final String SYSTEM_PANEL_MELDUNGEN_ANZEIGEN = "system-panel-meldungen-anzeigen";
+    public static final int SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR = 10;
     //proxy
     public static final String SYSTEM_PROXY_SERVER = "proxy-server";
-    public static final int SYSTEM_PROXY_SERVER_NR = 10;
+    public static final int SYSTEM_PROXY_SERVER_NR = 11;
     public static final String SYSTEM_PROXY_PORT = "proxy-port";
-    public static final int SYSTEM_PROXY_PORT_NR = 11;
+    public static final int SYSTEM_PROXY_PORT_NR = 12;
     public static final String SYSTEM_PROXY_USER = "proxy-benutzer";
-    public static final int SYSTEM_PROXY_USER_NR = 12;
+    public static final int SYSTEM_PROXY_USER_NR = 13;
     public static final String SYSTEM_PROXY_PWD = "proxy-passwort";
-    public static final int SYSTEM_PROXY_PWD_NR = 13;
+    public static final int SYSTEM_PROXY_PWD_NR = 14;
     public static final String SYSTEM_PROXY_ON = "proxy-an";
-    public static final int SYSTEM_PROXY_ON_NR = 14;
+    public static final int SYSTEM_PROXY_ON_NR = 15;
     //Einstellungen Sender
     public static final String SYSTEM_MAX_DOWNLOAD = "maxDownload";
-    public static final int SYSTEM_MAX_DOWNLOAD_NR = 15;
+    public static final int SYSTEM_MAX_DOWNLOAD_NR = 16;
     public static final String SYSTEM_LEITUNG_LOW = "Leitung";
-    public static final int SYSTEM_LEITUNG_LOW_NR = 16;
-    public static final String SYSTEM_RTMP_FLVSTREAMER = "Rtmp-bauen";
-//    public static final int SYSTEM_RTMP_FLVSTREAMER_NR = 17;
+    public static final int SYSTEM_LEITUNG_LOW_NR = 17;
     public static final String SYSTEM_SWR_LISTE = "nr-in-liste";
     public static final int SYSTEM_SWR_LISTE_NR = 18;
     //Einstellungen Im-Export
@@ -136,9 +135,9 @@ public class Konstanten {
     public static final String SYSTEM = "system";
     public static final int SYSTEM_MAX_ELEM = 37;
     public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION, SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y,
-        SYSTEM_ICON_KLEIN, SYSTEM_FENSTER_MAX, SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN,
+        SYSTEM_ICON_KLEIN, SYSTEM_FENSTER_MAX, SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, SYSTEM_PANEL_MELDUNGEN_ANZEIGEN,
         SYSTEM_PROXY_SERVER, SYSTEM_PROXY_PORT, SYSTEM_PROXY_USER, SYSTEM_PROXY_PWD, SYSTEM_PROXY_ON,
-        SYSTEM_MAX_DOWNLOAD, SYSTEM_LEITUNG_LOW, SYSTEM_RTMP_FLVSTREAMER,
+        SYSTEM_MAX_DOWNLOAD, SYSTEM_LEITUNG_LOW,
         SYSTEM_SWR_LISTE, SYSTEM_PFAD_EXPORT_ABOS, SYSTEM_IMPORT_DATEI, SYSTEM_IMPORT_URL_AUTO, SYSTEM_IMPORT_URL_MANUELL,
         SYSTEM_EXPORT_DATEI, SYSTEM_WARTEN, SYSTEM_UDATE_SUCHEN, SYSTEM_UPDATE_DATUM, SYSTEM_IMPORT_ART_FILME,
         SYSTEM_FILTER_TAGE, SYSTEM_FILTER_KEINE_ABO, SYSTEM_FILTER_KEINE_GESEHENE,

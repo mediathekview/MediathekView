@@ -61,6 +61,7 @@ public final class MediathekGui extends javax.swing.JFrame {
     private JSpinner jSpinnerAnzahl = new JSpinner(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
     JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
     JPanel jPanelAnzahl = new JPanel();
+    JSplitPane splitPane = null;
 
     public MediathekGui(String[] ar) {
         String pfad = "";
@@ -253,11 +254,17 @@ public final class MediathekGui extends javax.swing.JFrame {
         jTabbedPane.addTab("Filme", ddaten.guiFilme);
         jTabbedPane.addTab("Downloads", ddaten.guiDownloads);
         jTabbedPane.addTab("Abos", ddaten.guiAbo);
-        jTabbedPane.add("Meldungen", new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 new PanelMeldungen(ddaten, Log.textSystem, Log.LOG_SYSTEM, "Systemmeldungen"),
-                new PanelMeldungen(ddaten, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer")));
+                new PanelMeldungen(ddaten, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer"));
         if (Daten.debug) {
             jTabbedPane.addTab("Debug", ddaten.guiDebug);
+        }
+    }
+
+    private void setPanelMeldungen() {
+        if (jCheckBoxMenuItemMeldungen.isSelected()) {
+            jTabbedPane.add("Meldungen", splitPane);
         }
     }
 
@@ -540,6 +547,21 @@ public final class MediathekGui extends javax.swing.JFrame {
                 ddaten.guiFilme.videoPlayerAnzeigen(jCheckBoxMenuItemVideoplayer.isSelected());
             }
         });
+        jCheckBoxMenuItemMeldungen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR]));
+        setPanelMeldungen();
+        jCheckBoxMenuItemMeldungen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.setGeaendert();
+                Daten.system[Konstanten.SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemMeldungen.isSelected());
+                if (jCheckBoxMenuItemMeldungen.isSelected()) {
+                    jTabbedPane.add("Meldungen", splitPane);
+                } else {
+                    jTabbedPane.remove(splitPane);
+                }
+            }
+        });
         // Hilfe
         jMenuItemAnleitung.addActionListener(new ActionListener() {
 
@@ -689,6 +711,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         jCheckBoxMenuItemToolBar = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxIconKlein = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemVideoplayer = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItemMeldungen = new javax.swing.JCheckBoxMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
         jMenuItemProgrammlog = new javax.swing.JMenuItem();
@@ -903,6 +926,9 @@ public final class MediathekGui extends javax.swing.JFrame {
         jCheckBoxMenuItemVideoplayer.setText("weitere Videoplayer");
         jMenu7.add(jCheckBoxMenuItemVideoplayer);
 
+        jCheckBoxMenuItemMeldungen.setText("Meldungen anzeigen");
+        jMenu7.add(jCheckBoxMenuItemMeldungen);
+
         jMenuBar1.add(jMenu7);
 
         jMenu3.setText("Hilfe");
@@ -957,6 +983,7 @@ public final class MediathekGui extends javax.swing.JFrame {
     private javax.swing.JButton jButtonFilmSpeichern;
     private javax.swing.JButton jButtonFilmeLaden;
     private javax.swing.JCheckBoxMenuItem jCheckBoxIconKlein;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemMeldungen;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
     private javax.swing.JMenu jMenu1;
