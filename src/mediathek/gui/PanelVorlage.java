@@ -33,10 +33,10 @@ public class PanelVorlage extends javax.swing.JPanel {
     private List<? extends javax.swing.RowSorter.SortKey> listeSort = null;
     private int sel;
     private int rows;
-    
+
     /**
      *
-     *   @param d
+     * @param d
      */
     public PanelVorlage(DDaten d) {
         ddaten = d;
@@ -70,7 +70,7 @@ public class PanelVorlage extends javax.swing.JPanel {
                 listeSort = tabelle.getRowSorter().getSortKeys();
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(998213690,"PanelVorlage.getSpalten", ex);
+            Log.fehlerMeldung(998213690, "PanelVorlage.getSpalten", ex);
         }
     }
 
@@ -98,7 +98,7 @@ public class PanelVorlage extends javax.swing.JPanel {
             }
             tabelle.validate();
         } catch (Exception ex) {
-            Log.fehlerMeldung(102540367,"PanelVorlage.setSpalten", ex);
+            Log.fehlerMeldung(102540367, "PanelVorlage.setSpalten", ex);
         }
     }
 }

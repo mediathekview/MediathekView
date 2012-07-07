@@ -27,20 +27,19 @@ import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
 import javax.swing.JFrame;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.daten.*;
+import mediathek.daten.DDaten;
 
 public class GuiFunktionen {
 
     public static boolean setLook(JFrame frame) {
         int look;
         if (DDaten.system[Konstanten.SYSTEM_LOOK_NR].equals("")) {
-            DDaten.system[Konstanten.SYSTEM_LOOK_NR] = "1";
+            DDaten.system[Konstanten.SYSTEM_LOOK_NR] = "0";
         }
         look = Integer.parseInt(DDaten.system[Konstanten.SYSTEM_LOOK_NR]);
         if (look != 0) {

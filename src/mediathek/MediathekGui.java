@@ -257,6 +257,15 @@ public final class MediathekGui extends javax.swing.JFrame {
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 new PanelMeldungen(ddaten, Log.textSystem, Log.LOG_SYSTEM, "Systemmeldungen"),
                 new PanelMeldungen(ddaten, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer"));
+        splitPane.addComponentListener(new java.awt.event.ComponentAdapter() {
+
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                ddaten.mediathekGui.setToolbar(MediathekGui.ButtonAus);
+                ddaten.infoPanel.setIdx(InfoPanel.IDX_GUI_FILME);
+            }
+        });
+
         if (Daten.debug) {
             jTabbedPane.addTab("Debug", ddaten.guiDebug);
         }
