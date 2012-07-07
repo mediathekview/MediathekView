@@ -42,7 +42,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
     private int seiten = 0;
 
     public MediathekSwr(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER,  /* threads */ 1, /* urlWarten */ 1000, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 1, /* urlWarten */ 1000, startPrio);
     }
 
     //===================================
@@ -103,7 +103,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     thema = StringEscapeUtils.unescapeHtml4(thema.trim()); //wird gleich benutzt und muss dann schon stimmen
                 }
                 if (url.equals("")) {
-                    Log.fehlerMeldungMReader(-163255009,"MediathekSwr.addToList__", "keine URL");
+                    Log.fehlerMeldungMReader(-163255009, "MediathekSwr.addToList__", "keine URL");
                 } else {
                     //url = url.replace("&amp;", "&");
                     String[] add = new String[]{"http://swrmediathek.de/tvshow.htm?show=" + url, thema};
@@ -170,7 +170,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     meldungThreadUndFertig();
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-739285690,"MediathekSwr.SenderThemaLaden.run", ex);
+                Log.fehlerMeldung(-739285690, "MediathekSwr.SenderThemaLaden.run", ex);
             }
         }
 
@@ -191,7 +191,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     url = strSeite1.substring(pos1, pos2);
                     pos = pos2;
                     if (url.equals("")) {
-                        Log.fehlerMeldungMReader(-648522300,"MediathekSwr.themenSeiteSuchen", "keine URL, Thema: " + thema);
+                        Log.fehlerMeldungMReader(-648522300, "MediathekSwr.themenSeiteSuchen", "keine URL, Thema: " + thema);
                     } else {
                         url = "http://swrmediathek.de/player.htm?show=" + url;
                         if (!urls.contains(url)) {
@@ -248,7 +248,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         }
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(-649820016,"MediathekSwr.addFilme2-1", ex, thema + " " + urlFilm);
+                    Log.fehlerMeldung(-649820016, "MediathekSwr.addFilme2-1", ex, thema + " " + urlFilm);
                 }
             }
             // Zeit suchen
@@ -280,7 +280,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         }
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(-795623410,"MediathekSwr.addFilme2-2", ex, thema + " " + urlFilm);
+                    Log.fehlerMeldung(-795623410, "MediathekSwr.addFilme2-2", ex, thema + " " + urlFilm);
                 }
             }
             pos = 0;
@@ -302,11 +302,13 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                 if (pos1 != -1 && pos2 != -1 && pos1 < pos2) {
                     titel = strSeite2.substring(pos1, pos2);
                     if (!url.equals("")) {
+                        // hohe Auflösung
+                        url = url.replace(".m.mp4", ".l.mp4");
                         // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                         DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
                         addFilm(film);
                     } else {
-                        Log.fehlerMeldungMReader(-468200690,"MediathekSwr.addFilme2-4", thema + " " + urlFilm);
+                        Log.fehlerMeldungMReader(-468200690, "MediathekSwr.addFilme2-4", thema + " " + urlFilm);
                     }
                 }
             }
