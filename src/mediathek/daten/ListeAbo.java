@@ -39,10 +39,10 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
     private int nr = 0;
 
-    public boolean addAbo(String filmSender, String filmThema, String filmTitel) {
+    public boolean addAbo(String filmSender, String filmThema, String filmTitel, String filmThemaTitel, String namePfad) {
         //abo anlegen, oder false wenns schon existiert
         boolean ret = false;
-        DatenAbo datenAbo = new DatenAbo(filmThema /* name */, filmSender, filmThema, filmTitel, filmThema /* Pfad */, "");
+        DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, namePfad, "");
         DialogEditAbo dialogEditAbo = new DialogEditAbo(null, true, daten, datenAbo);
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
@@ -52,11 +52,15 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 ret = true;
                 Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
             } else {
-                JOptionPane.showMessageDialog(null, "Abo existiert bereits",
-                        "Abo anlegen", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Abo existiert bereits", "Abo anlegen", JOptionPane.INFORMATION_MESSAGE);
             }
         }
         return ret;
+    }
+
+    public boolean addAbo(String filmSender, String filmThema, String filmTitel) {
+        return addAbo(filmSender, filmThema, filmTitel, "", filmThema);
+
     }
 
     public void aboLoeschen(DatenAbo abo) {

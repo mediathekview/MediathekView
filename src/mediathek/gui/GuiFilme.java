@@ -905,6 +905,7 @@ public class GuiFilme extends PanelVorlage {
         private BeobFilterLoeschen beobLoeschen = new BeobFilterLoeschen();
         private BeobAbo beobAbo = new BeobAbo(false /* mit Titel */);
         private BeobAbo beobAboMitTitel = new BeobAbo(true /* mit Titel */);
+        private BeobAboFilter beobAboFilter = new BeobAboFilter();
         private BeobFilterThema beobThema = new BeobFilterThema();
         private BeobFilterSender beobSender = new BeobFilterSender();
         private BeobFilterSenderThema beobSenderThema = new BeobFilterSenderThema();
@@ -1001,23 +1002,28 @@ public class GuiFilme extends PanelVorlage {
             JMenuItem itemAboLoeschen;
             JMenuItem itemAbo;
             JMenuItem itemAboMitTitel;
+            JMenuItem itemAboFilter;
             itemAboLoeschen = new JMenuItem("Abo Löschen");
             itemAbo = new JMenuItem("Abo mit Sender und Thema anlegen");
             itemAboMitTitel = new JMenuItem("Abo mit Sender und Thema und Titel anlegen");
+            itemAboFilter = new JMenuItem("Abo aus Filter anlegen");
             if ((ddaten.listeAbo.getAbo(filmSender, filmThema, filmTitel)) != null) {
                 //gibts schon, dann löschen
                 itemAbo.setEnabled(false);
                 itemAboMitTitel.setEnabled(false);
+                itemAboFilter.setEnabled(false);
                 itemAboLoeschen.addActionListener(beobAbo);
             } else {
                 itemAboLoeschen.setEnabled(false);
                 //neues Abo anlegen
                 itemAbo.addActionListener(beobAbo);
                 itemAboMitTitel.addActionListener(beobAboMitTitel);
+                itemAboFilter.addActionListener(beobAboFilter);
             }
             submenueAbo.add(itemAboLoeschen);
             submenueAbo.add(itemAbo);
             submenueAbo.add(itemAboMitTitel);
+            submenueAbo.add(itemAboFilter);
 
             //Programme einblenden
             JMenu submenue = new JMenu("Film mit Programm starten:");
@@ -1241,6 +1247,31 @@ public class GuiFilme extends PanelVorlage {
                                 ddaten.listeAbo.addAbo(filmSender, filmThema, "");
                             }
                         }
+                        stopBeob = false;
+                        tabelleBauen();
+                    }
+                }
+            }
+        }
+
+        private class BeobAboFilter implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (ddaten.listePset.getListeAbo().size() == 0) {
+                    JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+                            "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    int nr = tabelle.rowAtPoint(p);
+                    if (nr >= 0) {
+                        stopBeob = true;
+                        //String filmSender = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_SENDER_NR).toString();
+                        String filmThema = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
+                        //String filmTitel = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_TITEL_NR).toString();
+                        //neues Abo anlegen
+                        //ddaten.listeAbo.addAbo(filmSender, filmThema, filmTitel);
+                        ddaten.listeAbo.addAbo(jComboBoxFilterSender.getSelectedItem().toString(), jComboBoxFilterThema.getSelectedItem().toString(),
+                                jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(), filmThema);
                         stopBeob = false;
                         tabelleBauen();
                     }
