@@ -5,11 +5,13 @@
 package mediathek.tool;
 
 import java.util.List;
+import javax.swing.DefaultRowSorter;
 import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
+import javax.swing.table.TableRowSorter;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.daten.DDaten;
@@ -31,6 +33,7 @@ public final class JTableMed extends JTable {
     public static final int TABELLE_TAB_ABOS = 2;
     public static final String FELDTRENNER = "|";
     private List<? extends javax.swing.RowSorter.SortKey> listeSortKeys = null;
+    private DefaultRowSorter rowSorter;
     int[] breite;
     int[] reihe;
     private int sel;
@@ -47,7 +50,9 @@ public final class JTableMed extends JTable {
             case TABELLE_TAB_FILME:
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR;
                 spaltenTabelle = DatenFilm.FILME_COLUMN_NAMES;
-                this.setModel(new TModelFilm(new Object[][]{}, spaltenTabelle));
+                rowSorter = new TableRowSorter(new TModelFilm(new Object[][]{}, spaltenTabelle));
+                this.setRowSorter(rowSorter);
+                //this.setModel(new TModelFilm(new Object[][]{}, spaltenTabelle));
                 break;
             case TABELLE_TAB_DOWNLOADS:
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR;
@@ -79,6 +84,8 @@ public final class JTableMed extends JTable {
         }
         if (this.getRowSorter() != null) {
             listeSortKeys = this.getRowSorter().getSortKeys();
+        } else {
+            listeSortKeys = null;
         }
     }
 

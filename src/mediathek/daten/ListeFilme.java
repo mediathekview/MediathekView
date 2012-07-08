@@ -257,33 +257,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         addFilmVomSender(
                 new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Phoenix" + " " + THEMA_LIVE, "http://hstreaming.zdf.de/encoder/phoenix_vh.mov", ""/* datum */, ""/* zeit */));
     }
-//
-//    /**
-//     * 
-//     * @param url
-//     * @return
-//     */
-//    public synchronized DatenFilm getFilmByUrl(String url) {
-//        DatenFilm ret = null;
-//        ListIterator<DatenFilm> it = this.listIterator(0);
-//        while (it.hasNext()) {
-//            DatenFilm f = it.next();
-//            if (f.arr[Konstanten.FILM_URL_NR].equals(url)) {
-//                ret = f;
-//                break;
-//            }
-//        }
-//        return ret;
-//    }
 
-    /**
-     *
-     * @param filterSender
-     * @param filterThema
-     * @param filterExakt
-     * @param filterText
-     * @return
-     * // */
     public synchronized void getModelTabFilme(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {
         modelFilm.setRowCount(0);
         if (this.size() != 0) {
