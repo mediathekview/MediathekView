@@ -260,18 +260,18 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void tabelleAufraeumen() {
-        for (int i = 0; i < tabelle.getModel().getRowCount(); ++i) {
+        for (int i = tabelle.getRowCount() - 1; i >= 0; --i) {
             int delRow = tabelle.convertRowIndexToModel(i);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
             Starts s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 if (s.status >= Starts.STATUS_FERTIG) {
                     ddaten.listeDownloads.delDownloadByUrl(url);
-                    ((TModelDownload) tabelle.getModel()).removeRow(i);
-                    --i;
+                    ((TModelDownload) tabelle.getModel()).removeRow(delRow);
                 }
             }
         }
+//        ((TModelDownload) tabelle.getModel()).fireTableDataChanged();
         setInfo();
         ddaten.starterClass.aufraeumen();
     }
@@ -539,11 +539,11 @@ public class GuiDownloads extends PanelVorlage {
                     filmStartenWiederholenStoppen(false /* starten */);
                 }
             });
- 
+
             //#######################################
             jPopupMenu.addSeparator();
             //#######################################
-            
+
             JMenuItem itemLoeschen = new JMenuItem("Download zurückstellen");
             itemLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_16.png")));
             jPopupMenu.add(itemLoeschen);
@@ -580,7 +580,7 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
             jPopupMenu.addSeparator();
             //#######################################
-            
+
             JMenuItem itemAlleStarten = new JMenuItem("alle Downloads starten");
             itemAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_16.png")));
             jPopupMenu.add(itemAlleStarten);
