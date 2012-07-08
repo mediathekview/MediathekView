@@ -214,6 +214,7 @@ public class Log {
         }
         final String FEHLER = "MReader: ";
         final String z = "  ==>";
+        System.out.println(" Fehlernr: " + fehlerNummer);
         System.out.println(z + " " + FEHLER + sender);
         notifyMediathekListener(LOG_FEHLER, FEHLER + sender);
         for (int i = 0; i < texte.length; ++i) {
@@ -231,6 +232,7 @@ public class Log {
         }
         final String FEHLER = "GetUrl: ";
         final String z = "  ++>";
+        System.out.println(" Fehlernr: " + fehlerNummer);
         System.out.println(z + " " + FEHLER + sender + " " + ex.getMessage());
         notifyMediathekListener(LOG_FEHLER, FEHLER + sender + " - " + ex.getMessage());
         for (int i = 0; i < text.length; ++i) {
@@ -249,6 +251,7 @@ public class Log {
         final String FEHLER = "Fehler: ";
         final String z = "*";
         System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
+        System.out.println(z + " Fehlernr: " + fehlerNummer);
         System.out.println(z + " " + FEHLER + klasse);
         notifyMediathekListener(LOG_FEHLER, FEHLER + klasse);
         for (int i = 0; i < texte.length; ++i) {

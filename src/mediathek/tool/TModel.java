@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.ListIterator;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import mediathek.Log;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
@@ -48,16 +47,6 @@ public class TModel extends DefaultTableModel {
     @Override
     public boolean isCellEditable(int i, int j) {
         return false;
-    }
-
-    @Override
-    public Object getValueAt(int row, int column) {
-        if (row < this.getRowCount() && column < this.getColumnCount()) {
-            return super.getValueAt(row, column);
-        } else {
-            Log.debugMeldung("TModel.getValueAt");
-            return null;
-        }
     }
 
     public void filterModel(String str, int feld, boolean exact) {

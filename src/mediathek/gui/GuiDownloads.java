@@ -271,7 +271,6 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         }
-//        ((TModelDownload) tabelle.getModel()).fireTableDataChanged();
         setInfo();
         ddaten.starterClass.aufraeumen();
     }

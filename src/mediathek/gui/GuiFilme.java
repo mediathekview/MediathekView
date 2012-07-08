@@ -309,6 +309,20 @@ public class GuiFilme extends PanelVorlage {
     //####################################
     private synchronized void tabelleBauen() {
         try {
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    tabelleBauen_();
+                }
+            });
+        } catch (Exception ex) {
+            Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
+        }
+    }
+
+    private synchronized void tabelleBauen_() {
+        try {
             boolean themaNichtDa = false;
             stopBeob = true;
             tabelle.getSpalten();
@@ -366,7 +380,6 @@ public class GuiFilme extends PanelVorlage {
             //filtern
             if (themaNichtDa) {
                 // nochmal filtern anschieben
-                // jComboBoxFilterThema.setSelectedIndex(0);
                 this.tabelleBauen();
             }
         } catch (Exception ex) {
@@ -374,7 +387,7 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    private void listeInModellLaden() {
+    private synchronized void listeInModellLaden() {
         Log.debugMeldung("Tabelle.model_laden_1");
         DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), jComboBoxFilterSender.getSelectedItem().toString(),
                 jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText());
@@ -386,6 +399,7 @@ public class GuiFilme extends PanelVorlage {
                 Log.debugMeldung("Tabelle.model_laden_4");
             }
         }
+        Log.debugMeldung("Tabelle.model_laden_5");
     }
 
     private void filterLoeschen() {
