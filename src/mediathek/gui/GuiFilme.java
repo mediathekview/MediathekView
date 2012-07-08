@@ -305,7 +305,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     //####################################
-    // Tabelle
+    // Tabelle asynchron füllen
     //####################################
     private synchronized void tabelleBauen() {
         try {
@@ -401,6 +401,9 @@ public class GuiFilme extends PanelVorlage {
         }
         Log.debugMeldung("Tabelle.model_laden_5");
     }
+    // ####################################
+    // Ende Tabelle asynchron füllen
+    // ####################################
 
     private void filterLoeschen() {
         stopBeob = true;

@@ -28,12 +28,12 @@ import mediathek.daten.DatenPset;
 import mediathek.gui.beobachter.EscBeenden;
 
 public class DialogPsetSpeichern extends javax.swing.JDialog {
-    
+
     public DatenPset gruppe = null;
     public boolean starten = true;
     public boolean ok = false;
     private DDaten ddaten;
-    
+
     public DialogPsetSpeichern(java.awt.Frame parent, boolean modal, DDaten dd, DatenFilm film) {
         super(parent, modal);
         ddaten = dd;
@@ -56,7 +56,7 @@ public class DialogPsetSpeichern extends javax.swing.JDialog {
             }
             setGruppe();
             jButtonBeenden.addActionListener(new ActionListener() {
-                
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     ok = true;
@@ -64,14 +64,14 @@ public class DialogPsetSpeichern extends javax.swing.JDialog {
                 }
             });
             new EscBeenden(this) {
-                
+
                 @Override
                 public void beenden_() {
                     beenden();
                 }
             };
             jButtonAbbrechen.addActionListener(new ActionListener() {
-                
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     beenden();
@@ -80,15 +80,16 @@ public class DialogPsetSpeichern extends javax.swing.JDialog {
             jCheckBoxStarten.setSelected(true);
             starten = true;
             jCheckBoxStarten.addActionListener(new ActionListener() {
-                
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     starten = jCheckBoxStarten.isSelected();
                 }
             });
         }
+        pack();
     }
-    
+
     private void setGruppe() {
         if (ddaten.listePset.getListeSpeichern().size() > 0) {
             gruppe = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
@@ -96,7 +97,7 @@ public class DialogPsetSpeichern extends javax.swing.JDialog {
             gruppe = null;
         }
     }
-    
+
     private void beenden() {
         this.dispose();
     }
@@ -239,7 +240,7 @@ public class DialogPsetSpeichern extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private class BeobComboProgramm implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             setGruppe();
