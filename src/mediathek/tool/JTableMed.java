@@ -5,8 +5,10 @@
 package mediathek.tool;
 
 import java.util.List;
+import java.util.ListIterator;
 import javax.swing.DefaultRowSorter;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
@@ -69,6 +71,38 @@ public final class JTableMed extends JTable {
         reihe = getArray(spaltenTabelle.length);
         this.setAutoCreateRowSorter(true);
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+    }
+
+    public synchronized void tabelleFuellen(Object[][] iinhalt) {
+        // Tabelle asynchron füllen
+        final Object[][] inhalt = iinhalt;
+        try {
+            if (SwingUtilities.isEventDispatchThread()) {
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        addObjectData(inhalt);
+                    }
+                });
+            } else {
+                SwingUtilities.invokeAndWait(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        addObjectData(inhalt);
+                    }
+                });
+            }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
+        }
+    }
+
+    private void addObjectData(Object[][] inhalt) {
+        for (int i = 0; i < inhalt.length; ++i) {
+            ((TModel) this.getModel()).addRow(inhalt[i]);
+        }
     }
 
     public void getSpalten() {

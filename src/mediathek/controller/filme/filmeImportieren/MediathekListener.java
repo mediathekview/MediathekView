@@ -20,6 +20,8 @@
 package mediathek.controller.filme.filmeImportieren;
 
 import java.util.EventListener;
+import javax.swing.SwingUtilities;
+import mediathek.Log;
 
 public class MediathekListener implements EventListener {
 
@@ -45,6 +47,30 @@ public class MediathekListener implements EventListener {
     }
 
     public void ping() {
+    }
+
+    public void pingA() {
+        try {
+            if (SwingUtilities.isEventDispatchThread()) {
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        ping();
+                    }
+                });
+            } else {
+                SwingUtilities.invokeAndWait(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        ping();
+                    }
+                });
+            }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
+        }
     }
 
     public void ping(String from) {
