@@ -19,23 +19,34 @@
  */
 package mediathek.gui;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import mediathek.Daten;
+import mediathek.MediathekGui;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
 
 public class GuiDebug extends PanelVorlage {
 
-    /**
-     * Creates new form GuiFeed
-     *
-     * @param d
-     */
+    private JButton[] buttonSender;
+    private String[] sender;
+
     public GuiDebug(DDaten d) {
         super(d);
         initComponents();
         ddaten = d;
-        jButtonSpeichern.addActionListener(new BeobAllesSpeichern());
+        sender = Daten.filmeLaden.getSenderNamen();
+        buttonSender = new JButton[sender.length];
+        for (int i = 0; i < Daten.filmeLaden.getSenderNamen().length; ++i) {
+            buttonSender[i] = new JButton(sender[i]);
+            buttonSender[i].addActionListener(new BeobSenderLoeschen(sender[i]));
+        }
+        addSender();
         jToggleButtonAllesLaden.addActionListener(new ActionListener() {
 
             @Override
@@ -43,37 +54,75 @@ public class GuiDebug extends PanelVorlage {
                 Daten.filmeLaden.setAllesLaden(jToggleButtonAllesLaden.isSelected());
             }
         });
-    }
-    //===================================
-    // Public
-    //===================================
+        jButtonFilmeSpeichern.addActionListener(new ActionListener() {
 
-    //===================================
-    // Private
-    //===================================
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.allesSpeichern();
+            }
+        });
+    }
+
+    private void addSender() {
+        jPanelSender.removeAll();
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        c.weightx = 0;
+        jPanelSender.setLayout(gridbag);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.BOTH;
+        int nr = 0;
+        int y = 0;
+        int halbe = sender.length / 2;
+        halbe += sender.length % 2;
+        for (int i = 0; i < sender.length; ++i) {
+            c.gridy = y;
+            addPanel(gridbag, c, sender[i], nr);
+            ++nr;
+            ++y;
+            if (y >= halbe) {
+                y = 0;
+                c.gridx = 1;
+            }
+        }
+        JLabel label = new JLabel();
+        c.gridx = 4;
+        c.weightx = 2;
+        gridbag.setConstraints(label, c);
+        jPanelSender.add(label);
+        jPanelSender.updateUI();
+    }
+
+    private void addPanel(GridBagLayout gridbag, GridBagConstraints c, String sender, int nr) {
+        c.insets = new Insets(2, 10, 2, 2);
+        gridbag.setConstraints(buttonSender[nr], c);
+        jPanelSender.add(buttonSender[nr]);
+    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButtonSpeichern = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
         jToggleButtonAllesLaden = new javax.swing.JToggleButton();
+        jPanelSender = new javax.swing.JPanel();
+        jButtonFilmeSpeichern = new javax.swing.JButton();
 
-        jButtonSpeichern.setText("alles Speichern");
+        jToggleButtonAllesLaden.setText("[-alles] setzen");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jPanelSender.setBorder(javax.swing.BorderFactory.createTitledBorder("Sender löschen"));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 135, Short.MAX_VALUE)
+        javax.swing.GroupLayout jPanelSenderLayout = new javax.swing.GroupLayout(jPanelSender);
+        jPanelSender.setLayout(jPanelSenderLayout);
+        jPanelSenderLayout.setHorizontalGroup(
+            jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 104, Short.MAX_VALUE)
+        jPanelSenderLayout.setVerticalGroup(
+            jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 222, Short.MAX_VALUE)
         );
 
-        jToggleButtonAllesLaden.setText("alles Laden");
+        jButtonFilmeSpeichern.setText("Filmliste speichern");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -82,36 +131,44 @@ public class GuiDebug extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jToggleButtonAllesLaden, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonSpeichern, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(523, Short.MAX_VALUE))
+                    .addComponent(jPanelSender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jToggleButtonAllesLaden, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonFilmeSpeichern)
+                        .addGap(0, 12, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButtonSpeichern)
-                .addGap(18, 18, 18)
-                .addComponent(jToggleButtonAllesLaden)
-                .addGap(115, 115, 115)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(190, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jToggleButtonAllesLaden)
+                    .addComponent(jButtonFilmeSpeichern))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanelSender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonSpeichern;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton jButtonFilmeSpeichern;
+    private javax.swing.JPanel jPanelSender;
     private javax.swing.JToggleButton jToggleButtonAllesLaden;
     // End of variables declaration//GEN-END:variables
 
-    private class BeobAllesSpeichern implements ActionListener {
+    private class BeobSenderLoeschen implements ActionListener {
+
+        private String sender;
+
+        public BeobSenderLoeschen(String ssender) {
+            sender = ssender;
+        }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-//            DDaten.speichern();
-//            daten.ioXmlSchreiben.filmeSchreiben();
+            DDaten.listeFilme.delSender(sender);
+            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_FILMLISTE_NEU, MediathekGui.class.getSimpleName());
         }
     }
 }

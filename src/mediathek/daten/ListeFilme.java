@@ -225,11 +225,24 @@ public class ListeFilme extends LinkedList<DatenFilm> {
 //
 
     public synchronized void delOhneSender(String sender) {
+        // alle Filme BIS AUF DIE vom SENDER löschen
         DatenFilm film;
         ListIterator<DatenFilm> it = this.listIterator(0);
         while (it.hasNext()) {
             film = it.next();
             if (!film.arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(sender)) {
+                it.remove();
+            }
+        }
+    }
+
+    public synchronized void delSender(String sender) {
+        // alle Filme VOM SENDER löschen
+        DatenFilm film;
+        ListIterator<DatenFilm> it = this.listIterator(0);
+        while (it.hasNext()) {
+            film = it.next();
+            if (film.arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(sender)) {
                 it.remove();
             }
         }

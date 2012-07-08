@@ -35,7 +35,7 @@ public final class JTableMed extends JTable {
     public static final int TABELLE_TAB_ABOS = 2;
     public static final String FELDTRENNER = "|";
     private List<? extends javax.swing.RowSorter.SortKey> listeSortKeys = null;
-    private DefaultRowSorter rowSorter;
+//    private DefaultRowSorter rowSorter;
     int[] breite;
     int[] reihe;
     private int sel;
@@ -52,9 +52,9 @@ public final class JTableMed extends JTable {
             case TABELLE_TAB_FILME:
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR;
                 spaltenTabelle = DatenFilm.FILME_COLUMN_NAMES;
-                rowSorter = new TableRowSorter(new TModelFilm(new Object[][]{}, spaltenTabelle));
-                this.setRowSorter(rowSorter);
-                //this.setModel(new TModelFilm(new Object[][]{}, spaltenTabelle));
+//                rowSorter = new TableRowSorter(new TModelFilm(new Object[][]{}, spaltenTabelle));
+//                this.setRowSorter(rowSorter);
+                this.setModel(new TModelFilm(new Object[][]{}, spaltenTabelle));
                 break;
             case TABELLE_TAB_DOWNLOADS:
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR;
@@ -73,38 +73,37 @@ public final class JTableMed extends JTable {
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
     }
 
-    public synchronized void tabelleFuellen(Object[][] iinhalt) {
-        // Tabelle asynchron füllen
-        final Object[][] inhalt = iinhalt;
-        try {
-            if (SwingUtilities.isEventDispatchThread()) {
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        addObjectData(inhalt);
-                    }
-                });
-            } else {
-                SwingUtilities.invokeAndWait(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        addObjectData(inhalt);
-                    }
-                });
-            }
-        } catch (Exception ex) {
-            Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
-        }
-    }
-
-    private void addObjectData(Object[][] inhalt) {
-        for (int i = 0; i < inhalt.length; ++i) {
-            ((TModel) this.getModel()).addRow(inhalt[i]);
-        }
-    }
-
+//    public synchronized void tabelleFuellen(Object[][] iinhalt) {
+//        // Tabelle asynchron füllen
+//        final Object[][] inhalt = iinhalt;
+//        try {
+//            if (SwingUtilities.isEventDispatchThread()) {
+//                SwingUtilities.invokeLater(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        addObjectData(inhalt);
+//                    }
+//                });
+//            } else {
+//                SwingUtilities.invokeAndWait(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        addObjectData(inhalt);
+//                    }
+//                });
+//            }
+//        } catch (Exception ex) {
+//            Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
+//        }
+//    }
+//
+//    private void addObjectData(Object[][] inhalt) {
+//        for (int i = 0; i < inhalt.length; ++i) {
+//            ((TModel) this.getModel()).addRow(inhalt[i]);
+//        }
+//    }
     public void getSpalten() {
         // Einstellungen der Tabelle merken
         sel = this.getSelectedRow();
@@ -247,6 +246,9 @@ public final class JTableMed extends JTable {
                 }
                 break;
         }
+        ///// noch mal im Auge behalten
+        this.setRowSorter(null);
+        this.setAutoCreateRowSorter(true);
         setSpalten();
     }
 

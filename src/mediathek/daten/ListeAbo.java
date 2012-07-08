@@ -76,10 +76,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             str = "0" + str;
         }
         datenAbo.arr[DatenAbo.ABO_NR_NR] = str;
-        //für die neue Funktion
-//        if (datenAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR].equals("")) {
-//            datenAbo.arr[DatenAbo.ABO_THEMA_EXAKT_NR] = Boolean.toString(true);
-//        }
         super.add(datenAbo);
         Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
     }
