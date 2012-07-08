@@ -54,14 +54,15 @@ public class DatenAbo implements Comparable<DatenAbo> {
         makeArr();
     }
 
-    public DatenAbo(String name, String sender, String thema,  String titel, String ziel, String programmname) {
+    public DatenAbo(String name, String sender, String thema,  String titel, String themaTitel, String ziel, String pset) {
         makeArr();
         arr[ABO_NAME_NR] = name;
         arr[ABO_SENDER_NR] = sender;
         arr[ABO_THEMA_NR] = thema;
         arr[ABO_TITEL_NR] = titel;
+        arr[ABO_THEMA_TITEL_NR] = themaTitel;
         arr[ABO_ZIELPFAD_NR] = ziel;
-        arr[ABO_PSET_NR] = programmname;
+        arr[ABO_PSET_NR] = pset;
     }
 
     public DatenAbo getCopy() {
