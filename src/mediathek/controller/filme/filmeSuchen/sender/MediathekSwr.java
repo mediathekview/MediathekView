@@ -303,7 +303,10 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     titel = strSeite2.substring(pos1, pos2);
                     if (!url.equals("")) {
                         // hohe Auflösung
-                        url = url.replace(".m.mp4", ".l.mp4");
+                        if (url.startsWith("rtmp:")) {
+                            // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
+                            url = url.replace(".m.mp4", ".l.mp4");
+                        }
                         // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                         DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
                         addFilm(film);
