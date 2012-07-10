@@ -127,16 +127,17 @@ public final class MediathekGui extends javax.swing.JFrame {
                 buttonAus();
                 jButtonFilmeLaden.setEnabled(true);
                 jButtonDownloadAktualisieren.setEnabled(true);
-                jButtonDownloadStarten.setEnabled(true);
+                jButtonDownloadAlleStarten.setEnabled(true);
                 jButtonDownloadZurueckstellen.setEnabled(true);
                 jButtonDownloadLoeschen.setEnabled(true);
                 jButtonDownloadAufraeumen.setEnabled(true);
+                jMenuItemDownloadStarten.setEnabled(true);
                 jMenuItemDownloadStoppen.setEnabled(true);
                 jMenuItemDownloadAlleStoppen.setEnabled(true);
                 jMenuItemDownloadsAktualisieren.setEnabled(true);
                 jMenuItemDownloadsAufraeumen.setEnabled(true);
                 jMenuItemDownloadsLoeschen.setEnabled(true);
-                jMenuItemDownloadsStarten.setEnabled(true);
+                jMenuItemDownloadsAlleStarten.setEnabled(true);
                 jMenuItemDownloadAendern.setEnabled(true);
                 jMenuItemDownloadsZurueckstellen.setEnabled(true);
                 jSpinnerAnzahl.setEnabled(true);
@@ -164,7 +165,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         jButtonFilmAbspielen.setEnabled(false);
         jButtonFilmSpeichern.setEnabled(false);
         jButtonDownloadAktualisieren.setEnabled(false);
-        jButtonDownloadStarten.setEnabled(false);
+        jButtonDownloadAlleStarten.setEnabled(false);
         jButtonDownloadZurueckstellen.setEnabled(false);
         jButtonDownloadLoeschen.setEnabled(false);
         jButtonDownloadAufraeumen.setEnabled(false);
@@ -177,7 +178,8 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenuItemDownloadsAktualisieren.setEnabled(false);
         jMenuItemDownloadsAufraeumen.setEnabled(false);
         jMenuItemDownloadsLoeschen.setEnabled(false);
-        jMenuItemDownloadsStarten.setEnabled(false);
+        jMenuItemDownloadsAlleStarten.setEnabled(false);
+        jMenuItemDownloadStarten.setEnabled(false);
         jMenuItemDownloadStoppen.setEnabled(false);
         jMenuItemDownloadAlleStoppen.setEnabled(false);
         jMenuItemDownloadAendern.setEnabled(false);
@@ -323,18 +325,11 @@ public final class MediathekGui extends javax.swing.JFrame {
                 ddaten.guiDownloads.loeschen();
             }
         });
-        jButtonDownloadStarten.addActionListener(new ActionListener() {
+        jButtonDownloadAlleStarten.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                ddaten.guiDownloads.starten();
-            }
-        });
-        jButtonDownloadStarten.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ddaten.guiDownloads.starten();
+                ddaten.guiDownloads.starten(true);
             }
         });
         jButtonDownloadZurueckstellen.addActionListener(new ActionListener() {
@@ -342,27 +337,6 @@ public final class MediathekGui extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.zurueckstellen();
-            }
-        });
-        jMenuItemDownloadAendern.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ddaten.guiDownloads.aendern();
-            }
-        });
-        jMenuItemDownloadAlleStoppen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ddaten.guiDownloads.alleStoppen();
-            }
-        });
-        jMenuItemDownloadStoppen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ddaten.guiDownloads.stoppen();
             }
         });
         // Tab Abo
@@ -438,7 +412,6 @@ public final class MediathekGui extends javax.swing.JFrame {
                 beenden();
             }
         });
-
         // Filme
         jMenuItemFilmlisteLaden.addActionListener(new ActionListener() {
 
@@ -483,11 +456,18 @@ public final class MediathekGui extends javax.swing.JFrame {
                 ddaten.guiDownloads.loeschen();
             }
         });
-        jMenuItemDownloadsStarten.addActionListener(new ActionListener() {
+        jMenuItemDownloadsAlleStarten.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                ddaten.guiDownloads.starten();
+                ddaten.guiDownloads.starten(true /* alle */);
+            }
+        });
+        jMenuItemDownloadStarten.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.guiDownloads.starten(false /* alle */);
             }
         });
         jMenuItemDownloadsZurueckstellen.addActionListener(new ActionListener() {
@@ -495,6 +475,27 @@ public final class MediathekGui extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.zurueckstellen();
+            }
+        });
+        jMenuItemDownloadAendern.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.guiDownloads.aendern();
+            }
+        });
+        jMenuItemDownloadAlleStoppen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.guiDownloads.stoppen(true /* alle */);
+            }
+        });
+        jMenuItemDownloadStoppen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.guiDownloads.stoppen(false /* alle */);
             }
         });
 
@@ -630,7 +631,7 @@ public final class MediathekGui extends javax.swing.JFrame {
             jButtonFilmAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_16.png")));
             jButtonFilmSpeichern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_rec_16.png")));
             jButtonDownloadAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png")));
-            jButtonDownloadStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_16.png")));
+            jButtonDownloadAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_16.png")));
             jButtonDownloadZurueckstellen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_16.png")));
             jButtonDownloadLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
             jButtonDownloadAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/edit-clear_16.png")));
@@ -642,7 +643,7 @@ public final class MediathekGui extends javax.swing.JFrame {
             jButtonFilmAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_32.png")));
             jButtonFilmSpeichern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_rec_32.png")));
             jButtonDownloadAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_32.png")));
-            jButtonDownloadStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_32.png")));
+            jButtonDownloadAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_32.png")));
             jButtonDownloadZurueckstellen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_32.png")));
             jButtonDownloadLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_32.png")));
             jButtonDownloadAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/edit-clear_32.png")));
@@ -682,7 +683,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         jButtonFilmSpeichern = new javax.swing.JButton();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
         jButtonDownloadAktualisieren = new javax.swing.JButton();
-        jButtonDownloadStarten = new javax.swing.JButton();
+        jButtonDownloadAlleStarten = new javax.swing.JButton();
         jButtonDownloadZurueckstellen = new javax.swing.JButton();
         jButtonDownloadLoeschen = new javax.swing.JButton();
         jButtonDownloadAufraeumen = new javax.swing.JButton();
@@ -701,9 +702,10 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenuItemFilmAbspielen = new javax.swing.JMenuItem();
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
         jMenuDownload = new javax.swing.JMenu();
-        jMenuItemDownloadsStarten = new javax.swing.JMenuItem();
+        jMenuItemDownloadsAlleStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadAlleStoppen = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemDownloadStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadStoppen = new javax.swing.JMenuItem();
         jMenuItemDownloadsZurueckstellen = new javax.swing.JMenuItem();
         jMenuItemDownloadsLoeschen = new javax.swing.JMenuItem();
@@ -776,12 +778,12 @@ public final class MediathekGui extends javax.swing.JFrame {
         jButtonDownloadAktualisieren.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonDownloadAktualisieren);
 
-        jButtonDownloadStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_32.png"))); // NOI18N
-        jButtonDownloadStarten.setToolTipText("alle Downloads starten");
-        jButtonDownloadStarten.setFocusable(false);
-        jButtonDownloadStarten.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonDownloadStarten.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar.add(jButtonDownloadStarten);
+        jButtonDownloadAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_32.png"))); // NOI18N
+        jButtonDownloadAlleStarten.setToolTipText("alle Downloads starten");
+        jButtonDownloadAlleStarten.setFocusable(false);
+        jButtonDownloadAlleStarten.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonDownloadAlleStarten.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar.add(jButtonDownloadAlleStarten);
 
         jButtonDownloadZurueckstellen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_32.png"))); // NOI18N
         jButtonDownloadZurueckstellen.setToolTipText("Download zurückstellen");
@@ -865,15 +867,19 @@ public final class MediathekGui extends javax.swing.JFrame {
 
         jMenuDownload.setText("Downloads");
 
-        jMenuItemDownloadsStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_16.png"))); // NOI18N
-        jMenuItemDownloadsStarten.setText("alle Downloads starten");
-        jMenuDownload.add(jMenuItemDownloadsStarten);
+        jMenuItemDownloadsAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_16.png"))); // NOI18N
+        jMenuItemDownloadsAlleStarten.setText("alle Downloads starten");
+        jMenuDownload.add(jMenuItemDownloadsAlleStarten);
 
         jMenuItemDownloadAlleStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png"))); // NOI18N
         jMenuItemDownloadAlleStoppen.setText("alle stoppen");
         jMenuItemDownloadAlleStoppen.setToolTipText("alle Downloads stoppen");
         jMenuDownload.add(jMenuItemDownloadAlleStoppen);
         jMenuDownload.add(jSeparator1);
+
+        jMenuItemDownloadStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_16.png"))); // NOI18N
+        jMenuItemDownloadStarten.setText("Download starten");
+        jMenuDownload.add(jMenuItemDownloadStarten);
 
         jMenuItemDownloadStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png"))); // NOI18N
         jMenuItemDownloadStoppen.setText("Download stoppen");
@@ -984,9 +990,9 @@ public final class MediathekGui extends javax.swing.JFrame {
     private javax.swing.JButton jButtonAbosEinschalten;
     private javax.swing.JButton jButtonAbosLoeschen;
     private javax.swing.JButton jButtonDownloadAktualisieren;
+    private javax.swing.JButton jButtonDownloadAlleStarten;
     private javax.swing.JButton jButtonDownloadAufraeumen;
     private javax.swing.JButton jButtonDownloadLoeschen;
-    private javax.swing.JButton jButtonDownloadStarten;
     private javax.swing.JButton jButtonDownloadZurueckstellen;
     private javax.swing.JButton jButtonFilmAbspielen;
     private javax.swing.JButton jButtonFilmSpeichern;
@@ -1011,11 +1017,12 @@ public final class MediathekGui extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemBeenden;
     private javax.swing.JMenuItem jMenuItemDownloadAendern;
     private javax.swing.JMenuItem jMenuItemDownloadAlleStoppen;
+    private javax.swing.JMenuItem jMenuItemDownloadStarten;
     private javax.swing.JMenuItem jMenuItemDownloadStoppen;
     private javax.swing.JMenuItem jMenuItemDownloadsAktualisieren;
+    private javax.swing.JMenuItem jMenuItemDownloadsAlleStarten;
     private javax.swing.JMenuItem jMenuItemDownloadsAufraeumen;
     private javax.swing.JMenuItem jMenuItemDownloadsLoeschen;
-    private javax.swing.JMenuItem jMenuItemDownloadsStarten;
     private javax.swing.JMenuItem jMenuItemDownloadsZurueckstellen;
     private javax.swing.JMenuItem jMenuItemEinstellungen;
     private javax.swing.JMenuItem jMenuItemFilmAbspielen;
