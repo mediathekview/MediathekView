@@ -75,8 +75,12 @@ public class GuiDownloads extends PanelVorlage {
         load();
     }
 
-    public void starten() {
-        downloadAll("");
+    public void starten(boolean alle) {
+        filmStartenWiederholenStoppen(alle, true /* starten */);
+    }
+
+    public void stoppen(boolean alle) {
+        filmStartenWiederholenStoppen(alle, false /* starten */);
     }
 
     public void zurueckstellen() {
@@ -93,14 +97,6 @@ public class GuiDownloads extends PanelVorlage {
 
     public void aendern() {
         downloadAendern();
-    }
-
-    public void stoppen() {
-        filmStartenWiederholenStoppen(false /* starten */);
-    }
-
-    public void alleStoppen() {
-        stopAll();
     }
 
     //===================================
@@ -202,46 +198,53 @@ public class GuiDownloads extends PanelVorlage {
         }
     }
 
-    private void filmStartenWiederholenStoppen(boolean starten /* starten/wiederstarten oder stoppen */) {
-        // ein Film der noch keinen Starts hat wird gestartet
-        // ein Film dessen Starts schon auf fertig/fehler steht wird wieder gestartet
-        int row = tabelle.getSelectedRow();
-        if (row >= 0) {
-            int delRow = tabelle.convertRowIndexToModel(row);
-            String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
+    private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */) {
+        // bezieht sich immer auf "alle" oder nur die markierten
+        // Film der noch keinen Starts hat wird gestartet
+        // Film dessen Starts schon auf fertig/fehler steht wird wieder gestartet
+        // bei !starten wird der Film gestoppt
+        String[] urls;
+        String url;
+        if (alle) {
+            urls = new String[tabelle.getRowCount()];
+            for (int i = 0; i < tabelle.getRowCount(); ++i) {
+                urls[i] = tabelle.getModel().getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString();
+            }
+        } else {
+            int[] rows = tabelle.getSelectedRows();
+            urls = new String[rows.length];
+            if (rows.length >= 0) {
+                for (int i = 0; i < rows.length; i++) {
+                    int row = tabelle.convertRowIndexToModel(rows[i]);
+                    url = tabelle.getModel().getValueAt(row, DatenDownload.DOWNLOAD_URL_NR).toString();
+                    urls[i] = url;
+                }
+            } else {
+                new HinweisKeineAuswahl().zeigen();
+            }
+        }
+        for (int i = 0; i < urls.length; ++i) {
+            url = urls[i];
             Starts s = ddaten.starterClass.getStart(url);
-            if (s != null) {
-                if (starten && s.status > Starts.STATUS_RUN || !starten && s.status <= Starts.STATUS_RUN) {
-                    //daten.starterClass.delStart(url);
-                    ddaten.starterClass.filmLoeschen(url);
-                    if (s.datenDownload.istAbo()) {
-                        // bei Abos Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                        ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
-                    }
+            if (s != null && (starten && s.status > Starts.STATUS_RUN || !starten && s.status <= Starts.STATUS_RUN)) {
+                // wenn kein s -> dann gibts auch nichts zum stoppen oder wieder-starten
+                // entweder starten -> nur wenn schon fertig, dann nochmal starten
+                // oder löschen -> nur wenn noch läuft, sonst gibts nichts mehr zum löschen
+                ddaten.starterClass.filmLoeschen(url);
+                if (s.datenDownload.istAbo()) {
+                    // bei Abos Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
+                    ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
                 }
             }
             if (starten) {
-                downloadAll(url);
+                // nach dem Putzen
+                // jetzt noch starten/wiederstarten
+                //Start erstellen und zur Liste hinzufügen
+                DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
+                ddaten.starterClass.addStarts(new Starts(download));
             }
-            setInfo();
-        } else {
-            new HinweisKeineAuswahl().zeigen();
         }
-    }
-
-    private void stopAll() {
-        // es werden alle laufenden Downloads gestopt
-        for (int i = 0; i < tabelle.getRowCount(); ++i) {
-            int delRow = tabelle.convertRowIndexToModel(i);
-            String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-            Starts s = ddaten.starterClass.getStart(url);
-            if (s != null) {
-                if (s.status <= Starts.STATUS_RUN) {
-                    ddaten.starterClass.filmLoeschen(url);
-                }
-            }
-            setInfo();
-        }
+        setInfo();
     }
 
     private void stopWartende() {
@@ -273,25 +276,6 @@ public class GuiDownloads extends PanelVorlage {
         }
         setInfo();
         ddaten.starterClass.aufraeumen();
-    }
-
-    private boolean downloadAll(String uurl) {
-        // liefert false, wenn es nichts zu Laden gibt
-        boolean ret = false;
-        String url;
-        if (tabelle.getModel() != null) {
-            for (int i = 0; i < tabelle.getModel().getRowCount(); ++i) {
-                url = (tabelle.getModel().getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString());
-                if (uurl.equals("") || uurl.equals(url)) {
-                    //Start erstellen und zur Liste hinzufügen
-                    DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
-                    ddaten.starterClass.addStarts(new Starts(download));
-                    ret = true;
-                }
-            }
-        }
-        setInfo();
-        return ret;
     }
 
     private void panelUpdate() {
@@ -524,7 +508,7 @@ public class GuiDownloads extends PanelVorlage {
 
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    filmStartenWiederholenStoppen(true /* starten */);
+                    filmStartenWiederholenStoppen(false /* alle */, true /* starten */);
                 }
             });
             JMenuItem itemStoppen = new JMenuItem("Download stoppen");
@@ -535,7 +519,7 @@ public class GuiDownloads extends PanelVorlage {
 
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    filmStartenWiederholenStoppen(false /* starten */);
+                    filmStartenWiederholenStoppen(false /* alle */, false /* starten */);
                 }
             });
 
@@ -587,7 +571,7 @@ public class GuiDownloads extends PanelVorlage {
 
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    downloadAll("");
+                    filmStartenWiederholenStoppen(true /* alle */, true /* starten */);
                 }
             });
             JMenuItem itemAlleStoppen = new JMenuItem("alle Downloads stoppen");
@@ -597,7 +581,7 @@ public class GuiDownloads extends PanelVorlage {
 
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    stopAll();
+                    filmStartenWiederholenStoppen(true /* alle */, false /* starten */);
                 }
             });
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
