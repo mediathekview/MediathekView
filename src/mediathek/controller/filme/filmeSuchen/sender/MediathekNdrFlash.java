@@ -30,19 +30,19 @@ import mediathek.daten.DatenFilm;
 
 public class MediathekNdrFlash extends MediathekReader implements Runnable {
 
-    public static final String SENDER = "NDR-Flash";
-    private final int MAX_PER_FEED = 5;
+    public static final String SENDER = "NDR";
+    //private final int MAX_PER_FEED = 5;
 
     public MediathekNdrFlash(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 1000, startPrio);
     }
 
-//-> erste Seite:
-//http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_searchtype-broadcasts.xml
-//-> Thema:
-//http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-46_pageSize-24.xml
-//-> Film:
-//http://www.ndr.de/mediathek/visite4392-mediathek_details-true.xml
+    //-> erste Seite:
+    //http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_searchtype-broadcasts.xml
+    //-> Thema:
+    //http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-46_pageSize-24.xml
+    //-> Film:
+    //http://www.ndr.de/mediathek/visite4392-mediathek_details-true.xml
     @Override
     void addToList() {
         //<broadcast id="1391" site="ndrfernsehen">45 Min</broadcast>
@@ -125,16 +125,16 @@ public class MediathekNdrFlash extends MediathekReader implements Runnable {
             int counter = 0;
             seite1 = getUrlIo.getUri(nameSenderMReader, strUrlFeed, Konstanten.KODIERUNG_UTF, 3 /* versuche */, seite1, "Thema: " + thema/* meldung */);
             int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
+            int pos1;
+            int pos2;
             String url = "";
             String titel = "";
             try {
                 while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_URL, pos)) != -1) {
                     ++counter;
-//////////                    if (!suchen.allesLaden && counter > MAX_PER_FEED) {
-//////////                        break;
-//////////                    }
+                    // if (!suchen.allesLaden && counter > MAX_PER_FEED) {
+                    //   break;
+                    // }
                     pos += MUSTER_URL.length();
                     pos1 = pos;
                     if ((pos2 = seite1.indexOf("\"", pos)) != -1) {
@@ -168,13 +168,13 @@ public class MediathekNdrFlash extends MediathekReader implements Runnable {
             final String MUSTER_DATUM = "<date ";
             final String MUSTER_URL = "<source format=\"mp4hq\" mimetype=\"video/mp4\" protocol=\"rtmpt\">";
             seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "strUrlThema: " + strUrlThema);
-            int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
-            String url = "";
+            int pos;
+            int pos1;
+            int pos2;
+            String url;
             String datum = "";
             String zeit = "";
-            String tmp = "";
+            String tmp;
             try {
                 if ((pos = seite2.indexOf(MUSTER_DATUM)) != -1) {
                     pos += MUSTER_DATUM.length();

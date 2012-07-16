@@ -42,7 +42,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekZdf(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER,  6 /* threads */, 500 /* urlWarten */, startPrio);
+        super(ssearch, /* name */ SENDER, 6 /* threads */, 500 /* urlWarten */, startPrio);
     }
 
     /**
@@ -51,14 +51,18 @@ public class MediathekZdf extends MediathekReader implements Runnable {
     @Override
     public void addToList() {
         listeThemen.clear();
-        //Liste von http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-a-bis-z/saz0 bis sat8 holen
+        // Liste von http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-a-bis-z/saz0 bis sat8 holen
         String addr = "http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-a-bis-z/saz";
         for (int i = 0; i <= 8; ++i) {
             addToList_addr(addr + String.valueOf(i));
         }
+        // Spartenkanäle einfügen
         addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209122"); // zdf-neo
         addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209120"); // zdf-info
         addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1317640"); // zdf-kultur
+        // Rubriken einfügen
+        addToList_Rubrik("http://www.zdf.de/ZDFmediathek/hauptnavigation/rubriken");
+        // letzte Woche eingügen
         addToList_kurz();
         if (!Daten.filmeLaden.getStop() && listeThemen.size() > 0) {
             meldungStart(listeThemen.size());
@@ -69,13 +73,45 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         }
     }
 
+    private void addToList_Rubrik(String addr) {
+        final String MUSTER_URL = "<p><b><a href=\"/ZDFmediathek/kanaluebersicht/aktuellste/";
+        //GetUrl(int ttimeout, long wwartenBasis) {
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
+        StringBuffer seiteR = new StringBuffer();
+        seiteR = getUrl.getUri(nameSenderMReader, addr, Konstanten.KODIERUNG_UTF, 6 /* versuche */, seiteR, "" /* Meldung */);
+        if (seiteR.length() == 0) {
+            Log.fehlerMeldungMReader(-774200364, "MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
+        }
+        int pos = 0;
+        int pos1;
+        int pos2;
+        int pos3;
+        String url = "";
+        while ((pos = seiteR.indexOf(MUSTER_URL, pos)) != -1) {
+            pos += MUSTER_URL.length();
+            pos1 = pos;
+            pos2 = seiteR.indexOf("?", pos);
+            pos3 = seiteR.indexOf("\"", pos);
+            if (pos1 != -1 && pos2 != -1 && pos3 != -1 && pos2 < pos3) {
+                //pos2 > pos3 dann hat der Link kein ?
+                url = seiteR.substring(pos1, pos2);
+            }
+            if (url.equals("")) {
+                Log.fehlerMeldungMReader(-754126900, "MediathekZdf.addToList_addr", "keine URL: " + addr);
+            } else {
+                url = "http://www.zdf.de/ZDFmediathek/kanaluebersicht/aktuellste/" + url + "?bc=rub";
+                addToList_addr(url);
+            }
+        }
+    }
+
     private void addToList_addr(String addr) {
         final String MUSTER_URL = "<p><b><a href=\"/ZDFmediathek/kanaluebersicht/aktuellste/";
         //GetUrl(int ttimeout, long wwartenBasis) {
-        GetUrl getUrl = new GetUrl( wartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         seite = getUrl.getUri(nameSenderMReader, addr, Konstanten.KODIERUNG_UTF, 6 /* versuche */, seite, "" /* Meldung */);
         if (seite.length() == 0) {
-            Log.fehlerMeldungMReader(-596004563,"MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
+            Log.fehlerMeldungMReader(-596004563, "MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
         }
         int pos = 0;
         int pos1;
@@ -92,6 +128,13 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             if (pos1 != -1 && pos2 != -1 && pos3 != -1 && pos2 < pos3) {
                 //pos2 > pos3 dann hat der Link kein ?
                 url = seite.substring(pos1, pos2);
+            } else {
+                pos2 = seite.indexOf("\"", pos);
+                pos3 = seite.indexOf("<", pos);
+                if (pos1 != -1 && pos2 != -1 && pos3 != -1 && pos2 < pos3) {
+                    //pos2 > pos3 dann hat der Link kein ? zB bei "Rubiken"
+                    url = seite.substring(pos1, pos2);
+                }
             }
             pos1 = seite.indexOf("\">", pos);
             pos2 = seite.indexOf("<", pos);
@@ -99,7 +142,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 thema = seite.substring(pos1 + 2, pos2);
             }
             if (url.equals("")) {
-                Log.fehlerMeldungMReader(-946325890,"MediathekZdf.addToList_addr", "keine URL: " + addr);
+                Log.fehlerMeldungMReader(-946325890, "MediathekZdf.addToList_addr", "keine URL: " + addr);
             } else {
                 url = "http://www.zdf.de/ZDFmediathek/kanaluebersicht/aktuellste/" + url;
                 urlorg = url;
@@ -149,7 +192,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-496583200,"MediathekZdf.ZdfThemaLaden.run", ex);
+                Log.fehlerMeldung(-496583200, "MediathekZdf.ZdfThemaLaden.run", ex);
             }
         }
 
@@ -189,14 +232,14 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                         titel = seite1.substring(pos1 + 2, pos2);
                     }
                     if (url.equals("")) {
-                        Log.fehlerMeldungMReader(-643269690,"MediathekZdf.addFilme", "keine URL: " + urlThema);
+                        Log.fehlerMeldungMReader(-643269690, "MediathekZdf.addFilme", "keine URL: " + urlThema);
                     } else {
                         url = "http://www.zdf.de/ZDFmediathek/beitrag/video/" + url;
                         filmHolen(thema, titel, urlorg, url);
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-796325800,"MediathekZdf.addFilme", ex, urlThema);
+                Log.fehlerMeldung(-796325800, "MediathekZdf.addFilme", ex, urlThema);
             }
         }
 
@@ -267,11 +310,11 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                         url = seite2.substring(pos1, pos2);
                     }
                     if (url.equals("")) {
-                        Log.fehlerMeldungMReader(-690048078,"MediathekZdf.filmHolen-1", "keine URL: " + urlFilm);
+                        Log.fehlerMeldungMReader(-690048078, "MediathekZdf.filmHolen-1", "keine URL: " + urlFilm);
                     } else {
                         url = "http://wstreaming.zdf.de/zdf/veryhigh/" + url;
                         if (!url.endsWith("asx")) {
-                            Log.fehlerMeldungMReader(-200480752,"MediathekZdf.filmHolen-2", "keine URL: " + urlFilm);
+                            Log.fehlerMeldungMReader(-200480752, "MediathekZdf.filmHolen-2", "keine URL: " + urlFilm);
                         } else {
 //                            if (thema.equals("Terra X")) { //bisher einziges Thema
 //                                if (Funktionen.urlExists(url.replace("/veryhigh/", "/hd/"))) {
@@ -288,7 +331,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-860248073,"MediathekZdf.filmHolen", ex, urlFilm);
+                Log.fehlerMeldung(-860248073, "MediathekZdf.filmHolen", ex, urlFilm);
             }
         }
 
