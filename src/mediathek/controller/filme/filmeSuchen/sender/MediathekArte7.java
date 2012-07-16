@@ -40,7 +40,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     public static final String SENDER_ARTE = "ARTE";
     private final String THEMA_ARTE_7 = "Arte+7";
     private int themenLaufen = 0;
-    // Seiten bei den Themen //////////////////////////
+    // Seiten bei den Themen 
     private int MAX_SEITEN = 10;
     private LinkedList<String[]> listeFilmseiten = new LinkedList<String[]>();
     private LinkedList<String[]> listeFilmseitenFertig = new LinkedList<String[]>();
