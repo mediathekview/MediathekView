@@ -36,13 +36,14 @@ public class MediathekZdf extends MediathekReader implements Runnable {
     private StringBuffer seite = new StringBuffer();
     private final int ANZAHL_ZDF_ALLE = 500;
     private final int ANZAHL_ZDF_UPDATE = 20;
+    private final int ANZAHL_ZDF_KURZ = 10;
 
     /**
      *
      * @param ddaten
      */
     public MediathekZdf(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER, 6 /* threads */, 500 /* urlWarten */, startPrio);
+        super(ssearch, /* name */ SENDER, 8 /* threads */, 500 /* urlWarten */, startPrio);
     }
 
     /**
@@ -54,12 +55,12 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         // Liste von http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-a-bis-z/saz0 bis sat8 holen
         String addr = "http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-a-bis-z/saz";
         for (int i = 0; i <= 8; ++i) {
-            addToList_addr(addr + String.valueOf(i), suchen.allesLaden ? true : false);
+            addToList_addr(addr + String.valueOf(i), suchen.allesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE);
         }
         // Spartenkanäle einfügen
-        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209122", suchen.allesLaden ? true : false); // zdf-neo
-        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209120", suchen.allesLaden ? true : false); // zdf-info
-        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1317640", suchen.allesLaden ? true : false); // zdf-kultur
+        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209122", suchen.allesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE); // zdf-neo
+        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209120", suchen.allesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE); // zdf-info
+        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1317640", suchen.allesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE); // zdf-kultur
         // Rubriken einfügen
         addToList_Rubrik("http://www.zdf.de/ZDFmediathek/hauptnavigation/rubriken");
         // letzte Woche eingügen
@@ -100,12 +101,12 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-754126900, "MediathekZdf.addToList_addr", "keine URL: " + addr);
             } else {
                 url = "http://www.zdf.de/ZDFmediathek/kanaluebersicht/aktuellste/" + url + "?bc=rub";
-                addToList_addr(url, false); // immer nur eine "kurz"
+                addToList_addr(url, ANZAHL_ZDF_UPDATE); // immer nur eine "kurz"
             }
         }
     }
 
-    private void addToList_addr(String addr, boolean lang) {
+    private void addToList_addr(String addr, int anz) {
         final String MUSTER_URL = "<p><b><a href=\"/ZDFmediathek/kanaluebersicht/aktuellste/";
         //GetUrl(int ttimeout, long wwartenBasis) {
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
@@ -146,11 +147,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             } else {
                 url = "http://www.zdf.de/ZDFmediathek/kanaluebersicht/aktuellste/" + url;
                 urlorg = url;
-                if (lang) {
-                    url += "?teaserListIndex=" + ANZAHL_ZDF_ALLE;
-                } else {
-                    url += "?teaserListIndex=" + ANZAHL_ZDF_UPDATE;
-                }
+                url += "?teaserListIndex=" + String.valueOf(anz);
                 addThemenliste(urlorg, url, thema);
             }
         }
@@ -211,7 +208,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_URL_1, pos)) != -1) {
                     ++anz;
                     if (!suchen.allesLaden) {
-                        if (anz > ANZAHL_ZDF_UPDATE) {
+                        if (anz > ANZAHL_ZDF_KURZ) {
                             // dann reichts
                             break;
                         }
