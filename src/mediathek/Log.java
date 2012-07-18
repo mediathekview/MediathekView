@@ -121,14 +121,9 @@ public class Log {
     }
 
     public static synchronized void fehlerMeldungMReader(int fehlerNummer, String klasse, String text) {
-        if (Daten.debug) {
-            fehlermeldung_mReader(fehlerNummer, klasse, new String[]{text});
-        }
+        fehlermeldung_mReader(fehlerNummer, klasse, new String[]{text});
     }
 
-//    public static synchronized void fehlerMeldungMReader(int fehlerNummer, String sender, String[] text) {
-//        fehlermeldung_mReader(fehlerNummer, sender, text);
-//    }
     public static synchronized void fehlerMeldungGetUrl(int fehlerNummer, Exception ex, String sender, String text[]) {
         fehlermeldung_getUrl(fehlerNummer, sender, ex, text);
     }
@@ -207,19 +202,21 @@ public class Log {
 
     private static void fehlermeldung_mReader(int fehlerNummer, String sender, String[] texte) {
         addFehlerNummer(fehlerNummer);
-        if (prog) {
-            // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
-            System.out.print("                                                                            \r");
-            prog = false;
-        }
-        final String FEHLER = "MReader: ";
-        final String z = "  ==>";
-        System.out.println(" Fehlernr: " + fehlerNummer);
-        System.out.println(z + " " + FEHLER + sender);
-        notifyMediathekListener(LOG_FEHLER, FEHLER + sender);
-        for (int i = 0; i < texte.length; ++i) {
-            System.out.println("                " + texte[i]);
-            notifyMediathekListener(LOG_FEHLER, texte[i]);
+        if (Daten.debug) {
+            if (prog) {
+                // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
+                System.out.print("                                                                            \r");
+                prog = false;
+            }
+            final String FEHLER = "MReader: ";
+            final String z = "  ==>";
+            System.out.println(" Fehlernr: " + fehlerNummer);
+            System.out.println(z + " " + FEHLER + sender);
+            notifyMediathekListener(LOG_FEHLER, FEHLER + sender);
+            for (int i = 0; i < texte.length; ++i) {
+                System.out.println("                " + texte[i]);
+                notifyMediathekListener(LOG_FEHLER, texte[i]);
+            }
         }
     }
 

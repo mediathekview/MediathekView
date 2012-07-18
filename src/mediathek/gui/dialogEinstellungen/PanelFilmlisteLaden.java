@@ -29,7 +29,6 @@ import javax.swing.JFileChooser;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
@@ -47,14 +46,15 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     public PanelFilmlisteLaden(DDaten d) {
         super(d);
         initComponents();
-        init();
+        initRadio();
+        tabelleLaden();
         jButtonUpdate.addActionListener(new BeobSuchen());
         jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
         jButtonFilmeLaden.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.filmeLaden.filmeLaden(ddaten);
+                Daten.filmeLaden.importFilmliste(Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
             }
         });
         jRadioButtonUpdateAus.addActionListener(new BeobOption());
@@ -69,16 +69,22 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 tabelleLaden();
             }
         });
+        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_ART_IMPORT_FILMLISTE, PanelFilmlisteLaden.class.getSimpleName()) {
+
+            @Override
+            public void ping() {
+                initRadio();
+            }
+        });
     }
 
-    private void init() {
+    private void initRadio() {
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUS) {
             jRadioButtonUpdateAus.setSelected(true);
         } else {
             jRadioButtonAuto.setSelected(true);
         }
         jTextFieldUrl.setText(Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
-        tabelleLaden();
         setPanelTabelle(jRadioButtonUpdateAus.isSelected());
     }
 
@@ -127,7 +133,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR] = aktUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR];
             if (doppel) {
                 // dann wars ein Doppelklick, gleich laden
-                Daten.filmeLaden.filmeLaden(ddaten);
+                Daten.filmeLaden.importFilmliste(Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
             }
         }
         stopBeob = false;
@@ -342,12 +348,12 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
-                setPanelTabelle(jRadioButtonUpdateAus.isSelected());
                 if (jRadioButtonUpdateAus.isSelected()) {
                     Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUS);
                 } else {
                     Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO);
-                }
+                }                // den Dialog gibts 2x
+                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
                 Daten.setGeaendert();
             }
         }

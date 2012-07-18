@@ -22,6 +22,7 @@ package mediathek.daten;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import mediathek.Log;
 import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.filme.filmeSuchen.sender.*;
 import mediathek.tool.DatumZeit;
@@ -451,6 +452,9 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         if (jetzt != null && filmDate != null) {
             ret = Math.round((jetzt.getTime() - filmDate.getTime()) / (1000));
             ret = Math.abs(ret);
+        }
+        if (ret != -1) {
+            Log.systemMeldung("Alter Filmliste: " + ret / 60 + " Minuten");
         }
         if (ret > FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE) {
             return true;

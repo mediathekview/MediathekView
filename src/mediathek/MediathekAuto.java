@@ -57,13 +57,13 @@ public class MediathekAuto {
             ddaten.allesLaden();
             DDaten.filmeLaden.addAdListener(new BeobachterLadenFilme());
             if (Daten.listeFilme.filmlisteIstAelter()) {
-                DDaten.filmeLaden.filmlisteImportierenAuto();
+                DDaten.filmeLaden.importFilmliste("");
             } else {
                 filmeLaden();
             }
         } else {
             // Programm erst mit der GuiVersion einrichten
-            Log.fehlerMeldung(834986137,"MediathekAuto", "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
+            Log.fehlerMeldung(834986137, "MediathekAuto", "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
             System.exit(0);
         }
     }
@@ -98,7 +98,7 @@ public class MediathekAuto {
                 this.wait(5000);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(769325469,"MediathekAuto.filmeLaden", ex);
+            Log.fehlerMeldung(769325469, "MediathekAuto.filmeLaden", ex);
         }
         ddaten.listeDownloads.listePutzen();
         ddaten.listeDownloads.abosLoschen();
@@ -128,6 +128,8 @@ public class MediathekAuto {
 
         @Override
         public void fertig(FilmListenerElement filmListenerElement) {
+            ////////////////////////
+            DDaten.listeFilme = DDaten.filmeLaden.getListeFilme();
             filmeLaden();
         }
     }
