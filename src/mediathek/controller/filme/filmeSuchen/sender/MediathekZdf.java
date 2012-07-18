@@ -54,12 +54,12 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         // Liste von http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-a-bis-z/saz0 bis sat8 holen
         String addr = "http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-a-bis-z/saz";
         for (int i = 0; i <= 8; ++i) {
-            addToList_addr(addr + String.valueOf(i));
+            addToList_addr(addr + String.valueOf(i), suchen.allesLaden ? true : false);
         }
         // Spartenkanäle einfügen
-        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209122"); // zdf-neo
-        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209120"); // zdf-info
-        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1317640"); // zdf-kultur
+        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209122", suchen.allesLaden ? true : false); // zdf-neo
+        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209120", suchen.allesLaden ? true : false); // zdf-info
+        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1317640", suchen.allesLaden ? true : false); // zdf-kultur
         // Rubriken einfügen
         addToList_Rubrik("http://www.zdf.de/ZDFmediathek/hauptnavigation/rubriken");
         // letzte Woche eingügen
@@ -100,12 +100,12 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-754126900, "MediathekZdf.addToList_addr", "keine URL: " + addr);
             } else {
                 url = "http://www.zdf.de/ZDFmediathek/kanaluebersicht/aktuellste/" + url + "?bc=rub";
-                addToList_addr(url);
+                addToList_addr(url, false); // immer nur eine "kurz"
             }
         }
     }
 
-    private void addToList_addr(String addr) {
+    private void addToList_addr(String addr, boolean lang) {
         final String MUSTER_URL = "<p><b><a href=\"/ZDFmediathek/kanaluebersicht/aktuellste/";
         //GetUrl(int ttimeout, long wwartenBasis) {
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
@@ -146,7 +146,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             } else {
                 url = "http://www.zdf.de/ZDFmediathek/kanaluebersicht/aktuellste/" + url;
                 urlorg = url;
-                if (suchen.allesLaden) {
+                if (lang) {
                     url += "?teaserListIndex=" + ANZAHL_ZDF_ALLE;
                 } else {
                     url += "?teaserListIndex=" + ANZAHL_ZDF_UPDATE;

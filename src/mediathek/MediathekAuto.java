@@ -128,9 +128,7 @@ public class MediathekAuto {
 
         @Override
         public void fertig(FilmListenerElement filmListenerElement) {
-            ////////////////////////
-            DDaten.listeFilme = DDaten.filmeLaden.getListeFilme();
-            filmeLaden();
+                filmeLaden();
         }
     }
 }
