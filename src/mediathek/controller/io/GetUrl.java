@@ -154,8 +154,8 @@ public class GetUrl {
         return ret;
     }
 
-    public static synchronized int getSeitenZaehler(int art) {
-        int ret = 0;
+    public static synchronized long getSeitenZaehler(int art) {
+        long ret = 0;
         LinkedList<Seitenzaehler> liste = getListe(art);
         Iterator<Seitenzaehler> it = liste.iterator();
         while (it.hasNext()) {

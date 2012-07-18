@@ -20,11 +20,10 @@
 package mediathek.controller.filme;
 
 import javax.swing.event.EventListenerList;
-import mediathek.Konstanten;
+import mediathek.Daten;
 import mediathek.controller.filme.filmUpdateServer.ListeFilmUpdateServer;
 import mediathek.controller.filme.filmeImportieren.FilmeImportieren;
 import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
-import mediathek.daten.DDaten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.GuiFunktionen;
 
@@ -98,14 +97,6 @@ public class FilmeLaden {
         return filmeImportieren.filmUpdateServer.listeUpdateServer;
     }
 
-    public ListeFilme getListeFilme() {
-        if (listeFilmeNeu != null) {
-            return listeFilmeNeu;
-        } else {
-            return new ListeFilme();
-        }
-    }
-
     public String[] getSenderNamen() {
         return filmeSuchen.getNamenSenderFilmliste();
     }
@@ -170,8 +161,7 @@ public class FilmeLaden {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
             listeFilmeNeu = filmeSuchen.listeFilmeNeu;
             filmeSuchen.listeFilmeNeu = null;
-            istAmLaufen = false;
-            notifyFertig(filmListenerElement);
+            fertig_(filmListenerElement);
         }
     }
 
@@ -192,8 +182,18 @@ public class FilmeLaden {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
             listeFilmeNeu = filmeImportieren.listeFilme;
             filmeImportieren.listeFilme = null;
-            istAmLaufen = false;
-            notifyFertig(filmListenerElement);
+            fertig_(filmListenerElement);
         }
+    }
+
+    private void fertig_(FilmListenerElement filmListenerElement) {
+        istAmLaufen = false;
+        Daten.setGeaendert();
+        if (listeFilmeNeu != null) {
+            Daten.listeFilme = listeFilmeNeu;
+        } else {
+            Daten.listeFilme = new ListeFilme();
+        }
+        notifyFertig(filmListenerElement);
     }
 }

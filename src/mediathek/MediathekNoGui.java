@@ -104,7 +104,6 @@ public class MediathekNoGui {
     }
 
     private void undTschuess() {
-        Daten.listeFilme = Daten.filmeLaden.getListeFilme();
         if (!importUrl.equals("")) {
             // wenn eine ImportUrl angegeben, dann noch eine Liste importieren
             addImportListe(importUrl);

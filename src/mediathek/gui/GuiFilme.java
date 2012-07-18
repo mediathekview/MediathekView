@@ -172,8 +172,6 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void fertig(FilmListenerElement filmListenerElement) {
-                DDaten.setGeaendert();
-                DDaten.listeFilme = DDaten.filmeLaden.getListeFilme();
                 checkBlacklist();
                 tabelleBauen();
                 beobMausTabelle.itemSenderLaden.setEnabled(true);
