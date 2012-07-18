@@ -102,7 +102,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         new CheckUpdate(this, ddaten).suchen();
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.filmlisteIstAelter()) {
-                DDaten.filmeLaden.filmlisteImportierenAuto();
+                DDaten.filmeLaden.importFilmliste("");
             }
         }
     }
@@ -662,7 +662,7 @@ public final class MediathekGui extends javax.swing.JFrame {
             jButtonFilmeLaden.setEnabled(false);
             jMenuItemFilmlisteLaden.setEnabled(false);
             Daten.setGeaendert();
-            Daten.filmeLaden.filmeLaden(ddaten);
+            Daten.filmeLaden.importFilmliste("");
         }
     }
 

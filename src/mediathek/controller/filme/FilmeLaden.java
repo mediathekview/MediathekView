@@ -24,7 +24,6 @@ import mediathek.Konstanten;
 import mediathek.controller.filme.filmUpdateServer.ListeFilmUpdateServer;
 import mediathek.controller.filme.filmeImportieren.FilmeImportieren;
 import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
-import mediathek.controller.io.GetUrl;
 import mediathek.daten.DDaten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.GuiFunktionen;
@@ -53,16 +52,34 @@ public class FilmeLaden {
         filmeImportieren.addAdListener(new BeobLadenImportieren());
     }
 
-    public void filmeLaden(DDaten daten) {
-        if (GuiFunktionen.getImportArtFilme() == FilmeLaden.UPDATE_FILME_AUS) {
-            // ImportDialog starten zum Auswählen der URL
-            filmlisteImportieren(DDaten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
-        } else {
-            filmlisteImportierenAuto();
+    // ###########################
+    // Listener
+    // ###########################
+    public void addAdListener(FilmListener listener) {
+        listeners.add(FilmListener.class, listener);
+    }
+
+    public void notifyStart(FilmListenerElement filmListenerElement) {
+        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+            l.start(filmListenerElement);
         }
     }
 
+    public void notifyProgress(FilmListenerElement filmListenerElement) {
+        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+            l.progress(filmListenerElement);
+        }
+    }
+
+    public void notifyFertig(FilmListenerElement filmListenerElement) {
+        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+            l.fertig(filmListenerElement);
+        }
+    }
+    // ###########################
+
     public void setAllesLaden(boolean alles) {
+        // beim Sender laden: alles nicht nur ein Update
         filmeSuchen.allesLaden = alles;
     }
 
@@ -72,10 +89,6 @@ public class FilmeLaden {
 
     public synchronized boolean getStop() {
         return stop;
-    }
-
-    public synchronized void resetStop() {
-        stop = false;
     }
 
     public ListeFilmUpdateServer getListeFilmUpdateServer(boolean update) {
@@ -98,38 +111,28 @@ public class FilmeLaden {
     }
 
     // #########################################################
-    // Filme als Liste importieren, Url automatisch ermitteln
+    // Filme als Liste importieren
     // #########################################################
-    public synchronized void filmlisteImportierenAuto() {
+    public void importFilmliste(String dateiUrl) {
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
             stop = false;
-            filmeImportieren.filmeImportierenAuto();
+            if (dateiUrl.equals("")) {
+                // Filme als Liste importieren, Url automatisch ermitteln
+                filmeImportieren.filmeImportierenAuto();
+            } else {
+                // Filme als Liste importieren, feste URL/Datei
+                filmeImportieren.filmeImportierenDatei(dateiUrl, GuiFunktionen.istUrl(dateiUrl));
+            }
         }
     }
 
-    // #################################################
-    // Filme als Liste importieren, feste URL/Datei
-    // #################################################
-    public synchronized void filmlisteImportieren(String dateiUrl) {
-        if (!istAmLaufen) {
-            // nicht doppelt starten
-            istAmLaufen = true;
-            stop = false;
-            filmeImportieren.filmeImportierenDatei(dateiUrl, GuiFunktionen.istUrl(dateiUrl));
-        }
-    }
-
-//    public synchronized void filmlisteDirektImportieren(String dateiUrl) {
-//        boolean istUrl;
-//        istUrl = dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
-//        filmeImportieren.filmeDirektImportierenDatei(dateiUrl, istUrl);
-//    }
     // #######################################
-    // Filme beim allen Sender laden
+    // Filme bei den Sendern laden
     // #######################################
     public void filmeBeimSenderSuchen(ListeFilme llisteFilme, boolean allesLaden) {
+        // Filme bei allen Sender suchen
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -139,44 +142,14 @@ public class FilmeLaden {
         }
     }
 
-    // ###########################################
-    // Filme bei EINEM Sender laden (nur update)
-    // ###########################################
     public void updateSender(String sender, ListeFilme llisteFilme) {
+        // Filme nur bei EINEM Sender suchen (nur update)
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
             stop = false;
             listeFilmeAlt = llisteFilme;
             filmeSuchen.updateSender(sender, llisteFilme);
-        }
-    }
-
-    // ###########################
-    // Listener
-    // ###########################
-//    public void addListener(MediathekListener listener) {
-//        listeners.add(MediathekListener.class, listener);
-//    }
-    public void addAdListener(FilmListener listener) {
-        listeners.add(FilmListener.class, listener);
-    }
-
-    public void notifyStart(FilmListenerElement filmListenerElement) {
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
-            l.start(filmListenerElement);
-        }
-    }
-
-    public void notifyProgress(FilmListenerElement filmListenerElement) {
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
-            l.progress(filmListenerElement);
-        }
-    }
-
-    public void notifyFertig(FilmListenerElement filmListenerElement) {
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
-            l.fertig(filmListenerElement);
         }
     }
 
