@@ -454,7 +454,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             ret = Math.abs(ret);
         }
         if (ret != -1) {
-            Log.systemMeldung("Alter Filmliste: " + ret / 60 + " Minuten");
+            Log.systemMeldung("Die Filmliste ist " + ret / 60 + " Minuten alt");
         }
         if (ret > FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE) {
             return true;
