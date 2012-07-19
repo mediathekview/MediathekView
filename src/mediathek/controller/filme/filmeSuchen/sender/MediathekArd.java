@@ -20,6 +20,7 @@
 package mediathek.controller.filme.filmeSuchen.sender;
 
 import mediathek.Daten;
+import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
@@ -49,7 +50,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
         listeThemen.clear();
         StringBuffer seite = new StringBuffer();
         //seite = new GetUrl(daten).getUriArd(ADRESSE, seite, "");
-        seite = getUrlIo.getUri_Utf(nameSenderMReader, ADRESSE, seite, "");
+        seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, "" /* Meldung */);
         int pos = 0;
         int pos1;
         int pos2;
