@@ -205,6 +205,7 @@ public class GuiDownloads extends PanelVorlage {
         // bei !starten wird der Film gestoppt
         String[] urls;
         String url;
+        // erst mal die URLs sammeln
         if (alle) {
             urls = new String[tabelle.getRowCount()];
             for (int i = 0; i < tabelle.getRowCount(); ++i) {
@@ -223,27 +224,42 @@ public class GuiDownloads extends PanelVorlage {
                 new HinweisKeineAuswahl().zeigen();
             }
         }
+        // und jetzt abarbeiten
         for (int i = 0; i < urls.length; ++i) {
             url = urls[i];
             Starts s = ddaten.starterClass.getStart(url);
-            if (s != null && (starten && s.status > Starts.STATUS_RUN || !starten && s.status <= Starts.STATUS_RUN)) {
+            if (s != null) {
                 // wenn kein s -> dann gibts auch nichts zum stoppen oder wieder-starten
-                // entweder starten -> nur wenn schon fertig, dann nochmal starten
-                // oder löschen -> nur wenn noch läuft, sonst gibts nichts mehr zum löschen
-                ddaten.starterClass.filmLoeschen(url);
-                if (s.datenDownload.istAbo()) {
-                    // bei Abos Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                    ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
+                if (!starten && s.status <= Starts.STATUS_RUN) {
+                    // löschen -> nur wenn noch läuft, sonst gibts nichts mehr zum löschen
+                    ddaten.starterClass.filmLoeschen(url);
+                    if (s.datenDownload.istAbo()) {
+                        // bei Abos Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
+                        ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
+                    }
+                }
+                if (starten && s.status > Starts.STATUS_RUN) {
+                    // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
+                    int a = JOptionPane.showConfirmDialog(null, "Film nochmal starten?  ==> " + s.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR], "Fertiger Download", JOptionPane.YES_NO_OPTION);
+                    if (a != JOptionPane.YES_OPTION) {
+                        // weiter mit der nächsten URL
+                        continue;
+                    }
+                    ddaten.starterClass.filmLoeschen(url);
+                    if (s.datenDownload.istAbo()) {
+                        // bei Abos Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
+                        ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
+
+                    }
                 }
             }
             if (starten) {
-                // nach dem Putzen
                 // jetzt noch starten/wiederstarten
-                //Start erstellen und zur Liste hinzufügen
+                // Start erstellen und zur Liste hinzufügen
                 DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
                 ddaten.starterClass.addStarts(new Starts(download));
             }
-        }
+        } // for()
         setInfo();
     }
 
