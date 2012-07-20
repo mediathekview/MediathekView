@@ -49,6 +49,19 @@ public class TModel extends DefaultTableModel {
         return false;
     }
 
+    public int getIdxRow(String idx) {
+        //liefert die Zeile in der die erste Spalte idx enthält
+        int ret = 0;
+        ListIterator<List> it = this.getDataVector().listIterator();
+        while (it.hasNext()) {
+            if (it.next().get(0).equals(idx)) {
+                return ret;
+            }
+            ++ret;
+        }
+        return -1;
+    }
+
     public void filterModel(String str, int feld, boolean exact) {
         if (str != null) {
             if (!str.equals("")) {

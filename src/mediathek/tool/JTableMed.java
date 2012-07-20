@@ -40,6 +40,7 @@ public final class JTableMed extends JTable {
     int[] reihe;
     private int sel;
     private int rows;
+    private String idx = "";
     private boolean stopBeob = false;
     //
     String[] spaltenTabelle;
@@ -108,6 +109,11 @@ public final class JTableMed extends JTable {
         // Einstellungen der Tabelle merken
         sel = this.getSelectedRow();
         rows = this.getRowCount();
+        if (sel > 0) {
+            idx = this.getModel().getValueAt(this.convertRowIndexToModel(sel), 0).toString();
+        } else {
+            idx = "";
+        }
         for (int i = 0; i < reihe.length && i < this.getModel().getColumnCount(); ++i) {
             reihe[i] = this.convertColumnIndexToModel(i);
         }
@@ -148,12 +154,21 @@ public final class JTableMed extends JTable {
                     this.getRowSorter().setSortKeys(listeSortKeys);
                 }
             }
-            if (rows == getRowCount()) {
-                if (sel >= 0 && sel < this.getRowCount()) {
-                    this.setRowSelectionInterval(sel, sel);
-                    this.scrollRectToVisible(getCellRect(sel, 0, false));
+//            if (rows == getRowCount()) {
+//                if (sel >= 0 && sel < this.getRowCount()) {
+//                    this.setRowSelectionInterval(sel, sel);
+//                    this.scrollRectToVisible(getCellRect(sel, 0, false));
+//                }
+//            }
+            if (!idx.equals("")) {
+                int r = ((TModel) this.getModel()).getIdxRow(idx);
+                r = this.convertRowIndexToView(r);
+                if (r >= 0) {
+                    this.setRowSelectionInterval(r, r);
+                    this.scrollRectToVisible(getCellRect(r, 0, false));
                 }
             }
+            idx = "";
             this.validate();
         } catch (Exception ex) {
             Log.fehlerMeldung(965001463, "JTableMed.setSpalten", ex);
