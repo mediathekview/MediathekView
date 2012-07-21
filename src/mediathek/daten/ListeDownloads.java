@@ -25,6 +25,7 @@ import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.gui.dialog.DialogPsetSpeichern;
+import mediathek.gui.dialogEinstellungen.PanelPsetImport;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.TModelDownload;
 
@@ -116,11 +117,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // Filme in die Liste der Downloads eintragen
         // ist eine URL schon vorhanden,Sender,Thema,Titel aktualisieren,
         // es wird der aktuellere Eintrag verwendet
-        DatenDownload download = new DatenDownload(film, Starts.QUELLE_DOWNLOAD);
         DialogPsetSpeichern dialog = new DialogPsetSpeichern(null, true, ddaten, film);
         dialog.setVisible(true);
-        if (dialog.ok && dialog.gruppe != null) {
-            download.aufrufBauen(dialog.gruppe, null);
+        if (dialog.ok && dialog.pSet != null) {
             // erst mal schauen obs das schon gibt
             Iterator<DatenDownload> it = this.iterator();
             while (it.hasNext()) {
@@ -130,6 +129,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
             }
             // und dann eintragen
+            DatenDownload download = new DatenDownload(dialog.pSet, film, Starts.QUELLE_DOWNLOAD, null);
             this.add(download);
             if (dialog.starten) {
                 // und evtl. auch gleich starten
@@ -165,15 +165,13 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 abo.arr[DatenAbo.ABO_DOWN_DATUM_NR] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
                 DDaten.setGeaendert();
                 //wenn nicht doppelt, dann in die Liste schreiben
-                DatenDownload download = new DatenDownload(film, Starts.QUELLE_ABO);
-                DatenPset gruppe = ddaten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET_NR]);
-                if (!abo.arr[DatenAbo.ABO_PSET_NR].equals(gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR])) {
-                    // abändern
-                    abo.arr[DatenAbo.ABO_PSET_NR] = gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR];
+                DatenPset pSet = ddaten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET_NR]);
+                if (!abo.arr[DatenAbo.ABO_PSET_NR].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR])) {
+                    // abo ändern
+                    abo.arr[DatenAbo.ABO_PSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
                 }
-                if (gruppe != null) {
-                    download.aufrufBauen(gruppe, abo);
-                    this.add(download);
+                if (pSet != null) {
+                    this.add(new DatenDownload(pSet, film, Starts.QUELLE_ABO, abo));
                 }
             }
         } //while

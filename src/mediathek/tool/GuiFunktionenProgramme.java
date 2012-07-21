@@ -272,6 +272,9 @@ public class GuiFunktionenProgramme {
         boolean ret = false;
         File testPfad = new File(pfad);
         try {
+            if (!testPfad.exists()) {
+                testPfad.mkdirs();
+            }
             if (pfad.equals("")) {
             } else if (!testPfad.isDirectory()) {
             } else {
@@ -303,25 +306,25 @@ public class GuiFunktionenProgramme {
                 text += "++++++++++++++++++++++++++++++++++++++++++++" + "\n";
                 text += PIPE + "Programmgruppe: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME_NR] + "\n";
                 String zielPfad = datenPset.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR];
-                if (zielPfad.equals("")) {
+                if (datenPset.needsPath()) {
                     // beim nur Abspielen wird er nicht gebraucht
-                    if (datenPset.needsPath()) {
+                    if (zielPfad.equals("")) {
                         ret = false;
                         text += PIPE + LEER + "Zielpfad fehlt!\n";
-                    }
-                } else {
-                    File pfad = new File(zielPfad);
-                    if (!pfad.isDirectory()) {
-                        ret = false;
-                        text += PIPE + LEER + "Falscher Zielpfad!\n";
-                        text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" ist kein Verzeichnis!" + "\n";
                     } else {
-                        // Pfad beschreibbar?
-                        if (!checkPfadBeschreibbar(zielPfad)) {
-                            //da Pfad-leer und "kein" Pfad schon abgeprüft
+                        File pfad = new File(zielPfad);
+                        if (!pfad.isDirectory()) {
                             ret = false;
                             text += PIPE + LEER + "Falscher Zielpfad!\n";
-                            text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" nicht beschreibbar!" + "\n";
+                            text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" ist kein Verzeichnis!" + "\n";
+                        } else {
+                            // Pfad beschreibbar?
+                            if (!checkPfadBeschreibbar(zielPfad)) {
+                                //da Pfad-leer und "kein" Pfad schon abgeprüft
+                                ret = false;
+                                text += PIPE + LEER + "Falscher Zielpfad!\n";
+                                text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" nicht beschreibbar!" + "\n";
+                            }
                         }
                     }
                 }

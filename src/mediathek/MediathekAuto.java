@@ -52,6 +52,7 @@ public class MediathekAuto {
 
     public void starten() {
         ddaten = new DDaten(pfad, false);
+        Daten.auto = true;
         Log.startMeldungen(this.getClass().getName());
         if (IoXmlLesen.einstellungenExistieren()) {
             ddaten.allesLaden();
@@ -130,7 +131,7 @@ public class MediathekAuto {
 
         @Override
         public void fertig(FilmListenerElement filmListenerElement) {
-                filmeLaden();
+            filmeLaden();
         }
     }
 }

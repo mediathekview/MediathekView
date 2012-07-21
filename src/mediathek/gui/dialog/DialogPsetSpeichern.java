@@ -29,7 +29,7 @@ import mediathek.gui.beobachter.EscBeenden;
 
 public class DialogPsetSpeichern extends javax.swing.JDialog {
 
-    public DatenPset gruppe = null;
+    public DatenPset pSet = null;
     public boolean starten = true;
     public boolean ok = false;
     private DDaten ddaten;
@@ -92,9 +92,9 @@ public class DialogPsetSpeichern extends javax.swing.JDialog {
 
     private void setGruppe() {
         if (ddaten.listePset.getListeSpeichern().size() > 0) {
-            gruppe = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
+            pSet = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
         } else {
-            gruppe = null;
+            pSet = null;
         }
     }
 

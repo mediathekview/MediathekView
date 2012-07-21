@@ -141,6 +141,14 @@ public class PanelPsetLang extends PanelVorlage {
                 nurtabellePset();
             }
         });
+        jCheckBoxFragen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getPset().arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.toString(jCheckBoxFragen.isSelected());
+                nurtabellePset();
+            }
+        });
         jSpinnerLaenge.addChangeListener(new ChangeListener() {
 
             @Override
@@ -240,6 +248,7 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxButton.setEnabled(pSet != null);
         jCheckBoxAbo.setEnabled(pSet != null);
         jCheckBoxLaenge.setEnabled(pSet != null);
+        jCheckBoxFragen.setEnabled(pSet != null);
         jSpinnerLaenge.setEnabled(pSet != null);
         if (pSet != null) {
             if (pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
@@ -249,6 +258,7 @@ public class PanelPsetLang extends PanelVorlage {
                 jSpinnerLaenge.setValue(Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]));
             }
             jCheckBoxLaenge.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR]));
+            jCheckBoxFragen.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR]));
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, pSet.arr[DatenPset.PROGRAMMSET_NAME_NR], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTabbedPane.setTitleAt(0, "Set: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
             jTextFieldGruppeName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
@@ -265,6 +275,7 @@ public class PanelPsetLang extends PanelVorlage {
             jTabbedPane.setTitleAt(0, "Programmsets");
             //jSpinnerLaenge.setValue(GuiKonstanten.MAX_LAENGE_DATEINAME); Exception!
             jCheckBoxLaenge.setSelected(false);
+            jCheckBoxFragen.setSelected(false);
             jTextFieldGruppeName.setText("");
             jTextFieldGruppeDirektSuffix.setText("");
             jTextFieldGruppeDirektPraefix.setText("");
@@ -499,21 +510,24 @@ public class PanelPsetLang extends PanelVorlage {
         jLabel5 = new javax.swing.JLabel();
         jButtonGruppeFarbe = new javax.swing.JButton();
         jButtonGruppeStandardfarbe = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
-        jTextFieldGruppeZielPfad = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
-        jTextFieldGruppeZielName = new javax.swing.JTextField();
-        jButtonGruppePfad = new javax.swing.JButton();
         jTextFieldGruppeDirektPraefix = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jTextFieldGruppeName = new javax.swing.JTextField();
-        jCheckBoxLaenge = new javax.swing.JCheckBox();
-        jSpinnerLaenge = new javax.swing.JSpinner();
         jSeparator1 = new javax.swing.JSeparator();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextAreaBeschreibung = new javax.swing.JTextArea();
         jLabel11 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        jTextFieldGruppeZielPfad = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jTextFieldGruppeZielName = new javax.swing.JTextField();
+        jCheckBoxLaenge = new javax.swing.JCheckBox();
+        jSpinnerLaenge = new javax.swing.JSpinner();
+        jButtonGruppePfad = new javax.swing.JButton();
+        jCheckBoxFragen = new javax.swing.JCheckBox();
+        jLabel12 = new javax.swing.JLabel();
         jPanelProgramme = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableProgramme = new javax.swing.JTable();
@@ -653,7 +667,7 @@ public class PanelPsetLang extends PanelVorlage {
             jPanelPsetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelPsetLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -673,26 +687,86 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeStandardfarbe.setText("Standardfarbe");
         jButtonGruppeStandardfarbe.setToolTipText("Farbe zurücksetzen");
 
-        jLabel7.setText("Zielpfad:");
-
-        jLabel8.setText("Zieldateiname:");
-
-        jButtonGruppePfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
-        jButtonGruppePfad.setToolTipText("Pfad auswählen");
-
         jLabel10.setText("direkter Download, Präfix:");
 
         jLabel6.setText("Name:");
-
-        jCheckBoxLaenge.setText("Länge auf Anzahl Zeichen beschränken:");
-
-        jSpinnerLaenge.setModel(new javax.swing.SpinnerNumberModel(25, 12, 100, 1));
 
         jTextAreaBeschreibung.setColumns(20);
         jTextAreaBeschreibung.setRows(5);
         jScrollPane2.setViewportView(jTextAreaBeschreibung);
 
         jLabel11.setText("Beschreibung:");
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Ziel"));
+
+        jLabel7.setText("Zielpfad:");
+
+        jLabel8.setText("Zieldateiname:");
+
+        jCheckBoxLaenge.setText("Dateiname beschränken auf:");
+
+        jSpinnerLaenge.setModel(new javax.swing.SpinnerNumberModel(25, 12, 100, 1));
+
+        jButtonGruppePfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonGruppePfad.setToolTipText("Pfad auswählen");
+
+        jCheckBoxFragen.setText("Ziel vor dem Download abfragen");
+
+        jLabel12.setText("Zeichen");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jTextFieldGruppeZielPfad)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonGruppePfad))
+                            .addComponent(jTextFieldGruppeZielName)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jCheckBoxLaenge)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSpinnerLaenge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel12)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jCheckBoxFragen)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jCheckBoxFragen)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel7)
+                    .addComponent(jTextFieldGruppeZielPfad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonGruppePfad))
+                .addGap(7, 7, 7)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jTextFieldGruppeZielName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBoxLaenge)
+                    .addComponent(jSpinnerLaenge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonGruppePfad, jTextFieldGruppeZielName, jTextFieldGruppeZielPfad});
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -701,6 +775,10 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldGruppeName))
                     .addComponent(jSeparator1)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel10)
@@ -711,32 +789,15 @@ public class PanelPsetLang extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldGruppeDirektSuffix, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
+                        .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldGruppeName))
+                        .addComponent(jScrollPane2))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jButtonGruppeFarbe)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonGruppeStandardfarbe)
-                        .addGap(0, 314, Short.MAX_VALUE))
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel11))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jTextFieldGruppeZielPfad)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonGruppePfad))
-                            .addComponent(jTextFieldGruppeZielName)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jCheckBoxLaenge)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSpinnerLaenge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -749,19 +810,8 @@ public class PanelPsetLang extends PanelVorlage {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldGruppeName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel7)
-                    .addComponent(jTextFieldGruppeZielPfad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonGruppePfad))
-                .addGap(7, 7, 7)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(jTextFieldGruppeZielName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxLaenge)
-                    .addComponent(jSpinnerLaenge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -781,7 +831,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel7Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonGruppePfad, jTextFieldGruppeDirektPraefix, jTextFieldGruppeDirektSuffix, jTextFieldGruppeName, jTextFieldGruppeZielName, jTextFieldGruppeZielPfad});
+        jPanel7Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonGruppeFarbe, jButtonGruppeStandardfarbe, jTextFieldGruppeDirektPraefix, jTextFieldGruppeDirektSuffix, jTextFieldGruppeName});
 
         javax.swing.GroupLayout jPanelDetailsLayout = new javax.swing.GroupLayout(jPanelDetails);
         jPanelDetails.setLayout(jPanelDetailsLayout);
@@ -797,7 +847,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanelDetailsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Details", jPanelDetails);
@@ -967,7 +1017,7 @@ public class PanelPsetLang extends PanelVorlage {
             jPanelProgrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProgrammeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -996,7 +1046,7 @@ public class PanelPsetLang extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane)
+                .addComponent(jTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonHilfe)
@@ -1025,6 +1075,7 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JButton jButtonPruefen;
     private javax.swing.JCheckBox jCheckBoxAbo;
     private javax.swing.JCheckBox jCheckBoxButton;
+    private javax.swing.JCheckBox jCheckBoxFragen;
     private javax.swing.JCheckBox jCheckBoxLaenge;
     private javax.swing.JCheckBox jCheckBoxRestart;
     private javax.swing.JCheckBox jCheckBoxSpeichern;
@@ -1032,6 +1083,7 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1040,6 +1092,7 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -1157,7 +1210,7 @@ public class PanelPsetLang extends PanelVorlage {
                     String str = chooser.getSelectedFile().getPath();
                     jTextFieldProgPfad.setText(str);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(825630443,"PanelPset.BeobDateiDialogProg", ex);
+                    Log.fehlerMeldung(825630443, "PanelPset.BeobDateiDialogProg", ex);
                 }
             }
         }
@@ -1179,7 +1232,7 @@ public class PanelPsetLang extends PanelVorlage {
                     String str = chooser.getSelectedFile().getPath();
                     jTextFieldGruppeZielPfad.setText(str);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(319860075,"PanelPset.BeobDateiDialogPfad", ex);
+                    Log.fehlerMeldung(319860075, "PanelPset.BeobDateiDialogPfad", ex);
                 }
             }
         }
@@ -1408,34 +1461,6 @@ public class PanelPsetLang extends PanelVorlage {
         }
     }
 
-//    private class ComboBoxRenderer extends JLabel implements ListCellRenderer {
-//
-//        @Override
-//        public Component getListCellRendererComponent(
-//                JList list, // the list
-//                Object value, // value to display
-//                int index, // cell index
-//                boolean isSelected, // is the cell selected
-//                boolean cellHasFocus) // does the cell have focus
-//        {
-//            if (value.toString().equals("")) {
-//                //für Leerzeichen
-//                this.setMinimumSize(new Dimension(19, 19));
-//                this.setPreferredSize(new Dimension(19, 19));
-//            }
-//            setText(value.toString());
-//            setBackground(null);
-//            setBorder(null);
-//            Color col = null;
-//            if (col != null) {
-//                setBorder(javax.swing.BorderFactory.createLineBorder(col, 2));
-//            }
-//            setEnabled(list.isEnabled());
-//            setFont(list.getFont());
-//            setOpaque(true);
-//            return this;
-//        }
-//    }
     public class BeobTableSelect implements ListSelectionListener {
 
         @Override

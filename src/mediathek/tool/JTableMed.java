@@ -5,15 +5,11 @@
 package mediathek.tool;
 
 import java.util.List;
-import java.util.ListIterator;
-import javax.swing.DefaultRowSorter;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
-import javax.swing.table.TableRowSorter;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.daten.DDaten;
@@ -35,7 +31,6 @@ public final class JTableMed extends JTable {
     public static final int TABELLE_TAB_ABOS = 2;
     public static final String FELDTRENNER = "|";
     private List<? extends javax.swing.RowSorter.SortKey> listeSortKeys = null;
-//    private DefaultRowSorter rowSorter;
     int[] breite;
     int[] reihe;
     private int sel;
@@ -53,8 +48,6 @@ public final class JTableMed extends JTable {
             case TABELLE_TAB_FILME:
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR;
                 spaltenTabelle = DatenFilm.FILME_COLUMN_NAMES;
-//                rowSorter = new TableRowSorter(new TModelFilm(new Object[][]{}, spaltenTabelle));
-//                this.setRowSorter(rowSorter);
                 this.setModel(new TModelFilm(new Object[][]{}, spaltenTabelle));
                 break;
             case TABELLE_TAB_DOWNLOADS:
@@ -74,37 +67,6 @@ public final class JTableMed extends JTable {
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
     }
 
-//    public synchronized void tabelleFuellen(Object[][] iinhalt) {
-//        // Tabelle asynchron füllen
-//        final Object[][] inhalt = iinhalt;
-//        try {
-//            if (SwingUtilities.isEventDispatchThread()) {
-//                SwingUtilities.invokeLater(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        addObjectData(inhalt);
-//                    }
-//                });
-//            } else {
-//                SwingUtilities.invokeAndWait(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        addObjectData(inhalt);
-//                    }
-//                });
-//            }
-//        } catch (Exception ex) {
-//            Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
-//        }
-//    }
-//
-//    private void addObjectData(Object[][] inhalt) {
-//        for (int i = 0; i < inhalt.length; ++i) {
-//            ((TModel) this.getModel()).addRow(inhalt[i]);
-//        }
-//    }
     public void getSpalten() {
         // Einstellungen der Tabelle merken
         sel = this.getSelectedRow();
@@ -128,9 +90,6 @@ public final class JTableMed extends JTable {
         }
     }
 
-    /**
-     *
-     */
     public void setSpalten() {
         // gemerkte Einstellungen der Tabelle wieder setzten
         stopBeob = true;
@@ -193,7 +152,7 @@ public final class JTableMed extends JTable {
             resetTabelle();
             // setSpalten wird im resetTabelle gemacht
         }
-        // und jetzt erst der Beobachter, damit Daten.system nich vorher schon überschrieben wird
+        // und jetzt erst der Beobachter, damit Daten.system nicht vorher schon überschrieben wird
         this.getColumnModel().addColumnModelListener(new BeobSpalten());
     }
 
@@ -261,7 +220,6 @@ public final class JTableMed extends JTable {
                 }
                 break;
         }
-        ///// noch mal im Auge behalten
         this.setRowSorter(null);
         this.setAutoCreateRowSorter(true);
         setSpalten();
@@ -328,7 +286,7 @@ public final class JTableMed extends JTable {
     }
 
     private void arrLesen(String s, int[] arr) {
-        String sub = "";
+        String sub;
         for (int i = 0; i < spaltenTabelle.length; i++) {
             if (!s.equals("")) {
                 if (s.contains(",")) {
