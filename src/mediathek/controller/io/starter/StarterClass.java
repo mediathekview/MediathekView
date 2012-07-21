@@ -72,16 +72,13 @@ public class StarterClass {
      * @param ersterFilm
      * @return
      */
-    public synchronized Starts urlStarten(DatenPset gruppe, DatenFilm ersterFilm) {
+    public synchronized Starts urlStarten(DatenPset pSet, DatenFilm ersterFilm) {
         // url mit dem Programm mit der Nr. starten (Button oder Doppelklick)
         // Quelle ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
         Starts s = null;
         String url = ersterFilm.arr[DatenFilm.FILM_URL_NR];
-        DatenDownload download;
         if (!url.equals("")) {
-            download = new DatenDownload(ersterFilm, Starts.QUELLE_BUTTON);
-            download.aufrufBauen(gruppe, null);
-            s = new Starts(download);
+            s = new Starts(new DatenDownload(pSet, ersterFilm, Starts.QUELLE_BUTTON, null));
             this.starten.startStarten(s);
             addStarts(s);
         }
@@ -398,7 +395,7 @@ public class StarterClass {
                     buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     this.wait(3000);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(613822015,"StarterClass.Starten.run", ex);
+                    Log.fehlerMeldung(613822015, "StarterClass.Starten.run", ex);
                 }
             } //while(true)
         }
@@ -414,7 +411,7 @@ public class StarterClass {
                     new Thread(podderStart).start();
                     break;
                 default:
-                    Log.fehlerMeldung(789356001,"StartetClass.startStarten", "StarterClass.Starten - Switch-default");
+                    Log.fehlerMeldung(789356001, "StartetClass.startStarten", "StarterClass.Starten - Switch-default");
                     break;
             }
         }
@@ -432,7 +429,7 @@ public class StarterClass {
             try {
                 new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
             } catch (Exception ex) {
-                Log.fehlerMeldung(469365281,"StarterClass.StartenProgramm-1", ex);
+                Log.fehlerMeldung(469365281, "StarterClass.StartenProgramm-1", ex);
             }
         }
 
@@ -523,7 +520,7 @@ public class StarterClass {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(395623710,"StarterClass.StartenProgramm-2", ex);
+                Log.fehlerMeldung(395623710, "StarterClass.StartenProgramm-2", ex);
             }
             notifyStartEvent();
         }
@@ -580,7 +577,7 @@ public class StarterClass {
                 input.close();
                 destStream.close();
             } catch (Exception ex) {
-                Log.fehlerMeldung(502039078,"StarterClass.StartenDonwnload-1", ex);
+                Log.fehlerMeldung(502039078, "StarterClass.StartenDonwnload-1", ex);
             }
             try {
                 if (allesStop || starts.stoppen) {
@@ -599,7 +596,7 @@ public class StarterClass {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(904685832,"StarterClass.StartenDonwnload-2", ex);
+                Log.fehlerMeldung(904685832, "StarterClass.StartenDonwnload-2", ex);
             }
             notifyStartEvent();
         }
@@ -610,9 +607,9 @@ public class StarterClass {
         boolean ret = false;
         File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         if (!file.exists()) {
-            Log.fehlerMeldung(550236231,"StartetClass.pruefen-1", "Download fehlgeschlagen: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(550236231, "StartetClass.pruefen-1", "Download fehlgeschlagen: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_KB * 1024) {
-            Log.fehlerMeldung(795632500,"StartetClass.pruefen-2", "Download fehlgeschlagen: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(795632500, "StartetClass.pruefen-2", "Download fehlgeschlagen: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else {
             if (starts.datenDownload.istAbo()) {
                 ddaten.erledigteAbos.zeileSchreiben(starts.datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],

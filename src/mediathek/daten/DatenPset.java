@@ -32,7 +32,7 @@ public class DatenPset {
 
     //Tags Programmgruppen
     public static final String PROGRAMMSET = "Programmset";
-    public static final int PROGRAMMSET_MAX_ELEM = 13;
+    public static final int PROGRAMMSET_MAX_ELEM = 14;
     public static final String PROGRAMMSET_NAME = "Name";
     public static final int PROGRAMMSET_NAME_NR = 0;
     public static final String PROGRAMMSET_PRAEFIX_DIREKT = "Praefix";
@@ -45,22 +45,24 @@ public class DatenPset {
     public static final int PROGRAMMSET_ZIEL_PFAD_NR = 4;
     public static final String PROGRAMMSET_ZIEL_DATEINAME = "Zieldateiname";
     public static final int PROGRAMMSET_ZIEL_DATEINAME_NR = 5;
+    public static final String PROGRAMMSET_ZIEL_FRAGEN = "Ziel-abfragen";
+    public static final int PROGRAMMSET_ZIEL_FRAGEN_NR = 6;
     public static final String PROGRAMMSET_IST_ABSPIELEN = "Abspielen";
-    public static final int PROGRAMMSET_IST_ABSPIELEN_NR = 6;
+    public static final int PROGRAMMSET_IST_ABSPIELEN_NR = 7;
     public static final String PROGRAMMSET_IST_SPEICHERN = "Speichern";
-    public static final int PROGRAMMSET_IST_SPEICHERN_NR = 7;
+    public static final int PROGRAMMSET_IST_SPEICHERN_NR = 8;
     public static final String PROGRAMMSET_IST_BUTTON = "Button";
-    public static final int PROGRAMMSET_IST_BUTTON_NR = 8;
+    public static final int PROGRAMMSET_IST_BUTTON_NR = 9;
     public static final String PROGRAMMSET_IST_ABO = "Abo";
-    public static final int PROGRAMMSET_IST_ABO_NR = 9;
+    public static final int PROGRAMMSET_IST_ABO_NR = 10;
     public static final String PROGRAMMSET_LAENGE_BESCHRAENKEN = "Laenge";
-    public static final int PROGRAMMSET_LAENGE_BESCHRAENKEN_NR = 10;
+    public static final int PROGRAMMSET_LAENGE_BESCHRAENKEN_NR = 11;
     public static final String PROGRAMMSET_MAX_LAENGE = "max-Laenge";
-    public static final int PROGRAMMSET_MAX_LAENGE_NR = 11;
+    public static final int PROGRAMMSET_MAX_LAENGE_NR = 12;
     public static final String PROGRAMMSET_BESCHREIBUNG = "Beschreibung";
-    public static final int PROGRAMMSET_BESCHREIBUNG_NR = 12;
+    public static final int PROGRAMMSET_BESCHREIBUNG_NR = 13;
     public static final String[] PROGRAMMSET_COLUMN_NAMES = {PROGRAMMSET_NAME, PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
-        PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME,
+        PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_ZIEL_FRAGEN,
         PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
         PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_BESCHREIBUNG};
     public String[] arr;
@@ -90,10 +92,13 @@ public class DatenPset {
 
     public boolean needsPath() {
         // Zielpfad muss angegeben werden wenn:
-        // er nicht mit "%p" abgefragt wird
+        // er nicht mit "%p" oder "%n" abgefragt wird
         // und beim Programmschalter mit "**" eingesetzt werden soll
         boolean ret = false;
-        if (!this.arr[PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%p")) {
+        if (!this.arr[PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%p")
+                && !this.arr[PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%n")
+                && !this.arr[PROGRAMMSET_ZIEL_PFAD_NR].contains("%p")
+                && !this.arr[PROGRAMMSET_ZIEL_PFAD_NR].contains("%n")) {
             Iterator<DatenProg> it = listeProg.iterator();
             DatenProg prog;
             while (it.hasNext()) {
@@ -234,7 +239,7 @@ public class DatenPset {
             try {
                 ret = new Color(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
             } catch (Exception ex) {
-                Log.fehlerMeldung(669254033,this.getClass().getName() + ".getFarbe", ex);
+                Log.fehlerMeldung(669254033, this.getClass().getName() + ".getFarbe", ex);
             }
         }
         return ret;

@@ -35,6 +35,7 @@ public class Daten {
     // flags
     public static boolean debug = false;
     public static boolean nogui = false;
+    public static boolean auto = false;
     private static boolean geaendert = false;
     private static String basisverzeichnis = "";
     // Klassen
@@ -131,7 +132,7 @@ public class Daten {
     private static String getBasisVerzeichnis(String basis, boolean anlegen) {
         String ret;
         if (basis.equals("")) {
-            ret = System.getProperty("user.home") + File.separator + Konstanten.MEDIATHEK_VIEW_VERZEICHNISS + File.separator;
+            ret = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNISS_EINSTELLUNGEN + File.separator;
         } else {
             ret = basis;
         }
