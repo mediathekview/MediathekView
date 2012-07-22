@@ -183,8 +183,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
             }
             // ##############################################
             // ##############################################
-            String zielDateiname = pSet.getZielDateiname(arr[DOWNLOAD_URL_NR]);
-            String zielPfad = pSet.getZielPfad();
             arr[DOWNLOAD_PROGRAMMSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
             int art = pSet.checkDownloadDirekt(arr[DOWNLOAD_URL_NR]);
             arr[DOWNLOAD_ART_NR] = String.valueOf(art);
@@ -194,8 +192,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 arr[DatenDownload.DOWNLOAD_PROGRAMM_NR] = programm.arr[DatenProg.PROGRAMM_NAME_NR];
             }
             arr[DOWNLOAD_PROGRAMM_RESTART_NR] = String.valueOf(programm.isRestart());
-            arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = zielDateiname;
-            arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = zielPfad;
             dateinamePfadBauen(pSet, abo);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
@@ -204,6 +200,12 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private void dateinamePfadBauen(DatenPset pSet, DatenAbo abo) {
+        if (!pSet.progsContainPath()) {
+            // dann können wir uns das sparen
+            return;
+        }
+        arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = pSet.getZielDateiname(arr[DOWNLOAD_URL_NR]);
+        arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = pSet.getZielPfad();
         String name = arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR];
         String pfad = arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
         // ##############################
@@ -224,6 +226,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
             pfad = GuiFunktionen.addsPfad(pfad, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
             arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
         }
+        // ##############################
+        // Name sinnvoll belegen
+        // ##############################
         if (name.equals("")) {
             pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
             name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";

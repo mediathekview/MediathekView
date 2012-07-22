@@ -95,18 +95,42 @@ public class DatenPset {
         // er nicht mit "%p" oder "%n" abgefragt wird
         // und beim Programmschalter mit "**" eingesetzt werden soll
         boolean ret = false;
-        if (!this.arr[PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%p")
-                && !this.arr[PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%n")
-                && !this.arr[PROGRAMMSET_ZIEL_PFAD_NR].contains("%p")
-                && !this.arr[PROGRAMMSET_ZIEL_PFAD_NR].contains("%n")) {
-            Iterator<DatenProg> it = listeProg.iterator();
-            DatenProg prog;
-            while (it.hasNext()) {
-                prog = it.next();
-                if (prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains("**")) {
-                    ret = true;
-                    break;
-                }
+        if (!this.arr[PROGRAMMSET_ZIEL_FRAGEN_NR].equals("")) {
+            if (Boolean.parseBoolean(this.arr[PROGRAMMSET_ZIEL_FRAGEN_NR])) {
+                // dann wird gefragt
+                return false;
+            }
+        }
+        if (this.arr[PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%p")
+                || this.arr[PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%n")
+                || this.arr[PROGRAMMSET_ZIEL_PFAD_NR].contains("%p")
+                || this.arr[PROGRAMMSET_ZIEL_PFAD_NR].contains("%n")) {
+            // aus historischen Gründen, dann wird gefragt
+            return false;
+        }
+        // nur dann nach "**" suchen
+        Iterator<DatenProg> it = listeProg.iterator();
+        DatenProg prog;
+        while (it.hasNext()) {
+            prog = it.next();
+            if (prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains("**")) {
+                ret = true;
+                break;
+            }
+        }
+        return ret;
+    }
+
+    public boolean progsContainPath() {
+        // ein Programmschalter mit "**"
+        boolean ret = false;
+        Iterator<DatenProg> it = listeProg.iterator();
+        DatenProg prog;
+        while (it.hasNext()) {
+            prog = it.next();
+            if (prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains("**")) {
+                ret = true;
+                break;
             }
         }
         return ret;
