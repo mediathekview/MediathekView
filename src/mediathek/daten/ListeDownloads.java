@@ -25,7 +25,6 @@ import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.gui.dialog.DialogPsetSpeichern;
-import mediathek.gui.dialogEinstellungen.PanelPsetImport;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.TModelDownload;
 

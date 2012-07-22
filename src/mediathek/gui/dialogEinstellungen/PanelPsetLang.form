@@ -25,7 +25,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonHilfe" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jTabbedPane" alignment="0" pref="659" max="32767" attributes="0"/>
+                  <Component id="jTabbedPane" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -35,7 +35,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jTabbedPane" pref="497" max="32767" attributes="0"/>
+              <Component id="jTabbedPane" pref="684" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonHilfe" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -87,7 +87,7 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane3" pref="631" max="32767" attributes="0"/>
+                          <Component id="jScrollPane3" pref="914" max="32767" attributes="0"/>
                           <Component id="jPanel6" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -98,7 +98,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane3" pref="331" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" pref="518" max="32767" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -147,7 +147,7 @@
                                   <Component id="jButtonGruppeAuf" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jButtonGruppeAb" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="122" max="32767" attributes="0"/>
+                                  <EmptySpace pref="412" max="32767" attributes="0"/>
                                   <Component id="jButtonGruppeDuplizieren" min="-2" pref="125" max="-2" attributes="3"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jButtonExport" min="-2" pref="125" max="-2" attributes="1"/>
@@ -296,7 +296,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel7" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="199" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -330,7 +330,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jTextFieldGruppeDirektSuffix" pref="203" max="32767" attributes="0"/>
+                                  <Component id="jTextFieldGruppeDirektSuffix" pref="493" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
@@ -354,7 +354,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jTextFieldGruppeName" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jTextFieldGruppeName" linkSize="6" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -369,14 +369,14 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
                               <Component id="jLabel10" alignment="2" min="-2" max="-2" attributes="0"/>
-                              <Component id="jTextFieldGruppeDirektPraefix" linkSize="3" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="jTextFieldGruppeDirektPraefix" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel5" alignment="2" min="-2" max="-2" attributes="0"/>
-                              <Component id="jTextFieldGruppeDirektSuffix" linkSize="3" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="jTextFieldGruppeDirektSuffix" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jButtonGruppeFarbe" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jButtonGruppeStandardfarbe" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtonGruppeFarbe" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtonGruppeStandardfarbe" linkSize="6" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -591,7 +591,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="171" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="358" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -649,7 +649,7 @@
                           <Component id="jButtonProgAb" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jButtonProgDuplizieren" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="270" max="32767" attributes="0"/>
+                          <EmptySpace pref="553" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -747,7 +747,7 @@
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jTextFieldProgSuffix" pref="180" max="32767" attributes="2"/>
+                                          <Component id="jTextFieldProgSuffix" pref="470" max="32767" attributes="2"/>
                                       </Group>
                                   </Group>
                               </Group>
