@@ -74,13 +74,12 @@ public class MediathekNdrFlash extends MediathekReader implements Runnable {
                     continue;
                 }
                 String[] add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-24.xml", thema};
-                if (!istInListe(listeThemen, url, 0)) {
-                    listeThemen.add(add);
-                }
+//////////                listeThemen.add(add);
             } catch (Exception ex) {
                 Log.fehlerMeldung(-332945670, "MediathekNdr.finden", ex);
             }
         }
+        addTage();
         if (!Daten.filmeLaden.getStop()) {
             if (listeThemen.size() > 0) {
                 meldungStart(listeThemen.size());
@@ -89,7 +88,13 @@ public class MediathekNdrFlash extends MediathekReader implements Runnable {
                 }
             }
         }
+    }
 
+    private void addTage() {
+        for (int i = 0; i <= 10; ++i) {
+            String[] add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_page-" + Integer.toString(i) + "_medium-tv_pageSize-24.xml", "NDR"};
+            listeThemen.add(add);
+        }
     }
 
     private class ThemaLaden implements Runnable {
@@ -168,6 +173,7 @@ public class MediathekNdrFlash extends MediathekReader implements Runnable {
             final String MUSTER_DATUM = "<date ";
             final String MUSTER_URL = "<source format=\"mp4hq\" mimetype=\"video/mp4\" protocol=\"rtmpt\">";
             seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "strUrlThema: " + strUrlThema);
+            meldung(urlFilm);
             int pos;
             int pos1;
             int pos2;
