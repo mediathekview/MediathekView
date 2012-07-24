@@ -221,11 +221,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 pfad = GuiFunktionen.addsPfad(pfad, arr[DatenDownload.DOWNLOAD_THEMA_NR]);
             }
         }
-        if (abo != null) {
-            // Bei Abos: den Namen des Abos an den Zielpfad anhängen, leer kann er jetzt ja schon nicht mehr sein
-            pfad = GuiFunktionen.addsPfad(pfad, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
-            arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
-        }
         // ##############################
         // Name sinnvoll belegen
         // ##############################
@@ -233,14 +228,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
             name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
         }
-        name = name.replace("%D", arr[DOWNLOAD_DATUM_NR].equals("") ? DatumZeit.getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(arr[DOWNLOAD_DATUM_NR])));
-        name = name.replace("%d", arr[DOWNLOAD_ZEIT_NR].equals("") ? DatumZeit.getJetzt_HHMMSS() : datumDatumZeitReinigen(arr[DOWNLOAD_ZEIT_NR]));
-        name = name.replace("%t", arr[DOWNLOAD_THEMA_NR]);
-        name = name.replace("%T", arr[DOWNLOAD_TITEL_NR]);
-        name = name.replace("%s", arr[DOWNLOAD_SENDER_NR]);
-        name = name.replace("%H", DatumZeit.getHeute_yyyyMMdd());
-        name = name.replace("%h", DatumZeit.getJetzt_HHMMSS());
-        name = name.replace("%N", GuiFunktionen.getDateiName(arr[DOWNLOAD_URL_NR]));
+        name = replaceString(name);
         // prüfen ob das Suffix 2x vorkommt
         if (name.length() > 8) {
             String suf1 = name.substring(name.length() - 8, name.length() - 4);
@@ -251,6 +239,17 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 }
             }
         }
+        // ##############################
+        // Pfad sinnvoll belegen
+        // ##############################
+        if (abo != null) {
+            // Bei Abos: den Namen des Abos an den Zielpfad anhängen, leer kann er jetzt ja schon nicht mehr sein
+            pfad = GuiFunktionen.addsPfad(pfad, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
+            arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
+        }
+
+        pfad = replaceString(pfad);
+        pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* pfadtrennerEntfernen */);
         if (pfad.endsWith(File.separator)) {
             pfad = pfad.substring(0, pfad.length() - 1);
         }
@@ -292,6 +291,19 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZIEL_DATEINAME_NR] = GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */);
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
         arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, arr[DOWNLOAD_ZIEL_DATEINAME_NR]);
+    }
+
+    private String replaceString(String s) {
+        s = s.replace("%D", arr[DOWNLOAD_DATUM_NR].equals("") ? DatumZeit.getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(arr[DOWNLOAD_DATUM_NR])));
+        s = s.replace("%d", arr[DOWNLOAD_ZEIT_NR].equals("") ? DatumZeit.getJetzt_HHMMSS() : datumDatumZeitReinigen(arr[DOWNLOAD_ZEIT_NR]));
+        s = s.replace("%t", arr[DOWNLOAD_THEMA_NR]);
+        s = s.replace("%T", arr[DOWNLOAD_TITEL_NR]);
+        s = s.replace("%s", arr[DOWNLOAD_SENDER_NR]);
+        s = s.replace("%H", DatumZeit.getHeute_yyyyMMdd());
+        s = s.replace("%h", DatumZeit.getJetzt_HHMMSS());
+        s = s.replace("%N", GuiFunktionen.getDateiName(arr[DOWNLOAD_URL_NR]));
+        s = s.replace("%A", arr[DOWNLOAD_ABO_NR]);
+        return s;
     }
 
     private void programmaufrufBauen(DatenProg programm) {
