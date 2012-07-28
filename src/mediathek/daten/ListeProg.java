@@ -122,9 +122,9 @@ public class ListeProg extends LinkedList<DatenProg> {
                 object[i] = daten.arr;
                 ++i;
             }
-            model = new TModel(object, DatenProg.PROGRAMM_COLUMN_NAMES);
+            model = new TModel(object, DatenProg.PROGRAMM_COLUMN_NAMES_);
         } else {
-            model = new TModel(new Object[0][DatenProg.PROGRAMM_MAX_ELEM], DatenProg.PROGRAMM_COLUMN_NAMES);
+            model = new TModel(new Object[0][DatenProg.PROGRAMM_MAX_ELEM], DatenProg.PROGRAMM_COLUMN_NAMES_);
         }
         return model;
     }
