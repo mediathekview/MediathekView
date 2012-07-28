@@ -65,6 +65,10 @@ public class DatenPset {
         PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_ZIEL_FRAGEN,
         PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
         PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_BESCHREIBUNG};
+    public static final String[] PROGRAMMSET_COLUMN_NAMES_ = {"Programmsetname", PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
+        PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_ZIEL_FRAGEN,
+        PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
+        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_BESCHREIBUNG};
     public String[] arr;
     private ListeProg listeProg = new ListeProg();
 
@@ -293,7 +297,7 @@ public class DatenPset {
         ret += "================================================" + Daten.LINE_SEPARATOR;
         ret += "| Programmset" + Daten.LINE_SEPARATOR;
         for (int i = 0; i < PROGRAMMSET_MAX_LAENGE_NR; ++i) {
-            ret += "| " + PROGRAMMSET_COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+            ret += "| " + PROGRAMMSET_COLUMN_NAMES_[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
         }
         for (int i = 0; i < listeProg.size(); ++i) {
             ret += "|" + Daten.LINE_SEPARATOR;

@@ -42,6 +42,8 @@ public class DatenProg {
     public static final int PROGRAMM_RESTART_NR = 6;
     public static final String[] PROGRAMM_COLUMN_NAMES = {PROGRAMM_NAME, PROGRAMM_ZIEL_DATEINAME, PROGRAMM_PROGRAMMPFAD,
         PROGRAMM_SCHALTER, PROGRAMM_PRAEFIX, PROGRAMM_SUFFIX, PROGRAMM_RESTART};
+    public static final String[] PROGRAMM_COLUMN_NAMES_ = {"Beschreibung", PROGRAMM_ZIEL_DATEINAME, PROGRAMM_PROGRAMMPFAD,
+        PROGRAMM_SCHALTER, PROGRAMM_PRAEFIX, PROGRAMM_SUFFIX, PROGRAMM_RESTART};
     public String[] arr;
 
     public DatenProg() {
@@ -102,9 +104,9 @@ public class DatenProg {
         String ret = "";
         for (int i = 0; i < PROGRAMM_MAX_ELEM; ++i) {
             if (i == 0) {
-                ret += "| ***|" + PROGRAMM_COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+                ret += "| ***|" + PROGRAMM_COLUMN_NAMES_[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
             } else {
-                ret += "|    |" + PROGRAMM_COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+                ret += "|    |" + PROGRAMM_COLUMN_NAMES_[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
             }
         }
         return ret;

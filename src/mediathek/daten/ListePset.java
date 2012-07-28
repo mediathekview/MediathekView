@@ -264,9 +264,9 @@ public class ListePset extends LinkedList<DatenPset> {
 //                object[i] = daten.arr;
                 ++i;
             }
-            model = new TModel(object, DatenPset.PROGRAMMSET_COLUMN_NAMES);
+            model = new TModel(object, DatenPset.PROGRAMMSET_COLUMN_NAMES_);
         } else {
-            model = new TModel(new Object[0][DatenPset.PROGRAMMSET_MAX_ELEM], DatenPset.PROGRAMMSET_COLUMN_NAMES);
+            model = new TModel(new Object[0][DatenPset.PROGRAMMSET_MAX_ELEM], DatenPset.PROGRAMMSET_COLUMN_NAMES_);
         }
         return model;
     }
