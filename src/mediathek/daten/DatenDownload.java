@@ -21,7 +21,6 @@ package mediathek.daten;
 
 import java.io.File;
 import java.util.Iterator;
-import javax.swing.JOptionPane;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
@@ -312,6 +311,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         befehlsString = befehlsString.replace("%f", arr[DOWNLOAD_URL_NR]);
         befehlsString = befehlsString.replace("%F", getUrlFlvstreamer());
         befehlsString = befehlsString.replace("%k", getUrlLow());
+        befehlsString = befehlsString.replace("%h", getUrlHi());
         befehlsString = befehlsString.replace("%x", AsxLesen.lesen(arr[DOWNLOAD_URL_NR]));
         //Auth eintragen
         if (arr[DOWNLOAD_URL_AUTH_NR].equals("")) {
@@ -356,6 +356,16 @@ public class DatenDownload implements Comparable<DatenDownload> {
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekNdr.SENDER)) {
             //NDR
             ret = arr[DOWNLOAD_URL_NR].replace(".hq.", ".lo.");
+        }
+        return ret;
+    }
+
+    private String getUrlHi() {
+        String ret = "";
+        if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
+            // ZDF
+            ret = arr[DOWNLOAD_URL_NR].replace("wstreaming.zdf.de", "fstreaming.zdf.de");
+            ret = ret.replace(".asx", ".smil");
         }
         return ret;
     }
