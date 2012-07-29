@@ -61,7 +61,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209122", suchen.allesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE); // zdf-neo
         addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209120", suchen.allesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE); // zdf-info
         addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1317640", suchen.allesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE); // zdf-kultur
-        // Rubriken einfügen
+        //Rubriken einfügen
         addToList_Rubrik("http://www.zdf.de/ZDFmediathek/hauptnavigation/rubriken");
         // letzte Woche eingügen
         addToList_kurz();
@@ -313,20 +313,95 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                         if (!url.endsWith("asx")) {
                             Log.fehlerMeldungMReader(-200480752, "MediathekZdf.filmHolen-2", "keine URL: " + urlFilm);
                         } else {
-//                            if (thema.equals("Terra X")) { //bisher einziges Thema
-//                                if (Funktionen.urlExists(url.replace("/veryhigh/", "/hd/"))) {
-//                                    urlHd = url.replace("/veryhigh/", "/hd/");
-//                                }
-//                            }
-                            //DatenFilm(ddaten, ssender, tthema, urlThema, ttitel, uurl, uurlorg, zziel)
-//                            daten.filmeLaden.listeFilmeSchattenliste.addSenderRtmp(new DatenFilm(daten, Konstanten.SENDER_ZDF,
-//                                    thema, urlThema, titel,
-//                                    leitungAendern__(daten, url, urlHd), url/*urlOrg*/, ""/*urlRtmp*/, urlHd, alt));
-                            addFilm(new DatenFilm(nameSenderMReader,
-                                    thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
+                            //addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
+                            flashHolen(thema, titel, urlThema, url, datum, zeit);
                         }
                     }
                 }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(-860248073, "MediathekZdf.filmHolen", ex, urlFilm);
+            }
+        }
+
+        private void flashHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit) {
+            //<param name="app" value="ondemand" />
+            //<param name="host" value="cp125301.edgefcs.net" />
+            //<param name="protocols" value="rtmp,rtmpt" />
+            //<video dur="00:29:33" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_l.mp4" system-bitrate="62000">
+            //<param name="quality" value="low" />
+            //</video>
+            //
+            //<video dur="00:29:33" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_h.mp4" system-bitrate="700000">
+            //<param name="quality" value="high" />
+            //</video>
+            //
+            //<video dur="00:29:33" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_vh.mp4" system-bitrate="1700000">
+            //<param name="quality" value="veryhigh" />
+            //</video>
+
+            //http://wstreaming.zdf.de/3sat/veryhigh/ ... _hitec.asx
+            //http://fstreaming.zdf.de/3sat/veryhigh/ ... hitec.smil
+            //rtmpt://cp125301.edgefcs.net/ondemand/mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_vh.mp4
+
+            final String MUSTER_HOST = "<param name=\"host\" value=\"";
+            final String MUSTER_PROT = "<param name=\"protocols\" value=\"";
+            final String MUSTER_APP = "<param name=\"app\" value=\"";
+            final String MUSTER_URL = "src=\"";
+            final String MUSTER_URL_L = "l.mp4";
+            final String MUSTER_URL_H = "h.mp4";
+            final String MUSTER_URL_VH = "vh.mp4";
+            String host = "";
+            String app = "";
+            String prot;
+            String url = "", tmpUrl = "";
+            int pos1;
+            int pos2;
+            try {
+                meldung(urlFilm);
+                urlFilm = urlFilm.replace("http://wstreaming.zdf.de", "http://fstreaming.zdf.de");
+                urlFilm = urlFilm.replace(".asx", ".smil");
+                seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "urlThema: " + urlThema);
+                if ((pos1 = seite2.indexOf(MUSTER_HOST, 0)) != -1) {
+                    pos1 += MUSTER_HOST.length();
+                    if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
+                        host = seite2.substring(pos1, pos2);
+                    }
+                }
+                if ((pos1 = seite2.indexOf(MUSTER_APP, 0)) != -1) {
+                    pos1 += MUSTER_APP.length();
+                    if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
+                        app = seite2.substring(pos1, pos2);
+                    }
+                }
+                pos1 = 0;
+                while ((pos1 = seite2.indexOf(MUSTER_URL, pos1)) != -1) {
+                    pos1 += MUSTER_URL.length();
+                    if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
+                        tmpUrl = seite2.substring(pos1, pos2);
+                    }
+                    if (url.equals("")) {
+                        url = tmpUrl;
+                    }
+                    if (!url.contains(MUSTER_URL_VH) && tmpUrl.contains(MUSTER_URL_H)) {
+                        url = tmpUrl;
+                    }
+                    if (tmpUrl.contains(MUSTER_URL_VH)) {
+                        url = tmpUrl;
+                    }
+                }
+                if (url.equals("")) {
+                    // dann die alte URL eintragen
+                    addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
+                    Log.fehlerMeldungMReader(-864100247, "MediathekZdf.flashHolen-1", "keine URL: " + urlFilm);
+                } else if (host.equals("")) {
+                    // dann die alte URL eintragen
+                    addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
+                    Log.fehlerMeldungMReader(-356047809, "MediathekZdf.flashHolen-2", "kein Host: " + urlFilm);
+                } else {
+                    url = "rtmpt://" + host + "/" + app + "/" + url;
+                    addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
+                }
+
             } catch (Exception ex) {
                 Log.fehlerMeldung(-860248073, "MediathekZdf.filmHolen", ex, urlFilm);
             }
