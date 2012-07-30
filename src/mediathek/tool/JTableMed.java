@@ -113,16 +113,11 @@ public final class JTableMed extends JTable {
                     this.getRowSorter().setSortKeys(listeSortKeys);
                 }
             }
-//            if (rows == getRowCount()) {
-//                if (sel >= 0 && sel < this.getRowCount()) {
-//                    this.setRowSelectionInterval(sel, sel);
-//                    this.scrollRectToVisible(getCellRect(sel, 0, false));
-//                }
-//            }
             if (!idx.equals("")) {
                 int r = ((TModel) this.getModel()).getIdxRow(idx);
-                r = this.convertRowIndexToView(r);
                 if (r >= 0) {
+                    // ansonsten gibts die Zeile nicht mehr
+                    r = this.convertRowIndexToView(r);
                     this.setRowSelectionInterval(r, r);
                     this.scrollRectToVisible(getCellRect(r, 0, false));
                 }

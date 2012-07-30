@@ -350,6 +350,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             final String MUSTER_URL_L = "l.mp4";
             final String MUSTER_URL_H = "h.mp4";
             final String MUSTER_URL_VH = "vh.mp4";
+            String orgUrl = urlFilm;
             String host = "";
             String app = "";
             String prot;
@@ -357,10 +358,10 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             int pos1;
             int pos2;
             try {
-                meldung(urlFilm);
-                urlFilm = urlFilm.replace("http://wstreaming.zdf.de", "http://fstreaming.zdf.de");
-                urlFilm = urlFilm.replace(".asx", ".smil");
-                seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "urlThema: " + urlThema);
+                meldung(orgUrl);
+                orgUrl = orgUrl.replace("http://wstreaming.zdf.de", "http://fstreaming.zdf.de");
+                orgUrl = orgUrl.replace(".asx", ".smil");
+                seite2 = getUrl.getUri_Utf(nameSenderMReader, orgUrl, seite2, "urlThema: " + urlThema);
                 if ((pos1 = seite2.indexOf(MUSTER_HOST, 0)) != -1) {
                     pos1 += MUSTER_HOST.length();
                     if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
@@ -391,11 +392,11 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 }
                 if (url.equals("")) {
                     // dann die alte URL eintragen
-                    addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
+                    addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, urlFilm, urlFilm/* urlOrg */, ""/* urlRtmp */, datum, zeit));
                     Log.fehlerMeldungMReader(-864100247, "MediathekZdf.flashHolen-1", "keine URL: " + urlFilm);
                 } else if (host.equals("")) {
                     // dann die alte URL eintragen
-                    addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
+                    addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, urlFilm, urlFilm/* urlOrg */, ""/* urlRtmp */, datum, zeit));
                     Log.fehlerMeldungMReader(-356047809, "MediathekZdf.flashHolen-2", "kein Host: " + urlFilm);
                 } else {
                     url = "rtmpt://" + host + "/" + app + "/" + url;
