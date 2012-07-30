@@ -21,7 +21,6 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
@@ -39,54 +38,48 @@ public class DialogPsetSpeichern extends javax.swing.JDialog {
         ddaten = dd;
         initComponents();
         this.setTitle("Film Speichern");
-        if (ddaten.listePset.getListeSpeichern().size() == 0) {
-            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
-                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
-            beenden();
+        jTextFieldSender.setText(film.arr[DatenFilm.FILM_SENDER_NR]);
+        jTextFieldTitel.setText(film.arr[DatenFilm.FILM_TITEL_NR]);
+        jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel(ddaten.listePset.getListeSpeichern().getObjectDataCombo()));
+        if (ddaten.listePset.getListeSpeichern().size() == 1) {
+            // macht dann keinen Sinn
+            jComboBoxPgr.setVisible(false);
+            jLabelPset.setVisible(false);
         } else {
-            jTextFieldSender.setText(film.arr[DatenFilm.FILM_SENDER_NR]);
-            jTextFieldTitel.setText(film.arr[DatenFilm.FILM_TITEL_NR]);
-            jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel(ddaten.listePset.getListeSpeichern().getObjectDataCombo()));
-            if (ddaten.listePset.getListeSpeichern().size() == 1) {
-                // macht dann keinen Sinn
-                jComboBoxPgr.setVisible(false);
-                jLabelPset.setVisible(false);
-            } else {
-                jComboBoxPgr.addActionListener(new BeobComboProgramm());
-            }
-            setGruppe();
-            jButtonBeenden.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    ok = true;
-                    beenden();
-                }
-            });
-            new EscBeenden(this) {
-
-                @Override
-                public void beenden_() {
-                    beenden();
-                }
-            };
-            jButtonAbbrechen.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    beenden();
-                }
-            });
-            jCheckBoxStarten.setSelected(true);
-            starten = true;
-            jCheckBoxStarten.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    starten = jCheckBoxStarten.isSelected();
-                }
-            });
+            jComboBoxPgr.addActionListener(new BeobComboProgramm());
         }
+        setGruppe();
+        jButtonBeenden.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ok = true;
+                beenden();
+            }
+        });
+        new EscBeenden(this) {
+
+            @Override
+            public void beenden_() {
+                beenden();
+            }
+        };
+        jButtonAbbrechen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                beenden();
+            }
+        });
+        jCheckBoxStarten.setSelected(true);
+        starten = true;
+        jCheckBoxStarten.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                starten = jCheckBoxStarten.isSelected();
+            }
+        });
         pack();
     }
 

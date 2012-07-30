@@ -66,7 +66,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         ddaten = d;
         init();
         initTree();
-        this.pack();
         jButtonBeenden.addActionListener(new ActionListener() {
 
             @Override
@@ -288,9 +287,9 @@ public class DialogEinstellungen extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 989, Short.MAX_VALUE)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1068, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 886, Short.MAX_VALUE)
+                        .addGap(12, 965, Short.MAX_VALUE)
                         .addComponent(jButtonBeenden)))
                 .addContainerGap())
         );
@@ -298,7 +297,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonBeenden)
                 .addGap(6, 6, 6))

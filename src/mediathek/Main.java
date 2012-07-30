@@ -19,6 +19,8 @@
  */
 package mediathek;
 
+import java.util.ResourceBundle;
+
 public class Main {
 
     public static final String STARTP_ALLES = "-alles";
@@ -55,6 +57,7 @@ public class Main {
 
             @Override
             public void run() {
+
                 if (ar != null) {
                     for (int i = 0; i < ar.length; ++i) {
                         if (ar[i].equalsIgnoreCase("-auto")) {
@@ -86,4 +89,5 @@ public class Main {
             }
         });
     }
+
 }
