@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -54,6 +55,20 @@ public class Log {
         return ret;
     }
 
+    public static String getBuildNr(String propToken) {
+        final ResourceBundle rb;
+        String msg = "";
+        try {
+            ResourceBundle.clearCache();
+            rb = ResourceBundle.getBundle("version");
+            msg = rb.getString(propToken);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.err.println("Token " + propToken + " not in Propertyfile!");
+        }
+        return msg;
+    }
+
     public void resetFehlerListe() {
         fehlerListe.clear();
     }
@@ -73,6 +88,7 @@ public class Log {
         Log.systemMeldung("###########################################################");
         //Version
         Log.systemMeldung(getCompileDate());
+        Log.systemMeldung("Buildnummer: " + getBuildNr("BUILD"));
         Log.systemMeldung("Klassenname: " + classname);
         Log.systemMeldung("###########################################################");
     }

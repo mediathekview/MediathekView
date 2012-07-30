@@ -135,7 +135,7 @@ public class Konstanten {
     public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR = 36;
     //#######################
     public static final String SYSTEM_ABOS_PFAD = "Abos-Pfad-anlegen";
-    public static final int SYSTEM_ABOS_PFAD_NR = 37;
+    //public static final int SYSTEM_ABOS_PFAD_NR = 37;
     public static final String SYSTEM = "system";
     public static final int SYSTEM_MAX_ELEM = 38;
     public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION, SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y,

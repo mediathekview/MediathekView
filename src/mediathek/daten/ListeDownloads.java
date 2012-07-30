@@ -21,6 +21,7 @@ package mediathek.daten;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import javax.swing.JOptionPane;
 import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.starter.Starts;
@@ -116,6 +117,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // Filme in die Liste der Downloads eintragen
         // ist eine URL schon vorhanden,Sender,Thema,Titel aktualisieren,
         // es wird der aktuellere Eintrag verwendet
+        if (ddaten.listePset.getListeSpeichern().size() == 0) {
+            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+            // Satz mit x, war wohl nix
+            return;
+        }
         DialogPsetSpeichern dialog = new DialogPsetSpeichern(null, true, ddaten, film);
         dialog.setVisible(true);
         if (dialog.ok && dialog.pSet != null) {

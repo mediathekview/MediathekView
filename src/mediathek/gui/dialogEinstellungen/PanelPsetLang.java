@@ -149,6 +149,14 @@ public class PanelPsetLang extends PanelVorlage {
                 nurtabellePset();
             }
         });
+        jCheckBoxThema.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getPset().arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR] = Boolean.toString(jCheckBoxThema.isSelected());
+                nurtabellePset();
+            }
+        });
         jSpinnerLaenge.addChangeListener(new ChangeListener() {
 
             @Override
@@ -249,6 +257,7 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxAbo.setEnabled(pSet != null);
         jCheckBoxLaenge.setEnabled(pSet != null);
         jCheckBoxFragen.setEnabled(pSet != null);
+        jCheckBoxThema.setEnabled(pSet != null);
         jSpinnerLaenge.setEnabled(pSet != null);
         if (pSet != null) {
             if (pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
@@ -259,6 +268,7 @@ public class PanelPsetLang extends PanelVorlage {
             }
             jCheckBoxLaenge.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR]));
             jCheckBoxFragen.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR]));
+            jCheckBoxThema.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR]));
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Programmset: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTabbedPane.setTitleAt(0, "Programmset: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
             jTextFieldGruppeName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
@@ -276,6 +286,7 @@ public class PanelPsetLang extends PanelVorlage {
             //jSpinnerLaenge.setValue(GuiKonstanten.MAX_LAENGE_DATEINAME); Exception!
             jCheckBoxLaenge.setSelected(false);
             jCheckBoxFragen.setSelected(false);
+            jCheckBoxThema.setSelected(false);
             jTextFieldGruppeName.setText("");
             jTextFieldGruppeDirektSuffix.setText("");
             jTextFieldGruppeDirektPraefix.setText("");
@@ -450,7 +461,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
             String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR] + ".xml";
-            DialogZiel dialogZiel = new DialogZiel(null, true, exportPfad, GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */, false /*leerEntfernen*/));
+            DialogZiel dialogZiel = new DialogZiel(null, true, exportPfad, GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */, false /* leerEntfernen */));
             dialogZiel.setVisible(true);
             if (dialogZiel.ok) {
                 if (dialogZiel.ziel.contains(File.separator)) {
@@ -536,6 +547,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppePfad = new javax.swing.JButton();
         jCheckBoxFragen = new javax.swing.JCheckBox();
         jLabel12 = new javax.swing.JLabel();
+        jCheckBoxThema = new javax.swing.JCheckBox();
         jPanelProgramme = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableProgramme = new javax.swing.JTable();
@@ -712,6 +724,7 @@ public class PanelPsetLang extends PanelVorlage {
         jLabel8.setText("Zieldateiname:");
 
         jCheckBoxLaenge.setText("Dateiname beschränken auf:");
+        jCheckBoxLaenge.setToolTipText("die Länge des Dateinamens wird auf die Anzahl Zeichen beschränkt");
 
         jSpinnerLaenge.setModel(new javax.swing.SpinnerNumberModel(25, 12, 100, 1));
 
@@ -719,8 +732,12 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppePfad.setToolTipText("Pfad auswählen");
 
         jCheckBoxFragen.setText("Ziel vor dem Download abfragen");
+        jCheckBoxFragen.setToolTipText("vor dem Download wird in einem Dialog der Speicherort abgefragt");
 
         jLabel12.setText("Zeichen");
+
+        jCheckBoxThema.setText("einen Unterordner mit dem Thema anlegen");
+        jCheckBoxThema.setToolTipText("im Zielverzeichnis wird ein Unterordner mit dem Namen des Themas zum Speichern der Filme angelegt");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -749,14 +766,17 @@ public class PanelPsetLang extends PanelVorlage {
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jCheckBoxFragen)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jCheckBoxThema)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxFragen)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBoxFragen)
+                    .addComponent(jCheckBoxThema))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel7)
@@ -1087,6 +1107,7 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxLaenge;
     private javax.swing.JCheckBox jCheckBoxRestart;
     private javax.swing.JCheckBox jCheckBoxSpeichern;
+    private javax.swing.JCheckBox jCheckBoxThema;
     private javax.swing.JLabel jLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
