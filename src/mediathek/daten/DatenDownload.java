@@ -248,7 +248,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
 
         pfad = replaceString(pfad);
-        pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* pfadtrennerEntfernen */);
+        pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* pfadtrennerEntfernen */, false /* leerEntfernen */);
         if (pfad.endsWith(File.separator)) {
             pfad = pfad.substring(0, pfad.length() - 1);
         }
@@ -258,7 +258,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         // ##############################################
         if (!Daten.auto && Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR])) {
             // %n und %p werden jetzt gleich verwendet, es wird immer ein Dialog angezeigt in dem beides (Name und Pfad) geändert werden kann
-            name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */);
+            name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */, true /* leerEntfernen */);
             DialogZielDatei dialog = new DialogZielDatei(null, true, pfad, name);
             dialog.setVisible(true);
             if (!dialog.ok) {
@@ -287,7 +287,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 name = name.substring(0, laenge - 4) + name.substring(name.length() - 4);
             }
         }
-        arr[DOWNLOAD_ZIEL_DATEINAME_NR] = GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */);
+        arr[DOWNLOAD_ZIEL_DATEINAME_NR] = GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */, true /* leerEntfernen */);
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
         arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, arr[DOWNLOAD_ZIEL_DATEINAME_NR]);
     }

@@ -70,7 +70,7 @@ public class GuiFunktionen {
             }
             ret = true;
         } catch (Exception e) {
-            Log.fehlerMeldung(305964198,"GuiFunktionen.setLook", e, "Kann das Look and Feel nicht ändern!");
+            Log.fehlerMeldung(305964198, "GuiFunktionen.setLook", e, "Kann das Look and Feel nicht ändern!");
         }
         return ret;
     }
@@ -91,12 +91,14 @@ public class GuiFunktionen {
         }
     }
 
-    public static String replaceLeerDateiname(String pfad, boolean pfadtrennerEntfernen) {
+    public static String replaceLeerDateiname(String pfad, boolean pfadtrennerEntfernen, boolean leerEntfernen) {
         //verbotene Zeichen entfernen
         String ret = pfad;
         if (pfadtrennerEntfernen) {
-            ret = ret.replace("/", "-");
-            ret = ret.replace("\\", "-");
+            ret = ret.replace(File.separator, "-");
+        }
+        if (leerEntfernen) {
+            ret = ret.replace(" ", "_");
         }
         ret = ret.replace("\n", "_");
         ret = ret.replace("\"", "_");
@@ -104,7 +106,6 @@ public class GuiFunktionen {
         ret = ret.replace(";", "_");
         ret = ret.replace("(", "_");
         ret = ret.replace(")", "_");
-        ret = ret.replace(" ", "_");
         ret = ret.replace("*", "_");
         ret = ret.replace("?", "_");
         ret = ret.replace("<", "_");
@@ -132,7 +133,7 @@ public class GuiFunktionen {
             }
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(283946015,"GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
+            Log.fehlerMeldung(283946015, "GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
         }
         return ret;
     }
@@ -152,7 +153,7 @@ public class GuiFunktionen {
             ret = ret.substring(0, ret.indexOf("&"));
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(395019631,"GuiFunktionen.getDateiName", pfad);
+            Log.fehlerMeldung(395019631, "GuiFunktionen.getDateiName", pfad);
         }
         return ret;
     }

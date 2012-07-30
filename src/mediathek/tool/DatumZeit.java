@@ -107,31 +107,31 @@ public class DatumZeit {
         return zeit;
     }
 
-    public static String datumDrehen(String datum) {
-        String ret = "";
-        if (!datum.equals("")) {
-            try {
-                if (datum.length() == 10) {
-                    String tmp = datum.substring(6); // Jahr
-                    tmp += "." + datum.substring(3, 5); // Monat
-                    tmp += "." + datum.substring(0, 2); // Tag
-                    ret = tmp;
-                }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(293561086, "DatumZeit.datumDrehen", ex);
-            }
-
-        }
-        return ret;
-    }
-
-    public static String datumDatumZeitReinigen(String datum) {
-        String ret = "";
-        ret = datum;
-        ret = ret.replace(":", "");
-        ret = ret.replace(".", "");
-        return ret;
-    }
+//    public static String datumDrehen(String datum) {
+//        String ret = "";
+//        if (!datum.equals("")) {
+//            try {
+//                if (datum.length() == 10) {
+//                    String tmp = datum.substring(6); // Jahr
+//                    tmp += "." + datum.substring(3, 5); // Monat
+//                    tmp += "." + datum.substring(0, 2); // Tag
+//                    ret = tmp;
+//                }
+//            } catch (Exception ex) {
+//                Log.fehlerMeldung(293561086, "DatumZeit.datumDrehen", ex);
+//            }
+//
+//        }
+//        return ret;
+//    }
+//
+//    public static String datumDatumZeitReinigen(String datum) {
+//        String ret = "";
+//        ret = datum;
+//        ret = ret.replace(":", "");
+//        ret = ret.replace(".", "");
+//        return ret;
+//    }
 
     public static Datum getDatumForObject(String datum) {
         Datum tmp = new Datum(0);

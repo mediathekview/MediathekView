@@ -450,7 +450,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
             String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR] + ".xml";
-            DialogZiel dialogZiel = new DialogZiel(null, true, exportPfad, GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */));
+            DialogZiel dialogZiel = new DialogZiel(null, true, exportPfad, GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */, false /*leerEntfernen*/));
             dialogZiel.setVisible(true);
             if (dialogZiel.ok) {
                 if (dialogZiel.ziel.contains(File.separator)) {
