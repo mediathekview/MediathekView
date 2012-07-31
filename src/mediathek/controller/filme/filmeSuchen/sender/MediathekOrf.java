@@ -55,8 +55,8 @@ public class MediathekOrf extends MediathekReader implements Runnable {
         StringBuffer seite = new StringBuffer();
         seite = getUrlIo.getUri_Utf(nameSenderMReader, ADRESSE, seite, "");
         int pos = 0;
-        int pos1 = 0;
-        int pos2 = 0;
+        int pos1;
+        int pos2;
         String url = "";
         String thema = "";
         //Podcasts auslesen
@@ -96,14 +96,14 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                     String[] add = new String[]{
                         "http://tvthek.orf.at" + m + url, thema //TH
                     };
-                    if (!istInListe(listeThemen, url, 0)) {
+                    if (!istInListe(listeThemen, add[0], 0)) {
                         listeThemen.add(add);
                     }
                 } else {
                     break; //TH muss sein da muster 2 manchmal nicht fündig - dann Endlosschleife
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-469732500,"MediathekOrf.addToList", ex);
+                Log.fehlerMeldung(-469732500, "MediathekOrf.addToList", ex);
             }
         }
         if (!Daten.filmeLaden.getStop()) {
@@ -119,7 +119,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
 
     private class OrfThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl( wartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
 
         @Override
@@ -132,12 +132,12 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                         meldungProgress(link[0]);
                         feedEinerSeiteSuchen(link[0] /* url */, link[1] /* Thema */);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(-795633581,"MediathekOrf.OrfThemaLaden.run", ex);
+                        Log.fehlerMeldung(-795633581, "MediathekOrf.OrfThemaLaden.run", ex);
                     }
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-554012398,"MediathekOrf.OrfThemaLaden.run", ex);
+                Log.fehlerMeldung(-554012398, "MediathekOrf.OrfThemaLaden.run", ex);
             }
         }
 
@@ -150,12 +150,12 @@ public class MediathekOrf extends MediathekReader implements Runnable {
             final String MUSTER_DATUM_2 = "Uhr</span>"; //TH
             seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "Thema: " + thema);
             int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
+            int pos1;
+            int pos2;
             String url = "";
             String datum = "";
             String zeit = "";
-            String tmp = "";
+            String tmp;
             if ((pos1 = seite1.indexOf(MUSTER_DATUM_1)) != -1) {
                 pos1 += MUSTER_DATUM_1.length();
                 if ((pos2 = seite1.indexOf(MUSTER_DATUM_2, pos1)) != -1) {
@@ -189,7 +189,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                         addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, MUSTER_SET + url, datum, zeit));
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(-336987510,"MediathekOrf.feedEinerSeiteSuchen", ex);
+                    Log.fehlerMeldung(-336987510, "MediathekOrf.feedEinerSeiteSuchen", ex);
                 }
             }
         }
