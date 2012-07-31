@@ -27,7 +27,7 @@ import mediathek.Log;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekSfPod extends MediathekReader implements Runnable {
 
@@ -36,7 +36,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
 
     /**
      * 
-     * @param ddaten
+     *  @param ddaten
      */
     public MediathekSfPod(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
@@ -69,12 +69,10 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                 }
             }
             if (url.equals("")) {
-                Log.fehlerMeldungMReader(-698875503,"MediathekSfPod.addToList", "keine URL");
+                Log.fehlerMeldungMReader(-698875503, "MediathekSfPod.addToList", "keine URL");
             } else {
                 String[] add = new String[]{url, ""};
-                if (!istInListe(listeThemen, url, 0)) {
-                    listeThemen.add(add);
-                }
+                listeThemen.addUrl(add);
             }
         }
         if (!Daten.filmeLaden.getStop()) {
@@ -89,7 +87,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
 
     private class SfThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl( wartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite = new StringBuffer();
 
         @Override
@@ -103,7 +101,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-286931004,"MediathekSfPod.SfThemaLaden.run", ex);
+                Log.fehlerMeldung(-286931004, "MediathekSfPod.SfThemaLaden.run", ex);
             }
         }
 
@@ -162,7 +160,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                             url = seite.substring(pos, posEnd);
                         }
                         if (url.equals("")) {
-                            Log.fehlerMeldungMReader(-463820049,"MediathekSfPod.addFilme", "keine URL: " + strUrlFeed);
+                            Log.fehlerMeldungMReader(-463820049, "MediathekSfPod.addFilme", "keine URL: " + strUrlFeed);
                         } else {
 //                            urlorg = urlorg.replace("%20", "\u0020;");
                             addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""/* zeit */));
@@ -170,7 +168,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-496352007,"MediathekSfPod.addFilme", ex);
+                Log.fehlerMeldung(-496352007, "MediathekSfPod.addFilme", ex);
             }
         }
     }

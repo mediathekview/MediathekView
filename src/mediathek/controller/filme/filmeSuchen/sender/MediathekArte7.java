@@ -142,9 +142,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                         Log.fehlerMeldungMReader(-762138540, "MediathekArte.addToList__", "keine URL" + nameSenderMReader + thema);
                     } else {
                         String[] add = new String[]{URL_THEMA_PREFIX + url, thema};
-                        if (!istInListe(listeThemen, url, 0)) {
-                            listeThemen.add(add);
-                        }
+                        listeThemen.addUrl(add);
                     }
                 }
             }

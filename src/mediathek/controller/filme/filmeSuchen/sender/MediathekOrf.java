@@ -31,7 +31,7 @@ import mediathek.daten.DatenFilm;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekOrf extends MediathekReader implements Runnable {
 
@@ -39,7 +39,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *  @param ddaten
      */
     public MediathekOrf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
@@ -96,9 +96,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                     String[] add = new String[]{
                         "http://tvthek.orf.at" + m + url, thema //TH
                     };
-                    if (!istInListe(listeThemen, add[0], 0)) {
-                        listeThemen.add(add);
-                    }
+                    listeThemen.addUrl(add);
                 } else {
                     break; //TH muss sein da muster 2 manchmal nicht fündig - dann Endlosschleife
                 }

@@ -74,7 +74,7 @@ public class MediathekNdrFlash extends MediathekReader implements Runnable {
                     continue;
                 }
                 String[] add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-24.xml", thema};
-                listeThemen.add(add);
+                listeThemen.addUrl(add);
             } catch (Exception ex) {
                 Log.fehlerMeldung(-332945670, "MediathekNdr.finden", ex);
             }
@@ -94,7 +94,7 @@ public class MediathekNdrFlash extends MediathekReader implements Runnable {
         // Seiten der Ansicht: "letzten Tage"
         for (int i = 0; i <= 10; ++i) {
             String[] add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_page-" + Integer.toString(i) + "_medium-tv_pageSize-24.xml", ""};
-            listeThemen.add(add);
+            listeThemen.addUrl(add);
         }
     }
 

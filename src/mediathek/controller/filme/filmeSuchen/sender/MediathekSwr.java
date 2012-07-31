@@ -107,9 +107,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                 } else {
                     //url = url.replace("&amp;", "&");
                     String[] add = new String[]{"http://swrmediathek.de/tvshow.htm?show=" + url, thema};
-                    if (!istInListe(listeThemen, url, 0)) {
-                        listeThemen.add(add);
-                    }
+                    listeThemen.addUrl(add);
                 }
             }
         }

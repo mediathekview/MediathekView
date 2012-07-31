@@ -39,7 +39,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekHr(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 1000, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
     }
 
     /**
@@ -62,9 +62,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                 url = seite.substring(pos1, pos2);
                 if (!url.equals("")) {
                     String[] add = new String[]{url, ""};
-                    if (!istInListe(listeThemen, url, 0)) {
-                        listeThemen.add(add);
-                    }
+                    listeThemen.addUrl(add);
                 } else {
                     Log.fehlerMeldungMReader(-456933258, "MediathekHr.addToList", "keine URL");
                 }

@@ -29,7 +29,7 @@ import mediathek.daten.DatenFilm;
 
 /**
  *
- * @author
+ *   @author
  */
 public class MediathekWdr extends MediathekReader implements Runnable {
 
@@ -39,8 +39,8 @@ public class MediathekWdr extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
-     * @param dde
+     *   @param ddaten
+     *   @param dde
      */
     public MediathekWdr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
@@ -57,7 +57,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         if (suchen.allesLaden) {
             //TH Rockpalast hinzu
             String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
-            listeThemen.add(add);
+            listeThemen.addUrl(add);
         }
         if (!Daten.filmeLaden.getStop()) {
             if (listeThemen.size() > 0) {
@@ -114,9 +114,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                         } else {
                             add = new String[]{"http://www.wdr.de" + url + "&rankingcount=10", thema};
                         }
-                        if (!istInListe(listeThemen, url, 0)) {
-                            listeThemen.add(add);
-                        }
+                        listeThemen.addUrl(add);
                     }
                 }
             }
