@@ -29,7 +29,7 @@ import mediathek.tool.GermanStringSorter;
 
 /**
  *
- *    @author
+ * @author
  */
 public class MediathekReader implements Runnable {
 
@@ -43,13 +43,13 @@ public class MediathekReader implements Runnable {
     int max = 0;
     int progress = 0;
     int startPrio = 1; // es gibt die Werte: 0->startet sofort, 1->später und 2->zuletzt
-    LinkedList<String[]> listeThemen = new LinkedList<String[]>();
+    LinkedListUrl listeThemen = new LinkedListUrl();
     GetUrl getUrlIo;
     FilmeSuchenSender suchen;
 
     /**
      *
-     *    @param ddaten
+     * @param ddaten
      */
     public MediathekReader(FilmeSuchenSender ssearch, String nameMreader, int ssenderMaxThread, int ssenderWartenSeiteLaden, int sstartPrio) {
         suchen = ssearch;
@@ -64,13 +64,17 @@ public class MediathekReader implements Runnable {
     // public 
     //===================================
 
-//    public boolean istSenderAn() {
-//        return senderOn;
-//    }
-//
-//    public void setSenderAn(boolean an) {
-//        senderOn = an;
-//    }
+    class LinkedListUrl extends LinkedList<String[]> {
+
+        public boolean addUrl(String[] e) {
+            // e[0] ist immer die URL
+            if (!istInListe(listeThemen, e[0], 0)) {
+                return super.add(e);
+            }
+            return false;
+        }
+    };
+
     public int getStartPrio() {
         return startPrio;
     }

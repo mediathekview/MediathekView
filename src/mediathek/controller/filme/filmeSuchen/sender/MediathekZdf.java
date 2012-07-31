@@ -28,7 +28,7 @@ import mediathek.daten.DatenFilm;
 
 /**
  *
- * @author
+ *        @author
  */
 public class MediathekZdf extends MediathekReader implements Runnable {
 
@@ -40,7 +40,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *        @param ddaten
      */
     public MediathekZdf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, 8 /* threads */, 500 /* urlWarten */, startPrio);
@@ -119,7 +119,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         int pos2;
         int pos3;
         String url = "";
-        String urlorg;
+        String urlThema;
         String thema = "";
         while ((pos = seite.indexOf(MUSTER_URL, pos)) != -1) {
             pos += MUSTER_URL.length();
@@ -146,9 +146,9 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-946325890, "MediathekZdf.addToList_addr", "keine URL: " + addr);
             } else {
                 url = "http://www.zdf.de/ZDFmediathek/kanaluebersicht/aktuellste/" + url;
-                urlorg = url;
+                urlThema = url;
                 url += "?teaserListIndex=" + String.valueOf(anz);
-                addThemenliste(urlorg, url, thema);
+                addThemenliste(url, urlThema, thema);
             }
         }
     }
@@ -164,11 +164,9 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         addThemenliste("http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-verpasst/day7", "http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-verpasst/day7", "");
     }
 
-    private synchronized void addThemenliste(String urlorg, String url, String thema) {
-        String[] add = new String[]{urlorg, url, thema};
-        if (!istInListe(listeThemen, url, 0)) {
-            listeThemen.add(add);
-        }
+    private synchronized void addThemenliste(String url, String urlThema, String thema) {
+        String[] add = new String[]{url, urlThema, thema};
+        listeThemen.addUrl(add);
     }
 
     private class ZdfThemaLaden implements Runnable {
@@ -184,7 +182,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 meldungAddThread();
                 while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
                     seite1.setLength(0);
-                    addFilme(link[2]/* Thema */, link[1]/* url */, link[0]/* urlorg */);
+                    addFilme(link[0]/* url */, link[1]/* urlThema */, link[2]/* Thema */);
                     meldungProgress(link[0]);
                 }
                 meldungThreadUndFertig();
@@ -193,10 +191,10 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             }
         }
 
-        private void addFilme(String thema, String urlThema, String urlorg) {
+        private void addFilme(String url, String urlThema, String thema) {
             final String MUSTER_URL_1 = "<p><b><a href=\"/ZDFmediathek/beitrag/video/";
             String titel = "";
-            String url = "";
+            String urlFilm = "";
             int pos = 0;
             int pos1 = 0;
             int pos2 = 0;
@@ -204,7 +202,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             int anz = 0;
             try {
                 //seite1 = getUrl.getUri(urlThema + "?bc=saz", seite1);
-                seite1 = getUrl.getUri_Utf(nameSenderMReader, urlThema, seite1, "Thema: " + thema);
+                seite1 = getUrl.getUri_Utf(nameSenderMReader, url, seite1, "Thema: " + thema);
                 while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_URL_1, pos)) != -1) {
                     ++anz;
                     if (!suchen.allesLaden) {
@@ -219,28 +217,28 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     pos3 = seite1.indexOf("\"", pos);
                     if (pos1 != -1 && pos2 != -1 && pos3 != -1 && pos2 < pos3) {
                         //pos2 > pos3 dann hat der Link kein ?
-                        url = seite1.substring(pos1, pos2);
+                        urlFilm = seite1.substring(pos1, pos2);
                     } else {
-                        url = seite1.substring(pos1, pos3);
+                        urlFilm = seite1.substring(pos1, pos3);
                     }
                     pos1 = seite1.indexOf("\">", pos);
                     pos2 = seite1.indexOf("<", pos);
                     if (pos1 != -1 && pos2 != -1) {
                         titel = seite1.substring(pos1 + 2, pos2);
                     }
-                    if (url.equals("")) {
-                        Log.fehlerMeldungMReader(-643269690, "MediathekZdf.addFilme", "keine URL: " + urlThema);
+                    if (urlFilm.equals("")) {
+                        Log.fehlerMeldungMReader(-643269690, "MediathekZdf.addFilme", "keine URL: " + url);
                     } else {
-                        url = "http://www.zdf.de/ZDFmediathek/beitrag/video/" + url;
-                        filmHolen(thema, titel, urlorg, url);
+                        urlFilm = "http://www.zdf.de/ZDFmediathek/beitrag/video/" + urlFilm;
+                        filmHolen(thema, titel, urlThema, urlFilm);
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-796325800, "MediathekZdf.addFilme", ex, urlThema);
+                Log.fehlerMeldung(-796325800, "MediathekZdf.addFilme", ex, url);
             }
         }
 
-        private void filmHolen(String thema, String titel, String urlThema, String urlFilm) {
+        private void filmHolen(String thema, String titel, String urlThema, String uurlFilm) {
             final String MUSTER_URL_1 = "<li>DSL 2000 <a href=\"http://wstreaming.zdf.de/zdf/veryhigh/";
             final String MUSTER_URL_2 = "<li>DSL 2000 <a href=\"http://wgeostreaming.zdf.de/zdf/veryhigh/";
             final String MUSTER_TITEL_1 = "<title>";
@@ -248,15 +246,15 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             final String MUSTER_DATUM_1 = "<p class=\"datum\">";
             final String MUSTER_DATUM_2 = "</p>";
             String muster = "";
-            String url = "";
+            String urlFilm = "";
             String datum = "";
             String zeit = "";
             int pos = 0;
             int pos1 = 0;
             int pos2 = 0;
             try {
-                meldung("*" + urlFilm);
-                seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "urlThema: " + urlThema);
+                meldung("*" + uurlFilm);
+                seite2 = getUrl.getUri_Utf(nameSenderMReader, uurlFilm, seite2, "urlThema: " + urlThema);
                 if (titel.equals("")) {
                     //<title>Neu im Kino - &quot;Fair Game&quot; - ZDFneo - ZDFmediathek - ZDF Mediathek</title>
                     //<title>Trinkwasser aus dem Eisberg - Abenteuer Wissen - ZDFmediathek - ZDF Mediathek</title>
@@ -304,17 +302,17 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     pos1 = pos;
                     pos2 = seite2.indexOf("\"", pos);
                     if (pos1 != -1 && pos2 != -1) {
-                        url = seite2.substring(pos1, pos2);
+                        urlFilm = seite2.substring(pos1, pos2);
                     }
-                    if (url.equals("")) {
+                    if (urlFilm.equals("")) {
                         Log.fehlerMeldungMReader(-690048078, "MediathekZdf.filmHolen-1", "keine URL: " + urlFilm);
                     } else {
-                        url = "http://wstreaming.zdf.de/zdf/veryhigh/" + url;
-                        if (!url.endsWith("asx")) {
+                        urlFilm = "http://wstreaming.zdf.de/zdf/veryhigh/" + urlFilm;
+                        if (!urlFilm.endsWith("asx")) {
                             Log.fehlerMeldungMReader(-200480752, "MediathekZdf.filmHolen-2", "keine URL: " + urlFilm);
                         } else {
                             //addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
-                            flashHolen(thema, titel, urlThema, url, datum, zeit);
+                            flashHolen(thema, titel, urlThema, urlFilm, datum, zeit);
                         }
                     }
                 }

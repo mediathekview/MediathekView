@@ -82,9 +82,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     continue;
                 }
                 String[] add = new String[]{"http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=" + url + "/index.html", thema};
-                if (!istInListe(listeThemen, url, 0)) {
-                    listeThemen.add(add);
-                }
+                listeThemen.addUrl(add);
             } catch (Exception ex) {
                 Log.fehlerMeldung(-698732167, "MediathekArd.addToList", ex, "kein Thema");
             }

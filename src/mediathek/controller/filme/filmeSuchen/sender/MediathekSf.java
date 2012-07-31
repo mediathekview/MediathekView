@@ -27,7 +27,7 @@ import mediathek.daten.DatenFilm;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekSf extends MediathekReader implements Runnable {
 
@@ -37,10 +37,10 @@ public class MediathekSf extends MediathekReader implements Runnable {
 
     /**
      * 
-     * @param ddaten
+     *  @param ddaten
      */
     public MediathekSf(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 1000, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
     }
 
     /**
@@ -71,11 +71,9 @@ public class MediathekSf extends MediathekReader implements Runnable {
                         thema = seite.substring(pos1 + 1, pos2);
                     }
                     String[] add = new String[]{"http://www.videoportal.sf.tv/rss/sendung?id=" + url, thema};
-                    if (!istInListe(listeThemen, url, 0)) {
-                        listeThemen.add(add);
-                    }
+                    listeThemen.addUrl(add);
                 } else {
-                    Log.fehlerMeldungMReader(-198620778,"MediathekSf.addToList", "keine URL");
+                    Log.fehlerMeldungMReader(-198620778, "MediathekSf.addToList", "keine URL");
 
                 }
             }
@@ -92,7 +90,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
 
     private class SfThemaLaden implements Runnable {
 
-        GetUrl getUrl = new GetUrl( wartenSeiteLaden);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
         private StringBuffer seite2 = new StringBuffer();
 
@@ -108,7 +106,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-832002877,"MediathekSf.SfThemaLaden.run", ex);
+                Log.fehlerMeldung(-832002877, "MediathekSf.SfThemaLaden.run", ex);
             }
         }
 
@@ -164,7 +162,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                                         titel = seite1.substring(pos1, pos2);
                                         addFilme2(thema, strUrlFeed, "http://www.videoportal.sf.tv/cvis/segment/" + url + "/.json", titel, datum, zeit);
                                     } else {
-                                        Log.fehlerMeldungMReader(-499556023,"MediathekSf.addFilme", "keine URL: " + strUrlFeed);
+                                        Log.fehlerMeldungMReader(-499556023, "MediathekSf.addFilme", "keine URL: " + strUrlFeed);
                                     }
                                 }
                             }
@@ -172,7 +170,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-795638103,"MediathekSf.addFilme", ex);
+                Log.fehlerMeldung(-795638103, "MediathekSf.addFilme", ex);
             }
         }
 
@@ -196,12 +194,12 @@ public class MediathekSf extends MediathekReader implements Runnable {
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
                             addFilm(film);
                         } else {
-                            Log.fehlerMeldungMReader(-698325618,"MediathekSf.addFilme2", "keine URL" + url);
+                            Log.fehlerMeldungMReader(-698325618, "MediathekSf.addFilme2", "keine URL" + url);
                         }
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-556320087,"MediathekSf.addFilme2", ex);
+                Log.fehlerMeldung(-556320087, "MediathekSf.addFilme2", ex);
             }
         }
     }

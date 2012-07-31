@@ -62,9 +62,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                             String listurl = ROOTADR + seite2.substring(lpos1, lpos2);
                             if (!listurl.equals("")) {
                                 String[] add = new String[]{listurl, ""};
-                                if (!istInListe(listeThemen, url, 0)) {
-                                    listeThemen.add(add);
-                                }
+                                listeThemen.addUrl(add);
                             }
                         }
                     }

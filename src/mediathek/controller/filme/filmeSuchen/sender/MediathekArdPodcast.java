@@ -28,7 +28,7 @@ import mediathek.daten.DatenFilm;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
@@ -36,7 +36,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
     /**
      *
-     *  @param ddaten
+     * @param ddaten
      */
     public MediathekArdPodcast(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
@@ -79,9 +79,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     continue;
                 }
                 String[] add = new String[]{MUSTER_SET + url, thema};
-                if (!istInListe(listeThemen, url, 0)) {
-                    listeThemen.add(add);
-                }
+                listeThemen.addUrl(add);
             } catch (Exception ex) {
                 Log.fehlerMeldung(-764238903, "MediathekArdPodcast.addToList", ex, "kein Thema");
             }

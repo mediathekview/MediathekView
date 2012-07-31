@@ -31,7 +31,7 @@ import mediathek.daten.DatenFilm;
 
 /**
  *
- *  @author
+ *   @author
  */
 public class MediathekMdr extends MediathekReader implements Runnable {
 
@@ -41,7 +41,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
 
     /**
      *
-     *  @param ddaten
+     *   @param ddaten
      */
     public MediathekMdr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 1000, startPrio);
@@ -78,9 +78,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-889216307, "MediathekMdr.addToList", "keine URL");
             } else {
                 url = MUSTER_ADD + url;
-                if (!istInListe(listeThemen, url, 0)) {
-                    listeThemen.add(new String[]{url});
-                }
+                listeThemen.addUrl(new String[]{url});
             }
         }
         seite = getUrlIo.getUri_Utf(nameSenderMReader, URL_TAGE, seite, "");

@@ -76,9 +76,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                 }
                 // in die Liste eintragen
                 String[] add = new String[]{"http://www.3sat.de/mediathek/rss/mediathek_" + url, thema};
-                if (!istInListe(listeThemen, url, 0)) {
-                    listeThemen.add(add);
-                }
+                    listeThemen.addUrl(add);
             } catch (Exception ex) {
                 Log.fehlerMeldung(-498653287, "Mediathek3sat.addToList", ex);
             }
