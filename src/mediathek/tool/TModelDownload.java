@@ -25,10 +25,6 @@ public class TModelDownload extends TModel {
 
     Class[] types;
 
-    /** Creates a new instance of TModel */
-    public TModelDownload() {
-    }
-
     public TModelDownload(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
         types = new Class[DatenDownload.DOWNLOAD_MAX_ELEM];

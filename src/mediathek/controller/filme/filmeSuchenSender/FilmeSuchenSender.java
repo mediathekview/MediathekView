@@ -208,6 +208,7 @@ public class FilmeSuchenSender {
         }
         // wird einmal aufgerufen, wenn alle Sender fertig sind
         if (listeSenderLaufen.listeFertig()) {
+            int anzFilme = listeFilmeNeu.size();
             listeFilmeNeu.sort();
             if (!allesLaden) {
                 // alte Filme eintragen
@@ -230,6 +231,7 @@ public class FilmeSuchenSender {
             Log.systemMeldung(fertigMeldung.toArray(new String[0]));
             Log.systemMeldung("==================================================================================================================");
             Log.systemMeldung("");
+            Log.systemMeldung("      Filme geladen:  " + anzFilme);
             Log.systemMeldung("      Seiten geladen: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER));
             String groesse = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE) == 0) ? "<1" : Long.toString(GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE));
             Log.systemMeldung("Summe geladen[MByte]: " + groesse);

@@ -17,7 +17,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mediathek.tool;
 
 import mediathek.daten.DatenFilm;
@@ -25,10 +24,6 @@ import mediathek.daten.DatenFilm;
 public class TModelFilm extends TModel {
 
     Class[] types;
-
-    /** Creates a new instance of TModel */
-    public TModelFilm() {
-    }
 
     public TModelFilm(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
