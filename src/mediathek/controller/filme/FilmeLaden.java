@@ -58,19 +58,19 @@ public class FilmeLaden {
         listeners.add(FilmListener.class, listener);
     }
 
-    public void notifyStart(FilmListenerElement filmListenerElement) {
+    private void notifyStart(FilmListenerElement filmListenerElement) {
         for (FilmListener l : listeners.getListeners(FilmListener.class)) {
             l.start(filmListenerElement);
         }
     }
 
-    public void notifyProgress(FilmListenerElement filmListenerElement) {
+    private void notifyProgress(FilmListenerElement filmListenerElement) {
         for (FilmListener l : listeners.getListeners(FilmListener.class)) {
             l.progress(filmListenerElement);
         }
     }
 
-    public void notifyFertig(FilmListenerElement filmListenerElement) {
+    private void notifyFertig(FilmListenerElement filmListenerElement) {
         for (FilmListener l : listeners.getListeners(FilmListener.class)) {
             l.fertig(filmListenerElement);
         }
