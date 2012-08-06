@@ -27,7 +27,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import javax.swing.*;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.filme.BeobFilmeLaden;
@@ -37,7 +44,12 @@ import mediathek.controller.io.CheckUpdate;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.ProgrammLog;
 import mediathek.daten.DDaten;
-import mediathek.gui.*;
+import mediathek.gui.GuiAbo;
+import mediathek.gui.GuiDebug;
+import mediathek.gui.GuiDownloads;
+import mediathek.gui.GuiFilme;
+import mediathek.gui.InfoPanel;
+import mediathek.gui.OSXAdapter;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.PanelHilfe;
@@ -217,7 +229,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         initMenue();
         initToolBar();
         DDaten.filmeLaden.addAdListener(new BeobFilmeLaden() {
-
             @Override
             public void start(FilmListenerElement filmListenerElement) {
                 //ddaten.infoPanel.setProgress();
@@ -238,7 +249,6 @@ public final class MediathekGui extends javax.swing.JFrame {
             }
         });
         addWindowListener(new java.awt.event.WindowAdapter() {
-
             @Override
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 beenden();
@@ -260,7 +270,6 @@ public final class MediathekGui extends javax.swing.JFrame {
                 new PanelMeldungen(ddaten, Log.textSystem, Log.LOG_SYSTEM, "Systemmeldungen"),
                 new PanelMeldungen(ddaten, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer"));
         splitPane.addComponentListener(new java.awt.event.ComponentAdapter() {
-
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 ddaten.mediathekGui.setToolbar(MediathekGui.ButtonAus);
@@ -282,7 +291,6 @@ public final class MediathekGui extends javax.swing.JFrame {
     private void initToolBar() {
         setIcon(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ICON_KLEIN_NR]));
         jButtonFilmeLaden.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 filmeLaden();
@@ -290,14 +298,12 @@ public final class MediathekGui extends javax.swing.JFrame {
         });
         // Tab Filme
         jButtonFilmSpeichern.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiFilme.filmSpeichern();
             }
         });
         jButtonFilmAbspielen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiFilme.filmAbspielen();
@@ -305,35 +311,30 @@ public final class MediathekGui extends javax.swing.JFrame {
         });
         // Tab Downloads
         jButtonDownloadAktualisieren.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.akualisieren();
             }
         });
         jButtonDownloadAufraeumen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.aufraeumen();
             }
         });
         jButtonDownloadLoeschen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.loeschen();
             }
         });
         jButtonDownloadAlleStarten.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.starten(true);
             }
         });
         jButtonDownloadZurueckstellen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.zurueckstellen();
@@ -341,21 +342,18 @@ public final class MediathekGui extends javax.swing.JFrame {
         });
         // Tab Abo
         jButtonAbosEinschalten.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiAbo.einAus(true);
             }
         });
         jButtonAbosAusschalten.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiAbo.einAus(false);
             }
         });
         jButtonAbosLoeschen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiAbo.loeschen();
@@ -380,7 +378,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         jPanelAnzahl.add(jSpinnerAnzahl, BorderLayout.EAST);
         jLabelAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/up_down_16.png")));
         jSpinnerAnzahl.addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent arg0) {
                 Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
@@ -390,7 +387,6 @@ public final class MediathekGui extends javax.swing.JFrame {
             }
         });
         Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
-
             @Override
             public void ping() {
                 initSpinner();
@@ -399,14 +395,12 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenuDownload.add(jPanelAnzahl);
         // Datei
         jMenuItemEinstellungen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 dialogEinstellungen.setVisible(true);
             }
         });
         jMenuItemBeenden.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden();
@@ -414,21 +408,18 @@ public final class MediathekGui extends javax.swing.JFrame {
         });
         // Filme
         jMenuItemFilmlisteLaden.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 filmeLaden();
             }
         });
         jMenuItemFilmAbspielen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiFilme.filmAbspielen();
             }
         });
         jMenuItemFilmAufzeichnen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiFilme.filmSpeichern();
@@ -436,63 +427,54 @@ public final class MediathekGui extends javax.swing.JFrame {
         });
         // Downloads
         jMenuItemDownloadsAktualisieren.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.akualisieren();
             }
         });
         jMenuItemDownloadsAufraeumen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.aufraeumen();
             }
         });
         jMenuItemDownloadsLoeschen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.loeschen();
             }
         });
         jMenuItemDownloadsAlleStarten.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.starten(true /* alle */);
             }
         });
         jMenuItemDownloadStarten.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.starten(false /* alle */);
             }
         });
         jMenuItemDownloadsZurueckstellen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.zurueckstellen();
             }
         });
         jMenuItemDownloadAendern.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.aendern();
             }
         });
         jMenuItemDownloadAlleStoppen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.stoppen(true /* alle */);
             }
         });
         jMenuItemDownloadStoppen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiDownloads.stoppen(false /* alle */);
@@ -501,28 +483,24 @@ public final class MediathekGui extends javax.swing.JFrame {
 
         // Abo
         jMenuItemAbosEinschalten.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiAbo.einAus(true);
             }
         });
         jMenuItemAbosAusschalten.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiAbo.einAus(false);
             }
         });
         jMenuItemAbosLoeschen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiAbo.loeschen();
             }
         });
         jMenuItemAbosAendern.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiAbo.aendern();
@@ -531,7 +509,6 @@ public final class MediathekGui extends javax.swing.JFrame {
 
         // Ansicht
         jCheckBoxMenuItemToolBar.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 jToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
@@ -539,7 +516,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         });
         jCheckBoxIconKlein.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ICON_KLEIN_NR]));
         jCheckBoxIconKlein.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.setGeaendert();
@@ -549,7 +525,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR]));
         ddaten.guiFilme.videoPlayerAnzeigen(jCheckBoxMenuItemVideoplayer.isSelected());
         jCheckBoxMenuItemVideoplayer.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.setGeaendert();
@@ -560,7 +535,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         jCheckBoxMenuItemMeldungen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR]));
         setPanelMeldungen();
         jCheckBoxMenuItemMeldungen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.setGeaendert();
@@ -574,7 +548,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         });
         // Hilfe
         jMenuItemAnleitung.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -583,7 +556,6 @@ public final class MediathekGui extends javax.swing.JFrame {
             }
         });
         jMenuItemProgrammlog.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ProgrammLog.LogDateiSchreiben(ddaten);
@@ -594,11 +566,9 @@ public final class MediathekGui extends javax.swing.JFrame {
             jMenuDebug.setVisible(false);
         } else {
             jMenuItemLoeschen.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     DDaten.listeFilme.clear();
-                    DDaten.listeFilmeNachBlackList.clear();
                     Daten.notifyMediathekListener(MediathekListener.EREIGNIS_FILMLISTE_NEU, MediathekGui.class.getSimpleName());
                 }
             });
@@ -1078,7 +1048,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         private void showMenu(MouseEvent evt) {
             JPopupMenu jPopupMenu = new JPopupMenu();
             itemAusblenden.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     jToolBar.setVisible(false);
@@ -1087,7 +1056,6 @@ public final class MediathekGui extends javax.swing.JFrame {
             });
             jPopupMenu.add(itemAusblenden);
             itemKlein.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Daten.setGeaendert();

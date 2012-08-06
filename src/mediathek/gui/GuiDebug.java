@@ -48,14 +48,12 @@ public class GuiDebug extends PanelVorlage {
         }
         addSender();
         jToggleButtonAllesLaden.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.filmeLaden.setAllesLaden(jToggleButtonAllesLaden.isSelected());
             }
         });
         jButtonFilmeSpeichern.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.allesSpeichern();

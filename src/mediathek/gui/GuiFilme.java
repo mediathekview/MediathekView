@@ -19,12 +19,34 @@
  */
 package mediathek.gui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
 import java.util.Iterator;
 import java.util.LinkedList;
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -39,13 +61,25 @@ import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.starter.StartEvent;
 import mediathek.controller.io.starter.StartListener;
 import mediathek.controller.io.starter.Starts;
-import mediathek.daten.*;
+import mediathek.daten.DDaten;
+import mediathek.daten.DatenAbo;
+import mediathek.daten.DatenBlacklist;
+import mediathek.daten.DatenDownload;
+import mediathek.daten.DatenFilm;
+import mediathek.daten.DatenPset;
+import mediathek.daten.ListeAbo;
+import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.beobachter.BeobMpanel;
 import mediathek.gui.beobachter.CellRendererFilme;
 import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.tool.*;
+import mediathek.tool.Datum;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiKonstanten;
+import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.JTableMed;
+import mediathek.tool.TModelFilm;
 
 public class GuiFilme extends PanelVorlage {
 
@@ -72,23 +106,21 @@ public class GuiFilme extends PanelVorlage {
         tabelleBauen(); //Filme laden
         tabelle.initTabelle();
         Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
-
             @Override
             public void ping() {
                 extra();
             }
         });
         Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_BLACKLIST_DEL, GuiFilme.class.getSimpleName()) {
-
             @Override
             public void ping() {
                 tabelleBauen();
             }
         });
         Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_FILMLISTE_NEU, GuiFilme.class.getSimpleName()) {
-
             @Override
             public void ping() {
+                checkBlacklist();
                 tabelleBauen();
             }
         });
@@ -154,7 +186,6 @@ public class GuiFilme extends PanelVorlage {
             Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = "6";
         }
         jComboBoxZeitraum.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.setGeaendert();
@@ -164,7 +195,6 @@ public class GuiFilme extends PanelVorlage {
             }
         });
         DDaten.filmeLaden.addAdListener(new BeobFilmeLaden() {
-
             @Override
             public void start(FilmListenerElement filmListenerElement) {
                 beobMausTabelle.itemSenderLaden.setEnabled(false);
@@ -178,7 +208,6 @@ public class GuiFilme extends PanelVorlage {
             }
         });
         jButtonHilfe.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 new DialogHilfe(null, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_SUCHEN)).setVisible(true);
@@ -198,7 +227,6 @@ public class GuiFilme extends PanelVorlage {
         tabelle.setDefaultRenderer(Datum.class, new CellRendererFilme(ddaten));
         //beobachter Filter
         jToggleButtonLivestram.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!stopBeob) {
@@ -308,7 +336,6 @@ public class GuiFilme extends PanelVorlage {
     private synchronized void tabelleBauen() {
         try {
             SwingUtilities.invokeLater(new Runnable() {
-
                 @Override
                 public void run() {
                     tabelleBauen_();
@@ -333,6 +360,7 @@ public class GuiFilme extends PanelVorlage {
                 jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(DDaten.listeFilmeNachBlackList.getModelOfField(DatenFilm.FILM_THEMA_NR, "", 0)));
                 jComboBoxFilterSender.setSelectedIndex(0);
                 jComboBoxFilterThema.setSelectedIndex(0);
+                listeInModellLaden(); // zum löschen der Tabelle
             } else {
                 //Filme neu laden
                 listeInModellLaden();
@@ -948,7 +976,6 @@ public class GuiFilme extends PanelVorlage {
             JMenuItem item = new JMenuItem("Film starten");
             item.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_16.png")));
             item.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     filmAbspielen();
@@ -959,7 +986,6 @@ public class GuiFilme extends PanelVorlage {
             item = new JMenuItem("Film speichern");
             item.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_rec_16.png")));
             item.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     filmSpeichern();
@@ -1077,7 +1103,6 @@ public class GuiFilme extends PanelVorlage {
             // Tabellenspalten zurücksetzen
             item = new JMenuItem("Spalten zurücksetzen");
             item.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     tabelle.resetTabelle();
