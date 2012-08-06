@@ -50,7 +50,7 @@ public class OSXAdapter implements InvocationHandler {
     // setHandler creates a Proxy object from the passed OSXAdapter and adds it as an ApplicationListener
     public static void setHandler(OSXAdapter adapter) {
         try {
-            Class applicationClass = Class.forName("com.apple.eawt.Application");
+            Class<?> applicationClass = Class.forName("com.apple.eawt.Application");
             if (macOSXApplication == null) {
                 macOSXApplication = applicationClass.getConstructor((Class[]) null).newInstance((Object[]) null);
             }

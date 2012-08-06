@@ -144,7 +144,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         // in eine vorhandene Liste soll eine andere Filmliste einsortiert werden
         // es werden nur Filme die noch nicht vorhanden sind, einsortiert
         DatenFilm f;
-        HashSet hashSet = new HashSet<String>();
+        HashSet<String> hashSet = new HashSet<String>();
         Iterator<DatenFilm> it = this.iterator();
         while (it.hasNext()) {
             if (index) {

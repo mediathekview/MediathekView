@@ -78,6 +78,14 @@ public class Log {
     }
 
     public static synchronized void versionsMeldungen(String classname) {
+        Date startZeit = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        Log.systemMeldung("");
+        Log.systemMeldung("");
+        Log.systemMeldung("###########################################################");
+        Log.systemMeldung("###########################################################");
+        Log.systemMeldung("Programmstart: " + sdf.format(startZeit));
+        Log.systemMeldung("###########################################################");
         Log.systemMeldung("###########################################################");
         long totalMem = Runtime.getRuntime().totalMemory();
         Log.systemMeldung("totalMemory: " + totalMem / (1024L * 1024L) + " MB");
@@ -94,14 +102,6 @@ public class Log {
     }
 
     public static synchronized void startMeldungen(String classname) {
-        Date startZeit = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        Log.systemMeldung("");
-        Log.systemMeldung("");
-        Log.systemMeldung("###########################################################");
-        Log.systemMeldung("###########################################################");
-        Log.systemMeldung("Programmstart: " + sdf.format(startZeit));
-        Log.systemMeldung("###########################################################");
         versionsMeldungen(classname);
         Log.systemMeldung("Programmpfad: " + GuiFunktionenProgramme.getPathJar());
         Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getBasisVerzeichnis());
