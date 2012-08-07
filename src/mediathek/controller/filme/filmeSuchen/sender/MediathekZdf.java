@@ -358,6 +358,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             try {
                 meldung(orgUrl);
                 orgUrl = orgUrl.replace("http://wstreaming.zdf.de", "http://fstreaming.zdf.de");
+                orgUrl = orgUrl.replace("http://wgeostreaming.zdf.de", "http://fgeostreaming.zdf.de");
                 orgUrl = orgUrl.replace(".asx", ".smil");
                 seite2 = getUrl.getUri_Utf(nameSenderMReader, orgUrl, seite2, "urlThema: " + urlThema);
                 if ((pos1 = seite2.indexOf(MUSTER_HOST, 0)) != -1) {
