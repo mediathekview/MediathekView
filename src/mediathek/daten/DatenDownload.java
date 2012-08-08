@@ -311,7 +311,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
         befehlsString = befehlsString.replace("%f", arr[DOWNLOAD_URL_NR]);
         befehlsString = befehlsString.replace("%F", getUrlFlvstreamer());
         befehlsString = befehlsString.replace("%k", getUrlLow());
-        befehlsString = befehlsString.replace("%h", getUrlHi());
         befehlsString = befehlsString.replace("%x", AsxLesen.lesen(arr[DOWNLOAD_URL_NR]));
         //Auth eintragen
         if (arr[DOWNLOAD_URL_AUTH_NR].equals("")) {
@@ -329,7 +328,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private String getUrlFlvstreamer() {
-        String ret = "";
+        String ret;
         if (!arr[DOWNLOAD_URL_RTMP_NR].equals("")) {
             ret = arr[DOWNLOAD_URL_RTMP_NR];
         } else {
@@ -343,29 +342,21 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private String getUrlLow() {
-        String ret = "";
+        String ret = arr[DOWNLOAD_URL_NR];
         if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
             //swr
             ret = arr[DOWNLOAD_URL_NR].replace(".m.mp4", ".l.mp4");
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER)) {
             //3Sat
-            ret = arr[DOWNLOAD_URL_NR].replace("/veryhigh/", "/300/");
+            //ret = arr[DOWNLOAD_URL_NR].replace("/veryhigh/", "/300/");
+            ret = arr[DOWNLOAD_URL_NR].replace("vh.mp4", "h.mp4");
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
             //ZDF
-            ret = arr[DOWNLOAD_URL_NR].replace("/veryhigh/", "/300/");
+            //ret = arr[DOWNLOAD_URL_NR].replace("/veryhigh/", "/300/");
+            ret = arr[DOWNLOAD_URL_NR].replace("vh.mp4", "h.mp4");
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekNdr.SENDER)) {
             //NDR
             ret = arr[DOWNLOAD_URL_NR].replace(".hq.", ".lo.");
-        }
-        return ret;
-    }
-
-    private String getUrlHi() {
-        String ret = "";
-        if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
-            // ZDF
-            ret = arr[DOWNLOAD_URL_NR].replace("wstreaming.zdf.de", "fstreaming.zdf.de");
-            ret = ret.replace(".asx", ".smil");
         }
         return ret;
     }
