@@ -175,7 +175,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 if (prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].contains("%p") || prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].contains("%n")) {
                     prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].replace("%n", "");
                     prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].replace("%p", "");
-                    prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = Boolean.TRUE.toString();
                     pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
                     Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, this.getClass().getSimpleName());
                 }
@@ -215,10 +214,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
             // wenn leer, vorbelegen
             pfad = GuiFunktionen.getHomePath();
             pfad = GuiFunktionen.addsPfad(pfad, Konstanten.VERZEICNHISS_DOWNLOADS);
-            if (abo == null) {
-                // nur wenn kein Abo
-                pfad = GuiFunktionen.addsPfad(pfad, arr[DatenDownload.DOWNLOAD_THEMA_NR]);
-            }
         }
         // ##############################
         // Name sinnvoll belegen
@@ -242,11 +237,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
         // Pfad sinnvoll belegen
         // ##############################
         if (abo != null) {
-            // Bei Abos: den Namen des Abos an den Zielpfad anhängen, leer kann er jetzt ja schon nicht mehr sein
-            pfad = GuiFunktionen.addsPfad(pfad, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
+            // Bei Abos: den Namen des Abos in den Download eintragen
             arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
         }
-
+        if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
+            // den Namen des Themas an den Zielpfad anhängen, leer kann er jetzt ja schon nicht mehr sein
+            pfad = GuiFunktionen.addsPfad(pfad, arr[DatenDownload.DOWNLOAD_THEMA_NR]);
+        }
         pfad = replaceString(pfad);
         pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* pfadtrennerEntfernen */, false /* leerEntfernen */);
         if (pfad.endsWith(File.separator)) {

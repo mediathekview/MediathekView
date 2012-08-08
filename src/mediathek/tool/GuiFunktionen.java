@@ -94,6 +94,12 @@ public class GuiFunktionen {
     public static String replaceLeerDateiname(String pfad, boolean pfadtrennerEntfernen, boolean leerEntfernen) {
         //verbotene Zeichen entfernen
         String ret = pfad;
+        boolean winPfad = false;
+        if (pfad.length() > 3) {
+            if (pfad.substring(1, 3).equals(":\\")) {
+                winPfad = true;
+            }
+        }
         if (pfadtrennerEntfernen) {
             ret = ret.replace(File.separator, "-");
         }
@@ -113,6 +119,9 @@ public class GuiFunktionen {
         ret = ret.replace(":", "_");
         ret = ret.replace("'", "_");
         ret = ret.replace("|", "_");
+        if (winPfad) {
+            ret = ret.substring(0, 1) + ":\\" + ret.substring(3);
+        }
         return ret;
     }
 
