@@ -25,7 +25,7 @@ import javax.swing.JOptionPane;
 import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.starter.Starts;
-import mediathek.gui.dialog.DialogPsetSpeichern;
+import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.TModelDownload;
 
@@ -113,7 +113,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized void addFilmDownload(DatenFilm film) {
+    public synchronized void addDownloadTabFilme(DatenFilm film) {
         // Filme in die Liste der Downloads eintragen
         // ist eine URL schon vorhanden,Sender,Thema,Titel aktualisieren,
         // es wird der aktuellere Eintrag verwendet
@@ -123,7 +123,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             // Satz mit x, war wohl nix
             return;
         }
-        DialogPsetSpeichern dialog = new DialogPsetSpeichern(null, true, ddaten, film);
+        DialogAddDownload dialog = new DialogAddDownload(null, ddaten, film);
         dialog.setVisible(true);
         if (dialog.ok && dialog.pSet != null) {
             // erst mal schauen obs das schon gibt

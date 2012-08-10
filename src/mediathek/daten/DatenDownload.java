@@ -103,7 +103,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZEIT_NR] = film.arr[DatenFilm.FILM_ZEIT_NR];
         arr[DOWNLOAD_URL_RTMP_NR] = film.arr[DatenFilm.FILM_URL_RTMP_NR];
         arr[DOWNLOAD_QUELLE_NR] = String.valueOf(quelle);
-        aufrufBauen(pSet, abo);
+        aufrufBauen(pSet, film, abo);
     }
 
     public DatenDownload getCopy() {
@@ -149,7 +149,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART_NR]);
     }
 
-    private void aufrufBauen(DatenPset pSet, DatenAbo abo) {
+    private void aufrufBauen(DatenPset pSet, DatenFilm film, DatenAbo abo) {
         //zieldatei und pfad bauen und eintragen
         //und gibt die Zieldatei mit Pfad zurück
         try {
@@ -190,14 +190,14 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 arr[DatenDownload.DOWNLOAD_PROGRAMM_NR] = programm.arr[DatenProg.PROGRAMM_NAME_NR];
             }
             arr[DOWNLOAD_PROGRAMM_RESTART_NR] = String.valueOf(programm.isRestart());
-            dateinamePfadBauen(pSet, abo);
+            dateinamePfadBauen(pSet, film, abo);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
             Log.fehlerMeldung(825600145, this.getClass().getName(), ex);
         }
     }
 
-    private void dateinamePfadBauen(DatenPset pSet, DatenAbo abo) {
+    private void dateinamePfadBauen(DatenPset pSet, DatenFilm film, DatenAbo abo) {
         if (!pSet.progsContainPath()) {
             // dann können wir uns das sparen
             return;
@@ -222,7 +222,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
             name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
         }
-        name = replaceString(name);
+        name = GuiFunktionen.replaceString(name, film);
         // prüfen ob das Suffix 2x vorkommt
         if (name.length() > 8) {
             String suf1 = name.substring(name.length() - 8, name.length() - 4);
@@ -244,7 +244,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             // den Namen des Themas an den Zielpfad anhängen, leer kann er jetzt ja schon nicht mehr sein
             pfad = GuiFunktionen.addsPfad(pfad, arr[DatenDownload.DOWNLOAD_THEMA_NR]);
         }
-        pfad = replaceString(pfad);
+        pfad = GuiFunktionen.replaceString(pfad, film);
         pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* pfadtrennerEntfernen */, false /* leerEntfernen */);
         if (pfad.endsWith(File.separator)) {
             pfad = pfad.substring(0, pfad.length() - 1);
@@ -287,19 +287,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZIEL_DATEINAME_NR] = GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */, true /* leerEntfernen */);
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
         arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, arr[DOWNLOAD_ZIEL_DATEINAME_NR]);
-    }
-
-    private String replaceString(String s) {
-        s = s.replace("%D", arr[DOWNLOAD_DATUM_NR].equals("") ? DatumZeit.getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(arr[DOWNLOAD_DATUM_NR])));
-        s = s.replace("%d", arr[DOWNLOAD_ZEIT_NR].equals("") ? DatumZeit.getJetzt_HHMMSS() : datumDatumZeitReinigen(arr[DOWNLOAD_ZEIT_NR]));
-        s = s.replace("%t", arr[DOWNLOAD_THEMA_NR]);
-        s = s.replace("%T", arr[DOWNLOAD_TITEL_NR]);
-        s = s.replace("%s", arr[DOWNLOAD_SENDER_NR]);
-        s = s.replace("%H", DatumZeit.getHeute_yyyyMMdd());
-        s = s.replace("%h", DatumZeit.getJetzt_HHMMSS());
-        s = s.replace("%N", GuiFunktionen.getDateiName(arr[DOWNLOAD_URL_NR]));
-        s = s.replace("%A", arr[DOWNLOAD_ABO_NR]);
-        return s;
     }
 
     private void programmaufrufBauen(DatenProg programm) {
@@ -373,31 +360,5 @@ public class DatenDownload implements Comparable<DatenDownload> {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }
-    }
-
-    private String datumDrehen(String datum) {
-        String ret = "";
-        if (!datum.equals("")) {
-            try {
-                if (datum.length() == 10) {
-                    String tmp = datum.substring(6); // Jahr
-                    tmp += "." + datum.substring(3, 5); // Monat
-                    tmp += "." + datum.substring(0, 2); // Tag
-                    ret = tmp;
-                }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(775421006, "DatenFilm.datumDrehen", ex, datum);
-            }
-
-        }
-        return ret;
-    }
-
-    private String datumDatumZeitReinigen(String datum) {
-        String ret = "";
-        ret = datum;
-        ret = ret.replace(":", "");
-        ret = ret.replace(".", "");
-        return ret;
     }
 }
