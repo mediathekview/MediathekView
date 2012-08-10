@@ -33,6 +33,7 @@ import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.daten.DDaten;
+import mediathek.daten.DatenFilm;
 
 public class GuiFunktionen {
 
@@ -89,6 +90,44 @@ public class GuiFunktionen {
         } else {
             System.setProperty("proxySet", "false");
         }
+    }
+
+    public static String replaceString(String s, DatenFilm film) {
+        s = s.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
+        s = s.replace("%d", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? DatumZeit.getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT_NR]));
+        s = s.replace("%t", film.arr[DatenFilm.FILM_THEMA_NR]);
+        s = s.replace("%T", film.arr[DatenFilm.FILM_TITEL_NR]);
+        s = s.replace("%s", film.arr[DatenFilm.FILM_SENDER_NR]);
+        s = s.replace("%H", DatumZeit.getHeute_yyyyMMdd());
+        s = s.replace("%h", DatumZeit.getJetzt_HHMMSS());
+        s = s.replace("%N", GuiFunktionen.getDateiName(film.arr[DatenFilm.FILM_URL_NR]));
+        return s;
+    }
+
+    private static String datumDrehen(String datum) {
+        String ret = "";
+        if (!datum.equals("")) {
+            try {
+                if (datum.length() == 10) {
+                    String tmp = datum.substring(6); // Jahr
+                    tmp += "." + datum.substring(3, 5); // Monat
+                    tmp += "." + datum.substring(0, 2); // Tag
+                    ret = tmp;
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(775421006, "DatenFilm.datumDrehen", ex, datum);
+            }
+
+        }
+        return ret;
+    }
+
+    private static String datumDatumZeitReinigen(String datum) {
+        String ret = "";
+        ret = datum;
+        ret = ret.replace(":", "");
+        ret = ret.replace(".", "");
+        return ret;
     }
 
     public static String replaceLeerDateiname(String pfad, boolean pfadtrennerEntfernen, boolean leerEntfernen) {

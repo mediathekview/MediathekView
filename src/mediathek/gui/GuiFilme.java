@@ -159,7 +159,7 @@ public class GuiFilme extends PanelVorlage {
         if (selRow >= 0) {
             selRow = tabelle.convertRowIndexToModel(selRow);
             film = DDaten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
-            ddaten.listeDownloads.addFilmDownload(film);
+            ddaten.listeDownloads.addDownloadTabFilme(film);
         }
     }
 

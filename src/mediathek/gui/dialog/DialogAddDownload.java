@@ -26,15 +26,15 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.gui.beobachter.EscBeenden;
 
-public class DialogPsetSpeichern extends javax.swing.JDialog {
+public class DialogAddDownload extends javax.swing.JDialog {
 
     public DatenPset pSet = null;
     public boolean starten = true;
     public boolean ok = false;
     private DDaten ddaten;
 
-    public DialogPsetSpeichern(java.awt.Frame parent, boolean modal, DDaten dd, DatenFilm film) {
-        super(parent, modal);
+    public DialogAddDownload(java.awt.Frame parent, DDaten dd, DatenFilm film) {
+        super(parent, true);
         ddaten = dd;
         initComponents();
         this.setTitle("Film Speichern");
@@ -50,7 +50,6 @@ public class DialogPsetSpeichern extends javax.swing.JDialog {
         }
         setGruppe();
         jButtonBeenden.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ok = true;
@@ -58,14 +57,12 @@ public class DialogPsetSpeichern extends javax.swing.JDialog {
             }
         });
         new EscBeenden(this) {
-
             @Override
             public void beenden_() {
                 beenden();
             }
         };
         jButtonAbbrechen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden();
@@ -74,7 +71,6 @@ public class DialogPsetSpeichern extends javax.swing.JDialog {
         jCheckBoxStarten.setSelected(true);
         starten = true;
         jCheckBoxStarten.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 starten = jCheckBoxStarten.isSelected();
