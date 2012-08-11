@@ -67,7 +67,6 @@ public class PanelPsetLang extends PanelVorlage {
     private void init() {
         //Programme
         Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
-
             @Override
             public void ping() {
                 if (!stopBeob) {
@@ -98,7 +97,6 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxRestart.addActionListener(new BeobProgRestart());
         //Pset
         jButtonAbspielen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 getPset().setAbspielen(ddaten);
@@ -107,7 +105,6 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
         jCheckBoxSpeichern.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 getPset().setSpeichern(jCheckBoxSpeichern.isSelected());
@@ -116,7 +113,6 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
         jCheckBoxButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 getPset().setButton(jCheckBoxButton.isSelected());
@@ -125,7 +121,6 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
         jCheckBoxAbo.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 getPset().setAbo(jCheckBoxAbo.isSelected());
@@ -134,23 +129,13 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
         jCheckBoxLaenge.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 getPset().arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = Boolean.toString(jCheckBoxLaenge.isSelected());
                 nurtabellePset();
             }
         });
-        jCheckBoxFragen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                getPset().arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.toString(jCheckBoxFragen.isSelected());
-                nurtabellePset();
-            }
-        });
         jCheckBoxThema.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 getPset().arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR] = Boolean.toString(jCheckBoxThema.isSelected());
@@ -158,7 +143,6 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
         jSpinnerLaenge.addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 getPset().arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = String.valueOf(((Number) jSpinnerLaenge.getModel().getValue()).intValue());
@@ -185,7 +169,6 @@ public class PanelPsetLang extends PanelVorlage {
                 new BeobGruppenDoc(jTextFieldGruppeZielPfad, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
         //rest
         jButtonHilfe.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 new DialogHilfe(null, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PRGRAMME)).setVisible(true);
@@ -256,7 +239,6 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxButton.setEnabled(pSet != null);
         jCheckBoxAbo.setEnabled(pSet != null);
         jCheckBoxLaenge.setEnabled(pSet != null);
-        jCheckBoxFragen.setEnabled(pSet != null);
         jCheckBoxThema.setEnabled(pSet != null);
         jSpinnerLaenge.setEnabled(pSet != null);
         if (pSet != null) {
@@ -267,7 +249,6 @@ public class PanelPsetLang extends PanelVorlage {
                 jSpinnerLaenge.setValue(Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]));
             }
             jCheckBoxLaenge.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR]));
-            jCheckBoxFragen.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR]));
             jCheckBoxThema.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR]));
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Programmset: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTabbedPane.setTitleAt(0, "Programmset: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
@@ -285,7 +266,6 @@ public class PanelPsetLang extends PanelVorlage {
             jTabbedPane.setTitleAt(0, "Programmsets");
             //jSpinnerLaenge.setValue(GuiKonstanten.MAX_LAENGE_DATEINAME); Exception!
             jCheckBoxLaenge.setSelected(false);
-            jCheckBoxFragen.setSelected(false);
             jCheckBoxThema.setSelected(false);
             jTextFieldGruppeName.setText("");
             jTextFieldGruppeDirektSuffix.setText("");
@@ -545,7 +525,6 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxLaenge = new javax.swing.JCheckBox();
         jSpinnerLaenge = new javax.swing.JSpinner();
         jButtonGruppePfad = new javax.swing.JButton();
-        jCheckBoxFragen = new javax.swing.JCheckBox();
         jLabel12 = new javax.swing.JLabel();
         jCheckBoxThema = new javax.swing.JCheckBox();
         jPanelProgramme = new javax.swing.JPanel();
@@ -731,9 +710,6 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppePfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
         jButtonGruppePfad.setToolTipText("Pfad auswählen");
 
-        jCheckBoxFragen.setText("Ziel vor dem Download abfragen");
-        jCheckBoxFragen.setToolTipText("vor dem Download wird in einem Dialog der Speicherort abgefragt");
-
         jLabel12.setText("Zeichen");
 
         jCheckBoxThema.setText("einen Unterordner mit dem Thema anlegen");
@@ -763,21 +739,18 @@ public class PanelPsetLang extends PanelVorlage {
                                 .addComponent(jSpinnerLaenge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel12)
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGap(0, 256, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jCheckBoxFragen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jCheckBoxThema)))
+                        .addComponent(jCheckBoxThema)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxFragen)
-                    .addComponent(jCheckBoxThema))
                 .addGap(18, 18, 18)
+                .addComponent(jCheckBoxThema)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel7)
                     .addComponent(jTextFieldGruppeZielPfad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1067,7 +1040,7 @@ public class PanelPsetLang extends PanelVorlage {
                         .addComponent(jButtonPruefen, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonHilfe))
-                    .addComponent(jTabbedPane))
+                    .addComponent(jTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 830, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -1103,7 +1076,6 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JButton jButtonPruefen;
     private javax.swing.JCheckBox jCheckBoxAbo;
     private javax.swing.JCheckBox jCheckBoxButton;
-    private javax.swing.JCheckBox jCheckBoxFragen;
     private javax.swing.JCheckBox jCheckBoxLaenge;
     private javax.swing.JCheckBox jCheckBoxRestart;
     private javax.swing.JCheckBox jCheckBoxSpeichern;

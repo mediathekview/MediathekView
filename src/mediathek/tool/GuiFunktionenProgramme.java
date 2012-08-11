@@ -306,7 +306,7 @@ public class GuiFunktionenProgramme {
                 text += "++++++++++++++++++++++++++++++++++++++++++++" + "\n";
                 text += PIPE + "Programmgruppe: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME_NR] + "\n";
                 String zielPfad = datenPset.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR];
-                if (datenPset.needsPath()) {
+                if (datenPset.progsContainPath()) {
                     // beim nur Abspielen wird er nicht gebraucht
                     if (zielPfad.equals("")) {
                         ret = false;
