@@ -21,8 +21,6 @@ package mediathek.daten;
 
 import java.io.File;
 import java.util.Iterator;
-import mediathek.Daten;
-import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeSuchen.sender.Mediathek3Sat;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekNdr;
@@ -30,7 +28,6 @@ import mediathek.controller.filme.filmeSuchen.sender.MediathekSwr;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekZdf;
 import mediathek.controller.io.AsxLesen;
 import mediathek.controller.io.starter.Starts;
-import mediathek.gui.dialog.DialogZielDatei;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
@@ -90,7 +87,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         makeArr();
     }
 
-    public DatenDownload(DatenPset pSet, DatenFilm film, int quelle, DatenAbo abo) {
+    public DatenDownload(DatenPset pSet, DatenFilm film, int quelle, DatenAbo abo, String name, String pfad) {
         makeArr();
         arr[DOWNLOAD_NR_NR] = film.arr[DatenFilm.FILM_NR_NR];
         arr[DOWNLOAD_SENDER_NR] = film.arr[DatenFilm.FILM_SENDER_NR];
@@ -102,7 +99,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZEIT_NR] = film.arr[DatenFilm.FILM_ZEIT_NR];
         arr[DOWNLOAD_URL_RTMP_NR] = film.arr[DatenFilm.FILM_URL_RTMP_NR];
         arr[DOWNLOAD_QUELLE_NR] = String.valueOf(quelle);
-        aufrufBauen(pSet, film, abo);
+        aufrufBauen(pSet, film, abo, name, pfad);
     }
 
     public DatenDownload getCopy() {
@@ -148,7 +145,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART_NR]);
     }
 
-    private void aufrufBauen(DatenPset pSet, DatenFilm film, DatenAbo abo) {
+    private void aufrufBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
         //zieldatei und pfad bauen und eintragen
         try {
             DatenProg programm = pSet.getProgUrl(arr[DOWNLOAD_URL_NR]);
@@ -175,14 +172,16 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 arr[DatenDownload.DOWNLOAD_PROGRAMM_NR] = programm.arr[DatenProg.PROGRAMM_NAME_NR];
             }
             arr[DOWNLOAD_PROGRAMM_RESTART_NR] = String.valueOf(programm.isRestart());
-            dateinamePfadBauen(pSet, film, abo);
+            dateinamePfadBauen(pSet, film, abo, nname, ppfad);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
             Log.fehlerMeldung(825600145, this.getClass().getName(), ex);
         }
     }
 
-    private void dateinamePfadBauen(DatenPset pSet, DatenFilm film, DatenAbo abo) {
+    private void dateinamePfadBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
+        String name;
+        String pfad;
         if (!pSet.progsContainPath()) {
             // dann können wir uns das sparen
             arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = "";
@@ -190,58 +189,72 @@ public class DatenDownload implements Comparable<DatenDownload> {
             return;
         }
         // ##############################################
-        // Vorgaben fürs Ziel eintragen
-        arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = pSet.getZielDateiname(arr[DOWNLOAD_URL_NR]);
-        arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = pSet.getZielPfad();
-        String name = arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR];
-        String pfad = arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
-        // ##############################
-        // Name sinnvoll belegen
-        if (name.equals("")) {
-            name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
-        }
-        name = GuiFunktionen.replaceString(name, film);
-        name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */, true /* leerEntfernen */);
-        // prüfen ob das Suffix 2x vorkommt
-        if (name.length() > 8) {
-            String suf1 = name.substring(name.length() - 8, name.length() - 4);
-            String suf2 = name.substring(name.length() - 4);
-            if (suf1.startsWith(".") && suf2.startsWith(".")) {
-                if (suf1.equalsIgnoreCase(suf2)) {
-                    name = name.substring(0, name.length() - 4);
+        // Name
+        // ##############################################
+        if (!nname.equals("")) {
+            // wenn vorgegeben, dann den nehmen
+            name = nname;
+        } else {
+            arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = pSet.getZielDateiname(arr[DOWNLOAD_URL_NR]);
+            name = arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR];
+            // ##############################
+            // Name sinnvoll belegen
+            if (name.equals("")) {
+                name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+            }
+            // prüfen ob das Suffix 2x vorkommt
+            if (name.length() > 8) {
+                String suf1 = name.substring(name.length() - 8, name.length() - 4);
+                String suf2 = name.substring(name.length() - 4);
+                if (suf1.startsWith(".") && suf2.startsWith(".")) {
+                    if (suf1.equalsIgnoreCase(suf2)) {
+                        name = name.substring(0, name.length() - 4);
+                    }
                 }
             }
-        }
-        // Kürzen
-        if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR])) {
-            // nur dann ist was zu tun
-            int laenge = GuiKonstanten.LAENGE_DATEINAME;
-            if (!pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
-                laenge = Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]);
+            // Kürzen
+            if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR])) {
+                // nur dann ist was zu tun
+                int laenge = GuiKonstanten.LAENGE_DATEINAME;
+                if (!pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
+                    laenge = Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]);
+                }
+                if (name.length() > laenge) {
+                    name = name.substring(0, laenge - 4) + name.substring(name.length() - 4);
+                }
             }
-            if (name.length() > laenge) {
-                name = name.substring(0, laenge - 4) + name.substring(name.length() - 4);
+            name = GuiFunktionen.replaceString(name, film);
+            name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */, true /* leerEntfernen */);
+        }
+        // ##############################################
+        // Pfad
+        // ##############################################
+        if (!ppfad.equals("")) {
+            // wenn vorgegeben, dann den nehmen
+            pfad = ppfad;
+        } else {
+            arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = pSet.getZielPfad();
+            pfad = arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
+            // ##############################
+            // Pfad sinnvoll belegen
+            if (pfad.equals("")) {
+                // wenn leer, vorbelegen
+                pfad = GuiFunktionen.getStandardDownloadPath();
             }
-        }
-        // ##############################
-        // Pfad sinnvoll belegen
-        if (pfad.equals("")) {
-            // wenn leer, vorbelegen
-            pfad = GuiFunktionen.getStandardDownloadPath();
-        }
-        if (abo != null) {
-            // Bei Abos: den Namen des Abos eintragen
-            arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
-            if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
-                // und Abopfad an den Pfad anhängen
-                pfad = GuiFunktionen.addsPfad(pfad, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
+            if (abo != null) {
+                // Bei Abos: den Namen des Abos eintragen
+                arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
+                if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
+                    // und Abopfad an den Pfad anhängen
+                    pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(abo.arr[DatenAbo.ABO_ZIELPFAD_NR], true/* pfadtrennerEntfernen */, true /* leerEntfernen */));
+                }
+            } else if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
+                // bei Downloads den Namen des Themas an den Zielpfad anhängen
+                pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR], true/* pfadtrennerEntfernen */, true /* leerEntfernen */));
             }
-        } else if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
-            // bei Downloads den Namen des Themas an den Zielpfad anhängen
-            pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR], true/* pfadtrennerEntfernen */, true /* leerEntfernen */));
+            pfad = GuiFunktionen.replaceString(pfad, film);
+            pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* pfadtrennerEntfernen */, false /* leerEntfernen */);
         }
-        pfad = GuiFunktionen.replaceString(pfad, film);
-        pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* pfadtrennerEntfernen */, false /* leerEntfernen */);
         if (pfad.endsWith(File.separator)) {
             pfad = pfad.substring(0, pfad.length() - 1);
         }

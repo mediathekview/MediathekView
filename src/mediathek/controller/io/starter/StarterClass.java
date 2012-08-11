@@ -76,7 +76,7 @@ public class StarterClass {
         Starts s = null;
         String url = ersterFilm.arr[DatenFilm.FILM_URL_NR];
         if (!url.equals("")) {
-            s = new Starts(new DatenDownload(pSet, ersterFilm, Starts.QUELLE_BUTTON, null));
+            s = new Starts(new DatenDownload(pSet, ersterFilm, Starts.QUELLE_BUTTON, null, "", ""));
             this.starten.startStarten(s);
             addStarts(s);
         }

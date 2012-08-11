@@ -72,6 +72,7 @@ import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.beobachter.BeobMpanel;
 import mediathek.gui.beobachter.CellRendererFilme;
+import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.Datum;
@@ -154,12 +155,21 @@ public class GuiFilme extends PanelVorlage {
     }
 
     public void filmSpeichern() {
-        DatenFilm film;
-        int selRow = tabelle.getSelectedRow();
-        if (selRow >= 0) {
-            selRow = tabelle.convertRowIndexToModel(selRow);
-            film = DDaten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
-            ddaten.listeDownloads.addDownloadVonTabFilme(film);
+        if (ddaten.listePset.getListeSpeichern().size() == 0) {
+            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+            // Satz mit x, war wohl nix
+        } else {
+            DatenFilm film;
+            int selRow = tabelle.getSelectedRow();
+            if (selRow == -1) {
+                new HinweisKeineAuswahl().zeigen();
+            } else {
+                selRow = tabelle.convertRowIndexToModel(selRow);
+                film = DDaten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
+                DialogAddDownload dialog = new DialogAddDownload(null, ddaten, film);
+                dialog.setVisible(true);
+            }
         }
     }
 

@@ -20,7 +20,11 @@
 package mediathek.daten;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
@@ -114,35 +118,35 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void addDownloadVonTabFilme(DatenFilm film) {
-        // Filme in die Liste der Downloads eintragen
-        // ist eine URL schon vorhanden,Sender,Thema,Titel aktualisieren,
-        // es wird der aktuellere Eintrag verwendet
-        if (ddaten.listePset.getListeSpeichern().size() == 0) {
-            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
-                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
-            // Satz mit x, war wohl nix
-            return;
-        }
-        DialogAddDownload dialog = new DialogAddDownload(null, ddaten, film);
-        dialog.setVisible(true);
-        if (dialog.ok && dialog.pSet != null) {
-            // erst mal schauen obs das schon gibt
-            Iterator<DatenDownload> it = this.iterator();
-            while (it.hasNext()) {
-                if (it.next().arr[DatenDownload.DOWNLOAD_URL_NR].equals(film.arr[DatenFilm.FILM_URL_NR])) {
-                    // alte Eintrag wird gelöscht und der neue eingetragen
-                    it.remove();
-                }
-            }
-            // und dann eintragen
-            DatenDownload download = new DatenDownload(dialog.pSet, film, Starts.QUELLE_DOWNLOAD, null);
-            this.add(download);
-            if (dialog.starten) {
-                // und evtl. auch gleich starten
-                ddaten.starterClass.addStarts(new Starts(download));
-            }
-            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_DOWNLOADS, ListeDownloads.class.getSimpleName());
-        }
+//////////////        // Filme in die Liste der Downloads eintragen
+//////////////        // ist eine URL schon vorhanden,Sender,Thema,Titel aktualisieren,
+//////////////        // es wird der aktuellere Eintrag verwendet
+//////////////        if (ddaten.listePset.getListeSpeichern().size() == 0) {
+//////////////            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+//////////////                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+//////////////            // Satz mit x, war wohl nix
+//////////////            return;
+//////////////        }
+//////////////        DialogAddDownload dialog = new DialogAddDownload(null, ddaten, film);
+//////////////        dialog.setVisible(true);
+//////////////        if (dialog.ok && dialog.pSet != null) {
+//////////////            // erst mal schauen obs das schon gibt
+//////////////            Iterator<DatenDownload> it = this.iterator();
+//////////////            while (it.hasNext()) {
+//////////////                if (it.next().arr[DatenDownload.DOWNLOAD_URL_NR].equals(film.arr[DatenFilm.FILM_URL_NR])) {
+//////////////                    // alte Eintrag wird gelöscht und der neue eingetragen
+//////////////                    it.remove();
+//////////////                }
+//////////////            }
+//////////////            // und dann eintragen
+//////////////            DatenDownload download = new DatenDownload(dialog.pSet, film, Starts.QUELLE_DOWNLOAD, null);
+//////////////            this.add(download);
+//////////////            if (dialog.starten) {
+//////////////                // und evtl. auch gleich starten
+//////////////                ddaten.starterClass.addStarts(new Starts(download));
+//////////////            }
+//////////////            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_DOWNLOADS, ListeDownloads.class.getSimpleName());
+//////////////        }
     }
 
     public synchronized void abosEintragen() {
@@ -177,7 +181,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     abo.arr[DatenAbo.ABO_PSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
                 }
                 if (pSet != null) {
-                    this.add(new DatenDownload(pSet, film, Starts.QUELLE_ABO, abo));
+                    this.add(new DatenDownload(pSet, film, Starts.QUELLE_ABO, abo, "", ""));
                 }
             }
         } //while

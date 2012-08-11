@@ -20,19 +20,13 @@
 package mediathek.daten;
 
 import java.awt.Color;
-import java.io.File;
 import java.util.Iterator;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import mediathek.Daten;
-import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.controller.io.starter.Starts;
-import mediathek.gui.dialog.DialogZielDatei;
-import mediathek.tool.DatumZeit;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.GuiKonstanten;
 
 public class DatenPset {
 
