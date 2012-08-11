@@ -202,6 +202,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
             if (name.equals("")) {
                 name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
             }
+            name = GuiFunktionen.replaceString(name, film);
+            name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */, true /* leerEntfernen */);
             // prüfen ob das Suffix 2x vorkommt
             if (name.length() > 8) {
                 String suf1 = name.substring(name.length() - 8, name.length() - 4);
@@ -223,8 +225,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     name = name.substring(0, laenge - 4) + name.substring(name.length() - 4);
                 }
             }
-            name = GuiFunktionen.replaceString(name, film);
-            name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */, true /* leerEntfernen */);
         }
         // ##############################################
         // Pfad
