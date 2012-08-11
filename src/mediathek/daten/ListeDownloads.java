@@ -113,7 +113,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized void addDownloadTabFilme(DatenFilm film) {
+    public synchronized void addDownloadVonTabFilme(DatenFilm film) {
         // Filme in die Liste der Downloads eintragen
         // ist eine URL schon vorhanden,Sender,Thema,Titel aktualisieren,
         // es wird der aktuellere Eintrag verwendet

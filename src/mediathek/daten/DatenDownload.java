@@ -157,27 +157,27 @@ public class DatenDownload implements Comparable<DatenDownload> {
             // ##############################################
             // für die alten Versionen:
             // ##############################################
-            if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%p") || pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%n")) {
+//            if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%p") || pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%n")) {
                 pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].replace("%n", "");
                 pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].replace("%p", "");
-                pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
-                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, this.getClass().getSimpleName());
-            }
-            if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].contains("%p") || pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].contains("%n")) {
+//                pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
+//                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, this.getClass().getSimpleName());
+//            }
+//            if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].contains("%p") || pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].contains("%n")) {
                 pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace("%n", "");
                 pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace("%p", "");
-                pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
-                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, this.getClass().getSimpleName());
-            }
+//                pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
+//                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, this.getClass().getSimpleName());
+//            }
             Iterator<DatenProg> it = pSet.getListeProg().iterator();
             while (it.hasNext()) {
                 DatenProg prog = it.next();
-                if (prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].contains("%p") || prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].contains("%n")) {
+//                if (prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].contains("%p") || prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].contains("%n")) {
                     prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].replace("%n", "");
                     prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].replace("%p", "");
-                    pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
-                    Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, this.getClass().getSimpleName());
-                }
+//                    pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
+//                    Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, this.getClass().getSimpleName());
+//                }
             }
             // ##############################################
             // ##############################################
