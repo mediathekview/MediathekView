@@ -217,6 +217,11 @@ public class GuiFunktionen {
         return System.getProperty("user.home");
     }
 
+    public static String getStandardDownloadPath() {
+        //lifert den Standardpfad für Downloads
+        return addsPfad(getHomePath(), Konstanten.VERZEICNHISS_DOWNLOADS);
+    }
+
     public static String[] addLeerListe(String[] str) {
         //ein Leerzeichen der Liste voranstellen
         int len = str.length + 1;

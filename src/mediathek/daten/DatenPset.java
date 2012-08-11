@@ -51,7 +51,7 @@ public class DatenPset {
     public static final String PROGRAMMSET_ZIEL_DATEINAME = "Zieldateiname";
     public static final int PROGRAMMSET_ZIEL_DATEINAME_NR = 5;
     public static final String PROGRAMMSET_ZIEL_FRAGEN = "Ziel-abfragen";
-    public static final int PROGRAMMSET_ZIEL_FRAGEN_NR = 6;
+    //public static final int PROGRAMMSET_ZIEL_FRAGEN_NR = 6;
     public static final String PROGRAMMSET_THEMA_ANLEGEN = "Thema-anlegen";
     public static final int PROGRAMMSET_THEMA_ANLEGEN_NR = 7;
     public static final String PROGRAMMSET_IST_ABSPIELEN = "Abspielen";
@@ -100,101 +100,6 @@ public class DatenPset {
 
     public DatenProg getProg(int i) {
         return listeProg.get(i);
-    }
-
-    public boolean needsPath() {
-        // Zielpfad muss angegeben werden wenn:
-        // er nicht mit "%p" oder "%n" abgefragt wird
-        // und beim Programmschalter mit "**" eingesetzt werden soll
-        boolean ret = false;
-        if (!this.arr[PROGRAMMSET_ZIEL_FRAGEN_NR].equals("")) {
-            if (Boolean.parseBoolean(this.arr[PROGRAMMSET_ZIEL_FRAGEN_NR])) {
-                // dann wird gefragt
-                return false;
-            }
-        }
-        if (this.arr[PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%p")
-                || this.arr[PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%n")
-                || this.arr[PROGRAMMSET_ZIEL_PFAD_NR].contains("%p")
-                || this.arr[PROGRAMMSET_ZIEL_PFAD_NR].contains("%n")) {
-            // aus historischen Gründen, dann wird gefragt
-            return false;
-        }
-        // nur dann nach "**" suchen
-        Iterator<DatenProg> it = listeProg.iterator();
-        DatenProg prog;
-        while (it.hasNext()) {
-            prog = it.next();
-            if (prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains("**")) {
-                ret = true;
-                break;
-            }
-        }
-        return ret;
-    }
-
-    public String[] getPathDownload(DatenFilm film, DatenAbo abo) {
-        // Pfad, Datei für Downloads ermitteln
-        // String[] [pfad, datei]
-        String pfad, name;
-        // ##############################
-        // nur wenn nötig
-        if (!progsContainPath()) {
-            // dann können wir uns das sparen
-            return null;
-        }
-        name = getZielDateiname(film.arr[DatenFilm.FILM_URL_ORG_NR]);
-        pfad = getZielPfad();
-        // ##############################
-        // Name sinnvoll vorbelegen
-        // ##############################
-        if (name.equals("")) {
-            name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
-        }
-        name = GuiFunktionen.replaceString(name, film);
-        name = GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */, true /* leerEntfernen */);
-        // prüfen ob das Suffix 2x vorkommt
-        if (name.length() > 8) {
-            String suf1 = name.substring(name.length() - 8, name.length() - 4);
-            String suf2 = name.substring(name.length() - 4);
-            if (suf1.startsWith(".") && suf2.startsWith(".")) {
-                if (suf1.equalsIgnoreCase(suf2)) {
-                    name = name.substring(0, name.length() - 4);
-                }
-            }
-        }
-        // Kürzen
-        if (Boolean.parseBoolean(arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR])) {
-            // nur dann ist was zu tun
-            int laenge = GuiKonstanten.LAENGE_DATEINAME;
-            if (!arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
-                laenge = Integer.parseInt(arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]);
-            }
-            if (name.length() > laenge) {
-                name = name.substring(0, laenge - 4) + name.substring(name.length() - 4);
-            }
-        }
-        // ##############################
-        // Pfad sinnvoll vorbelegen
-        // ##############################
-        if (pfad.equals("")) {
-            pfad = GuiFunktionen.getHomePath();
-            pfad = GuiFunktionen.addsPfad(pfad, Konstanten.VERZEICNHISS_DOWNLOADS);
-        }
-        if (abo != null) {
-            // abo-zielpfad anhängen
-            pfad = GuiFunktionen.addsPfad(pfad, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
-
-        } else if (Boolean.parseBoolean(arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
-            // den Namen des Themas an den Zielpfad anhängen, leer kann er jetzt ja schon nicht mehr sein
-            pfad = GuiFunktionen.addsPfad(pfad, arr[DatenDownload.DOWNLOAD_THEMA_NR]);
-        }
-        pfad = GuiFunktionen.replaceString(pfad, film);
-        pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* pfadtrennerEntfernen */, false /* leerEntfernen */);
-        if (pfad.endsWith(File.separator)) {
-            pfad = pfad.substring(0, pfad.length() - 1);
-        }
-        return new String[]{pfad, name};
     }
 
     public boolean progsContainPath() {
@@ -391,5 +296,6 @@ public class DatenPset {
         arr[PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_IST_BUTTON_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_IST_ABO_NR] = Boolean.toString(false);
+        arr[PROGRAMMSET_THEMA_ANLEGEN_NR] = Boolean.toString(true);
     }
 }
