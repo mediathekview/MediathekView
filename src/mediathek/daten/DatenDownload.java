@@ -24,7 +24,6 @@ import java.util.Iterator;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.filme.filmeSuchen.sender.Mediathek3Sat;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekNdr;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekSwr;
@@ -151,36 +150,22 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     private void aufrufBauen(DatenPset pSet, DatenFilm film, DatenAbo abo) {
         //zieldatei und pfad bauen und eintragen
-        //und gibt die Zieldatei mit Pfad zurück
         try {
             DatenProg programm = pSet.getProgUrl(arr[DOWNLOAD_URL_NR]);
             // ##############################################
             // für die alten Versionen:
-            // ##############################################
-//            if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%p") || pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].contains("%n")) {
-                pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].replace("%n", "");
-                pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].replace("%p", "");
-//                pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
-//                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, this.getClass().getSimpleName());
-//            }
-//            if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].contains("%p") || pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].contains("%n")) {
-                pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace("%n", "");
-                pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace("%p", "");
-//                pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
-//                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, this.getClass().getSimpleName());
-//            }
+            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].replace("%n", "");
+            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].replace("%p", "");
+            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace("%n", "");
+            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace("%p", "");
             Iterator<DatenProg> it = pSet.getListeProg().iterator();
             while (it.hasNext()) {
                 DatenProg prog = it.next();
-//                if (prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].contains("%p") || prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].contains("%n")) {
-                    prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].replace("%n", "");
-                    prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].replace("%p", "");
-//                    pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
-//                    Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, this.getClass().getSimpleName());
-//                }
+                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].replace("%n", "");
+                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].replace("%p", "");
             }
             // ##############################################
-            // ##############################################
+            // pSet und ... eintragen
             arr[DOWNLOAD_PROGRAMMSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
             int art = pSet.checkDownloadDirekt(arr[DOWNLOAD_URL_NR]);
             arr[DOWNLOAD_ART_NR] = String.valueOf(art);
@@ -200,29 +185,23 @@ public class DatenDownload implements Comparable<DatenDownload> {
     private void dateinamePfadBauen(DatenPset pSet, DatenFilm film, DatenAbo abo) {
         if (!pSet.progsContainPath()) {
             // dann können wir uns das sparen
+            arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = "";
+            arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = "";
             return;
         }
+        // ##############################################
+        // Vorgaben fürs Ziel eintragen
         arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = pSet.getZielDateiname(arr[DOWNLOAD_URL_NR]);
         arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = pSet.getZielPfad();
         String name = arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR];
         String pfad = arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
         // ##############################
-        // Pfad sinnvoll belegen
-        // ##############################
-        if (pfad.equals("")) {
-            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
-            // wenn leer, vorbelegen
-            pfad = GuiFunktionen.getHomePath();
-            pfad = GuiFunktionen.addsPfad(pfad, Konstanten.VERZEICNHISS_DOWNLOADS);
-        }
-        // ##############################
         // Name sinnvoll belegen
-        // ##############################
         if (name.equals("")) {
-            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR] = Boolean.TRUE.toString();
             name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
         }
         name = GuiFunktionen.replaceString(name, film);
+        name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */, true /* leerEntfernen */);
         // prüfen ob das Suffix 2x vorkommt
         if (name.length() > 8) {
             String suf1 = name.substring(name.length() - 8, name.length() - 4);
@@ -232,46 +211,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     name = name.substring(0, name.length() - 4);
                 }
             }
-        }
-        // ##############################
-        // Pfad sinnvoll belegen
-        // ##############################
-        if (abo != null) {
-            // Bei Abos: den Namen des Abos in den Download eintragen
-            arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
-        }
-        if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
-            // den Namen des Themas an den Zielpfad anhängen, leer kann er jetzt ja schon nicht mehr sein
-            pfad = GuiFunktionen.addsPfad(pfad, arr[DatenDownload.DOWNLOAD_THEMA_NR]);
-        }
-        pfad = GuiFunktionen.replaceString(pfad, film);
-        pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* pfadtrennerEntfernen */, false /* leerEntfernen */);
-        if (pfad.endsWith(File.separator)) {
-            pfad = pfad.substring(0, pfad.length() - 1);
-        }
-        // ##############################
-        // im Auto-Modus keinen Dialog anzeigen
-        // Pfad abfragen
-        // ##############################################
-        if (!Daten.auto && Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_FRAGEN_NR])) {
-            // %n und %p werden jetzt gleich verwendet, es wird immer ein Dialog angezeigt in dem beides (Name und Pfad) geändert werden kann
-            name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */, true /* leerEntfernen */);
-            DialogZielDatei dialog = new DialogZielDatei(null, true, pfad, name);
-            dialog.setVisible(true);
-            if (!dialog.ok) {
-                pfad = GuiFunktionen.getHomePath();
-                pfad = GuiFunktionen.addsPfad(pfad, arr[DatenDownload.DOWNLOAD_THEMA_NR]);
-                name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
-            } else {
-                name = dialog.zielDateiname;
-                pfad = dialog.zielPfad;
-            }
-        }
-        // ##############################################
-        // und jetzt noch den Pfad aufbauen
-        // ##############################################
-        if (pfad.endsWith(File.separator)) {
-            pfad = pfad.substring(0, pfad.length() - 1);
         }
         // Kürzen
         if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR])) {
@@ -284,9 +223,31 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 name = name.substring(0, laenge - 4) + name.substring(name.length() - 4);
             }
         }
-        arr[DOWNLOAD_ZIEL_DATEINAME_NR] = GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */, true /* leerEntfernen */);
+        // ##############################
+        // Pfad sinnvoll belegen
+        if (pfad.equals("")) {
+            // wenn leer, vorbelegen
+            pfad = GuiFunktionen.getStandardDownloadPath();
+        }
+        if (abo != null) {
+            // Bei Abos: den Namen des Abos eintragen
+            arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
+            if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
+                // und Abopfad an den Pfad anhängen
+                pfad = GuiFunktionen.addsPfad(pfad, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
+            }
+        } else if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
+            // bei Downloads den Namen des Themas an den Zielpfad anhängen
+            pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR], true/* pfadtrennerEntfernen */, true /* leerEntfernen */));
+        }
+        pfad = GuiFunktionen.replaceString(pfad, film);
+        pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* pfadtrennerEntfernen */, false /* leerEntfernen */);
+        if (pfad.endsWith(File.separator)) {
+            pfad = pfad.substring(0, pfad.length() - 1);
+        }
+        arr[DOWNLOAD_ZIEL_DATEINAME_NR] = name;
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
-        arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, arr[DOWNLOAD_ZIEL_DATEINAME_NR]);
+        arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, name);
     }
 
     private void programmaufrufBauen(DatenProg programm) {
