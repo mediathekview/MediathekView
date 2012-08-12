@@ -20,11 +20,16 @@
 package mediathek.controller.filme.filmeSuchen.sender;
 
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import mediathek.Daten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Datum;
+import mediathek.tool.GuiFunktionen;
 
 /**
  *
@@ -222,7 +227,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
             final String MUSTER_ITEM_1 = "<item>";
             final String MUSTER_DATUM = "<pubDate>"; //<pubDate>03.01.2011</pubDate>
             final String MUSTER_THEMA = "<jwplayer:author>"; //TH 7.8.2012
-            meldung("*" + strUrlFeed);
+            meldung(strUrlFeed);
             seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "");
             try {
                 int posItem1 = 0;
@@ -259,31 +264,57 @@ public class MediathekHr extends MediathekReader implements Runnable {
                     if (thema.isEmpty()) {
                         thema = titel;
                     }
-                    if ((pos1 = seite1.indexOf(MUSTER_URL_1, posItem1)) != -1) {
-                        pos1 += MUSTER_URL_1.length();
-                        if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
-                            url1 = seite1.substring(pos1, pos2);
-                            if (!url1.equals("")) {
-                                if ((pos1 = seite1.indexOf(MUSTER_URL_2, pos2)) != -1) {
-                                    pos1 += MUSTER_URL_2.length();
-                                    if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                                        url2 = seite1.substring(pos1, pos2);
-                                        url = addsUrl(url1, url2);
-                                        String furl = "-r " + url + " -y " + url2;
-                                        // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String datum, String zeit) {
-                                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, url, furl, datum, "");
-                                        addFilm(film);
-                                    } else {
-                                        Log.fehlerMeldungMReader(-649882036, "MediathekHr.addFilme", "keine URL");
-                                    }
-                                }
-                            }
+                    if ((pos1 = seite1.indexOf(MUSTER_URL_1, posItem1)) == -1) {
+                        return; // nix is
+                    }
+                    pos1 += MUSTER_URL_1.length();
+                    if ((pos2 = seite1.indexOf("<", pos1)) == -1) {
+                        return; // nix is
+                    }
+                    url1 = seite1.substring(pos1, pos2);
+                    if (url1.equals("")) {
+                        return; // nix is
+                    }
+                    if ((pos1 = seite1.indexOf(MUSTER_URL_2, pos2)) == -1) {
+                        return; // nix is
+                    }
+                    pos1 += MUSTER_URL_2.length();
+                    if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                        url2 = seite1.substring(pos1, pos2);
+                        url = addsUrl(url1, url2);
+                        String furl = "-r " + url + " -y " + url2;
+                        if (datum.equals("")) {
+                            datum = getDate(url);
                         }
+                        // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String datum, String zeit) {
+                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, url, furl, datum, "");
+                        addFilm(film);
+                    } else {
+                        Log.fehlerMeldungMReader(-649882036, "MediathekHr.addFilme", "keine URL");
                     }
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(-487774126, "MediathekHr.addFilme", ex);
             }
+        }
+
+        private String getDate(String url) {
+            String ret = "";
+            try {
+                String tmp = GuiFunktionen.getDateiName(url);
+                if (tmp.length() > 8) {
+                    tmp = tmp.substring(0, 8);
+                    SimpleDateFormat sdfIn = new SimpleDateFormat("yyyyMMdd");
+                    Date filmDate = sdfIn.parse(tmp);
+                    SimpleDateFormat sdfOut;
+                    sdfOut = new SimpleDateFormat("dd.MM.yyyy");
+                    ret = sdfOut.format(filmDate);
+                }
+            } catch (Exception ex) {
+                ret = "";
+                Log.fehlerMeldungMReader(-356408790, "MediathekHr.getDate", "kein Datum");
+            }
+            return ret;
         }
     }
 }
