@@ -10,7 +10,7 @@ cp /mnt/daten/software/java/Mediathek_3/bin/Anleitung/Anleitung.pdf /mnt/daten/s
 
 # Aufräumen
 rm /mnt/daten/software/java/Mediathek_3/dist/README.TXT
-rm -r /mnt/daten/software/java/Mediathek_3/dist/Anleitung
+#rm -r /mnt/daten/software/java/Mediathek_3/dist/Anleitung
 
 # Programmsets ins www-verzeichnis kopieren
 cp /mnt/daten/software/java/Mediathek_3/src/mediathek/file/*.xml /mnt/daten/www/online/ZDFMediathekView/programmgruppen/
