@@ -197,7 +197,7 @@ public class ListePset extends LinkedList<DatenPset> {
     }
 
     private boolean addVorlage(DatenPset pSet) {
-        pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getHomePath());
+        pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
         String mplayer = "";
         String vlc = "";
         String flvstreamer = "";

@@ -33,7 +33,6 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.gui.beobachter.EscBeenden;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 
 public class DialogAddDownload extends javax.swing.JDialog {
@@ -104,11 +103,13 @@ public class DialogAddDownload extends javax.swing.JDialog {
         if (datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR].equals("")) {
             jTextFieldName.setEnabled(false);
             jTextFieldPfad.setEnabled(false);
+            jButtonZiel.setEnabled(false);
             jTextFieldName.setText("");
             jTextFieldPfad.setText("");
         } else {
             jTextFieldName.setEnabled(true);
             jTextFieldPfad.setEnabled(true);
+            jButtonZiel.setEnabled(true);
             jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR]);
             jTextFieldPfad.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
         }
