@@ -78,7 +78,6 @@ public class FilmeSuchenSender {
         mediathekListe.add(new MediathekArte7(this, 1));
         mediathekListe.add(new Mediathek3Sat(this, 2));
         mediathekListe.add(new MediathekSwr(this, 1));
-        //mediathekListe.add(new MediathekNdr(this, 1));
         mediathekListe.add(new MediathekNdrFlash(this, 1));
         // Spalte 2
         mediathekListe.add(new MediathekMdr(this, 1));

@@ -19,6 +19,7 @@
  */
 package mediathek.controller.filme.filmeSuchen.sender;
 
+import java.io.UnsupportedEncodingException;
 import mediathek.Daten;
 import mediathek.Log;
 import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
@@ -39,7 +40,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekHr(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 1000, startPrio);
     }
 
     /**
@@ -54,6 +55,24 @@ public class MediathekHr extends MediathekReader implements Runnable {
         int pos1;
         int pos2;
         String url;
+        //TH 7.8.2012 Erst suchen nach Rubrik-URLs, die haben Thema
+        final String RUBRIK_MUSTER = "<option value=\"/website/fernsehen/sendungen/index.jsp?rubrik=";
+        final String RUBRIK_PREFIX = "http://www.hr-online.de/website/fernsehen/sendungen/index.jsp?rubrik=";
+        while ((pos = seite.indexOf(RUBRIK_MUSTER, pos)) != -1) {
+            pos += RUBRIK_MUSTER.length();
+            pos2 = seite.indexOf("\"", pos);
+            if (pos2 != -1) {
+                url = seite.substring(pos, pos2);
+                if (!url.equals("")) {
+                    url = RUBRIK_PREFIX + url;
+                    bearbeiteRubrik(url);
+                }
+            } else {
+                Log.fehlerMeldungMReader(-456933258, "MediathekHr.addToList-1", "keine URL");
+            }
+        }
+        pos = 0;
+
         while ((pos = seite.indexOf(MUSTER, pos)) != -1) {
             pos += MUSTER.length();
             pos1 = pos;
@@ -62,9 +81,11 @@ public class MediathekHr extends MediathekReader implements Runnable {
                 url = seite.substring(pos1, pos2);
                 if (!url.equals("")) {
                     String[] add = new String[]{url, ""};
-                    listeThemen.addUrl(add);
+                    if (!istInListe(listeThemen, url, 0)) {
+                        listeThemen.add(add);
+                    }
                 } else {
-                    Log.fehlerMeldungMReader(-456933258, "MediathekHr.addToList", "keine URL");
+                    Log.fehlerMeldungMReader(-203659403, "MediathekHr.addToList-2", "keine URL");
                 }
             }
         }
@@ -74,6 +95,100 @@ public class MediathekHr extends MediathekReader implements Runnable {
                 for (int t = 0; t < maxThreadLaufen; ++t) {
                     new Thread(new HrThemaLaden()).start();
                 }
+            }
+        }
+    }
+
+    //TH 7.8.2012 Suchen in Seite von Rubrik-URL
+    // z.B. http://www.hr-online.de/website/fernsehen/sendungen/index.jsp?rubrik=2254
+    private void bearbeiteRubrik(String rubrikUrl) {
+        final String RUBRIK_PREFIX = "http://www.hr-online.de/website/fernsehen/sendungen/index.jsp?rubrik=";
+        final String MUSTER = "\"http%3A%2F%2Fwww.hr-online.de%2Fwebsite%2Fincludes%2Fmedianew-playlist.xml.jsp%3Flogic%3Dstart_multimedia_document_logic";
+        final String MUSTER_TITEL = "<meta property=\"og:title\" content=\"";
+
+        StringBuffer rubrikSeite = getUrlIo.getUri_Iso(nameSenderMReader, rubrikUrl, new StringBuffer(), "");
+        int pos = 0;
+        int pos2;
+        String url;
+        String thema = "";
+
+        // 1. Titel (= Thema) holen
+        if ((pos = rubrikSeite.indexOf(MUSTER_TITEL, pos)) != -1) {
+            pos += MUSTER_TITEL.length();
+            pos2 = rubrikSeite.indexOf("\"", pos);
+            int ppos = rubrikSeite.indexOf("|", pos);
+            if (ppos != -1 && ppos < pos2) {
+                pos2 = ppos;
+            }
+            if (pos2 != -1) {
+                thema = rubrikSeite.substring(pos, pos2).trim();
+            }
+        }
+
+        // 2. suchen nach XML Liste       
+        pos = 0;
+        if ((pos = rubrikSeite.indexOf(MUSTER, pos)) != -1) {
+            pos += MUSTER.length();
+            pos2 = rubrikSeite.indexOf("\"", pos);
+            if (pos2 != -1) {
+                url = rubrikSeite.substring(pos, pos2);
+                if (!url.equals("")) {
+                    try {
+                        url = java.net.URLDecoder.decode(MUSTER.substring(1) + url, "UTF-8");
+                        String[] add = new String[]{
+                            url, thema
+                        };
+                        if (!istInListe(listeThemen, url, 0)) {
+                            listeThemen.add(add);
+                        }
+                    } catch (UnsupportedEncodingException ex) {
+                    }
+                } else {
+                    Log.fehlerMeldungMReader(-653210697, "MediathekHr.bearbeiteRubrik", "keine URL");
+                }
+            }
+        }
+
+        // 3. Test: Suchen nach extra-Seite "Videos"
+        final String MEDIA_MUSTER = "<li class=\"navi\"><a href=\"index.jsp?rubrik=";
+        String videoUrl = null;
+        pos = 0;
+        if ((pos = rubrikSeite.indexOf(MEDIA_MUSTER, pos)) != -1) {
+            pos += MEDIA_MUSTER.length();
+            pos2 = rubrikSeite.indexOf("\"", pos);
+            if (pos2 != -1) {
+                String key = rubrikSeite.substring(pos, pos2);
+                pos = pos2;
+                if (rubrikSeite.substring(pos, pos + 36).equals("\" class=\"navigation\" title=\"Videos\">")) {
+                    videoUrl = RUBRIK_PREFIX + key;
+                }
+            }
+        }
+
+        if (videoUrl == null) {
+            return;
+        }
+
+        // 4. dort Verweise auf XML Einträge finden
+        rubrikSeite = getUrlIo.getUri_Iso(nameSenderMReader, videoUrl, rubrikSeite, "");
+        pos = 0;
+        final String PLAYER_MUSTER = "<a href=\"mediaplayer.jsp?mkey=";
+        while ((pos = rubrikSeite.indexOf(PLAYER_MUSTER, pos)) != -1) {
+            pos += PLAYER_MUSTER.length();
+            pos2 = rubrikSeite.indexOf("&", pos);
+            if (pos2 != -1) {
+                url = rubrikSeite.substring(pos, pos2);
+                if (!url.equals("") && url.matches("[0-9]*")) {
+                    url = "http://www.hr-online.de/website/includes/medianew.xml.jsp?key=" + url + "&xsl=media2rss-nocopyright.xsl";
+
+                    String[] add = new String[]{
+                        url, thema
+                    };
+                    if (!istInListe(listeThemen, url, 0)) {
+                        listeThemen.add(add);
+                    }
+                }
+                pos = pos2;
             }
         }
     }
@@ -106,6 +221,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
             final String MUSTER_URL_2 = "\" url=\"";//<media:content duration="00:29:42" type="video/mp4" url="mp4:flash/fs/hessenschau/20110103_1930" />
             final String MUSTER_ITEM_1 = "<item>";
             final String MUSTER_DATUM = "<pubDate>"; //<pubDate>03.01.2011</pubDate>
+            final String MUSTER_THEMA = "<jwplayer:author>"; //TH 7.8.2012
             meldung("*" + strUrlFeed);
             seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "");
             try {
@@ -130,8 +246,18 @@ public class MediathekHr extends MediathekReader implements Runnable {
                         pos1 += MUSTER_TITEL.length();
                         if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
                             titel = seite1.substring(pos1, pos2);
-                            thema = titel;
+                            //thema = titel; //TH 7.8.2012 weg weil thema nun meistens belegt
                         }
+                    }
+                    //TH 7.8.2012 Falls Thema doch nicht belegt, dann in XML Datei nehmen (leider weniger zuverlässig)
+                    if (thema.isEmpty() && (pos1 = seite1.indexOf(MUSTER_THEMA, posItem1)) != -1) {
+                        pos1 += MUSTER_THEMA.length();
+                        if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
+                            thema = seite1.substring(pos1, pos2);
+                        }
+                    }
+                    if (thema.isEmpty()) {
+                        thema = titel;
                     }
                     if ((pos1 = seite1.indexOf(MUSTER_URL_1, posItem1)) != -1) {
                         pos1 += MUSTER_URL_1.length();
