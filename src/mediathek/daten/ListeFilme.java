@@ -285,12 +285,12 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public synchronized void getModelTabFilme(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {
         modelFilm.setRowCount(0);
         if (this.size() != 0) {
-            ListeFilme liste = new ListeFilme();
-            Iterator<DatenFilm> it = this.iterator();
-            DatenFilm film;
             if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("")) {
                 addObjectDataTabFilme(ddaten, modelFilm);
             } else {
+                ListeFilme liste = new ListeFilme();
+                DatenFilm film;
+                Iterator<DatenFilm> it = this.iterator();
                 while (it.hasNext()) {
                     film = it.next();
                     // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
