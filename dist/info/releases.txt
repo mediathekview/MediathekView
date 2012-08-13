@@ -18,8 +18,21 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+# Version 3.1.0
+	- In den Programmsets kann jetzt auch für Downloads eingestellt werden, dass ein Unterverzeichnis
+	"Thema" angelegt wird (wie bisher bei den Abos)
+	- Der Dialog der bei einem Download angezeigt wird, enthält jetzt auch den Zielpfad und der kann so 
+	auch noch geändert werden
+	- Im Filter "Titel" funktionieren jetzt auch reguläre Ausdrücke
+	- Die Sender ZDF, 3sat, HR, NDR, WDR und ORF wurden erweitert/angepasst
+	- Programmmeldungen können als eigener Tab angezeigt werden (unter "Ansicht")
+	- Eine Filtereinstellung kann als Abo (Kontextmenü Maus) übernommen werden, es werden dann alle Filme
+	geladen, auf die die Filtereinstellungen passen
+	- mit dem Schalter "-auto" lädt das Programm automatisch die Filmliste, erledigt alle Abos und beendet sich 
+	dann wieder. Das funtioniert jetzt auch auf Rechnern ohne grafische Oberfläche (ohne X)
+
 # Version 3.0.0
-    - Die gesamte Oberfläche des Programms wurde überarbeitet
+	- Die gesamte Oberfläche des Programms wurde überarbeitet
     - Der Ablauf zum Download ist vereinfacht worden
     - Beim ersten Start wird der VLC und der flvstreamer so eingerichtet, dass sich alle Filme direkt
     ansehen lassen

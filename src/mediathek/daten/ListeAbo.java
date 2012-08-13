@@ -130,12 +130,14 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // titelSuchen muss im Titel nur enthalten sein
         if (aboFilter_SenderSuchen.equals("") || imFilm_Sender.equalsIgnoreCase(aboFilter_SenderSuchen)) {
             if (aboFilter_themaSuchen.equals("") || imFilm_Thema.equalsIgnoreCase(aboFilter_themaSuchen)) {
-                if (aboFilter_titelSuchen.equals("") || imFilm_Titel.toLowerCase().contains(aboFilter_titelSuchen.toLowerCase())) {
+
+                if (pruefenTitel(aboFilter_titelSuchen, imFilm_Titel)) {
+
                     if (aboFilter_themaTitelSuchen.equals("")) {
                         return true;
-                    } else if (pruefen(aboFilter_themaTitelSuchen, imFilm_Thema)) {
+                    } else if (pruefenThemaTitel(aboFilter_themaTitelSuchen, imFilm_Thema)) {
                         return true;
-                    } else if (pruefen(aboFilter_themaTitelSuchen, imFilm_Titel)) {
+                    } else if (pruefenThemaTitel(aboFilter_themaTitelSuchen, imFilm_Titel)) {
                         return true;
                     }
                 }
@@ -144,7 +146,15 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         return false;
     }
 
-    private static boolean pruefen(String aboFilter, String im) {
+    private static boolean pruefenTitel(String aboFilter, String im) {
+        Pattern p = makePattern(aboFilter);
+        if (p != null) {
+            return (p.matcher(im).matches());
+        }
+        return (textPruefen(aboFilter, im));
+    }
+
+    private static boolean pruefenThemaTitel(String aboFilter, String im) {
         Pattern p = makePattern(aboFilter);
         if (p != null) {
             return (p.matcher(im).matches());
@@ -172,8 +182,8 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         return liste.toArray(new String[0]);
     }
 
-    private static boolean textPruefen(String aboFilter_themaTitelSuchen, String imFilm) {
-        if (aboFilter_themaTitelSuchen.equals("") || imFilm.toLowerCase().contains(aboFilter_themaTitelSuchen.toLowerCase())) {
+    private static boolean textPruefen(String filter, String imFilm) {
+        if (filter.equals("") || imFilm.toLowerCase().contains(filter.toLowerCase())) {
             return true;
         } else {
             return false;
