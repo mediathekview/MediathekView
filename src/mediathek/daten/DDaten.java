@@ -27,7 +27,11 @@ import mediathek.controller.io.History;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.IoXmlSchreiben;
 import mediathek.controller.io.starter.StarterClass;
-import mediathek.gui.*;
+import mediathek.gui.GuiAbo;
+import mediathek.gui.GuiDebug;
+import mediathek.gui.GuiDownloads;
+import mediathek.gui.GuiFilme;
+import mediathek.gui.InfoPanel;
 
 public final class DDaten extends Daten {
     // Listen

@@ -19,7 +19,11 @@
  */
 package mediathek.controller.io;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.ZipOutputStream;
@@ -31,7 +35,14 @@ import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.controller.filme.filmUpdateServer.DatenFilmUpdateServer;
 import mediathek.controller.filme.filmUpdateServer.FilmUpdateServer;
-import mediathek.daten.*;
+import mediathek.daten.DDaten;
+import mediathek.daten.DatenAbo;
+import mediathek.daten.DatenBlacklist;
+import mediathek.daten.DatenDownload;
+import mediathek.daten.DatenProg;
+import mediathek.daten.DatenPset;
+import mediathek.daten.ListeBlacklist;
+import mediathek.daten.ListePset;
 import mediathek.importOld.DatenPgruppe__old;
 import mediathek.importOld.Konstanten__old;
 import mediathek.tool.GuiFunktionen;

@@ -51,7 +51,7 @@ public class PanelEinstellungen extends PanelVorlage {
         }
         jComboBoxLook.setModel(new DefaultComboBoxModel(theme));
         if (Daten.system[Konstanten.SYSTEM_LOOK_NR].equals("")) {
-            Daten.system[Konstanten.SYSTEM_LOOK_NR] = "1";
+            Daten.system[Konstanten.SYSTEM_LOOK_NR] = "0";
         }
         jComboBoxLook.setSelectedIndex(Integer.parseInt(Daten.system[Konstanten.SYSTEM_LOOK_NR]));
         jComboBoxLook.addActionListener(new BeobLook());
@@ -364,9 +364,9 @@ public class PanelEinstellungen extends PanelVorlage {
             if (GuiFunktionen.setLook(ddaten.mediathekGui, Integer.parseInt(String.valueOf(jComboBoxLook.getSelectedIndex())))) {
                 Daten.system[Konstanten.SYSTEM_LOOK_NR] = String.valueOf(jComboBoxLook.getSelectedIndex());
             } else {
-                Daten.system[Konstanten.SYSTEM_LOOK_NR] = "1";
-                jComboBoxLook.setSelectedIndex(1);
-                GuiFunktionen.setLook(ddaten.mediathekGui, 1);
+                Daten.system[Konstanten.SYSTEM_LOOK_NR] = "0";
+                jComboBoxLook.setSelectedIndex(0);
+                GuiFunktionen.setLook(ddaten.mediathekGui, 0);
             }
 
         }
