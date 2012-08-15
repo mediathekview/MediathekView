@@ -136,12 +136,20 @@ public final class JTableMed extends JTable {
         // mit den Standardwerten
         // erst die Breite, dann die Reihenfolge
         String b, r;
+        boolean ok = false;
         if (!DDaten.system[nrDatenSystem].equals("")) {
+            ok = true;
             String d = DDaten.system[nrDatenSystem];
             b = DDaten.system[nrDatenSystem].substring(0, DDaten.system[nrDatenSystem].indexOf(FELDTRENNER));
             r = DDaten.system[nrDatenSystem].substring(DDaten.system[nrDatenSystem].indexOf(FELDTRENNER) + 1);
-            arrLesen(b, breite);
-            arrLesen(r, reihe);
+            if (!arrLesen(b, breite)) {
+                ok = false;
+            }
+            if (!arrLesen(r, reihe)) {
+                ok = false;
+            }
+        }
+        if (ok) {
             setSpalten();
         } else {
             resetTabelle();
@@ -280,7 +288,7 @@ public final class JTableMed extends JTable {
         return arr;
     }
 
-    private void arrLesen(String s, int[] arr) {
+    private boolean arrLesen(String s, int[] arr) {
         String sub;
         for (int i = 0; i < spaltenTabelle.length; i++) {
             if (!s.equals("")) {
@@ -291,8 +299,13 @@ public final class JTableMed extends JTable {
                     sub = s;
                     s = "";
                 }
-                arr[i] = Integer.parseInt(sub);
+                try {
+                    arr[i] = Integer.parseInt(sub);
+                } catch (Exception ex) {
+                    return false;
+                }
             }
         }
+        return true;
     }
 }
