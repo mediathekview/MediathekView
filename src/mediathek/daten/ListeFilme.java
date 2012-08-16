@@ -153,7 +153,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public synchronized void updateListe(ListeFilme liste, boolean index /* Vergleich über Index, sonst nur URL */) {
         // in eine vorhandene Liste soll eine andere Filmliste einsortiert werden
         // es werden nur Filme die noch nicht vorhanden sind, einsortiert
-        DatenFilm f;
+        DatenFilm film;
         HashSet<String> hashSet = new HashSet<String>();
         Iterator<DatenFilm> it = this.iterator();
         while (it.hasNext()) {
@@ -165,14 +165,14 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         it = liste.iterator();
         while (it.hasNext()) {
-            f = it.next();
+            film = it.next();
             if (index) {
-                if (!hashSet.contains(f.getIndex())) {
-                    add(f);
+                if (!hashSet.contains(film.getIndex())) {
+                    add(film);
                 }
             } else {
-                if (!hashSet.contains(f.arr[DatenFilm.FILM_URL_NR])) {
-                    add(f);
+                if (!hashSet.contains(film.arr[DatenFilm.FILM_URL_NR])) {
+                    add(film);
                 }
             }
         }

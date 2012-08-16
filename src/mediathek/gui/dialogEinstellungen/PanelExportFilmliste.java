@@ -53,22 +53,22 @@ public class PanelExportFilmliste extends PanelVorlage {
 
     private void filmeExportieren() {
         int ret;
-        String d = Daten.system[Konstanten.SYSTEM_EXPORT_DATEI_NR];
-        if (d.equals("")) {
+        String exporDatei = Daten.system[Konstanten.SYSTEM_EXPORT_DATEI_NR];
+        if (exporDatei.equals("")) {
             JOptionPane.showMessageDialog(null, "Keine Datei angegeben", "Pfad", JOptionPane.INFORMATION_MESSAGE);
         } else {
             try {
-                if (new File(d).exists()) {
-                    ret = JOptionPane.showConfirmDialog(null, "Datei:  " + "\"" + d + "\"" + "  existiert bereits", "Überschreiben?",
+                if (new File(exporDatei).exists()) {
+                    ret = JOptionPane.showConfirmDialog(null, "Datei:  " + "\"" + exporDatei + "\"" + "  existiert bereits", "Überschreiben?",
                             JOptionPane.YES_NO_OPTION);
                 } else {
                     ret = JOptionPane.OK_OPTION;
                 }
                 if (ret == JOptionPane.OK_OPTION) {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                    new IoXmlFilmlisteSchreiben().filmeSchreiben(d, Daten.listeFilme);
-                    if (!new File(d).exists()) {
-                        JOptionPane.showMessageDialog(null, "Datei:  " + "\"" + d + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    new IoXmlFilmlisteSchreiben().filmeSchreiben(exporDatei, Daten.listeFilme);
+                    if (!new File(exporDatei).exists()) {
+                        JOptionPane.showMessageDialog(null, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             } catch (Exception ex) {
