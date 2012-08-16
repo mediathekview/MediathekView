@@ -312,19 +312,12 @@ public class GuiFunktionenProgramme {
                         ret = false;
                         text += PIPE + LEER + "Zielpfad fehlt!\n";
                     } else {
-                        File pfad = new File(zielPfad);
-                        if (!pfad.isDirectory()) {
+                        // Pfad beschreibbar?
+                        if (!checkPfadBeschreibbar(zielPfad)) {
+                            //da Pfad-leer und "kein" Pfad schon abgeprüft
                             ret = false;
                             text += PIPE + LEER + "Falscher Zielpfad!\n";
-                            text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" ist kein Verzeichnis!" + "\n";
-                        } else {
-                            // Pfad beschreibbar?
-                            if (!checkPfadBeschreibbar(zielPfad)) {
-                                //da Pfad-leer und "kein" Pfad schon abgeprüft
-                                ret = false;
-                                text += PIPE + LEER + "Falscher Zielpfad!\n";
-                                text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" nicht beschreibbar!" + "\n";
-                            }
+                            text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" nicht beschreibbar!" + "\n";
                         }
                     }
                 }
