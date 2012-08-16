@@ -123,7 +123,6 @@ public class FilmeSuchenSender {
 
     public void updateSender(String nameSenderFilmliste, ListeFilme alteListe) {
         // nur für den Mauskontext "Sender aktualisieren"
-//        allesLaden = false;
         initStart(alteListe);
         MediathekReader reader = getMReaderNameSenderFilmliste(nameSenderFilmliste);
         if (reader != null) {
@@ -223,11 +222,11 @@ public class FilmeSuchenSender {
         // wird einmal aufgerufen, wenn alle Sender fertig sind
         if (listeSenderLaufen.listeFertig()) {
             int anzFilme = listeFilmeNeu.size();
-            listeFilmeNeu.sort();
             if (!allesLaden) {
                 // alte Filme eintragen
                 listeFilmeNeu.updateListe(listeFilmeAlt, true /* über den Index vergleichen */);
             }
+            listeFilmeNeu.sort();
             listeFilmeAlt = null; // brauchmer nicht mehr
             metaDatenSchreiben();
             stopZeit = new Date(System.currentTimeMillis());
