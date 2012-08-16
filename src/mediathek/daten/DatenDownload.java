@@ -82,11 +82,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE};
     public String[] arr;
-
+    
     public DatenDownload() {
         makeArr();
     }
-
+    
     public DatenDownload(DatenPset pSet, DatenFilm film, int quelle, DatenAbo abo, String name, String pfad) {
         makeArr();
         arr[DOWNLOAD_NR_NR] = film.arr[DatenFilm.FILM_NR_NR];
@@ -101,7 +101,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_QUELLE_NR] = String.valueOf(quelle);
         aufrufBauen(pSet, film, abo, name, pfad);
     }
-
+    
     public DatenDownload getCopy() {
         DatenDownload ret = new DatenDownload();
         for (int i = 0; i < arr.length; ++i) {
@@ -109,17 +109,17 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
         return ret;
     }
-
+    
     public void aufMichKopieren(DatenDownload datenDownload) {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = new String(datenDownload.arr[i]);
         }
     }
-
+    
     public boolean istAbo() {
         return !arr[DatenDownload.DOWNLOAD_ABO_NR].equals("");
     }
-
+    
     public int getArt() {
         try {
             return Integer.parseInt(arr[DOWNLOAD_ART_NR]);
@@ -128,7 +128,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             return Starts.ART_PROGRAMM;
         }
     }
-
+    
     public int getQuelle() {
         try {
             return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);
@@ -137,14 +137,14 @@ public class DatenDownload implements Comparable<DatenDownload> {
             return Starts.QUELLE_BUTTON;
         }
     }
-
+    
     public boolean isRestart() {
         if (arr[DOWNLOAD_PROGRAMM_RESTART_NR].equals("")) {
             return false;
         }
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART_NR]);
     }
-
+    
     private void aufrufBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
         //zieldatei und pfad bauen und eintragen
         try {
@@ -178,7 +178,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             Log.fehlerMeldung(825600145, this.getClass().getName(), ex);
         }
     }
-
+    
     private void dateinamePfadBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
         String name;
         String pfad;
@@ -262,14 +262,17 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
         arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, name);
     }
-
+    
     private void programmaufrufBauen(DatenProg programm) {
         String befehlsString = programm.getProgrammAufruf();
         befehlsString = befehlsString.replace("**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         befehlsString = befehlsString.replace("%f", arr[DOWNLOAD_URL_NR]);
         befehlsString = befehlsString.replace("%F", getUrlFlvstreamer());
         befehlsString = befehlsString.replace("%k", getUrlLow());
-        befehlsString = befehlsString.replace("%x", AsxLesen.lesen(arr[DOWNLOAD_URL_NR]));
+        if (befehlsString.contains("%x")) {
+            // sonst holt er doch tatsächlich immer erst die asx-datei!
+            befehlsString = befehlsString.replace("%x", AsxLesen.lesen(arr[DOWNLOAD_URL_NR]));
+        }
         //Auth eintragen
         if (arr[DOWNLOAD_URL_AUTH_NR].equals("")) {
             befehlsString = befehlsString.replace("%a", "");
@@ -284,7 +287,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = befehlsString;
         }
     }
-
+    
     private String getUrlFlvstreamer() {
         String ret;
         if (!arr[DOWNLOAD_URL_RTMP_NR].equals("")) {
@@ -298,7 +301,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
         return ret;
     }
-
+    
     private String getUrlLow() {
         String ret = arr[DOWNLOAD_URL_NR];
         if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
@@ -318,7 +321,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
         return ret;
     }
-
+    
     @Override
     public int compareTo(DatenDownload arg0) {
         int ret = 0;
@@ -328,7 +331,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
         return ret;
     }
-
+    
     private void makeArr() {
         arr = new String[DOWNLOAD_MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
