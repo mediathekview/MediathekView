@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -43,15 +44,27 @@ import mediathek.tool.TModel;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
 
+    private JDialog dialog = null;
+
+    public PanelFilmlisteLaden(DDaten d, JDialog ddialog) {
+        super(d);
+        dialog = ddialog;
+        initComponents();
+        init();
+    }
+
     public PanelFilmlisteLaden(DDaten d) {
         super(d);
         initComponents();
+        init();
+    }
+
+    private void init() {
         initRadio();
         tabelleLaden();
         jButtonUpdate.addActionListener(new BeobSuchen());
         jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
         jButtonFilmeLaden.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.filmeLaden.importFilmliste(Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
@@ -63,14 +76,12 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jTable1.addMouseListener(new BeobachterTableSelect());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
         Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_UPDATESERVER, PanelFilmlisteLaden.class.getSimpleName()) {
-
             @Override
             public void ping() {
                 tabelleLaden();
             }
         });
         Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_ART_IMPORT_FILMLISTE, PanelFilmlisteLaden.class.getSimpleName()) {
-
             @Override
             public void ping() {
                 initRadio();
@@ -137,6 +148,9 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             }
         }
         stopBeob = false;
+        if (doppel && dialog != null) {
+            dialog.dispose();
+        }
     }
 
     private void setPanelTabelle(boolean manuell) {

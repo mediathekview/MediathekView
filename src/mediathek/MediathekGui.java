@@ -626,7 +626,8 @@ public final class MediathekGui extends javax.swing.JFrame {
 
     private void filmeLaden() {
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUS) {
-            DialogLeer dialog = new DialogLeer(null, true, new PanelFilmlisteLaden(ddaten), "Einstellungen zum Laden der Filme");
+            DialogLeer dialog = new DialogLeer(this, true);
+            dialog.init("Einstellungen zum Laden der Filme", new PanelFilmlisteLaden(ddaten, dialog));
             dialog.setVisible(true);
         } else {
             jButtonFilmeLaden.setEnabled(false);

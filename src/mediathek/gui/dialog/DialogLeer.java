@@ -25,22 +25,17 @@ import mediathek.gui.beobachter.EscBeenden;
 
 public class DialogLeer extends javax.swing.JDialog {
 
-    /**
-     *
-     * @param parent
-     * @param modal
-     * @param d
-     * @param gguiFilme
-     */
-    public DialogLeer(java.awt.Frame parent, boolean modal, JPanel panel, String titel) {
+    public DialogLeer(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+    }
+
+    public void init(String titel, JPanel panel) {
         this.setTitle(titel);
         jPanelExtra.setLayout(new BorderLayout());
         jPanelExtra.add(panel);
         this.pack();
         new EscBeenden(this) {
-
             @Override
             public void beenden_() {
                 beenden();
