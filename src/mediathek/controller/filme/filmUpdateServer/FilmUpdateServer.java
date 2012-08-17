@@ -53,7 +53,7 @@ public class FilmUpdateServer {
         try {
             FilmUpdateServerSuchen.getListe(Konstanten.ADRESSE_UPDATE_SERVER, tmp);
         } catch (Exception ex) {
-            Log.fehlerMeldung(347895642,"FilmUpdateServer.suchen", ex);
+            Log.fehlerMeldung(347895642, "FilmUpdateServer.suchen", ex);
         }
         if (tmp.isEmpty()) {
             Log.systemMeldung(new String[]{"Es ist ein Fehler aufgetreten!",
@@ -64,11 +64,11 @@ public class FilmUpdateServer {
             listeUpdateServer.sort();
         }
         if (listeUpdateServer.size() == 0) {
-            listeUpdateServer.add(new DatenFilmUpdateServer("http://178.77.79.81/mediathek4/Mediathek_14.bz2", "1"));
-            listeUpdateServer.add(new DatenFilmUpdateServer("http://178.77.79.81/mediathek2/Mediathek_13.zip", "1"));
-            listeUpdateServer.add(new DatenFilmUpdateServer("http://178.77.79.81/mediathek3/Mediathek_12.bz2", "1"));
-            listeUpdateServer.add(new DatenFilmUpdateServer("http://178.77.79.81/mediathek3/Mediathek_10.bz2", "1"));
-            listeUpdateServer.add(new DatenFilmUpdateServer("http://178.77.79.81/mediathek2/Mediathek_08.zip", "1"));
+            listeUpdateServer.add(new DatenFilmUpdateServer("http://176.28.14.91/mediathek1/Mediathek_14.bz2", "1"));
+            listeUpdateServer.add(new DatenFilmUpdateServer("http://176.28.14.91/mediathek2/Mediathek_16.bz2", "1"));
+            listeUpdateServer.add(new DatenFilmUpdateServer("http://176.28.14.91/mediathek3/Mediathek_18.bz2", "1"));
+            listeUpdateServer.add(new DatenFilmUpdateServer("http://176.28.14.91/mediathek4/Mediathek_20.bz2", "1"));
+            listeUpdateServer.add(new DatenFilmUpdateServer("http://176.28.14.91/mediathek1/Mediathek_22.bz2", "1"));
         }
         retUrl = listeUpdateServer.getRand(0); //eine Zufällige Adresse wählen
         Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_UPDATESERVER, this.getClass().getSimpleName());
