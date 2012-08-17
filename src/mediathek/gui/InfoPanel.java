@@ -27,6 +27,7 @@ public final class InfoPanel extends javax.swing.JPanel {
     private String[] idx = new String[IDX_MAX];
     private int aktIdx = 0;
     private MediathekTimer mediathekTimer = new MediathekTimer();
+    private boolean stopTimer = false;
 
     public InfoPanel() {
         initComponents();
@@ -37,7 +38,6 @@ public final class InfoPanel extends javax.swing.JPanel {
         jLabelStatusLinks.setMinimumSize(new Dimension(25, 25));
         jLabelRechts.setMinimumSize(new Dimension(25, 25));
         jButtonStop.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.filmeLaden.setStop();
@@ -57,17 +57,21 @@ public final class InfoPanel extends javax.swing.JPanel {
     }
 
     public void setProgressBar(FilmListenerElement filmListenerElement) {
+        stopTimer=true;
         jProgressBar1.setVisible(true);
         jButtonStop.setVisible(true);
         jProgressBar1.setMaximum(filmListenerElement.max);
         jProgressBar1.setMinimum(0);
         jProgressBar1.setValue(filmListenerElement.progress);
         jProgressBar1.setStringPainted(true);
+        jLabelRechts.setText(filmListenerElement.text);
     }
 
     public void clearProgress() {
+        stopTimer=false;
         jProgressBar1.setVisible(false);
         jButtonStop.setVisible(false);
+        setInfoRechts();
     }
 
     private void setInfoRechts() {
@@ -157,7 +161,9 @@ public final class InfoPanel extends javax.swing.JPanel {
 
         @Override
         public void ping() {
-            setInfoRechts();
+            if (!stopTimer) {
+                setInfoRechts();
+            }
         }
     }
 }

@@ -107,7 +107,7 @@ public class IoXmlFilmlisteLesen {
                         fOut.write(buffer, 0, n);
                         ++count;
                         if (count > 30) {
-                            this.notifyProgress("Download: " + datei);
+                            this.notifyProgress(datei);
                             count = 0;
                         }
                     }
@@ -126,14 +126,14 @@ public class IoXmlFilmlisteLesen {
             ret = datenFilmlisteLesen(parser, datei, listeFilme);
         } catch (Exception ex) {
             ret = false;
-            Log.fehlerMeldung(468956200,"IoXmlLesen.importDatenFilm", ex, "von: " + datei);
+            Log.fehlerMeldung(468956200, "IoXmlLesen.importDatenFilm", ex, "von: " + datei);
         } finally {
             try {
                 if (inReader != null) {
                     inReader.close();
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(468983014,"IoXmlLesen.importDatenFilm", ex);
+                Log.fehlerMeldung(468983014, "IoXmlLesen.importDatenFilm", ex);
             }
         }
         this.notifyFertig(listeFilme);
@@ -201,7 +201,7 @@ public class IoXmlFilmlisteLesen {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(698510057,"IoXml.datenLesenFilme", ex);
+            Log.fehlerMeldung(698510057, "IoXml.datenLesenFilme", ex);
             ret = false;
         }
         return ret;
@@ -232,7 +232,7 @@ public class IoXmlFilmlisteLesen {
             }
         } catch (Exception ex) {
             ret = false;
-            Log.fehlerMeldung(702069349,"IoXmlLesen.get", ex);
+            Log.fehlerMeldung(702069349, "IoXmlLesen.get", ex);
         }
         return ret;
     }
