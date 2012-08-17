@@ -84,7 +84,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
      * @param adresse Starter-URL von dem aus Sendungen gefunden werden
      */
     private void bearbeiteAdresse(String adresse) {
-        System.out.println("bearbeiteAdresse: " + adresse);
+        //System.out.println("bearbeiteAdresse: " + adresse);
         final String MUSTER_URL1 = "<a href=\""; //TH
         final String MUSTER_URL2 = "/programs/";
         final String MUSTER_URL2b = "/topics/"; //TH
