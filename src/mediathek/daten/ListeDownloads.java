@@ -25,11 +25,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import javax.swing.JOptionPane;
 import mediathek.Daten;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.Log;
 import mediathek.controller.io.starter.Starts;
-import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.TModelDownload;
 

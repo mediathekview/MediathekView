@@ -20,8 +20,18 @@
 package mediathek.gui;
 
 import java.awt.Point;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.Daten;
@@ -38,7 +48,12 @@ import mediathek.gui.beobachter.BeobMpanel;
 import mediathek.gui.beobachter.CellRendererDownloads;
 import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogEditDownload;
-import mediathek.tool.*;
+import mediathek.tool.Datum;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiKonstanten;
+import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.JTableMed;
+import mediathek.tool.TModelDownload;
 
 public class GuiDownloads extends PanelVorlage {
 
@@ -104,10 +119,15 @@ public class GuiDownloads extends PanelVorlage {
     //===================================
     private void init() {
         Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_DOWNLOADS, GuiDownloads.class.getSimpleName()) {
-
             @Override
             public void ping() {
                 load();
+            }
+        });
+        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                panelUpdate();
             }
         });
         jRadioButtonAbos.setForeground(GuiKonstanten.ABO_FOREGROUND);
@@ -521,7 +541,6 @@ public class GuiDownloads extends PanelVorlage {
             itemStarten.setEnabled(!wartenOderLaufen);
             jPopupMenu.add(itemStarten);
             itemStarten.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     filmStartenWiederholenStoppen(false /* alle */, true /* starten */);
@@ -532,7 +551,6 @@ public class GuiDownloads extends PanelVorlage {
             itemStoppen.setEnabled(wartenOderLaufen);
             jPopupMenu.add(itemStoppen);
             itemStoppen.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     filmStartenWiederholenStoppen(false /* alle */, false /* starten */);
@@ -547,7 +565,6 @@ public class GuiDownloads extends PanelVorlage {
             itemLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_16.png")));
             jPopupMenu.add(itemLoeschen);
             itemLoeschen.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     downloadLoeschen(false /* dauerhaft */);
@@ -558,7 +575,6 @@ public class GuiDownloads extends PanelVorlage {
             itemDauerhaftLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
             jPopupMenu.add(itemDauerhaftLoeschen);
             itemDauerhaftLoeschen.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     downloadLoeschen(true /* dauerhaft */);
@@ -569,7 +585,6 @@ public class GuiDownloads extends PanelVorlage {
             itemAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png")));
             jPopupMenu.add(itemAendern);
             itemAendern.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     downloadAendern();
@@ -584,7 +599,6 @@ public class GuiDownloads extends PanelVorlage {
             itemAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_16.png")));
             jPopupMenu.add(itemAlleStarten);
             itemAlleStarten.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     filmStartenWiederholenStoppen(true /* alle */, true /* starten */);
@@ -594,7 +608,6 @@ public class GuiDownloads extends PanelVorlage {
             itemAlleStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
             jPopupMenu.add(itemAlleStoppen);
             itemAlleStoppen.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     filmStartenWiederholenStoppen(true /* alle */, false /* starten */);
@@ -604,7 +617,6 @@ public class GuiDownloads extends PanelVorlage {
             itemWartendeStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
             jPopupMenu.add(itemWartendeStoppen);
             itemWartendeStoppen.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     stopWartende();
@@ -614,7 +626,6 @@ public class GuiDownloads extends PanelVorlage {
             itemAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png")));
             jPopupMenu.add(itemAktualisieren);
             itemAktualisieren.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     akualisieren();
@@ -624,7 +635,6 @@ public class GuiDownloads extends PanelVorlage {
             itemAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/edit-clear_16.png")));
             jPopupMenu.add(itemAufraeumen);
             itemAufraeumen.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     aufraeumen();
@@ -638,7 +648,6 @@ public class GuiDownloads extends PanelVorlage {
             //url
             JMenuItem itemUrl = new JMenuItem("URL kopieren");
             itemUrl.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int nr = tabelle.rowAtPoint(p);
@@ -653,7 +662,6 @@ public class GuiDownloads extends PanelVorlage {
             //Player
             JMenuItem itemPlayer = new JMenuItem("Film abspielen");
             itemPlayer.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int nr = tabelle.rowAtPoint(p);
@@ -679,7 +687,6 @@ public class GuiDownloads extends PanelVorlage {
             //Infos
             JMenuItem itemInfo = new JMenuItem("Infos anzeigen");
             itemInfo.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     dialogDatenFilm.setVis();
@@ -689,7 +696,6 @@ public class GuiDownloads extends PanelVorlage {
             // Tabellenspalten zurücksetzen
             JMenuItem item = new JMenuItem("Spalten zurücksetzen");
             item.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     tabelle.resetTabelle();

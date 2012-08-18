@@ -37,7 +37,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     //Tags Filme
 
     public static final String DOWNLOAD = "Downlad";
-    public static final int DOWNLOAD_MAX_ELEM = 19;
+    public static final int DOWNLOAD_MAX_ELEM = 20;
     //
     public static final String DOWNLOAD_NR = "Nr";
     public static final int DOWNLOAD_NR_NR = 0;
@@ -49,44 +49,46 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_THEMA_NR = 3;
     public static final String DOWNLOAD_TITEL = "Titel";
     public static final int DOWNLOAD_TITEL_NR = 4;
+    public static final String DOWNLOAD_PROGRESS = "Fortschritt";
+    public static final int DOWNLOAD_PROGRESS_NR = 5;
     public static final String DOWNLOAD_DATUM = "Datum";
-    public static final int DOWNLOAD_DATUM_NR = 5;
+    public static final int DOWNLOAD_DATUM_NR = 6;
     public static final String DOWNLOAD_ZEIT = "Zeit";
-    public static final int DOWNLOAD_ZEIT_NR = 6;
+    public static final int DOWNLOAD_ZEIT_NR = 7;
     public static final String DOWNLOAD_URL = "URL";
-    public static final int DOWNLOAD_URL_NR = 7;
+    public static final int DOWNLOAD_URL_NR = 8;
     public static final String DOWNLOAD_URL_AUTH = "URL-Auth";
-    public static final int DOWNLOAD_URL_AUTH_NR = 8;
+    public static final int DOWNLOAD_URL_AUTH_NR = 9;
     public static final String DOWNLOAD_URL_RTMP = "URL-rtmp";
-    public static final int DOWNLOAD_URL_RTMP_NR = 9;
+    public static final int DOWNLOAD_URL_RTMP_NR = 10;
     public static final String DOWNLOAD_PROGRAMMSET = "Programmset";
-    public static final int DOWNLOAD_PROGRAMMSET_NR = 10;
+    public static final int DOWNLOAD_PROGRAMMSET_NR = 11;
     public static final String DOWNLOAD_PROGRAMM = "Programm";
-    public static final int DOWNLOAD_PROGRAMM_NR = 11;
+    public static final int DOWNLOAD_PROGRAMM_NR = 12;
     public static final String DOWNLOAD_PROGRAMM_AUFRUF = "Programmaufruf";
-    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 12;
+    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 13;
     public static final String DOWNLOAD_PROGRAMM_RESTART = "Restart";
-    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 13;
+    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 14;
     public static final String DOWNLOAD_ZIEL_DATEINAME = "Dateiname";
-    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 14;
+    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 15;
     public static final String DOWNLOAD_ZIEL_PFAD = "Pfad";
-    public static final int DOWNLOAD_ZIEL_PFAD_NR = 15;
+    public static final int DOWNLOAD_ZIEL_PFAD_NR = 16;
     public static final String DOWNLOAD_ZIEL_PFAD_DATEINAME = "Pfad-Dateiname";
-    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 16;
+    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 17;
     public static final String DOWNLOAD_ART = "Art"; //Art des Downloads: direkter Dateidownload oder über ein Programm
-    public static final int DOWNLOAD_ART_NR = 17;
+    public static final int DOWNLOAD_ART_NR = 18;
     public static final String DOWNLOAD_QUELLE = "Quelle"; //Quelle: gestartet über einen Button, Download, Abo
-    public static final int DOWNLOAD_QUELLE_NR = 18;
-    public static final String[] DOWNLOAD_COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
+    public static final int DOWNLOAD_QUELLE_NR = 19;
+    public static final String[] DOWNLOAD_COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL, DOWNLOAD_PROGRESS,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_URL, DOWNLOAD_URL_AUTH, DOWNLOAD_URL_RTMP,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE};
     public String[] arr;
-    
+
     public DatenDownload() {
         makeArr();
     }
-    
+
     public DatenDownload(DatenPset pSet, DatenFilm film, int quelle, DatenAbo abo, String name, String pfad) {
         makeArr();
         arr[DOWNLOAD_NR_NR] = film.arr[DatenFilm.FILM_NR_NR];
@@ -101,7 +103,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_QUELLE_NR] = String.valueOf(quelle);
         aufrufBauen(pSet, film, abo, name, pfad);
     }
-    
+
     public DatenDownload getCopy() {
         DatenDownload ret = new DatenDownload();
         for (int i = 0; i < arr.length; ++i) {
@@ -109,17 +111,17 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
         return ret;
     }
-    
+
     public void aufMichKopieren(DatenDownload datenDownload) {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = new String(datenDownload.arr[i]);
         }
     }
-    
+
     public boolean istAbo() {
         return !arr[DatenDownload.DOWNLOAD_ABO_NR].equals("");
     }
-    
+
     public int getArt() {
         try {
             return Integer.parseInt(arr[DOWNLOAD_ART_NR]);
@@ -128,7 +130,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             return Starts.ART_PROGRAMM;
         }
     }
-    
+
     public int getQuelle() {
         try {
             return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);
@@ -137,14 +139,14 @@ public class DatenDownload implements Comparable<DatenDownload> {
             return Starts.QUELLE_BUTTON;
         }
     }
-    
+
     public boolean isRestart() {
         if (arr[DOWNLOAD_PROGRAMM_RESTART_NR].equals("")) {
             return false;
         }
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART_NR]);
     }
-    
+
     private void aufrufBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
         //zieldatei und pfad bauen und eintragen
         try {
@@ -178,7 +180,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             Log.fehlerMeldung(825600145, this.getClass().getName(), ex);
         }
     }
-    
+
     private void dateinamePfadBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
         String name;
         String pfad;
@@ -262,7 +264,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
         arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, name);
     }
-    
+
     private void programmaufrufBauen(DatenProg programm) {
         String befehlsString = programm.getProgrammAufruf();
         befehlsString = befehlsString.replace("**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
@@ -287,7 +289,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = befehlsString;
         }
     }
-    
+
     private String getUrlFlvstreamer() {
         String ret;
         if (!arr[DOWNLOAD_URL_RTMP_NR].equals("")) {
@@ -301,7 +303,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
         return ret;
     }
-    
+
     private String getUrlLow() {
         String ret = arr[DOWNLOAD_URL_NR];
         if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
@@ -321,7 +323,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
         return ret;
     }
-    
+
     @Override
     public int compareTo(DatenDownload arg0) {
         int ret = 0;
@@ -331,11 +333,12 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
         return ret;
     }
-    
+
     private void makeArr() {
         arr = new String[DOWNLOAD_MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }
+        arr[DOWNLOAD_PROGRESS_NR] = String.valueOf(-1);
     }
 }

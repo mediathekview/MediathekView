@@ -36,6 +36,7 @@ public class MediathekListener implements EventListener {
     public static final int EREIGNIS_LISTE_HISTORY = 9;
     public static final int EREIGNIS_LISTE_ERLEDIGTE_ABOS = 10;
     public static final int EREIGNIS_ART_IMPORT_FILMLISTE = 11;
+    public static final int EREIGNIS_ART_DOWNLOAD_PROZENT = 12;
     public int ereignis = -1;
     public String klasse = "";
 
@@ -54,7 +55,6 @@ public class MediathekListener implements EventListener {
         try {
             if (SwingUtilities.isEventDispatchThread()) {
                 SwingUtilities.invokeLater(new Runnable() {
-
                     @Override
                     public void run() {
                         ping();
@@ -62,7 +62,6 @@ public class MediathekListener implements EventListener {
                 });
             } else {
                 SwingUtilities.invokeAndWait(new Runnable() {
-
                     @Override
                     public void run() {
                         ping();
