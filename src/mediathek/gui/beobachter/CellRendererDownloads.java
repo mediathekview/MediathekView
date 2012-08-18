@@ -19,8 +19,12 @@
  */
 package mediathek.gui.beobachter;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -33,9 +37,13 @@ import mediathek.tool.GuiKonstanten;
 public class CellRendererDownloads extends DefaultTableCellRenderer {
 
     private DDaten ddaten;
+    private final JProgressBar progressBar = new JProgressBar(0, 100);
+    private final JPanel panel = new JPanel(new BorderLayout());
 
     public CellRendererDownloads(DDaten d) {
         ddaten = d;
+        panel.add(progressBar);
+        panel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
     }
 
     @Override
@@ -92,6 +100,21 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                         }
                         break;
                 }
+                if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                    int i = Integer.parseInt(s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
+                    if (i == -1) {
+                        this.setText("warten");
+                    } else if (0 <= i && i < 100) {
+                        progressBar.setValue(i);
+                        return panel;
+                    } else {
+                        this.setText("fertig");
+                    }
+                }
+            } else {
+                if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                    this.setText("");
+                }
             }
             if (c == DatenDownload.DOWNLOAD_ABO_NR) {
                 setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
@@ -124,7 +147,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(758200166,this.getClass().getName(), ex);
+            Log.fehlerMeldung(758200166, this.getClass().getName(), ex);
         }
         return this;
     }

@@ -23,7 +23,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import mediathek.Daten;
 import mediathek.Log;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DatenDownload;
 
 class RuntimeExec {
@@ -35,6 +39,7 @@ class RuntimeExec {
     Thread clearOut;
     private Process process = null;
     Starts s;
+    private Pattern pattern = Pattern.compile("([0-9.]*%)");
 
     /**
      * Neue Klasse instanzieren
@@ -87,6 +92,7 @@ class RuntimeExec {
         private BufferedReader buff;
         private InputStream in;
         private Process process;
+        int percent = 0;
 
         public ClearInOut(int a, Process p) {
             art = a;
@@ -110,13 +116,37 @@ class RuntimeExec {
                 buff = new BufferedReader(new InputStreamReader(in));
                 String inStr;
                 while ((inStr = buff.readLine()) != null) {
+                    GetPercentageFromErrorStream(inStr);
                     Log.playerMeldung(titel + ": " + inStr);
                 }
             } catch (IOException ex) {
             } finally {
                 try {
                     buff.close();
+                    s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(100);
+                    Log.debugMeldung("PERCENTAGE: " + "fertig");
+                    Daten.notifyMediathekListener(MediathekListener.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
                 } catch (IOException ex) {
+                }
+            }
+        }
+
+        private void GetPercentageFromErrorStream(String input) {
+            // by: siedlerchr
+            Matcher matcher = pattern.matcher(input);
+            if (matcher.find()) {
+                String percentage = matcher.group();
+                percentage = percentage.substring(0, percentage.length() - 1);
+                try {
+                    if (Double.valueOf(percentage).intValue() != percent) {
+                        percent = Double.valueOf(percentage).intValue();
+                        // nur ganze Int speichern, damit nur 100 Schritte
+                        s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(percent);
+                        Log.debugMeldung("PERCENTAGE: " + percent);
+                        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
+                    }
+                } catch (Exception ex) {
+                    Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream", input);
                 }
             }
         }

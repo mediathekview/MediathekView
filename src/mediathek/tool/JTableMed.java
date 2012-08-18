@@ -10,6 +10,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
+import javax.swing.table.TableColumn;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.daten.DDaten;
@@ -197,7 +198,8 @@ public final class JTableMed extends JTable {
                         breite[i] = 300;
                     } else if (i == DatenDownload.DOWNLOAD_DATUM_NR
                             || i == DatenDownload.DOWNLOAD_ZEIT_NR
-                            || i == DatenDownload.DOWNLOAD_SENDER_NR) {
+                            || i == DatenDownload.DOWNLOAD_SENDER_NR
+                            || i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                         breite[i] = 100;
                     } else if (!DDaten.debug) {
                         if (i == DatenDownload.DOWNLOAD_URL_AUTH_NR

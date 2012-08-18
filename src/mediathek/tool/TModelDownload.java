@@ -29,10 +29,10 @@ public class TModelDownload extends TModel {
         super(data, columnNames);
         types = new Class[DatenDownload.DOWNLOAD_MAX_ELEM];
         for (int i = 0; i < DatenDownload.DOWNLOAD_MAX_ELEM; ++i) {
-            if (i != DatenDownload.DOWNLOAD_DATUM_NR) {
-                types[i] = String.class;
-            } else {
+            if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                 types[i] = Datum.class;
+            } else {
+                types[i] = String.class;
             }
         }
     }
