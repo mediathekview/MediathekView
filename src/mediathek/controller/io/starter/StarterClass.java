@@ -399,6 +399,7 @@ public class StarterClass {
         }
 
         public void startStarten(Starts starts) {
+            starts.datenDownload.startMelden(DatenDownload.PROGRESS_GESTARTET);
             switch (starts.datenDownload.getArt()) {
                 case Starts.ART_PROGRAMM:
                     StartenProgramm zdfStarten = new StartenProgramm(starts);
@@ -520,6 +521,7 @@ public class StarterClass {
             } catch (Exception ex) {
                 Log.fehlerMeldung(395623710, "StarterClass.StartenProgramm-2", ex);
             }
+            starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
 
@@ -596,6 +598,7 @@ public class StarterClass {
             } catch (Exception ex) {
                 Log.fehlerMeldung(904685832, "StarterClass.StartenDonwnload-2", ex);
             }
+            starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
     }

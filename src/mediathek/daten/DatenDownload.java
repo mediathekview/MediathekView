@@ -21,7 +21,9 @@ package mediathek.daten;
 
 import java.io.File;
 import java.util.Iterator;
+import mediathek.Daten;
 import mediathek.Log;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.filme.filmeSuchen.sender.Mediathek3Sat;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekNdr;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekSwr;
@@ -38,6 +40,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public static final String DOWNLOAD = "Downlad";
     public static final int DOWNLOAD_MAX_ELEM = 20;
+    public static final int PROGRESS_NICHT_GESTARTET = -1;
+    public static final int PROGRESS_WARTEN = 0;
+    public static final int PROGRESS_GESTARTET = 1;
+    public static final int PROGRESS_FERTIG = 100;
     //
     public static final String DOWNLOAD_NR = "Nr";
     public static final int DOWNLOAD_NR_NR = 0;
@@ -102,6 +108,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_URL_RTMP_NR] = film.arr[DatenFilm.FILM_URL_RTMP_NR];
         arr[DOWNLOAD_QUELLE_NR] = String.valueOf(quelle);
         aufrufBauen(pSet, film, abo, name, pfad);
+    }
+
+    public void startMelden(int status) {
+        arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(status);
+        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
     }
 
     public DatenDownload getCopy() {

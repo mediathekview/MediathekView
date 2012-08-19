@@ -104,6 +104,10 @@ public class GuiDebug extends PanelVorlage {
         jToggleButtonAllesLaden = new javax.swing.JToggleButton();
         jPanelSender = new javax.swing.JPanel();
         jButtonFilmeSpeichern = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jProgressBar1 = new javax.swing.JProgressBar();
+
+        setBackground(new java.awt.Color(204, 204, 255));
 
         jToggleButtonAllesLaden.setText("[-alles] setzen");
 
@@ -113,14 +117,28 @@ public class GuiDebug extends PanelVorlage {
         jPanelSender.setLayout(jPanelSenderLayout);
         jPanelSenderLayout.setHorizontalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 530, Short.MAX_VALUE)
         );
         jPanelSenderLayout.setVerticalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 222, Short.MAX_VALUE)
+            .addGap(0, 45, Short.MAX_VALUE)
         );
 
         jButtonFilmeSpeichern.setText("Filmliste speichern");
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 4, 2, 4));
+        jPanel1.setOpaque(false);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -134,8 +152,12 @@ public class GuiDebug extends PanelVorlage {
                         .addComponent(jToggleButtonAllesLaden, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonFilmeSpeichern)
-                        .addGap(0, 12, Short.MAX_VALUE)))
+                        .addGap(0, 218, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(93, 93, 93)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -145,13 +167,17 @@ public class GuiDebug extends PanelVorlage {
                     .addComponent(jToggleButtonAllesLaden)
                     .addComponent(jButtonFilmeSpeichern))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanelSender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanelSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(107, 107, 107)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(223, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonFilmeSpeichern;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelSender;
+    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JToggleButton jToggleButtonAllesLaden;
     // End of variables declaration//GEN-END:variables
 
