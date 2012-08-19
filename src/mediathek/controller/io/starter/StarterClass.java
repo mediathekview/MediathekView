@@ -565,10 +565,24 @@ public class StarterClass {
                 int len;
                 new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
                 URL feedUrl = new URL(starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                int maxLen = laenge(starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                int downLen = 0;
                 input = feedUrl.openStream();
                 byte[] buffer = new byte[1024];
                 destStream = new FileOutputStream(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 while ((len = input.read(buffer)) != -1) {
+                    downLen += buffer.length;
+                    if (maxLen > 0) {
+                        int p = (downLen * 100) / maxLen;
+                        // p muss zwischen 1 und 99 liegen
+                        if (p == 0) {
+                            p = 1;
+                        }
+                        if (p >= 100) {
+                            p = 99;
+                        }
+                        starts.datenDownload.startMelden(p);
+                    }
                     destStream.write(buffer, 0, len);
                     if (allesStop || starts.stoppen) {
                         break;
@@ -601,6 +615,22 @@ public class StarterClass {
             starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
+    }
+
+    private int laenge(String url) {
+        int ret = -1;
+        try {
+            URL u = new URL(url);
+            ret = u.openConnection().getContentLength();
+        } catch (Exception ex) {
+            ret = -1;
+            Log.fehlerMeldung(643298301, "StarterClass.StartenDonwnload.laenge", ex);
+        }
+        if (ret < 100) {
+            // dann wars nix
+            ret = -1;
+        }
+        return ret;
     }
 
     private boolean pruefen(Starts starts) {
