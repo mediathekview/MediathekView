@@ -23,6 +23,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
@@ -43,7 +44,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     public CellRendererDownloads(DDaten d) {
         ddaten = d;
         panel.add(progressBar);
-        panel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        panel.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
     }
 
     @Override
@@ -74,40 +75,54 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     case Starts.STATUS_INIT:
                         if (isSelected) {
                             setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
+                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
                         } else {
                             setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
+                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
                         }
                         break;
                     case Starts.STATUS_RUN:
                         if (isSelected) {
                             setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
+                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
                         } else {
                             setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
+                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
                         }
                         break;
                     case Starts.STATUS_FERTIG:
                         if (isSelected) {
                             setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
+                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
                         } else {
                             setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
+                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
                         }
                         break;
                     case Starts.STATUS_ERR:
                         if (isSelected) {
                             setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
+                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
                         } else {
                             setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
                         }
                         break;
                 }
                 if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                     int i = Integer.parseInt(s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
+                    setHorizontalAlignment(SwingConstants.CENTER);
                     if (i == -1) {
+                        // noch nicht gestartet
+                        this.setText("");
+                    } else if (i == 0) {
                         this.setText("warten");
-                    } else if (0 <= i && i < 100) {
+                    } else if (i == 1) {
+                        this.setText("gestartet");
+                    } else if (1 < i && i < 100) {
                         progressBar.setValue(i);
                         return panel;
-                    } else {
+                    } else if (i == 100) {
                         this.setText("fertig");
                     }
                 }
@@ -120,21 +135,10 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
                 if (abo) {
                     setForeground(GuiKonstanten.ABO_FOREGROUND);
-//                    if (isSelected) {
-//                        setBackground(GuiKonstanten.ABO_SEL);
-//                    } else {
-//                        setBackground(GuiKonstanten.ABO);
-//                    }
                 } else {
                     setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
-//                    if (isSelected) {
-//                        setBackground(GuiKonstanten.DOWNLOAD_SEL);
-//                    } else {
-//                        setBackground(GuiKonstanten.DOWNLOAD);
-//                    }
                     setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
                     setHorizontalAlignment(SwingConstants.CENTER);
-//                    setText("-");
                 }
             }
             if (c == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {

@@ -123,9 +123,6 @@ class RuntimeExec {
             } finally {
                 try {
                     buff.close();
-                    s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(100);
-                    Log.debugMeldung("PERCENTAGE: " + "fertig");
-                    Daten.notifyMediathekListener(MediathekListener.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
                 } catch (IOException ex) {
                 }
             }
@@ -141,9 +138,7 @@ class RuntimeExec {
                     if (Double.valueOf(percentage).intValue() != percent) {
                         percent = Double.valueOf(percentage).intValue();
                         // nur ganze Int speichern, damit nur 100 Schritte
-                        s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(percent);
-                        Log.debugMeldung("PERCENTAGE: " + percent);
-                        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
+                        s.datenDownload.startMelden(percent);
                     }
                 } catch (Exception ex) {
                     Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream", input);
