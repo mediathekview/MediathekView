@@ -350,6 +350,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }
-        arr[DOWNLOAD_PROGRESS_NR] = String.valueOf(-1);
+        arr[DOWNLOAD_PROGRESS_NR] = String.valueOf(PROGRESS_NICHT_GESTARTET);
     }
 }
