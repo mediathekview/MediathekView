@@ -126,10 +126,10 @@ public class GuiFilme extends PanelVorlage {
             }
         });
     }
+
     //===================================
     // Public
     //===================================
-
     @Override
     public void isShown() {
         super.isShown();
@@ -183,10 +183,10 @@ public class GuiFilme extends PanelVorlage {
     public void videoPlayerAnzeigen(boolean anzeigen) {
         jPanelExtra.setVisible(anzeigen);
     }
+
     //===================================
     // Private
     //===================================
-
     private void init() {
         checkBlacklist();
         jComboBoxZeitraum.setModel(new DefaultComboBoxModel(COMBO_ZEIT));

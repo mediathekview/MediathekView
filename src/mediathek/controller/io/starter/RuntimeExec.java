@@ -25,9 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import mediathek.Daten;
 import mediathek.Log;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DatenDownload;
 
 class RuntimeExec {
@@ -135,9 +133,17 @@ class RuntimeExec {
                 String percentage = matcher.group();
                 percentage = percentage.substring(0, percentage.length() - 1);
                 try {
-                    if (Double.valueOf(percentage).intValue() != percent) {
-                        percent = Double.valueOf(percentage).intValue();
-                        // nur ganze Int speichern, damit nur 100 Schritte
+                    // nur ganze Int speichern, damit nur 100 Schritte
+                    Double d = Double.valueOf(percentage);
+                    int pNeu;
+                    if (d > 0 && d <= 1) {
+                        // damit der Progressbar gleich startet
+                        pNeu = 1;
+                    } else {
+                        pNeu = d.intValue();
+                    }
+                    if (pNeu != percent) {
+                        percent = pNeu;
                         s.datenDownload.startMelden(percent);
                     }
                 } catch (Exception ex) {

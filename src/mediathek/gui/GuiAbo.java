@@ -20,13 +20,25 @@
 package mediathek.gui;
 
 import java.awt.Point;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import mediathek.Daten;
+import mediathek.Konstanten;
 import mediathek.MediathekGui;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
+import mediathek.daten.ListeAbo;
 import mediathek.gui.beobachter.CellRendererAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.Datum;
@@ -75,10 +87,16 @@ public class GuiAbo extends PanelVorlage {
     //===================================
     private void initBeobachter() {
         Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName()) {
-
             @Override
             public void ping() {
                 load();
+            }
+        });
+        jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR]));
+        jCheckBoxSuchen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR] = Boolean.toString(jCheckBoxSuchen.isSelected());
             }
         });
         tabelle.addMouseListener(new BeobMausTabelle1());
@@ -120,6 +138,7 @@ public class GuiAbo extends PanelVorlage {
             }
             DDaten.setGeaendert();
             load();
+            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -159,6 +178,7 @@ public class GuiAbo extends PanelVorlage {
                 tabelle.addRowSelectionInterval(rows[i], rows[i]);
             }
             setInfo();
+            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -199,6 +219,7 @@ public class GuiAbo extends PanelVorlage {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jCheckBoxSuchen = new javax.swing.JCheckBox();
 
         jLabel1.setText("jLabel1");
 
@@ -206,24 +227,34 @@ public class GuiAbo extends PanelVorlage {
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
 
+        jCheckBoxSuchen.setText("beim Neuladen der Filmliste, Abos automatisch suchen");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
-                .addGap(14, 14, 14))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jCheckBoxSuchen)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
+                        .addGap(14, 14, 14))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
+                .addComponent(jCheckBoxSuchen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox jCheckBoxSuchen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
@@ -268,7 +299,6 @@ public class GuiAbo extends PanelVorlage {
             itemEinschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
             itemEinschalten.setEnabled(!ein);
             itemEinschalten.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     aboEinAus(true);
@@ -280,7 +310,6 @@ public class GuiAbo extends PanelVorlage {
             itemDeaktivieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_16.png")));
             itemDeaktivieren.setEnabled(ein);
             itemDeaktivieren.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     aboEinAus(false);
@@ -291,7 +320,6 @@ public class GuiAbo extends PanelVorlage {
             JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
             itemLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
             itemLoeschen.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     aboLoeschen();
@@ -302,7 +330,6 @@ public class GuiAbo extends PanelVorlage {
             JMenuItem itemAendern = new JMenuItem("Abo ändern");
             itemAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png")));
             itemAendern.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     aboAendern();
@@ -313,11 +340,10 @@ public class GuiAbo extends PanelVorlage {
             //##Trenner##
             jPopupMenu.addSeparator();
             //##Trenner##
-            
+
             // Tabellenspalten zurücksetzen
             JMenuItem item = new JMenuItem("Spalten zurücksetzen");
             item.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     tabelle.resetTabelle();
