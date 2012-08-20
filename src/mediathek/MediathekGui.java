@@ -313,7 +313,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         jButtonDownloadAktualisieren.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ddaten.guiDownloads.akualisieren();
+                ddaten.guiDownloads.aktualisieren();
             }
         });
         jButtonDownloadAufraeumen.addActionListener(new ActionListener() {
@@ -429,7 +429,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenuItemDownloadsAktualisieren.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ddaten.guiDownloads.akualisieren();
+                ddaten.guiDownloads.aktualisieren();
             }
         });
         jMenuItemDownloadsAufraeumen.addActionListener(new ActionListener() {

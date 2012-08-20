@@ -35,7 +35,10 @@ import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.Daten;
+import mediathek.Konstanten;
 import mediathek.MediathekGui;
+import mediathek.controller.filme.BeobFilmeLaden;
+import mediathek.controller.filme.FilmListenerElement;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.starter.StartEvent;
 import mediathek.controller.io.starter.StartListener;
@@ -56,10 +59,10 @@ import mediathek.tool.JTableMed;
 import mediathek.tool.TModelDownload;
 
 public class GuiDownloads extends PanelVorlage {
-    
+
     private DialogDatenFilm dialogDatenFilm = null;
     private JTableMed tabelle;
-    
+
     public GuiDownloads(DDaten d) {
         super(d);
         initComponents();
@@ -82,34 +85,34 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     //toolbar
-    public void akualisieren() {
+    public void aktualisieren() {
         Daten.setGeaendert();
         aufraeumen();
         ddaten.listeDownloads.abosLoschen();
         ddaten.listeDownloads.abosEintragen();
         load();
     }
-    
+
     public void starten(boolean alle) {
         filmStartenWiederholenStoppen(alle, true /* starten */);
     }
-    
+
     public void stoppen(boolean alle) {
         filmStartenWiederholenStoppen(alle, false /* starten */);
     }
-    
+
     public void zurueckstellen() {
         downloadLoeschen(false);
     }
-    
+
     public void loeschen() {
         downloadLoeschen(true);
     }
-    
+
     public void aufraeumen() {
         tabelleAufraeumen();
     }
-    
+
     public void aendern() {
         downloadAendern();
     }
@@ -128,6 +131,22 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void ping() {
                 panelUpdate();
+            }
+        });
+        DDaten.filmeLaden.addAdListener(new BeobFilmeLaden() {
+            @Override
+            public void fertig(FilmListenerElement filmListenerElement) {
+                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
+                    aktualisieren();
+                }
+            }
+        });
+        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_ABOS, GuiDownloads.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
+                    aktualisieren();
+                }
             }
         });
         jRadioButtonAbos.setForeground(GuiKonstanten.ABO_FOREGROUND);
@@ -150,7 +169,7 @@ public class GuiDownloads extends PanelVorlage {
         jRadioButtonDownloads.addActionListener(new BeobAnzeige());
         jCheckBoxFilter.addActionListener(new BeobMpanel(jCheckBoxFilter, jPanelFilter, "Filter"));
     }
-    
+
     private void load() {
         //Filme laden
         boolean abo, download;
@@ -170,7 +189,7 @@ public class GuiDownloads extends PanelVorlage {
         setSpalten(tabelle);
         setInfo();
     }
-    
+
     private void downloadAendern() {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
@@ -192,7 +211,7 @@ public class GuiDownloads extends PanelVorlage {
             new HinweisKeineAuswahl().zeigen();
         }
     }
-    
+
     private void downloadLoeschen(boolean dauerhaft) {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
@@ -217,7 +236,7 @@ public class GuiDownloads extends PanelVorlage {
             new HinweisKeineAuswahl().zeigen();
         }
     }
-    
+
     private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */) {
         // bezieht sich immer auf "alle" oder nur die markierten
         // Film der noch keinen Starts hat wird gestartet
@@ -269,7 +288,7 @@ public class GuiDownloads extends PanelVorlage {
                     if (s.datenDownload.istAbo()) {
                         // bei Abos Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                         ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
-                        
+
                     }
                 }
             }
@@ -285,7 +304,7 @@ public class GuiDownloads extends PanelVorlage {
         } // for()
         setInfo();
     }
-    
+
     private void stopWartende() {
         // es werden alle noch nicht gestarteten Downloads gelöscht
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
@@ -300,7 +319,7 @@ public class GuiDownloads extends PanelVorlage {
             setInfo();
         }
     }
-    
+
     private void tabelleAufraeumen() {
         for (int i = tabelle.getRowCount() - 1; i >= 0; --i) {
             int delRow = tabelle.convertRowIndexToModel(i);
@@ -316,13 +335,13 @@ public class GuiDownloads extends PanelVorlage {
         setInfo();
         ddaten.starterClass.aufraeumen();
     }
-    
+
     private void panelUpdate() {
         setInfo();
         tabelle.repaint();
         this.validate();
     }
-    
+
     private void setInfo() {
         String textLinks;
         // Text links: Zeilen Tabelle
@@ -349,7 +368,7 @@ public class GuiDownloads extends PanelVorlage {
         // Infopanel setzen
         ddaten.infoPanel.setTextLinks(InfoPanel.IDX_GUI_DOWNLOAD, textLinks);
     }
-    
+
     private void table1Select() {
         DatenFilm aktFilm = new DatenFilm();
         int selectedTableRow = tabelle.getSelectedRow();
@@ -483,17 +502,17 @@ public class GuiDownloads extends PanelVorlage {
     // End of variables declaration//GEN-END:variables
 
     private class BeobachterStart implements StartListener {
-        
+
         @Override
         public void starter(StartEvent ev) {
             panelUpdate();
         }
     }
-    
+
     private class BeobachterTableSelect1 implements ListSelectionListener {
-        
+
         public int selectedModelRow = -1;
-        
+
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (!event.getValueIsAdjusting()) {
@@ -501,14 +520,14 @@ public class GuiDownloads extends PanelVorlage {
             }
         }
     }
-    
+
     public class BeobMausTabelle extends MouseAdapter {
-        
+
         private Point p;
-        
+
         public BeobMausTabelle() {
         }
-        
+
         @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
@@ -519,7 +538,7 @@ public class GuiDownloads extends PanelVorlage {
                 showMenu(arg0);
             }
         }
-        
+
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
             int nr = tabelle.rowAtPoint(p);
@@ -631,7 +650,7 @@ public class GuiDownloads extends PanelVorlage {
             itemAktualisieren.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    akualisieren();
+                    aktualisieren();
                 }
             });
             JMenuItem itemAufraeumen = new JMenuItem("Liste Aufräumen");
@@ -709,17 +728,17 @@ public class GuiDownloads extends PanelVorlage {
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
-    
+
     private class BeobAbstractAction extends AbstractAction {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             downloadAendern();
         }
     }
-    
+
     private class BeobAnzeige implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             load();
