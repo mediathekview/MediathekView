@@ -161,13 +161,12 @@ public class GuiFilme extends PanelVorlage {
             // Satz mit x, war wohl nix
         } else {
             DatenFilm film;
-            int selRow = tabelle.getSelectedRow();
-            if (selRow == -1) {
+            int[] selRows = tabelle.getSelectedRows();
+            if (selRows.length == 0) {
                 new HinweisKeineAuswahl().zeigen();
             } else {
-                int[] selRows = tabelle.getSelectedRows();
                 for (int i = 0; i < selRows.length; i++) {
-                    selRow = selRows[i];
+                    int selRow = selRows[i];
                     selRow = tabelle.convertRowIndexToModel(selRow);
                     film = DDaten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
                     DialogAddDownload dialog = new DialogAddDownload(null, ddaten, film);
