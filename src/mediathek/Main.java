@@ -19,8 +19,6 @@
  */
 package mediathek;
 
-import java.util.ResourceBundle;
-
 public class Main {
 
     public static final String STARTP_ALLES = "-alles";
