@@ -136,9 +136,9 @@ class RuntimeExec {
                     // nur ganze Int speichern, damit nur 100 Schritte
                     Double d = Double.valueOf(percentage);
                     int pNeu;
-                    if (d > 0 && d <= 1) {
+                    if (d > 0 && d <= 2) {
                         // damit der Progressbar gleich startet
-                        pNeu = 1;
+                        pNeu = 2;
                     } else {
                         pNeu = d.intValue();
                     }
@@ -147,6 +147,7 @@ class RuntimeExec {
                         s.datenDownload.startMelden(percent);
                     }
                 } catch (Exception ex) {
+                    s.datenDownload.startMelden(1);
                     Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream", input);
                 }
             }
