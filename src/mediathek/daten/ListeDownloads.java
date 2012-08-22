@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.Daten;
-import mediathek.Log;
 import mediathek.controller.io.starter.Starts;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.TModelDownload;
@@ -50,6 +49,13 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         Collections.<DatenDownload>sort(this);
     }
 
+    @Override
+    public boolean add(DatenDownload e) {
+        boolean ret = super.add(e);
+        nummerEintragen();
+        return ret;
+    }
+
     public synchronized void listePutzen() {
         // beim Programmende fertige Downloads löschen
         LinkedList<Starts> s = ddaten.starterClass.getStarts(Starts.QUELLE_ALLE);
@@ -62,6 +68,22 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
             }
         }
+        nummerEintragen();
+    }
+
+    public synchronized DatenDownload downloadVorziehen(String url) {
+        DatenDownload d = null;
+        ListIterator<DatenDownload> it = this.listIterator(0);
+        while (it.hasNext()) {
+            d = it.next();
+            if (d.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
+                it.remove();
+                this.addFirst(d);
+                break;
+            }
+        }
+        nummerEintragen();
+        return d;
     }
 
     public synchronized DatenDownload getDownloadByUrl(String url) {
@@ -82,9 +104,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         while (it.hasNext()) {
             if (it.next().arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
                 it.remove();
+                nummerEintragen();
                 return true;
             }
         }
+        nummerEintragen();
         return false;
     }
 
@@ -151,6 +175,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
             }
         } //while
+        nummerEintragen();
     }
 
     public synchronized void abosLoschen() {
@@ -166,11 +191,22 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
             }
         }
+        nummerEintragen();
     }
 
     //===================================
     // private
     //===================================
+    private void nummerEintragen() {
+        int i = 0;
+        ListIterator<DatenDownload> it = listIterator();
+        while (it.hasNext()) {
+            it.next().arr[DatenDownload.DOWNLOAD_NR_NR] = String.valueOf(i);
+            ++i;
+        }
+
+    }
+
     private boolean checkListe(String url) {
         //prüfen, ob der Film schon in der Liste ist, (manche Filme sind in verschiedenen Themen)
         boolean ret = false;

@@ -192,6 +192,7 @@ public final class JTableMed extends JTable {
                     reihe[i] = i;
                     breite[i] = 200;
                     if (i == DatenDownload.DOWNLOAD_NR_NR
+                            || i == DatenDownload.DOWNLOAD_FILM_NR_NR
                             || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                         breite[i] = 75;
                     } else if (i == DatenDownload.DOWNLOAD_TITEL_NR) {

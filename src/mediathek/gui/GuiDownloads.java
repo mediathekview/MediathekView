@@ -212,6 +212,31 @@ public class GuiDownloads extends PanelVorlage {
         }
     }
 
+    private void downloadVorziehen() {
+        int row = tabelle.getSelectedRow();
+        if (row != -1) {
+            int delRow = tabelle.convertRowIndexToModel(row);
+            String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
+            if (ddaten.starterClass.getStart(url) != null) {
+                JOptionPane.showMessageDialog(null, "Download läuft bereits",
+                        "nicht mehr möglich", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                DatenDownload download = ddaten.listeDownloads.downloadVorziehen(url);
+                if (download != null) {
+                    // hat dann geklappt
+                    load();
+                    setInfo();
+                    if (tabelle.getRowCount() > 0) {
+                        tabelle.setRowSelectionInterval(0, 0);
+                        tabelle.scrollRectToVisible(tabelle.getCellRect(0, 0, false));
+                    }
+                }
+            }
+        } else {
+            new HinweisKeineAuswahl().zeigen();
+        }
+    }
+
     private void downloadLoeschen(boolean dauerhaft) {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
@@ -583,6 +608,15 @@ public class GuiDownloads extends PanelVorlage {
             jPopupMenu.addSeparator();
             //#######################################
 
+            JMenuItem itemVorziehen = new JMenuItem("Download vorziehen");
+            itemVorziehen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/up_blue_16.png")));
+            jPopupMenu.add(itemVorziehen);
+            itemVorziehen.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    downloadVorziehen();
+                }
+            });
             JMenuItem itemLoeschen = new JMenuItem("Download zurückstellen");
             itemLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_16.png")));
             jPopupMenu.add(itemLoeschen);
