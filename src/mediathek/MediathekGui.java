@@ -152,6 +152,7 @@ public final class MediathekGui extends javax.swing.JFrame {
                 jMenuItemDownloadsAlleStarten.setEnabled(true);
                 jMenuItemDownloadAendern.setEnabled(true);
                 jMenuItemDownloadsZurueckstellen.setEnabled(true);
+                jMenuItemDownloadVorziehen.setEnabled(true);
                 jSpinnerAnzahl.setEnabled(true);
                 jLabelAnzahl.setEnabled(true);
                 break;
@@ -196,6 +197,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenuItemDownloadAlleStoppen.setEnabled(false);
         jMenuItemDownloadAendern.setEnabled(false);
         jMenuItemDownloadsZurueckstellen.setEnabled(false);
+        jMenuItemDownloadVorziehen.setEnabled(false);
         jSpinnerAnzahl.setEnabled(false);
         jLabelAnzahl.setEnabled(false);
         jMenuItemAbosEinschalten.setEnabled(false);
@@ -462,6 +464,12 @@ public final class MediathekGui extends javax.swing.JFrame {
                 ddaten.guiDownloads.zurueckstellen();
             }
         });
+        jMenuItemDownloadVorziehen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.guiDownloads.vorziehen();
+            }
+        });
         jMenuItemDownloadAendern.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -678,6 +686,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItemDownloadStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadStoppen = new javax.swing.JMenuItem();
+        jMenuItemDownloadVorziehen = new javax.swing.JMenuItem();
         jMenuItemDownloadsZurueckstellen = new javax.swing.JMenuItem();
         jMenuItemDownloadsLoeschen = new javax.swing.JMenuItem();
         jMenuItemDownloadAendern = new javax.swing.JMenuItem();
@@ -856,6 +865,10 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenuItemDownloadStoppen.setText("Download stoppen");
         jMenuDownload.add(jMenuItemDownloadStoppen);
 
+        jMenuItemDownloadVorziehen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/up_blue_16.png"))); // NOI18N
+        jMenuItemDownloadVorziehen.setText("Download vorziehen");
+        jMenuDownload.add(jMenuItemDownloadVorziehen);
+
         jMenuItemDownloadsZurueckstellen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_16.png"))); // NOI18N
         jMenuItemDownloadsZurueckstellen.setText("Download zurückstellen");
         jMenuDownload.add(jMenuItemDownloadsZurueckstellen);
@@ -990,6 +1003,7 @@ public final class MediathekGui extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemDownloadAlleStoppen;
     private javax.swing.JMenuItem jMenuItemDownloadStarten;
     private javax.swing.JMenuItem jMenuItemDownloadStoppen;
+    private javax.swing.JMenuItem jMenuItemDownloadVorziehen;
     private javax.swing.JMenuItem jMenuItemDownloadsAktualisieren;
     private javax.swing.JMenuItem jMenuItemDownloadsAlleStarten;
     private javax.swing.JMenuItem jMenuItemDownloadsAufraeumen;

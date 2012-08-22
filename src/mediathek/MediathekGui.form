@@ -113,6 +113,14 @@
                 <Property name="text" type="java.lang.String" value="Download stoppen"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadVorziehen">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/up_blue_16.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Download vorziehen"/>
+              </Properties>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsZurueckstellen">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
