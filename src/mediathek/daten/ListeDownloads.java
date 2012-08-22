@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import javax.swing.JOptionPane;
 import mediathek.Daten;
 import mediathek.controller.io.starter.Starts;
 import mediathek.tool.DatumZeit;
@@ -73,6 +74,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public synchronized DatenDownload downloadVorziehen(String url) {
         DatenDownload d = null;
+        Starts s = ddaten.starterClass.urlVorziehen(url);
         ListIterator<DatenDownload> it = this.listIterator(0);
         while (it.hasNext()) {
             d = it.next();
@@ -201,10 +203,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         int i = 0;
         ListIterator<DatenDownload> it = listIterator();
         while (it.hasNext()) {
-            it.next().arr[DatenDownload.DOWNLOAD_NR_NR] = String.valueOf(i);
-            ++i;
+            String str = String.valueOf(i++);
+            while (str.length() < 3) {
+                str = "0" + str;
+            }
+            it.next().arr[DatenDownload.DOWNLOAD_NR_NR] = str;
         }
-
     }
 
     private boolean checkListe(String url) {

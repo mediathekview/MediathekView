@@ -101,6 +101,10 @@ public class GuiDownloads extends PanelVorlage {
         filmStartenWiederholenStoppen(alle, false /* starten */);
     }
 
+    public void vorziehen() {
+        downloadVorziehen();
+    }
+
     public void zurueckstellen() {
         downloadLoeschen(false);
     }
@@ -217,19 +221,14 @@ public class GuiDownloads extends PanelVorlage {
         if (row != -1) {
             int delRow = tabelle.convertRowIndexToModel(row);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-            if (ddaten.starterClass.getStart(url) != null) {
-                JOptionPane.showMessageDialog(null, "Download läuft bereits",
-                        "nicht mehr möglich", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                DatenDownload download = ddaten.listeDownloads.downloadVorziehen(url);
-                if (download != null) {
-                    // hat dann geklappt
-                    load();
-                    setInfo();
-                    if (tabelle.getRowCount() > 0) {
-                        tabelle.setRowSelectionInterval(0, 0);
-                        tabelle.scrollRectToVisible(tabelle.getCellRect(0, 0, false));
-                    }
+            DatenDownload download = ddaten.listeDownloads.downloadVorziehen(url);
+            if (download != null) {
+                // hat dann geklappt
+                load();
+                setInfo();
+                if (tabelle.getRowCount() > 0) {
+                    tabelle.setRowSelectionInterval(0, 0);
+                    tabelle.scrollRectToVisible(tabelle.getCellRect(0, 0, false));
                 }
             }
         } else {

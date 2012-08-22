@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
+import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import mediathek.Konstanten;
 import mediathek.Log;
@@ -79,6 +80,24 @@ public class StarterClass {
             s = new Starts(new DatenDownload(pSet, ersterFilm, Starts.QUELLE_BUTTON, null, "", ""));
             this.starten.startStarten(s);
             addStarts(s);
+        }
+        return s;
+    }
+
+    public synchronized Starts urlVorziehen(String url) {
+        // Starts mit der URL wird vorgezogen und startet als nächster
+        Starts s = null;
+        Iterator<Starts> it = listeStarts.getIt();
+        while (it.hasNext()) {
+            s = it.next();
+            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
+                if (s.status < Starts.STATUS_RUN) {
+                    // sonst bringts nichts mehr
+                    it.remove();
+                    listeStarts.addFirst(s);
+                }
+                break;
+            }
         }
         return s;
     }
