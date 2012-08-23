@@ -359,6 +359,21 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
+    private synchronized void updateTabelle() {
+        try {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    setInfo();
+                    ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
+                    //tabelle.updateUI();
+                }
+            });
+        } catch (Exception ex) {
+            Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
+        }
+    }
+
     private synchronized void tabelleBauen_() {
         try {
             boolean themaNichtDa = false;
@@ -1385,7 +1400,7 @@ public class GuiFilme extends PanelVorlage {
         @Override
         public void starter(StartEvent ev) {
             setInfo();
-            tabelle.updateUI();
+            ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
         }
     }
 }

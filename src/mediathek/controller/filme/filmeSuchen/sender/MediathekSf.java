@@ -27,7 +27,7 @@ import mediathek.daten.DatenFilm;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekSf extends MediathekReader implements Runnable {
 
@@ -36,15 +36,15 @@ public class MediathekSf extends MediathekReader implements Runnable {
     private StringBuffer seite = new StringBuffer();
 
     /**
-     * 
-     *  @param ddaten
+     *
+     * @param ddaten
      */
     public MediathekSf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
     }
 
     /**
-     * 
+     *
      */
     @Override
     public void addToList() {
@@ -119,7 +119,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
             final String MUSTER_ITEM_1 = "<item>";
             final String MUSTER_ITEM_2 = "</item>";
             final String MUSTER_DATUM = "<title>";
-            meldung("*" + strUrlFeed);
+            meldung(strUrlFeed);
             seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "");
             try {
                 int counter = 0;
@@ -176,7 +176,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
 
         private void addFilme2(String thema, String strUrlFeed, String url, String titel, String datum, String zeit) {
             final String MUSTER_URL = "\"url\":\""; //bis zum "
-            meldung("*" + url);
+            meldung(url);
             seite2 = getUrl.getUri_Utf(nameSenderMReader, url, seite2, "");
             try {
                 int pos = 0;

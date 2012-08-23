@@ -28,7 +28,7 @@ import mediathek.daten.DatenFilm;
 
 /**
  *
- *        @author
+ * @author
  */
 public class MediathekZdf extends MediathekReader implements Runnable {
 
@@ -40,7 +40,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
 
     /**
      *
-     *        @param ddaten
+     * @param ddaten
      */
     public MediathekZdf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, 8 /* threads */, 500 /* urlWarten */, startPrio);
@@ -245,15 +245,15 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             final String MUSTER_TITEL_2 = "</title>";
             final String MUSTER_DATUM_1 = "<p class=\"datum\">";
             final String MUSTER_DATUM_2 = "</p>";
-            String muster = "";
+            String muster;
             String urlFilm = "";
             String datum = "";
             String zeit = "";
-            int pos = 0;
-            int pos1 = 0;
-            int pos2 = 0;
+            int pos;
+            int pos1;
+            int pos2;
             try {
-                meldung("*" + uurlFilm);
+                meldung(uurlFilm);
                 seite2 = getUrl.getUri_Utf(nameSenderMReader, uurlFilm, seite2, "urlThema: " + urlThema);
                 if (titel.equals("")) {
                     //<title>Neu im Kino - &quot;Fair Game&quot; - ZDFneo - ZDFmediathek - ZDF Mediathek</title>
@@ -264,15 +264,12 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     pos2 = seite2.indexOf(MUSTER_TITEL_2, MUSTER_TITEL_1.length());
                     if (pos1 != -1 && pos2 != -1) {
                         titel = seite2.substring(pos1, pos2);
-                        titel.replace("", " - ZDFmediathek - ZDF Mediathek");
+                        titel = titel.replace("", " - ZDFmediathek - ZDF Mediathek");
                         if (titel.contains("-")) {
                             titel = titel.substring(titel.lastIndexOf("-"));
                         }
                     }
                 }
-                pos = 0;
-                pos1 = 0;
-                pos2 = 0;
                 if ((pos1 = seite2.indexOf(MUSTER_DATUM_1, 0)) != -1) {
                     if ((pos2 = seite2.indexOf(MUSTER_DATUM_2, pos1)) != -1) {
                         pos1 += MUSTER_DATUM_1.length();
@@ -290,8 +287,6 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     }
                 }
                 pos = 0;
-                pos1 = 0;
-                pos2 = 0;
                 if (seite2.indexOf(MUSTER_URL_1) != -1) {
                     muster = MUSTER_URL_1;
                 } else {

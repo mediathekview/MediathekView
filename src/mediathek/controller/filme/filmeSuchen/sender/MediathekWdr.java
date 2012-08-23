@@ -29,7 +29,7 @@ import mediathek.daten.DatenFilm;
 
 /**
  *
- *   @author
+ * @author
  */
 public class MediathekWdr extends MediathekReader implements Runnable {
 
@@ -39,8 +39,8 @@ public class MediathekWdr extends MediathekReader implements Runnable {
 
     /**
      *
-     *   @param ddaten
-     *   @param dde
+     * @param ddaten
+     * @param dde
      */
     public MediathekWdr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
@@ -209,7 +209,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 pos = 0;
                 strSeite1 = getUrl.getUri_Iso(nameSenderMReader, strUrlFeed, strSeite1, "");
                 ++seitenCount;
-                meldung("*" + strUrlFeed);
+                meldung(strUrlFeed);
                 while (!Daten.filmeLaden.getStop() && (pos = strSeite1.indexOf(MUSTER_URL, pos)) != -1) {
                     pos += MUSTER_URL.length();
                     pos1 = pos;
@@ -260,7 +260,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             // <p class="wsArticleAutor">Ein Beitrag von Heinke Schröder, 24.11.2010	</p>
             final String MUSTER_URL = "dslSrc=";
             final String MUSTER_DATUM = "<p class=\"wsArticleAutor\">";
-            meldung("*" + urlFilm);
+            meldung(urlFilm);
             strSeite2 = getUrl.getUri_Iso(nameSenderMReader, urlFilm, strSeite2, "");
             int pos;
             int pos1;

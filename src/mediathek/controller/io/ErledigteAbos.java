@@ -19,7 +19,12 @@
  */
 package mediathek.controller.io;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.Daten;
@@ -65,14 +70,14 @@ public class ErledigteAbos {
             OutputStreamWriter writer = null;
             try {
                 writer = new OutputStreamWriter(new FileOutputStream(f, true));
-                thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */);
-                titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */);
+                thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
+                titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
                 text = DatumZeit.getHeute_dd_MM_yyyy() + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
                 writer.write(text);
                 writer.close();
                 ret = true;
             } catch (Exception ex) {
-                Log.fehlerMeldung(945258023,"LogDownload.zeileSchreiben-1", ex);
+                Log.fehlerMeldung(945258023, "LogDownload.zeileSchreiben-1", ex);
             } finally {
                 try {
                     writer.close();
@@ -168,7 +173,7 @@ public class ErledigteAbos {
             }
             in.close();
         } catch (Exception ex) {
-            Log.fehlerMeldung(281006874,"LogDownload.urlAusLogfileLoeschen-1", ex);
+            Log.fehlerMeldung(281006874, "LogDownload.urlAusLogfileLoeschen-1", ex);
         } finally {
             try {
                 if (in != null) {
@@ -190,12 +195,12 @@ public class ErledigteAbos {
                     }
                     writer.close();
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(566277080,"LogDownload.urlAusLogfileLoeschen-3", ex);
+                    Log.fehlerMeldung(566277080, "LogDownload.urlAusLogfileLoeschen-3", ex);
                 } finally {
                     try {
                         writer.close();
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(256648801,"LogDownload.urlAusLogfileLoeschen-4", ex);
+                        Log.fehlerMeldung(256648801, "LogDownload.urlAusLogfileLoeschen-4", ex);
                     }
                 }
             }
@@ -218,7 +223,7 @@ public class ErledigteAbos {
                 url = zeile;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(398853224,"LogDownload.getUrlAusZeile: " + zeile, ex);
+            Log.fehlerMeldung(398853224, "LogDownload.getUrlAusZeile: " + zeile, ex);
         }
         return url;
     }

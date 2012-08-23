@@ -31,7 +31,7 @@ import mediathek.tool.DatumZeit;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekArte7 extends MediathekReader implements Runnable {
 
@@ -217,7 +217,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 //auch nach älteren Beiträgen suchen
                 do {
                     gefunden = false;
-                    meldung("*" + seite);
+                    meldung(seite);
                     if (thema.startsWith(THEMA_ARTE_7)) {
                         //strSeite1 = getUrl7.getUri_Utf(senderName, seite, strSeite1, "");
                         strSeite1 = getUrl.getUri(nameSenderMReader, seite, Konstanten.KODIERUNG_UTF, 5 /* versuche */, strSeite1, "" /* Meldung */);
@@ -327,7 +327,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
 
             final String MUSTER_URL = "vars_player.videorefFileUrl = \"";
             final String MUSTER_AUTH = "var url_player = \"";
-            meldung("*" + urlFilm);
+            meldung(urlFilm);
             if (Daten.filmeLaden.getStop()) {
                 return;
             }

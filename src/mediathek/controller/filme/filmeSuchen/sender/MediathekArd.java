@@ -51,6 +51,15 @@ public class MediathekArd extends MediathekReader implements Runnable {
         StringBuffer seite = new StringBuffer();
         //seite = new GetUrl(daten).getUriArd(ADRESSE, seite, "");
         seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, "" /* Meldung */);
+        seite.setLength(0);
+        if (seite.length() == 0) {
+            warten();
+            Log.systemMeldung("2. Versuch ARD");
+            seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, "" /* Meldung */);
+            if (seite.length() == 0) {
+                Log.fehlerMeldung(-104689736, "MediathekArd.addToList", "wieder nichts gefunden");
+            }
+        }
         int pos = 0;
         int pos1;
         int pos2;
@@ -95,6 +104,17 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     new Thread(new ArdThemaLaden()).start();
                 }
             }
+        }
+    }
+
+    private synchronized void warten() {
+        try {
+            // war wohl nix, warten und dann nochmal
+            // timeout: the maximum time to wait in milliseconds.
+            long warten = 60 * 1000;
+            this.wait(warten);
+        } catch (InterruptedException ex) {
+            Log.fehlerMeldung(-369502367, "MediathekArd.warten", ex, "2. Versuch");
         }
     }
 
@@ -319,7 +339,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             final String MUSTER_URL2d = "mediaCollection.addMediaStream(2, 1, \"\"";
 
             boolean ret = false;
-            meldung("*" + urlFilm);
+            meldung(urlFilm);
             seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "urlFeed: " + urlFeed);
             int pos1;
             int pos1Tmp;
