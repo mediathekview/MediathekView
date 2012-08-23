@@ -33,7 +33,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
     final String ROOTADR = "http://mediathek.rbb-online.de";
 
     public MediathekRbb(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 500, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 500, startPrio);
     }
 
     @Override
@@ -67,11 +67,11 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                         }
                     }
                 } else {
-                    Log.fehlerMeldungMReader(-894562036,"MediathekRBB.addToList", "keine URL");
+                    Log.fehlerMeldungMReader(-894562036, "MediathekRBB.addToList", "keine URL");
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(-398214058,"MediathekRBB.addToList", ex);
+            Log.fehlerMeldung(-398214058, "MediathekRBB.addToList", ex);
         }
         if (!Daten.filmeLaden.getStop()) {
             if (listeThemen.size() > 0) {
@@ -102,7 +102,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-794625882,"MediathekRBB.ThemaLaden.run", ex);
+                Log.fehlerMeldung(-794625882, "MediathekRBB.ThemaLaden.run", ex);
             }
         }
 
@@ -139,7 +139,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                         // Wir haben den URL der Sendung
                         seite3.setLength(0);
                         seite3 = getUrlIo.getUri_Utf(nameSenderMReader, showurl, seite3, "");
-                        meldung("*" + showurl);
+                        meldung(showurl);
 
                         // Titel
                         int tpos = seite3.indexOf("<title>");

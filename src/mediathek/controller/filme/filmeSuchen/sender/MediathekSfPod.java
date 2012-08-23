@@ -27,7 +27,7 @@ import mediathek.Log;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekSfPod extends MediathekReader implements Runnable {
 
@@ -35,15 +35,15 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
     private StringBuffer seite = new StringBuffer();
 
     /**
-     * 
-     *  @param ddaten
+     *
+     * @param ddaten
      */
     public MediathekSfPod(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
     }
 
     /**
-     * 
+     *
      */
     @Override
     public void addToList() {
@@ -121,7 +121,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
             String url = "";
             String datum = "";
             try {
-                meldung("*" + strUrlFeed);
+                meldung(strUrlFeed);
                 seite = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite, "Thema: " + thema);
                 pos = seite.indexOf(MUSTER_THEMA_1);
                 if (pos != -1) {

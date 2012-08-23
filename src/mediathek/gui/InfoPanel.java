@@ -12,6 +12,7 @@ import mediathek.controller.filme.FilmListenerElement;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.filme.filmeImportieren.MediathekTimer;
 import mediathek.daten.ListeFilme;
+import mediathek.tool.GuiFunktionen;
 
 /**
  *
@@ -57,18 +58,20 @@ public final class InfoPanel extends javax.swing.JPanel {
     }
 
     public void setProgressBar(FilmListenerElement filmListenerElement) {
-        stopTimer=true;
+        stopTimer = true;
+        jLabelRechts.setFont(new java.awt.Font("Monospaced", 1, 12));
         jProgressBar1.setVisible(true);
         jButtonStop.setVisible(true);
         jProgressBar1.setMaximum(filmListenerElement.max);
         jProgressBar1.setMinimum(0);
         jProgressBar1.setValue(filmListenerElement.progress);
         jProgressBar1.setStringPainted(true);
-        jLabelRechts.setText(filmListenerElement.text);
+        jLabelRechts.setText(GuiFunktionen.textLaenge(60, filmListenerElement.text, true /* mitte */, false /*addVorne*/));
     }
 
     public void clearProgress() {
-        stopTimer=false;
+        stopTimer = false;
+        jLabelRechts.setFont(new java.awt.Font("Dialog", 1, 12));
         jProgressBar1.setVisible(false);
         jButtonStop.setVisible(false);
         setInfoRechts();
@@ -118,6 +121,7 @@ public final class InfoPanel extends javax.swing.JPanel {
 
         jLabelStatusLinks.setText("jLabel2");
 
+        jLabelRechts.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabelRechts.setText("jLabel1");
 
         jButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/stop_16.png"))); // NOI18N

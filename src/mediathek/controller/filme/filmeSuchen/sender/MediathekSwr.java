@@ -215,7 +215,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             //<span class="mClipInfos">		22.11.2010 | 23.00 Uhr | 2:07 min</span>
             //<p><span class="group_title">2+Leif</span> vom <span class="entry_pdatehd">22.11.2010</span> | <span class="entry_pdateht">23.00</span> Uhr</p>
 //            urlFilm = "http://www.swrmediathek.de/player.htm?show=3791f560-fb1d-11df-8817-0026b975f2e6";
-            meldung("*" + urlFilm);
+            meldung(urlFilm);
             strSeite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, strSeite2, "");
             ++seiten;
             int pos;

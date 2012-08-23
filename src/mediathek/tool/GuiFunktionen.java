@@ -233,17 +233,20 @@ public class GuiFunktionen {
         return liste;
     }
 
-    public static String textLaenge(int max, String text, boolean mitte) {
-        final int MAX = max;
-        if (text.length() > MAX) {
+    public static String textLaenge(int max, String text, boolean mitte, boolean addVorne) {
+        if (text.length() > max) {
             if (mitte) {
-                text = text.substring(0, 25) + " .... " + text.substring(text.length() - (MAX - 31));
+                text = text.substring(0, 25) + " .... " + text.substring(text.length() - (max - 31));
             } else {
-                text = text.substring(0, MAX - 1);
+                text = text.substring(0, max - 1);
             }
         }
-        while (text.length() < MAX) {
-            text = text + " ";
+        while (text.length() < max) {
+            if (addVorne) {
+                text = " " + text;
+            } else {
+                text = text + " ";
+            }
         }
         return text;
     }

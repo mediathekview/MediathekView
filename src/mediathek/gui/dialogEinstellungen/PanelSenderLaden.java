@@ -63,7 +63,6 @@ public class PanelSenderLaden extends PanelVorlage {
             jSpinnerWarten.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_WARTEN_NR]));
         }
         jButtonStop.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.filmeLaden.setStop();
@@ -71,7 +70,6 @@ public class PanelSenderLaden extends PanelVorlage {
         });
         addSender();
         DDaten.filmeLaden.addAdListener(new BeobFilmeLaden() {
-
             @Override
             public void start(FilmListenerElement filmListenerElement) {
             }
@@ -82,7 +80,7 @@ public class PanelSenderLaden extends PanelVorlage {
                 jProgressBar1.setMinimum(0);
                 jProgressBar1.setValue(filmListenerElement.progress);
                 jProgressBar1.setStringPainted(true);
-                jLabelProgress.setText(GuiFunktionen.textLaenge(80, filmListenerElement.text, true /* mitte */));
+                jLabelProgress.setText(GuiFunktionen.textLaenge(80, filmListenerElement.text, true /* mitte */, false /*addVorne*/));
             }
 
             @Override
