@@ -24,7 +24,6 @@ import javax.swing.event.EventListenerList;
 import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
-import mediathek.controller.filmeLaden.filmUpdateServer.FilmUpdateServer;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.Log;
