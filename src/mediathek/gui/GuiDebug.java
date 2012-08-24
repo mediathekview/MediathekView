@@ -27,7 +27,7 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import mediathek.Daten;
+import mediathek.daten.Daten;
 import mediathek.MediathekGui;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;

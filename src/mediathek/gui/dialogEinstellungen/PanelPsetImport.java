@@ -29,7 +29,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.Log;
+import mediathek.tool.Log;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.ListePsetVorlagen;
 import mediathek.daten.DDaten;

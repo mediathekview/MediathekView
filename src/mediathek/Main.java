@@ -19,6 +19,9 @@
  */
 package mediathek;
 
+import mediathek.tool.Log;
+import mediathek.daten.Daten;
+
 public class Main {
 
     public static final String STARTP_ALLES = "-alles";

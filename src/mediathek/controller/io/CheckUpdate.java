@@ -19,8 +19,8 @@
  */
 package mediathek.controller.io;
 
-import mediathek.Daten;
-import mediathek.Konstanten;
+import mediathek.daten.Daten;
+import mediathek.daten.Konstanten;
 import mediathek.MediathekGui;
 import mediathek.daten.DDaten;
 import mediathek.tool.DatumZeit;

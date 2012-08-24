@@ -24,7 +24,6 @@ import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import mediathek.Log;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.tool.GuiKonstanten;

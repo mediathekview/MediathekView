@@ -21,7 +21,7 @@ package mediathek.controller.filme.filmeImportieren;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
-import mediathek.Log;
+import mediathek.tool.Log;
 import mediathek.controller.filme.ListenerFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
 import mediathek.controller.filme.FilmeLaden;

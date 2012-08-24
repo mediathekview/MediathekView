@@ -19,6 +19,9 @@
  */
 package mediathek;
 
+import mediathek.tool.Log;
+import mediathek.daten.Konstanten;
+import mediathek.daten.Daten;
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;

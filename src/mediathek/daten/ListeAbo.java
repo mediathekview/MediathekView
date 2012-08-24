@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
-import mediathek.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.DatumZeit;

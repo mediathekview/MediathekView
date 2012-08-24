@@ -32,7 +32,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
-import mediathek.Daten;
+import mediathek.daten.Daten;
 import mediathek.MediathekGui;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;

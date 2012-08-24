@@ -19,6 +19,9 @@
  */
 package mediathek;
 
+import mediathek.tool.Log;
+import mediathek.daten.Konstanten;
+import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import java.awt.BorderLayout;
 import java.awt.Dimension;

@@ -19,6 +19,8 @@
  */
 package mediathek;
 
+import mediathek.tool.Log;
+import mediathek.daten.Daten;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;

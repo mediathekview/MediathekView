@@ -20,7 +20,7 @@
 package mediathek.controller.filme;
 
 import javax.swing.event.EventListenerList;
-import mediathek.Daten;
+import mediathek.daten.Daten;
 import mediathek.controller.filme.filmUpdateServer.ListeFilmUpdateServer;
 import mediathek.controller.filme.filmeImportieren.FilmeImportieren;
 import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;

@@ -23,7 +23,6 @@ import java.awt.Component;
 import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import mediathek.Log;
 import mediathek.controller.io.History;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;

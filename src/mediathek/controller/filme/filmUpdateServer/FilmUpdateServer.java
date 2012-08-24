@@ -19,9 +19,9 @@
  */
 package mediathek.controller.filme.filmUpdateServer;
 
-import mediathek.Daten;
-import mediathek.Konstanten;
-import mediathek.Log;
+import mediathek.daten.Daten;
+import mediathek.daten.Konstanten;
+import mediathek.tool.Log;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 
 public class FilmUpdateServer {

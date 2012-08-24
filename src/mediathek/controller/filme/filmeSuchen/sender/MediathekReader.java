@@ -21,7 +21,7 @@ package mediathek.controller.filme.filmeSuchen.sender;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import mediathek.Log;
+import mediathek.tool.Log;
 import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;

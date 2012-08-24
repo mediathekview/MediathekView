@@ -21,7 +21,7 @@ package mediathek.daten;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import mediathek.Log;
+import mediathek.tool.Log;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiKonstanten;
 

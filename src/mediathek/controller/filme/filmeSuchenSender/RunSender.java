@@ -20,7 +20,7 @@
 package mediathek.controller.filme.filmeSuchenSender;
 
 import java.util.Date;
-import mediathek.Log;
+import mediathek.tool.Log;
 
 public class RunSender {
 

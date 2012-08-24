@@ -26,9 +26,9 @@ import java.util.LinkedList;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.Daten;
-import mediathek.Konstanten;
-import mediathek.Log;
+import mediathek.daten.Daten;
+import mediathek.daten.Konstanten;
+import mediathek.tool.Log;
 import mediathek.tool.TModel;
 
 public class ListePsetVorlagen extends LinkedList<String[]> {
