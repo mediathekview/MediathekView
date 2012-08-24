@@ -22,11 +22,11 @@ package mediathek.daten;
 import java.io.File;
 import java.util.Iterator;
 import mediathek.tool.Log;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
-import mediathek.controller.filme.filmeSuchen.sender.Mediathek3Sat;
-import mediathek.controller.filme.filmeSuchen.sender.MediathekNdr;
-import mediathek.controller.filme.filmeSuchen.sender.MediathekSwr;
-import mediathek.controller.filme.filmeSuchen.sender.MediathekZdf;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
+import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
+import mediathek.controller.filmeLaden.suchen.sender.MediathekSwr;
+import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
 import mediathek.controller.io.AsxLesen;
 import mediathek.controller.io.starter.Starts;
 import mediathek.tool.DatumZeit;
@@ -114,7 +114,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public void startMelden(int status) {
         arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(status);
-        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
+        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
     }
 
     public DatenDownload getCopy() {

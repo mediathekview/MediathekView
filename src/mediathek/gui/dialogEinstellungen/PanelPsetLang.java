@@ -32,7 +32,7 @@ import javax.swing.JTextField;
 import javax.swing.event.*;
 import mediathek.daten.Daten;
 import mediathek.tool.Log;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
@@ -66,7 +66,7 @@ public class PanelPsetLang extends PanelVorlage {
 
     private void init() {
         //Programme
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (!stopBeob) {
@@ -305,7 +305,7 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void notifyPset() {
-        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName());
+        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName());
     }
 
     private void fillTextProgramme() {

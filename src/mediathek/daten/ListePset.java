@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.regex.Matcher;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.TModel;
@@ -152,7 +152,7 @@ public class ListePset extends LinkedList<DatenPset> {
             }
         }
         this.add(neu, prog);
-        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
+        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
         return neu;
     }
 

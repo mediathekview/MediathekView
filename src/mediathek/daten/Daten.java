@@ -22,8 +22,8 @@ package mediathek.daten;
 import java.io.File;
 import javax.swing.event.EventListenerList;
 import mediathek.tool.Log;
-import mediathek.controller.filme.FilmeLaden;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.controller.filmeLaden.FilmeLaden;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.ListeFilme;
@@ -69,12 +69,12 @@ public class Daten {
         filmeLaden = new FilmeLaden();
     }
 
-    public synchronized static void addAdListener(MediathekListener listener) {
-        listeners.add(MediathekListener.class, listener);
+    public synchronized static void addAdListener(ListenerMediathekView listener) {
+        listeners.add(ListenerMediathekView.class, listener);
     }
 
     public synchronized static void notifyMediathekListener(int ereignis, String klasse) {
-        for (MediathekListener l : listeners.getListeners(MediathekListener.class)) {
+        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
             if (l.ereignis == ereignis) {
                 if (!l.klasse.equals(klasse)) {
                     // um einen Kreislauf zu verhindern

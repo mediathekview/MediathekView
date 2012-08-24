@@ -37,9 +37,9 @@ import javax.swing.event.ListSelectionListener;
 import mediathek.daten.Daten;
 import mediathek.daten.Konstanten;
 import mediathek.MediathekGui;
-import mediathek.controller.filme.FilmListenerElement;
-import mediathek.controller.filme.ListenerFilmeLaden;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
+import mediathek.controller.filmeLaden.ListenerFilmeLaden;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.io.starter.StartEvent;
 import mediathek.controller.io.starter.StartListener;
 import mediathek.controller.io.starter.Starts;
@@ -125,13 +125,13 @@ public class GuiDownloads extends PanelVorlage {
     //private
     //===================================
     private void init() {
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_DOWNLOADS, GuiDownloads.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 load();
             }
         });
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 panelUpdate();
@@ -139,13 +139,13 @@ public class GuiDownloads extends PanelVorlage {
         });
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void fertig(FilmListenerElement filmListenerElement) {
+            public void fertig(ListenerFilmeLadenElement filmListenerElement) {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
                     aktualisieren();
                 }
             }
         });
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_ABOS, GuiDownloads.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {

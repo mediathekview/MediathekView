@@ -27,7 +27,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import mediathek.daten.Daten;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenBlacklist;
 import mediathek.gui.PanelVorlage;
@@ -54,7 +54,7 @@ public class PanelBlacklist extends PanelVorlage {
                 loeschen();
             }
         });
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_BLACKLIST_ADD, PanelBlacklist.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_ADD, PanelBlacklist.class.getSimpleName()) {
 
             @Override
             public void ping() {
@@ -67,7 +67,7 @@ public class PanelBlacklist extends PanelVorlage {
     private void loeschen() {
         tabelleLaden();
         DDaten.listeFilmeNachBlackList = ddaten.listeBlacklist.filterListe(Daten.listeFilme);
-        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_BLACKLIST_DEL, PanelBlacklist.class.getSimpleName());
+        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_BLACKLIST_DEL, PanelBlacklist.class.getSimpleName());
         DDaten.setGeaendert();
 
     }

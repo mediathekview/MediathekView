@@ -29,7 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import mediathek.daten.Daten;
 import mediathek.MediathekGui;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
 
 public class GuiDebug extends PanelVorlage {
@@ -199,7 +199,7 @@ public class GuiDebug extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             DDaten.listeFilme.delSender(sender);
-            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_FILMLISTE_NEU, MediathekGui.class.getSimpleName());
+            Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_FILMLISTE_NEU, MediathekGui.class.getSimpleName());
         }
     }
 }

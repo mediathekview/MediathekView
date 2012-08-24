@@ -30,7 +30,7 @@ import java.util.LinkedList;
 import mediathek.daten.Daten;
 import mediathek.daten.Konstanten;
 import mediathek.tool.Log;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
@@ -85,7 +85,7 @@ public class ErledigteAbos {
                 }
             }
         }
-        Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
+        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         return ret;
     }
 
@@ -205,7 +205,7 @@ public class ErledigteAbos {
                 }
             }
             ddaten.erledigteAbos.clearLogList();
-            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
+            Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         }
         return gefunden;
     }

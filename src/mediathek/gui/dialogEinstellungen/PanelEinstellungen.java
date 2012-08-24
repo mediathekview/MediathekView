@@ -28,7 +28,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.daten.Daten;
 import mediathek.daten.Konstanten;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.io.ProgrammUpdateSuchen;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
@@ -80,7 +80,7 @@ public class PanelEinstellungen extends PanelVorlage {
             }
         });
         jTextFieldUserAgent.getDocument().addDocumentListener(new BeobUserAgent());
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
 
             @Override
             public void ping() {
@@ -344,7 +344,7 @@ public class PanelEinstellungen extends PanelVorlage {
             Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
                     String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue());
             DDaten.setGeaendert();
-            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
+            Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
         }
     }
 
