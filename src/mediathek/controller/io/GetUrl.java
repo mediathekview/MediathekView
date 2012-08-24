@@ -26,9 +26,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import mediathek.Daten;
-import mediathek.Konstanten;
-import mediathek.Log;
+import mediathek.daten.Daten;
+import mediathek.daten.Konstanten;
+import mediathek.tool.Log;
 
 public class GetUrl {
 

@@ -7,7 +7,7 @@ package mediathek.gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.Daten;
+import mediathek.daten.Daten;
 import mediathek.controller.filme.FilmListenerElement;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.GuiFunktionen;

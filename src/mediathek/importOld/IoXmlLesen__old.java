@@ -26,7 +26,7 @@ import javax.swing.JOptionPane;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.Log;
+import mediathek.tool.Log;
 import mediathek.daten.*;
 
 public class IoXmlLesen__old {

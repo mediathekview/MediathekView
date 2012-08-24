@@ -26,7 +26,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import mediathek.Log;
+import mediathek.tool.Log;
 import mediathek.controller.io.starter.ListeStarts;
 import mediathek.controller.io.starter.StartEvent;
 import mediathek.controller.io.starter.StartListener;

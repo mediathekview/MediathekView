@@ -21,8 +21,7 @@ package mediathek.daten;
 
 import java.io.File;
 import java.util.Iterator;
-import mediathek.Daten;
-import mediathek.Log;
+import mediathek.tool.Log;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.filme.filmeSuchen.sender.Mediathek3Sat;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekNdr;

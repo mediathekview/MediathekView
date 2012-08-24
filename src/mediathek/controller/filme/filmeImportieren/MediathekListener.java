@@ -21,7 +21,7 @@ package mediathek.controller.filme.filmeImportieren;
 
 import java.util.EventListener;
 import javax.swing.SwingUtilities;
-import mediathek.Log;
+import mediathek.tool.Log;
 
 public class MediathekListener implements EventListener {
 

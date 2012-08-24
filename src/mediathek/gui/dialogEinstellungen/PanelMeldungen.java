@@ -21,7 +21,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.Log;
+import mediathek.tool.Log;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;

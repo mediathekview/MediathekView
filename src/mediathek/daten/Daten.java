@@ -17,10 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek;
+package mediathek.daten;
 
 import java.io.File;
 import javax.swing.event.EventListenerList;
+import mediathek.tool.Log;
 import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.IoXmlFilmlisteLesen;

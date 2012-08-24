@@ -25,9 +25,9 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.zip.ZipInputStream;
-import mediathek.Daten;
-import mediathek.Konstanten;
-import mediathek.Log;
+import mediathek.daten.Daten;
+import mediathek.daten.Konstanten;
+import mediathek.tool.Log;
 import mediathek.controller.filme.filmeSuchenSender.FilmeSuchenSender;
 import mediathek.daten.DatenFilm;
 

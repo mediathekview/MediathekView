@@ -20,8 +20,8 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Insets;
-import mediathek.Daten;
-import mediathek.Konstanten;
+import mediathek.daten.Daten;
+import mediathek.daten.Konstanten;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.BeobWeb;

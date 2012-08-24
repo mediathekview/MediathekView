@@ -21,7 +21,7 @@ package mediathek.controller.io;
 import java.io.*;
 import java.util.HashSet;
 import java.util.Iterator;
-import mediathek.Daten;
+import mediathek.daten.Daten;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 
 public class History extends HashSet<String> {

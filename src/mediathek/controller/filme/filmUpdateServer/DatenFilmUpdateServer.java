@@ -23,7 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import mediathek.Log;
+import mediathek.tool.Log;
 
 public class DatenFilmUpdateServer implements Comparable<DatenFilmUpdateServer> {
 

@@ -37,7 +37,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.Log;
+import mediathek.tool.Log;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;

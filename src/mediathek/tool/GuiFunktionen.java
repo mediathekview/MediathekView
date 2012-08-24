@@ -29,9 +29,8 @@ import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import mediathek.Daten;
-import mediathek.Konstanten;
-import mediathek.Log;
+import mediathek.daten.Daten;
+import mediathek.daten.Konstanten;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenFilm;
 

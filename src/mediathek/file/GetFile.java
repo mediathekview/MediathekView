@@ -8,8 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import mediathek.Konstanten;
-import mediathek.Log;
+import mediathek.daten.Konstanten;
+import mediathek.tool.Log;
 
 /**
  *

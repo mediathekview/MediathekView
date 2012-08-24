@@ -28,7 +28,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import mediathek.Log;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
