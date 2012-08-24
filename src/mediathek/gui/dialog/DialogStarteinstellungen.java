@@ -21,18 +21,13 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import javax.swing.JFileChooser;
 import mediathek.daten.Daten;
 import mediathek.daten.Konstanten;
-import mediathek.tool.Log;
 import mediathek.daten.DDaten;
 import mediathek.daten.ListePset;
-import mediathek.tool.EscBeenden;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.PanelPsetLang;
-import mediathek.importOld.IoXmlLesen__old;
 import mediathek.tool.GuiFunktionenProgramme;
 
 public class DialogStarteinstellungen extends javax.swing.JDialog {
@@ -57,21 +52,21 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                 weiter();
             }
         });
-        jButtonAlt.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                alt();
-            }
-        });
-        jButtonZiel.addActionListener(new ZielBeobachter());
-        new EscBeenden(this) {
-
-            @Override
-            public void beenden_() {
-                weiter();
-            }
-        };
+//        jButtonAlt.addActionListener(new ActionListener() {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                alt();
+//            }
+//        });
+//        jButtonZiel.addActionListener(new ZielBeobachter());
+//        new EscBeenden(this) {
+//
+//            @Override
+//            public void beenden_() {
+//                weiter();
+//            }
+//        };
         jCheckBoxAlleEinstellungen.setVisible(false);
         jCheckBoxAlleEinstellungen.addActionListener(new ActionListener() {
 
@@ -84,8 +79,8 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         jCheckBoxSuchen.setSelected(true);
         Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
         jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
-        String dateiAlt = IoXmlLesen__old.altExistiert();
-        jTextFieldPfad.setText(dateiAlt);
+//        String dateiAlt = IoXmlLesen__old.altExistiert();
+//        jTextFieldPfad.setText(dateiAlt);
         Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = GuiFunktionenProgramme.getMusterPfadMplayer();
         Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = GuiFunktionenProgramme.getMusterPfadVlc();
         Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = GuiFunktionenProgramme.getMusterPfadFlv();
@@ -108,13 +103,13 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         }
     }
 
-    private void alt() {
-        if (!jTextFieldPfad.getText().equals("")) {
-            new IoXmlLesen__old().importOld(ddaten, jTextFieldPfad.getText());
-            status = STAT_PSET;
-            weiter();
-        }
-    }
+//    private void alt() {
+//        if (!jTextFieldPfad.getText().equals("")) {
+//            new IoXmlLesen__old().importOld(ddaten, jTextFieldPfad.getText());
+//            status = STAT_PSET;
+//            weiter();
+//        }
+//    }
 
     private void statusStart() {
         jButtonStandard.setText("Weiter");
@@ -180,12 +175,6 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         jPanelExtra = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jCheckBoxSuchen = new javax.swing.JCheckBox();
-        jTextField2 = new javax.swing.JTextField();
-        jPanel1 = new javax.swing.JPanel();
-        jButtonZiel = new javax.swing.JButton();
-        jTextFieldPfad = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jButtonAlt = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -242,74 +231,19 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTextField2.setBackground(new java.awt.Color(204, 204, 204));
-        jTextField2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField2.setText("Alte Einstellungen");
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-
-        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
-        jButtonZiel.setContentAreaFilled(false);
-
-        jTextFieldPfad.setEditable(false);
-
-        jLabel1.setText("Pfad:");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldPfad)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonZiel)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextFieldPfad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonZiel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonZiel, jTextFieldPfad});
-
-        jButtonAlt.setText("Mit alten Einstellungen starten");
-        jButtonAlt.setContentAreaFilled(false);
-
         javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
         jPanelExtra.setLayout(jPanelExtraLayout);
         jPanelExtraLayout.setHorizontalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelExtraLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExtraLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonAlt)))
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExtraLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonAlt)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 535, Short.MAX_VALUE)
+                .addContainerGap(675, Short.MAX_VALUE)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -343,43 +277,37 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
      * @param args the command line arguments
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAlt;
     private javax.swing.JButton jButtonStandard;
-    private javax.swing.JButton jButtonZiel;
     private javax.swing.JCheckBox jCheckBoxAlleEinstellungen;
     private javax.swing.JCheckBox jCheckBoxAnpassen;
     private javax.swing.JCheckBox jCheckBoxSuchen;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextFieldPfad;
     // End of variables declaration//GEN-END:variables
 
-    private class ZielBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int returnVal;
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileHidingEnabled(false);
-            if (!jTextFieldPfad.getText().equals("")) {
-                chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
-            }
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(926487463,"DialogImportOld.ZielBeobachter", ex);
-                }
-            }
-        }
-    }
+//    private class ZielBeobachter implements ActionListener {
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            int returnVal;
+//            JFileChooser chooser = new JFileChooser();
+//            chooser.setFileHidingEnabled(false);
+//            if (!jTextFieldPfad.getText().equals("")) {
+//                chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
+//            }
+//            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//            returnVal = chooser.showOpenDialog(null);
+//            if (returnVal == JFileChooser.APPROVE_OPTION) {
+//                try {
+//                    jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
+//                } catch (Exception ex) {
+//                    Log.fehlerMeldung(926487463,"DialogImportOld.ZielBeobachter", ex);
+//                }
+//            }
+//        }
+//    }
 
     private class BeobCheckBoxSuchen implements ActionListener {
 
