@@ -17,9 +17,10 @@
  *      You should have received a copy of the GNU General Public License
  *      along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.controller.filme.filmeImportieren;
+package mediathek.tool;
 
 import javax.swing.event.EventListenerList;
+import mediathek.controller.filme.filmeImportieren.MediathekListener;
 
 public class MediathekTimer {
 

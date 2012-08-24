@@ -9,8 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.Daten;
 import mediathek.controller.filme.FilmListenerElement;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
-import mediathek.controller.filme.filmeImportieren.MediathekTimer;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.GuiFunktionen;
 
@@ -27,11 +25,20 @@ public final class InfoPanel extends javax.swing.JPanel {
     private final int IDX_MAX = 4;
     private String[] idx = new String[IDX_MAX];
     private int aktIdx = 0;
-    private MediathekTimer mediathekTimer = new MediathekTimer();
     private boolean stopTimer = false;
+    private String textRechts;
+    private int sekunden;
+    private int minuten;
+    private String sek;
+    private String min;
+    private String stu;
 
     public InfoPanel() {
         initComponents();
+        init();
+    }
+
+    private void init() {
         clearProgress();
         for (int i = 0; i < IDX_MAX; ++i) {
             idx[i] = "";
@@ -44,7 +51,8 @@ public final class InfoPanel extends javax.swing.JPanel {
                 Daten.filmeLaden.setStop();
             }
         });
-        mediathekTimer.addAdListener(new BeobTimer());
+        new Thread(new TimerClass()).start();
+
     }
 
     public void setTextLinks(int i, String text) {
@@ -78,16 +86,15 @@ public final class InfoPanel extends javax.swing.JPanel {
     }
 
     private void setInfoRechts() {
-        String textRechts;
         // Text rechts: alter/neuladenIn anzeigen
         textRechts = "Filmliste erstellt: ";
         textRechts += Daten.listeFilme.metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
         textRechts += " Uhr  ||  Alter: ";
-        int sekunden = Daten.listeFilme.alterFilmlisteSek();
-        int minuten = sekunden / 60;
-        String sek = String.valueOf(sekunden % 60);
-        String min = String.valueOf(minuten % 60);
-        String stu = String.valueOf(minuten / 60);
+        sekunden = Daten.listeFilme.alterFilmlisteSek();
+        minuten = sekunden / 60;
+        sek = String.valueOf(sekunden % 60);
+        min = String.valueOf(minuten % 60);
+        stu = String.valueOf(minuten / 60);
         while (sek.length() < 2) {
             sek = "0" + sek;
         }
@@ -161,12 +168,22 @@ public final class InfoPanel extends javax.swing.JPanel {
     private javax.swing.JProgressBar jProgressBar1;
     // End of variables declaration//GEN-END:variables
 
-    private class BeobTimer extends MediathekListener {
+    private class TimerClass implements Runnable {
+
+        private final int WARTEZEIT = 1000; // 1 Sekunde
 
         @Override
-        public void ping() {
-            if (!stopTimer) {
-                setInfoRechts();
+        public synchronized void run() {
+            while (true) {
+                try {
+                    Thread.sleep(WARTEZEIT);
+                } catch (InterruptedException e) {
+                } finally {
+                    if (!stopTimer) {
+                        setInfoRechts();
+                    }
+
+                }
             }
         }
     }
