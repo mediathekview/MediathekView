@@ -55,9 +55,9 @@ import mediathek.daten.Daten;
 import mediathek.daten.Konstanten;
 import mediathek.tool.Log;
 import mediathek.MediathekGui;
-import mediathek.controller.filme.FilmListenerElement;
-import mediathek.controller.filme.ListenerFilmeLaden;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
+import mediathek.controller.filmeLaden.ListenerFilmeLaden;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.io.starter.StartEvent;
 import mediathek.controller.io.starter.StartListener;
 import mediathek.controller.io.starter.Starts;
@@ -106,19 +106,19 @@ public class GuiFilme extends PanelVorlage {
         extra();
         tabelleBauen(); //Filme laden
         tabelle.initTabelle();
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 extra();
             }
         });
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_BLACKLIST_DEL, GuiFilme.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_DEL, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelleBauen();
             }
         });
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_FILMLISTE_NEU, GuiFilme.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILMLISTE_NEU, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 checkBlacklist();
@@ -209,12 +209,12 @@ public class GuiFilme extends PanelVorlage {
         });
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(FilmListenerElement filmListenerElement) {
+            public void start(ListenerFilmeLadenElement filmListenerElement) {
                 beobMausTabelle.itemSenderLaden.setEnabled(false);
             }
 
             @Override
-            public void fertig(FilmListenerElement filmListenerElement) {
+            public void fertig(ListenerFilmeLadenElement filmListenerElement) {
                 checkBlacklist();
                 tabelleBauen();
                 beobMausTabelle.itemSenderLaden.setEnabled(true);

@@ -41,9 +41,9 @@ import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.controller.filme.FilmListenerElement;
-import mediathek.controller.filme.ListenerFilmeLaden;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
+import mediathek.controller.filmeLaden.ListenerFilmeLaden;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.io.CheckUpdate;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.ProgrammLog;
@@ -236,19 +236,19 @@ public final class MediathekGui extends javax.swing.JFrame {
         initToolBar();
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(FilmListenerElement filmListenerElement) {
+            public void start(ListenerFilmeLadenElement filmListenerElement) {
                 //ddaten.infoPanel.setProgress();
                 jButtonFilmeLaden.setEnabled(false);
                 jMenuItemFilmlisteLaden.setEnabled(false);
             }
 
             @Override
-            public void progress(FilmListenerElement filmListenerElement) {
+            public void progress(ListenerFilmeLadenElement filmListenerElement) {
                 ddaten.infoPanel.setProgressBar(filmListenerElement);
             }
 
             @Override
-            public void fertig(FilmListenerElement filmListenerElement) {
+            public void fertig(ListenerFilmeLadenElement filmListenerElement) {
                 ddaten.infoPanel.clearProgress();
                 jButtonFilmeLaden.setEnabled(true);
                 jMenuItemFilmlisteLaden.setEnabled(true);
@@ -388,11 +388,11 @@ public final class MediathekGui extends javax.swing.JFrame {
             public void stateChanged(ChangeEvent arg0) {
                 Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
                         String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue());
-                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
+                Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
                 DDaten.setGeaendert();
             }
         });
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 initSpinner();
@@ -581,7 +581,7 @@ public final class MediathekGui extends javax.swing.JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     DDaten.listeFilme.clear();
-                    Daten.notifyMediathekListener(MediathekListener.EREIGNIS_FILMLISTE_NEU, MediathekGui.class.getSimpleName());
+                    Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_FILMLISTE_NEU, MediathekGui.class.getSimpleName());
                 }
             });
         }

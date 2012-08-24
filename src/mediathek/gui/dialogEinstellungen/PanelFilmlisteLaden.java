@@ -33,9 +33,9 @@ import javax.swing.event.ListSelectionEvent;
 import mediathek.daten.Daten;
 import mediathek.daten.Konstanten;
 import mediathek.tool.Log;
-import mediathek.controller.filme.filmUpdateServer.DatenFilmUpdateServer;
-import mediathek.controller.filme.filmUpdateServer.FilmUpdateServer;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.controller.filmeLaden.filmUpdateServer.DatenFilmUpdateServer;
+import mediathek.controller.filmeLaden.filmUpdateServer.FilmUpdateServer;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
@@ -75,13 +75,13 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         //jTable1.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         jTable1.addMouseListener(new BeobachterTableSelect());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_UPDATESERVER, PanelFilmlisteLaden.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_UPDATESERVER, PanelFilmlisteLaden.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelleLaden();
             }
         });
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_ART_IMPORT_FILMLISTE, PanelFilmlisteLaden.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_IMPORT_FILMLISTE, PanelFilmlisteLaden.class.getSimpleName()) {
             @Override
             public void ping() {
                 initRadio();
@@ -367,7 +367,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 } else {
                     Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO);
                 }                // den Dialog gibts 2x
-                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
+                Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
                 Daten.setGeaendert();
             }
         }

@@ -26,7 +26,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import mediathek.daten.Daten;
 import mediathek.tool.Log;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
@@ -145,7 +145,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 // und evtl. auch gleich starten
                 ddaten.starterClass.addStarts(new Starts(datenDownload));
             }
-            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
         this.dispose();
     }

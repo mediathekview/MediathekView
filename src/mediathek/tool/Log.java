@@ -28,7 +28,6 @@ import java.util.LinkedList;
 import java.util.ResourceBundle;
 import javax.swing.event.EventListenerList;
 import mediathek.Main;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.tool.GuiFunktionenProgramme;
 
 public class Log {
@@ -76,8 +75,8 @@ public class Log {
         fehlerListe.clear();
     }
 
-    public static void addAdListener(MediathekListener listener) {
-        listeners.add(MediathekListener.class, listener);
+    public static void addAdListener(ListenerMediathekView listener) {
+        listeners.add(ListenerMediathekView.class, listener);
     }
 
     public static synchronized void versionsMeldungen(String classname) {
@@ -325,7 +324,7 @@ public class Log {
         } else if (art.equals(LOG_PLAYER)) {
             textProgramm.setLength(0);
         }
-        for (MediathekListener l : listeners.getListeners(MediathekListener.class)) {
+        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
             l.ping(art);
         }
     }
@@ -338,7 +337,7 @@ public class Log {
         } else if (art.equals(LOG_PLAYER)) {
             addText(textProgramm, zeile);
         }
-        for (MediathekListener l : listeners.getListeners(MediathekListener.class)) {
+        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
             l.ping(art);
         }
     }

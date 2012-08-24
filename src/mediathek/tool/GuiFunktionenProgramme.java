@@ -27,7 +27,6 @@ import javax.swing.JOptionPane;
 import mediathek.daten.Daten;
 import mediathek.daten.Konstanten;
 import mediathek.Main;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenProg;
@@ -222,7 +221,7 @@ public class GuiFunktionenProgramme {
                 }
             }
             if (ddaten.listePset.addPset(pSet)) {
-                Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_PSET, PanelPsetImport.class.getSimpleName());
+                Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetImport.class.getSimpleName());
                 JOptionPane.showMessageDialog(null, pSet.size() + " Programmset importiert!",
                         "Ok", JOptionPane.INFORMATION_MESSAGE);
             }

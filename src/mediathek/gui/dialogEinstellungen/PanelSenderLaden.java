@@ -30,8 +30,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
 import mediathek.daten.Konstanten;
-import mediathek.controller.filme.FilmListenerElement;
-import mediathek.controller.filme.ListenerFilmeLaden;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
+import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
@@ -71,11 +71,11 @@ public class PanelSenderLaden extends PanelVorlage {
         addSender();
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(FilmListenerElement filmListenerElement) {
+            public void start(ListenerFilmeLadenElement filmListenerElement) {
             }
 
             @Override
-            public void progress(FilmListenerElement filmListenerElement) {
+            public void progress(ListenerFilmeLadenElement filmListenerElement) {
                 jProgressBar1.setMaximum(filmListenerElement.max);
                 jProgressBar1.setMinimum(0);
                 jProgressBar1.setValue(filmListenerElement.progress);
@@ -84,7 +84,7 @@ public class PanelSenderLaden extends PanelVorlage {
             }
 
             @Override
-            public void fertig(FilmListenerElement filmListenerElement) {
+            public void fertig(ListenerFilmeLadenElement filmListenerElement) {
                 jProgressBar1.setMaximum(0);
                 jProgressBar1.setMinimum(0);
                 jProgressBar1.setValue(0);

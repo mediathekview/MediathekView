@@ -8,7 +8,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.daten.Daten;
-import mediathek.controller.filme.FilmListenerElement;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.GuiFunktionen;
 
@@ -65,7 +65,7 @@ public final class InfoPanel extends javax.swing.JPanel {
         jLabelStatusLinks.setText(idx[i]);
     }
 
-    public void setProgressBar(FilmListenerElement filmListenerElement) {
+    public void setProgressBar(ListenerFilmeLadenElement filmListenerElement) {
         stopTimer = true;
         jLabelRechts.setFont(new java.awt.Font("Monospaced", 1, 12));
         jProgressBar1.setVisible(true);

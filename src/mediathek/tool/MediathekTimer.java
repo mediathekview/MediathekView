@@ -20,7 +20,6 @@
 package mediathek.tool;
 
 import javax.swing.event.EventListenerList;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
 
 public class MediathekTimer {
 
@@ -31,12 +30,12 @@ public class MediathekTimer {
         new Thread(new TimerClass()).start();
     }
 
-    public void addAdListener(MediathekListener listener) {
-        listeners.add(MediathekListener.class, listener);
+    public void addAdListener(ListenerMediathekView listener) {
+        listeners.add(ListenerMediathekView.class, listener);
     }
 
     private void notifyTakt() {
-        for (MediathekListener l : listeners.getListeners(MediathekListener.class)) {
+        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
             l.ping();
         }
     }

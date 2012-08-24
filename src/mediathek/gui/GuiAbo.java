@@ -34,7 +34,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import mediathek.daten.Daten;
 import mediathek.MediathekGui;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.tool.CellRendererAbo;
@@ -84,7 +84,7 @@ public class GuiAbo extends PanelVorlage {
     //private
     //===================================
     private void initBeobachter() {
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName()) {
             @Override
             public void ping() {
                 load();
@@ -129,7 +129,7 @@ public class GuiAbo extends PanelVorlage {
             }
             DDaten.setGeaendert();
             load();
-            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
+            Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -169,7 +169,7 @@ public class GuiAbo extends PanelVorlage {
                 tabelle.addRowSelectionInterval(rows[i], rows[i]);
             }
             setInfo();
-            Daten.notifyMediathekListener(MediathekListener.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
+            Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
         } else {
             new HinweisKeineAuswahl().zeigen();
         }

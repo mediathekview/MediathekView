@@ -22,7 +22,7 @@ package mediathek.gui.dialogEinstellungen;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.tool.Log;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 
@@ -44,7 +44,7 @@ public class PanelMeldungen extends PanelVorlage {
         logArt = llogArt;
         setText();
         //init
-        Log.addAdListener(new MediathekListener() {
+        Log.addAdListener(new ListenerMediathekView() {
 
             @Override
             public void ping(String fromm) {

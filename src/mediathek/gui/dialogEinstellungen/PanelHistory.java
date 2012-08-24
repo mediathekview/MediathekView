@@ -27,7 +27,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import mediathek.daten.Daten;
-import mediathek.controller.filme.filmeImportieren.MediathekListener;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.TModel;
@@ -42,7 +42,7 @@ public class PanelHistory extends PanelVorlage {
     }
 
     private void init() {
-        Daten.addAdListener(new MediathekListener(MediathekListener.EREIGNIS_LISTE_HISTORY, PanelHistory.class.getSimpleName()) {
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, PanelHistory.class.getSimpleName()) {
 
             @Override
             public void ping() {
