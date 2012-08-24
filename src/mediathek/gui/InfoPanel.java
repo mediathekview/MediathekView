@@ -7,8 +7,8 @@ package mediathek.gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.daten.Daten;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.GuiFunktionen;
 
@@ -65,21 +65,19 @@ public final class InfoPanel extends javax.swing.JPanel {
         jLabelStatusLinks.setText(idx[i]);
     }
 
-    public void setProgressBar(ListenerFilmeLadenElement filmListenerElement) {
+    public void setProgressBar(ListenerFilmeLadenEvent event) {
         stopTimer = true;
-        jLabelRechts.setFont(new java.awt.Font("Monospaced", 1, 12));
         jProgressBar1.setVisible(true);
         jButtonStop.setVisible(true);
-        jProgressBar1.setMaximum(filmListenerElement.max);
+        jProgressBar1.setMaximum(event.max);
         jProgressBar1.setMinimum(0);
-        jProgressBar1.setValue(filmListenerElement.progress);
+        jProgressBar1.setValue(event.progress);
         jProgressBar1.setStringPainted(true);
-        jLabelRechts.setText(GuiFunktionen.textLaenge(60, filmListenerElement.text, true /* mitte */, false /*addVorne*/));
+        jLabelRechts.setText(GuiFunktionen.textLaenge(60, event.text, true /* mitte */, true /*addVorne*/));
     }
 
     public void clearProgress() {
         stopTimer = false;
-        jLabelRechts.setFont(new java.awt.Font("Dialog", 1, 12));
         jProgressBar1.setVisible(false);
         jButtonStop.setVisible(false);
         setInfoRechts();
@@ -128,7 +126,6 @@ public final class InfoPanel extends javax.swing.JPanel {
 
         jLabelStatusLinks.setText("jLabel2");
 
-        jLabelRechts.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabelRechts.setText("jLabel1");
 
         jButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/stop_16.png"))); // NOI18N
@@ -142,7 +139,7 @@ public final class InfoPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jLabelStatusLinks)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addComponent(jLabelRechts)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)

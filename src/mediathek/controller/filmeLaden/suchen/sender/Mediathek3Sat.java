@@ -131,7 +131,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                 }
 
             }
-            while ((pos = seite1.indexOf(MUSTER_TITEL, pos)) != -1) {
+            while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_TITEL, pos)) != -1) {
                 pos += MUSTER_TITEL.length();
                 url = "";
                 link = "";
@@ -265,7 +265,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                     }
                 }
                 pos1 = 0;
-                while ((pos1 = seite2.indexOf(MUSTER_URL, pos1)) != -1) {
+                while (!Daten.filmeLaden.getStop() && (pos1 = seite2.indexOf(MUSTER_URL, pos1)) != -1) {
                     pos1 += MUSTER_URL.length();
                     if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
                         tmpUrl = seite2.substring(pos1, pos2);

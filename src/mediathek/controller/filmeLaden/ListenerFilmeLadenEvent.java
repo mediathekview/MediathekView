@@ -19,14 +19,14 @@
  */
 package mediathek.controller.filmeLaden;
 
-public class ListenerFilmeLadenElement {
+public class ListenerFilmeLadenEvent {
 
     public String sender = "";
     public String text = "";
     public int max = 0;
     public int progress = 0;
 
-    public ListenerFilmeLadenElement(String ssender, String ttext, int mmax, int pprogress) {
+    public ListenerFilmeLadenEvent(String ssender, String ttext, int mmax, int pprogress) {
         sender = ssender;
         text = ttext;
         max = mmax;

@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekArd;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekArdPodcast;
@@ -182,10 +182,10 @@ public class FilmeSuchenSender {
             listeSenderLaufen.add(new RunSender(sender, max, progress));
             //wird beim Start des Senders aufgerufen, 1x
             if (listeSenderLaufen.size() <= 1 /* erster Aufruf */) {
-                notifyStart(new ListenerFilmeLadenElement(sender, text, listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
+                notifyStart(new ListenerFilmeLadenEvent(sender, text, listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
             }
         }
-        notifyProgress(new ListenerFilmeLadenElement(sender, text, listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
+        notifyProgress(new ListenerFilmeLadenEvent(sender, text, listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
         progressBar();
     }
 
@@ -254,10 +254,10 @@ public class FilmeSuchenSender {
             Log.systemMeldung("");
             Log.systemMeldung("==================================================================================================================");
             Log.systemMeldung("==================================================================================================================");
-            notifyFertig(new ListenerFilmeLadenElement(sender, "", listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
+            notifyFertig(new ListenerFilmeLadenEvent(sender, "", listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
         } else {
             //nur ein Sender fertig
-            notifyProgress(new ListenerFilmeLadenElement(sender, "", listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
+            notifyProgress(new ListenerFilmeLadenEvent(sender, "", listeSenderLaufen.getMax(), listeSenderLaufen.getProgress()));
         }
     }
 
@@ -326,22 +326,22 @@ public class FilmeSuchenSender {
         return text;
     }
 
-    private void notifyStart(ListenerFilmeLadenElement filmListenerElement) {
+    private void notifyStart(ListenerFilmeLadenEvent event) {
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.start(filmListenerElement);
+            l.start(event);
         }
     }
 
-    private void notifyProgress(ListenerFilmeLadenElement filmListenerElement) {
+    private void notifyProgress(ListenerFilmeLadenEvent event) {
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.progress(filmListenerElement);
+            l.progress(event);
         }
 
     }
 
-    private void notifyFertig(ListenerFilmeLadenElement filmListenerElement) {
+    private void notifyFertig(ListenerFilmeLadenEvent event) {
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.fertig(filmListenerElement);
+            l.fertig(event);
         }
 
     }

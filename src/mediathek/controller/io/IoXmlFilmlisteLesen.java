@@ -19,7 +19,11 @@
  */
 package mediathek.controller.io;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.ZipInputStream;
@@ -27,15 +31,15 @@ import javax.swing.event.EventListenerList;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
-import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.daten.Konstanten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiKonstanten;
+import mediathek.tool.Log;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
 public class IoXmlFilmlisteLesen {
@@ -241,7 +245,7 @@ public class IoXmlFilmlisteLesen {
         max = mmax;
         progress = 0;
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.start(new ListenerFilmeLadenElement("", "", max, 0));
+            l.start(new ListenerFilmeLadenEvent("", "", max, 0));
         }
     }
 
@@ -250,7 +254,7 @@ public class IoXmlFilmlisteLesen {
             progress += 1;
         }
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.progress(new ListenerFilmeLadenElement("", text, max, progress));
+            l.progress(new ListenerFilmeLadenEvent("", text, max, progress));
         }
     }
 
@@ -258,7 +262,7 @@ public class IoXmlFilmlisteLesen {
         Log.systemMeldung("Liste Filme gelesen: " + DatumZeit.getHeute_dd_MM_yyyy() + " " + DatumZeit.getJetzt_HH_MM_SS());
         Log.systemMeldung("Anzahl Filme: " + liste.size());
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.fertig(new ListenerFilmeLadenElement("", "", max, progress));
+            l.fertig(new ListenerFilmeLadenEvent("", "", max, progress));
         }
     }
 }

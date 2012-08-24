@@ -23,7 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.Log;
@@ -130,7 +130,7 @@ public class ImportFilmliste {
     // #######################################
     private synchronized void fertigMelden() {
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.fertig(new ListenerFilmeLadenElement("", "", 0, 0));
+            l.fertig(new ListenerFilmeLadenEvent("", "", 0, 0));
         }
     }
 
@@ -141,23 +141,23 @@ public class ImportFilmliste {
     private class BeobLaden extends ListenerFilmeLaden {
 
         @Override
-        public synchronized void start(ListenerFilmeLadenElement filmListenerElement) {
+        public synchronized void start(ListenerFilmeLadenEvent event) {
             for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-                l.start(filmListenerElement);
+                l.start(event);
             }
         }
 
         @Override
-        public synchronized void progress(ListenerFilmeLadenElement filmListenerElement) {
+        public synchronized void progress(ListenerFilmeLadenEvent event) {
             for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-                l.progress(filmListenerElement);
+                l.progress(event);
             }
         }
 
         @Override
-        public synchronized void fertig(ListenerFilmeLadenElement filmListenerElement) {
+        public synchronized void fertig(ListenerFilmeLadenEvent event) {
             for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-                l.fertig(filmListenerElement);
+                l.fertig(event);
             }
         }
     }
