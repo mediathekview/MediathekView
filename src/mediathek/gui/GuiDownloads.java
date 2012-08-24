@@ -34,28 +34,28 @@ import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
 import mediathek.MediathekGui;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
-import mediathek.tool.ListenerMediathekView;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.starter.StartEvent;
 import mediathek.controller.io.starter.StartListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
-import mediathek.tool.BeobMpanel;
-import mediathek.tool.CellRendererDownloads;
+import mediathek.daten.Konstanten;
 import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogEditDownload;
+import mediathek.tool.BeobMpanel;
+import mediathek.tool.CellRendererDownloads;
 import mediathek.tool.Datum;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.JTableMed;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModelDownload;
 
 public class GuiDownloads extends PanelVorlage {
@@ -139,7 +139,7 @@ public class GuiDownloads extends PanelVorlage {
         });
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void fertig(ListenerFilmeLadenElement filmListenerElement) {
+            public void fertig(ListenerFilmeLadenEvent event) {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
                     aktualisieren();
                 }

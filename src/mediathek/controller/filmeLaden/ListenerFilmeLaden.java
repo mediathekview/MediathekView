@@ -23,12 +23,12 @@ import java.util.EventListener;
 
 public class ListenerFilmeLaden implements EventListener {
 
-    public void start(ListenerFilmeLadenElement filmListenerElement) {
+    public void start(ListenerFilmeLadenEvent event) {
     }
 
-    public void progress(ListenerFilmeLadenElement filmListenerElement) {
+    public void progress(ListenerFilmeLadenEvent event) {
     }
 
-    public void fertig(ListenerFilmeLadenElement filmListenerElement) {
+    public void fertig(ListenerFilmeLadenEvent event) {
     }
 }

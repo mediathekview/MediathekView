@@ -58,21 +58,21 @@ public class FilmeLaden {
         listeners.add(ListenerFilmeLaden.class, listener);
     }
 
-    private void notifyStart(ListenerFilmeLadenElement element) {
+    private void notifyStart(ListenerFilmeLadenEvent event) {
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.start(element);
+            l.start(event);
         }
     }
 
-    private void notifyProgress(ListenerFilmeLadenElement element) {
+    private void notifyProgress(ListenerFilmeLadenEvent event) {
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.progress(element);
+            l.progress(event);
         }
     }
 
-    private void notifyFertig(ListenerFilmeLadenElement element) {
+    private void notifyFertig(ListenerFilmeLadenEvent event) {
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.fertig(element);
+            l.fertig(event);
         }
     }
     // ###########################
@@ -147,46 +147,46 @@ public class FilmeLaden {
     private class BeobLadenSuchen extends ListenerFilmeLaden {
 
         @Override
-        public synchronized void start(ListenerFilmeLadenElement filmListenerElement) {
-            notifyStart(filmListenerElement);
+        public synchronized void start(ListenerFilmeLadenEvent event) {
+            notifyStart(event);
         }
 
         @Override
-        public synchronized void progress(ListenerFilmeLadenElement filmListenerElement) {
-            notifyProgress(filmListenerElement);
+        public synchronized void progress(ListenerFilmeLadenEvent event) {
+            notifyProgress(event);
         }
 
         @Override
-        public synchronized void fertig(ListenerFilmeLadenElement filmListenerElement) {
+        public synchronized void fertig(ListenerFilmeLadenEvent event) {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
             listeFilmeNeu = filmeSuchen.listeFilmeNeu;
             filmeSuchen.listeFilmeNeu = null;
-            fertig_(filmListenerElement);
+            fertig_(event);
         }
     }
 
     private class BeobLadenImportieren extends ListenerFilmeLaden {
 
         @Override
-        public synchronized void start(ListenerFilmeLadenElement filmListenerElement) {
-            notifyStart(filmListenerElement);
+        public synchronized void start(ListenerFilmeLadenEvent event) {
+            notifyStart(event);
         }
 
         @Override
-        public synchronized void progress(ListenerFilmeLadenElement filmListenerElement) {
-            notifyProgress(filmListenerElement);
+        public synchronized void progress(ListenerFilmeLadenEvent event) {
+            notifyProgress(event);
         }
 
         @Override
-        public synchronized void fertig(ListenerFilmeLadenElement filmListenerElement) {
+        public synchronized void fertig(ListenerFilmeLadenEvent event) {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
             listeFilmeNeu = filmeImportieren.listeFilme;
             filmeImportieren.listeFilme = null;
-            fertig_(filmListenerElement);
+            fertig_(event);
         }
     }
 
-    private void fertig_(ListenerFilmeLadenElement filmListenerElement) {
+    private void fertig_(ListenerFilmeLadenEvent event) {
         istAmLaufen = false;
         Daten.setGeaendert();
         if (listeFilmeNeu != null) {
@@ -194,6 +194,6 @@ public class FilmeLaden {
         } else {
             Daten.listeFilme = new ListeFilme();
         }
-        notifyFertig(filmListenerElement);
+        notifyFertig(event);
     }
 }

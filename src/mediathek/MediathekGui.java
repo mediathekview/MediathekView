@@ -41,7 +41,7 @@ import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.io.CheckUpdate;
@@ -236,19 +236,19 @@ public final class MediathekGui extends javax.swing.JFrame {
         initToolBar();
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(ListenerFilmeLadenElement filmListenerElement) {
+            public void start(ListenerFilmeLadenEvent event) {
                 //ddaten.infoPanel.setProgress();
                 jButtonFilmeLaden.setEnabled(false);
                 jMenuItemFilmlisteLaden.setEnabled(false);
             }
 
             @Override
-            public void progress(ListenerFilmeLadenElement filmListenerElement) {
-                ddaten.infoPanel.setProgressBar(filmListenerElement);
+            public void progress(ListenerFilmeLadenEvent event) {
+                ddaten.infoPanel.setProgressBar(event);
             }
 
             @Override
-            public void fertig(ListenerFilmeLadenElement filmListenerElement) {
+            public void fertig(ListenerFilmeLadenEvent event) {
                 ddaten.infoPanel.clearProgress();
                 jButtonFilmeLaden.setEnabled(true);
                 jMenuItemFilmlisteLaden.setEnabled(true);

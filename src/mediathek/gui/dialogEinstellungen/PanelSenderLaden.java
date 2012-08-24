@@ -28,11 +28,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import mediathek.controller.filmeLaden.ListenerFilmeLaden;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
+import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.Konstanten;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
-import mediathek.controller.filmeLaden.ListenerFilmeLaden;
-import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
 
@@ -71,20 +71,20 @@ public class PanelSenderLaden extends PanelVorlage {
         addSender();
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(ListenerFilmeLadenElement filmListenerElement) {
+            public void start(ListenerFilmeLadenEvent event) {
             }
 
             @Override
-            public void progress(ListenerFilmeLadenElement filmListenerElement) {
-                jProgressBar1.setMaximum(filmListenerElement.max);
+            public void progress(ListenerFilmeLadenEvent event) {
+                jProgressBar1.setMaximum(event.max);
                 jProgressBar1.setMinimum(0);
-                jProgressBar1.setValue(filmListenerElement.progress);
+                jProgressBar1.setValue(event.progress);
                 jProgressBar1.setStringPainted(true);
-                jLabelProgress.setText(GuiFunktionen.textLaenge(80, filmListenerElement.text, true /* mitte */, false /*addVorne*/));
+                jLabelProgress.setText(GuiFunktionen.textLaenge(80, event.text, true /* mitte */, false /*addVorne*/));
             }
 
             @Override
-            public void fertig(ListenerFilmeLadenElement filmListenerElement) {
+            public void fertig(ListenerFilmeLadenEvent event) {
                 jProgressBar1.setMaximum(0);
                 jProgressBar1.setMinimum(0);
                 jProgressBar1.setValue(0);

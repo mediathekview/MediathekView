@@ -25,7 +25,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ListIterator;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.starter.Starts;
@@ -132,7 +132,7 @@ public class MediathekAuto {
     private class BeobachterLadenFilme extends ListenerFilmeLaden {
 
         @Override
-        public void fertig(ListenerFilmeLadenElement filmListenerElement) {
+        public void fertig(ListenerFilmeLadenEvent event) {
             filmeLaden();
         }
     }

@@ -25,7 +25,7 @@ import mediathek.daten.Daten;
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenElement;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.ListeFilme;
@@ -91,7 +91,7 @@ public class MediathekNoGui {
     public void starten() {
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void fertig(ListenerFilmeLadenElement filmListenerElement) {
+            public void fertig(ListenerFilmeLadenEvent event) {
                 undTschuess();
             }
         });
