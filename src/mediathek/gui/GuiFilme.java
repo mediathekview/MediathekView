@@ -55,8 +55,8 @@ import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.MediathekGui;
-import mediathek.controller.filme.BeobFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
+import mediathek.controller.filme.ListenerFilmeLaden;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.starter.StartEvent;
 import mediathek.controller.io.starter.StartListener;
@@ -207,7 +207,7 @@ public class GuiFilme extends PanelVorlage {
                 tabelleBauen();
             }
         });
-        DDaten.filmeLaden.addAdListener(new BeobFilmeLaden() {
+        DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(FilmListenerElement filmListenerElement) {
                 beobMausTabelle.itemSenderLaden.setEnabled(false);

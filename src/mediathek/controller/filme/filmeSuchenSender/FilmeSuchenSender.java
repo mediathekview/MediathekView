@@ -27,7 +27,7 @@ import javax.swing.event.EventListenerList;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.controller.filme.FilmListener;
+import mediathek.controller.filme.ListenerFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
 import mediathek.controller.filme.filmeSuchen.sender.Mediathek3Sat;
 import mediathek.controller.filme.filmeSuchen.sender.MediathekArd;
@@ -90,8 +90,8 @@ public class FilmeSuchenSender {
         mediathekListe.add(new MediathekOrf(this, 1));
     }
 
-    public void addAdListener(FilmListener listener) {
-        listeners.add(FilmListener.class, listener);
+    public void addAdListener(ListenerFilmeLaden listener) {
+        listeners.add(ListenerFilmeLaden.class, listener);
     }
 
     public synchronized void filmeBeimSenderLaden(boolean aallesLaden, ListeFilme alteListe) {
@@ -327,20 +327,20 @@ public class FilmeSuchenSender {
     }
 
     private void notifyStart(FilmListenerElement filmListenerElement) {
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+        for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             l.start(filmListenerElement);
         }
     }
 
     private void notifyProgress(FilmListenerElement filmListenerElement) {
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+        for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             l.progress(filmListenerElement);
         }
 
     }
 
     private void notifyFertig(FilmListenerElement filmListenerElement) {
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+        for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             l.fertig(filmListenerElement);
         }
 

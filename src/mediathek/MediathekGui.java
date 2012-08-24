@@ -37,8 +37,8 @@ import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.controller.filme.BeobFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
+import mediathek.controller.filme.ListenerFilmeLaden;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.CheckUpdate;
 import mediathek.controller.io.IoXmlLesen;
@@ -230,7 +230,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         initTabs();
         initMenue();
         initToolBar();
-        DDaten.filmeLaden.addAdListener(new BeobFilmeLaden() {
+        DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(FilmListenerElement filmListenerElement) {
                 //ddaten.infoPanel.setProgress();
