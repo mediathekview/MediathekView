@@ -23,7 +23,7 @@
  *
  */
 
-package mediathek.gui;
+package mediathek.tool;
 
 /**
  *

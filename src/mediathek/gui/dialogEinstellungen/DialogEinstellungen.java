@@ -28,7 +28,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import mediathek.Log;
 import mediathek.daten.DDaten;
-import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.EscBeenden;
 
 public class DialogEinstellungen extends javax.swing.JDialog {
 

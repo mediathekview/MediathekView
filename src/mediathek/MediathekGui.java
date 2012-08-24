@@ -19,6 +19,7 @@
  */
 package mediathek;
 
+import mediathek.gui.dialog.DialogStarteinstellungen;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -49,7 +50,7 @@ import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.InfoPanel;
-import mediathek.gui.OSXAdapter;
+import mediathek.tool.OSXAdapter;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.PanelHilfe;

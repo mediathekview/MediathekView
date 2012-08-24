@@ -21,7 +21,7 @@ package mediathek.gui.dialog;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
-import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.EscBeenden;
 
 public class DialogLeer extends javax.swing.JDialog {
 

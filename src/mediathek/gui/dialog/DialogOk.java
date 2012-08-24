@@ -23,7 +23,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JPanel;
-import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.EscBeenden;
 
 public class DialogOk extends javax.swing.JDialog {
 

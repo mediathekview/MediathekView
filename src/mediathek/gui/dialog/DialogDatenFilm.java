@@ -31,7 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenFilm;
-import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.EscBeenden;
 
 public class DialogDatenFilm extends javax.swing.JDialog {
 

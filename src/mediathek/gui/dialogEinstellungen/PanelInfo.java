@@ -24,7 +24,7 @@ import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.beobachter.BeobWeb;
+import mediathek.tool.BeobWeb;
 
 public class PanelInfo extends PanelVorlage {
 

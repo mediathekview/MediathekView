@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.daten.DDaten;
 import mediathek.gui.GuiAbo;
-import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.EscBeenden;
 
 public class DialogHilfe extends javax.swing.JDialog {
 

@@ -34,7 +34,7 @@ import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.beobachter.CellRendererFilme;
+import mediathek.tool.CellRendererFilme;
 import mediathek.tool.TModel;
 
 public class PanelInfoStarts extends PanelVorlage {

@@ -17,7 +17,7 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui.beobachter;
+package mediathek.tool;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -39,15 +39,9 @@ public class BeobMpanel implements ActionListener {
         box = bbox;
         box.setSelected(true);
         panel = ppanel;
-//            box.setBackground(new java.awt.Color(204, 204, 204));
         box.setText(text);
         box.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/minus_16.png")));
         box.setFont(new java.awt.Font("Dialog", 0, 11));
-//            box.setMinimumSize(new Dimension(150, 21));
-//            box.setPreferredSize(new Dimension(150, 21));
-//            setPanel();
-//            box.setSelected(false);
-//            setPanel();
     }
 
     private void setPanel() {

@@ -33,7 +33,7 @@ import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
 import mediathek.file.GetFile;
-import mediathek.gui.beobachter.BeobWeb;
+import mediathek.tool.BeobWeb;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
