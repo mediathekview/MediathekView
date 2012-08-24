@@ -54,24 +54,24 @@ public class FilmeLaden {
     // ###########################
     // Listener
     // ###########################
-    public void addAdListener(FilmListener listener) {
-        listeners.add(FilmListener.class, listener);
+    public void addAdListener(ListenerFilmeLaden listener) {
+        listeners.add(ListenerFilmeLaden.class, listener);
     }
 
     private void notifyStart(FilmListenerElement filmListenerElement) {
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+        for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             l.start(filmListenerElement);
         }
     }
 
     private void notifyProgress(FilmListenerElement filmListenerElement) {
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+        for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             l.progress(filmListenerElement);
         }
     }
 
     private void notifyFertig(FilmListenerElement filmListenerElement) {
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+        for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             l.fertig(filmListenerElement);
         }
     }
@@ -144,7 +144,7 @@ public class FilmeLaden {
         }
     }
 
-    private class BeobLadenSuchen implements FilmListener {
+    private class BeobLadenSuchen extends ListenerFilmeLaden {
 
         @Override
         public synchronized void start(FilmListenerElement filmListenerElement) {
@@ -165,7 +165,7 @@ public class FilmeLaden {
         }
     }
 
-    private class BeobLadenImportieren implements FilmListener {
+    private class BeobLadenImportieren extends ListenerFilmeLaden {
 
         @Override
         public synchronized void start(FilmListenerElement filmListenerElement) {

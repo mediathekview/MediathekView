@@ -22,8 +22,8 @@ package mediathek;
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
-import mediathek.controller.filme.BeobFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
+import mediathek.controller.filme.ListenerFilmeLaden;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.ListeFilme;
 
@@ -86,7 +86,12 @@ public class MediathekNoGui {
     }
 
     public void starten() {
-        Daten.filmeLaden.addAdListener(new BeobachterLadenFilme());
+        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void fertig(FilmListenerElement filmListenerElement) {
+                undTschuess();
+            }
+        });
         // laden was es schon gibt
         Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
         // das eigentliche Suchen der Filme bei den Sendern starten
@@ -136,14 +141,6 @@ public class MediathekNoGui {
             System.exit(1);
         } else {
             System.exit(0);
-        }
-    }
-
-    private class BeobachterLadenFilme extends BeobFilmeLaden {
-
-        @Override
-        public void fertig(FilmListenerElement filmListenerElement) {
-            undTschuess();
         }
     }
 }

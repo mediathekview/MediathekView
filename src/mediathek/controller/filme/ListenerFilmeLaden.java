@@ -21,11 +21,14 @@ package mediathek.controller.filme;
 
 import java.util.EventListener;
 
-public interface FilmListener extends EventListener {
+public class ListenerFilmeLaden implements EventListener {
 
-    public void start(FilmListenerElement filmListenerElement);
+    public void start(FilmListenerElement filmListenerElement) {
+    }
 
-    public void progress(FilmListenerElement filmListenerElement);
+    public void progress(FilmListenerElement filmListenerElement) {
+    }
 
-    public void fertig(FilmListenerElement filmListenerElement);
+    public void fertig(FilmListenerElement filmListenerElement) {
+    }
 }

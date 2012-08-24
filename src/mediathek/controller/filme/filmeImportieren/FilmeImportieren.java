@@ -22,7 +22,7 @@ package mediathek.controller.filme.filmeImportieren;
 import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import mediathek.Log;
-import mediathek.controller.filme.FilmListener;
+import mediathek.controller.filme.ListenerFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
 import mediathek.controller.filme.FilmeLaden;
 import mediathek.controller.filme.filmUpdateServer.FilmUpdateServer;
@@ -75,7 +75,7 @@ public class FilmeImportieren {
             }
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {
                 JOptionPane.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                Log.fehlerMeldung(951235497,"Filme laden", "Es konnten keine Filme geladen werden!");
+                Log.fehlerMeldung(951235497, "Filme laden", "Es konnten keine Filme geladen werden!");
             }
         }
     }
@@ -121,7 +121,7 @@ public class FilmeImportieren {
                 ret = ioXmlFilmlisteLesen.filmlisteLesen(dateiUrl, istUrl, listeFilme);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(965412378,"ImportListe.urlLaden: ", ex);
+            Log.fehlerMeldung(965412378, "ImportListe.urlLaden: ", ex);
         }
         return ret;
     }
@@ -130,34 +130,34 @@ public class FilmeImportieren {
     // Listener
     // #######################################
     private synchronized void fertigMelden() {
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+        for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             l.fertig(new FilmListenerElement("", "", 0, 0));
         }
     }
 
-    public void addAdListener(FilmListener listener) {
-        listeners.add(FilmListener.class, listener);
+    public void addAdListener(ListenerFilmeLaden listener) {
+        listeners.add(ListenerFilmeLaden.class, listener);
     }
 
-    private class BeobLaden implements FilmListener {
+    private class BeobLaden extends ListenerFilmeLaden {
 
         @Override
         public synchronized void start(FilmListenerElement filmListenerElement) {
-            for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+            for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                 l.start(filmListenerElement);
             }
         }
 
         @Override
         public synchronized void progress(FilmListenerElement filmListenerElement) {
-            for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+            for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                 l.progress(filmListenerElement);
             }
         }
 
         @Override
         public synchronized void fertig(FilmListenerElement filmListenerElement) {
-            for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+            for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                 l.fertig(filmListenerElement);
             }
         }

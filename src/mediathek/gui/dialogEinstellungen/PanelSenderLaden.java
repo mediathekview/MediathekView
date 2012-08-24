@@ -30,8 +30,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.Daten;
 import mediathek.Konstanten;
-import mediathek.controller.filme.BeobFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
+import mediathek.controller.filme.ListenerFilmeLaden;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
@@ -69,7 +69,7 @@ public class PanelSenderLaden extends PanelVorlage {
             }
         });
         addSender();
-        DDaten.filmeLaden.addAdListener(new BeobFilmeLaden() {
+        DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(FilmListenerElement filmListenerElement) {
             }

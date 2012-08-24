@@ -30,7 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.Log;
-import mediathek.controller.filme.FilmListener;
+import mediathek.controller.filme.ListenerFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
@@ -44,8 +44,8 @@ public class IoXmlFilmlisteLesen {
     private int max = 0;
     private int progress = 0;
 
-    public void addAdListener(FilmListener listener) {
-        listeners.add(FilmListener.class, listener);
+    public void addAdListener(ListenerFilmeLaden listener) {
+        listeners.add(ListenerFilmeLaden.class, listener);
     }
 
     /**
@@ -240,7 +240,7 @@ public class IoXmlFilmlisteLesen {
     private void notifyStart(int mmax) {
         max = mmax;
         progress = 0;
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+        for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             l.start(new FilmListenerElement("", "", max, 0));
         }
     }
@@ -249,7 +249,7 @@ public class IoXmlFilmlisteLesen {
         if (progress < max) {
             progress += 1;
         }
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+        for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             l.progress(new FilmListenerElement("", text, max, progress));
         }
     }
@@ -257,7 +257,7 @@ public class IoXmlFilmlisteLesen {
     private void notifyFertig(ListeFilme liste) {
         Log.systemMeldung("Liste Filme gelesen: " + DatumZeit.getHeute_dd_MM_yyyy() + " " + DatumZeit.getJetzt_HH_MM_SS());
         Log.systemMeldung("Anzahl Filme: " + liste.size());
-        for (FilmListener l : listeners.getListeners(FilmListener.class)) {
+        for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             l.fertig(new FilmListenerElement("", "", max, progress));
         }
     }

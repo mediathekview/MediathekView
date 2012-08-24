@@ -37,8 +37,8 @@ import javax.swing.event.ListSelectionListener;
 import mediathek.Daten;
 import mediathek.Konstanten;
 import mediathek.MediathekGui;
-import mediathek.controller.filme.BeobFilmeLaden;
 import mediathek.controller.filme.FilmListenerElement;
+import mediathek.controller.filme.ListenerFilmeLaden;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.controller.io.starter.StartEvent;
 import mediathek.controller.io.starter.StartListener;
@@ -137,7 +137,7 @@ public class GuiDownloads extends PanelVorlage {
                 panelUpdate();
             }
         });
-        DDaten.filmeLaden.addAdListener(new BeobFilmeLaden() {
+        DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
             public void fertig(FilmListenerElement filmListenerElement) {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
