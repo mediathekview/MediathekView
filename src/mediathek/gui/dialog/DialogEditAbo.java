@@ -31,7 +31,7 @@ import javax.swing.event.DocumentListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenPset;
-import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 
 public class DialogEditAbo extends javax.swing.JDialog {

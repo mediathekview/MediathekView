@@ -25,7 +25,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import mediathek.Log;
-import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 
 public class DialogZiel extends javax.swing.JDialog {

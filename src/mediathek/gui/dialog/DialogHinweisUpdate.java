@@ -21,7 +21,7 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.EscBeenden;
 import mediathek.daten.DDaten;
 
 public class DialogHinweisUpdate extends javax.swing.JDialog {

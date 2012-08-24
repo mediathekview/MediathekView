@@ -39,8 +39,8 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.beobachter.CellRendererProgramme;
-import mediathek.gui.beobachter.CellRendererPset;
+import mediathek.tool.CellRendererProgramme;
+import mediathek.tool.CellRendererPset;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.*;
 

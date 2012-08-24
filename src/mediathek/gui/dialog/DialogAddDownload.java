@@ -32,7 +32,7 @@ import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
-import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionenProgramme;
 
 public class DialogAddDownload extends javax.swing.JDialog {

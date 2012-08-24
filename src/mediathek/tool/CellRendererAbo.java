@@ -17,20 +17,23 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui.beobachter;
+package mediathek.tool;
 
 import java.awt.Component;
+import java.awt.Font;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.Log;
 import mediathek.daten.DDaten;
-import mediathek.daten.DatenProg;
+import mediathek.daten.DatenAbo;
+import mediathek.tool.GuiKonstanten;
 
-public class CellRendererProgramme extends DefaultTableCellRenderer {
+public class CellRendererAbo extends DefaultTableCellRenderer {
 
     DDaten daten;
 
-    public CellRendererProgramme(DDaten d) {
+    public CellRendererAbo(DDaten d) {
         daten = d;
     }
 
@@ -42,21 +45,36 @@ public class CellRendererProgramme extends DefaultTableCellRenderer {
             boolean hasFocus,
             int row,
             int column) {
+        setBackground(null);
+        setForeground(null);
+        setFont(null);
         setIcon(null);
+        setHorizontalAlignment(SwingConstants.LEADING);
         super.getTableCellRendererComponent(
                 table, value, isSelected, hasFocus, row, column);
         try {
+            int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
-            if (c == DatenProg.PROGRAMM_RESTART_NR) {
-                if (getText().equals(Boolean.TRUE.toString())) {
+            DatenAbo abo = daten.listeAbo.getAboNr(r);
+            boolean eingeschaltet = abo.aboIstEingeschaltet();
+            if (!eingeschaltet) {
+                setFont(new java.awt.Font("Dialog", Font.ITALIC, 12));
+                if (isSelected) {
+                    setBackground(GuiKonstanten.FARBE_GRAU_SEL);
+                } else {
+                    setBackground(GuiKonstanten.FARBE_GRAU);
+                }
+            }
+            if (c == DatenAbo.ABO_EINGESCHALTET_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+                if (eingeschaltet) {
                     setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
                 } else {
                     setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
                 }
-                setText("");
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(338740095,this.getClass().getName(), ex);
+            Log.fehlerMeldung(630365892,this.getClass().getName(), ex);
         }
         return this;
     }

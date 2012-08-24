@@ -32,7 +32,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DatenDownload;
-import mediathek.gui.beobachter.EscBeenden;
+import mediathek.tool.EscBeenden;
 
 public class DialogEditDownload extends javax.swing.JDialog {
     

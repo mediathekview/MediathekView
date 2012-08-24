@@ -37,7 +37,7 @@ import mediathek.MediathekGui;
 import mediathek.controller.filme.filmeImportieren.MediathekListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
-import mediathek.gui.beobachter.CellRendererAbo;
+import mediathek.tool.CellRendererAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.Datum;
 import mediathek.tool.HinweisKeineAuswahl;
