@@ -19,8 +19,8 @@
  */
 package mediathek;
 
-import mediathek.tool.Log;
 import mediathek.daten.Daten;
+import mediathek.tool.Log;
 
 public class Main {
 
