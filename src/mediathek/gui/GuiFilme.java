@@ -64,7 +64,7 @@ import mediathek.daten.DatenBlacklist;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.daten.ListeAbo;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
@@ -427,7 +427,6 @@ public class GuiFilme extends PanelVorlage {
                 jComboBoxFilterThema.setPopupVisible(themaOpen);
             }
             setInfo();
-            Log.debugMeldung("Tabelle.model_feuer_1");
             ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
             tabelle.setSpalten();
             stopBeob = false;
@@ -442,18 +441,13 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void listeInModellLaden() {
-        Log.debugMeldung("Tabelle.model_laden_1");
         DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), jComboBoxFilterSender.getSelectedItem().toString(),
                 jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText());
-        Log.debugMeldung("Tabelle.model_laden_2");
         if (((TModelFilm) tabelle.getModel()).getRowCount() > 0) {
             if (jCheckBoxKeineGesehenen.isSelected() || jCheckBoxKeineAbos.isSelected() || jToggleButtonLivestram.isSelected()) {
-                Log.debugMeldung("Tabelle.model_laden_3");
                 ((TModelFilm) tabelle.getModel()).filter(ddaten, jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jToggleButtonLivestram.isSelected());
-                Log.debugMeldung("Tabelle.model_laden_4");
             }
         }
-        Log.debugMeldung("Tabelle.model_laden_5");
     }
     // ####################################
     // Ende Tabelle asynchron füllen

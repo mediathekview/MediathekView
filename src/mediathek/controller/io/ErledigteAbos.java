@@ -28,7 +28,7 @@ import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;

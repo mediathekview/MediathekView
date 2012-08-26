@@ -59,7 +59,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                 String[] add = new String[]{"http://www.3sat.de/mediaplayer/rss/mediathek" + url, ""};
                 listeThemen.addUrl(add);
             } catch (Exception ex) {
-                Log.fehlerMeldung(-498653287, "Mediathek3sat.addToList", ex);
+                Log.fehlerMeldungMReader(-498653287, "Mediathek3sat.addToList", new String[]{ex.getMessage()});
             }
         }
         if (!Daten.filmeLaden.getStop()) {
@@ -92,7 +92,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                     laden(link[0] /* url */, link[1] /* Thema */);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-987452384, "Mediathek3Sat.ThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-987452384, "Mediathek3Sat.ThemaLaden.run", ex.getMessage());
             }
             meldungThreadUndFertig();
         }
@@ -207,7 +207,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
 
 
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(-823694892, "Mediathek3Sat.laden", ex);
+                    Log.fehlerMeldungMReader(-823694892, "Mediathek3Sat.laden", ex.getMessage());
                 }
             } //while, die ganz große Schleife
         }
@@ -294,7 +294,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                 }
 
             } catch (Exception ex) {
-                Log.fehlerMeldung(-45410240, "Mediathek3sat.filmHolen", ex, urlFilm);
+                Log.fehlerMeldungMReader(-45410240, "Mediathek3sat.filmHolen", new String[]{ex.getMessage(), urlFilm});
             }
         }
 

@@ -101,7 +101,7 @@ public class MediathekReader implements Runnable {
             threads = 0;
             addToList();
         } catch (Exception ex) {
-            Log.fehlerMeldung(-397543600, "MediathekReader.run", ex, nameSenderMReader);
+            Log.fehlerMeldungMReader(-397543600, "MediathekReader.run", new String[]{ex.getMessage(), nameSenderMReader});
         }
     }
 

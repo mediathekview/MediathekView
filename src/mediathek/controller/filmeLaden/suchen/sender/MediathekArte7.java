@@ -22,7 +22,7 @@ package mediathek.controller.filmeLaden.suchen.sender;
 import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
@@ -92,7 +92,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             // für die Themenseiten
             new Thread(new ArteThemaLaden()).start(); // 
         } catch (Exception ex) {
-            Log.fehlerMeldung(-782563914, "MediathekArte7.addToList_de_fr", ex);
+            Log.fehlerMeldungMReader(-782563914, "MediathekArte7.addToList_de_fr", ex.getMessage());
         }
     }
 
@@ -177,7 +177,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 getAddThemenLaufen(-1);
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-251436904, "MediathekArte7.ArteThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-251436904, "MediathekArte7.ArteThemaLaden.run", ex.getMessage());
             }
         }
 
@@ -308,13 +308,13 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                         //da ist die Themenliste noch nicht fertig
                         this.wait(500);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(-561408963, "MediathekArte7.ArteFilmseitenLaden.run", ex);
+                        Log.fehlerMeldungMReader(-561408963, "MediathekArte7.ArteFilmseitenLaden.run", ex.getMessage());
                     }
                 } while (!Daten.filmeLaden.getStop() && getAddThemenLaufen(0) > 0);
                 meldung("");
                 meldungThreadUndFertig(); // und im SeitenThread gelöscht
             } catch (Exception ex) {
-                Log.fehlerMeldung(-381069831, "MediathekArte7.ArteFilmseitenLaden.run", ex);
+                Log.fehlerMeldungMReader(-381069831, "MediathekArte7.ArteFilmseitenLaden.run", ex.getMessage());
             }
         }
 

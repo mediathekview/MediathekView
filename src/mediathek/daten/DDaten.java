@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.tool.Konstanten;
 import mediathek.MediathekGui;
 import mediathek.controller.io.ErledigteAbos;
 import mediathek.controller.io.History;

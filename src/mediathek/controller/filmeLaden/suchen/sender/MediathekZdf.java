@@ -20,7 +20,7 @@
 package mediathek.controller.filmeLaden.suchen.sender;
 
 import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
@@ -187,7 +187,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-496583200, "MediathekZdf.ZdfThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-496583200, "MediathekZdf.ZdfThemaLaden.run", ex.getMessage());
             }
         }
 
@@ -234,7 +234,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-796325800, "MediathekZdf.addFilme", ex, url);
+                Log.fehlerMeldungMReader(-796325800, "MediathekZdf.addFilme", new String[]{ex.getMessage(), url});
             }
         }
 
@@ -312,7 +312,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-860248073, "MediathekZdf.filmHolen", ex, urlFilm);
+                Log.fehlerMeldungMReader(-860248073, "MediathekZdf.filmHolen", new String[]{ex.getMessage(), urlFilm});
             }
         }
 
@@ -398,7 +398,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 }
 
             } catch (Exception ex) {
-                Log.fehlerMeldung(-860248073, "MediathekZdf.filmHolen", ex, urlFilm);
+                Log.fehlerMeldungMReader(-860248073, "MediathekZdf.filmHolen", new String[]{ex.getMessage(), urlFilm});
             }
         }
 

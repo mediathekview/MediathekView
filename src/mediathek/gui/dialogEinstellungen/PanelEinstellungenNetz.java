@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.daten.Daten;
 import mediathek.tool.GuiFunktionen;
 import mediathek.daten.DDaten;

@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;

@@ -22,7 +22,7 @@ package mediathek.controller.filmeLaden.suchen.sender;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
@@ -76,7 +76,7 @@ public class MediathekNdrFlash extends MediathekReader implements Runnable {
                 String[] add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-24.xml", thema};
                 listeThemen.addUrl(add);
             } catch (Exception ex) {
-                Log.fehlerMeldung(-332945670, "MediathekNdr.finden", ex);
+                Log.fehlerMeldungMReader(-332945670, "MediathekNdr.finden", ex.getMessage());
             }
         }
         addTage();
@@ -114,7 +114,7 @@ public class MediathekNdrFlash extends MediathekReader implements Runnable {
                         meldungProgress(link[1]);
                         feedEinerSeiteSuchen(link[0], link[1] /* thema */);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(-336901211, "MediathekNdr.ThemaLaden.run.1", ex);
+                        Log.fehlerMeldungMReader(-336901211, "MediathekNdr.ThemaLaden.run.1", ex.getMessage());
                     }
                 }
                 meldungThreadUndFertig();
@@ -253,7 +253,7 @@ public class MediathekNdrFlash extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-699830157, "MediathekNdr.FilmSuchen", ex);
+                Log.fehlerMeldungMReader(-699830157, "MediathekNdr.FilmSuchen", ex.getMessage());
             }
         }
     }

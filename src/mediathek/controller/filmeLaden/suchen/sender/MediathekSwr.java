@@ -168,7 +168,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     meldungThreadUndFertig();
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-739285690, "MediathekSwr.SenderThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-739285690, "MediathekSwr.SenderThemaLaden.run", ex.getMessage());
             }
         }
 
@@ -246,7 +246,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         }
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(-649820016, "MediathekSwr.addFilme2-1", ex, thema + " " + urlFilm);
+                    Log.fehlerMeldungMReader(-649820016, "MediathekSwr.addFilme2-1", new String[]{ex.getMessage(), thema + " " + urlFilm});
                 }
             }
             // Zeit suchen
@@ -278,7 +278,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         }
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(-795623410, "MediathekSwr.addFilme2-2", ex, thema + " " + urlFilm);
+                    Log.fehlerMeldungMReader(-795623410, "MediathekSwr.addFilme2-2", new String[]{ex.getMessage(), thema + " " + urlFilm});
                 }
             }
             pos = 0;

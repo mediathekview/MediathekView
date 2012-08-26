@@ -216,7 +216,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-894330854, "MediathekHr.HrThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-894330854, "MediathekHr.ThemaLaden.run", ex.getMessage());
             }
         }
 
@@ -294,7 +294,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-487774126, "MediathekHr.addFilme", ex);
+                Log.fehlerMeldungMReader(-487774126, "MediathekHr.addFilme", ex.getMessage());
             }
         }
 

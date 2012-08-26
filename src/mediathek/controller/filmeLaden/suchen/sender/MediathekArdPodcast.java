@@ -81,7 +81,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 String[] add = new String[]{MUSTER_SET + url, thema};
                 listeThemen.addUrl(add);
             } catch (Exception ex) {
-                Log.fehlerMeldung(-764238903, "MediathekArdPodcast.addToList", ex, "kein Thema");
+                Log.fehlerMeldungMReader(-764238903, "MediathekArdPodcast.addToList", new String[]{ex.getMessage(), "kein Thema"});
             }
         }
         if (!Daten.filmeLaden.getStop()) {
@@ -112,7 +112,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-460287629, "MediathekArdPodcast.ArdThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-460287629, "MediathekArdPodcast.ArdThemaLaden.run", ex.getMessage());
             }
         }
 

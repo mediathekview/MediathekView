@@ -101,7 +101,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-286931004, "MediathekSfPod.SfThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-286931004, "MediathekSfPod.SfThemaLaden.run", ex.getMessage());
             }
         }
 
@@ -168,7 +168,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-496352007, "MediathekSfPod.addFilme", ex);
+                Log.fehlerMeldungMReader(-496352007, "MediathekSfPod.addFilme", ex.getMessage());
             }
         }
     }
