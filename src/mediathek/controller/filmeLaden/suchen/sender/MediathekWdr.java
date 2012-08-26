@@ -145,7 +145,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-633250489, "MediathekWdr.SenderThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-633250489, "MediathekWdr.SenderThemaLaden.run", ex.getMessage());
             }
         }
         //TH
@@ -175,7 +175,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     pos = pos3;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-469692500, "MediathekRbb.themenSeiteRockpalast", ex);
+                Log.fehlerMeldungMReader(-696963025, "MediathekWdr.themenSeiteRockpalast", ex.getMessage());
             }
         }
 

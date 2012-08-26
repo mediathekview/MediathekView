@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.tool.Konstanten;
 import java.io.File;
 import javax.swing.event.EventListenerList;
 import mediathek.tool.Log;

@@ -25,7 +25,6 @@ import java.security.CodeSource;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
 import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
 import mediathek.Main;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;

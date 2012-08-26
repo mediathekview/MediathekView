@@ -71,7 +71,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(-398214058, "MediathekRBB.addToList", ex);
+            Log.fehlerMeldungMReader(-398214058, "MediathekRBB.addToList", ex.getMessage());
         }
         if (!Daten.filmeLaden.getStop()) {
             if (listeThemen.size() > 0) {
@@ -102,7 +102,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-794625882, "MediathekRBB.ThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-794625882, "MediathekRBB.ThemaLaden.run", ex.getMessage());
             }
         }
 

@@ -44,9 +44,9 @@ import mediathek.controller.filmeLaden.suchen.sender.MediathekWdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
 public class FilmeSuchenSender {
@@ -80,6 +80,7 @@ public class FilmeSuchenSender {
         mediathekListe.add(new MediathekSwr(this, 1));
         mediathekListe.add(new MediathekNdrFlash(this, 1));
         // Spalte 2
+//        mediathekListe.add(new MediathekMdr_old(this, 1));
         mediathekListe.add(new MediathekMdr(this, 1));
         mediathekListe.add(new MediathekWdr(this, 0));
         mediathekListe.add(new MediathekHr(this, 2));
@@ -241,7 +242,9 @@ public class FilmeSuchenSender {
             Log.systemMeldung("");
             Log.systemMeldung("==================================================================================================================");
             Log.systemMeldung("Sender ===========================================================================================================");
-            Log.systemMeldung(fertigMeldung.toArray(new String[0]));
+            if (fertigMeldung.size() > 0) {
+                Log.systemMeldung(fertigMeldung.toArray(new String[0]));
+            }
             Log.systemMeldung("==================================================================================================================");
             Log.systemMeldung("");
             Log.systemMeldung("      Filme geladen:  " + anzFilme);

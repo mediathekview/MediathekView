@@ -21,9 +21,9 @@ package mediathek.daten;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import mediathek.tool.Log;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiKonstanten;
+import mediathek.tool.Log;
 
 public class DatenFilm implements Comparable<DatenFilm> {
     //Tags Filme
@@ -153,18 +153,18 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     private static String checkDatum(String datum, String fehlermeldung) {
-        //Datum max. 50 Tage in der Zukunft
-        final long MAX = 1000L * 60L * 60L * 24L * 50L;
+        //Datum max. 100 Tage in der Zukunft
+        final long MAX = 1000L * 60L * 60L * 24L * 100L;
         String ret = datum.trim();
         if (ret.equals("")) {
             return "";
         }
         if (!ret.contains(".")) {
-            Log.fehlerMeldungMReader(591143690, "DatenFilm.CheckDatum-1 [", datum + "] " + fehlermeldung);
+            Log.fehlerMeldung(591143690, "DatenFilm.CheckDatum-1 [", datum + "] " + fehlermeldung);
             return "";
         }
         if (ret.length() != 10) {
-            Log.fehlerMeldungMReader(507629943, "DatenFilm.CheckDatum-2 [", datum + "] " + fehlermeldung);
+            Log.fehlerMeldung(507629943, "DatenFilm.CheckDatum-2 [", datum + "] " + fehlermeldung);
             return "";
         }
         try {
@@ -172,11 +172,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
             Date filmDate = sdfIn.parse(ret);
             if (filmDate.getTime() < 0) {
                 //Datum vor 1970
-                Log.fehlerMeldungMReader(930665317, "DatenFilm.CheckDatum-3", "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
+                Log.fehlerMeldung(930665317, "DatenFilm.CheckDatum-3", "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
                 ret = "";
             }
             if ((new Date().getTime() + MAX) < filmDate.getTime()) {
-                Log.fehlerMeldungMReader(632088649, "DatenFilm.CheckDatum-4", "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
+                Log.fehlerMeldung(632088649, "DatenFilm.CheckDatum-4", "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
                 ret = "";
             }
         } catch (Exception ex) {

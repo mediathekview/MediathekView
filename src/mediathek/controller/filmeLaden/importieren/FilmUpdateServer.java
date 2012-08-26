@@ -20,7 +20,7 @@
 package mediathek.controller.filmeLaden.importieren;
 
 import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.tool.ListenerMediathekView;
 

@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import mediathek.daten.Konstanten;
 import mediathek.daten.Daten;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -140,6 +139,10 @@ public class Log {
 
     public static synchronized void fehlerMeldungMReader(int fehlerNummer, String klasse, String text) {
         fehlermeldung_mReader(fehlerNummer, klasse, new String[]{text});
+    }
+
+    public static synchronized void fehlerMeldungMReader(int fehlerNummer, String klasse, String[] text) {
+        fehlermeldung_mReader(fehlerNummer, klasse, text);
     }
 
     public static synchronized void fehlerMeldungGetUrl(int fehlerNummer, Exception ex, String sender, String text[]) {

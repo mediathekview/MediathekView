@@ -20,7 +20,7 @@
 package mediathek;
 
 import mediathek.tool.Log;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import java.awt.BorderLayout;

@@ -25,11 +25,11 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.zip.ZipInputStream;
-import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
-import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 public class MediathekBr extends MediathekReader implements Runnable {
 
@@ -48,7 +48,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
             try {
                 laden();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-761355948,"MediathekBr.ThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-761355948,"MediathekBr.ThemaLaden.run", ex.getMessage());
             }
             meldungThreadUndFertig();
         }
@@ -201,7 +201,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                 }
             } //while, die ganz große Schleife
         } catch (Exception ex) {
-            Log.fehlerMeldung(-963486054,"MediathekBr.laden", ex);
+            Log.fehlerMeldungMReader(-963486054,"MediathekBr.laden", ex.getMessage());
         }
     }
 
@@ -214,7 +214,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
             sdfOut = new SimpleDateFormat("dd.MM.yyyy");
             datum = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung(-210365944,"MediathekBr.convertDatum", ex);
+            Log.fehlerMeldungMReader(-210365944,"MediathekBr.convertDatum", ex.getMessage());
         }
         return datum;
     }
@@ -228,7 +228,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
             sdfOut = new SimpleDateFormat("HH:mm:ss");
             datum = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung(-573690176,"MediatheBr.convertTime", ex);
+            Log.fehlerMeldungMReader(-573690176,"MediatheBr.convertTime", ex.getMessage());
         }
         return datum;
     }

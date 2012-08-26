@@ -30,7 +30,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.file.GetFile;
 import mediathek.tool.BeobWeb;

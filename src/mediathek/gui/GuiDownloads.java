@@ -45,7 +45,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.tool.BeobMpanel;

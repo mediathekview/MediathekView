@@ -21,9 +21,9 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
+import mediathek.daten.DDaten;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.dialogEinstellungen.PanelPsetKurz;

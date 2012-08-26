@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.Main;
 import mediathek.controller.io.ProgrammLog;
 import mediathek.daten.DDaten;

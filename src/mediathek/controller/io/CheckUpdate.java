@@ -20,7 +20,7 @@
 package mediathek.controller.io;
 
 import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.MediathekGui;
 import mediathek.daten.DDaten;
 import mediathek.tool.DatumZeit;

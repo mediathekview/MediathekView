@@ -21,7 +21,7 @@ package mediathek.controller.filmeLaden.suchen.sender;
 
 import java.util.LinkedList;
 import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
@@ -110,12 +110,12 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                         meldungProgress(link[1]);
                         finden(Integer.parseInt(link[0]), link[1] /* url */);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(-685011466, "MediathekNdr.ThemaLaden.run.1", ex);
+                        Log.fehlerMeldungMReader(-685011466, "MediathekNdr.ThemaLaden.run.1", ex.getMessage());
                     }
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-894632580, "MediathekNdr.ThemaLaden.run.2", ex);
+                Log.fehlerMeldungMReader(-894632580, "MediathekNdr.ThemaLaden.run.2", ex.getMessage());
             }
         }
 
@@ -203,7 +203,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-211036709, "MediathekNdr.finden", ex, urlSeite);
+                Log.fehlerMeldungMReader(-211036709, "MediathekNdr.finden", new String[]{ex.getMessage(), urlSeite});
             }
         }
 
@@ -255,7 +255,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-698032157, "MediathekNdr.feedEinerSeiteSuchen", ex);
+                Log.fehlerMeldungMReader(-698032157, "MediathekNdr.feedEinerSeiteSuchen", ex.getMessage());
             }
         }
     }

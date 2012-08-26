@@ -19,12 +19,12 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
+import mediathek.daten.Daten;
+import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.Konstanten;
-import mediathek.tool.Log;
 
 /**
  *
@@ -57,7 +57,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             Log.systemMeldung("2. Versuch ARD");
             seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, "" /* Meldung */);
             if (seite.length() == 0) {
-                Log.fehlerMeldung(-104689736, "MediathekArd.addToList", "wieder nichts gefunden");
+                Log.fehlerMeldungMReader(-104689736, "MediathekArd.addToList", "wieder nichts gefunden");
             }
         }
         int pos = 0;
@@ -93,7 +93,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 String[] add = new String[]{"http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=" + url + "/index.html", thema};
                 listeThemen.addUrl(add);
             } catch (Exception ex) {
-                Log.fehlerMeldung(-698732167, "MediathekArd.addToList", ex, "kein Thema");
+                Log.fehlerMeldungMReader(-698732167, "MediathekArd.addToList", new String[]{ex.getMessage(), "kein Thema"});
             }
         }
         if (!Daten.filmeLaden.getStop()) {
@@ -114,7 +114,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             long warten = 60 * 1000;
             this.wait(warten);
         } catch (InterruptedException ex) {
-            Log.fehlerMeldung(-369502367, "MediathekArd.warten", ex, "2. Versuch");
+            Log.fehlerMeldungMReader(-369502367, "MediathekArd.warten", new String[]{ex.getMessage(), "2. Versuch"});
         }
     }
 
@@ -140,7 +140,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-487326921, "MediathekArdThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-487326921, "MediathekArdThemaLaden.run", ex.getMessage());
             }
 
         }
@@ -183,7 +183,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         seiteWeiter = getUrl.getUri_Utf(nameSenderMReader, "http://www.ardmediathek.de" + url, seiteWeiter, "Thema: " + thema);
                         feedEinerSeiteSuchen(seiteWeiter, strUrlFeed, thema, true);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(-497321681, "MediathekArd.feedSuchen", ex, "Weitere Seiten suchen");
+                        Log.fehlerMeldungMReader(-497321681, "MediathekArd.feedSuchen", new String[]{ex.getMessage(), "Weitere Seiten suchen"});
                     }
                 }
             }
@@ -265,7 +265,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         gefunden = true;
                         ret = filmLaden(strUrlFeed, MUSTER_SET + url, thema, titel, datum, zeit, alt);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(-321648296, "MediathekArd.feedEinerSeiteSuchen-1", ex, "Thema hat keine Links");
+                        Log.fehlerMeldungMReader(-321648296, "MediathekArd.feedEinerSeiteSuchen-1", new String[]{ex.getMessage(), "Thema hat keine Links"});
                     }
                 }
             }
@@ -305,7 +305,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         }
                         ret = filmLaden(strUrlFeed, MUSTER_SET + url, thema, titel, datum, zeit, alt);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(-487369532, "MediathekArd.feedEinerSeiteSuchen-2", ex, "Thema hat keine Links");
+                        Log.fehlerMeldungMReader(-487369532, "MediathekArd.feedEinerSeiteSuchen-2", new String[]{ex.getMessage(), "Thema hat keine Links"});
                     }
                 }
 

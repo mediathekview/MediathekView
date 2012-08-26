@@ -35,7 +35,7 @@ import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiKonstanten;

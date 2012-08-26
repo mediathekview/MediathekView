@@ -24,7 +24,7 @@
 package mediathek.controller.filmeLaden.suchen.sender;
 
 import mediathek.daten.Daten;
-import mediathek.daten.Konstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
@@ -143,7 +143,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                     break; //TH muss sein da muster 2 manchmal nicht fündig - dann Endlosschleife
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-896234580, "MediathekOrf.addToList", ex);
+                Log.fehlerMeldungMReader(-896234580, "MediathekOrf.addToList", ex.getMessage());
             }
         }
 
@@ -163,7 +163,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                         }
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(-468320478, "MediathekOrf.addToList", ex);
+                    Log.fehlerMeldungMReader(-468320478, "MediathekOrf.addToList", ex.getMessage());
                 }
             }
         }
@@ -185,12 +185,12 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                         meldungProgress(link[0]);
                         feedEinerSeiteSuchen(link[0] /* url */, link[1] /* Thema */);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(-795633581, "MediathekOrf.OrfThemaLaden.run", ex);
+                        Log.fehlerMeldungMReader(-795633581, "MediathekOrf.OrfThemaLaden.run", ex.getMessage());
                     }
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-554012398, "MediathekOrf.OrfThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-554012398, "MediathekOrf.OrfThemaLaden.run", ex.getMessage());
             }
         }
 
@@ -250,7 +250,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                         }
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(-632105897, "MediathekOrf.feedEinerSeiteSuchen", ex);
+                    Log.fehlerMeldungMReader(-632105897, "MediathekOrf.feedEinerSeiteSuchen", ex.getMessage());
                 }
             }
         }

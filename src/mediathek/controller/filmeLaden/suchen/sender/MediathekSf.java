@@ -106,7 +106,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldung(-832002877, "MediathekSf.SfThemaLaden.run", ex);
+                Log.fehlerMeldungMReader(-832002877, "MediathekSf.SfThemaLaden.run", ex.getMessage());
             }
         }
 
@@ -126,14 +126,13 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 int posItem1 = 0;
                 int posItem2 = 0;
                 int pos = 0;
-                int pos1 = 0;
-                int pos2 = 0;
-                String url = "";
-                String link = "";
+                int pos1;
+                int pos2;
+                String url;
                 String datum = "";
                 String zeit = "";
-                String titel = "";
-                String tmp = "";
+                String titel;
+                String tmp;
                 while (!Daten.filmeLaden.getStop() && (suchen.allesLaden || counter < MAX_FILME_THEMA) && (posItem1 = seite1.indexOf(MUSTER_ITEM_1, posItem1)) != -1) {
                     posItem1 += MUSTER_ITEM_1.length();
 //                    posItem2 = seite1.indexOf(MUSTER_ITEM_2, posItem1);
@@ -170,7 +169,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-795638103, "MediathekSf.addFilme", ex);
+                Log.fehlerMeldungMReader(-795638103, "MediathekSf.addFilme", ex.getMessage());
             }
         }
 
@@ -199,7 +198,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-556320087, "MediathekSf.addFilme2", ex);
+                Log.fehlerMeldungMReader(-556320087, "MediathekSf.addFilme2", ex.getMessage());
             }
         }
     }
