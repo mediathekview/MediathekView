@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import mediathek.daten.Daten;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -27,7 +26,7 @@ import java.util.LinkedList;
 import java.util.ResourceBundle;
 import javax.swing.event.EventListenerList;
 import mediathek.Main;
-import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.daten.Daten;
 
 public class Log {
 
@@ -43,6 +42,8 @@ public class Log {
     private static EventListenerList listeners = new EventListenerList();
     private static LinkedList<Integer[]> fehlerListe = new LinkedList<Integer[]>(); // [Fehlernummer, Anzahl]
     private static boolean prog = false;
+    private static Date startZeit = new Date(System.currentTimeMillis());
+    private static Date stopZeit = null;
 
     public static String getCompileDate() {
         String ret = "";
@@ -79,7 +80,6 @@ public class Log {
     }
 
     public static synchronized void versionsMeldungen(String classname) {
-        Date startZeit = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         Log.systemMeldung("");
         Log.systemMeldung("");
@@ -164,48 +164,65 @@ public class Log {
     }
 
     public static synchronized void progress(String texte) {
-//        if (!prog) {
-//            // erst wieder eine Leerzeile
-//            System.out.println("                                                                           ");
         prog = true;
-//        }
         texte += "\r";
         System.out.print(texte);
     }
 
-    public static void printFehlerNummer() {
-        final String z = "*";
+    public static void printEndeMeldung() {
         if (fehlerListe.size() == 0) {
-            System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
-            System.out.println(z + " " + "Keine Fehler :)");
-            System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
-            return;
-        }
-        int i_1;
-        int i_2;
-        for (int i = 1; i < fehlerListe.size(); ++i) {
-            for (int k = i; k > 0; --k) {
-                i_1 = fehlerListe.get(k - 1)[1];
-                i_2 = fehlerListe.get(k)[1];
-                // if (str1.compareToIgnoreCase(str2) > 0) {
-                if (i_1 < i_2) {
-                    fehlerListe.add(k - 1, fehlerListe.remove(k));
-                } else {
-                    break;
+            systemMeldung("###########################################################");
+            systemMeldung(" Keine Fehler :)");
+            systemMeldung("###########################################################");
+        } else {
+            // Fehler ausgeben
+            int i_1;
+            int i_2;
+            for (int i = 1; i < fehlerListe.size(); ++i) {
+                for (int k = i; k > 0; --k) {
+                    i_1 = fehlerListe.get(k - 1)[1];
+                    i_2 = fehlerListe.get(k)[1];
+                    // if (str1.compareToIgnoreCase(str2) > 0) {
+                    if (i_1 < i_2) {
+                        fehlerListe.add(k - 1, fehlerListe.remove(k));
+                    } else {
+                        break;
+                    }
                 }
             }
-        }
-        System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
-        Iterator<Integer[]> it = fehlerListe.iterator();
-        while (it.hasNext()) {
-            Integer[] integers = it.next();
-            if (integers[0] < 0) {
-                System.out.println(z + " " + "Fehlernummer: " + integers[0] + " Anzahl: " + integers[1]);
-            } else {
-                System.out.println(z + " " + "Fehlernummer:  " + integers[0] + " Anzahl: " + integers[1]);
+            systemMeldung("###########################################################");
+            Iterator<Integer[]> it = fehlerListe.iterator();
+            while (it.hasNext()) {
+                Integer[] integers = it.next();
+                if (integers[0] < 0) {
+                    systemMeldung(" Fehlernummer: " + integers[0] + " Anzahl: " + integers[1]);
+                } else {
+                    systemMeldung(" Fehlernummer:  " + integers[0] + " Anzahl: " + integers[1]);
+                }
             }
+            systemMeldung("###########################################################");
         }
-        System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
+        // Laufzeit ausgeben
+        stopZeit = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        int minuten;
+        try {
+            minuten = Math.round((stopZeit.getTime() - startZeit.getTime()) / (1000 * 60));
+        } catch (Exception ex) {
+            minuten = -1;
+        }
+        systemMeldung("");
+        systemMeldung("");
+        systemMeldung("###########################################################");
+        systemMeldung("   --> Beginn: " + sdf.format(startZeit));
+        systemMeldung("   --> Fertig: " + sdf.format(stopZeit));
+        systemMeldung("   --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten));
+        systemMeldung("###########################################################");
+        systemMeldung("");
+        systemMeldung("   und Tschuess");
+        systemMeldung("");
+        systemMeldung("");
+        systemMeldung("###########################################################");
     }
 
     private static void addFehlerNummer(int nr) {
@@ -326,6 +343,10 @@ public class Log {
             textSystem.setLength(0);
         } else if (art.equals(LOG_PLAYER)) {
             textProgramm.setLength(0);
+
+
+
+
         }
         for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
             l.ping(art);
@@ -339,6 +360,10 @@ public class Log {
             addText(textSystem, zeile);
         } else if (art.equals(LOG_PLAYER)) {
             addText(textProgramm, zeile);
+
+
+
+
         }
         for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
             l.ping(art);

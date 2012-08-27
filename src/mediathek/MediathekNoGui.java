@@ -19,16 +19,16 @@
  */
 package mediathek;
 
-import mediathek.tool.Log;
-import mediathek.tool.Konstanten;
-import mediathek.daten.Daten;
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
+import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
+import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 public class MediathekNoGui {
 
@@ -138,7 +138,7 @@ public class MediathekNoGui {
                 new IoXmlFilmlisteSchreiben().filmeSchreiben(it.next(), Daten.listeFilme);
             }
         }
-        Log.printFehlerNummer();
+        Log.printEndeMeldung();
         if (Daten.listeFilme.isEmpty()) {
             //Satz mit x, war wohl nix
             System.exit(1);

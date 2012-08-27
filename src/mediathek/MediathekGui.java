@@ -599,7 +599,7 @@ public final class MediathekGui extends javax.swing.JFrame {
         Daten.system[Konstanten.SYSTEM_GROESSE_X_NR] = String.valueOf(this.getSize().width);
         Daten.system[Konstanten.SYSTEM_GROESSE_Y_NR] = String.valueOf(this.getSize().height);
         ddaten.allesSpeichern();
-        Log.printFehlerNummer();
+        Log.printEndeMeldung();
         this.dispose();
         System.exit(0);
     }
