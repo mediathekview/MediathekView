@@ -20,8 +20,6 @@
 package mediathek;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ListIterator;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
@@ -106,10 +104,6 @@ public class MediathekAuto {
         ddaten.listeDownloads.listePutzen();
         ddaten.listeDownloads.abosLoschen();
         ddaten.allesSpeichern();
-        undTschuess();
-    }
-
-    private void undTschuess() {
         Log.printEndeMeldung();
         System.exit(0);
     }

@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *
- *  @author
+ *   @author
  */
 public class MediathekSwr extends MediathekReader implements Runnable {
 
@@ -56,7 +56,9 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             suchen.listeFilmeNeu.infos[ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR] = "0";
         }
         startThema = Integer.parseInt(suchen.listeFilmeNeu.infos[ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR]);
-        if (Daten.nogui) {
+        if (!Daten.nogui) {
+            meldungThreadUndFertig();
+        } else {
             //Theman suchen
             seiten = 0;
             listeThemen.clear();

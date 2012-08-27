@@ -19,12 +19,12 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
-import mediathek.daten.Daten;
-import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 /**
  *
@@ -54,8 +54,8 @@ public class MediathekArd extends MediathekReader implements Runnable {
         seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, "" /* Meldung */);
         seite.setLength(0);
         if (seite.length() == 0) {
+            Log.systemMeldung("ARD: Versuch 2");
             warten();
-            Log.systemMeldung("2. Versuch ARD");
             seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, "" /* Meldung */);
             if (seite.length() == 0) {
                 Log.fehlerMeldungMReader(-104689736, "MediathekArd.addToList", "wieder nichts gefunden");
