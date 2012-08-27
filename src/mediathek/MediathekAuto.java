@@ -19,24 +19,22 @@
  */
 package mediathek;
 
-import mediathek.tool.Log;
-import mediathek.daten.Daten;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ListIterator;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.Log;
 
 public class MediathekAuto {
 
     private DDaten ddaten;
-    private Date startZeit = new Date(System.currentTimeMillis());
-    private Date stopZeit = null;
     private String pfad = "";
 
     public MediathekAuto(String[] ar) {
@@ -112,20 +110,7 @@ public class MediathekAuto {
     }
 
     private void undTschuess() {
-        stopZeit = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        int minuten;
-        try {
-            minuten = Math.round((stopZeit.getTime() - startZeit.getTime()) / (1000 * 60));
-        } catch (Exception ex) {
-            minuten = -1;
-        }
-        Log.printFehlerNummer();
-        Log.systemMeldung(new String[]{
-                    "========================================",
-                    "  --> Beginn: " + sdf.format(startZeit),
-                    "  --> Fertig: " + sdf.format(stopZeit), "  --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten),
-                    "========================================"});
+        Log.printEndeMeldung();
         System.exit(0);
     }
 
