@@ -21,12 +21,12 @@ package mediathek.controller.filmeLaden.suchen.sender;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import mediathek.daten.Daten;
-import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 public class MediathekNdrFlash extends MediathekReader implements Runnable {
 
@@ -49,6 +49,7 @@ public class MediathekNdrFlash extends MediathekReader implements Runnable {
         final String ADRESSE = "http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_searchtype-broadcasts.xml";
         final String MUSTER_URL1 = "<broadcast id=\"";
         listeThemen.clear();
+        meldungStart();
         StringBuffer seite = new StringBuffer();
         seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, ""/* meldung */);
         int pos = 0;
@@ -80,12 +81,14 @@ public class MediathekNdrFlash extends MediathekReader implements Runnable {
             }
         }
         addTage();
-        if (!Daten.filmeLaden.getStop()) {
-            if (listeThemen.size() > 0) {
-                meldungStart(listeThemen.size());
-                for (int t = 0; t < maxThreadLaufen; ++t) {
-                    new Thread(new ThemaLaden()).start();
-                }
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
+            meldungThreadUndFertig();
+        } else {
+            meldungAddMax(listeThemen.size());
+            for (int t = 0; t < maxThreadLaufen; ++t) {
+                new Thread(new ThemaLaden()).start();
             }
         }
     }

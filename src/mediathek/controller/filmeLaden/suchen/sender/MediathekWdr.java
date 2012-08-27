@@ -21,15 +21,15 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
-import mediathek.daten.Daten;
-import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Log;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekWdr extends MediathekReader implements Runnable {
 
@@ -39,8 +39,8 @@ public class MediathekWdr extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
-     * @param dde
+     *  @param ddaten
+     *  @param dde
      */
     public MediathekWdr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
@@ -53,18 +53,21 @@ public class MediathekWdr extends MediathekReader implements Runnable {
     public synchronized void addToList() {
         //Theman suchen
         listeThemen.clear();
+        meldungStart();
         addToList__("http://www.wdr.de/mediathek/html/regional/index.xml");
         if (suchen.allesLaden) {
             //TH Rockpalast hinzu
             String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
             listeThemen.addUrl(add);
         }
-        if (!Daten.filmeLaden.getStop()) {
-            if (listeThemen.size() > 0) {
-                meldungStart(listeThemen.size());
-                for (int t = 0; t < maxThreadLaufen; ++t) {
-                    new Thread(new SenderThemaLaden()).start();
-                }
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
+            meldungThreadUndFertig();
+        } else {
+            meldungAddMax(listeThemen.size());
+            for (int t = 0; t < maxThreadLaufen; ++t) {
+                new Thread(new SenderThemaLaden()).start();
             }
         }
     }

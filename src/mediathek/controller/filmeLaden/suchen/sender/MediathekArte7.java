@@ -31,7 +31,7 @@ import mediathek.tool.DatumZeit;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekArte7 extends MediathekReader implements Runnable {
 
@@ -76,6 +76,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             listeThemen.clear();
             listeFilmseiten.clear();
             listeFilmseitenFertig.clear();
+            meldungStart();
             //immer erst mal Arte7!!
             String[] add = new String[]{"http://videos.arte.tv/de/videos", THEMA_ARTE_7};
             listeThemen.add(add);
@@ -88,7 +89,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             } else {
                 this.maxThreadLaufen = MAX_THREADS_UPDATE;
             }
-            meldungStart(listeThemen.size());
+            meldungAddMax(listeThemen.size());
             // für die Themenseiten
             new Thread(new ArteThemaLaden()).start(); // 
         } catch (Exception ex) {

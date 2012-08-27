@@ -49,6 +49,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
         final String MUSTER_THEMA = "{ \"titel\": \"";
         listeThemen.clear();
         StringBuffer seite = new StringBuffer();
+        meldungStart();
         //seite = new GetUrl(daten).getUriArd(ADRESSE, seite, "");
         seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, "" /* Meldung */);
         seite.setLength(0);
@@ -96,13 +97,15 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-698732167, "MediathekArd.addToList", new String[]{ex.getMessage(), "kein Thema"});
             }
         }
-        if (!Daten.filmeLaden.getStop()) {
-            if (listeThemen.size() > 0) {
-                meldungStart(listeThemen.size());
-                listeSort(listeThemen, 1);
-                for (int t = 0; t < maxThreadLaufen; ++t) {
-                    new Thread(new ArdThemaLaden()).start();
-                }
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
+            meldungThreadUndFertig();
+        } else {
+            meldungAddMax(listeThemen.size());
+            listeSort(listeThemen, 1);
+            for (int t = 0; t < maxThreadLaufen; ++t) {
+                new Thread(new ArdThemaLaden()).start();
             }
         }
     }

@@ -41,6 +41,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
         final String MUSTER_URL = "<a href=\"/mediaplayer/rss/mediathek";
         listeThemen.clear();
         StringBuffer seite = new StringBuffer();
+        meldungStart();
         //seite = new GetUrl(daten).getUriArd(ADRESSE, seite, "");
         seite = getUrlIo.getUri_Iso(nameSenderMReader, ADRESSE, seite, "");
         int pos1 = 0;
@@ -62,13 +63,17 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-498653287, "Mediathek3sat.addToList", new String[]{ex.getMessage()});
             }
         }
-        if (!Daten.filmeLaden.getStop()) {
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
+            meldungThreadUndFertig();
+        } else {
             listeSort(listeThemen, 1);
             // noch den RSS für alles anfügen
             // Liste von http://www.3sat.de/mediathek/rss/mediathek.xml holen
             String[] add = new String[]{MUSTER_ALLE, ""};
             listeThemen.add(0, add); // alle nachfolgenden Filme ersetzen Filme die bereits in der Liste sind
-            meldungStart(listeThemen.size());
+            meldungAddMax(listeThemen.size());
             for (int t = 0; t < maxThreadLaufen; ++t) {
                 new Thread(new ThemaLaden()).start();
             }

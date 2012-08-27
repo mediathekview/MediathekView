@@ -19,15 +19,15 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
-import mediathek.daten.Daten;
-import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Log;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekSf extends MediathekReader implements Runnable {
 
@@ -37,7 +37,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *  @param ddaten
      */
     public MediathekSf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
@@ -52,6 +52,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
         //<a class="sendung_name" href="/sendung?id=6fd27ab0-d10f-450f-aaa9-836f1cac97bd">1 gegen 100</a><p class="az_description">Gameshow, in der ein Kandidat gegen 100 Kontrahenten antritt.</p></div>
         final String MUSTER = "sendung_name\" href=\"/sendung?id=";
         listeThemen.clear();
+        meldungStart();
         seite = getUrlIo.getUri_Utf(nameSenderMReader, "http://www.videoportal.sf.tv/sendungen", seite, "");
         int pos = 0;
         int pos1 = 0;
@@ -78,12 +79,14 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 }
             }
         }
-        if (!Daten.filmeLaden.getStop()) {
-            if (listeThemen.size() > 0) {
-                meldungStart(listeThemen.size());
-                for (int t = 0; t < maxThreadLaufen; ++t) {
-                    new Thread(new SfThemaLaden()).start();
-                }
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
+            meldungThreadUndFertig();
+        } else {
+            meldungAddMax(listeThemen.size());
+            for (int t = 0; t < maxThreadLaufen; ++t) {
+                new Thread(new SfThemaLaden()).start();
             }
         }
     }

@@ -20,17 +20,17 @@
 package mediathek.controller.filmeLaden.suchen.sender;
 
 import java.util.LinkedList;
-import mediathek.daten.Daten;
-import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
+import mediathek.tool.Log;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekSwr extends MediathekReader implements Runnable {
 
@@ -50,6 +50,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
     //===================================
     @Override
     public synchronized void addToList() {
+        meldungStart();
         //nur im --nogui laufen lassen
         if (suchen.listeFilmeNeu.infos[ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR].equals("")) {
             suchen.listeFilmeNeu.infos[ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR] = "0";
@@ -59,17 +60,17 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             //Theman suchen
             seiten = 0;
             listeThemen.clear();
-            meldungStart(0);
             addToList__("http://www.swrmediathek.de/tvlist.htm");
             suchen.listeFilmeNeu.alteThemenLöschen(nameSenderMReader, listeThemen);
-            if (!Daten.filmeLaden.getStop() && listeThemen.size() > 0) {
+            if (Daten.filmeLaden.getStop()) {
+                meldungThreadUndFertig();
+            } else if (listeThemen.size() == 0) {
+                meldungThreadUndFertig();
+            } else {
                 for (int t = 0; t < maxThreadLaufen; ++t) {
                     new Thread(new SenderThemaLaden()).start();
                 }
             }
-        } else {
-            meldungStart(0);
-            meldungFertig();
         }
     }
 

@@ -23,16 +23,16 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
-import mediathek.daten.Daten;
-import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekOrf extends MediathekReader implements Runnable {
 
@@ -42,7 +42,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *  @param ddaten
      */
     public MediathekOrf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 3, /* urlWarten */ 1000, startPrio);
@@ -51,8 +51,8 @@ public class MediathekOrf extends MediathekReader implements Runnable {
     @Override
     void addToList() {
         listeThemen.clear();
+        meldungStart();
         bearbeiteAdresse(TOPICURL);
-
         bearbeiteAdresse("http://tvthek.orf.at/schedule/last/archiv");
         bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday");
         bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday");
@@ -69,19 +69,21 @@ public class MediathekOrf extends MediathekReader implements Runnable {
         bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday_prev");
         bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday_prev");
 
-        if (!Daten.filmeLaden.getStop()) {
-            if (listeThemen.size() > 0) {
-                meldungStart(listeThemen.size());
-                listeSort(listeThemen, 1);
-                for (int t = 0; t < maxThreadLaufen; ++t) {
-                    new Thread(new OrfThemaLaden()).start();
-                }
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
+            meldungThreadUndFertig();
+        } else {
+            meldungAddMax(listeThemen.size());
+            listeSort(listeThemen, 1);
+            for (int t = 0; t < maxThreadLaufen; ++t) {
+                new Thread(new OrfThemaLaden()).start();
             }
         }
     }
 
     /**
-     * @param adresse Starter-URL von dem aus Sendungen gefunden werden
+     *  @param adresse Starter-URL von dem aus Sendungen gefunden werden
      */
     private void bearbeiteAdresse(String adresse) {
         //System.out.println("bearbeiteAdresse: " + adresse);
