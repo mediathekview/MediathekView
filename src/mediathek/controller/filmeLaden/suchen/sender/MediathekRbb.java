@@ -21,11 +21,11 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
-import mediathek.daten.Daten;
-import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Log;
 
 public class MediathekRbb extends MediathekReader implements Runnable {
 
@@ -39,12 +39,13 @@ public class MediathekRbb extends MediathekReader implements Runnable {
     @Override
     void addToList() {
         int pos1 = 0;
-        int pos2 = 0;
+        int pos2;
         StringBuffer seite1 = new StringBuffer();
         StringBuffer seite2 = new StringBuffer();
         final String ADRESSE = "http://mediathek.rbb-online.de/fernsehen";
         final String ITEM_1 = "<a href=\"/rbb/servlet/ajax-cache/";
         final String ITEM_URL = "http://mediathek.rbb-online.de/rbb/servlet/ajax-cache/";
+        meldungStart();
         try {
             seite1 = getUrlIo.getUri_Utf(nameSenderMReader, ADRESSE, seite1, "");
             while ((pos1 = seite1.indexOf(ITEM_1, pos1)) != -1) {
@@ -73,13 +74,15 @@ public class MediathekRbb extends MediathekReader implements Runnable {
         } catch (Exception ex) {
             Log.fehlerMeldungMReader(-398214058, "MediathekRBB.addToList", ex.getMessage());
         }
-        if (!Daten.filmeLaden.getStop()) {
-            if (listeThemen.size() > 0) {
-                meldungStart(listeThemen.size());
-                listeSort(listeThemen, 1);
-                for (int t = 0; t < maxThreadLaufen; ++t) {
-                    new Thread(new ThemaLaden()).start();
-                }
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
+            meldungThreadUndFertig();
+        } else {
+            meldungAddMax(listeThemen.size());
+            listeSort(listeThemen, 1);
+            for (int t = 0; t < maxThreadLaufen; ++t) {
+                new Thread(new ThemaLaden()).start();
             }
         }
     }

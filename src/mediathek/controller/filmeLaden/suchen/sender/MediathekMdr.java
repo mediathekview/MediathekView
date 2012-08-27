@@ -62,6 +62,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
         listeThemen.clear();
         listeTage.clear();
         listeGesucht.clear();
+        meldungStart();
         seite = getUrlIo.getUri_Utf(nameSenderMReader, URL_SENDUNGEN, seite, "");
         int pos = 0;
         int pos1;
@@ -105,7 +106,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
         } else if (listeThemen.size() == 0 && listeTage.size() == 0) {
             meldungThreadUndFertig();
         } else {
-            meldungStart(listeThemen.size() + listeTage.size());
+            meldungAddMax(listeThemen.size() + listeTage.size());
             listeSort(listeThemen, 0);
             for (int t = 0; t < maxThreadLaufen; ++t) {
                 new Thread(new MdrThemaLaden()).start();

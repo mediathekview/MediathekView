@@ -20,12 +20,12 @@
 package mediathek.controller.filmeLaden.suchen.sender;
 
 import java.util.LinkedList;
-import mediathek.daten.Daten;
-import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 /**
  *
@@ -55,6 +55,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         final String MUSTER_ANZAHL = "Zeige Seite";
         int maxSeiten = MAX_SEITEN_KURZ;
         listeThemen.clear();
+        meldungStart();
         StringBuffer seite = new StringBuffer();
         int pos;
         int pos1;
@@ -84,12 +85,14 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             String[] add = new String[]{String.valueOf(i), ADRESSE_TEIL + i + ".html"};
             listeThemen.add(add);
         }
-        if (!Daten.filmeLaden.getStop()) {
-            if (listeThemen.size() > 0) {
-                meldungStart(listeThemen.size());
-                for (int t = 0; t < maxThreadLaufen; ++t) {
-                    new Thread(new ThemaLaden()).start();
-                }
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
+            meldungThreadUndFertig();
+        } else {
+            meldungAddMax(listeThemen.size());
+            for (int t = 0; t < maxThreadLaufen; ++t) {
+                new Thread(new ThemaLaden()).start();
             }
         }
     }

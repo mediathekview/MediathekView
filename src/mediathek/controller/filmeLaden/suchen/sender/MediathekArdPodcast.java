@@ -28,7 +28,7 @@ import mediathek.daten.DatenFilm;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
@@ -36,7 +36,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *  @param ddaten
      */
     public MediathekArdPodcast(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
@@ -50,6 +50,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
         final String MUSTER_SET = "http://www.ardmediathek.de";
         listeThemen.clear();
         StringBuffer seite = new StringBuffer();
+        meldungStart();
         seite = getUrlIo.getUri_Utf(nameSenderMReader, ADRESSE, seite, "");
         int pos = 0;
         int pos1;
@@ -84,13 +85,15 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-764238903, "MediathekArdPodcast.addToList", new String[]{ex.getMessage(), "kein Thema"});
             }
         }
-        if (!Daten.filmeLaden.getStop()) {
-            if (listeThemen.size() > 0) {
-                meldungStart(listeThemen.size());
-                listeSort(listeThemen, 1);
-                for (int t = 0; t < maxThreadLaufen; ++t) {
-                    new Thread(new ArdThemaLaden()).start();
-                }
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
+            meldungThreadUndFertig();
+        } else {
+            meldungAddMax(listeThemen.size());
+            listeSort(listeThemen, 1);
+            for (int t = 0; t < maxThreadLaufen; ++t) {
+                new Thread(new ArdThemaLaden()).start();
             }
         }
     }

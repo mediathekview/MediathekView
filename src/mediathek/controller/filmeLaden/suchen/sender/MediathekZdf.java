@@ -19,16 +19,16 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
-import mediathek.daten.Daten;
-import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekZdf extends MediathekReader implements Runnable {
 
@@ -40,7 +40,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *  @param ddaten
      */
     public MediathekZdf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, 8 /* threads */, 500 /* urlWarten */, startPrio);
@@ -52,6 +52,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
     @Override
     public void addToList() {
         listeThemen.clear();
+        meldungStart();
         // Liste von http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-a-bis-z/saz0 bis sat8 holen
         String addr = "http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-a-bis-z/saz";
         for (int i = 0; i <= 8; ++i) {
@@ -65,8 +66,12 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         addToList_Rubrik("http://www.zdf.de/ZDFmediathek/hauptnavigation/rubriken");
         // letzte Woche eingügen
         addToList_kurz();
-        if (!Daten.filmeLaden.getStop() && listeThemen.size() > 0) {
-            meldungStart(listeThemen.size());
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
+            meldungThreadUndFertig();
+        } else {
+            meldungAddMax(listeThemen.size());
             //alles auswerten
             for (int t = 0; t < maxThreadLaufen; ++t) {
                 new Thread(new ZdfThemaLaden()).start();

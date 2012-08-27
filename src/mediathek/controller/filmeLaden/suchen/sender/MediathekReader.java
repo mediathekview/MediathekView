@@ -29,7 +29,7 @@ import mediathek.tool.Log;
 
 /**
  *
- * @author
+ *   @author
  */
 public class MediathekReader implements Runnable {
 
@@ -49,7 +49,7 @@ public class MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *   @param ddaten
      */
     public MediathekReader(FilmeSuchenSender ssearch, String nameMreader, int ssenderMaxThread, int ssenderWartenSeiteLaden, int sstartPrio) {
         suchen = ssearch;
@@ -150,8 +150,8 @@ public class MediathekReader implements Runnable {
 //        return ret;
 //    }
     // Meldungen
-    synchronized void meldungStart(int mmax) {
-        max = mmax;
+    synchronized void meldungStart() {
+        max = 0;
         progress = 0;
         suchen.melden(nameSenderMReader, max, progress, "" /* text */);
     }
@@ -177,14 +177,11 @@ public class MediathekReader implements Runnable {
 
     synchronized void meldungThreadUndFertig() {
         --threads;
-        meldungFertig();
-    }
-
-    synchronized void meldungFertig() {
-        //wird erst ausgeführt wenn alle Threads beendet sind
-        if (threads <= 0) { // sonst läuft noch was
+        if (threads <= 0) {
+            //wird erst ausgeführt wenn alle Threads beendet sind
             suchen.meldenFertig(nameSenderMReader);
         } else {
+            // läuft noch was
             suchen.melden(nameSenderMReader, max, progress, "" /* text */);
         }
     }

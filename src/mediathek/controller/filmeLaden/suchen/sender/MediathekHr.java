@@ -55,6 +55,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
     public void addToList() {
         final String MUSTER = "sendEvent('load','";
         listeThemen.clear();
+        meldungStart();
         seite = getUrlIo.getUri_Utf(nameSenderMReader, "http://www.hr-online.de/website/fernsehen/sendungen/index.jsp", seite, "");
         int pos = 0;
         int pos1;
@@ -94,12 +95,14 @@ public class MediathekHr extends MediathekReader implements Runnable {
                 }
             }
         }
-        if (!Daten.filmeLaden.getStop()) {
-            if (listeThemen.size() > 0) {
-                meldungStart(listeThemen.size());
-                for (int t = 0; t < maxThreadLaufen; ++t) {
-                    new Thread(new HrThemaLaden()).start();
-                }
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
+            meldungThreadUndFertig();
+        } else {
+            meldungAddMax(listeThemen.size());
+            for (int t = 0; t < maxThreadLaufen; ++t) {
+                new Thread(new HrThemaLaden()).start();
             }
         }
     }

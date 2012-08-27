@@ -36,19 +36,20 @@ public class MediathekBr extends MediathekReader implements Runnable {
     public static final String SENDER = "BR";
 
     public MediathekBr(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER,  /* threads */ 2, /* urlWarten */ 500, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 500, startPrio);
     }
 
     private class ThemaLaden implements Runnable {
 
         @Override
         public synchronized void run() {
-            meldungStart(1);
+            meldungStart();
+            meldungAddMax(1);
             meldungAddThread();
             try {
                 laden();
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-761355948,"MediathekBr.ThemaLaden.run", ex.getMessage());
+                Log.fehlerMeldungMReader(-761355948, "MediathekBr.ThemaLaden.run", ex.getMessage());
             }
             meldungThreadUndFertig();
         }
@@ -201,7 +202,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                 }
             } //while, die ganz große Schleife
         } catch (Exception ex) {
-            Log.fehlerMeldungMReader(-963486054,"MediathekBr.laden", ex.getMessage());
+            Log.fehlerMeldungMReader(-963486054, "MediathekBr.laden", ex.getMessage());
         }
     }
 
@@ -214,7 +215,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
             sdfOut = new SimpleDateFormat("dd.MM.yyyy");
             datum = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldungMReader(-210365944,"MediathekBr.convertDatum", ex.getMessage());
+            Log.fehlerMeldungMReader(-210365944, "MediathekBr.convertDatum", ex.getMessage());
         }
         return datum;
     }
@@ -228,7 +229,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
             sdfOut = new SimpleDateFormat("HH:mm:ss");
             datum = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldungMReader(-573690176,"MediatheBr.convertTime", ex.getMessage());
+            Log.fehlerMeldungMReader(-573690176, "MediatheBr.convertTime", ex.getMessage());
         }
         return datum;
     }

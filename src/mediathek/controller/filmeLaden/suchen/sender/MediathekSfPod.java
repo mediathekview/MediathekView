@@ -19,15 +19,15 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
-import mediathek.daten.Daten;
-import mediathek.daten.DatenFilm;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
+import mediathek.daten.Daten;
+import mediathek.daten.DatenFilm;
 import mediathek.tool.Log;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekSfPod extends MediathekReader implements Runnable {
 
@@ -36,7 +36,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *  @param ddaten
      */
     public MediathekSfPod(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
@@ -53,6 +53,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
         final String MUSTER = "class=\"\" href=\"/Podcasts/";
         String addr1 = "http://www.podcast.sf.tv/";
         listeThemen.clear();
+        meldungStart();
         seite = getUrlIo.getUri_Utf(nameSenderMReader, addr1, seite, "");
         int pos = 0;
         int pos1 = 0;
@@ -75,12 +76,14 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                 listeThemen.addUrl(add);
             }
         }
-        if (!Daten.filmeLaden.getStop()) {
-            if (listeThemen.size() > 0) {
-                meldungStart(listeThemen.size());
-                for (int t = 0; t < maxThreadLaufen; ++t) {
-                    new Thread(new SfThemaLaden()).start();
-                }
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
+            meldungThreadUndFertig();
+        } else {
+            meldungAddMax(listeThemen.size());
+            for (int t = 0; t < maxThreadLaufen; ++t) {
+                new Thread(new SfThemaLaden()).start();
             }
         }
     }
