@@ -133,6 +133,7 @@ class RuntimeExec {
 
         private void GetPercentageFromErrorStream(String input) {
             // by: siedlerchr
+            // für den flvstreamer und rtmpdump
             Matcher matcher = patternFlvstreamer.matcher(input);
             if (matcher.find()) {
                 try {
@@ -146,6 +147,9 @@ class RuntimeExec {
                     Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream-1", input);
                 }
             } else {
+                // für ffmpeg
+                // ffmpeg muss dazu mit dem Parameter -i gestartet werden:
+                // -i %f -acodec copy -vcodec copy -y **
                 try {
                     matcher = patternFfmpeg.matcher(input);
                     if (matcher.find()) {
