@@ -23,10 +23,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import mediathek.tool.Log;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.Log;
 
 class RuntimeExec {
 
@@ -37,7 +38,11 @@ class RuntimeExec {
     Thread clearOut;
     private Process process = null;
     Starts s;
-    private Pattern pattern = Pattern.compile("([0-9.]*%)");
+    private Pattern patternFlvstreamer = Pattern.compile("([0-9.]*%)");
+    private Pattern patternFfmpeg = Pattern.compile("(?<=Duration: )[^,]*");
+    private Pattern patternZeit = Pattern.compile("(?<=time=)[\\d.]+");
+    private double totalSecs = 0;
+    private String zeit, prozent;
 
     /**
      * Neue Klasse instanzieren
@@ -128,28 +133,55 @@ class RuntimeExec {
 
         private void GetPercentageFromErrorStream(String input) {
             // by: siedlerchr
-            Matcher matcher = pattern.matcher(input);
+            Matcher matcher = patternFlvstreamer.matcher(input);
             if (matcher.find()) {
-                String percentage = matcher.group();
-                percentage = percentage.substring(0, percentage.length() - 1);
                 try {
+                    prozent = matcher.group();
+                    prozent = prozent.substring(0, prozent.length() - 1);
                     // nur ganze Int speichern, damit nur 100 Schritte
-                    Double d = Double.valueOf(percentage);
-                    int pNeu;
-                    if (d > 0 && d <= 2) {
-                        // damit der Progressbar gleich startet
-                        pNeu = 2;
-                    } else {
-                        pNeu = d.intValue();
+                    double d = Double.parseDouble(prozent);
+                    meldenDouble(d);
+                } catch (Exception ex) {
+                    s.datenDownload.startMelden(DatenDownload.PROGRESS_GESTARTET);
+                    Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream-1", input);
+                }
+            } else {
+                try {
+                    matcher = patternFfmpeg.matcher(input);
+                    if (matcher.find()) {
+                        // Find duration
+                        String dauer = matcher.group();
+                        String[] hms = dauer.split(":");
+                        totalSecs = Integer.parseInt(hms[0]) * 3600
+                                + Integer.parseInt(hms[1]) * 60
+                                + Double.parseDouble(hms[2]);
                     }
-                    if (pNeu != percent) {
-                        percent = pNeu;
-                        s.datenDownload.startMelden(percent);
+                    matcher = patternZeit.matcher(input);
+                    if (totalSecs > 0 && matcher.find()) {
+                        zeit = matcher.group();
+                        double d = Double.parseDouble(zeit) / totalSecs * 100;
+                        meldenDouble(d);
+                        //Log.systemMeldung("Filmlänge: " + (int) d + " von " + totalSecs + " s");
                     }
                 } catch (Exception ex) {
-                    s.datenDownload.startMelden(1);
-                    Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream", input);
+                    s.datenDownload.startMelden(DatenDownload.PROGRESS_GESTARTET);
+                    Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream-2", input);
                 }
+            }
+        }
+
+        private void meldenDouble(double d) {
+            // nur ganze Int speichern, damit nur 100 Schritte
+            int pNeu;
+            if (d > 0 && d <= 2) {
+                // damit der Progressbar gleich startet
+                pNeu = 2;
+            } else {
+                pNeu = (int) d;
+            }
+            if (pNeu != percent) {
+                percent = pNeu;
+                s.datenDownload.startMelden(percent);
             }
         }
     }
