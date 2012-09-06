@@ -23,12 +23,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import mediathek.tool.Konstanten;
 import mediathek.Main;
 import mediathek.controller.io.ProgrammLog;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.BeobWeb;
+import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 public class PanelHilfe extends PanelVorlage {
 
@@ -43,16 +44,15 @@ public class PanelHilfe extends PanelVorlage {
         //init
         try {
             Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-            jTextFieldVersion.setText(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + " vom: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
+            jTextFieldVersion.setText(Konstanten.VERSION + "  [Buildnummer: " + Log.getBuildNr() + "]  vom: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
         } catch (Exception e) {
-            jTextFieldVersion.setText(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
+            jTextFieldVersion.setText(Konstanten.VERSION);
         }
         jButtonWebsite.addActionListener(new BeobWeb(jTextFieldWebsite.getText()));
         jButtonAnleitung.addActionListener(new BeobWeb(jTextFieldAnleitung.getText()));
         jButtonFaq.addActionListener(new BeobWeb(jTextFieldFAQ.getText()));
         jButtonForum.addActionListener(new BeobWeb(jTextFieldForum.getText()));
         jButtonLogErstellen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ProgrammLog.LogDateiSchreiben(ddaten);
@@ -85,6 +85,7 @@ public class PanelHilfe extends PanelVorlage {
         jLabel1.setText("Programmversion:");
 
         jTextFieldVersion.setEditable(false);
+        jTextFieldVersion.setBorder(null);
 
         jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
@@ -219,7 +220,7 @@ public class PanelHilfe extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)

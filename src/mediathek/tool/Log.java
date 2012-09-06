@@ -50,15 +50,16 @@ public class Log {
         try {
             //Version
             Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-            ret = Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + " - Compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d);
+            ret = Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + "  [Buildnummer: " + Log.getBuildNr() + "] - Compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d);
         } catch (Exception ex) {
             Log.fehlerMeldung(569614756, "Log.getCompileDate: ", ex);
         }
         return ret;
     }
 
-    public static String getBuildNr(String propToken) {
+    public static String getBuildNr() {
         final ResourceBundle rb;
+        String propToken = "BUILD";
         String msg = "";
         try {
             ResourceBundle.clearCache();
@@ -97,7 +98,7 @@ public class Log {
         Log.systemMeldung("###########################################################");
         //Version
         Log.systemMeldung(getCompileDate());
-        Log.systemMeldung("Buildnummer: " + getBuildNr("BUILD"));
+        Log.systemMeldung("Buildnummer: " + getBuildNr());
         Log.systemMeldung("Klassenname: " + classname);
         Log.systemMeldung("###########################################################");
     }
