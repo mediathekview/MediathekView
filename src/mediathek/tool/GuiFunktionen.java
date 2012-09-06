@@ -121,7 +121,7 @@ public class GuiFunktionen {
     }
 
     private static String datumDatumZeitReinigen(String datum) {
-        String ret = "";
+        String ret;
         ret = datum;
         ret = ret.replace(":", "");
         ret = ret.replace(".", "");
@@ -138,7 +138,16 @@ public class GuiFunktionen {
             }
         }
         if (pfadtrennerEntfernen) {
-            ret = ret.replace(File.separator, "-");
+            ret = ret.replace("\\", "-");
+            ret = ret.replace("/", "-");
+        } else {
+            String sl;
+            if (File.separator.equals("\\")) {
+                sl = "/";
+            } else {
+                sl = "\\";
+            }
+            ret = ret.replace(sl, "-");
         }
         if (leerEntfernen) {
             ret = ret.replace(" ", "_");
