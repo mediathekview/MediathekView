@@ -50,9 +50,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
         listeThemen.clear();
         StringBuffer seite = new StringBuffer();
         meldungStart();
-        //seite = new GetUrl(daten).getUriArd(ADRESSE, seite, "");
         seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, "" /* Meldung */);
-        seite.setLength(0);
         if (seite.length() == 0) {
             Log.systemMeldung("ARD: Versuch 2");
             warten();
