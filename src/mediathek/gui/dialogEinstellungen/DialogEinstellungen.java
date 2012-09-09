@@ -26,9 +26,9 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
-import mediathek.tool.Log;
 import mediathek.daten.DDaten;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.Log;
 
 public class DialogEinstellungen extends javax.swing.JDialog {
 
@@ -67,14 +67,12 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         init();
         initTree();
         jButtonBeenden.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden();
             }
         });
         new EscBeenden(this) {
-
             @Override
             public void beenden_() {
                 beenden();
@@ -172,7 +170,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNodeStart));
         jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         jTree1.addTreeSelectionListener(new TreeSelectionListener() {
-
             @Override
             public void valueChanged(TreeSelectionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
@@ -216,7 +213,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                     } else if (name.equals(NAME_allgemeineInfos)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelInfo);
-                    //} else if (name.equals(NAME_infosStarts)) {
+                        //} else if (name.equals(NAME_infosStarts)) {
                         //jPanelExtra.removeAll();
                         //jPanelExtra.add(panelStarts);
                     } else if (name.equals(NAME_systemmeldungen)) {
@@ -244,6 +241,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     }
 
     private void beenden() {
+        ddaten.allesSpeichern();
         this.dispose();
     }
 
