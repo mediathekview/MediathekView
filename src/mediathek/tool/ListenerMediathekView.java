@@ -21,7 +21,6 @@ package mediathek.tool;
 
 import java.util.EventListener;
 import javax.swing.SwingUtilities;
-import mediathek.tool.Log;
 
 public class ListenerMediathekView implements EventListener {
 

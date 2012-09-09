@@ -112,6 +112,12 @@ public class GuiFilme extends PanelVorlage {
                 extra();
             }
         });
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                tabelleBauen();
+            }
+        });
         Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_DEL, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -174,10 +180,6 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         }
-    }
-
-    public void videoPlayerNeuLaden() {
-        extra();
     }
 
     public void videoPlayerAnzeigen(boolean anzeigen) {
@@ -352,21 +354,6 @@ public class GuiFilme extends PanelVorlage {
                 @Override
                 public void run() {
                     tabelleBauen_();
-                }
-            });
-        } catch (Exception ex) {
-            Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
-        }
-    }
-
-    private synchronized void updateTabelle() {
-        try {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    setInfo();
-                    ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
-                    //tabelle.updateUI();
                 }
             });
         } catch (Exception ex) {
@@ -1398,7 +1385,9 @@ public class GuiFilme extends PanelVorlage {
         @Override
         public void starter(StartEvent ev) {
             setInfo();
+            tabelle.getSpalten();
             ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
+            tabelle.setSpalten();
         }
     }
 }

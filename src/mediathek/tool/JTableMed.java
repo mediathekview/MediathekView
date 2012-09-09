@@ -10,7 +10,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
-import javax.swing.table.TableColumn;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
