@@ -64,7 +64,6 @@ import mediathek.daten.DatenBlacklist;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
-import mediathek.tool.Konstanten;
 import mediathek.daten.ListeAbo;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
@@ -78,6 +77,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.JTableMed;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.TModelFilm;
@@ -1077,6 +1077,10 @@ public class GuiFilme extends PanelVorlage {
             ListePset liste = ddaten.listePset.getListeButton();
             for (int i = 0; i < liste.size(); ++i) {
                 DatenPset pset = liste.get(i);
+                if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME_NR].equals("")) {
+                    // ein "leeres" Pset, Platzhalter
+                    continue;
+                }
                 Color col = pset.getFarbe(ddaten);
                 item = new JMenuItem(pset.arr[DatenPset.PROGRAMMSET_NAME_NR]);
                 if (pset.getListeProg().isEmpty()) {
