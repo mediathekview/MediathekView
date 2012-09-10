@@ -28,7 +28,6 @@ import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
-import mediathek.tool.GuiKonstanten;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
 

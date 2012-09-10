@@ -23,16 +23,29 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URLDecoder;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekOrf extends MediathekReader implements Runnable {
 
@@ -42,7 +55,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
 
     /**
      *
-     *  @param ddaten
+     * @param ddaten
      */
     public MediathekOrf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 3, /* urlWarten */ 1000, startPrio);
@@ -53,22 +66,21 @@ public class MediathekOrf extends MediathekReader implements Runnable {
         listeThemen.clear();
         meldungStart();
         bearbeiteAdresse(TOPICURL);
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/archiv");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/wednesday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/thursday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/friday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday_prev");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday_prev");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/wednesday_prev");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/thursday_prev");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/friday_prev");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday_prev");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday_prev");
-
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/archiv");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/wednesday");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/thursday");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/friday");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday_prev");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday_prev");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/wednesday_prev");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/thursday_prev");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/friday_prev");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday_prev");
+//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday_prev");
         if (Daten.filmeLaden.getStop()) {
             meldungThreadUndFertig();
         } else if (listeThemen.size() == 0) {
@@ -83,7 +95,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
     }
 
     /**
-     *  @param adresse Starter-URL von dem aus Sendungen gefunden werden
+     * @param adresse Starter-URL von dem aus Sendungen gefunden werden
      */
     private void bearbeiteAdresse(String adresse) {
         //System.out.println("bearbeiteAdresse: " + adresse);
@@ -92,8 +104,8 @@ public class MediathekOrf extends MediathekReader implements Runnable {
         final String MUSTER_URL2b = "/topics/"; //TH
         StringBuffer seite = getUrlIo.getUri(nameSenderMReader, adresse, Konstanten.KODIERUNG_UTF, 3, new StringBuffer(), "");
         int pos = 0;
-        int pos1 = 0;
-        int pos2 = 0;
+        int pos1;
+        int pos2;
         String url = "";
         String thema = "";
         //Podcasts auslesen
@@ -197,21 +209,17 @@ public class MediathekOrf extends MediathekReader implements Runnable {
         }
 
         void feedEinerSeiteSuchen(String strUrlFeed, String thema) {
-            // System.out.println (this.toString() + "\nfeedEinerSeiteSuchen: " + strUrlFeed + ", Thema: " + thema);
-            // <param name="URL" value="/programs/1306-Newton/episodes/1229327-Newton/1231597-Signation---Themenuebersicht.asx" />
-            // <title> ORF TVthek: a.viso - 28.11.2010 09:05 Uhr</title>
-            final String MUSTER = "<param name=\"URL\" value=\"";
+            //<title> ORF TVthek: a.viso - 28.11.2010 09:05 Uhr</title>
             final String MUSTER_DATUM_1 = "<span>"; //TH
             final String MUSTER_DATUM_2 = "Uhr</span>"; //TH
             seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "Thema: " + thema);
-            // System.out.println ("###"+seite1.substring(0, 500) + "###\n");           
             int pos = 0;
             int pos1;
             int pos2;
-            String url = "";
             String datum = "";
             String zeit = "";
             String tmp;
+
             if ((pos1 = seite1.indexOf(MUSTER_DATUM_1)) != -1) {
                 pos1 += MUSTER_DATUM_1.length();
                 if ((pos2 = seite1.indexOf(MUSTER_DATUM_2, pos1)) != -1) {
@@ -226,73 +234,81 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                     }
                 }
             }
-            if ((pos = seite1.indexOf(MUSTER, pos)) != -1) {
-                try {
-                    pos += MUSTER.length();
-                    pos1 = pos;
-                    pos2 = seite1.indexOf("\"", pos);
-                    if (pos1 != -1 && pos2 != -1) {
-                        url = seite1.substring(pos1, pos2);
-                    }
-                    if (!url.equals("")) {
-                        //TH ggf. Trennen in Thema und Titel
-                        String titel = thema;
-                        int dp = thema.indexOf(": ");
-                        if (dp != -1) {
-                            titel = thema.substring(dp + 2);
-                            thema = thema.substring(0, dp);
-                        }//TH titel und thema getrennt
+            //TH ggf. Trennen in Thema und Titel
+            int dp = thema.indexOf(": ");
+            if (dp != -1) {
+                thema = thema.substring(0, dp);
+            }//TH titel und thema getrennt
 
-                        //TH 1.8.2012 -Signation Problematik
-                        if (!Daten.filmeLaden.getStop() && url.indexOf("-Signation") != -1) {
-                            meldung(ROOTURL + url);
-                            bearbeiteAsx(ROOTURL + url, thema, strUrlFeed, datum, zeit);
-                        } else {
-                            addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, ROOTURL + url, datum, zeit));
+            //TH 27.8.2012 JS XML Variable auswerten
+            final String MUSTER_FLASH = "ORF.flashXML = '";
+            if ((pos = seite1.indexOf(MUSTER_FLASH)) != -1) {
+                if ((pos2 = seite1.indexOf("'", pos + MUSTER_FLASH.length())) != -1) {
+                    String xml = seite1.substring(pos + MUSTER_FLASH.length(), pos2);
+                    try {
+                        xml = URLDecoder.decode(xml, "UTF-8");
+                        DocumentBuilder docBuilder = null;
+                        docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                        Document doc = docBuilder.parse(new InputSource(new StringReader(xml)));
+                        Node rootNode = doc.getDocumentElement();
+                        NodeList nodeList = rootNode.getChildNodes();
+                        for (int i = 0; i < nodeList.getLength(); ++i) {
+                            Node Item = nodeList.item(i);
+                            if ("Playlist".equals(Item.getNodeName())) {
+                                NodeList childNodeList = Item.getChildNodes();
+                                for (int j = 0; j < childNodeList.getLength(); ++j) {
+                                    Node childItem = childNodeList.item(j);
+                                    if ("Items".equals(childItem.getNodeName())) {
+                                        NodeList childNodeList2 = childItem.getChildNodes();
+                                        for (int k = 0; k < childNodeList2.getLength(); ++k) {
+                                            Node childItem2 = childNodeList2.item(k);
+                                            if ("Item".equals(childItem2.getNodeName())) {
+                                                String url = "";
+                                                String titel = "";
+                                                NodeList childNodeList3 = childItem2.getChildNodes();
+                                                for (int l = 0; l < childNodeList3.getLength(); ++l) {
+                                                    Node childItem3 = childNodeList3.item(l);
+                                                    if ("Title".equals(childItem3.getNodeName())) {
+                                                        titel = childItem3.getTextContent();
+                                                    }
+                                                    if ("VideoUrl".equals(childItem3.getNodeName())) {
+                                                        String quality = null;
+                                                        NamedNodeMap namedNodeMap = childItem3.getAttributes();
+                                                        if (namedNodeMap != null) {
+                                                            Node node = namedNodeMap.getNamedItem("quality");
+                                                            if (node != null) {
+                                                                quality = node.getNodeValue();
+                                                            }
+                                                        }
+                                                        // "SMIL"-Qualität nehmen, oder "keine Qualität"
+                                                        if ((quality == null && titel.isEmpty()) || "SMIL".equals(quality)) {
+                                                            url = childItem3.getTextContent();
+                                                        }
+                                                    }
+                                                }
+                                                if (!url.isEmpty() && !titel.isEmpty()) {
+                                                    String urlRtmp = "";
+                                                    int mpos = url.indexOf("mp4:");
+                                                    if (mpos != -1) {
+                                                        urlRtmp = "-r " + url + " -y " + url.substring(mpos);
+                                                    }
+                                                    //addFilm(new DatenFilm(senderName, thema, strUrlFeed, titel, url, datum, zeit));
+                                                    addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, url, urlRtmp, datum, zeit));
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
+                    } catch (SAXException ex) {
+                        Log.fehlerMeldungMReader(-643206531, "MediathekOrf.feedEinerSeiteSuchen", ex.getMessage());
+                    } catch (IOException ex) {
+                        Log.fehlerMeldungMReader(-201456987, "MediathekOrf.feedEinerSeiteSuchen", ex.getMessage());
+                    } catch (ParserConfigurationException ex) {
+                        Log.fehlerMeldungMReader(-121036907, "MediathekOrf.feedEinerSeiteSuchen", ex.getMessage());
                     }
-                } catch (Exception ex) {
-                    Log.fehlerMeldungMReader(-632105897, "MediathekOrf.feedEinerSeiteSuchen", ex.getMessage());
                 }
-            }
-        }
-
-        void bearbeiteAsx(String asxUrl, String thema, String strUrlFeed, String datum, String zeit) {
-            seiteAsx = getUrlIo.getUri_Iso(nameSenderMReader, asxUrl, seiteAsx, "");
-            //System.out.println(this.toString() + "\nASX: " + asxUrl + ":\n" + seiteAsx + "\n");
-            final String MUSTER_TITEL_OPEN = "<title>";
-            final String MUSTER_TITEL_CLOSE = "</title>";
-            final String MUSTER_REF = "<ref href=\"";
-            int tpos = seiteAsx.indexOf(MUSTER_TITEL_CLOSE); // Ersten Titel (Haupttitel) überspringen
-            if (tpos == -1) {
-                tpos = 0;
-            }
-            while ((tpos = seiteAsx.indexOf(MUSTER_TITEL_OPEN, tpos)) != -1) {
-                tpos += MUSTER_TITEL_OPEN.length();
-                int endpos = seiteAsx.indexOf(MUSTER_TITEL_CLOSE, tpos);
-                if (endpos == -1) {
-                    break;
-                }
-                String titel = seiteAsx.substring(tpos, endpos);
-                endpos += MUSTER_TITEL_CLOSE.length();
-
-                int ref = seiteAsx.indexOf(MUSTER_REF, endpos);
-                ref += MUSTER_REF.length();
-                // ? oder wenigstens "
-                int quote = seiteAsx.indexOf("\"", ref);
-                if (quote == -1) {
-                    break;
-                }
-                int quest = seiteAsx.indexOf("?", ref);
-                if (quest != -1 && quest < quote) {
-                    quote = quest;
-                }
-                String mms = seiteAsx.substring(ref, quote);
-                // System.out.println("tit: " + titel);
-                // System.out.println("mms: " + mms);
-                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, mms, datum, zeit));
-
-                tpos = quote;
             }
         }
     }
