@@ -21,8 +21,6 @@ package mediathek.daten;
 
 import java.io.File;
 import java.util.Iterator;
-import mediathek.tool.Log;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekSwr;
@@ -33,6 +31,8 @@ import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
 
 public class DatenDownload implements Comparable<DatenDownload> {
     //Tags Filme

@@ -33,7 +33,7 @@ import mediathek.controller.filmeLaden.suchen.sender.MediathekArte7;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekBr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekHr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekMdr;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekNdrFlash;
+import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekOrf;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekRbb;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekReader;
@@ -78,7 +78,7 @@ public class FilmeSuchenSender {
         mediathekListe.add(new MediathekArte7(this, 1));
         mediathekListe.add(new Mediathek3Sat(this, 2));
         mediathekListe.add(new MediathekSwr(this, 1));
-        mediathekListe.add(new MediathekNdrFlash(this, 1));
+        mediathekListe.add(new MediathekNdr(this, 1));
         // Spalte 2
 //        mediathekListe.add(new MediathekMdr_old(this, 1));
         mediathekListe.add(new MediathekMdr(this, 1));

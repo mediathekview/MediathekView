@@ -49,16 +49,16 @@ public class PanelInfoStarts extends PanelVorlage {
     public PanelInfoStarts(DDaten d) {
         super(d);
         initComponents();
-        ddaten = d;
-        jButtonAuffrischen.addActionListener(new BeobLaden());
-        jButtonStoppen.addActionListener(new BeobStoppen());
-        ddaten.starterClass.addListener(new BeobStart());
-        tModel = ListeStarts.getNewModel();
-        jTable1.setModel(tModel);
-        jTable1.setDefaultRenderer(Object.class, new CellRendererFilme(ddaten));
-        jTable1.addMouseListener(new BeobMausTabelle());
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        init();
+//        ddaten = d;
+//        jButtonAuffrischen.addActionListener(new BeobLaden());
+//        jButtonStoppen.addActionListener(new BeobStoppen());
+//        ddaten.starterClass.addListener(new BeobStart());
+//        tModel = ListeStarts.getNewModel();
+//        jTable1.setModel(tModel);
+//        jTable1.setDefaultRenderer(Object.class, new CellRendererFilme(ddaten));
+//        jTable1.addMouseListener(new BeobMausTabelle());
+//        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+//        init();
     }
 
     private synchronized void init() {

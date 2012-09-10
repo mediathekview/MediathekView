@@ -1,25 +1,26 @@
-/*
- *     MediathekView
- *     Copyright (C) 2008 W. Xaver
- *     W.Xaver[at]googlemail.com
- *     http://zdfmediathk.sourceforge.net/
+/*    
+ *    MediathekView
+ *    Copyright (C) 2008   W. Xaver
+ *    W.Xaver[at]googlemail.com
+ *    http://zdfmediathk.sourceforge.net/
+ *    
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    any later version.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
-import java.util.LinkedList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
@@ -27,64 +28,59 @@ import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
-/**
- *
- * @author
- */
 public class MediathekNdr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "NDR";
-    final int MAX_SEITEN_LANG = 200;
-    final int MAX_SEITEN_KURZ = 20;
+    //private final int MAX_PER_FEED = 5;
 
-    /**
-     *
-     * @param ddaten
-     */
     public MediathekNdr(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER, /* threads */ 8, /* urlWarten */ 2000, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 1000, startPrio);
     }
 
+    //-> erste Seite:
+    //http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_searchtype-broadcasts.xml
+    //-> Thema:
+    //http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-46_pageSize-24.xml
+    //-> Film:
+    //http://www.ndr.de/mediathek/visite4392-mediathek_details-true.xml
     @Override
     void addToList() {
-        // http://www.ndr.de/mediathek/videoliste100_glossaryPage-1.html
-        // <a href="/fernsehen/sendungen/hallo_niedersachsen/media/hallonds159.html"  >
-        // http://www.ndr.de/fernsehen/sendungen/hallo_niedersachsen/media/hallonds159.html
-        final String ADRESSE = "http://www.ndr.de/mediathek/videoliste100_glossaryPage-1.html";
-        final String ADRESSE_TEIL = "http://www.ndr.de/mediathek/videoliste100_glossaryPage-";
-        final String MUSTER_ANZAHL = "Zeige Seite";
-        int maxSeiten = MAX_SEITEN_KURZ;
+        //<broadcast id="1391" site="ndrfernsehen">45 Min</broadcast>
+        final String ADRESSE = "http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_searchtype-broadcasts.xml";
+        final String MUSTER_URL1 = "<broadcast id=\"";
         listeThemen.clear();
         meldungStart();
         StringBuffer seite = new StringBuffer();
-        int pos;
+        seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, ""/* meldung */);
+        int pos = 0;
         int pos1;
         int pos2;
-        String maxS;
-        seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, ""/* meldung */);
-        if (suchen.allesLaden) {
-            // wenn alle Seiten ermitteln und gesamtzahl noch nicht bekannt
-            if ((pos = seite.lastIndexOf(MUSTER_ANZAHL)) != -1) {
-                pos += MUSTER_ANZAHL.length();
+        String url = "";
+        String thema = "";
+        //Podcasts auslesen
+        while ((pos = seite.indexOf(MUSTER_URL1, pos)) != -1) {
+            try {
+                pos += MUSTER_URL1.length();
                 pos1 = pos;
-                if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
-                    try {
-                        maxS = seite.substring(pos1, pos2);
-                        maxS = maxS.trim();
-                        maxSeiten = Integer.parseInt(maxS);
-                        if (maxSeiten > MAX_SEITEN_LANG) {
-                            maxSeiten = MAX_SEITEN_LANG;
-                        }
-                    } catch (Exception ex) {
-                        maxSeiten = MAX_SEITEN_KURZ;
-                    }
+                if ((pos2 = seite.indexOf("\"", pos)) != -1) {
+                    url = seite.substring(pos1, pos2);
                 }
+                pos1 = seite.indexOf(">", pos);
+                pos2 = seite.indexOf("<", pos);
+                if (pos1 != -1 && pos2 != -1 && pos1 < pos2) {
+                    thema = seite.substring(pos1 + 1, pos2);
+                }
+                if (url.equals("")) {
+                    Log.fehlerMeldungMReader(-210367600, "MediathekNdr.addToList", "keine Url");
+                    continue;
+                }
+                String[] add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-24.xml", thema};
+                listeThemen.addUrl(add);
+            } catch (Exception ex) {
+                Log.fehlerMeldungMReader(-332945670, "MediathekNdr.finden", ex.getMessage());
             }
         }
-        for (int i = 1; i < maxSeiten; ++i) {
-            String[] add = new String[]{String.valueOf(i), ADRESSE_TEIL + i + ".html"};
-            listeThemen.add(add);
-        }
+        addTage();
         if (Daten.filmeLaden.getStop()) {
             meldungThreadUndFertig();
         } else if (listeThemen.size() == 0) {
@@ -94,6 +90,14 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             for (int t = 0; t < maxThreadLaufen; ++t) {
                 new Thread(new ThemaLaden()).start();
             }
+        }
+    }
+
+    private void addTage() {
+        // Seiten der Ansicht: "letzten Tage"
+        for (int i = 0; i <= 10; ++i) {
+            String[] add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_page-" + Integer.toString(i) + "_medium-tv_pageSize-24.xml", ""};
+            listeThemen.addUrl(add);
         }
     }
 
@@ -111,154 +115,148 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                 while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
                     try {
                         meldungProgress(link[1]);
-                        finden(Integer.parseInt(link[0]), link[1] /* url */);
+                        feedEinerSeiteSuchen(link[0], link[1] /* thema */);
                     } catch (Exception ex) {
-                        Log.fehlerMeldungMReader(-685011466, "MediathekNdr.ThemaLaden.run.1", ex.getMessage());
+                        Log.fehlerMeldungMReader(-336901211, "MediathekNdr.ThemaLaden.run.1", ex.getMessage());
                     }
                 }
                 meldungThreadUndFertig();
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-894632580, "MediathekNdr.ThemaLaden.run.2", ex.getMessage());
+                Log.fehlerMeldung(-554632590, "MediathekNdr.ThemaLaden.run.2", ex);
             }
         }
 
-        private void finden(int nr, String urlSeite) {
-            // http://www.ndr.de/mediathek/videoliste100_glossaryPage-1.html
-            // erst: <div class="subline">28.11.2010 | 11:30 Uhr</div>
-            // dann:
-            // <a href="/fernsehen/sendungen/hallo_niedersachsen/media/hallonds159.html"  >
-            // http://www.ndr.de/fernsehen/sendungen/hallo_niedersachsen/media/hallonds159.html
-            LinkedList<String> hammerSchon = new LinkedList<String>();
-            final String MUSTER_DATUM = "<div class=\"subline\">";
-            final String MUSTER_THEMA = "<div class=\"subline\">NDR Fernsehen:";
-            final String MUSTER_URL = "href=\"/fernsehen/";
+        void feedEinerSeiteSuchen(String strUrlFeed, String tthema) {
+            //<mediaItem id="hamj20831" type="video">
+            //<title><![CDATA[Angst vor Radfahrern am Tibarg]]></title>
+            //<broadcastStation id="ndrtv">NDR Fernsehen</broadcastStation>
+            //<broadcast id="14">Hamburg Journal</broadcast>
+            //<date weekday="Samstag" weekdayShort="Sa">2012-07-21T19:30:00</date>
+            //<duration>02:48</duration>
+            //<images>
+            //<image type="thumbnail">http://www.ndr.de/mediathek/media/mediathek106-mediathekPic_uuid-af971b4b-21cc-4271-8467-2c67d42d1dfe_v-mediathekthumbnail.jpg</image>
+            //</images>
+            //</mediaItem>
+            final String MUSTER_URL = "<mediaItem id=\"";
+            final String MUSTER_TITEL = "<title><![CDATA[";
+            final String MUSTER_THEMA = "<broadcast id=\"";
+            final String MUSTER_ENDE = "</mediaItem>";
+            int counter = 0;
+            seite1 = getUrlIo.getUri(nameSenderMReader, strUrlFeed, Konstanten.KODIERUNG_UTF, 3 /* versuche */, seite1, "Thema: " + tthema/* meldung */);
             int pos = 0;
             int pos1;
             int pos2;
-            String datum;
-            String zeit;
-            String url;
-            String thema;
-            try {
-                if (nr > 100) {
-                    seite1 = getUrlIo.getUri(nameSenderMReader, urlSeite, Konstanten.KODIERUNG_UTF, 2 /* versuche */, seite1, ""/* meldung */);
-                } else {
-                    // bei den aktuelleren etwas genauer
-                    seite1 = getUrlIo.getUri(nameSenderMReader, urlSeite, Konstanten.KODIERUNG_UTF, 3 /* versuche */, seite1, ""/* meldung */);
-                }
-                while ((pos = seite1.indexOf(MUSTER_DATUM, pos)) != -1) {
-                    datum = "";
-                    zeit = "";
-                    url = "";
-                    thema = "";
-                    pos += MUSTER_DATUM.length();
-                    pos1 = pos;
-                    // Datum/Zeit suchen
-                    if ((pos2 = seite1.indexOf("|", pos1)) == -1) {
-                        Log.fehlerMeldungMReader(-822560487, "MediathekNdr.finden", "kein Datum: " + urlSeite);
-                        continue;
-                    } else {
-                        pos = pos2;
-                        datum = seite1.substring(pos1, pos2).trim();
-                        pos1 = pos2;
-                        if ((pos2 = seite1.indexOf("<", pos1)) == -1) {
-                            Log.fehlerMeldungMReader(-336520198, "MediathekNdr.finden", "keine Zeit: " + urlSeite);
-                        } else {
-                            zeit = seite1.substring(pos1 + 1, pos2).trim();
-                            if (zeit.contains("Uhr")) {
-                                zeit = zeit.replace("Uhr", "").trim() + ":00";
-                            }
-                            pos = pos2;
-                            pos1 = pos2;
-                        }
-                    }
-                    // Thema suchen
-                    if ((pos1 = seite1.indexOf(MUSTER_THEMA, pos1)) == -1) {
-                        Log.fehlerMeldungMReader(-462887302, "MediathekNdr.finden", "kein Thema: " + urlSeite);
-//                        thema = "NDR Fernsehen";
-                        pos1 = pos;
-                    } else {
-                        pos1 += MUSTER_THEMA.length();
-                        if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
-                            thema = seite1.substring(pos1, pos2).trim();
-                            pos = pos2;
-                            pos1 = pos2;
-                        }
-                    }
-                    // URL suchen
-                    if ((pos1 = seite1.indexOf(MUSTER_URL, pos1)) == -1) {
-                        Log.fehlerMeldungMReader(-669120374, "MediathekNdr.finden", "keine URL: " + urlSeite);
-                        continue;
-                    } else {
-                        pos1 += MUSTER_URL.length();
-                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                            url = seite1.substring(pos1, pos2);
-                        }
-                        pos = pos2;
-                        if (url.equals("")) {
-                            Log.fehlerMeldungMReader(-462309664, "MediathekNdr.finden", "keine URL: " + urlSeite);
-                            continue;
-                        }
-                        if (!hammerSchon.contains(url)) {
-                            hammerSchon.add(url);
-                            feedEinerSeiteSuchen("http://www.ndr.de/fernsehen/" + url, thema, datum, zeit);
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-211036709, "MediathekNdr.finden", new String[]{ex.getMessage(), urlSeite});
-            }
-        }
-
-        void feedEinerSeiteSuchen(String urlFilm, String thema, String datum, String zeit) {
-            // <title>Demo: Zehntausende im Wendland | NDR.de - Fernsehen - Sendungen A - Z - Hallo Niedersachsen - media</title>
-            //<span class='footer_link'><a href="mms://ndr.wmod.llnwd.net/a3715/d1/msmedia/2010/1106/TV-20101106-2048-4701.wm.hq.wmv">Windows Media Stream (hohe Qualit&auml;t) im externen Player &ouml;ffnen</a></span>
-            //<span class='footer_link'><a href="mms://ndr.wmod.llnwd.net/a3715/d1/msmedia/2010/1106/TV-20101106-2048-4701.wm.hi.wmv">Windows Media Stream (mittlere Qualit&auml;t) im externen Player &ouml;ffnen</a></span>
-            //<span class='footer_link'><a href="mms://ndr.wmod.llnwd.net/a3715/d1/msmedia/2010/1106/TV-20101106-2048-4701.wm.lo.wmv">Windows Media Stream (niedrige Qualit&auml;t) im externen Player &ouml;ffnen</a></span>
-
-            final String MUSTER_URL = "<span class='footer_link'><a href=\"";
-            final String MUSTER_TITEL = "<title>";
-            seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "strUrlFilm: " + urlFilm);
-            int pos = 0;
-            int pos1;
-            int pos2;
+            int posEnde;
             String url;
             String titel = "";
-            //String tmp = seite2.toString();
+            String thema = tthema;
             try {
-                if ((pos = seite2.indexOf(MUSTER_TITEL, pos)) != -1) {
-                    pos += MUSTER_TITEL.length();
+                while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_URL, pos)) != -1) {
+                    ++counter;
+                    pos += MUSTER_URL.length();
                     pos1 = pos;
-                    pos2 = seite2.indexOf("<", pos);
-                    if (pos1 != -1 && pos2 != -1) {
-                        titel = seite2.substring(pos1, pos2);
-                        if (titel.contains("|")) {
-                            titel = titel.substring(0, titel.indexOf("|"));
-                            titel = titel.trim();
+                    posEnde = seite1.indexOf(MUSTER_ENDE, pos);
+                    if ((pos2 = seite1.indexOf("\"", pos1)) == -1) {
+                        continue;
+                    }
+                    url = seite1.substring(pos1, pos2);
+                    if (url.equals("")) {
+                        Log.fehlerMeldungMReader(-659210274, "MediathekNdr.feddEinerSeiteSuchen", "keine Url feedEinerSeiteSuchen" + strUrlFeed);
+                        continue;
+                    }
+                    if ((pos1 = seite1.indexOf(MUSTER_TITEL, pos)) != -1) {
+                        pos1 += MUSTER_TITEL.length();
+                        if ((pos2 = seite1.indexOf("]", pos1)) != -1) {
+                            titel = seite1.substring(pos1, pos2);
+                        }
+                    }
+                    if (tthema.equals("")) {
+                        thema = "";
+                        if ((pos1 = seite1.indexOf(MUSTER_THEMA, pos)) != -1) {
+                            if (pos1 < posEnde) {
+                                pos1 = pos1 + MUSTER_THEMA.length();
+                                if ((pos1 = seite1.indexOf("\"", pos1)) != -1) {
+                                    ++pos1;
+                                    ++pos1;
+                                    if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
+                                        thema = seite1.substring(pos1, pos2);
+                                    }
+                                }
+                            }
+                        }
+                        if (thema.equals("")) {
+                            thema = "NDR";
+                        }
+                    }
+                    filmSuchen(strUrlFeed, thema, titel, "http://www.ndr.de/mediathek/" + url + "-mediathek_details-true.xml");
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldungMReader(-693219870, "MediathekNdr.feddEinerSeiteSuchen", strUrlFeed);
+            }
+        }
+
+        void filmSuchen(String strUrlThema, String thema, String titel, String urlFilm) {
+            //<source format="mp4hi" mimetype="video/mp4" protocol="rtmpt">rtmpt://ndr.fcod.llnwd.net/a3715/d1/flashmedia/streams/ndr/2010/0208/TV-20100208-1833-0101.hi.mp4</source>
+            //<source format="mp4hq" mimetype="video/mp4" protocol="rtmpt">rtmpt://ndr.fcod.llnwd.net/a3715/d1/flashmedia/streams/ndr/2010/0208/TV-20100208-1833-0101.hq.mp4</source>
+            //http://www.ndr.de/mediathek/visite4392-mediathek_details-true.xml
+            // <date weekday="Dienstag" weekdayShort="Di">2010-11-30T23:45:00</date>
+            final String MUSTER_DATUM = "<date ";
+            final String MUSTER_URL = "<source format=\"mp4hq\" mimetype=\"video/mp4\" protocol=\"rtmpt\">";
+            seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "strUrlThema: " + strUrlThema);
+            meldung(urlFilm);
+            int pos;
+            int pos1;
+            int pos2;
+            String url;
+            String datum = "";
+            String zeit = "";
+            String tmp;
+            try {
+                if ((pos = seite2.indexOf(MUSTER_DATUM)) != -1) {
+                    pos += MUSTER_DATUM.length();
+                    if ((pos1 = seite2.indexOf(">", pos)) != -1) {
+                        pos1 += 1;
+                        if ((pos2 = seite2.indexOf("<", pos1)) != -1) {
+                            tmp = seite2.substring(pos1, pos2);
+                            try {
+                                SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                                Date filmDate = sdfIn.parse(tmp);
+                                SimpleDateFormat sdfOut;
+                                sdfOut = new SimpleDateFormat("dd.MM.yyyy");
+                                datum = sdfOut.format(filmDate);
+                                sdfOut = new SimpleDateFormat("HH:mm:ss");
+                                zeit = sdfOut.format(filmDate);
+                            } catch (Exception ex) {
+                                Log.fehlerMeldungMReader(-623657941, "MediathekNdr.FilmSuchen", "convertDatum: " + strUrlThema);
+                            }
                         }
                     }
                 }
-                pos = 0;
-                if ((pos = seite2.indexOf(MUSTER_URL, pos)) != -1) {
+                if ((pos = seite2.indexOf(MUSTER_URL)) != -1) {
                     pos += MUSTER_URL.length();
                     pos1 = pos;
-                    if ((pos2 = seite2.indexOf("\"", pos)) != -1) {
+                    if ((pos2 = seite2.indexOf("<", pos)) != -1) {
                         url = seite2.substring(pos1, pos2);
                         if (!url.equals("")) {
-                            //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel)
-//                            daten.filmeLaden.listeFilmeSchattenliste.addSenderRtmp(new DatenFilm(daten, sender, thema, urlFilm, titel,
-//                                    leitungAendern__(daten, url), url/*urlOrg*/, ""/*urlRtmp*/, ""/*urlHd*/));
-                            if (thema.equals("")) {
-                                thema = titel;
+                            // URL für den flvstreamer aufbereiten:
+                            // aus:  rtmpt://ndr.fcod.llnwd.net/a3715/d1/flashmedia/streams/ndr/2012/0621/TV-20120621-1319-2801.hq.mp4
+                            // wird: rtmpt://cp160844.edgefcs.net/ondemand/mp4:flashmedia/streams/ndr/2012/0525/TV-20120525-0207-5901.hq.mp4
+                            String s1 = "rtmpt://cp160844.edgefcs.net/ondemand/mp4:";
+                            String s2 = url.substring(url.indexOf("flashmedia"));
+                            String sUrl = s1 + s2;
+                            if (!sUrl.equals("")) {
+                                //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel)
+                                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlThema, titel, sUrl, datum, zeit));
+                            } else {
+                                Log.fehlerMeldungMReader(-878542100, "MediathekNdr.FilmSuchen", "Zusammenbau URL: " + url);
                             }
-                            addFilm(new DatenFilm(nameSenderMReader, thema, urlFilm, titel, url, datum, zeit));
                         } else {
-                            Log.fehlerMeldungMReader(-671055877, "MediathekNdr.feedEinerSeiteSuchen", "keine Url: " + urlFilm);
+                            Log.fehlerMeldungMReader(-623657941, "MediathekNdr.FilmSuchen", "keine URL: " + urlFilm);
                         }
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-698032157, "MediathekNdr.feedEinerSeiteSuchen", ex.getMessage());
+                Log.fehlerMeldungMReader(-699830157, "MediathekNdr.FilmSuchen", ex.getMessage());
             }
         }
     }

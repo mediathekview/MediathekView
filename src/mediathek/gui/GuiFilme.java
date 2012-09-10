@@ -1385,9 +1385,15 @@ public class GuiFilme extends PanelVorlage {
         @Override
         public void starter(StartEvent ev) {
             setInfo();
-            tabelle.getSpalten();
+//////////            int r = tabelle.getSelectedRow();
+//////////            if (r != -1) {
+//////////                ((TModelFilm) tabelle.getModel()).fireTableRowsUpdated(r, r);
+//////////            }
+//////////            tabelle.getSpalten();
+//////////            ((TModelFilm) tabelle.getModel()).fireTableStructureChanged();
             ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
-            tabelle.setSpalten();
+//////////            tabelle.validate();
+//////////            tabelle.setSpalten();
         }
     }
 }

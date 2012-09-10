@@ -45,7 +45,6 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
-import mediathek.tool.Konstanten;
 import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.tool.BeobMpanel;
@@ -55,6 +54,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.JTableMed;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModelDownload;
 
