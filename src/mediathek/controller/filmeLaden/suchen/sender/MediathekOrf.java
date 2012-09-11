@@ -42,7 +42,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
 /**
  *
  * @author
@@ -290,8 +289,18 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                                                     String urlRtmp = "";
                                                     int mpos = url.indexOf("mp4:");
                                                     if (mpos != -1) {
-                                                        urlRtmp = "-r " + url + " -y " + url.substring(mpos);
+                                                        urlRtmp = "-r " + url + " -y " + url.substring(mpos) + " --flashVer WIN11,4,402,265 --swfUrl http://tvthek.orf.at/flash/player/TVThekPlayer_9_ver18_1.swf";
                                                     }
+                                                    //rtmp://apasfw.apa.at/cms-worldwide/mp4:2012-09-09_1305_tl_23_UNGARISCHES-MAGAZIN_Beszelgetes-Szabo-Er__4582591__o__0000214447__s4588253___n__BHiRes_13241400P_13280400P_Q6A.mp4
+                                                    //flvr=WIN11,4,402,265
+                                                    //app=cms-worldwide/
+                                                    //swfUrl=http://tvthek.orf.at/flash/player/TVThekPlayer_9_ver18_1.swf
+                                                    //tcUrl=rtmp://apasfw.apa.at/%app%
+                                                    //play=mp4:1950-01-01_1200_in_00_Ungarnkrise-1956_____3230831__o__0000936285__s3230833___Q6A.mp4
+                                                    //flvstreamer --resume --rtmp %tcUrl% --flashVer %flvr% --app %app% --swfUrl %swfUrl% --playpath %play% --flv %Ziel%
+
+
+
                                                     //addFilm(new DatenFilm(senderName, thema, strUrlFeed, titel, url, datum, zeit));
                                                     addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, url, urlRtmp, datum, zeit));
                                                 }
