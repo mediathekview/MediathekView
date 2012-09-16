@@ -74,7 +74,12 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                     Log.fehlerMeldungMReader(-210367600, "MediathekNdr.addToList", "keine Url");
                     continue;
                 }
-                String[] add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-24.xml", thema};
+                String[] add;
+                if (suchen.allesLaden) {
+                    add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-100.xml", thema};
+                } else {
+                    add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-24.xml", thema};
+                }
                 listeThemen.addUrl(add);
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-332945670, "MediathekNdr.finden", ex.getMessage());
@@ -141,7 +146,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             final String MUSTER_TITEL = "<title><![CDATA[";
             final String MUSTER_THEMA = "<broadcast id=\"";
             final String MUSTER_ENDE = "</mediaItem>";
-            int counter = 0;
+//            int counter = 0;
             seite1 = getUrlIo.getUri(nameSenderMReader, strUrlFeed, Konstanten.KODIERUNG_UTF, 3 /* versuche */, seite1, "Thema: " + tthema/* meldung */);
             int pos = 0;
             int pos1;
@@ -152,7 +157,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             String thema = tthema;
             try {
                 while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_URL, pos)) != -1) {
-                    ++counter;
+//                    ++counter;
                     pos += MUSTER_URL.length();
                     pos1 = pos;
                     posEnde = seite1.indexOf(MUSTER_ENDE, pos);
