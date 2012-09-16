@@ -71,6 +71,8 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     private int nr = 0;
     public String[] infos;
     public String[] metaDaten;
+    private HashSet<String> treeGetModelOfField = new HashSet<String>();
+    private LinkedList<String> listGetModelOfField = new LinkedList<String>();
 
     /**
      *
@@ -306,10 +308,12 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     }
 
     public synchronized String[] getModelOfField(int feld, String filterString, int filterFeld) {
-        /* erstellt ein StringArray mit den Daten des Feldes und filtert nach filterFeld */
-        HashSet<String> tree = new HashSet<String>();
+        // erstellt ein StringArray mit den Daten des Feldes und filtert nach filterFeld
+        // ist für die Filterfelder im GuiFilme
+        // doppelte Einträge (bei der Groß- und Klienschribung) werden entfernt
         String str;
-        tree.add("");
+        String s;
+        listGetModelOfField.add("");
         DatenFilm film;
         Iterator<DatenFilm> it = this.iterator();
         if (filterString.equals("")) {
@@ -317,8 +321,10 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             while (it.hasNext()) {
                 str = it.next().arr[feld];
                 //hinzufügen
-                if (!tree.contains(str)) {
-                    tree.add(str);
+                s = str.toLowerCase();
+                if (!treeGetModelOfField.contains(s)) {
+                    treeGetModelOfField.add(s);
+                    listGetModelOfField.add(str);
                 }
             }
         } else {
@@ -328,27 +334,61 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 str = film.arr[feld];
                 if (film.arr[filterFeld].equalsIgnoreCase(filterString)) {
                     //hinzufügen
-                    if (!tree.contains(str)) {
-                        tree.add(str);
+                    s = str.toLowerCase();
+                    if (!treeGetModelOfField.contains(s)) {
+                        treeGetModelOfField.add(s);
+                        listGetModelOfField.add(str);
                     }
                 }
             }
         }
-        LinkedList<String> list = new LinkedList<String>();
-        for (String h : tree) {
-            list.add(h);
-        }
-        GuiFunktionen.listeSort(list);
+        treeGetModelOfField.clear();
+        GuiFunktionen.listeSort(listGetModelOfField);
         String[] ret = new String[0];
-        ret = list.toArray(ret);
+        ret = listGetModelOfField.toArray(ret);
+        listGetModelOfField.clear();
         return ret;
     }
 
-    /**
-     *
-     * @param url
-     * @return
-     */
+//    public synchronized String[] getModelOfField(int feld, String filterString, int filterFeld) {
+//        /* erstellt ein StringArray mit den Daten des Feldes und filtert nach filterFeld */
+//        HashSet<String> tree = new HashSet<String>();
+//        String str;
+//        tree.add("");
+//        DatenFilm film;
+//        Iterator<DatenFilm> it = this.iterator();
+//        if (filterString.equals("")) {
+//            //alle Werte dieses Feldes
+//            while (it.hasNext()) {
+//                str = it.next().arr[feld];
+//                //hinzufügen
+//                if (!tree.contains(str)) {
+//                    tree.add(str);
+//                }
+//            }
+//        } else {
+//            //Werte dieses Feldes, filtern nach filterString im FilterFeld
+//            while (it.hasNext()) {
+//                film = it.next();
+//                str = film.arr[feld];
+//                if (film.arr[filterFeld].equalsIgnoreCase(filterString)) {
+//                    //hinzufügen
+//                    if (!tree.contains(str)) {
+//                        tree.add(str);
+//                    }
+//                }
+//            }
+//        }
+//        LinkedList<String> list = new LinkedList<String>();
+//        for (String h : tree) {
+//            list.add(h);
+//        }
+//        GuiFunktionen.listeSort(list);
+//        String[] ret = new String[0];
+//        ret = list.toArray(ret);
+//        return ret;
+//    }
+
     public synchronized DatenFilm getFilmByUrl(String url) {
         DatenFilm ret = null;
         ListIterator<DatenFilm> it = this.listIterator(0);
@@ -362,42 +402,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return ret;
     }
 
-//    public static boolean filterPruefen__(String senderSuchen, String themaSuchen, String textSuchen,
-//            String imSender, String imThema, String imText) {
-//        // prüfen ob xxxSuchen im String imXxx enthalten ist, textSuchen wird mit Thema u. Titel verglichen
-//        // themaSuchen exakt mit thema
-//        Pattern p1 = makePattern(themaSuchen);
-//        boolean ret = false;
-//        if (senderSuchen.equals("") || imSender.equalsIgnoreCase(senderSuchen)) {
-//            if (p1 != null) {
-//                if (p1.matcher(imThema).matches()) {
-//                    ret = textPruefen(textSuchen, imText) || textPruefen(textSuchen, imThema);
-//                }
-//            } else if (themaSuchen.equals("")
-//                    || imThema.equalsIgnoreCase(themaSuchen)) {
-//                ret = textPruefen(textSuchen, imText) || textPruefen(textSuchen, imThema);
-//            }
-//        }
-//        return ret;
-//    }
-//    public static boolean filterPruefen_old(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
-//            String imSender, String imThema, String imText) {
-//        //prüfen ob xxxSuchen im String imXxx enthalten ist
-//        Pattern p1 = makePattern(themaSuchen);
-//        boolean ret = false;
-//        if (senderSuchen.equals("") || imSender.equalsIgnoreCase(senderSuchen)) {
-//            if (p1 != null) {
-//                if (p1.matcher(imThema).matches()) {
-//                    ret = textPruefen(textSuchen, imText);
-//                }
-//            } else if (themaSuchen.equals("")
-//                    || themaExakt && imThema.equalsIgnoreCase(themaSuchen)
-//                    || !themaExakt && (imThema.toLowerCase().contains(themaSuchen.toLowerCase()))) {
-//                ret = textPruefen(textSuchen, imText);
-//            }
-//        }
-//        return ret;
-//    }
     //===================================
     // private
     //===================================

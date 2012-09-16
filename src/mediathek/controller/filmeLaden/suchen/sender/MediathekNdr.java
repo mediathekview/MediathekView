@@ -34,7 +34,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
     //private final int MAX_PER_FEED = 5;
 
     public MediathekNdr(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 1000, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 6, /* urlWarten */ 1000, startPrio);
     }
 
     //-> erste Seite:
@@ -76,7 +76,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                 }
                 String[] add;
                 if (suchen.allesLaden) {
-                    add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-100.xml", thema};
+                    add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-200.xml", thema};
                 } else {
                     add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-24.xml", thema};
                 }
