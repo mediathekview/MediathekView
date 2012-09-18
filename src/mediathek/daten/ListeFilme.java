@@ -180,32 +180,32 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
     }
 
-    public synchronized void alteThemenLöschen(String sender, LinkedList<String[]> liste) {
-        //alle Themen des Senders die NICHT in der Liste liste sind, löschen, die gibts nicht mehr
-        Iterator<DatenFilm> itIch = this.iterator();
-        Iterator<String[]> itListe;
-        DatenFilm film;
-        boolean found;
-        while (itIch.hasNext()) {
-            // ganze Liste durchlaufen
-            film = itIch.next();
-            if (film.arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(sender)) {
-                found = false;
-                itListe = liste.iterator();
-                while (itListe.hasNext()) {
-                    // und schauen, obs das Thema noch gibt
-                    if (film.arr[DatenFilm.FILM_THEMA_NR].equals(itListe.next()[1])) {
-                        //gibts noch
-                        found = true;
-                        break;
-                    }
-                } //while (itListe.hasNext()) {
-                if (!found) {
-                    itIch.remove();
-                }
-            }
-        } //while (itIch.hasNext()) {
-    }
+//    public synchronized void alteThemenLöschen(String sender, LinkedList<String[]> liste) {
+//        //alle Themen des Senders die NICHT in der Liste liste sind, löschen, die gibts nicht mehr
+//        Iterator<DatenFilm> itIch = this.iterator();
+//        Iterator<String[]> itListe;
+//        DatenFilm film;
+//        boolean found;
+//        while (itIch.hasNext()) {
+//            // ganze Liste durchlaufen
+//            film = itIch.next();
+//            if (film.arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(sender)) {
+//                found = false;
+//                itListe = liste.iterator();
+//                while (itListe.hasNext()) {
+//                    // und schauen, obs das Thema noch gibt
+//                    if (film.arr[DatenFilm.FILM_THEMA_NR].equals(itListe.next()[1])) {
+//                        //gibts noch
+//                        found = true;
+//                        break;
+//                    }
+//                } //while (itListe.hasNext()) {
+//                if (!found) {
+//                    itIch.remove();
+//                }
+//            }
+//        } //while (itIch.hasNext()) {
+//    }
 
     public synchronized boolean addWithNr(DatenFilm film) {
         film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
