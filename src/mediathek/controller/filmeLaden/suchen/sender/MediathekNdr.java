@@ -76,7 +76,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                 }
                 String[] add;
                 if (suchen.allesLaden) {
-                    add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-200.xml", thema};
+                    add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-300.xml", thema};
                 } else {
                     add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-24.xml", thema};
                 }
