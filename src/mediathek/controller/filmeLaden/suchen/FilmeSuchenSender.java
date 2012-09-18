@@ -62,13 +62,13 @@ public class FilmeSuchenSender {
     private Date stopZeit = null;
 
     /**
-     * ###########################################################################################################
-     * Ablauf:
-     * die gefundenen Filme kommen in die "listeFilme"
-     * -> bei einem vollen Suchlauf: passiert nichts weiter
-     * -> bei einem Update: "listeFilme" mit alter Filmliste auffüllen, URLs die es schon gibt werden verworfen
-     * "listeFilme" ist dann die neue komplette Liste mit Filmen
-     * ##########################################################################################################
+     *     ###########################################################################################################
+     *     Ablauf:
+     *     die gefundenen Filme kommen in die "listeFilme"
+     *     -> bei einem vollen Suchlauf: passiert nichts weiter
+     *     -> bei einem Update: "listeFilme" mit alter Filmliste auffüllen, URLs die es schon gibt werden verworfen
+     *     "listeFilme" ist dann die neue komplette Liste mit Filmen
+     *     ##########################################################################################################
      */
     public FilmeSuchenSender() {
         //Reader laden Spaltenweises Laden
@@ -247,13 +247,15 @@ public class FilmeSuchenSender {
             }
             Log.systemMeldung("==================================================================================================================");
             Log.systemMeldung("");
-            Log.systemMeldung("      Filme geladen:  " + anzFilme);
-            Log.systemMeldung("      Seiten geladen: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER));
+            Log.systemMeldung("        Filme geladen: " + anzFilme);
+            Log.systemMeldung("       Seiten geladen: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER));
             String groesse = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE) == 0) ? "<1" : Long.toString(GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE));
             Log.systemMeldung("Summe geladen[MByte]: " + groesse);
-            Log.systemMeldung("           --> Start: " + sdf.format(startZeit));
-            Log.systemMeldung("            --> Ende: " + sdf.format(stopZeit));
-            Log.systemMeldung("       --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten));
+            long kb = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE) * 1024) / (minuten * 60);
+            Log.systemMeldung("-> Datenrate[kByte/s]: " + (kb == 0 ? "<1" : kb));
+            Log.systemMeldung("->         Dauer[Min]: " + (minuten == 0 ? "<1" : minuten));
+            Log.systemMeldung("             -> Start: " + sdf.format(startZeit));
+            Log.systemMeldung("             ->  Ende: " + sdf.format(stopZeit));
             Log.systemMeldung("");
             Log.systemMeldung("==================================================================================================================");
             Log.systemMeldung("==================================================================================================================");
