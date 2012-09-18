@@ -65,21 +65,21 @@ public class MediathekOrf extends MediathekReader implements Runnable {
         listeThemen.clear();
         meldungStart();
         bearbeiteAdresse(TOPICURL);
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/archiv");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/wednesday");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/thursday");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/friday");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday_prev");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday_prev");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/wednesday_prev");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/thursday_prev");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/friday_prev");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday_prev");
-//////////////        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday_prev");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/archiv");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/wednesday");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/thursday");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/friday");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday_prev");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday_prev");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/wednesday_prev");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/thursday_prev");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/friday_prev");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday_prev");
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday_prev");
         if (Daten.filmeLaden.getStop()) {
             meldungThreadUndFertig();
         } else if (listeThemen.size() == 0) {

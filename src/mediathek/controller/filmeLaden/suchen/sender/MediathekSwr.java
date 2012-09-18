@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *
- *   @author
+ * @author
  */
 public class MediathekSwr extends MediathekReader implements Runnable {
 
@@ -39,10 +39,9 @@ public class MediathekSwr extends MediathekReader implements Runnable {
     final int MAX_SEITEN = 500;
     public final int MAX_THEMEN_UPDATE = 4;
     public final int MAX_THEMEN_ALLES = 10;
-    private int seiten = 0;
 
     public MediathekSwr(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER, /* threads */ 1, /* urlWarten */ 1000, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 1000, startPrio);
     }
 
     //===================================
@@ -56,25 +55,25 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             suchen.listeFilmeNeu.infos[ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR] = "0";
         }
         startThema = Integer.parseInt(suchen.listeFilmeNeu.infos[ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR]);
-        if (!Daten.nogui) {
+//////////        if (!Daten.nogui) {
+//////////            meldungThreadUndFertig();
+//////////        } else {
+        //Theman suchen
+        listeThemen.clear();
+        addToList__("http://www.swrmediathek.de/tvlist.htm");
+        suchen.listeFilmeNeu.alteThemenLöschen(nameSenderMReader, listeThemen);
+        if (Daten.filmeLaden.getStop()) {
+            meldungThreadUndFertig();
+        } else if (listeThemen.size() == 0) {
             meldungThreadUndFertig();
         } else {
-            //Theman suchen
-            seiten = 0;
-            listeThemen.clear();
-            addToList__("http://www.swrmediathek.de/tvlist.htm");
-            suchen.listeFilmeNeu.alteThemenLöschen(nameSenderMReader, listeThemen);
-            if (Daten.filmeLaden.getStop()) {
-                meldungThreadUndFertig();
-            } else if (listeThemen.size() == 0) {
-                meldungThreadUndFertig();
-            } else {
-                for (int t = 0; t < maxThreadLaufen; ++t) {
-                    new Thread(new SenderThemaLaden()).start();
-                }
+            meldungAddMax(listeThemen.size());
+            for (int t = 0; t < maxThreadLaufen; ++t) {
+                new Thread(new SenderThemaLaden()).start();
             }
         }
     }
+////////////    }
 
     //===================================
     // private
@@ -128,180 +127,170 @@ public class MediathekSwr extends MediathekReader implements Runnable {
         @Override
         public void run() {
             try {
-                int maxThemen = MAX_THEMEN_UPDATE;
-                if (suchen.allesLaden) {
-                    maxThemen = MAX_THEMEN_ALLES;
-                }
-                int themen = 0;
                 meldungAddThread();
                 String[] link = null;
-                int nrListe = 0;
-                if (listeThemen.size() > 0) {
-                    try {
-                        nrListe = startThema;
-                    } catch (Exception ex) {
-                        nrListe = 0;
-                    }
-                    //liste präparieren
-                    if (listeThemen.size() <= nrListe) {
-                        nrListe = 0;
-                    } else {
-                        int k = 0;
-                        while (k < nrListe) {
-                            if ((link = getListeThemen()) != null) {
-                                ++k;
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                    if (listeThemen.size() > maxThemen) {
-                        meldungAddMax(maxThemen);
-                    } else {
-                        meldungAddMax(listeThemen.size());
-                    }
-                    while (!Daten.filmeLaden.getStop() && themen < maxThemen && (link = getListeThemen()) != null) {
-                        ++themen;
-                        ++nrListe;
-                        themenSeitenSuchen(link[0] /* url */, link[1] /* Thema */);
-                        meldungProgress(link[0]);
-                        meldungAddMax(1);
-                    }
-                    suchen.listeFilmeNeu.setInfo(ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR, String.valueOf(nrListe));
-                    meldungThreadUndFertig();
+                while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
+                    themenSeitenSuchen(link[0] /* url */, link[1] /* Thema */);
+                    meldungProgress(link[0]);
                 }
+                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-739285690, "MediathekSwr.SenderThemaLaden.run", ex.getMessage());
             }
         }
+////        public void run() {
+////            try {
+////                int maxThemen = MAX_THEMEN_UPDATE;
+////                if (suchen.allesLaden) {
+////                    maxThemen = MAX_THEMEN_ALLES;
+////                }
+////                int themen = 0;
+////                meldungAddThread();
+////                String[] link = null;
+////                int nrListe = 0;
+////                if (listeThemen.size() > 0) {
+////                    try {
+////                        nrListe = startThema;
+////                    } catch (Exception ex) {
+////                        nrListe = 0;
+////                    }
+////                    //liste präparieren
+////                    if (listeThemen.size() <= nrListe) {
+////                        nrListe = 0;
+////                    } else {
+////                        int k = 0;
+////                        while (k < nrListe) {
+////                            if ((link = getListeThemen()) != null) {
+////                                ++k;
+////                            } else {
+////                                break;
+////                            }
+////                        }
+////                    }
+////                    if (listeThemen.size() > maxThemen) {
+////                        meldungAddMax(maxThemen);
+////                    } else {
+////                        meldungAddMax(listeThemen.size());
+////                    }
+////                    while (!Daten.filmeLaden.getStop() && themen < maxThemen && (link = getListeThemen()) != null) {
+////                        ++themen;
+////                        ++nrListe;
+////                        themenSeitenSuchen(link[0] /* url */, link[1] /* Thema */);
+////                        meldungProgress(link[0]);
+////                        meldungAddMax(1);
+////                    }
+////                    suchen.listeFilmeNeu.setInfo(ListeFilme.FILMLISTE_INFOS_SWR_NR_THEMA_NR, String.valueOf(nrListe));
+////                    meldungThreadUndFertig();
+////                }
+////            } catch (Exception ex) {
+////                Log.fehlerMeldungMReader(-739285690, "MediathekSwr.SenderThemaLaden.run", ex.getMessage());
+////            }
+////        }
 
         private void themenSeitenSuchen(String strUrlFeed, String thema) {
-            final String MUSTER_URL = "<a class=\"plLink\" href=\"player.htm?show=";
+            final String MUSTER_URL = "<li><a class=\"plLink\" href=\"player.htm?show=";
             LinkedList<String> urls = new LinkedList<String>();
             strSeite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, strSeite1, thema);
-            ++seiten;
-            int pos = 0;
-            int pos1;
+            meldung(strUrlFeed);
+            int pos1 = 0;
             int pos2;
             String url;
-            while (!Daten.filmeLaden.getStop() && (pos = strSeite1.indexOf(MUSTER_URL, pos)) != -1) {
-                pos += MUSTER_URL.length();
-                pos1 = pos;
-                pos2 = strSeite1.indexOf("\"", pos);
-                if (pos1 != -1 && pos2 != -1 && pos1 != pos2) {
-                    url = strSeite1.substring(pos1, pos2);
-                    pos = pos2;
-                    if (url.equals("")) {
-                        Log.fehlerMeldungMReader(-648522300, "MediathekSwr.themenSeiteSuchen", "keine URL, Thema: " + thema);
-                    } else {
-                        url = "http://swrmediathek.de/player.htm?show=" + url;
-                        if (!urls.contains(url)) {
-                            //url sind mehrfach auf der Seite
-                            urls.add(url);
-                            addFilme2(strUrlFeed, thema, url);
-                        }
-                    }
+            int max = MAX_THEMEN_UPDATE;
+            if (suchen.allesLaden) {
+                max = MAX_THEMEN_ALLES;
+            }
+            while (!Daten.filmeLaden.getStop() && (pos1 = strSeite1.indexOf(MUSTER_URL, pos1)) != -1) {
+                --max;
+                if (max <= 0) {
+                    break;
                 }
+                pos1 += MUSTER_URL.length();
+                if ((pos2 = strSeite1.indexOf("\"", pos1)) != -1) {
+                    url = strSeite1.substring(pos1, pos2);
+                    if (url.equals("")) {
+                        Log.fehlerMeldungMReader(-875012369, "MediathekSwr.addFilme2", "keine URL, Thema: " + thema);
+                    } else {
+                        url = "http://swrmediathek.de/AjaxEntry?callback=jsonp1347979401564&ekey=" + url;
+                        jason(strUrlFeed, thema, url);
+                    }
+
+                }
+
             }
         }
 
-        private void addFilme2(String strUrlFeed, String thema, String urlFilm) {
-            final String MUSTER_URL = "<span class=\"entry_media\">";
-            final String MUSTER_TITEL = "entry_title=\"";
-//            final String MUSTER_DATUM_1 = "<span class=\"mClipInfos\">";
-//            final String MUSTER_DATUM_2 = "</span>";
-            final String MUSTER_DATUM_1 = "<span class=\"entry_pdatehd\">";
-            final String MUSTER_DATUM_2 = "</span>";
-            final String MUSTER_ZEIT_1 = "<span class=\"entry_pdateht\">";
-            final String MUSTER_ZEIT_2 = "</span>";
-
-            //<span class="mClipInfos">		22.11.2010 | 23.00 Uhr | 2:07 min</span>
-            //<p><span class="group_title">2+Leif</span> vom <span class="entry_pdatehd">22.11.2010</span> | <span class="entry_pdateht">23.00</span> Uhr</p>
-//            urlFilm = "http://www.swrmediathek.de/player.htm?show=3791f560-fb1d-11df-8817-0026b975f2e6";
-            meldung(urlFilm);
-            strSeite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, strSeite2, "");
-            ++seiten;
-            int pos;
+        protected void jason(String strUrlFeed, String thema, String urlJson) {
+            final String MUSTER_TITEL = "\"entry_title\":\"";
+            final String MUSTER_DATUM = "\"entry_pdatehd\":\"";
+            final String MUSTER_DAUER = "\"entry_durat\":\"";
+            final String MUSTER_ZEIT = "\"entry_pdateht\":\"";
+            final String MUSTER_URL = "\"entry_media\":\"";
             int pos1;
             int pos2;
             String url = "";
-            String titel;
+            String titel = "";
             String datum = "";
             String zeit = "";
-            String tmp = "";
-            // Datum suchen
-            if ((pos = strSeite2.indexOf(MUSTER_DATUM_1)) != -1) {
-                pos += MUSTER_DATUM_1.length();
-                try {
-                    if ((pos1 = strSeite2.indexOf(MUSTER_DATUM_2, pos)) != -1) {
-                        datum = strSeite2.substring(pos, pos1).trim();
-                        if (datum.length() < 10) {
-                            if (datum.contains(".")) {
-                                if ((tmp = datum.substring(0, datum.indexOf("."))).length() != 2) {
-                                    datum = "0" + datum;
-                                }
-                            }
-                            if (datum.indexOf(".") != datum.lastIndexOf(".")) {
-                                if ((tmp = datum.substring(datum.indexOf(".") + 1, datum.lastIndexOf("."))).length() != 2) {
-                                    datum = datum.substring(0, datum.indexOf(".") + 1) + "0" + datum.substring(datum.indexOf(".") + 1);
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                    Log.fehlerMeldungMReader(-649820016, "MediathekSwr.addFilme2-1", new String[]{ex.getMessage(), thema + " " + urlFilm});
-                }
-            }
-            // Zeit suchen
-            if ((pos = strSeite2.indexOf(MUSTER_ZEIT_1)) != -1) {
-                pos += MUSTER_ZEIT_1.length();
-                try {
-                    if ((pos1 = strSeite2.indexOf(MUSTER_ZEIT_2, pos)) != -1) {
-                        zeit = strSeite2.substring(pos, pos1).trim();
-                        if (!zeit.equals("")) {
-                            if (zeit.contains("Uhr")) {
-                                zeit = zeit.replace("Uhr", "");
-                            }
-                            if (zeit.length() <= 5) {
-                                zeit = zeit.trim() + ":00";
-                            }
-                            zeit = zeit.replace(".", ":");
-                            if (zeit.length() < 8) {
-                                if (zeit.contains(":")) {
-                                    if ((tmp = zeit.substring(0, zeit.indexOf(":"))).length() != 2) {
-                                        zeit = "0" + zeit;
-                                    }
-                                }
-                                if (zeit.indexOf(":") != zeit.lastIndexOf(":")) {
-                                    if ((tmp = zeit.substring(zeit.indexOf(":") + 1, zeit.lastIndexOf(":"))).length() != 2) {
-                                        zeit = zeit.substring(0, zeit.indexOf(":") + 1) + "0" + zeit + zeit.substring(zeit.lastIndexOf(":"));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                    Log.fehlerMeldungMReader(-795623410, "MediathekSwr.addFilme2-2", new String[]{ex.getMessage(), thema + " " + urlFilm});
-                }
-            }
-            pos = 0;
-            //url suchen
-            if ((pos = strSeite2.indexOf(MUSTER_URL, pos)) != -1) {
-                pos += MUSTER_URL.length();
-                pos1 = pos;
-                pos2 = strSeite2.indexOf("<", pos);
-                if (pos1 != -1 && pos2 != -1 && pos1 < pos2) {
-                    url = strSeite2.substring(pos1, pos2);
-                }
-            }
-            pos = 0;
-            //Titel
-            if ((pos = strSeite2.indexOf(MUSTER_TITEL, pos)) != -1) {
-                pos += MUSTER_TITEL.length();
-                pos1 = pos;
-                pos2 = strSeite2.indexOf("\"", pos);
-                if (pos1 != -1 && pos2 != -1 && pos1 < pos2) {
+            String dauer = "";
+            String tmp;
+            strSeite2 = getUrl.getUri_Utf(nameSenderMReader, urlJson, strSeite2, "");
+            if ((pos1 = strSeite2.indexOf(MUSTER_TITEL)) != -1) {
+                pos1 += MUSTER_TITEL.length();
+
+                if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
                     titel = strSeite2.substring(pos1, pos2);
+                }
+            }
+            if ((pos1 = strSeite2.indexOf(MUSTER_DATUM)) != -1) {
+                pos1 += MUSTER_DATUM.length();
+                if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                    datum = strSeite2.substring(pos1, pos2);
+                    if (datum.length() < 10) {
+                        if (datum.contains(".")) {
+                            if ((tmp = datum.substring(0, datum.indexOf("."))).length() != 2) {
+                                datum = "0" + datum;
+                            }
+                        }
+                        if (datum.indexOf(".") != datum.lastIndexOf(".")) {
+                            if ((tmp = datum.substring(datum.indexOf(".") + 1, datum.lastIndexOf("."))).length() != 2) {
+                                datum = datum.substring(0, datum.indexOf(".") + 1) + "0" + datum.substring(datum.indexOf(".") + 1);
+                            }
+                        }
+                    }
+                }
+            }
+            if ((pos1 = strSeite2.indexOf(MUSTER_DAUER)) != -1) {
+                pos1 += MUSTER_DAUER.length();
+
+                if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                    dauer = strSeite2.substring(pos1, pos2);
+                }
+            }
+            if ((pos1 = strSeite2.indexOf(MUSTER_ZEIT)) != -1) {
+                pos1 += MUSTER_ZEIT.length();
+                if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                    zeit = strSeite2.substring(pos1, pos2);
+                    if (zeit.length() <= 5) {
+                        zeit = zeit.trim() + ":00";
+                    }
+                    zeit = zeit.replace(".", ":");
+//                    if (zeit.length() < 8) {
+//                        if (zeit.contains(":")) {
+//                            if ((tmp = zeit.substring(0, zeit.indexOf(":"))).length() != 2) {
+//                                zeit = "0" + zeit;
+//                            }
+//                        }
+//                        if (zeit.indexOf(":") != zeit.lastIndexOf(":")) {
+//                            if ((tmp = zeit.substring(zeit.indexOf(":") + 1, zeit.lastIndexOf(":"))).length() != 2) {
+//                                zeit = zeit.substring(0, zeit.indexOf(":") + 1) + "0" + zeit + zeit.substring(zeit.lastIndexOf(":"));
+//                            }
+//                        }
+                }
+            }
+            if ((pos1 = strSeite2.indexOf(MUSTER_URL)) != -1) {
+                pos1 += MUSTER_URL.length();
+                if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                    url = strSeite2.substring(pos1, pos2);
                     if (!url.equals("")) {
                         // hohe Auflösung
                         if (url.startsWith("rtmp:")) {
@@ -312,7 +301,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
                         addFilm(film);
                     } else {
-                        Log.fehlerMeldungMReader(-468200690, "MediathekSwr.addFilme2-4", thema + " " + urlFilm);
+                        Log.fehlerMeldungMReader(-468200690, "MediathekSwr.addFilme2-4", thema + " " + urlJson);
                     }
                 }
             }
