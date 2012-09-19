@@ -23,7 +23,6 @@ import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.ListeFilme;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import org.apache.commons.lang3.StringEscapeUtils;
