@@ -32,15 +32,15 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
 public class MediathekBr extends MediathekReader implements Runnable {
-
+    
     public static final String SENDER = "BR";
-
+    
     public MediathekBr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 500, startPrio);
     }
-
+    
     private class ThemaLaden implements Runnable {
-
+        
         @Override
         public synchronized void run() {
             meldungStart();
@@ -54,13 +54,14 @@ public class MediathekBr extends MediathekReader implements Runnable {
             meldungThreadUndFertig();
         }
     }
-
+    
     @Override
     void addToList() {
         new Thread(new ThemaLaden()).start();
     }
-
+    
     void laden() {
+        getUrlIo.getDummy(nameSenderMReader);
         //        <video application="a792/o16" host="gffstream.fcod.llnwd.net" groesse="xlarge" stream="br/b7/b7konks25277.mp4" typ="aufzeichnung"/>
         StringBuilder seite = new StringBuilder();
         int pos = 0;
@@ -205,7 +206,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
             Log.fehlerMeldungMReader(-963486054, "MediathekBr.laden", ex.getMessage());
         }
     }
-
+    
     public String convertDatum(String datum) {
         //      <beginnPlan>2010-12-09T10:55:00</beginnPlan>
         try {
@@ -219,7 +220,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
         }
         return datum;
     }
-
+    
     public String convertTime(String datum) {
         //      <beginnPlan>2010-12-09T10:55:00</beginnPlan>
         try {

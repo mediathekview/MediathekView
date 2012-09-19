@@ -128,6 +128,11 @@ public class GetUrl {
         return seite;
     }
 
+    public synchronized void getDummy(String sender) {
+        // Dummy zum hochzählen des Seitenzählers
+        incSeitenZaehler(LISTE_SEITEN_ZAEHLER, sender, 1);
+    }
+
     public void setTimeout(int ttimeout) {
         timeout = ttimeout;
     }
