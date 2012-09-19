@@ -421,12 +421,16 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                                     if (i > max) {
                                         max = i;
                                         url = tmpUrl;
+                                        gefunden=true;
                                     }
                                 } catch (Exception e) {
                                 }
                             }
                         }
                     }
+                }
+                if(!gefunden){
+                    Log.fehlerMeldung(-302125078, "MediathekZdf.flashHolen-1", "!gefunden: " + urlFilm);
                 }
                 if (url.equals("")) {
                     // dann die alte URL eintragen
