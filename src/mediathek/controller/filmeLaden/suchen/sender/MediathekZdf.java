@@ -28,7 +28,7 @@ import mediathek.tool.Log;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekZdf extends MediathekReader implements Runnable {
 
@@ -40,7 +40,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
 
     /**
      *
-     *  @param ddaten
+     * @param ddaten
      */
     public MediathekZdf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, 8 /* threads */, 500 /* urlWarten */, startPrio);
@@ -374,6 +374,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     }
                 }
                 pos1 = 0;
+                boolean gefunden = false;
                 while ((pos1 = seite2.indexOf(MUSTER_URL, pos1)) != -1) {
                     pos1 += MUSTER_URL.length();
                     if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
@@ -384,9 +385,47 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     }
                     if (!url.contains(MUSTER_URL_VH) && tmpUrl.contains(MUSTER_URL_H)) {
                         url = tmpUrl;
+                        gefunden = true;
                     }
                     if (tmpUrl.contains(MUSTER_URL_VH)) {
                         url = tmpUrl;
+                        gefunden = true;
+                    }
+                }
+                if (!gefunden) {
+                    //<video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_51k_p7v9.mp4" system-bitrate="62000">
+                    //<param name="quality" value="low" />
+                    //</video>
+                    //<video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_536k_p9v9.mp4" system-bitrate="700000">
+                    //<param name="quality" value="high" />
+                    //</video>
+                    //<video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_1596k_p13v9.mp4" system-bitrate="1700000">
+                    //<param name="quality" value="veryhigh" />
+                    //</video>
+                    pos1 = 0;
+                    while ((pos1 = seite2.indexOf(MUSTER_URL, pos1)) != -1) {
+                        int max = 0;
+                        pos1 += MUSTER_URL.length();
+                        if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
+                            tmpUrl = seite2.substring(pos1, pos2);
+                        }
+                        if (url.equals("")) {
+                            url = tmpUrl;
+                        }
+                        if (tmpUrl.contains("k_")) {
+                            String tmp = tmpUrl.substring(0, tmpUrl.lastIndexOf("k_"));
+                            if (tmp.contains("_")) {
+                                tmp = tmp.substring(tmp.lastIndexOf("_") + 1);
+                                try {
+                                    int i = Integer.parseInt(tmp);
+                                    if (i > max) {
+                                        max = i;
+                                        url = tmpUrl;
+                                    }
+                                } catch (Exception e) {
+                                }
+                            }
+                        }
                     }
                 }
                 if (url.equals("")) {
