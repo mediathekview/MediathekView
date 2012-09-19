@@ -253,18 +253,6 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenuDebug">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Debug"/>
-          </Properties>
-          <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemLoeschen">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Filmliste l&#xf6;schen"/>
-              </Properties>
-            </MenuItem>
-          </SubComponents>
-        </Menu>
       </SubComponents>
     </Menu>
   </NonVisualComponents>

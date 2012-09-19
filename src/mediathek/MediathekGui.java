@@ -573,18 +573,6 @@ public final class MediathekGui extends javax.swing.JFrame {
                 ProgrammLog.LogDateiSchreiben(ddaten);
             }
         });
-        // Debug
-        if (!DDaten.debug) {
-            jMenuDebug.setVisible(false);
-        } else {
-            jMenuItemLoeschen.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    DDaten.listeFilme.clear();
-                    Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_FILMLISTE_NEU, MediathekGui.class.getSimpleName());
-                }
-            });
-        }
     }
 
     private void beenden() {
@@ -710,8 +698,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
         jMenuItemProgrammlog = new javax.swing.JMenuItem();
-        jMenuDebug = new javax.swing.JMenu();
-        jMenuItemLoeschen = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -945,13 +931,6 @@ public final class MediathekGui extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu3);
 
-        jMenuDebug.setText("Debug");
-
-        jMenuItemLoeschen.setText("Filmliste löschen");
-        jMenuDebug.add(jMenuItemLoeschen);
-
-        jMenuBar1.add(jMenuDebug);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -995,7 +974,6 @@ public final class MediathekGui extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenu jMenuDebug;
     private javax.swing.JMenu jMenuDownload;
     private javax.swing.JMenuItem jMenuItemAbosAendern;
     private javax.swing.JMenuItem jMenuItemAbosAusschalten;
@@ -1017,7 +995,6 @@ public final class MediathekGui extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemFilmAbspielen;
     private javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
     private javax.swing.JMenuItem jMenuItemFilmlisteLaden;
-    private javax.swing.JMenuItem jMenuItemLoeschen;
     private javax.swing.JMenuItem jMenuItemProgrammlog;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelInfo;
