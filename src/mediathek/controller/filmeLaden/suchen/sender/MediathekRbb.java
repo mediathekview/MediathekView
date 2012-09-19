@@ -45,6 +45,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
         final String ADRESSE = "http://mediathek.rbb-online.de/fernsehen";
         final String ITEM_1 = "<a href=\"/rbb/servlet/ajax-cache/";
         final String ITEM_URL = "http://mediathek.rbb-online.de/rbb/servlet/ajax-cache/";
+        final String ROOTADRESSE = "http://mediathek.rbb-online.de/sendung/";
         meldungStart();
         try {
             seite1 = getUrlIo.getUri_Utf(nameSenderMReader, ADRESSE, seite1, "");
@@ -56,11 +57,11 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                         seite2 = getUrlIo.getUri_Utf(nameSenderMReader, url, seite2, "");
                         int lpos1 = 0;
                         int lpos2 = 0;
-                        final String LIST_ITEM = "<h3 class=\"mt-title\"><a href=\"";
+                        final String LIST_ITEM = "<a href=\"/sendung/";
                         while ((lpos1 = seite2.indexOf(LIST_ITEM, lpos1)) != -1) {
                             lpos1 = lpos1 + LIST_ITEM.length();
                             lpos2 = seite2.indexOf("\"", lpos1);
-                            String listurl = ROOTADR + seite2.substring(lpos1, lpos2);
+                            String listurl = ROOTADRESSE + seite2.substring(lpos1, lpos2);
                             if (!listurl.equals("")) {
                                 String[] add = new String[]{listurl, ""};
                                 listeThemen.addUrl(add);
@@ -112,7 +113,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
         void addFilme(String url) {
             try {
                 // Hierin nun einen RSS feed URL extrahieren
-                final String RSS_ITEM = "<a href=\"/rbb/servlet/export/rss/";
+                final String RSS_ITEM = "<a href=\"/export/rss/";
                 seite1.setLength(0);
                 seite1 = getUrlIo.getUri_Utf(nameSenderMReader, url, seite1, "");
                 int rpos = seite1.indexOf(RSS_ITEM);
@@ -124,7 +125,6 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                     // Diesen RSS feed laden
                     seite2.setLength(0);
                     seite2 = getUrlIo.getUri_Utf(nameSenderMReader, rssurl, seite2, "");
-
                     rpos = 0;
                     int count = 0;
                     while ((rpos = seite2.indexOf("<link>", rpos)) != -1) {
