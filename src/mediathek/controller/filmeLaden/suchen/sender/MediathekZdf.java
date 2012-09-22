@@ -322,136 +322,144 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         }
 
         private void flashHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit) {
-            //<param name="app" value="ondemand" />
-            //<param name="host" value="cp125301.edgefcs.net" />
-            //<param name="protocols" value="rtmp,rtmpt" />
-            //<video dur="00:29:33" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_l.mp4" system-bitrate="62000">
-            //<param name="quality" value="low" />
-            //</video>
-            //
-            //<video dur="00:29:33" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_h.mp4" system-bitrate="700000">
-            //<param name="quality" value="high" />
-            //</video>
-            //
-            //<video dur="00:29:33" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_vh.mp4" system-bitrate="1700000">
-            //<param name="quality" value="veryhigh" />
-            //</video>
-
-            //http://wstreaming.zdf.de/3sat/veryhigh/ ... _hitec.asx
-            //http://fstreaming.zdf.de/3sat/veryhigh/ ... hitec.smil
-            //rtmpt://cp125301.edgefcs.net/ondemand/mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_vh.mp4
-
-            final String MUSTER_HOST = "<param name=\"host\" value=\"";
-            final String MUSTER_PROT = "<param name=\"protocols\" value=\"";
-            final String MUSTER_APP = "<param name=\"app\" value=\"";
-            final String MUSTER_URL = "src=\"";
-            final String MUSTER_URL_L = "l.mp4";
-            final String MUSTER_URL_H = "h.mp4";
-            final String MUSTER_URL_VH = "vh.mp4";
-            String orgUrl = urlFilm;
-            String host = "";
-            String app = "";
-            String prot;
-            String url = "", tmpUrl = "";
-            int pos1;
-            int pos2;
-            try {
-                meldung(orgUrl);
-                orgUrl = orgUrl.replace("http://wstreaming.zdf.de", "http://fstreaming.zdf.de");
-                orgUrl = orgUrl.replace("http://wgeostreaming.zdf.de", "http://fgeostreaming.zdf.de");
-                orgUrl = orgUrl.replace(".asx", ".smil");
-                seite2 = getUrl.getUri_Utf(nameSenderMReader, orgUrl, seite2, "urlThema: " + urlThema);
-                if ((pos1 = seite2.indexOf(MUSTER_HOST, 0)) != -1) {
-                    pos1 += MUSTER_HOST.length();
-                    if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
-                        host = seite2.substring(pos1, pos2);
-                    }
-                }
-                if ((pos1 = seite2.indexOf(MUSTER_APP, 0)) != -1) {
-                    pos1 += MUSTER_APP.length();
-                    if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
-                        app = seite2.substring(pos1, pos2);
-                    }
-                }
-                pos1 = 0;
-                boolean gefunden = false;
-                while ((pos1 = seite2.indexOf(MUSTER_URL, pos1)) != -1) {
-                    pos1 += MUSTER_URL.length();
-                    if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
-                        tmpUrl = seite2.substring(pos1, pos2);
-                    }
-                    if (url.equals("")) {
-                        url = tmpUrl;
-                    }
-                    if (!url.contains(MUSTER_URL_VH) && tmpUrl.contains(MUSTER_URL_H)) {
-                        url = tmpUrl;
-                        gefunden = true;
-                    }
-                    if (tmpUrl.contains(MUSTER_URL_VH)) {
-                        url = tmpUrl;
-                        gefunden = true;
-                    }
-                }
-                if (!gefunden) {
-                    //<video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_51k_p7v9.mp4" system-bitrate="62000">
-                    //<param name="quality" value="low" />
-                    //</video>
-                    //<video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_536k_p9v9.mp4" system-bitrate="700000">
-                    //<param name="quality" value="high" />
-                    //</video>
-                    //<video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_1596k_p13v9.mp4" system-bitrate="1700000">
-                    //<param name="quality" value="veryhigh" />
-                    //</video>
-                    pos1 = 0;
-                    while ((pos1 = seite2.indexOf(MUSTER_URL, pos1)) != -1) {
-                        int max = 0;
-                        pos1 += MUSTER_URL.length();
-                        if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
-                            tmpUrl = seite2.substring(pos1, pos2);
-                        }
-                        if (url.equals("")) {
-                            url = tmpUrl;
-                        }
-                        if (tmpUrl.contains("k_")) {
-                            String tmp = tmpUrl.substring(0, tmpUrl.lastIndexOf("k_"));
-                            if (tmp.contains("_")) {
-                                tmp = tmp.substring(tmp.lastIndexOf("_") + 1);
-                                try {
-                                    int i = Integer.parseInt(tmp);
-                                    if (i > max) {
-                                        max = i;
-                                        url = tmpUrl;
-                                        gefunden=true;
-                                    }
-                                } catch (Exception e) {
-                                }
-                            }
-                        }
-                    }
-                }
-                if(!gefunden){
-                    Log.fehlerMeldung(-302125078, "MediathekZdf.flashHolen-1", "!gefunden: " + urlFilm);
-                }
-                if (url.equals("")) {
-                    // dann die alte URL eintragen
-                    addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, urlFilm, urlFilm/* urlOrg */, ""/* urlRtmp */, datum, zeit));
-                    Log.fehlerMeldungMReader(-864100247, "MediathekZdf.flashHolen-1", "keine URL: " + urlFilm);
-                } else if (host.equals("")) {
-                    // dann die alte URL eintragen
-                    addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, urlFilm, urlFilm/* urlOrg */, ""/* urlRtmp */, datum, zeit));
-                    Log.fehlerMeldungMReader(-356047809, "MediathekZdf.flashHolen-2", "kein Host: " + urlFilm);
-                } else {
-                    url = "rtmpt://" + host + "/" + app + "/" + url;
-                    addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
-                }
-
-            } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-860248073, "MediathekZdf.filmHolen", new String[]{ex.getMessage(), urlFilm});
+            meldung(urlFilm);
+            DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit);
+            if (f != null) {
+                addFilm(f);
             }
         }
 
         private synchronized String[] getListeThemen() {
             return listeThemen.pollFirst();
         }
+    }
+
+    public static DatenFilm flash(GetUrl getUrl, StringBuffer seiteFlash, String senderName, String thema, String titel, String urlThema, String urlFilm, String datum, String zeit) {
+        //<param name="app" value="ondemand" />
+        //<param name="host" value="cp125301.edgefcs.net" />
+        //<param name="protocols" value="rtmp,rtmpt" />
+        //<video dur="00:29:33" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_l.mp4" system-bitrate="62000">
+        //<param name="quality" value="low" />
+        //</video>
+        //
+        //<video dur="00:29:33" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_h.mp4" system-bitrate="700000">
+        //<param name="quality" value="high" />
+        //</video>
+        //
+        //<video dur="00:29:33" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_vh.mp4" system-bitrate="1700000">
+        //<param name="quality" value="veryhigh" />
+        //</video>
+
+        //http://wstreaming.zdf.de/3sat/veryhigh/ ... _hitec.asx
+        //http://fstreaming.zdf.de/3sat/veryhigh/ ... hitec.smil
+        //rtmpt://cp125301.edgefcs.net/ondemand/mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_vh.mp4
+        DatenFilm ret = null;
+        final String MUSTER_HOST = "<param name=\"host\" value=\"";
+        final String MUSTER_PROT = "<param name=\"protocols\" value=\"";
+        final String MUSTER_APP = "<param name=\"app\" value=\"";
+        final String MUSTER_URL = "src=\"";
+        final String MUSTER_URL_L = "l.mp4";
+        final String MUSTER_URL_H = "h.mp4";
+        final String MUSTER_URL_VH = "vh.mp4";
+        String orgUrl = urlFilm;
+        String host = "";
+        String app = "";
+        String prot;
+        String url = "", tmpUrl = "";
+        int pos1;
+        int pos2;
+        try {
+            orgUrl = orgUrl.replace("http://wstreaming.zdf.de", "http://fstreaming.zdf.de");
+            orgUrl = orgUrl.replace("http://wgeostreaming.zdf.de", "http://fgeostreaming.zdf.de");
+            orgUrl = orgUrl.replace(".asx", ".smil");
+            seiteFlash = getUrl.getUri_Utf(senderName, orgUrl, seiteFlash, "urlThema: " + urlThema);
+            if ((pos1 = seiteFlash.indexOf(MUSTER_HOST, 0)) != -1) {
+                pos1 += MUSTER_HOST.length();
+                if ((pos2 = seiteFlash.indexOf("\"", pos1)) != -1) {
+                    host = seiteFlash.substring(pos1, pos2);
+                }
+            }
+            if ((pos1 = seiteFlash.indexOf(MUSTER_APP, 0)) != -1) {
+                pos1 += MUSTER_APP.length();
+                if ((pos2 = seiteFlash.indexOf("\"", pos1)) != -1) {
+                    app = seiteFlash.substring(pos1, pos2);
+                }
+            }
+            pos1 = 0;
+            boolean gefunden = false;
+            while ((pos1 = seiteFlash.indexOf(MUSTER_URL, pos1)) != -1) {
+                pos1 += MUSTER_URL.length();
+                if ((pos2 = seiteFlash.indexOf("\"", pos1)) != -1) {
+                    tmpUrl = seiteFlash.substring(pos1, pos2);
+                }
+                if (url.equals("")) {
+                    url = tmpUrl;
+                }
+                if (!url.contains(MUSTER_URL_VH) && tmpUrl.contains(MUSTER_URL_H)) {
+                    url = tmpUrl;
+                    gefunden = true;
+                }
+                if (tmpUrl.contains(MUSTER_URL_VH)) {
+                    url = tmpUrl;
+                    gefunden = true;
+                }
+            }
+            if (!gefunden) {
+                //<video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_51k_p7v9.mp4" system-bitrate="62000">
+                //<param name="quality" value="low" />
+                //</video>
+                //<video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_536k_p9v9.mp4" system-bitrate="700000">
+                //<param name="quality" value="high" />
+                //</video>
+                //<video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_1596k_p13v9.mp4" system-bitrate="1700000">
+                //<param name="quality" value="veryhigh" />
+                //</video>
+                pos1 = 0;
+                while ((pos1 = seiteFlash.indexOf(MUSTER_URL, pos1)) != -1) {
+                    int max = 0;
+                    pos1 += MUSTER_URL.length();
+                    if ((pos2 = seiteFlash.indexOf("\"", pos1)) != -1) {
+                        tmpUrl = seiteFlash.substring(pos1, pos2);
+                    }
+                    if (url.equals("")) {
+                        url = tmpUrl;
+                    }
+                    if (tmpUrl.contains("k_")) {
+                        String tmp = tmpUrl.substring(0, tmpUrl.lastIndexOf("k_"));
+                        if (tmp.contains("_")) {
+                            tmp = tmp.substring(tmp.lastIndexOf("_") + 1);
+                            try {
+                                int i = Integer.parseInt(tmp);
+                                if (i > max) {
+                                    max = i;
+                                    url = tmpUrl;
+                                    gefunden = true;
+                                }
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+                }
+            }
+            if (!gefunden) {
+                Log.fehlerMeldung(-302125078, "MediathekZdf.flash-1 " + senderName, "!gefunden: " + urlFilm);
+            }
+            if (url.equals("")) {
+                // dann die alte URL eintragen
+                ret = new DatenFilm(senderName, thema, urlThema, titel, urlFilm, urlFilm/* urlOrg */, ""/* urlRtmp */, datum, zeit);
+                Log.fehlerMeldungMReader(-864100247, "MediathekZdf.flash-1 " + senderName, "keine URL: " + urlFilm);
+            } else if (host.equals("")) {
+                // dann die alte URL eintragen
+                ret = new DatenFilm(senderName, thema, urlThema, titel, urlFilm, urlFilm/* urlOrg */, ""/* urlRtmp */, datum, zeit);
+                Log.fehlerMeldungMReader(-356047809, "MediathekZdf.flash-2 " + senderName, "kein Host: " + urlFilm);
+            } else {
+                url = "rtmpt://" + host + "/" + app + "/" + url;
+                ret = new DatenFilm(senderName, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit);
+            }
+
+        } catch (Exception ex) {
+            Log.fehlerMeldungMReader(-860248073, "MediathekZdf.flash" + senderName, new String[]{ex.getMessage(), urlFilm});
+        }
+        return ret;
     }
 }
