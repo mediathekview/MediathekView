@@ -1385,15 +1385,24 @@ public class GuiFilme extends PanelVorlage {
         @Override
         public void starter(StartEvent ev) {
             setInfo();
+            try {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
 //////////            int r = tabelle.getSelectedRow();
 //////////            if (r != -1) {
 //////////                ((TModelFilm) tabelle.getModel()).fireTableRowsUpdated(r, r);
 //////////            }
-//////////            tabelle.getSpalten();
+                        tabelle.getSpalten();
 //////////            ((TModelFilm) tabelle.getModel()).fireTableStructureChanged();
-            ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
+                        ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
 //////////            tabelle.validate();
-//////////            tabelle.setSpalten();
+                        tabelle.setSpalten();
+                    }
+                });
+            } catch (Exception ex) {
+                Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
+            }
         }
     }
 }
