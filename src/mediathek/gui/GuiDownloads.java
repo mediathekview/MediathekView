@@ -37,8 +37,6 @@ import javax.swing.event.ListSelectionListener;
 import mediathek.MediathekGui;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
-import mediathek.controller.io.starter.StartEvent;
-import mediathek.controller.io.starter.StartListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
@@ -167,7 +165,12 @@ public class GuiDownloads extends PanelVorlage {
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         im.put(enter, "aendern");
         //
-        ddaten.starterClass.addListener(new BeobachterStart());
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiDownloads.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                panelUpdate();
+            }
+        });
         jRadioButtonAlles.addActionListener(new BeobAnzeige());
         jRadioButtonAbos.addActionListener(new BeobAnzeige());
         jRadioButtonDownloads.addActionListener(new BeobAnzeige());
@@ -524,14 +527,6 @@ public class GuiDownloads extends PanelVorlage {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobachterStart implements StartListener {
-
-        @Override
-        public void starter(StartEvent ev) {
-            panelUpdate();
-        }
-    }
 
     private class BeobachterTableSelect1 implements ListSelectionListener {
 

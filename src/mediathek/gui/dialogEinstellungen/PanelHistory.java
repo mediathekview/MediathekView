@@ -26,10 +26,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import mediathek.daten.Daten;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
 
 public class PanelHistory extends PanelVorlage {

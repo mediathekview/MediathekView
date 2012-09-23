@@ -26,15 +26,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import mediathek.tool.Log;
 import mediathek.controller.io.starter.ListeStarts;
-import mediathek.controller.io.starter.StartEvent;
-import mediathek.controller.io.starter.StartListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.gui.GuiFilme;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.CellRendererFilme;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
 
 public class PanelInfoStarts extends PanelVorlage {
@@ -49,16 +49,21 @@ public class PanelInfoStarts extends PanelVorlage {
     public PanelInfoStarts(DDaten d) {
         super(d);
         initComponents();
-//        ddaten = d;
-//        jButtonAuffrischen.addActionListener(new BeobLaden());
-//        jButtonStoppen.addActionListener(new BeobStoppen());
-//        ddaten.starterClass.addListener(new BeobStart());
-//        tModel = ListeStarts.getNewModel();
-//        jTable1.setModel(tModel);
-//        jTable1.setDefaultRenderer(Object.class, new CellRendererFilme(ddaten));
-//        jTable1.addMouseListener(new BeobMausTabelle());
-//        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-//        init();
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                init();
+            }
+        });
+        ddaten = d;
+        jButtonAuffrischen.addActionListener(new BeobLaden());
+        jButtonStoppen.addActionListener(new BeobStoppen());
+        tModel = ListeStarts.getNewModel();
+        jTable1.setModel(tModel);
+        jTable1.setDefaultRenderer(Object.class, new CellRendererFilme(ddaten));
+        jTable1.addMouseListener(new BeobMausTabelle());
+        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        init();
     }
 
     private synchronized void init() {
@@ -164,18 +169,6 @@ public class PanelInfoStarts extends PanelVorlage {
                         stoppen(jTable1.getValueAt(delRow, DatenFilm.FILM_URL_NR).toString());
                     }
                 }
-            }
-        }
-    }
-
-    private class BeobStart implements StartListener {
-
-        @Override
-        public void starter(StartEvent ev) {
-            try {
-                init();
-            } catch (Exception ex) {
-                Log.fehlerMeldung(280046329,"PanelInfoStarts.BeobStart", ex);
             }
         }
     }

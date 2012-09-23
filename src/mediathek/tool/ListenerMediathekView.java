@@ -36,6 +36,7 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_LISTE_ERLEDIGTE_ABOS = 10;
     public static final int EREIGNIS_ART_IMPORT_FILMLISTE = 11;
     public static final int EREIGNIS_ART_DOWNLOAD_PROZENT = 12;
+    public static final int EREIGNIS_START_EVENT = 13;
     public int ereignis = -1;
     public String klasse = "";
 
@@ -68,7 +69,7 @@ public class ListenerMediathekView implements EventListener {
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
+            Log.fehlerMeldung(698989743, "ListenerMediathekView.pingA", ex);
         }
     }
 
