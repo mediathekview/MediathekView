@@ -37,6 +37,9 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_ART_IMPORT_FILMLISTE = 11;
     public static final int EREIGNIS_ART_DOWNLOAD_PROZENT = 12;
     public static final int EREIGNIS_START_EVENT = 13;
+    public static final int EREIGNIS_LOG_FEHLER = 14;
+    public static final int EREIGNIS_LOG_SYSTEM = 15;
+    public static final int EREIGNIS_LOG_PLAYER = 16;
     public int ereignis = -1;
     public String klasse = "";
 
@@ -51,17 +54,12 @@ public class ListenerMediathekView implements EventListener {
     public void ping() {
     }
 
-    public void pingA() {
+    public void pingGui() {
         try {
             if (SwingUtilities.isEventDispatchThread()) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        ping();
-                    }
-                });
+                ping();
             } else {
-                SwingUtilities.invokeAndWait(new Runnable() {
+                SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
                         ping();
@@ -73,9 +71,18 @@ public class ListenerMediathekView implements EventListener {
         }
     }
 
-    public void ping(String from) {
+    void dispatchOnSwingThread(Runnable r) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            r.run();
+        } else {
+            try {
+                SwingUtilities.invokeLater(r);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
-    public void ping(String fromm, String meldung) {
+    public void ping(String from) {
     }
 }

@@ -21,22 +21,23 @@ package mediathek.gui.dialogEinstellungen;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.tool.Log;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
 
 public class PanelMeldungen extends PanelVorlage {
 
     private StringBuffer text;
-    private String logArt;
+    private int logArt;
 
     /**
      * Creates new form GuiFeed
      *
      * @param d
      */
-    public PanelMeldungen(DDaten d, StringBuffer ttext, String llogArt, String header) {
+    public PanelMeldungen(DDaten d, StringBuffer ttext, int llogArt, String header) {
         super(d);
         initComponents();
         text = ttext;
@@ -44,15 +45,23 @@ public class PanelMeldungen extends PanelVorlage {
         logArt = llogArt;
         setText();
         //init
-        Log.addAdListener(new ListenerMediathekView() {
-
+//        Log.addAdListener(new ListenerMediathekView() {
+//
+//            @Override
+//            public void ping(String fromm) {
+//                if (logArt.equals(fromm)) {
+//                    setText();
+//                }
+//            }
+//        });
+        Daten.addAdListener(new ListenerMediathekView(logArt, PanelMeldungen.class.getSimpleName()) {
             @Override
-            public void ping(String fromm) {
-                if (logArt.equals(fromm)) {
-                    setText();
-                }
+            public void ping() {
+                setText();
             }
         });
+
+
         jButtonLoeschen.addActionListener(new BeobLoeschen());
     }
 

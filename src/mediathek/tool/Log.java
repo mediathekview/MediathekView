@@ -24,22 +24,21 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
-import javax.swing.event.EventListenerList;
 import mediathek.Main;
 import mediathek.daten.Daten;
 
 public class Log {
 
     public static boolean playerMeldungenAus = false;
-    public static final String LOG_FEHLER = "fehler";
-    public static final String LOG_SYSTEM = "system";
-    public static final String LOG_PLAYER = "player";
+    public static final int LOG_FEHLER = ListenerMediathekView.EREIGNIS_LOG_FEHLER;
+    public static final int LOG_SYSTEM = ListenerMediathekView.EREIGNIS_LOG_SYSTEM;
+    public static final int LOG_PLAYER = ListenerMediathekView.EREIGNIS_LOG_PLAYER;
     private static final int MAX_LAENGE_1 = 30000;
     private static final int MAX_LAENGE_2 = 20000;
     public static StringBuffer textSystem = new StringBuffer();
     public static StringBuffer textProgramm = new StringBuffer();
     public static StringBuffer textFehler = new StringBuffer();
-    private static EventListenerList listeners = new EventListenerList();
+//    private static EventListenerList listeners = new EventListenerList();
     private static LinkedList<Integer[]> fehlerListe = new LinkedList<Integer[]>(); // [Fehlernummer, Anzahl]
     private static boolean prog = false;
     private static Date startZeit = new Date(System.currentTimeMillis());
@@ -76,10 +75,9 @@ public class Log {
         fehlerListe.clear();
     }
 
-    public static void addAdListener(ListenerMediathekView listener) {
-        listeners.add(ListenerMediathekView.class, listener);
-    }
-
+//    public static void addAdListener(ListenerMediathekView listener) {
+//        listeners.add(ListenerMediathekView.class, listener);
+//    }
     public static synchronized void versionsMeldungen(String classname) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         Log.systemMeldung("");
@@ -337,38 +335,36 @@ public class Log {
         }
     }
 
-    public static void clearText(String art) {
-        if (art.equals(LOG_FEHLER)) {
+    public static void clearText(int art) {
+        if (art == LOG_FEHLER) {
             textFehler.setLength(0);
-        } else if (art.equals(LOG_SYSTEM)) {
+        } else if (art == LOG_SYSTEM) {
             textSystem.setLength(0);
-        } else if (art.equals(LOG_PLAYER)) {
+        } else if (art == LOG_PLAYER) {
             textProgramm.setLength(0);
-
-
-
-
         }
-        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
-            l.ping(art);
-        }
+        Daten.notifyMediathekListener(art, Log.class.getName());
+//        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
+//            if (l.ereignis == art) {
+//                l.ping();
+//            }
+//        }
     }
 
-    private static void notifyMediathekListener(String art, String zeile) {
-        if (art.equals(LOG_FEHLER)) {
+    private static void notifyMediathekListener(int art, String zeile) {
+        if (art == LOG_FEHLER) {
             addText(textFehler, zeile);
-        } else if (art.equals(LOG_SYSTEM)) {
+        } else if (art == LOG_SYSTEM) {
             addText(textSystem, zeile);
-        } else if (art.equals(LOG_PLAYER)) {
+        } else if (art == LOG_PLAYER) {
             addText(textProgramm, zeile);
-
-
-
-
         }
-        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
-            l.ping(art);
-        }
+        Daten.notifyMediathekListener(art, Log.class.getName());
+//        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
+//            if (l.ereignis == art) {
+//                l.ping();
+//            }
+//        }
     }
 
     private static void addText(StringBuffer text, String texte) {

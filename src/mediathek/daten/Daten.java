@@ -79,7 +79,7 @@ public class Daten {
                 if (!l.klasse.equals(klasse)) {
                     // um einen Kreislauf zu verhindern
                     try {
-                        l.pingA();
+                        l.pingGui();
                     } catch (Exception ex) {
                         Log.fehlerMeldung(562314008, "Daten.notifyMediathekListener", ex);
                     }
