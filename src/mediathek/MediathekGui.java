@@ -20,6 +20,7 @@
 package mediathek;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -273,8 +274,9 @@ public final class MediathekGui extends javax.swing.JFrame {
         jTabbedPane.addTab("Downloads", ddaten.guiDownloads);
         jTabbedPane.addTab("Abos", ddaten.guiAbo);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                new PanelMeldungen(ddaten, Log.textSystem, Log.LOG_SYSTEM, "Systemmeldungen"),
-                new PanelMeldungen(ddaten, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer"));
+                new PanelMeldungen(ddaten, Log.textSystem, ListenerMediathekView.EREIGNIS_LOG_SYSTEM, "Systemmeldungen"),
+                new PanelMeldungen(ddaten, Log.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Videoplayer"));
+        splitPane.setName("Meldungen");
         splitPane.addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -282,7 +284,6 @@ public final class MediathekGui extends javax.swing.JFrame {
                 ddaten.infoPanel.setIdx(InfoPanel.IDX_GUI_FILME);
             }
         });
-
         if (Daten.debug) {
             jTabbedPane.addTab("Debug", new GuiDebug(ddaten));
             jTabbedPane.addTab("Starts", new PanelInfoStarts(ddaten));
@@ -291,7 +292,9 @@ public final class MediathekGui extends javax.swing.JFrame {
 
     private void setPanelMeldungen() {
         if (jCheckBoxMenuItemMeldungen.isSelected()) {
-            jTabbedPane.add("Meldungen", splitPane);
+            jTabbedPane.add(splitPane, 3);
+        } else {
+            jTabbedPane.remove(splitPane);
         }
     }
 
@@ -546,17 +549,16 @@ public final class MediathekGui extends javax.swing.JFrame {
             }
         });
         jCheckBoxMenuItemMeldungen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR]));
+        if (Daten.debug) {
+            jCheckBoxMenuItemMeldungen.setSelected(true);
+        }
         setPanelMeldungen();
         jCheckBoxMenuItemMeldungen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.setGeaendert();
                 Daten.system[Konstanten.SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemMeldungen.isSelected());
-                if (jCheckBoxMenuItemMeldungen.isSelected()) {
-                    jTabbedPane.add("Meldungen", splitPane);
-                } else {
-                    jTabbedPane.remove(splitPane);
-                }
+                setPanelMeldungen();
             }
         });
         // Hilfe
