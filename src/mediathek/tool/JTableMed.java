@@ -65,7 +65,7 @@ public final class JTableMed extends JTable {
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
     }
 
-    public void getSpalten() {
+    public void getSelected() {
         // Einstellungen der Tabelle merken
         sel = this.getSelectedRow();
         rows = this.getRowCount();
@@ -74,6 +74,28 @@ public final class JTableMed extends JTable {
         } else {
             idx = "";
         }
+    }
+
+    public void setSelected() {
+        // gemerkte Einstellungen der Tabelle wieder setzten
+        stopBeob = true;
+        if (!idx.equals("")) {
+            int r = ((TModel) this.getModel()).getIdxRow(idx);
+            if (r >= 0) {
+                // ansonsten gibts die Zeile nicht mehr
+                r = this.convertRowIndexToView(r);
+                this.setRowSelectionInterval(r, r);
+                this.scrollRectToVisible(getCellRect(r, 0, false));
+            }
+        }
+        idx = "";
+        stopBeob = false;
+    }
+
+    public void getSpalten() {
+        // Einstellungen der Tabelle merken
+        getSelected();
+        rows = this.getRowCount();
         for (int i = 0; i < reihe.length && i < this.getModel().getColumnCount(); ++i) {
             reihe[i] = this.convertColumnIndexToModel(i);
         }
@@ -91,6 +113,7 @@ public final class JTableMed extends JTable {
     public void setSpalten() {
         // gemerkte Einstellungen der Tabelle wieder setzten
         stopBeob = true;
+        setSelected();
         try {
             for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
                 if (breite[i] == 0) {
@@ -111,16 +134,6 @@ public final class JTableMed extends JTable {
                     this.getRowSorter().setSortKeys(listeSortKeys);
                 }
             }
-            if (!idx.equals("")) {
-                int r = ((TModel) this.getModel()).getIdxRow(idx);
-                if (r >= 0) {
-                    // ansonsten gibts die Zeile nicht mehr
-                    r = this.convertRowIndexToView(r);
-                    this.setRowSelectionInterval(r, r);
-                    this.scrollRectToVisible(getCellRect(r, 0, false));
-                }
-            }
-            idx = "";
             this.validate();
         } catch (Exception ex) {
             Log.fehlerMeldung(965001463, "JTableMed.setSpalten", ex);

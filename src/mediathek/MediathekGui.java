@@ -19,10 +19,6 @@
  */
 package mediathek;
 
-import mediathek.tool.Log;
-import mediathek.tool.Konstanten;
-import mediathek.daten.Daten;
-import mediathek.gui.dialog.DialogStarteinstellungen;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -41,27 +37,32 @@ import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
-import mediathek.tool.ListenerMediathekView;
+import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.CheckUpdate;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.ProgrammLog;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.InfoPanel;
-import mediathek.tool.OSXAdapter;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.DialogOk;
+import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialog.PanelHilfe;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
+import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
+import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
+import mediathek.tool.OSXAdapter;
 
 public final class MediathekGui extends javax.swing.JFrame {
 
@@ -268,7 +269,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         ddaten.guiFilme = new GuiFilme(ddaten);
         ddaten.guiDownloads = new GuiDownloads(ddaten);
         ddaten.guiAbo = new GuiAbo(ddaten);
-        ddaten.guiDebug = new GuiDebug(ddaten);
         jTabbedPane.addTab("Filme", ddaten.guiFilme);
         jTabbedPane.addTab("Downloads", ddaten.guiDownloads);
         jTabbedPane.addTab("Abos", ddaten.guiAbo);
@@ -284,7 +284,8 @@ public final class MediathekGui extends javax.swing.JFrame {
         });
 
         if (Daten.debug) {
-            jTabbedPane.addTab("Debug", ddaten.guiDebug);
+            jTabbedPane.addTab("Debug", new GuiDebug(ddaten));
+            jTabbedPane.addTab("Starts", new PanelInfoStarts(ddaten));
         }
     }
 

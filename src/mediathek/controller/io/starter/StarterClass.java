@@ -28,10 +28,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.event.EventListenerList;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.TModel;
 
@@ -146,10 +148,6 @@ public class StarterClass {
 
     }
 
-    public void addListener(StartListener listener) {
-        listeners.add(StartListener.class, listener);
-    }
-
     public synchronized void addStarts(Starts starts) {
         //add: Neues Element an die Liste anhängen
         allesStop = false;
@@ -225,24 +223,7 @@ public class StarterClass {
     // Private
     //===================================
     private void notifyStartEvent() {
-        StartEvent event;
-        int down = 0;
-        int progress = 0;
-        int max = listeStarts.getmax();
-        Iterator<Starts> it = listeStarts.getIt();
-        while (it.hasNext()) {
-            Starts s = it.next();
-            if (s.status == Starts.STATUS_RUN) {
-                ++down;
-            }
-            if (s.status >= Starts.STATUS_FERTIG) {
-                ++progress;
-            }
-        }
-        event = new StartEvent(this, down, progress, max, allesStop);
-        for (StartListener l : listeners.getListeners(StartListener.class)) {
-            l.starter(event);
-        }
+        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
     }
 
     private Starts getListe() {

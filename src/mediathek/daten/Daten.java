@@ -19,15 +19,14 @@
  */
 package mediathek.daten;
 
-import mediathek.tool.Konstanten;
 import java.io.File;
 import javax.swing.event.EventListenerList;
-import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.FilmeLaden;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
-import mediathek.daten.ListeFilme;
+import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
 
 public class Daten {
 
@@ -79,7 +78,11 @@ public class Daten {
             if (l.ereignis == ereignis) {
                 if (!l.klasse.equals(klasse)) {
                     // um einen Kreislauf zu verhindern
-                    l.ping();
+                    try {
+                        l.pingA();
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(562314008, "Daten.notifyMediathekListener", ex);
+                    }
                 }
             }
         }

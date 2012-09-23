@@ -54,8 +54,6 @@ import javax.swing.event.ListSelectionListener;
 import mediathek.MediathekGui;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
-import mediathek.controller.io.starter.StartEvent;
-import mediathek.controller.io.starter.StartListener;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
@@ -129,6 +127,15 @@ public class GuiFilme extends PanelVorlage {
             public void ping() {
                 checkBlacklist();
                 tabelleBauen();
+            }
+        });
+        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                tabelle.getSelected();
+                ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
+                tabelle.setSelected();
+                setInfo();
             }
         });
     }
@@ -268,7 +275,6 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxKeineGesehenen.addActionListener(new BeobFilter());
         //restliche Filter
         jScrollPane1.addMouseListener(new BeobMausLaufendeProgramme());
-        ddaten.starterClass.addListener(new BeobStart());
         ddaten.infoPanel.addMouseListener(new BeobMausLaufendeProgramme());
         // Filter erst mal ausblenden
         jCheckBoxFilter.addActionListener(new BeobMpanel(jCheckBoxFilter, jPanelFilter, "Filter"));
@@ -1376,32 +1382,6 @@ public class GuiFilme extends PanelVorlage {
             checkPattern(jTextFieldFilterTitel);
             if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
                 tabelleBauen();
-            }
-        }
-    }
-
-    private class BeobStart implements StartListener {
-
-        @Override
-        public void starter(StartEvent ev) {
-            setInfo();
-            try {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-//////////            int r = tabelle.getSelectedRow();
-//////////            if (r != -1) {
-//////////                ((TModelFilm) tabelle.getModel()).fireTableRowsUpdated(r, r);
-//////////            }
-                        tabelle.getSpalten();
-//////////            ((TModelFilm) tabelle.getModel()).fireTableStructureChanged();
-                        ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
-//////////            tabelle.validate();
-                        tabelle.setSpalten();
-                    }
-                });
-            } catch (Exception ex) {
-                Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
             }
         }
     }

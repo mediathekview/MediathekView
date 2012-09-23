@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import mediathek.tool.Konstanten;
 import mediathek.MediathekGui;
 import mediathek.controller.io.ErledigteAbos;
 import mediathek.controller.io.History;
@@ -27,10 +26,10 @@ import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.IoXmlSchreiben;
 import mediathek.controller.io.starter.StarterClass;
 import mediathek.gui.GuiAbo;
-import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.InfoPanel;
+import mediathek.tool.Konstanten;
 
 public final class DDaten extends Daten {
     // Listen
@@ -52,7 +51,6 @@ public final class DDaten extends Daten {
     public GuiFilme guiFilme = null;
     public GuiDownloads guiDownloads = null;
     public GuiAbo guiAbo = null;
-    public GuiDebug guiDebug = null;
     // für die Tabellen
     public String[] tabFilmeBreit = new String[DatenFilm.FILME_MAX_ELEM];
     
