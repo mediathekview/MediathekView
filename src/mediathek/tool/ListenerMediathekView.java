@@ -25,10 +25,10 @@ import javax.swing.event.EventListenerList;
 
 public class ListenerMediathekView implements EventListener {
 
-    public static final int EREIGNIS_BLACKLIST_ADD = 1;
-    public static final int EREIGNIS_BLACKLIST_DEL = 2;
-    public static final int EREIGNIS_LISTE_PSET = 3;
-    public static final int EREIGNIS_FILMLISTE_NEU = 4;
+    public static final int EREIGNIS_BLACKLIST_GEAENDERT = 1;
+    public static final int EREIGNIS_LISTE_PSET = 2;
+    public static final int EREIGNIS__FILMLISTE_GEAENDERT = 3;
+    public static final int EREIGNIS_GANZ_NEUE_FILMLISTE = 4;
     public static final int EREIGNIS_ANZAHL_DOWNLOADS = 5;
     public static final int EREIGNIS_LISTE_UPDATESERVER = 6;
     public static final int EREIGNIS_LISTE_DOWNLOADS = 7;
