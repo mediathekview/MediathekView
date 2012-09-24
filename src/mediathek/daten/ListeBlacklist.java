@@ -38,7 +38,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     public boolean add(DatenBlacklist db) {
         boolean ret;
         ret = super.add(db);
-        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_BLACKLIST_ADD, ListeBlacklist.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_ADD, ListeBlacklist.class.getSimpleName());
         return ret;
     }
 

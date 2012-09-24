@@ -43,7 +43,6 @@ public class Daten {
     public static FilmeLaden filmeLaden;
     public static IoXmlFilmlisteLesen ioXmlFilmlisteLesen = null;
     public static ListeFilme listeFilme = null;
-    private static EventListenerList listeners = new EventListenerList();
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     public Daten(String pfad) {
@@ -67,25 +66,6 @@ public class Daten {
         listeFilme = new ListeFilme();
         ioXmlFilmlisteLesen = new IoXmlFilmlisteLesen();
         filmeLaden = new FilmeLaden();
-    }
-
-    public synchronized static void addAdListener(ListenerMediathekView listener) {
-        listeners.add(ListenerMediathekView.class, listener);
-    }
-
-    public synchronized static void notifyMediathekListener(int ereignis, String klasse) {
-        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
-            if (l.ereignis == ereignis) {
-                if (!l.klasse.equals(klasse)) {
-                    // um einen Kreislauf zu verhindern
-                    try {
-                        l.pingGui();
-                    } catch (Exception ex) {
-                        Log.fehlerMeldung(562314008, "Daten.notifyMediathekListener", ex);
-                    }
-                }
-            }
-        }
     }
 
     public static void setUserAgentAuto() {

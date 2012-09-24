@@ -42,7 +42,7 @@ public class PanelHistory extends PanelVorlage {
     }
 
     private void init() {
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, PanelHistory.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, PanelHistory.class.getSimpleName()) {
 
             @Override
             public void ping() {

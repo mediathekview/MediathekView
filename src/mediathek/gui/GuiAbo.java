@@ -84,7 +84,7 @@ public class GuiAbo extends PanelVorlage {
     //private
     //===================================
     private void initBeobachter() {
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName()) {
             @Override
             public void ping() {
                 load();
@@ -129,7 +129,7 @@ public class GuiAbo extends PanelVorlage {
             }
             DDaten.setGeaendert();
             load();
-            Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -169,7 +169,7 @@ public class GuiAbo extends PanelVorlage {
                 tabelle.addRowSelectionInterval(rows[i], rows[i]);
             }
             setInfo();
-            Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
         } else {
             new HinweisKeineAuswahl().zeigen();
         }

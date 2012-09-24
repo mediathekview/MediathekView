@@ -21,6 +21,7 @@ package mediathek.tool;
 
 import java.util.EventListener;
 import javax.swing.SwingUtilities;
+import javax.swing.event.EventListenerList;
 
 public class ListenerMediathekView implements EventListener {
 
@@ -42,9 +43,7 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_LOG_PLAYER = 16;
     public int ereignis = -1;
     public String klasse = "";
-
-    public ListenerMediathekView() {
-    }
+    private static EventListenerList listeners = new EventListenerList();
 
     public ListenerMediathekView(int eereignis, String kklasse) {
         ereignis = eereignis;
@@ -54,7 +53,26 @@ public class ListenerMediathekView implements EventListener {
     public void ping() {
     }
 
-    public void pingGui() {
+    public static synchronized void addListener(ListenerMediathekView listener) {
+        listeners.add(ListenerMediathekView.class, listener);
+    }
+
+    public static synchronized void notify(int ereignis, String klasse) {
+        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
+            if (l.ereignis == ereignis) {
+                if (!l.klasse.equals(klasse)) {
+                    // um einen Kreislauf zu verhindern
+                    try {
+                        l.pingen();
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(562314008, "ListenerMediathekView.notifyMediathekListener", ex);
+                    }
+                }
+            }
+        }
+    }
+
+    private void pingen() {
         try {
             if (SwingUtilities.isEventDispatchThread()) {
                 ping();
@@ -69,20 +87,5 @@ public class ListenerMediathekView implements EventListener {
         } catch (Exception ex) {
             Log.fehlerMeldung(698989743, "ListenerMediathekView.pingA", ex);
         }
-    }
-
-    void dispatchOnSwingThread(Runnable r) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            r.run();
-        } else {
-            try {
-                SwingUtilities.invokeLater(r);
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        }
-    }
-
-    public void ping(String from) {
     }
 }

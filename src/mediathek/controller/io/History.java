@@ -35,7 +35,7 @@ public class History extends HashSet<String> {
     @Override
     public boolean add(String url) {
         boolean ret = super.add(url);
-        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, History.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, History.class.getSimpleName());
         return ret;
     }
 
@@ -82,7 +82,7 @@ public class History extends HashSet<String> {
             return;
         }
         file.delete();
-        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, History.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, History.class.getSimpleName());
     }
 
     public Object[][] getObjectData() {

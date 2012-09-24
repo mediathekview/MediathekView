@@ -66,7 +66,7 @@ public class PanelPsetLang extends PanelVorlage {
 
     private void init() {
         //Programme
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (!stopBeob) {
@@ -305,7 +305,7 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void notifyPset() {
-        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName());
     }
 
     private void fillTextProgramme() {

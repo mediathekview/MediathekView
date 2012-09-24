@@ -49,7 +49,7 @@ public class PanelInfoStarts extends PanelVorlage {
     public PanelInfoStarts(DDaten d) {
         super(d);
         initComponents();
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 init();

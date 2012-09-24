@@ -85,7 +85,7 @@ public class ErledigteAbos {
                 }
             }
         }
-        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         return ret;
     }
 
@@ -205,7 +205,7 @@ public class ErledigteAbos {
                 }
             }
             ddaten.erledigteAbos.clearLogList();
-            Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         }
         return gefunden;
     }

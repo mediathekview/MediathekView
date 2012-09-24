@@ -146,7 +146,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 // und evtl. auch gleich starten
                 ddaten.starterClass.addStarts(new Starts(datenDownload));
             }
-            Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
         this.dispose();
     }

@@ -80,7 +80,7 @@ public class PanelEinstellungen extends PanelVorlage {
             }
         });
         jTextFieldUserAgent.getDocument().addDocumentListener(new BeobUserAgent());
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
 
             @Override
             public void ping() {
@@ -344,7 +344,7 @@ public class PanelEinstellungen extends PanelVorlage {
             Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
                     String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue());
             DDaten.setGeaendert();
-            Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
         }
     }
 

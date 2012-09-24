@@ -343,7 +343,7 @@ public class Log {
         } else if (art == LOG_PLAYER) {
             textProgramm.setLength(0);
         }
-        Daten.notifyMediathekListener(art, Log.class.getName());
+        ListenerMediathekView.notify(art, Log.class.getName());
 //        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
 //            if (l.ereignis == art) {
 //                l.ping();
@@ -359,7 +359,7 @@ public class Log {
         } else if (art == LOG_PLAYER) {
             addText(textProgramm, zeile);
         }
-        Daten.notifyMediathekListener(art, Log.class.getName());
+        ListenerMediathekView.notify(art, Log.class.getName());
 //        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
 //            if (l.ereignis == art) {
 //                l.ping();
