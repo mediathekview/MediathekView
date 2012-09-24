@@ -26,10 +26,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import mediathek.daten.Daten;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
 
 public class PanelErledigteAbos extends PanelVorlage {
@@ -52,15 +51,9 @@ public class PanelErledigteAbos extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.erledigteAbos.alleLoeschen();
-                tabelleLaden();
             }
         });
         tabelleLaden();
-    }
-
-    private void loeschen() {
-        tabelleLaden();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS__FILMLISTE_GEAENDERT, PanelErledigteAbos.class.getSimpleName());
     }
 
     private void tabelleLaden() {
@@ -159,7 +152,6 @@ public class PanelErledigteAbos extends PanelVorlage {
                 if (selectedTableRow >= 0) {
                     String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), 0).toString();
                     ddaten.erledigteAbos.urlAusLogfileLoeschen(del);
-                    loeschen();
                 }
             }
         }

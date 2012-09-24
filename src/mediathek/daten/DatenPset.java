@@ -23,9 +23,9 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
-import mediathek.tool.Log;
 import mediathek.controller.io.starter.Starts;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.Log;
 
 public class DatenPset {
 

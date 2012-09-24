@@ -26,12 +26,44 @@ import java.util.ListIterator;
 import mediathek.gui.GuiFilme;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     //Tags Blacklist
 
     private long tage = 0;
+
+    @Override
+    public boolean add(DatenBlacklist b) {
+        boolean ret = super.add(b);
+        DDaten.setGeaendert();
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        return ret;
+    }
+
+    @Override
+    public boolean remove(Object b) {
+        boolean ret = super.remove(b);
+        DDaten.setGeaendert();
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        return ret;
+    }
+
+    @Override
+    public DatenBlacklist remove(int idx) {
+        DatenBlacklist ret = super.remove(idx);
+        DDaten.setGeaendert();
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        return ret;
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        DDaten.setGeaendert();
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+    }
 
     public Object[][] getObjectData() {
         Object[][] object;

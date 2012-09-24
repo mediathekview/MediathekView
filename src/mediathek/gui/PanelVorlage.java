@@ -21,8 +21,8 @@ package mediathek.gui;
 
 import java.util.List;
 import javax.swing.JTable;
-import mediathek.tool.Log;
 import mediathek.daten.DDaten;
+import mediathek.tool.Log;
 
 public class PanelVorlage extends javax.swing.JPanel {
 

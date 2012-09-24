@@ -24,6 +24,7 @@ public final class JTableMed extends JTable {
     public static final String TABELLEN = "Tabellen";
     public static final int TABELLE_EIGENSCHAFTEN_MAX = 2; // Breite, Reihenfolge
     public static final int TABELLEN_MAX = 3; // GuiFilme, GuiDownlaod, GuiAbo
+    public static final int TABELLE_STANDARD = -1;
     public static final int TABELLE_TAB_FILME = 0;
     public static final int TABELLE_TAB_DOWNLOADS = 1;
     public static final int TABELLE_TAB_ABOS = 2;
@@ -59,6 +60,17 @@ public final class JTableMed extends JTable {
                 this.setModel(new TModelAbo(new Object[][]{}, spaltenTabelle));
                 break;
         }
+        breite = getArray(spaltenTabelle.length);
+        reihe = getArray(spaltenTabelle.length);
+        this.setAutoCreateRowSorter(true);
+        this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+    }
+
+    public JTableMed(String[] sspaltenTabelle) {
+        tabelle = TABELLE_STANDARD;
+
+        spaltenTabelle = sspaltenTabelle;
+        this.setModel(new TModel(new Object[][]{}, spaltenTabelle));
         breite = getArray(spaltenTabelle.length);
         reihe = getArray(spaltenTabelle.length);
         this.setAutoCreateRowSorter(true);
@@ -146,6 +158,10 @@ public final class JTableMed extends JTable {
         // mit den gespeicherten Daten oder
         // mit den Standardwerten
         // erst die Breite, dann die Reihenfolge
+        if (tabelle == TABELLE_STANDARD) {
+            // wird nur für eingerichtet Tabellen gemacht
+            return;
+        }
         String b, r;
         boolean ok = false;
         if (!DDaten.system[nrDatenSystem].equals("")) {
@@ -235,6 +251,8 @@ public final class JTableMed extends JTable {
                     }
                 }
                 break;
+            case TABELLE_STANDARD:
+                break;
         }
         this.setRowSorter(null);
         this.setAutoCreateRowSorter(true);
@@ -242,6 +260,10 @@ public final class JTableMed extends JTable {
     }
 
     private void tabelleNachDatenSchreiben() {
+        if (tabelle == TABELLE_STANDARD) {
+            // wird nur für eingerichtet Tabellen gemacht
+            return;
+        }
         // Tabellendaten ind die Daten.system schreiben
         // erst die Breite, dann die Reihenfolge
         String b, r;

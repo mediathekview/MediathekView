@@ -27,7 +27,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import mediathek.daten.DDaten;
-import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
@@ -42,7 +41,7 @@ public class PanelHistory extends PanelVorlage {
     }
 
     private void init() {
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, PanelHistory.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, PanelHistory.class.getSimpleName()) {
 
             @Override
             public void ping() {
@@ -54,15 +53,9 @@ public class PanelHistory extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.history.loschen();
-                loeschen();
             }
         });
         tabelleLaden();
-    }
-
-    private void loeschen() {
-        tabelleLaden();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS__FILMLISTE_GEAENDERT, PanelHistory.class.getSimpleName());
     }
 
     private void tabelleLaden() {
@@ -161,7 +154,6 @@ public class PanelHistory extends PanelVorlage {
                 if (selectedTableRow >= 0) {
                     String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), 0).toString();
                     ddaten.history.remove(del);
-                    loeschen();
                 }
             }
         }

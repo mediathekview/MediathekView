@@ -29,30 +29,48 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.event.*;
-import mediathek.daten.Daten;
-import mediathek.tool.Log;
-import mediathek.tool.ListenerMediathekView;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
+import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.CellRendererProgramme;
 import mediathek.tool.CellRendererPset;
-import mediathek.gui.dialog.DialogHilfe;
-import mediathek.tool.*;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.GuiKonstanten;
+import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.JTableMed;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
+import mediathek.tool.TModel;
 
 public class PanelPsetLang extends PanelVorlage {
 
     private int neuZaehler = 0;
     private String exportPfad = "";
     private ListePset listePset;
+    private JTableMed tabellePset;
+    private JTableMed tabelleProgramme;
+    
+    
 
     public PanelPsetLang(DDaten d) {
         super(d);
         initComponents();
+        tabellePset = new JTableMed(DatenPset.PROGRAMMSET_COLUMN_NAMES_);
+        jScrollPane3.setViewportView(tabellePset);
+        tabelleProgramme = new JTableMed(DatenProg.PROGRAMM_COLUMN_NAMES_);
+        jScrollPane1.setViewportView(tabelleProgramme);
         listePset = ddaten.listePset;
         init();
     }
@@ -175,15 +193,15 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
         jButtonPruefen.addActionListener(new BeobPuefen());
-        jTableProgramme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
-        jTableProgramme.setDefaultRenderer(Object.class, new CellRendererProgramme(ddaten));
-        jTablePset.setDefaultRenderer(Object.class, new CellRendererPset(ddaten));
-        jTablePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
+        tabelleProgramme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
+        tabelleProgramme.setDefaultRenderer(Object.class, new CellRendererProgramme(ddaten));
+        tabellePset.setDefaultRenderer(Object.class, new CellRendererPset(ddaten));
+        tabellePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
         tabellePset();
         spaltenSetzen();
-        if (jTablePset.getRowCount() > 0) {
-            jTablePset.setRowSelectionInterval(0, 0);
-            jTablePset.scrollRectToVisible(jTablePset.getCellRect(0, 0, false));
+        if (tabellePset.getRowCount() > 0) {
+            tabellePset.setRowSelectionInterval(0, 0);
+            tabellePset.scrollRectToVisible(tabellePset.getCellRect(0, 0, false));
         }
     }
 
@@ -194,31 +212,31 @@ public class PanelPsetLang extends PanelVorlage {
 
     private void nurtabellePset() {
         stopBeob = true;
-        getSpalten(jTablePset);
-        jTablePset.setModel(listePset.getModel());
+        tabellePset.getSpalten();
+        tabellePset.setModel(listePset.getModel());
         spaltenSetzen();
-        setSpalten(jTablePset);
-        jTablePset.updateUI();
+        tabellePset.setSpalten();
+//        tabellePset.updateUI();
         stopBeob = false;
     }
 
     private void spaltenSetzen() {
-        for (int i = 0; i < jTablePset.getColumnCount(); ++i) {
+        for (int i = 0; i < tabellePset.getColumnCount(); ++i) {
             if (i == DatenPset.PROGRAMMSET_NAME_NR) {
-                jTablePset.getColumnModel().getColumn(i).setMinWidth(10);
-                jTablePset.getColumnModel().getColumn(i).setMaxWidth(3000);
-                jTablePset.getColumnModel().getColumn(i).setPreferredWidth(200);
+                tabellePset.getColumnModel().getColumn(i).setMinWidth(10);
+                tabellePset.getColumnModel().getColumn(i).setMaxWidth(3000);
+                tabellePset.getColumnModel().getColumn(i).setPreferredWidth(200);
             } else if (i == DatenPset.PROGRAMMSET_IST_SPEICHERN_NR
                     || i == DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR
                     || i == DatenPset.PROGRAMMSET_IST_BUTTON_NR
                     || i == DatenPset.PROGRAMMSET_IST_ABO_NR) {
-                jTablePset.getColumnModel().getColumn(i).setMinWidth(10);
-                jTablePset.getColumnModel().getColumn(i).setMaxWidth(3000);
-                jTablePset.getColumnModel().getColumn(i).setPreferredWidth(100);
+                tabellePset.getColumnModel().getColumn(i).setMinWidth(10);
+                tabellePset.getColumnModel().getColumn(i).setMaxWidth(3000);
+                tabellePset.getColumnModel().getColumn(i).setPreferredWidth(100);
             } else {
-                jTablePset.getColumnModel().getColumn(i).setMinWidth(0);
-                jTablePset.getColumnModel().getColumn(i).setMaxWidth(0);
-                jTablePset.getColumnModel().getColumn(i).setPreferredWidth(0);
+                tabellePset.getColumnModel().getColumn(i).setMinWidth(0);
+                tabellePset.getColumnModel().getColumn(i).setMaxWidth(0);
+                tabellePset.getColumnModel().getColumn(i).setPreferredWidth(0);
             }
         }
     }
@@ -275,31 +293,31 @@ public class PanelPsetLang extends PanelVorlage {
             jTextAreaBeschreibung.setText("");
         }
         if (pSet != null) {
-            jTableProgramme.setModel(pSet.getListeProg().getModel());
-            if (jTableProgramme.getRowCount() > 0) {
+            tabelleProgramme.setModel(pSet.getListeProg().getModel());
+            if (tabelleProgramme.getRowCount() > 0) {
                 spaltenSetzenProgramme();
-                jTableProgramme.setRowSelectionInterval(0, 0);
-                jTableProgramme.scrollRectToVisible(jTableProgramme.getCellRect(0, 0, true));
+                tabelleProgramme.setRowSelectionInterval(0, 0);
+                tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(0, 0, true));
             }
         } else {
-            jTableProgramme.setModel(new TModel(new Object[0][DatenProg.PROGRAMM_MAX_ELEM], DatenProg.PROGRAMM_COLUMN_NAMES_));
+            tabelleProgramme.setModel(new TModel(new Object[0][DatenProg.PROGRAMM_MAX_ELEM], DatenProg.PROGRAMM_COLUMN_NAMES_));
         }
         stopBeob = false;
         fillTextProgramme();
     }
 
     public void spaltenSetzenProgramme() {
-        for (int i = 0; i < jTableProgramme.getColumnCount(); ++i) {
+        for (int i = 0; i < tabelleProgramme.getColumnCount(); ++i) {
             if (i == DatenProg.PROGRAMM_PRAEFIX_NR
                     || i == DatenProg.PROGRAMM_RESTART_NR
                     || i == DatenProg.PROGRAMM_SUFFIX_NR) {
-                jTableProgramme.getColumnModel().getColumn(i).setMinWidth(10);
-                jTableProgramme.getColumnModel().getColumn(i).setMaxWidth(3000);
-                jTableProgramme.getColumnModel().getColumn(i).setPreferredWidth(100);
+                tabelleProgramme.getColumnModel().getColumn(i).setMinWidth(10);
+                tabelleProgramme.getColumnModel().getColumn(i).setMaxWidth(3000);
+                tabelleProgramme.getColumnModel().getColumn(i).setPreferredWidth(100);
             } else {
-                jTableProgramme.getColumnModel().getColumn(i).setMinWidth(10);
-                jTableProgramme.getColumnModel().getColumn(i).setMaxWidth(3000);
-                jTableProgramme.getColumnModel().getColumn(i).setPreferredWidth(200);
+                tabelleProgramme.getColumnModel().getColumn(i).setMinWidth(10);
+                tabelleProgramme.getColumnModel().getColumn(i).setMaxWidth(3000);
+                tabelleProgramme.getColumnModel().getColumn(i).setPreferredWidth(200);
             }
         }
     }
@@ -311,9 +329,9 @@ public class PanelPsetLang extends PanelVorlage {
     private void fillTextProgramme() {
         //Textfelder mit Programmdaten füllen
         stopBeob = true;
-        int row = jTableProgramme.getSelectedRow();
+        int row = tabelleProgramme.getSelectedRow();
         boolean letzteZeile = false;
-        if (jTableProgramme.getRowCount() <= 1 || row == jTableProgramme.getRowCount() - 1) {
+        if (tabelleProgramme.getRowCount() <= 1 || row == tabelleProgramme.getRowCount() - 1) {
             letzteZeile = true;
         }
         jTextFieldProgPfad.setEnabled(row != -1);
@@ -326,7 +344,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonProgPfad.setEnabled(row != -1);
         jCheckBoxRestart.setEnabled(row != -1);
         if (row != -1) {
-            DatenProg prog = getPset().getProg(jTableProgramme.convertRowIndexToModel(row));
+            DatenProg prog = getPset().getProg(tabelleProgramme.convertRowIndexToModel(row));
             jTextFieldProgPfad.setText(prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]);
             jTextFieldProgSchalter.setText(prog.arr[DatenProg.PROGRAMM_SCHALTER_NR]);
             jTextFieldProgZielDateiName.setText(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR]);
@@ -354,16 +372,16 @@ public class PanelPsetLang extends PanelVorlage {
     //Pset
     private DatenPset getPset() {
         DatenPset ret = null;
-        int row = jTablePset.getSelectedRow();
+        int row = tabellePset.getSelectedRow();
         if (row != -1) {
-            ret = listePset.get(jTablePset.convertRowIndexToModel(row));
+            ret = listePset.get(tabellePset.convertRowIndexToModel(row));
         }
         return ret;
     }
 
     private void setNamePruefen() {
         //doppelte Gruppennamen suchen
-        int row = jTablePset.getSelectedRow();
+        int row = tabellePset.getSelectedRow();
         if (row != -1) {
             int foundgruppe = 0;
             Iterator<DatenPset> it = listePset.iterator();
@@ -382,12 +400,12 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void setAufAb(boolean auf) {
-        int row = jTablePset.getSelectedRow();
+        int row = tabellePset.getSelectedRow();
         if (row != -1) {
             int neu = listePset.auf(row, auf);
             tabellePset();
-            jTablePset.setRowSelectionInterval(neu, neu);
-            jTablePset.scrollRectToVisible(jTablePset.getCellRect(neu, 0, false));
+            tabellePset.setRowSelectionInterval(neu, neu);
+            tabellePset.scrollRectToVisible(tabellePset.getCellRect(neu, 0, false));
             Daten.setGeaendert();
             notifyPset();
         } else {
@@ -402,12 +420,12 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void setLoeschen() {
-        int rows[] = jTablePset.getSelectedRows();
+        int rows[] = tabellePset.getSelectedRows();
         if (rows.length > 0) {
             DatenPset pSet;
             String text;
             if (rows.length == 1) {
-                pSet = listePset.get(jTablePset.convertRowIndexToModel(rows[0]));
+                pSet = listePset.get(tabellePset.convertRowIndexToModel(rows[0]));
                 text = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
             } else {
                 text = rows.length + " Programmgruppen löschen?";
@@ -415,8 +433,8 @@ public class PanelPsetLang extends PanelVorlage {
             int ret = JOptionPane.showConfirmDialog(null, text, "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
                 for (int i = rows.length - 1; i >= 0; --i) {
-                    int delRow = jTablePset.convertRowIndexToModel(rows[i]);
-                    ((TModel) jTablePset.getModel()).removeRow(delRow);
+                    int delRow = tabellePset.convertRowIndexToModel(rows[i]);
+                    ((TModel) tabellePset.getModel()).removeRow(delRow);
                     listePset.remove(delRow);
                 }
                 tabellePset();
@@ -429,12 +447,12 @@ public class PanelPsetLang extends PanelVorlage {
 
     private void setExport() {
         LinkedList<DatenPset> liste = new LinkedList<DatenPset>();
-        int rows[] = jTablePset.getSelectedRows();
+        int rows[] = tabellePset.getSelectedRows();
         if (rows.length > 0) {
             DatenPset pSet;
             for (int i = 0; i < rows.length; ++i) {
                 String name;
-                int delRow = jTablePset.convertRowIndexToModel(rows[i]);
+                int delRow = tabellePset.convertRowIndexToModel(rows[i]);
                 pSet = listePset.get(delRow);
                 if (pSet != null) {
                     liste.add(pSet);
@@ -464,13 +482,13 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void progAufAb(boolean auf) {
-        int rows = jTableProgramme.getSelectedRow();
+        int rows = tabelleProgramme.getSelectedRow();
         if (rows != -1) {
-            int row = jTableProgramme.convertRowIndexToModel(rows);
+            int row = tabelleProgramme.convertRowIndexToModel(rows);
             int neu = getPset().getListeProg().auf(row, auf);
             tabelleProgramme();
-            jTableProgramme.setRowSelectionInterval(neu, neu);
-            jTableProgramme.scrollRectToVisible(jTableProgramme.getCellRect(neu, 0, true));
+            tabelleProgramme.setRowSelectionInterval(neu, neu);
+            tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(neu, 0, true));
             Daten.setGeaendert();
         } else {
             new HinweisKeineAuswahl().zeigen();
@@ -1129,12 +1147,12 @@ public class PanelPsetLang extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
                 Daten.setGeaendert();
-                int rows = jTableProgramme.getSelectedRow();
+                int rows = tabelleProgramme.getSelectedRow();
                 if (rows != -1) {
-                    int row = jTableProgramme.convertRowIndexToModel(rows);
+                    int row = tabelleProgramme.convertRowIndexToModel(rows);
                     DatenProg prog = getPset().getListeProg().get(row);
                     prog.arr[DatenProg.PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBoxRestart.isSelected());
-                    jTableProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART_NR);
+                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART_NR);
                 }
             }
 
@@ -1161,9 +1179,9 @@ public class PanelPsetLang extends PanelVorlage {
         private void eingabe() {
             if (!stopBeob) {
                 Daten.setGeaendert();
-                int rows = jTableProgramme.getSelectedRow();
+                int rows = tabelleProgramme.getSelectedRow();
                 if (rows != -1) {
-                    int row = jTableProgramme.convertRowIndexToModel(rows);
+                    int row = tabelleProgramme.convertRowIndexToModel(rows);
                     DatenProg prog = getPset().getListeProg().get(row);
                     prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = jTextFieldProgPfad.getText();
                     prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = jTextFieldProgSchalter.getText();
@@ -1171,12 +1189,12 @@ public class PanelPsetLang extends PanelVorlage {
                     prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = jTextFieldProgZielDateiName.getText();
                     prog.arr[DatenProg.PROGRAMM_SUFFIX_NR] = jTextFieldProgSuffix.getText();
                     prog.arr[DatenProg.PROGRAMM_PRAEFIX_NR] = jTextFieldProgPraefix.getText();
-                    jTableProgramme.getModel().setValueAt(jTextFieldProgPfad.getText(), row, DatenProg.PROGRAMM_PROGRAMMPFAD_NR);
-                    jTableProgramme.getModel().setValueAt(jTextFieldProgSchalter.getText(), row, DatenProg.PROGRAMM_SCHALTER_NR);
-                    jTableProgramme.getModel().setValueAt(jTextFieldProgName.getText(), row, DatenProg.PROGRAMM_NAME_NR);
-                    jTableProgramme.getModel().setValueAt(jTextFieldProgZielDateiName.getText(), row, DatenProg.PROGRAMM_ZIEL_DATEINAME_NR);
-                    jTableProgramme.getModel().setValueAt(jTextFieldProgSuffix.getText(), row, DatenProg.PROGRAMM_SUFFIX_NR);
-                    jTableProgramme.getModel().setValueAt(jTextFieldProgPraefix.getText(), row, DatenProg.PROGRAMM_PRAEFIX_NR);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgPfad.getText(), row, DatenProg.PROGRAMM_PROGRAMMPFAD_NR);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgSchalter.getText(), row, DatenProg.PROGRAMM_SCHALTER_NR);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgName.getText(), row, DatenProg.PROGRAMM_NAME_NR);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgZielDateiName.getText(), row, DatenProg.PROGRAMM_ZIEL_DATEINAME_NR);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgSuffix.getText(), row, DatenProg.PROGRAMM_SUFFIX_NR);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgPraefix.getText(), row, DatenProg.PROGRAMM_PRAEFIX_NR);
 //                    progNamePruefen();
                 }
             }
@@ -1252,9 +1270,9 @@ public class PanelPsetLang extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int rows = jTableProgramme.getSelectedRow();
+            int rows = tabelleProgramme.getSelectedRow();
             if (rows != -1) {
-                int row = jTableProgramme.convertRowIndexToModel(rows);
+                int row = tabelleProgramme.convertRowIndexToModel(rows);
                 DatenProg prog = getPset().getListeProg().get(row);
                 progNeueZeile(prog.copy());
             } else {
@@ -1297,9 +1315,9 @@ public class PanelPsetLang extends PanelVorlage {
         private void eingabe() {
             if (!stopBeob) {
                 DatenPset gruppe;
-                int row = jTablePset.getSelectedRow();
+                int row = tabellePset.getSelectedRow();
                 if (row != -1) {
-                    gruppe = listePset.get(jTablePset.convertRowIndexToModel(row));
+                    gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
                     stopBeob = true;
                     if (textfeld != null) {
                         gruppe.arr[nr] = textfeld.getText();
@@ -1307,7 +1325,7 @@ public class PanelPsetLang extends PanelVorlage {
                         gruppe.arr[nr] = textArea.getText();
                     }
                     if (nr == DatenPset.PROGRAMMSET_NAME_NR) {
-                        jTablePset.getModel().setValueAt(jTextFieldGruppeName.getText(), row, DatenPset.PROGRAMMSET_NAME_NR);
+                        tabellePset.getModel().setValueAt(jTextFieldGruppeName.getText(), row, DatenPset.PROGRAMMSET_NAME_NR);
                         jTabbedPane.setTitleAt(0, "Programmset: " + gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR]);
                     }
                     notifyPset();
@@ -1325,10 +1343,10 @@ public class PanelPsetLang extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            DatenPset gruppe = null;
-            int row = jTablePset.getSelectedRow();
+            DatenPset gruppe;
+            int row = tabellePset.getSelectedRow();
             if (row != -1) {
-                gruppe = listePset.get(jTablePset.convertRowIndexToModel(row));
+                gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
                 listePset.addPset(gruppe.copy());
                 tabellePset();
                 Daten.setGeaendert();
@@ -1343,12 +1361,12 @@ public class PanelPsetLang extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int rows[] = jTableProgramme.getSelectedRows();
+            int rows[] = tabelleProgramme.getSelectedRows();
             if (rows.length > 0) {
                 DatenPset pSet = getPset();
                 String text;
                 if (rows.length == 1) {
-                    int delRow = jTableProgramme.convertRowIndexToModel(rows[0]);
+                    int delRow = tabelleProgramme.convertRowIndexToModel(rows[0]);
                     text = pSet.getProg(delRow).arr[DatenProg.PROGRAMM_NAME_NR];
                 } else {
                     text = rows.length + " Programme löschen?";
@@ -1356,7 +1374,7 @@ public class PanelPsetLang extends PanelVorlage {
                 int ret = JOptionPane.showConfirmDialog(null, text, "Löschen?", JOptionPane.YES_NO_OPTION);
                 if (ret == JOptionPane.OK_OPTION) {
                     for (int i = rows.length - 1; i >= 0; --i) {
-                        int delRow = jTableProgramme.convertRowIndexToModel(rows[i]);
+                        int delRow = tabelleProgramme.convertRowIndexToModel(rows[i]);
                         pSet.getListeProg().remove(delRow);
                     }
                     tabelleProgramme();
