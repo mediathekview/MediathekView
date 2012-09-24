@@ -32,16 +32,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
-import mediathek.daten.Daten;
 import mediathek.MediathekGui;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
-import mediathek.tool.CellRendererAbo;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.tool.CellRendererAbo;
 import mediathek.tool.Datum;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.JTableMed;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModelAbo;
 
 public class GuiAbo extends PanelVorlage {
@@ -103,9 +102,9 @@ public class GuiAbo extends PanelVorlage {
     }
 
     private void load() {
-        getSpalten(tabelle);
+        tabelle.getSpalten();
         ddaten.listeAbo.addObjectData((TModelAbo) tabelle.getModel());
-        setSpalten(tabelle);
+        tabelle.setSpalten();
         setInfo();
     }
 

@@ -180,7 +180,7 @@ public class GuiDownloads extends PanelVorlage {
     private void load() {
         //Filme laden
         boolean abo, download;
-        getSpalten(tabelle);
+        tabelle.getSpalten();
         if (jRadioButtonAlles.isSelected()) {
             abo = true;
             download = true;
@@ -193,7 +193,7 @@ public class GuiDownloads extends PanelVorlage {
         }
         ddaten.listeDownloads.getModel((TModelDownload) tabelle.getModel(), abo, download);
         ((TModelDownload) tabelle.getModel()).fireTableDataChanged();
-        setSpalten(tabelle);
+        tabelle.setSpalten();
         setInfo();
     }
 

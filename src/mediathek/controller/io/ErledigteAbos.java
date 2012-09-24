@@ -27,13 +27,13 @@ import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.LinkedList;
-import mediathek.daten.Daten;
-import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
 
 public class ErledigteAbos {
 
@@ -57,6 +57,7 @@ public class ErledigteAbos {
                 ret = true;
             }
         }
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         return ret;
     }
 
@@ -205,8 +206,8 @@ public class ErledigteAbos {
                 }
             }
             ddaten.erledigteAbos.clearLogList();
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         }
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         return gefunden;
     }
 

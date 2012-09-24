@@ -26,11 +26,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import mediathek.daten.Daten;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenBlacklist;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
 
 public class PanelBlacklist extends PanelVorlage {
@@ -51,7 +50,6 @@ public class PanelBlacklist extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.listeBlacklist.clear();
-                loeschen();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, PanelBlacklist.class.getSimpleName()) {
@@ -62,13 +60,6 @@ public class PanelBlacklist extends PanelVorlage {
             }
         });
         tabelleLaden();
-    }
-
-    private void loeschen() {
-        tabelleLaden();
-        DDaten.listeFilmeNachBlackList = ddaten.listeBlacklist.filterListe(Daten.listeFilme);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS__FILMLISTE_GEAENDERT, PanelBlacklist.class.getSimpleName());
-        DDaten.setGeaendert();
     }
 
     private void tabelleLaden() {
@@ -157,7 +148,6 @@ public class PanelBlacklist extends PanelVorlage {
                 if (selectedTableRow >= 0) {
                     int del = jTable1.convertRowIndexToModel(selectedTableRow);
                     ddaten.listeBlacklist.remove(del);
-                    loeschen();
                 }
             }
         }

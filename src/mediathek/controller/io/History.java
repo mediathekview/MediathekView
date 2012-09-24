@@ -18,10 +18,17 @@
  */
 package mediathek.controller.io;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.HashSet;
 import java.util.Iterator;
-import mediathek.daten.Daten;
 import mediathek.tool.ListenerMediathekView;
 
 public class History extends HashSet<String> {
@@ -35,7 +42,14 @@ public class History extends HashSet<String> {
     @Override
     public boolean add(String url) {
         boolean ret = super.add(url);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, History.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
+        return ret;
+    }
+
+    @Override
+    public boolean remove(Object url) {
+        boolean ret = super.remove(url);
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
         return ret;
     }
 
@@ -51,10 +65,11 @@ public class History extends HashSet<String> {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String strLine;
             while ((strLine = br.readLine()) != null) {
-                add(strLine);
+                super.add(strLine);
             }
             //Close the input stream
             in.close();
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
         } catch (Exception e) {//Catch exception if any
             System.err.println("Fehler: " + e.getMessage());
         }
@@ -82,7 +97,7 @@ public class History extends HashSet<String> {
             return;
         }
         file.delete();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, History.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
     }
 
     public Object[][] getObjectData() {
