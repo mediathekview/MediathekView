@@ -62,7 +62,7 @@ public class PanelHistory extends PanelVorlage {
 
     private void loeschen() {
         tabelleLaden();
-        ddaten.guiFilme.neuLaden();
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS__FILMLISTE_GEAENDERT, PanelHistory.class.getSimpleName());
     }
 
     private void tabelleLaden() {

@@ -65,7 +65,7 @@ public class GuiDebug extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DDaten.listeFilme.clear();
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_NEU, MediathekGui.class.getSimpleName());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_GANZ_NEUE_FILMLISTE, MediathekGui.class.getSimpleName());
             }
         });
         jPanelSenderLaden.setLayout(new BorderLayout());
@@ -216,7 +216,7 @@ public class GuiDebug extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             DDaten.listeFilme.delSender(sender);
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_NEU, MediathekGui.class.getSimpleName());
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_GANZ_NEUE_FILMLISTE, MediathekGui.class.getSimpleName());
         }
     }
 }

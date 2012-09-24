@@ -63,6 +63,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListeAbo;
+import mediathek.daten.ListeBlacklist;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -116,13 +117,13 @@ public class GuiFilme extends PanelVorlage {
                 tabelleBauen();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_DEL, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS__FILMLISTE_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelleBauen();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILMLISTE_NEU, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_GANZ_NEUE_FILMLISTE, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 checkBlacklist();
@@ -148,13 +149,6 @@ public class GuiFilme extends PanelVorlage {
         super.isShown();
         ddaten.mediathekGui.setToolbar(MediathekGui.ButtonFilme);
         ddaten.infoPanel.setIdx(InfoPanel.IDX_GUI_FILME);
-    }
-
-    /**
-     * Panel Neu laden
-     */
-    public void neuLaden() {
-        tabelleBauen();
     }
 
     public void filmAbspielen() {
@@ -1344,6 +1338,7 @@ public class GuiFilme extends PanelVorlage {
                     } else {
                         ddaten.listeBlacklist.add(new DatenBlacklist(se, th));
                     }
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName());
                     checkBlacklist();
                     tabelleBauen();
                     DDaten.setGeaendert();

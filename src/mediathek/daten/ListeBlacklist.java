@@ -19,28 +19,19 @@
  */
 package mediathek.daten;
 
-import mediathek.tool.Konstanten;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import mediathek.tool.Log;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.gui.GuiFilme;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     //Tags Blacklist
 
     private long tage = 0;
-
-    @Override
-    public boolean add(DatenBlacklist db) {
-        boolean ret;
-        ret = super.add(db);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_ADD, ListeBlacklist.class.getSimpleName());
-        return ret;
-    }
 
     public Object[][] getObjectData() {
         Object[][] object;
@@ -130,7 +121,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 return false;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(462558700,"ListeBlacklist.checkDate: ", ex);
+            Log.fehlerMeldung(462558700, "ListeBlacklist.checkDate: ", ex);
         }
         return true;
     }
