@@ -54,7 +54,7 @@ public class PanelBlacklist extends PanelVorlage {
                 loeschen();
             }
         });
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_ADD, PanelBlacklist.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_ADD, PanelBlacklist.class.getSimpleName()) {
 
             @Override
             public void ping() {
@@ -67,7 +67,7 @@ public class PanelBlacklist extends PanelVorlage {
     private void loeschen() {
         tabelleLaden();
         DDaten.listeFilmeNachBlackList = ddaten.listeBlacklist.filterListe(Daten.listeFilme);
-        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_BLACKLIST_DEL, PanelBlacklist.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_DEL, PanelBlacklist.class.getSimpleName());
         DDaten.setGeaendert();
 
     }

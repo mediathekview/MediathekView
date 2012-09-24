@@ -71,7 +71,7 @@ public class FilmUpdateServer {
             listeUpdateServer.add(new DatenFilmUpdateServer("http://176.28.14.91/mediathek1/Mediathek_22.bz2", "1"));
         }
         retUrl = listeUpdateServer.getRand(0); //eine Zufällige Adresse wählen
-        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_UPDATESERVER, this.getClass().getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_UPDATESERVER, this.getClass().getSimpleName());
         Daten.setGeaendert();
         return retUrl;
     }

@@ -152,7 +152,7 @@ public class ListePset extends LinkedList<DatenPset> {
             }
         }
         this.add(neu, prog);
-        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
         return neu;
     }
 

@@ -392,11 +392,11 @@ public final class MediathekGui extends javax.swing.JFrame {
             public void stateChanged(ChangeEvent arg0) {
                 Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
                         String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue());
-                Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
                 DDaten.setGeaendert();
             }
         });
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 initSpinner();

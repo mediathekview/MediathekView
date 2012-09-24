@@ -220,7 +220,7 @@ public class GuiFunktionenProgramme {
                 }
             }
             if (ddaten.listePset.addPset(pSet)) {
-                Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetImport.class.getSimpleName());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetImport.class.getSimpleName());
                 JOptionPane.showMessageDialog(null, pSet.size() + " Programmset importiert!",
                         "Ok", JOptionPane.INFORMATION_MESSAGE);
             }

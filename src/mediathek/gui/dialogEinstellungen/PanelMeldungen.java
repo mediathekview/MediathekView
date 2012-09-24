@@ -54,7 +54,7 @@ public class PanelMeldungen extends PanelVorlage {
 //                }
 //            }
 //        });
-        Daten.addAdListener(new ListenerMediathekView(logArt, PanelMeldungen.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(logArt, PanelMeldungen.class.getSimpleName()) {
             @Override
             public void ping() {
                 setText();

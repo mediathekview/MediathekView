@@ -49,7 +49,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 addAbo(datenAbo);
                 sort();
                 ret = true;
-                Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
             } else {
                 JOptionPane.showMessageDialog(null, "Abo existiert bereits", "Abo anlegen", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -65,7 +65,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     public void aboLoeschen(DatenAbo abo) {
         if (abo != null) {
             this.remove(abo);
-            Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
         }
     }
 
@@ -76,7 +76,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
         datenAbo.arr[DatenAbo.ABO_NR_NR] = str;
         super.add(datenAbo);
-        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
     }
 
     public DatenAbo getAboNr(int i) {

@@ -114,7 +114,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public void startMelden(int status) {
         arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(status);
-        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
     }
 
     public DatenDownload getCopy() {

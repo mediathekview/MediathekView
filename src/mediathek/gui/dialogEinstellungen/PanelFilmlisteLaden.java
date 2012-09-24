@@ -75,13 +75,13 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         //jTable1.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         jTable1.addMouseListener(new BeobachterTableSelect());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_UPDATESERVER, PanelFilmlisteLaden.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_UPDATESERVER, PanelFilmlisteLaden.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelleLaden();
             }
         });
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_IMPORT_FILMLISTE, PanelFilmlisteLaden.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_IMPORT_FILMLISTE, PanelFilmlisteLaden.class.getSimpleName()) {
             @Override
             public void ping() {
                 initRadio();
@@ -367,7 +367,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 } else {
                     Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO);
                 }                // den Dialog gibts 2x
-                Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
                 Daten.setGeaendert();
             }
         }

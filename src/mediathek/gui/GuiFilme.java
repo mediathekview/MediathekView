@@ -104,32 +104,32 @@ public class GuiFilme extends PanelVorlage {
         extra();
         tabelleBauen(); //Filme laden
         tabelle.initTabelle();
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 extra();
             }
         });
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelleBauen();
             }
         });
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_DEL, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_DEL, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelleBauen();
             }
         });
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILMLISTE_NEU, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILMLISTE_NEU, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 checkBlacklist();
                 tabelleBauen();
             }
         });
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelle.getSelected();

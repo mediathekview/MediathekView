@@ -42,7 +42,7 @@ public class PanelErledigteAbos extends PanelVorlage {
     }
 
     private void init() {
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, PanelErledigteAbos.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, PanelErledigteAbos.class.getSimpleName()) {
 
             @Override
             public void ping() {

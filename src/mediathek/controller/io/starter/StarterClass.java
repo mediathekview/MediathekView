@@ -223,7 +223,7 @@ public class StarterClass {
     // Private
     //===================================
     private void notifyStartEvent() {
-        Daten.notifyMediathekListener(ListenerMediathekView.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
     }
 
     private Starts getListe() {

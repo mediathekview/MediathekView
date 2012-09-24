@@ -123,13 +123,13 @@ public class GuiDownloads extends PanelVorlage {
     //private
     //===================================
     private void init() {
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, GuiDownloads.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 load();
             }
         });
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 panelUpdate();
@@ -143,7 +143,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDownloads.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
@@ -165,7 +165,7 @@ public class GuiDownloads extends PanelVorlage {
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         im.put(enter, "aendern");
         //
-        Daten.addAdListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiDownloads.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 panelUpdate();
