@@ -149,11 +149,11 @@ public class Log {
     }
 
     public static synchronized void systemMeldung(String[] text) {
-        meldung(text);
+        systemmeldung(text);
     }
 
     public static synchronized void systemMeldung(String text) {
-        meldung(new String[]{text});
+        systemmeldung(new String[]{text});
     }
 
     public static synchronized void playerMeldung(String text) {
@@ -304,19 +304,32 @@ public class Log {
         System.out.println("|||| " + texte);
     }
 
-    private static void meldung(String[] texte) {
+    private static void systemmeldung(String[] texte) {
         if (prog) {
             // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
             System.out.print("                                                                            \r");
             prog = false;
         }
-        final String SYSTEMMELDUNG = "";
-        final String z = ".";
-        System.out.println(z + " " + SYSTEMMELDUNG + texte[0]);
-        notifyMediathekListener(LOG_SYSTEM, texte[0]);
-        for (int i = 1; i < texte.length; ++i) {
-            System.out.println(z + " " + texte[i]);
-            notifyMediathekListener(LOG_SYSTEM, texte[i]);
+        final String z = ". ";
+        if (texte.length <= 1) {
+            System.out.println(z + " " + texte[0]);
+            notifyMediathekListener(LOG_SYSTEM, texte[0]);
+        } else {
+            String zeile = "---------------------------------------";
+            String txt;
+            System.out.println(z + zeile);
+            notifyMediathekListener(LOG_SYSTEM, zeile);
+            for (int i = 0; i < texte.length; ++i) {
+                txt = "| " + texte[i];
+                System.out.println(z + txt);
+                if (i == 0) {
+                    notifyMediathekListener(LOG_SYSTEM, texte[i]);
+                } else {
+                    notifyMediathekListener(LOG_SYSTEM, "    " + texte[i]);
+                }
+            }
+            notifyMediathekListener(LOG_SYSTEM, " ");
+            System.out.println(z + zeile);
         }
     }
 
