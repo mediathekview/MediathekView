@@ -23,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mediathek.daten.DatenDownload;
@@ -67,11 +66,6 @@ class RuntimeExec {
      */
     public Process exec() {
         try {
-            Log.systemMeldung("----------------------------------------------------------------------------");
-            Log.systemMeldung("| Programm starten");
-            Log.systemMeldung("| Programmset: " + s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
-            Log.systemMeldung("| " + prog);
-            Log.systemMeldung("----------------------------------------------------------------------------");
             process = Runtime.getRuntime().exec(prog);
             clearIn = new Thread(new ClearInOut(INPUT, process));
             clearOut = new Thread(new ClearInOut(ERROR, process));

@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.event.EventListenerList;
 import mediathek.daten.DDaten;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
@@ -74,7 +73,7 @@ public class StarterClass {
      */
     public synchronized Starts urlStarten(DatenPset pSet, DatenFilm ersterFilm) {
         // url mit dem Programm mit der Nr. starten (Button oder Doppelklick)
-        // Quelle ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
+        // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
         Starts s = null;
         String url = ersterFilm.arr[DatenFilm.FILM_URL_NR];
         if (!url.equals("")) {
@@ -438,7 +437,7 @@ public class StarterClass {
             boolean restart = false;
             boolean startOk = false;
             try {
-                if (starten()) {
+                if (starten("")) {
                     restart = true; //los gehts
                 }
                 while (restart && !starts.stoppen) {
@@ -478,6 +477,16 @@ public class StarterClass {
                                     //erstes Mal
                                     File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                                     if (file.exists()) {
+                                        if (file.length() == 0) {
+                                            // zum Wiederstarten die leere Datei löschen, alles auf Anfang
+                                            Log.systemMeldung(new String[]{"StartenProgramm, Restart, leere Datei löschen", starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
+                                            try {
+                                                file.delete();
+                                            } catch (Exception ex) {
+                                            }
+                                        }
+                                    }
+                                    if (file.exists()) {
                                         filesize = file.length();
                                         startOk = true;
                                     } else if (starts.startcounter < Starts.STARTCOUNTER_MAX) {
@@ -495,7 +504,7 @@ public class StarterClass {
                                         }
                                     }
                                 }
-                                if (startOk && starten()) {
+                                if (startOk && starten(" Restart")) {
                                     restart = true;
                                 } else {
                                     //Anzeige ändern - fertig mit Fehler
@@ -520,12 +529,15 @@ public class StarterClass {
             } catch (Exception ex) {
                 Log.fehlerMeldung(395623710, "StarterClass.StartenProgramm-2", ex);
             }
+            beiFehlerAufraeumen(starts);
             starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
 
-        private boolean starten() {
+        private boolean starten(String t) {
             boolean ret = true;
+            Log.systemMeldung(new String[]{"Programm starten" + t, "Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR],
+                        starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]});
             runtimeExec = new RuntimeExec(starts);
             starts.process = runtimeExec.exec();
             if (starts.process == null) {
@@ -551,13 +563,9 @@ public class StarterClass {
 
         @Override
         public void run() {
-            Log.systemMeldung("----------------------------------------------------------------------------");
-            Log.systemMeldung("| Download starten");
-            Log.systemMeldung("| Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
-            Log.systemMeldung("| direkter Download");
-            Log.systemMeldung("| URL: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-            Log.systemMeldung("| Zieldatei: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-            Log.systemMeldung("----------------------------------------------------------------------------");
+            Log.systemMeldung(new String[]{"Download starten", "Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR],
+                        "direkter Download", "URL: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR],
+                        "Zieldatei: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
             InputStream input;
             OutputStream destStream;
             try {
@@ -611,6 +619,7 @@ public class StarterClass {
             } catch (Exception ex) {
                 Log.fehlerMeldung(904685832, "StarterClass.StartenDonwnload-2", ex);
             }
+            beiFehlerAufraeumen(starts);
             starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
@@ -637,9 +646,9 @@ public class StarterClass {
         boolean ret = false;
         File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         if (!file.exists()) {
-            Log.fehlerMeldung(550236231, "StartetClass.pruefen-1", "Download fehlgeschlagen: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(550236231, "StartetClass.pruefen-1", "Download fehlgeschlagen: Datei existiert nicht" + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_KB * 1024) {
-            Log.fehlerMeldung(795632500, "StartetClass.pruefen-2", "Download fehlgeschlagen: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(795632500, "StartetClass.pruefen-2", "Download fehlgeschlagen: Datei zu klein" + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else {
             if (starts.datenDownload.istAbo()) {
                 ddaten.erledigteAbos.zeileSchreiben(starts.datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
@@ -647,6 +656,41 @@ public class StarterClass {
                         starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
             }
             ret = true;
+        }
+        return ret;
+    }
+
+    private boolean beiFehlerAufraeumen(Starts starts) {
+        //prüfen ob der Downoad geklappt hat und die Datei existiert und eine min. Grüße hat, wenn nicht, dann löschen
+        boolean ret = false;
+        String programm;
+        if (starts.datenDownload.getArt() == Starts.ART_DOWNLOAD) {
+            programm = "direkter Download";
+        } else {
+            programm = "Programmaufruf: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
+        }
+        if (starts.status != Starts.STATUS_ERR) {
+            // dann ists ja gut
+            if (starts.datenDownload.getQuelle() != Starts.QUELLE_BUTTON) {
+                // also nicht Abspielen
+                Log.systemMeldung(new String[]{"Download hat geklappt", "Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR],
+                            programm, "Ziel: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
+            }
+            return true;
+        }
+        Log.systemMeldung(new String[]{"Download war fehlerhaft", "Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR],
+                    programm, "Ziel: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
+        File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        if (file.exists()) {
+            if (file.length() < Konstanten.MIN_DATEI_GROESSE_KB * 1024) {
+                Log.systemMeldung(new String[]{"Datei zu klein, löschen", starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
+                try {
+                    file.delete();
+                    ret = true;
+                } catch (Exception ex) {
+                    Log.fehlerMeldung(795632500, "StartetClass.kleineLoeschen", "Fehler beim löschen" + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                }
+            }
         }
         return ret;
     }
