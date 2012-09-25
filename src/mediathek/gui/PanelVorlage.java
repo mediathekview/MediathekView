@@ -19,20 +19,12 @@
  */
 package mediathek.gui;
 
-import java.util.List;
-import javax.swing.JTable;
 import mediathek.daten.DDaten;
-import mediathek.tool.Log;
 
 public class PanelVorlage extends javax.swing.JPanel {
 
     public DDaten ddaten;
     public boolean stopBeob = false;
-    private int[] breite = null;
-    private int[] reihe = null;
-    private List<? extends javax.swing.RowSorter.SortKey> listeSort = null;
-    private int sel;
-    private int rows;
 
     /**
      *
@@ -51,54 +43,5 @@ public class PanelVorlage extends javax.swing.JPanel {
 
     public void isShown() {
         // immer wenn isShown
-    }
-
-    public void getSpalten(JTable tabelle) {
-        try {
-            breite = new int[tabelle.getColumnCount()];
-            reihe = new int[tabelle.getColumnCount()];
-            sel = tabelle.getSelectedRow();
-            rows = tabelle.getRowCount();
-            for (int i = 0; i < reihe.length && i < tabelle.getModel().getColumnCount(); ++i) {
-                reihe[i] = tabelle.convertColumnIndexToModel(i);
-            }
-            for (int i = 0; i < breite.length && i < tabelle.getModel().getColumnCount(); ++i) {
-                breite[i] = tabelle.getColumnModel().getColumn(
-                        tabelle.convertColumnIndexToView(i)).getWidth();
-            }
-            if (tabelle.getRowSorter() != null) {
-                listeSort = tabelle.getRowSorter().getSortKeys();
-            }
-        } catch (Exception ex) {
-            Log.fehlerMeldung(998213690, "PanelVorlage.getSpalten", ex);
-        }
-    }
-
-    public void setSpalten(JTable tabelle) {
-        try {
-            for (int i = 0; i < breite.length && i < tabelle.getColumnCount(); ++i) {
-                tabelle.getColumnModel().getColumn(
-                        tabelle.convertColumnIndexToView(i)).setPreferredWidth(breite[i]);
-            }
-            for (int i = 0; i < reihe.length && i < tabelle.getColumnCount(); ++i) {
-                tabelle.getColumnModel().moveColumn(
-                        tabelle.convertColumnIndexToView(reihe[i]), i);
-
-            }
-            if (listeSort != null) {
-                if (!listeSort.isEmpty()) {
-                    tabelle.getRowSorter().setSortKeys(listeSort);
-                }
-            }
-            if (rows == tabelle.getRowCount()) {
-                if (sel >= 0 && sel < tabelle.getRowCount()) {
-                    tabelle.setRowSelectionInterval(sel, sel);
-                    tabelle.scrollRectToVisible(tabelle.getCellRect(sel, 0, false));
-                }
-            }
-            tabelle.validate();
-        } catch (Exception ex) {
-            Log.fehlerMeldung(102540367, "PanelVorlage.setSpalten", ex);
-        }
     }
 }

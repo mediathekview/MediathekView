@@ -31,7 +31,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.GuiKonstanten;
 
 public class CellRendererDownloads extends DefaultTableCellRenderer {
 
@@ -121,7 +120,15 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                         progressBar.setValue(i);
                         return panel;
                     } else if (i == 100) {
-                        this.setText("fertig");
+                        if (s != null) {
+                            if (s.status == Starts.STATUS_ERR) {
+                                this.setText("fehlerhaft");
+                            } else {
+                                this.setText("fertig");
+                            }
+                        } else {
+                            this.setText("fertig");
+                        }
                     }
                 }
             } else {
