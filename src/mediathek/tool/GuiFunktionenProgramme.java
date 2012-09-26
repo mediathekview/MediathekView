@@ -24,10 +24,10 @@ import java.io.InputStream;
 import java.security.CodeSource;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
-import mediathek.daten.Daten;
 import mediathek.Main;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -36,7 +36,6 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
-import mediathek.gui.dialogEinstellungen.PanelPsetImport;
 
 public class GuiFunktionenProgramme {
 
@@ -60,7 +59,7 @@ public class GuiFunktionenProgramme {
         //sonst den deutschen Defaultpfad für Programme verwenden verwenden
         final String PFAD_WIN_DEFAULT = "C:\\Program Files\\SMPlayer\\mplayer\\mplayer.exe";
         final String PFAD_WIN = "\\SMPlayer\\mplayer\\mplayer.exe";
-        String vlcPfad = "";
+        String vlcPfad;
         try {
             if (System.getProperty("os.name").toLowerCase().contains("windows")) {
                 if (System.getenv("ProgramFiles") != null) {
@@ -86,7 +85,7 @@ public class GuiFunktionenProgramme {
         //sonst den deutschen Defaultpfad für Programme verwenden verwenden
         final String PFAD_WIN_DEFAULT = "C:\\Programme\\VideoLAN\\VLC\\vlc.exe";
         final String PFAD_WIN = "\\VideoLAN\\VLC\\vlc.exe";
-        String vlcPfad = "";
+        String vlcPfad;
         try {
             if (System.getProperty("os.name").toLowerCase().contains("windows")) {
                 if (System.getenv("ProgramFiles") != null) {
