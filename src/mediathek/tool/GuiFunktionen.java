@@ -29,8 +29,8 @@ import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import mediathek.daten.Daten;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 
 public class GuiFunktionen {
