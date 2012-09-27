@@ -94,7 +94,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         if (listeFilme != null) {
             DatenFilm film;
             listeRet.setMeta(listeFilme.metaDaten);
-            listeRet.setInfo(listeFilme.infos);
+//            listeRet.setInfo(listeFilme.infos);
             Iterator<DatenFilm> it = listeFilme.iterator();
             while (it.hasNext()) {
                 film = it.next();

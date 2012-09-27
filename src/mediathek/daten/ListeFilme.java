@@ -60,16 +60,16 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public static final int FILMLISTE_PRGRAMM_NR = 5;
     public static final String[] FILMLISTE_COLUMN_NAMES = {FILMLISTE_DATUM, FILMLISTE_ZEIT, FILMLISTE_DATUM_ZEIT,
         FILMLISTE_ANZAHL, FILMLISTE_VERSION, FILMLISTE_PROGRAMM};
-    // Tags
-    public static final String FILMLISTE_INFOS = "Filmliste-Infos";
-    public static final int FILMLISTE_INFOS_MAX_ELEM = 2;
-    public static final String FILMLISTE_INFOS_SWR_NR_THEMA = "Filmliste-Infos-Swr-NrThema";
-    public static final int FILMLISTE_INFOS_SWR_NR_THEMA_NR = 0;
-    public static final String FILMLISTE_INFOS_frei = "Filmliste-Infos-frei";
-    public static final int FILMLISTE_INFOS_frei_NR = 1;
-    public static final String[] FILMLISTE_INFOS_COLUMN_NAMES = {FILMLISTE_INFOS_SWR_NR_THEMA, FILMLISTE_INFOS_frei};
+    // Infos
+//    public static final String FILMLISTE_INFOS = "Filmliste-Infos";
+//    public static final int FILMLISTE_INFOS_MAX_ELEM = 2;
+//    public static final String FILMLISTE_INFOS_SWR_NR_THEMA = "Filmliste-Infos-Swr-NrThema";
+//    public static final int FILMLISTE_INFOS_SWR_NR_THEMA_NR = 0;
+//    public static final String FILMLISTE_INFOS_frei = "Filmliste-Infos-frei";
+//    public static final int FILMLISTE_INFOS_frei_NR = 1;
+//    public static final String[] FILMLISTE_INFOS_COLUMN_NAMES = {FILMLISTE_INFOS_SWR_NR_THEMA, FILMLISTE_INFOS_frei};
     private int nr = 0;
-    public String[] infos;
+//    public String[] infos;
     public String[] metaDaten;
     private HashSet<String> treeGetModelOfField = new HashSet<String>();
     private LinkedList<String> listGetModelOfField = new LinkedList<String>();
@@ -79,7 +79,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
      * @param ddaten
      */
     public ListeFilme() {
-        infos = newInfo();
+//        infos = newInfo();
         metaDaten = newMetaDaten();
     }
     //===================================
@@ -94,13 +94,13 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return ret;
     }
 
-    public static String[] newInfo() {
-        String[] ret = new String[FILMLISTE_INFOS_MAX_ELEM];
-        for (int i = 0; i < ret.length; ++i) {
-            ret[i] = "";
-        }
-        return ret;
-    }
+//    public static String[] newInfo() {
+//        String[] ret = new String[FILMLISTE_INFOS_MAX_ELEM];
+//        for (int i = 0; i < ret.length; ++i) {
+//            ret[i] = "";
+//        }
+//        return ret;
+//    }
 
     @Override
     public synchronized void clear() {
@@ -118,15 +118,15 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
     }
 
-    public synchronized void setInfo(int feld, String wert) {
-        infos[feld] = wert;
-    }
-
-    public synchronized void setInfo(String[] iinfo) {
-        for (int i = 0; i < FILMLISTE_INFOS_MAX_ELEM; ++i) {
-            infos[i] = iinfo[i].toString();
-        }
-    }
+//    public synchronized void setInfo(int feld, String wert) {
+//        infos[feld] = wert;
+//    }
+//
+//    public synchronized void setInfo(String[] iinfo) {
+//        for (int i = 0; i < FILMLISTE_INFOS_MAX_ELEM; ++i) {
+//            infos[i] = iinfo[i].toString();
+//        }
+//    }
 
     public synchronized void setMeta(String[] mmeta) {
         for (int i = 0; i < FILMLISTE_MAX_ELEM; ++i) {
@@ -180,33 +180,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
     }
 
-//    public synchronized void alteThemenLöschen(String sender, LinkedList<String[]> liste) {
-//        //alle Themen des Senders die NICHT in der Liste liste sind, löschen, die gibts nicht mehr
-//        Iterator<DatenFilm> itIch = this.iterator();
-//        Iterator<String[]> itListe;
-//        DatenFilm film;
-//        boolean found;
-//        while (itIch.hasNext()) {
-//            // ganze Liste durchlaufen
-//            film = itIch.next();
-//            if (film.arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(sender)) {
-//                found = false;
-//                itListe = liste.iterator();
-//                while (itListe.hasNext()) {
-//                    // und schauen, obs das Thema noch gibt
-//                    if (film.arr[DatenFilm.FILM_THEMA_NR].equals(itListe.next()[1])) {
-//                        //gibts noch
-//                        found = true;
-//                        break;
-//                    }
-//                } //while (itListe.hasNext()) {
-//                if (!found) {
-//                    itIch.remove();
-//                }
-//            }
-//        } //while (itIch.hasNext()) {
-//    }
-
     public synchronized boolean addWithNr(DatenFilm film) {
         film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
         film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_TITEL_NR].trim());
@@ -235,19 +208,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret;
     }
-//
-
-//    public synchronized void delOhneSender(String sender) {
-//        // alle Filme BIS AUF DIE vom SENDER löschen
-//        DatenFilm film;
-//        ListIterator<DatenFilm> it = this.listIterator(0);
-//        while (it.hasNext()) {
-//            film = it.next();
-//            if (!film.arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(sender)) {
-//                it.remove();
-//            }
-//        }
-//    }
 
     public synchronized void delSender(String sender) {
         // alle Filme VOM SENDER löschen
@@ -349,45 +309,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         listGetModelOfField.clear();
         return ret;
     }
-
-//    public synchronized String[] getModelOfField(int feld, String filterString, int filterFeld) {
-//        /* erstellt ein StringArray mit den Daten des Feldes und filtert nach filterFeld */
-//        HashSet<String> tree = new HashSet<String>();
-//        String str;
-//        tree.add("");
-//        DatenFilm film;
-//        Iterator<DatenFilm> it = this.iterator();
-//        if (filterString.equals("")) {
-//            //alle Werte dieses Feldes
-//            while (it.hasNext()) {
-//                str = it.next().arr[feld];
-//                //hinzufügen
-//                if (!tree.contains(str)) {
-//                    tree.add(str);
-//                }
-//            }
-//        } else {
-//            //Werte dieses Feldes, filtern nach filterString im FilterFeld
-//            while (it.hasNext()) {
-//                film = it.next();
-//                str = film.arr[feld];
-//                if (film.arr[filterFeld].equalsIgnoreCase(filterString)) {
-//                    //hinzufügen
-//                    if (!tree.contains(str)) {
-//                        tree.add(str);
-//                    }
-//                }
-//            }
-//        }
-//        LinkedList<String> list = new LinkedList<String>();
-//        for (String h : tree) {
-//            list.add(h);
-//        }
-//        GuiFunktionen.listeSort(list);
-//        String[] ret = new String[0];
-//        ret = list.toArray(ret);
-//        return ret;
-//    }
 
     public synchronized DatenFilm getFilmByUrl(String url) {
         DatenFilm ret = null;

@@ -85,7 +85,7 @@ public class IoXmlFilmlisteSchreiben {
         //Filmliste Metadaten schreiben
         listeFilme.metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
         xmlSchreibenDaten(ListeFilme.FILMLISTE, ListeFilme.FILMLISTE_COLUMN_NAMES, listeFilme.metaDaten);
-        xmlSchreibenDaten(ListeFilme.FILMLISTE_INFOS, ListeFilme.FILMLISTE_INFOS_COLUMN_NAMES, listeFilme.infos);
+//        xmlSchreibenDaten(ListeFilme.FILMLISTE_INFOS, ListeFilme.FILMLISTE_INFOS_COLUMN_NAMES, listeFilme.infos);
         xmlSchreibenFeldInfo();
         //Filme schreiben
         ListIterator<DatenFilm> iterator;
