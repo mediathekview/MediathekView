@@ -40,7 +40,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int PROGRESS_NICHT_GESTARTET = -1;
     public static final int PROGRESS_WARTEN = 0;
     public static final int PROGRESS_GESTARTET = 1;
-    public static final int PROGRESS_FERTIG = 100;
+    public static final int PROGRESS_FERTIG = 1000;
     //
     public static final String DOWNLOAD_NR = "Nr";
     public static final int DOWNLOAD_NR_NR = 0;

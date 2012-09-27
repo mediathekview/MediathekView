@@ -22,7 +22,7 @@ package mediathek.tool;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
-import javax.swing.BorderFactory;
+import java.text.NumberFormat;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
@@ -35,13 +35,11 @@ import mediathek.daten.DatenDownload;
 public class CellRendererDownloads extends DefaultTableCellRenderer {
 
     private DDaten ddaten;
-    private final JProgressBar progressBar = new JProgressBar(0, 100);
-    private final JPanel panel = new JPanel(new BorderLayout());
+    private JProgressBar progressBar = new JProgressBar(0, 100);
+    private JPanel panel = new JPanel(new BorderLayout());
 
     public CellRendererDownloads(DDaten d) {
         ddaten = d;
-        panel.add(progressBar);
-        panel.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
     }
 
     @Override
@@ -107,6 +105,11 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                         break;
                 }
                 if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                    progressBar = new JProgressBar(0, 1000);
+                    progressBar.setStringPainted(true);
+                    panel = new JPanel(new BorderLayout());
+                    panel.add(progressBar);
+//                    panel.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
                     int i = Integer.parseInt(s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (i == -1) {
@@ -116,10 +119,12 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                         this.setText("warten");
                     } else if (i == 1) {
                         this.setText("gestartet");
-                    } else if (1 < i && i < 100) {
+                    } else if (1 < i && i < 1000) {
                         progressBar.setValue(i);
+                        double d = i / 10.0;
+                        progressBar.setString(Double.toString(d) + "%");
                         return panel;
-                    } else if (i == 100) {
+                    } else if (i == 1000) {
                         if (s != null) {
                             if (s.status == Starts.STATUS_ERR) {
                                 this.setText("fehlerhaft");

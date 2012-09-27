@@ -580,15 +580,15 @@ public class StarterClass {
                 while ((len = input.read(buffer)) != -1) {
                     downLen += buffer.length;
                     if (maxLen > 0) {
-                        int p = (downLen * 100) / maxLen;
-                        // p muss zwischen 1 und 99 liegen
+                        long p = (downLen * (long) 1000) / maxLen;
+                        // p muss zwischen 1 und 999 liegen
                         if (p == 0) {
-                            p = 1;
+                            p = DatenDownload.PROGRESS_GESTARTET;
                         }
-                        if (p >= 100) {
-                            p = 99;
+                        if (p >= 1000) {
+                            p = 999;
                         }
-                        starts.datenDownload.startMelden(p);
+                        starts.datenDownload.startMelden((int) p);
                     }
                     destStream.write(buffer, 0, len);
                     if (allesStop || starts.stoppen) {
@@ -626,7 +626,7 @@ public class StarterClass {
     }
 
     private int laenge(String url) {
-        int ret = -1;
+        int ret;
         try {
             URL u = new URL(url);
             ret = u.openConnection().getContentLength();

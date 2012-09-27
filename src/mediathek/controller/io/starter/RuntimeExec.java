@@ -169,14 +169,9 @@ class RuntimeExec {
         }
 
         private void meldenDouble(double d) {
-            // nur ganze Int speichern, damit nur 100 Schritte
-            int pNeu;
-            if (d > 0 && d <= 2) {
-                // damit der Progressbar gleich startet
-                pNeu = 2;
-            } else {
-                pNeu = (int) d;
-            }
+            // nur ganze Int speichern, und 1000 Schritte
+            d *= 10;
+            int pNeu = (int) d;
             if (pNeu != percent) {
                 percent = pNeu;
                 s.datenDownload.startMelden(percent);
