@@ -109,9 +109,9 @@ public class MediathekReader implements Runnable {
         //wird überschrieben, hier werden die Filme gesucht
     }
 
-    void setInfo(int feld, String wert) {
-        suchen.listeFilmeNeu.setInfo(feld, wert);
-    }
+//    void setInfo(int feld, String wert) {
+//        suchen.listeFilmeNeu.setInfo(feld, wert);
+//    }
 
     boolean addFilm(DatenFilm film) {
         return suchen.listeFilmeNeu.addFilmVomSender(film);

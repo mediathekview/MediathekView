@@ -277,7 +277,7 @@ public class FilmeSuchenSender {
         fertigMeldung.clear();
         listeFilmeAlt = alteListe;
         listeFilmeNeu = new ListeFilme();
-        listeFilmeNeu.setInfo(alteListe.infos);
+//        listeFilmeNeu.setInfo(alteListe.infos);
         GetUrl.resetZaehler();
     }
 

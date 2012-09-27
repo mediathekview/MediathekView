@@ -355,7 +355,6 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         //rtmpt://cp125301.edgefcs.net/ondemand/mp4:zdf/12/07/120724_mann_bin_ich_schoen_37g_vh.mp4
         DatenFilm ret = null;
         final String MUSTER_HOST = "<param name=\"host\" value=\"";
-        final String MUSTER_PROT = "<param name=\"protocols\" value=\"";
         final String MUSTER_APP = "<param name=\"app\" value=\"";
         final String MUSTER_URL = "src=\"";
         final String MUSTER_URL_L = "l.mp4";
@@ -364,7 +363,6 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         String orgUrl = urlFilm;
         String host = "";
         String app = "";
-        String prot;
         String url = "", tmpUrl = "";
         int pos1;
         int pos2;
@@ -446,6 +444,8 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             }
             if (url.equals("")) {
                 // dann die alte URL eintragen
+                
+                
                 ret = new DatenFilm(senderName, thema, urlThema, titel, urlFilm, urlFilm/* urlOrg */, ""/* urlRtmp */, datum, zeit);
                 Log.fehlerMeldungMReader(-864100247, "MediathekZdf.flash-1 " + senderName, "keine URL: " + urlFilm);
             } else if (host.equals("")) {
