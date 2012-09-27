@@ -101,7 +101,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
 //        }
 //        return ret;
 //    }
-
     @Override
     public synchronized void clear() {
         nr = 0;
@@ -127,7 +126,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
 //            infos[i] = iinfo[i].toString();
 //        }
 //    }
-
     public synchronized void setMeta(String[] mmeta) {
         for (int i = 0; i < FILMLISTE_MAX_ELEM; ++i) {
             metaDaten[i] = mmeta[i].toString();
@@ -322,6 +320,21 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret;
     }
+
+//    public synchronized DatenFilm getFilmByTitel(String sender, String thema, String titel) {
+//        ListIterator<DatenFilm> it = this.listIterator(0);
+//        while (it.hasNext()) {
+//            DatenFilm f = it.next();
+//            if (f.arr[DatenFilm.FILM_TITEL_NR].equalsIgnoreCase(titel)) {
+//                if (f.arr[DatenFilm.FILM_THEMA_NR].equalsIgnoreCase(thema)) {
+//                    if (f.arr[DatenFilm.FILM_SENDER_NR].equals(sender)) {
+//                        return f;
+//                    }
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     //===================================
     // private

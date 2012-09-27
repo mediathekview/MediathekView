@@ -208,9 +208,6 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                             flashHolen(thema, titel, link, url, datum, zeit);
                         }
                     }
-
-
-
                 } catch (Exception ex) {
                     Log.fehlerMeldungMReader(-823694892, "Mediathek3Sat.laden", ex.getMessage());
                 }
