@@ -443,20 +443,15 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 Log.fehlerMeldung(-302125078, "MediathekZdf.flash-1 " + senderName, "!gefunden: " + urlFilm);
             }
             if (url.equals("")) {
-                // dann die alte URL eintragen
-                
-                
-                ret = new DatenFilm(senderName, thema, urlThema, titel, urlFilm, urlFilm/* urlOrg */, ""/* urlRtmp */, datum, zeit);
-                Log.fehlerMeldungMReader(-864100247, "MediathekZdf.flash-1 " + senderName, "keine URL: " + urlFilm);
+                ret = null;
+                Log.fehlerMeldungMReader(-783012580, "MediathekZdf.flash-2 " + senderName, "keine URL: " + urlFilm);
             } else if (host.equals("")) {
-                // dann die alte URL eintragen
-                ret = new DatenFilm(senderName, thema, urlThema, titel, urlFilm, urlFilm/* urlOrg */, ""/* urlRtmp */, datum, zeit);
-                Log.fehlerMeldungMReader(-356047809, "MediathekZdf.flash-2 " + senderName, "kein Host: " + urlFilm);
+                ret = null;
+                Log.fehlerMeldungMReader(-356047809, "MediathekZdf.flash-3 " + senderName, "kein Host: " + urlFilm);
             } else {
                 url = "rtmpt://" + host + "/" + app + "/" + url;
                 ret = new DatenFilm(senderName, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit);
             }
-
         } catch (Exception ex) {
             Log.fehlerMeldungMReader(-860248073, "MediathekZdf.flash" + senderName, new String[]{ex.getMessage(), urlFilm});
         }
