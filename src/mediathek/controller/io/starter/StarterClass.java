@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.event.EventListenerList;
@@ -273,7 +274,7 @@ public class StarterClass {
     }
 
     private Starts naechsterStart() {
-        Starts s = null;
+        Starts s;
         Iterator<Starts> it = listeStarts.getIt();
         //erster Versuch, Start mit einem anderen Sender
         while (it.hasNext()) {
@@ -306,7 +307,7 @@ public class StarterClass {
         //true wenn bereits die maxAnzahl pro Sender läuft
         try {
             int counter = 0;
-            Starts start = null;
+            Starts start;
             String host = getHost(s);
             Iterator<Starts> it = listeStarts.getIt();
             while (it.hasNext()) {
@@ -396,7 +397,7 @@ public class StarterClass {
             } //while(true)
         }
 
-        public void startStarten(Starts starts) {
+        private void startStarten(Starts starts) {
             starts.datenDownload.startMelden(DatenDownload.PROGRESS_GESTARTET);
             switch (starts.datenDownload.getArt()) {
                 case Starts.ART_PROGRAMM:
@@ -529,6 +530,7 @@ public class StarterClass {
             } catch (Exception ex) {
                 Log.fehlerMeldung(395623710, "StarterClass.StartenProgramm-2", ex);
             }
+            fertigmeldung(starts);
             beiFehlerAufraeumen(starts);
             starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
@@ -536,8 +538,7 @@ public class StarterClass {
 
         private boolean starten(String t) {
             boolean ret = true;
-            Log.systemMeldung(new String[]{"Programm starten" + t, "Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR],
-                        starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]});
+            startmeldung(starts);
             runtimeExec = new RuntimeExec(starts);
             starts.process = runtimeExec.exec();
             if (starts.process == null) {
@@ -563,9 +564,7 @@ public class StarterClass {
 
         @Override
         public void run() {
-            Log.systemMeldung(new String[]{"Download starten", "Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR],
-                        "direkter Download", "URL: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR],
-                        "Zieldatei: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
+            startmeldung(starts);
             InputStream input;
             OutputStream destStream;
             try {
@@ -619,6 +618,7 @@ public class StarterClass {
             } catch (Exception ex) {
                 Log.fehlerMeldung(904685832, "StarterClass.StartenDonwnload-2", ex);
             }
+            fertigmeldung(starts);
             beiFehlerAufraeumen(starts);
             starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
@@ -663,23 +663,6 @@ public class StarterClass {
     private boolean beiFehlerAufraeumen(Starts starts) {
         //prüfen ob der Downoad geklappt hat und die Datei existiert und eine min. Grüße hat, wenn nicht, dann löschen
         boolean ret = false;
-        String programm;
-        if (starts.datenDownload.getArt() == Starts.ART_DOWNLOAD) {
-            programm = "direkter Download";
-        } else {
-            programm = "Programmaufruf: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
-        }
-        if (starts.status != Starts.STATUS_ERR) {
-            // dann ists ja gut
-            if (starts.datenDownload.getQuelle() != Starts.QUELLE_BUTTON) {
-                // also nicht Abspielen
-                Log.systemMeldung(new String[]{"Download hat geklappt", "Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR],
-                            programm, "Ziel: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
-            }
-            return true;
-        }
-        Log.systemMeldung(new String[]{"Download war fehlerhaft", "Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR],
-                    programm, "Ziel: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
         File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         if (file.exists()) {
             if (file.length() < Konstanten.MIN_DATEI_GROESSE_KB * 1024) {
@@ -693,5 +676,51 @@ public class StarterClass {
             }
         }
         return ret;
+    }
+
+    private void startmeldung(Starts starts) {
+        ArrayList<String> text = new ArrayList<String>();
+        boolean abspielen = starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON;
+        if (abspielen) {
+            text.add("Film starten");
+        } else {
+            text.add("Download starten");
+            text.add("Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
+            text.add("Ziel: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        }
+        text.add("URL: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+        if (starts.datenDownload.getArt() == Starts.ART_DOWNLOAD) {
+            text.add("direkter Download");
+        } else {
+            text.add("Programmaufruf: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
+        }
+        Log.systemMeldung(text.toArray(new String[]{}));
+    }
+
+    private void fertigmeldung(Starts starts) {
+        ArrayList<String> text = new ArrayList<String>();
+        boolean abspielen = starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON;
+        if (abspielen) {
+            text.add("Film fertig");
+        } else {
+            text.add("Download fertig");
+            text.add("Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
+            text.add("Ziel: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        }
+        text.add("URL: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+        if (starts.datenDownload.getArt() == Starts.ART_DOWNLOAD) {
+            text.add("direkter Download");
+        } else {
+            text.add("Programmaufruf: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
+        }
+        if (!abspielen) {
+            if (starts.status != Starts.STATUS_ERR) {
+                // dann ists gut
+                text.add("Download hat geklappt");
+            } else {
+                text.add("Download war fehlerhaft");
+            }
+        }
+        Log.systemMeldung(text.toArray(new String[]{}));
     }
 }
