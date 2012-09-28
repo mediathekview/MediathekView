@@ -27,7 +27,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import javax.swing.event.EventListenerList;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
@@ -40,10 +39,8 @@ import mediathek.tool.TModel;
 public class StarterClass {
 
     private DDaten ddaten;
-    private boolean allesStop = false;
     private ListeStarts listeStarts;
     private Starten starten = null;
-    private EventListenerList listeners = new EventListenerList();
 
     //===================================
     // Public
@@ -59,7 +56,6 @@ public class StarterClass {
     }
 
     private void init() {
-        listeners = new EventListenerList();
         listeStarts = new ListeStarts(ddaten);
         starten = new Starten();
         Thread startenThread = new Thread(starten);
@@ -150,7 +146,6 @@ public class StarterClass {
 
     public synchronized void addStarts(Starts starts) {
         //add: Neues Element an die Liste anhängen
-        allesStop = false;
         if (starts != null) {
             if (!listeStarts.contain(starts)) {
                 listeStarts.add(starts);
@@ -159,19 +154,6 @@ public class StarterClass {
             }
         }
         notifyStartEvent();
-    }
-
-    public synchronized int getState(String url) {
-        int ret = 0;
-        Iterator<Starts> it = listeStarts.getIt();
-        while (it.hasNext()) {
-            Starts s = it.next();
-            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
-                ret = s.status;
-                break;
-            }
-        }
-        return ret;
     }
 
     public synchronized Starts getStart(String url) {
@@ -187,10 +169,6 @@ public class StarterClass {
         return ret;
     }
 
-    public synchronized void delStart(String url) {
-        listeStarts.delStart(url);
-    }
-
     public synchronized int getStartsWaiting() {
         // für "Auto", wenn alle abgearbeitet sind, dann fertig
         return listeStarts.getmax();
@@ -201,16 +179,9 @@ public class StarterClass {
         notifyStartEvent();
     }
 
-    /** Alle Downloads werden abgebrochen */
-    public synchronized void abbrechen() {
-        allesStop = true;
-        listeStarts.delAlle();
-        notifyStartEvent();
-    }
-
-    /** Alle Downloads die nicht laufen, löschen: Es wird nach dem laufenden Download abgebrochen */
-    public synchronized void abbrechenNachFilm() {
-        listeStarts.delRest();
+    public synchronized void allesAbbrechen() {
+        // Alle Downloads werden abgebrochen
+        listeStarts.delStart();
         notifyStartEvent();
     }
 
@@ -227,27 +198,16 @@ public class StarterClass {
     }
 
     private Starts getListe() {
-        /* get: erstes passendes Element der Liste zurückgeben oder null */
-        /* versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird */
+        // get: erstes passendes Element der Liste zurückgeben oder null
+        // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
         Iterator<Starts> it;
         Starts ret = null;
-        if (allesStop) {
-            // nur die laufenden Starts löschen, damit die Anzeige der Podcasts stimmt
-            it = listeStarts.getIt();
-            while (it.hasNext()) {
-                Starts s = it.next();
-                if (s.status < Starts.STATUS_FERTIG) {
-                    it.remove();
-                }
-            }
-        } else {
-            if (listeStarts.size() >= 0
-                    && listeStarts.getDown() < Integer.parseInt(DDaten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR])) {
-                Starts s = naechsterStart();
-                if (s != null) {
-                    if (s.status == Starts.STATUS_INIT) {
-                        ret = s;
-                    }
+        if (listeStarts.size() >= 0
+                && listeStarts.getDown() < Integer.parseInt(DDaten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR])) {
+            Starts s = naechsterStart();
+            if (s != null) {
+                if (s.status == Starts.STATUS_INIT) {
+                    ret = s;
                 }
             }
         }
@@ -375,8 +335,11 @@ public class StarterClass {
         return host;
     }
 
+    // ********************************************
+    // Hier wird dann gestartet
+    // Ewige Schleife die die Downloads startet
+    // ********************************************
     private class Starten implements Runnable {
-        /* Ewige Schleife die die Downloads startet */
 
         Starts starts;
 
@@ -401,12 +364,12 @@ public class StarterClass {
             starts.datenDownload.startMelden(DatenDownload.PROGRESS_GESTARTET);
             switch (starts.datenDownload.getArt()) {
                 case Starts.ART_PROGRAMM:
-                    StartenProgramm zdfStarten = new StartenProgramm(starts);
-                    new Thread(zdfStarten).start();
+                    StartenProgramm startenProgrammn = new StartenProgramm(starts);
+                    new Thread(startenProgrammn).start();
                     break;
                 case Starts.ART_DOWNLOAD:
-                    StartenDonwnload podderStart = new StartenDonwnload(starts);
-                    new Thread(podderStart).start();
+                    StartenDonwnload startenDonwnloadtart = new StartenDonwnload(starts);
+                    new Thread(startenDonwnloadtart).start();
                     break;
                 default:
                     Log.fehlerMeldung(789356001, "StartetClass.startStarten", "StarterClass.Starten - Switch-default");
@@ -419,10 +382,12 @@ public class StarterClass {
 
         Starts starts;
         RuntimeExec runtimeExec;
+        File file;
 
         public StartenProgramm(Starts s) {
             starts = s;
             starts.status = Starts.STATUS_RUN;
+            file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
             notifyStartEvent();
             try {
                 new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
@@ -444,7 +409,7 @@ public class StarterClass {
             final int stat_ende = 99;
             int stat = stat_start;
             try {
-                while (stat < stat_ende && !starts.stoppen) {
+                while (stat < stat_ende) {
                     switch (stat) {
                         case stat_start:
                             if (starten()) {
@@ -456,15 +421,22 @@ public class StarterClass {
                         case stat_laufen:
                             //hier läuft der Download bis zum Abbruch oder Ende
                             try {
-                                int exitV;
-                                if ((exitV = starts.process.exitValue()) != 0) {
-                                    if (starts.datenDownload.isRestart()) {
-                                        stat = stat_restart;
-                                    } else {
-                                        stat = stat_fertig_fehler;
+                                if (starts.stoppen) {
+                                    stat = stat_fertig_ok;
+                                    if (starts.process != null) {
+                                        starts.process.destroy();
                                     }
                                 } else {
-                                    stat = stat_pruefen;
+                                    int exitV;
+                                    if ((exitV = starts.process.exitValue()) != 0) {
+                                        if (starts.datenDownload.isRestart()) {
+                                            stat = stat_restart;
+                                        } else {
+                                            stat = stat_fertig_fehler;
+                                        }
+                                    } else {
+                                        stat = stat_pruefen;
+                                    }
                                 }
                             } catch (Exception ex) {
                                 try {
@@ -474,10 +446,9 @@ public class StarterClass {
                             }
                             break;
                         case stat_restart:
-                            File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                             if (filesize == -1) {
                                 //erstes Mal
-                                leeresFileLoeschen(starts);
+                                leeresFileLoeschen(file);
                                 if (file.exists()) {
                                     // dann bestehende Datei weitermachen
                                     filesize = file.length();
@@ -518,7 +489,6 @@ public class StarterClass {
                             }
                             break;
                         case stat_fertig_fehler:
-                            leeresFileLoeschen(starts);
                             starts.status = Starts.STATUS_ERR;
                             stat = stat_ende;
                             break;
@@ -531,6 +501,7 @@ public class StarterClass {
             } catch (Exception ex) {
                 Log.fehlerMeldung(395623710, "StarterClass.StartenProgramm-2", ex);
             }
+            leeresFileLoeschen(file);
             fertigmeldung(starts);
             starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
@@ -677,7 +648,7 @@ public class StarterClass {
                 input = feedUrl.openStream();
                 byte[] buffer = new byte[1024];
                 destStream = new FileOutputStream(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-                while ((len = input.read(buffer)) != -1) {
+                while ((len = input.read(buffer)) != -1 && !starts.stoppen) {
                     downLen += buffer.length;
                     if (maxLen > 0) {
                         long p = (downLen * (long) 1000) / maxLen;
@@ -691,36 +662,26 @@ public class StarterClass {
                         starts.datenDownload.startMelden((int) p);
                     }
                     destStream.write(buffer, 0, len);
-                    if (allesStop || starts.stoppen) {
-                        break;
-                    }
                 }
                 input.close();
                 destStream.close();
             } catch (Exception ex) {
                 Log.fehlerMeldung(502039078, "StarterClass.StartenDonwnload-1", ex);
             }
-            try {
-                if (allesStop || starts.stoppen) {
-                    //mit dem flvstreamer könnte man weitermachen, wennd das File noch da wäre
-                    //new File(starts.film.arr[Konstanten.FILM_ZIEL_PFAD_DATEI_NR]).delete();
+            if (!starts.stoppen) {
+                if (starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
+                    // direkter Start mit dem Button
+                    starts.status = Starts.STATUS_FERTIG;
+                } else if (pruefen(starts)) {
+                    //Anzeige ändern - fertig
+                    starts.status = Starts.STATUS_FERTIG;
                 } else {
-                    if (starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
-                        // direkter Start mit dem Button
-                        starts.status = Starts.STATUS_FERTIG;
-                    } else if (pruefen(starts)) {
-                        //Anzeige ändern - fertig
-                        starts.status = Starts.STATUS_FERTIG;
-                    } else {
-                        //Anzeige ändern - bei Fehler fehlt der Eintrag
-                        starts.status = Starts.STATUS_ERR;
-                    }
+                    //Anzeige ändern - bei Fehler fehlt der Eintrag
+                    starts.status = Starts.STATUS_ERR;
                 }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(904685832, "StarterClass.StartenDonwnload-2", ex);
             }
+            leeresFileLoeschen(new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
             fertigmeldung(starts);
-            leeresFileLoeschen(starts);
             starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
@@ -761,24 +722,23 @@ public class StarterClass {
         return ret;
     }
 
-    private void leeresFileLoeschen(Starts starts) {
+    private void leeresFileLoeschen(File file) {
         //prüfen ob die Datei existiert und eine min. Grüße hat, wenn nicht, dann löschen
         try {
-            File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
             if (file.exists()) {
                 // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
                 if (file.length() == 0) {
                     // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
-                    Log.systemMeldung(new String[]{"Restart/Aufräumen: leere Datei löschen", starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
+                    Log.systemMeldung(new String[]{"Restart/Aufräumen: leere Datei löschen", file.getAbsolutePath()});
                     file.delete();
                 } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_KB * 1024) {
-                    Log.systemMeldung(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
+                    Log.systemMeldung(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", file.getAbsolutePath()});
                     file.delete();
 
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(795632500, "StartetClass.leeresFileLoeschen", "Fehler beim löschen" + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(795632500, "StartetClass.leeresFileLoeschen", "Fehler beim löschen" + file.getAbsolutePath());
         }
     }
 
@@ -811,7 +771,9 @@ public class StarterClass {
         if (abspielen) {
             text.add("Film fertig");
         } else {
-            if (starts.status != Starts.STATUS_ERR) {
+            if (starts.stoppen) {
+                text.add("Download abgebrochen");
+            } else if (starts.status != Starts.STATUS_ERR) {
                 // dann ists gut
                 text.add("Download ist fertig und hat geklappt");
             } else {

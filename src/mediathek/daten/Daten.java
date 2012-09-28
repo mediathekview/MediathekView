@@ -142,7 +142,4 @@ public class Daten {
     public void allesSpeichern() {
         new IoXmlFilmlisteSchreiben().filmeSchreiben(getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, listeFilme);
     }
-
-    public void allesAbbrechen() {
-    }
 }

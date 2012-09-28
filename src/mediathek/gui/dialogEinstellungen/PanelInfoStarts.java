@@ -19,17 +19,10 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import mediathek.controller.io.starter.ListeStarts;
-import mediathek.controller.io.starter.Starts;
 import mediathek.daten.DDaten;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.PanelVorlage;
@@ -57,11 +50,9 @@ public class PanelInfoStarts extends PanelVorlage {
         });
         ddaten = d;
         jButtonAuffrischen.addActionListener(new BeobLaden());
-        jButtonStoppen.addActionListener(new BeobStoppen());
         tModel = ListeStarts.getNewModel();
         jTable1.setModel(tModel);
         jTable1.setDefaultRenderer(Object.class, new CellRendererFilme(ddaten));
-        jTable1.addMouseListener(new BeobMausTabelle());
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         init();
     }
@@ -78,11 +69,6 @@ public class PanelInfoStarts extends PanelVorlage {
         this.updateUI();
     }
 
-    private void stoppen(String url) {
-        if (!url.equals("")) {
-            ddaten.starterClass.delStart(url);
-        }
-    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -90,7 +76,6 @@ public class PanelInfoStarts extends PanelVorlage {
         jButtonAuffrischen = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButtonStoppen = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -110,8 +95,6 @@ public class PanelInfoStarts extends PanelVorlage {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButtonStoppen.setText("Stoppen");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -121,29 +104,22 @@ public class PanelInfoStarts extends PanelVorlage {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButtonStoppen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonAuffrischen)))
                 .addContainerGap())
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAuffrischen, jButtonStoppen});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonAuffrischen)
-                    .addComponent(jButtonStoppen))
+                .addComponent(jButtonAuffrischen)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAuffrischen;
-    private javax.swing.JButton jButtonStoppen;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
@@ -156,71 +132,4 @@ public class PanelInfoStarts extends PanelVorlage {
         }
     }
 
-    private class BeobStoppen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int row = jTable1.getSelectedRow();
-            if (row >= 0) {
-                int delRow = jTable1.convertRowIndexToModel(row);
-                Starts s = ddaten.starterClass.getStart(jTable1.getValueAt(delRow, DatenFilm.FILM_URL_NR).toString());
-                if (s != null) {
-                    if (s.status == Starts.STATUS_RUN) {
-                        stoppen(jTable1.getValueAt(delRow, DatenFilm.FILM_URL_NR).toString());
-                    }
-                }
-            }
-        }
-    }
-
-    public class BeobMausTabelle extends MouseAdapter {
-
-        private BeobUrl beobUrl = new BeobUrl();
-        private Point p;
-        String url = null;
-
-        public BeobMausTabelle() {
-        }
-
-        private class BeobUrl implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                stoppen(url);
-            }
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent arg0) {
-            if (arg0.getButton() == MouseEvent.BUTTON3) {
-                showMenu(arg0);
-            }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            url = "";
-            p = evt.getPoint();
-            int nr = jTable1.rowAtPoint(p);
-            if (nr >= 0) {
-                jTable1.setRowSelectionInterval(nr, nr);
-            }
-            JPopupMenu menu = new JPopupMenu();
-            int row = jTable1.getSelectedRow();
-            if (row >= 0) {
-                int delRow = jTable1.convertRowIndexToModel(row);
-                Starts s = ddaten.starterClass.getStart(jTable1.getValueAt(delRow, DatenFilm.FILM_URL_NR).toString());
-                if (s != null) {
-                    if (s.status == Starts.STATUS_RUN) {
-                        //url
-                        url = jTable1.getValueAt(delRow, DatenFilm.FILM_URL_NR).toString();
-                        JMenuItem itemAbbrechen = new JMenuItem("Film abbrechen");
-                        itemAbbrechen.addActionListener(beobUrl);
-                        menu.add(itemAbbrechen);
-                        //Menü anzeigen
-                        menu.show(evt.getComponent(), evt.getX(), evt.getY());
-                    }
-                }
-            }
-        }
-    }
 }

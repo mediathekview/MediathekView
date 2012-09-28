@@ -88,16 +88,4 @@ public final class DDaten extends Daten {
         ioXmlSchreiben.datenSchreiben(this);
     }
 
-    @Override
-    public void allesAbbrechen() {
-        if (starterClass != null) {
-            starterClass.abbrechen();
-        }
-    }
-
-    public void allesAbbrechenNachFilm() {
-        if (starterClass != null) {
-            starterClass.abbrechenNachFilm();
-        }
-    }
 }

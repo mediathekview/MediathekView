@@ -64,6 +64,16 @@ public class ListeStarts extends LinkedList<Starts> {
         }
     }
 
+    void delStart() {
+        ListIterator<Starts> it = this.listIterator(0);
+        while (it.hasNext()) {
+            Starts s = it.next();
+            s.stoppen = true;
+            it.remove();
+            break;
+        }
+    }
+
     int getDown() {
         int ret = 0;
         ListIterator<Starts> it = this.listIterator(0);
@@ -98,11 +108,6 @@ public class ListeStarts extends LinkedList<Starts> {
         return ret;
     }
 
-    void delAlle() {
-        //löscht alle Starts, "alle Abbrechen"
-        this.clear();
-    }
-
     int getmax() {
         // liefert die Listengröße wenn noch nicht alle fertig
         // sonst wenn alle fertig: 0
@@ -117,7 +122,7 @@ public class ListeStarts extends LinkedList<Starts> {
 
     TModel getModel(TModel model) {
         model.setRowCount(0);
-        Object[] object = null;
+        Object[] object;
         Starts start;
         if (this.size() > 0) {
             Iterator<Starts> iterator = this.getIt();
@@ -155,7 +160,4 @@ public class ListeStarts extends LinkedList<Starts> {
         TModel model = new TModel(new Object[][]{}, titel);
         return model;
     }
-    //===================================
-    // private
-    //===================================
 }

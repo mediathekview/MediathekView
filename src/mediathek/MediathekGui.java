@@ -580,7 +580,9 @@ public final class MediathekGui extends javax.swing.JFrame {
 
     private void beenden() {
         ddaten.listeDownloads.listePutzen();
-        ddaten.allesAbbrechen();
+        if (ddaten.starterClass != null) {
+            ddaten.starterClass.allesAbbrechen();
+        }
         //int t = this.getExtendedState();
         if (this.getExtendedState() == JFrame.MAXIMIZED_BOTH) {
             Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR] = Boolean.TRUE.toString();
