@@ -22,7 +22,7 @@ package mediathek.tool;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
-import java.text.NumberFormat;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
@@ -106,10 +106,11 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 }
                 if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                     progressBar = new JProgressBar(0, 1000);
+                    progressBar.setBorder(BorderFactory.createEmptyBorder());
                     progressBar.setStringPainted(true);
                     panel = new JPanel(new BorderLayout());
                     panel.add(progressBar);
-//                    panel.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
+                    panel.setBorder(BorderFactory.createEmptyBorder());
                     int i = Integer.parseInt(s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (i == -1) {

@@ -433,124 +433,225 @@ public class StarterClass {
 
         @Override
         public synchronized void run() {
-            int k = 0;
             long filesize = -1;
-            boolean restart = false;
-            boolean startOk = false;
+            final int stat_start = 0;
+            final int stat_laufen = 1;
+            final int stat_restart = 3;
+            final int stat_pruefen = 4;
+            // ab hier ist schluss
+            final int stat_fertig_ok = 10;
+            final int stat_fertig_fehler = 11;
+            final int stat_ende = 99;
+            int stat = stat_start;
             try {
-                if (starten("")) {
-                    restart = true; //los gehts
-                }
-                while (restart && !starts.stoppen) {
-                    startOk = false;
-                    restart = false;
-                    while (!allesStop && !starts.stoppen) {
-                        //hier läuft der Download bis zum Abbruch oder Ende
-                        try {
-                            k = starts.process.exitValue();
-                            //fertig und tschüss
+                while (stat < stat_ende && !starts.stoppen) {
+                    switch (stat) {
+                        case stat_start:
+                            if (starten()) {
+                                stat = stat_laufen;
+                            } else {
+                                stat = stat_fertig_fehler;
+                            }
                             break;
-                        } catch (Exception ex) {
+                        case stat_laufen:
+                            //hier läuft der Download bis zum Abbruch oder Ende
                             try {
-                                this.wait(2000);
-                            } catch (InterruptedException e) {
+                                int exitV;
+                                if ((exitV = starts.process.exitValue()) != 0) {
+                                    if (starts.datenDownload.isRestart()) {
+                                        stat = stat_restart;
+                                    } else {
+                                        stat = stat_fertig_fehler;
+                                    }
+                                } else {
+                                    stat = stat_pruefen;
+                                }
+                            } catch (Exception ex) {
+                                try {
+                                    this.wait(2000);
+                                } catch (InterruptedException e) {
+                                }
                             }
-                        }
-                    }
-                    if (allesStop || starts.stoppen) {
-                        if (starts.process != null) {
-                            starts.process.destroy();
-                            //Anzeige ändern - fertig
+                            break;
+                        case stat_restart:
+                            File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                            if (filesize == -1) {
+                                //erstes Mal
+                                leeresFileLoeschen(starts);
+                                if (file.exists()) {
+                                    // dann bestehende Datei weitermachen
+                                    filesize = file.length();
+                                    stat = stat_start;
+                                } else if (starts.startcounter < Starts.STARTCOUNTER_MAX) {
+                                    // dann nochmal von vorne
+                                    // counter prüfen und bei einem Maxwert abbrechen, sonst endlos
+                                    stat = stat_start;
+                                } else {
+                                    // dann wars das
+                                    stat = stat_fertig_fehler;
+                                }
+                            } else {
+                                //jetzt muss das File wachsen, sonst kein Restart
+                                if (!file.exists()) {
+                                    // dann wars das
+                                    stat = stat_fertig_fehler;
+                                } else if (file.length() > filesize) {
+                                    //nur weitermachen wenn die Datei tasächlich wächst
+                                    filesize = file.length();
+                                    stat = stat_start;
+                                } else {
+                                    // dann wars das
+                                    stat = stat_fertig_fehler;
+                                }
+                            }
+                            break;
+                        case stat_pruefen:
                             if (starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
-                                //für die direkten Starts mit dem Button
-                                starts.status = Starts.STATUS_FERTIG;
+                                //für die direkten Starts mit dem Button wars das dann
+                                stat = stat_fertig_ok;
+                            } else if (pruefen(starts)) {
+                                //fertig und OK
+                                stat = stat_fertig_ok;
                             } else {
-                                starts.status = Starts.STATUS_INIT;
+                                //fertig und fehlerhaft
+                                stat = stat_fertig_fehler;
                             }
-                            //mit dem flvstreamer könnte man weitermachen, wennd das File noch da wäre
-                            //new File(starts.film.arr[Konstanten.FILM_ZIEL_PFAD_DATEI_NR]).delete();
-                        }
-                    } else { //Exitvalue vom Prozess prüfen und ggf. neu Starten
-                        if (k != 0) {
-                            if (starts.datenDownload.isRestart()) {
-                                //Download wieder starten
-                                if (filesize == -1) {
-                                    //erstes Mal
-                                    File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-                                    if (file.exists()) {
-                                        if (file.length() == 0) {
-                                            // zum Wiederstarten die leere Datei löschen, alles auf Anfang
-                                            Log.systemMeldung(new String[]{"StartenProgramm, Restart, leere Datei löschen", starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
-                                            try {
-                                                file.delete();
-                                            } catch (Exception ex) {
-                                            }
-                                        }
-                                    }
-                                    if (file.exists()) {
-                                        filesize = file.length();
-                                        startOk = true;
-                                    } else if (starts.startcounter < Starts.STARTCOUNTER_MAX) {
-                                        //counter prüfen und bei einem Maxwert abbrechen, sonst endlos
-                                        startOk = true;
-                                    }
-                                } else {
-                                    //jetzt muss das File wachsen, sonst kein Restart
-                                    File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-                                    if (file.exists()) {
-                                        if (file.length() > filesize) {
-                                            //nur weitermachen wenn die Datei tasächlich wächst
-                                            startOk = true;
-                                            filesize = file.length();
-                                        }
-                                    }
-                                }
-                                if (startOk && starten(" Restart")) {
-                                    restart = true;
-                                } else {
-                                    //Anzeige ändern - fertig mit Fehler
-                                    starts.status = Starts.STATUS_ERR;
-                                }
-                            } else {
-                                //Anzeige ändern - fertig
-                                starts.status = Starts.STATUS_ERR;
-                            }
-                        } else if (starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
-                            //für die direkten Starts mit dem Button
-                            starts.status = Starts.STATUS_FERTIG;
-                        } else if (pruefen(starts)) {
-                            //Anzeige ändern - fertig
-                            starts.status = Starts.STATUS_FERTIG;
-                        } else {
-                            //Anzeige ändern - fehler
+                            break;
+                        case stat_fertig_fehler:
+                            leeresFileLoeschen(starts);
                             starts.status = Starts.STATUS_ERR;
-                        }
+                            stat = stat_ende;
+                            break;
+                        case stat_fertig_ok:
+                            starts.status = Starts.STATUS_FERTIG;
+                            stat = stat_ende;
+                            break;
                     }
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(395623710, "StarterClass.StartenProgramm-2", ex);
             }
             fertigmeldung(starts);
-            beiFehlerAufraeumen(starts);
             starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
 
-        private boolean starten(String t) {
-            boolean ret = true;
+        private boolean starten() {
+            boolean ret = false;
+            // die Reihenfolge: startcounter - startmeldung ist wichtig!
+            starts.startcounter++;
             startmeldung(starts);
             runtimeExec = new RuntimeExec(starts);
             starts.process = runtimeExec.exec();
-            if (starts.process == null) {
-                //Anzeige ändern - fehler - Programm wurde nicht gestartet
-                starts.status = Starts.STATUS_ERR;
-                ret = false;
-            } else {
-                starts.startcounter++;
+            if (starts.process != null) {
+                ret = true;
             }
             return ret;
         }
     }
+//        public synchronized void run_old() {
+//            int k = 0;
+//            long filesize = -1;
+//            boolean restart = false;
+//            boolean startOk = false;
+//            try {
+//                if (starten("")) {
+//                    restart = true; //los gehts
+//                }
+//                while (restart && !starts.stoppen) {
+//                    startOk = false;
+//                    restart = false;
+//                    while (!allesStop && !starts.stoppen) {
+//                        //hier läuft der Download bis zum Abbruch oder Ende
+//                        try {
+//                            k = starts.process.exitValue();
+//                            //fertig und tschüss
+//                            break;
+//                        } catch (Exception ex) {
+//                            try {
+//                                this.wait(2000);
+//                            } catch (InterruptedException e) {
+//                            }
+//                        }
+//                    }
+//                    if (allesStop || starts.stoppen) {
+//                        if (starts.process != null) {
+//                            starts.process.destroy();
+//                            //Anzeige ändern - fertig
+//                            if (starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
+//                                //für die direkten Starts mit dem Button
+//                                starts.status = Starts.STATUS_FERTIG;
+//                            } else {
+//                                starts.status = Starts.STATUS_INIT;
+//                            }
+//                            //mit dem flvstreamer könnte man weitermachen, wennd das File noch da wäre
+//                            //new File(starts.film.arr[Konstanten.FILM_ZIEL_PFAD_DATEI_NR]).delete();
+//                        }
+//                    } else { //Exitvalue vom Prozess prüfen und ggf. neu Starten
+//                        if (k != 0) {
+//                            if (starts.datenDownload.isRestart()) {
+//                                //Download wieder starten
+//                                if (filesize == -1) {
+//                                    //erstes Mal
+//                                    File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+//                                    if (file.exists()) {
+//                                        if (file.length() == 0) {
+//                                            // zum Wiederstarten die leere Datei löschen, alles auf Anfang
+//                                            Log.systemMeldung(new String[]{"StartenProgramm, Restart, leere Datei löschen", starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
+//                                            try {
+//                                                file.delete();
+//                                            } catch (Exception ex) {
+//                                            }
+//                                        }
+//                                    }
+//                                    if (file.exists()) {
+//                                        filesize = file.length();
+//                                        startOk = true;
+//                                    } else if (starts.startcounter < Starts.STARTCOUNTER_MAX) {
+//                                        //counter prüfen und bei einem Maxwert abbrechen, sonst endlos
+//                                        startOk = true;
+//                                    }
+//                                } else {
+//                                    //jetzt muss das File wachsen, sonst kein Restart
+//                                    File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+//                                    if (file.exists()) {
+//                                        if (file.length() > filesize) {
+//                                            //nur weitermachen wenn die Datei tasächlich wächst
+//                                            startOk = true;
+//                                            filesize = file.length();
+//                                        }
+//                                    }
+//                                }
+//                                if (startOk && starten(" Restart")) {
+//                                    restart = true;
+//                                } else {
+//                                    //Anzeige ändern - fertig mit Fehler
+//                                    starts.status = Starts.STATUS_ERR;
+//                                }
+//                            } else {
+//                                //Anzeige ändern - fertig
+//                                starts.status = Starts.STATUS_ERR;
+//                            }
+//                        } else if (starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
+//                            //für die direkten Starts mit dem Button
+//                            starts.status = Starts.STATUS_FERTIG;
+//                        } else if (pruefen(starts)) {
+//                            //Anzeige ändern - fertig
+//                            starts.status = Starts.STATUS_FERTIG;
+//                        } else {
+//                            //Anzeige ändern - fehler
+//                            starts.status = Starts.STATUS_ERR;
+//                        }
+//                    }
+//                }
+//            } catch (Exception ex) {
+//                Log.fehlerMeldung(395623710, "StarterClass.StartenProgramm-2", ex);
+//            }
+//            fertigmeldung(starts);
+//            beiFehlerAufraeumen(starts);
+//            starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
+//            notifyStartEvent();
+//        }
 
     private class StartenDonwnload implements Runnable {
 
@@ -619,7 +720,7 @@ public class StarterClass {
                 Log.fehlerMeldung(904685832, "StarterClass.StartenDonwnload-2", ex);
             }
             fertigmeldung(starts);
-            beiFehlerAufraeumen(starts);
+            leeresFileLoeschen(starts);
             starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
@@ -660,22 +761,25 @@ public class StarterClass {
         return ret;
     }
 
-    private boolean beiFehlerAufraeumen(Starts starts) {
-        //prüfen ob der Downoad geklappt hat und die Datei existiert und eine min. Grüße hat, wenn nicht, dann löschen
-        boolean ret = false;
-        File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-        if (file.exists()) {
-            if (file.length() < Konstanten.MIN_DATEI_GROESSE_KB * 1024) {
-                Log.systemMeldung(new String[]{"Datei zu klein, löschen", starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
-                try {
+    private void leeresFileLoeschen(Starts starts) {
+        //prüfen ob die Datei existiert und eine min. Grüße hat, wenn nicht, dann löschen
+        try {
+            File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            if (file.exists()) {
+                // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
+                if (file.length() == 0) {
+                    // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
+                    Log.systemMeldung(new String[]{"Restart/Aufräumen: leere Datei löschen", starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
                     file.delete();
-                    ret = true;
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(795632500, "StartetClass.kleineLoeschen", "Fehler beim löschen" + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_KB * 1024) {
+                    Log.systemMeldung(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
+                    file.delete();
+
                 }
             }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(795632500, "StartetClass.leeresFileLoeschen", "Fehler beim löschen" + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
-        return ret;
     }
 
     private void startmeldung(Starts starts) {
@@ -684,7 +788,11 @@ public class StarterClass {
         if (abspielen) {
             text.add("Film starten");
         } else {
-            text.add("Download starten");
+            if (starts.startcounter > 1) {
+                text.add("Download starten - Restart (Summe Starts: " + starts.startcounter + ")");
+            } else {
+                text.add("Download starten");
+            }
             text.add("Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
             text.add("Ziel: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
@@ -703,7 +811,12 @@ public class StarterClass {
         if (abspielen) {
             text.add("Film fertig");
         } else {
-            text.add("Download fertig");
+            if (starts.status != Starts.STATUS_ERR) {
+                // dann ists gut
+                text.add("Download ist fertig und hat geklappt");
+            } else {
+                text.add("Download ist fertig und war fehlerhaft");
+            }
             text.add("Programmset: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
             text.add("Ziel: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
@@ -712,14 +825,6 @@ public class StarterClass {
             text.add("direkter Download");
         } else {
             text.add("Programmaufruf: " + starts.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
-        }
-        if (!abspielen) {
-            if (starts.status != Starts.STATUS_ERR) {
-                // dann ists gut
-                text.add("Download hat geklappt");
-            } else {
-                text.add("Download war fehlerhaft");
-            }
         }
         Log.systemMeldung(text.toArray(new String[]{}));
     }
