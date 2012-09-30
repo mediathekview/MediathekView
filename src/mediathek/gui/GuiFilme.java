@@ -46,7 +46,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -104,41 +103,6 @@ public class GuiFilme extends PanelVorlage {
         extra();
         tabelleBauen(); //Filme laden
         tabelle.initTabelle();
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                extra();
-            }
-        });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                tabelleBauen();
-            }
-        });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                checkBlacklist();
-                tabelleBauen();
-            }
-        });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                checkBlacklist();
-                tabelleBauen();
-            }
-        });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                tabelle.getSelected();
-                ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
-                tabelle.setSelected();
-                setInfo();
-            }
-        });
     }
 
     //===================================
@@ -273,6 +237,41 @@ public class GuiFilme extends PanelVorlage {
         // Filter erst mal ausblenden
         jCheckBoxFilter.addActionListener(new BeobMpanel(jCheckBoxFilter, jPanelFilter, "Filter"));
         jCheckBoxProgamme.addActionListener(new BeobMpanel(jCheckBoxProgamme, jPanelExtra, "weitere Videoplayer"));
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                extra();
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                tabelleBauen();
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                checkBlacklist();
+                tabelleBauen();
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                checkBlacklist();
+                tabelleBauen();
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                tabelle.getSelected();
+                ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
+                tabelle.setSelected();
+                setInfo();
+            }
+        });
     }
 
     // ############################################
@@ -348,20 +347,19 @@ public class GuiFilme extends PanelVorlage {
     //####################################
     // Tabelle asynchron füllen
     //####################################
+//    private synchronized void tabelleBauen() {
+//        try {
+//            SwingUtilities.invokeLater(new Runnable() {
+//                @Override
+//                public void run() {
+//                    tabelleBauen_();
+//                }
+//            });
+//        } catch (Exception ex) {
+//            Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
+//        }
+//    }
     private synchronized void tabelleBauen() {
-        try {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    tabelleBauen_();
-                }
-            });
-        } catch (Exception ex) {
-            Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
-        }
-    }
-
-    private synchronized void tabelleBauen_() {
         try {
             boolean themaNichtDa = false;
             stopBeob = true;
