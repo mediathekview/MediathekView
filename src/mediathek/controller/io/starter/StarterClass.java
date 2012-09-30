@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
@@ -65,68 +64,27 @@ public class StarterClass {
         String url = ersterFilm.arr[DatenFilm.FILM_URL_NR];
         if (!url.equals("")) {
             s = new Start(new DatenDownload(pSet, ersterFilm, Start.QUELLE_BUTTON, null, "", ""));
-            this.starten.startStarten(s);
+            starten.startStarten(s);
             addStarts(s);
         }
         return s;
     }
 
-    public synchronized Start urlVorziehen(String url) {
+    public Start urlVorziehen(String url) {
         // Starts mit der URL wird vorgezogen und startet als nächster
-        Start s = null;
-        Iterator<Start> it = listeStarts.getIt();
-        while (it.hasNext()) {
-            s = it.next();
-            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
-                if (s.status < Start.STATUS_RUN) {
-                    // sonst bringts nichts mehr
-                    it.remove();
-                    listeStarts.addFirst(s);
-                }
-                break;
-            }
-        }
-        return s;
+        return listeStarts.urlVorziehen(url);
     }
 
     public synchronized LinkedList<Start> getStarts(int quelle) {
-        LinkedList<Start> ret = new LinkedList<Start>();
-        Iterator<Start> it = listeStarts.getIt();
-        while (it.hasNext()) {
-            Start s = it.next();
-            if (s.datenDownload.getQuelle() == quelle || quelle == Start.QUELLE_ALLE) {
-                ret.add(s);
-            }
-        }
-        return ret;
+        return listeStarts.getStarts(quelle);
     }
 
     public synchronized int getDownloadsWarten() {
-        int ret = 0;
-        Iterator<Start> it = listeStarts.getIt();
-        while (it.hasNext()) {
-            Start s = it.next();
-            if (s.datenDownload.getQuelle() == Start.QUELLE_ABO || s.datenDownload.getQuelle() == Start.QUELLE_DOWNLOAD) {
-                if (s.status == Start.STATUS_INIT) {
-                    ++ret;
-                }
-            }
-        }
-        return ret;
+        return listeStarts.getDownloadsWarten();
     }
 
     public synchronized int getDownloadsLaufen() {
-        int ret = 0;
-        Iterator<Start> it = listeStarts.getIt();
-        while (it.hasNext()) {
-            Start s = it.next();
-            if (s.datenDownload.getQuelle() == Start.QUELLE_ABO || s.datenDownload.getQuelle() == Start.QUELLE_DOWNLOAD) {
-                if (s.status == Start.STATUS_RUN) {
-                    ++ret;
-                }
-            }
-        }
-        return ret;
+        return listeStarts.getDownloadsLaufen();
     }
 
     public synchronized int getStartsWaiting() {
@@ -134,195 +92,49 @@ public class StarterClass {
         return listeStarts.getmax();
     }
 
-    public synchronized TModel getStarterModell(TModel model) {
-        return listeStarts.getModel(model);
+    public synchronized TModel getModellStarts(TModel model) {
+        return listeStarts.getModelStarts(model);
 
     }
 
     public synchronized void addStarts(Start start) {
         //add: Neues Element an die Liste anhängen
-        if (start != null) {
-            if (!listeStarts.contain(start)) {
-                listeStarts.add(start);
-                // gestartete Filme auch in die History eintragen
-                ddaten.history.add(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-            }
-        }
-        notifyStartEvent();
+        listeStarts.addStarts(start);
     }
 
     public synchronized Start getStart(String url) {
-        Start ret = null;
-        Iterator<Start> it = listeStarts.getIt();
-        while (it.hasNext()) {
-            Start s = it.next();
-            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
-                ret = s;
-                break;
-            }
-        }
-        return ret;
+        return listeStarts.getStart(url);
     }
 
     public synchronized void aufraeumen() {
         listeStarts.aufraeumen();
-        notifyStartEvent();
     }
 
     public synchronized void allesAbbrechen() {
         // Alle Downloads werden abgebrochen
-        listeStarts.delStart();
-        notifyStartEvent();
+        listeStarts.delAllStart();
     }
 
     public synchronized void filmLoeschen(String url) {
         listeStarts.delStart(url);
-        notifyStartEvent();
     }
 
-    //===================================
+    // ===================================
     // Private
-    //===================================
+    // ===================================
     private void notifyStartEvent() {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
     }
 
     private void buttonStartsPutzen() {
         // Starts durch Button die fertig sind, löschen
-        boolean habsGetan = false;
-        Iterator<Start> it = listeStarts.getIt();
-        while (it.hasNext()) {
-            Start s = it.next();
-            if (s.datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
-                if (s.status != Start.STATUS_RUN) {
-                    // dann ist er fertig oder abgebrochen
-                    it.remove();
-                    habsGetan = true;
-                }
-            }
-        }
-        if (habsGetan) {
-            notifyStartEvent(); // und dann bescheid geben
-        }
+        listeStarts.buttonStartsPutzen();
     }
 
     private Start getListe() {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
-        Iterator<Start> it;
-        Start ret = null;
-        if (listeStarts.size() >= 0
-                && listeStarts.getDown() < Integer.parseInt(DDaten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR])) {
-            Start s = naechsterStart();
-            if (s != null) {
-                if (s.status == Start.STATUS_INIT) {
-                    ret = s;
-                }
-            }
-        }
-        return ret;
-    }
-
-    private Start naechsterStart() {
-        Start s;
-        Iterator<Start> it = listeStarts.getIt();
-        //erster Versuch, Start mit einem anderen Sender
-        while (it.hasNext()) {
-            s = it.next();
-            if (s.status == Start.STATUS_INIT) {
-                if (!maxSenderLaufen(s, 1)) {
-                    return s;
-                }
-            }
-        }
-        if (Konstanten.MAX_SENDER_FILME_LADEN == 1) {
-            //dann wars dass
-            return null;
-        }
-        //zweiter Versuch, Start mit einem passenden Sender
-        it = listeStarts.getIt();
-        while (it.hasNext()) {
-            s = it.next();
-            if (s.status == Start.STATUS_INIT) {
-                //int max = s.film.arr[Konstanten.FILM_SENDER_NR].equals(Konstanten.SENDER_PODCAST) ? Konstanten.MAX_PODCAST_FILME_LADEN : Konstanten.MAX_SENDER_FILME_LADEN;
-                if (!maxSenderLaufen(s, Konstanten.MAX_SENDER_FILME_LADEN)) {
-                    return s;
-                }
-            }
-        }
-        return null;
-    }
-
-    private boolean maxSenderLaufen(Start s, int max) {
-        //true wenn bereits die maxAnzahl pro Sender läuft
-        try {
-            int counter = 0;
-            Start start;
-            String host = getHost(s);
-            Iterator<Start> it = listeStarts.getIt();
-            while (it.hasNext()) {
-                start = it.next();
-                if (start.status == Start.STATUS_RUN
-                        && getHost(start).equalsIgnoreCase(host)) {
-                    counter++;
-                    if (counter >= max) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        } catch (Exception ex) {
-            return false;
-        }
-    }
-
-    private String getHost(Start s) {
-        String host = "";
-        try {
-            try {
-                String uurl = s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR];
-                // die funktion "getHost()" kann nur das Protokoll "http" ??!??
-                if (uurl.startsWith("rtmpt:")) {
-                    uurl = uurl.toLowerCase().replace("rtmpt:", "http:");
-                }
-                if (uurl.startsWith("rtmp:")) {
-                    uurl = uurl.toLowerCase().replace("rtmp:", "http:");
-                }
-                if (uurl.startsWith("mms:")) {
-                    uurl = uurl.toLowerCase().replace("mms:", "http:");
-                }
-                URL url = new URL(uurl);
-                String tmp = url.getHost();
-                if (tmp.contains(".")) {
-                    host = tmp.substring(tmp.lastIndexOf("."));
-                    tmp = tmp.substring(0, tmp.lastIndexOf("."));
-                    if (tmp.contains(".")) {
-                        host = tmp.substring(tmp.lastIndexOf(".") + 1) + host;
-                    } else if (tmp.contains("/")) {
-                        host = tmp.substring(tmp.lastIndexOf("/") + 1) + host;
-                    } else {
-                        host = "host";
-                    }
-                }
-            } catch (Exception ex) {
-                // für die Hosts bei denen das nicht klappt
-                // Log.systemMeldung("getHost 1: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                host = "host";
-            } finally {
-                if (host == null) {
-                    // Log.systemMeldung("getHost 2: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                    host = "host";
-                }
-                if (host.equals("")) {
-                    // Log.systemMeldung("getHost 3: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                    host = "host";
-                }
-            }
-        } catch (Exception ex) {
-            // Log.systemMeldung("getHost 4: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
-            host = "exception";
-        }
-        return host;
+        return listeStarts.getListe();
     }
 
     // ********************************************
@@ -516,109 +328,6 @@ public class StarterClass {
             return ret;
         }
     }
-//        public synchronized void run_old() {
-//            int k = 0;
-//            long filesize = -1;
-//            boolean restart = false;
-//            boolean startOk = false;
-//            try {
-//                if (starten("")) {
-//                    restart = true; //los gehts
-//                }
-//                while (restart && !starts.stoppen) {
-//                    startOk = false;
-//                    restart = false;
-//                    while (!allesStop && !starts.stoppen) {
-//                        //hier läuft der Download bis zum Abbruch oder Ende
-//                        try {
-//                            k = starts.process.exitValue();
-//                            //fertig und tschüss
-//                            break;
-//                        } catch (Exception ex) {
-//                            try {
-//                                this.wait(2000);
-//                            } catch (InterruptedException e) {
-//                            }
-//                        }
-//                    }
-//                    if (allesStop || starts.stoppen) {
-//                        if (starts.process != null) {
-//                            starts.process.destroy();
-//                            //Anzeige ändern - fertig
-//                            if (starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
-//                                //für die direkten Starts mit dem Button
-//                                starts.status = Starts.STATUS_FERTIG;
-//                            } else {
-//                                starts.status = Starts.STATUS_INIT;
-//                            }
-//                            //mit dem flvstreamer könnte man weitermachen, wennd das File noch da wäre
-//                            //new File(starts.film.arr[Konstanten.FILM_ZIEL_PFAD_DATEI_NR]).delete();
-//                        }
-//                    } else { //Exitvalue vom Prozess prüfen und ggf. neu Starten
-//                        if (k != 0) {
-//                            if (starts.datenDownload.isRestart()) {
-//                                //Download wieder starten
-//                                if (filesize == -1) {
-//                                    //erstes Mal
-//                                    File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-//                                    if (file.exists()) {
-//                                        if (file.length() == 0) {
-//                                            // zum Wiederstarten die leere Datei löschen, alles auf Anfang
-//                                            Log.systemMeldung(new String[]{"StartenProgramm, Restart, leere Datei löschen", starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]});
-//                                            try {
-//                                                file.delete();
-//                                            } catch (Exception ex) {
-//                                            }
-//                                        }
-//                                    }
-//                                    if (file.exists()) {
-//                                        filesize = file.length();
-//                                        startOk = true;
-//                                    } else if (starts.startcounter < Starts.STARTCOUNTER_MAX) {
-//                                        //counter prüfen und bei einem Maxwert abbrechen, sonst endlos
-//                                        startOk = true;
-//                                    }
-//                                } else {
-//                                    //jetzt muss das File wachsen, sonst kein Restart
-//                                    File file = new File(starts.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-//                                    if (file.exists()) {
-//                                        if (file.length() > filesize) {
-//                                            //nur weitermachen wenn die Datei tasächlich wächst
-//                                            startOk = true;
-//                                            filesize = file.length();
-//                                        }
-//                                    }
-//                                }
-//                                if (startOk && starten(" Restart")) {
-//                                    restart = true;
-//                                } else {
-//                                    //Anzeige ändern - fertig mit Fehler
-//                                    starts.status = Starts.STATUS_ERR;
-//                                }
-//                            } else {
-//                                //Anzeige ändern - fertig
-//                                starts.status = Starts.STATUS_ERR;
-//                            }
-//                        } else if (starts.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
-//                            //für die direkten Starts mit dem Button
-//                            starts.status = Starts.STATUS_FERTIG;
-//                        } else if (pruefen(starts)) {
-//                            //Anzeige ändern - fertig
-//                            starts.status = Starts.STATUS_FERTIG;
-//                        } else {
-//                            //Anzeige ändern - fehler
-//                            starts.status = Starts.STATUS_ERR;
-//                        }
-//                    }
-//                }
-//            } catch (Exception ex) {
-//                Log.fehlerMeldung(395623710, "StarterClass.StartenProgramm-2", ex);
-//            }
-//            fertigmeldung(starts);
-//            beiFehlerAufraeumen(starts);
-//            starts.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
-//            notifyStartEvent();
-//        }
 
     private class StartenDonwnload implements Runnable {
 
