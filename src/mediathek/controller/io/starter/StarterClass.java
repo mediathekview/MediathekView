@@ -754,7 +754,7 @@ public class StarterClass {
         }
         text.add("URL: " + start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
         if (start.datenDownload.getArt() == Start.ART_DOWNLOAD) {
-            text.add("direkter Download");
+            text.add(Start.ART_DOWNLOAD_TXT);
         } else {
             text.add("Programmaufruf: " + start.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
         }
@@ -780,7 +780,7 @@ public class StarterClass {
         }
         text.add("URL: " + start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
         if (start.datenDownload.getArt() == Start.ART_DOWNLOAD) {
-            text.add("direkter Download");
+            text.add(Start.ART_DOWNLOAD_TXT);
         } else {
             text.add("Programmaufruf: " + start.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
         }
