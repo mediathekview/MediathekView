@@ -24,7 +24,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import mediathek.controller.io.starter.Starts;
+import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -100,7 +100,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private void setGruppe() {
         pSet = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
         // beim ersten mal werden die Standardpfade gesucht
-        datenDownload = new DatenDownload(pSet, datenFilm, Starts.QUELLE_DOWNLOAD, null, "", "");
+        datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, "", "");
         if (datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR].equals("")) {
             jTextFieldName.setEnabled(false);
             jTextFieldPfad.setEnabled(false);
@@ -140,11 +140,11 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private void beenden() {
         if (ok) {
             // jetzt wird mit den angegebenen Pfaden gearbeitet
-            datenDownload = new DatenDownload(pSet, datenFilm, Starts.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), jTextFieldPfad.getText());
+            datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), jTextFieldPfad.getText());
             ddaten.listeDownloads.add(datenDownload);
             if (jCheckBoxStarten.isSelected()) {
                 // und evtl. auch gleich starten
-                ddaten.starterClass.addStarts(new Starts(datenDownload));
+                ddaten.starterClass.addStarts(new Start(datenDownload));
             }
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }

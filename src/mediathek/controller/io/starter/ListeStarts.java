@@ -26,7 +26,7 @@ import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.TModel;
 
-public class ListeStarts extends LinkedList<Starts> {
+public class ListeStarts extends LinkedList<Start> {
 
     DDaten daten;
 
@@ -35,16 +35,16 @@ public class ListeStarts extends LinkedList<Starts> {
         daten = d;
     }
 
-    public synchronized Iterator<Starts> getIt() {
+    public synchronized Iterator<Start> getIt() {
         return super.iterator();
     }
 
-    boolean contain(Starts starts) {
+    boolean contain(Start start) {
         boolean ret = false;
-        ListIterator<Starts> it = this.listIterator(0);
+        ListIterator<Start> it = this.listIterator(0);
         while (it.hasNext()) {
-            Starts s = it.next();
-            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(starts.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR])) {
+            Start s = it.next();
+            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR])) {
                 ret = true;
                 break;
             }
@@ -53,9 +53,9 @@ public class ListeStarts extends LinkedList<Starts> {
     }
 
     void delStart(String url) {
-        ListIterator<Starts> it = this.listIterator(0);
+        ListIterator<Start> it = this.listIterator(0);
         while (it.hasNext()) {
-            Starts s = it.next();
+            Start s = it.next();
             if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
                 s.stoppen = true;
                 it.remove();
@@ -65,9 +65,9 @@ public class ListeStarts extends LinkedList<Starts> {
     }
 
     void delStart() {
-        ListIterator<Starts> it = this.listIterator(0);
+        ListIterator<Start> it = this.listIterator(0);
         while (it.hasNext()) {
-            Starts s = it.next();
+            Start s = it.next();
             s.stoppen = true;
             it.remove();
             break;
@@ -76,10 +76,10 @@ public class ListeStarts extends LinkedList<Starts> {
 
     int getDown() {
         int ret = 0;
-        ListIterator<Starts> it = this.listIterator(0);
+        ListIterator<Start> it = this.listIterator(0);
         while (it.hasNext()) {
-            Starts s = it.next();
-            if (s.status == Starts.STATUS_RUN) {
+            Start s = it.next();
+            if (s.status == Start.STATUS_RUN) {
                 ++ret;
             }
         }
@@ -87,10 +87,10 @@ public class ListeStarts extends LinkedList<Starts> {
     }
 
     void aufraeumen() {
-        Iterator<Starts> it = this.iterator();
+        Iterator<Start> it = this.iterator();
         while (it.hasNext()) {
-            Starts start = it.next();
-            if (start.status >= Starts.STATUS_FERTIG) {
+            Start start = it.next();
+            if (start.status >= Start.STATUS_FERTIG) {
                 it.remove();
             }
         }
@@ -99,9 +99,9 @@ public class ListeStarts extends LinkedList<Starts> {
     int delRest() {
         //löscht alle Starts die noch nicht laufen
         int ret = 0;
-        ListIterator<Starts> it = this.listIterator(0);
+        ListIterator<Start> it = this.listIterator(0);
         while (it.hasNext()) {
-            if (it.next().status < Starts.STATUS_RUN) {
+            if (it.next().status < Start.STATUS_RUN) {
                 it.remove();
             }
         }
@@ -111,9 +111,9 @@ public class ListeStarts extends LinkedList<Starts> {
     int getmax() {
         // liefert die Listengröße wenn noch nicht alle fertig
         // sonst wenn alle fertig: 0
-        ListIterator<Starts> it = this.listIterator(0);
+        ListIterator<Start> it = this.listIterator(0);
         while (it.hasNext()) {
-            if (it.next().status < Starts.STATUS_FERTIG) {
+            if (it.next().status < Start.STATUS_FERTIG) {
                 return this.size();
             }
         }
@@ -123,9 +123,9 @@ public class ListeStarts extends LinkedList<Starts> {
     TModel getModel(TModel model) {
         model.setRowCount(0);
         Object[] object;
-        Starts start;
+        Start start;
         if (this.size() > 0) {
-            Iterator<Starts> iterator = this.getIt();
+            Iterator<Start> iterator = this.getIt();
             int objLen = DatenDownload.DOWNLOAD_MAX_ELEM + 1;
             object = new Object[objLen];
             while (iterator.hasNext()) {

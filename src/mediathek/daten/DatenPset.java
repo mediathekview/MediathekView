@@ -23,7 +23,7 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
-import mediathek.controller.io.starter.Starts;
+import mediathek.controller.io.starter.Start;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Log;
 
@@ -197,7 +197,7 @@ public class DatenPset {
         //gibt den Zieldateinamen für den Film zurück
         DatenProg prog = this.getProgUrl(url);
         String ret = arr[PROGRAMMSET_ZIEL_DATEINAME_NR];
-        if ((checkDownloadDirekt(url) != Starts.ART_DOWNLOAD) && prog != null) {
+        if ((checkDownloadDirekt(url) != Start.ART_DOWNLOAD) && prog != null) {
             // nur wenn kein direkter Download und ein passendes Programm
             if (!prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].equals("")) {
                 ret = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR];
@@ -249,13 +249,13 @@ public class DatenPset {
     }
 
     public int checkDownloadDirekt(String url) {
-        int ret = Starts.ART_PROGRAMM;
+        int ret = Start.ART_PROGRAMM;
         //auf direkte prüfen, pref oder suf: wenn angegeben dann muss es stimmen
         if (!this.arr[PROGRAMMSET_PRAEFIX_DIREKT_NR].equals("")
                 || !this.arr[PROGRAMMSET_SUFFIX_DIREKT_NR].equals("")) {
             if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_PRAEFIX_DIREKT_NR], url, true)
                     && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_SUFFIX_DIREKT_NR], url, false)) {
-                ret = Starts.ART_DOWNLOAD;
+                ret = Start.ART_DOWNLOAD;
             }
         }
         return ret;

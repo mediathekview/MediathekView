@@ -30,7 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mediathek.controller.io.starter.Starts;
+import mediathek.controller.io.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
 
@@ -104,7 +104,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             jPanelExtra.add(jCheckBox);
         } else {
             if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
-                if (download.getArt() == Starts.ART_DOWNLOAD) {
+                if (download.getArt() == Start.ART_DOWNLOAD) {
                     textfeld.setEditable(false);
                 } else {
                     textfeld.getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
@@ -115,26 +115,26 @@ public class DialogEditDownload extends javax.swing.JDialog {
             }
             if (i == DatenDownload.DOWNLOAD_ART_NR) {
                 switch (download.getArt()) {
-                    case Starts.ART_DOWNLOAD:
-                        textfeld.setText(Starts.ART_DOWNLOAD_TXT);
+                    case Start.ART_DOWNLOAD:
+                        textfeld.setText(Start.ART_DOWNLOAD_TXT);
                         break;
-                    case Starts.ART_PROGRAMM:
-                        textfeld.setText(Starts.ART_PROGRAMM_TXT);
+                    case Start.ART_PROGRAMM:
+                        textfeld.setText(Start.ART_PROGRAMM_TXT);
                         break;
                 }
             } else if (i == DatenDownload.DOWNLOAD_QUELLE_NR) {
                 switch (download.getQuelle()) {
-                    case Starts.QUELLE_ALLE:
-                        textfeld.setText(Starts.QUELLE_ALLE_TXT);
+                    case Start.QUELLE_ALLE:
+                        textfeld.setText(Start.QUELLE_ALLE_TXT);
                         break;
-                    case Starts.QUELLE_ABO:
-                        textfeld.setText(Starts.QUELLE_ABO_TXT);
+                    case Start.QUELLE_ABO:
+                        textfeld.setText(Start.QUELLE_ABO_TXT);
                         break;
-                    case Starts.QUELLE_BUTTON:
-                        textfeld.setText(Starts.QUELLE_BUTTON_TXT);
+                    case Start.QUELLE_BUTTON:
+                        textfeld.setText(Start.QUELLE_BUTTON_TXT);
                         break;
-                    case Starts.QUELLE_DOWNLOAD:
-                        textfeld.setText(Starts.QUELLE_DOWNLOAD_TXT);
+                    case Start.QUELLE_DOWNLOAD:
+                        textfeld.setText(Start.QUELLE_DOWNLOAD_TXT);
                         break;
                 }
             } else {

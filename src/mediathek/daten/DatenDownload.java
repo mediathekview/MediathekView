@@ -26,7 +26,7 @@ import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekSwr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
 import mediathek.controller.io.AsxLesen;
-import mediathek.controller.io.starter.Starts;
+import mediathek.controller.io.starter.Start;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
@@ -140,7 +140,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             return Integer.parseInt(arr[DOWNLOAD_ART_NR]);
         } catch (Exception ex) {
             Log.fehlerMeldung(946325800, this.getClass().getName(), ex);
-            return Starts.ART_PROGRAMM;
+            return Start.ART_PROGRAMM;
         }
     }
 
@@ -149,7 +149,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);
         } catch (Exception ex) {
             Log.fehlerMeldung(649632580, this.getClass().getName(), ex);
-            return Starts.QUELLE_BUTTON;
+            return Start.QUELLE_BUTTON;
         }
     }
 
@@ -181,7 +181,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[DOWNLOAD_PROGRAMMSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
             int art = pSet.checkDownloadDirekt(arr[DOWNLOAD_URL_NR]);
             arr[DOWNLOAD_ART_NR] = String.valueOf(art);
-            if (art == Starts.ART_DOWNLOAD) {
+            if (art == Start.ART_DOWNLOAD) {
                 arr[DatenDownload.DOWNLOAD_PROGRAMM_NR] = "direkter Download";
             } else {
                 arr[DatenDownload.DOWNLOAD_PROGRAMM_NR] = programm.arr[DatenProg.PROGRAMM_NAME_NR];
@@ -296,7 +296,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             befehlsString = befehlsString.replace("%a", arr[DOWNLOAD_URL_AUTH_NR]);
             befehlsString = befehlsString.replace("%A", "-W " + arr[DOWNLOAD_URL_AUTH_NR]);
         }
-        if (getArt() == Starts.ART_DOWNLOAD) {
+        if (getArt() == Start.ART_DOWNLOAD) {
             arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = "";
         } else {
             arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = befehlsString;

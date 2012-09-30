@@ -54,7 +54,7 @@ import javax.swing.event.ListSelectionListener;
 import mediathek.MediathekGui;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
-import mediathek.controller.io.starter.Starts;
+import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
@@ -515,7 +515,7 @@ public class GuiFilme extends PanelVorlage {
         String leer = "   -   ";
         int gesamt = Daten.listeFilme.size();
         int anzListe = tabelle.getModel().getRowCount();
-        int runs = ddaten.starterClass.getStarts(Starts.QUELLE_BUTTON).size();
+        int runs = ddaten.starterClass.getStarts(Start.QUELLE_BUTTON).size();
         if (gesamt == anzListe) {
             if (anzListe == 1) {
                 textLinks = "1 Film";
@@ -892,13 +892,13 @@ public class GuiFilme extends PanelVorlage {
         }
 
         private void showMenu(MouseEvent evt) {
-            LinkedList<Starts> liste = ddaten.starterClass.getStarts(Starts.QUELLE_BUTTON);
+            LinkedList<Start> liste = ddaten.starterClass.getStarts(Start.QUELLE_BUTTON);
             if (liste.size() > 0) {
                 JPopupMenu jPopupMenu = new JPopupMenu();
                 JMenuItem item;
-                Iterator<Starts> it = liste.iterator();
+                Iterator<Start> it = liste.iterator();
                 while (it.hasNext()) {
-                    Starts s = it.next();
+                    Start s = it.next();
                     // dann läuft er noch
                     item = new JMenuItem("Beenden: [" + s.datenDownload.arr[DatenDownload.DOWNLOAD_SENDER_NR] + "]  " + s.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
                     item.addActionListener(new BeobProgramm(s));
@@ -911,17 +911,17 @@ public class GuiFilme extends PanelVorlage {
 
         private class BeobProgramm implements ActionListener {
 
-            Starts s;
+            Start start;
 
-            public BeobProgramm(Starts ss) {
-                s = ss;
+            public BeobProgramm(Start sstart) {
+                start = sstart;
             }
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (s != null) {
-                        ddaten.starterClass.filmLoeschen(s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                    if (start != null) {
+                        ddaten.starterClass.filmLoeschen(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                     }
                 } catch (Exception ex) {
                     System.err.println("GuiFilme.BeobProgramm: " + ex.getMessage());

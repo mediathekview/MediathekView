@@ -28,7 +28,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import mediathek.controller.io.starter.Starts;
+import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 
@@ -64,10 +64,10 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             // Abos
             boolean abo = !table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_ABO_NR).equals("");
             // Starts
-            Starts s = ddaten.starterClass.getStart(url);
+            Start s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 switch (s.status) {
-                    case Starts.STATUS_INIT:
+                    case Start.STATUS_INIT:
                         if (isSelected) {
                             setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
                             panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
@@ -76,7 +76,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                             panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
                         }
                         break;
-                    case Starts.STATUS_RUN:
+                    case Start.STATUS_RUN:
                         if (isSelected) {
                             setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
                             panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
@@ -85,7 +85,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                             panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
                         }
                         break;
-                    case Starts.STATUS_FERTIG:
+                    case Start.STATUS_FERTIG:
                         if (isSelected) {
                             setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
                             panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
@@ -94,7 +94,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                             panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
                         }
                         break;
-                    case Starts.STATUS_ERR:
+                    case Start.STATUS_ERR:
                         if (isSelected) {
                             setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
                             panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
@@ -127,7 +127,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                         return panel;
                     } else if (i == 1000) {
                         if (s != null) {
-                            if (s.status == Starts.STATUS_ERR) {
+                            if (s.status == Start.STATUS_ERR) {
                                 this.setText("fehlerhaft");
                             } else {
                                 this.setText("fertig");
