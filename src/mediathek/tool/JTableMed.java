@@ -81,7 +81,7 @@ public final class JTableMed extends JTable {
         // Einstellungen der Tabelle merken
         sel = this.getSelectedRow();
         rows = this.getRowCount();
-        if (sel > 0) {
+        if (sel >= 0) {
             idx = this.getModel().getValueAt(this.convertRowIndexToModel(sel), 0).toString();
         } else {
             idx = "";

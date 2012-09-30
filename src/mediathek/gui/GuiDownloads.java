@@ -123,6 +123,24 @@ public class GuiDownloads extends PanelVorlage {
     //private
     //===================================
     private void init() {
+        jRadioButtonAbos.setForeground(GuiKonstanten.ABO_FOREGROUND);
+        jRadioButtonDownloads.setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
+        tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads(ddaten));
+        tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads(ddaten));
+        tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.DOWNLOAD_COLUMN_NAMES));
+        tabelle.addMouseListener(new BeobMausTabelle());
+        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect1());
+        //aendern
+        ActionMap am = tabelle.getActionMap();
+        am.put("aendern", new BeobAbstractAction());
+        InputMap im = tabelle.getInputMap();
+        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+        im.put(enter, "aendern");
+        //
+        jRadioButtonAlles.addActionListener(new BeobAnzeige());
+        jRadioButtonAbos.addActionListener(new BeobAnzeige());
+        jRadioButtonDownloads.addActionListener(new BeobAnzeige());
+        jCheckBoxFilter.addActionListener(new BeobMpanel(jCheckBoxFilter, jPanelFilter, "Filter"));
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -132,7 +150,11 @@ public class GuiDownloads extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                panelUpdate();
+                tabelle.getSelected();
+                ((TModelDownload) tabelle.getModel()).fireTableDataChanged();
+                tabelle.setSelected();
+                setInfo();
+                //panelUpdate();
             }
         });
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
@@ -151,30 +173,16 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
-        jRadioButtonAbos.setForeground(GuiKonstanten.ABO_FOREGROUND);
-        jRadioButtonDownloads.setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
-        tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads(ddaten));
-        tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads(ddaten));
-        tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.DOWNLOAD_COLUMN_NAMES));
-        tabelle.addMouseListener(new BeobMausTabelle());
-        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect1());
-        //aendern
-        ActionMap am = tabelle.getActionMap();
-        am.put("aendern", new BeobAbstractAction());
-        InputMap im = tabelle.getInputMap();
-        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-        im.put(enter, "aendern");
-        //
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                panelUpdate();
+                tabelle.getSelected();
+                ((TModelDownload) tabelle.getModel()).fireTableDataChanged();
+                tabelle.setSelected();
+                setInfo();
+                //panelUpdate();
             }
         });
-        jRadioButtonAlles.addActionListener(new BeobAnzeige());
-        jRadioButtonAbos.addActionListener(new BeobAnzeige());
-        jRadioButtonDownloads.addActionListener(new BeobAnzeige());
-        jCheckBoxFilter.addActionListener(new BeobMpanel(jCheckBoxFilter, jPanelFilter, "Filter"));
     }
 
     private void load() {
@@ -363,12 +371,11 @@ public class GuiDownloads extends PanelVorlage {
         ddaten.starterClass.aufraeumen();
     }
 
-    private void panelUpdate() {
-        setInfo();
-        tabelle.repaint();
-        this.validate();
-    }
-
+//    private void panelUpdate() {
+//        setInfo();
+//        tabelle.repaint();
+//        this.validate();
+//    }
     private void setInfo() {
         String textLinks;
         // Text links: Zeilen Tabelle
