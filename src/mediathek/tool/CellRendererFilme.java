@@ -24,7 +24,7 @@ import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.io.History;
-import mediathek.controller.io.starter.Starts;
+import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
@@ -57,33 +57,33 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             String url = table.getModel().getValueAt(r, DatenFilm.FILM_URL_NR).toString();
             boolean live = table.getModel().getValueAt(r, DatenFilm.FILM_THEMA_NR).equals(ListeFilme.THEMA_LIVE);
             boolean start = false;
-            Starts s = ddaten.starterClass.getStart(url);
+            Start s = ddaten.starterClass.getStart(url);
             if (s != null) {
-                if (s.datenDownload.getQuelle() == Starts.QUELLE_BUTTON) {
+                if (s.datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
                     start = true;
                     switch (s.status) {
-                        case Starts.STATUS_INIT:
+                        case Start.STATUS_INIT:
                             if (isSelected) {
                                 setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
                             } else {
                                 setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
                             }
                             break;
-                        case Starts.STATUS_RUN:
+                        case Start.STATUS_RUN:
                             if (isSelected) {
                                 setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
                             } else {
                                 setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
                             }
                             break;
-                        case Starts.STATUS_FERTIG:
+                        case Start.STATUS_FERTIG:
                             if (isSelected) {
                                 setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
                             } else {
                                 setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
                             }
                             break;
-                        case Starts.STATUS_ERR:
+                        case Start.STATUS_ERR:
                             if (isSelected) {
                                 setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
                             } else {

@@ -21,7 +21,7 @@ package mediathek.controller.io.starter;
 
 import mediathek.daten.DatenDownload;
 
-public class Starts {
+public class Start {
 
     public int status = STATUS_INIT;
     public int startcounter = 0;
@@ -57,7 +57,7 @@ public class Starts {
      * @param pprog
      * @param rrestart
      */
-    public Starts(DatenDownload d) {
+    public Start(DatenDownload d) {
         datenDownload = d;
     }
 }

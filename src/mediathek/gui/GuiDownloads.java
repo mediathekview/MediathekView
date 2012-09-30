@@ -37,7 +37,7 @@ import javax.swing.event.ListSelectionListener;
 import mediathek.MediathekGui;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
-import mediathek.controller.io.starter.Starts;
+import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -293,10 +293,10 @@ public class GuiDownloads extends PanelVorlage {
         // und jetzt abarbeiten
         for (int i = 0; i < urls.length; ++i) {
             url = urls[i];
-            Starts s = ddaten.starterClass.getStart(url);
+            Start s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 // wenn kein s -> dann gibts auch nichts zum stoppen oder wieder-starten
-                if (!starten && s.status <= Starts.STATUS_RUN) {
+                if (!starten && s.status <= Start.STATUS_RUN) {
                     // löschen -> nur wenn noch läuft, sonst gibts nichts mehr zum löschen
                     ddaten.starterClass.filmLoeschen(url);
                     if (s.datenDownload.istAbo()) {
@@ -304,7 +304,7 @@ public class GuiDownloads extends PanelVorlage {
                         ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
                     }
                 }
-                if (starten && s.status > Starts.STATUS_RUN) {
+                if (starten && s.status > Start.STATUS_RUN) {
                     // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
                     int a = JOptionPane.showConfirmDialog(null, "Film nochmal starten?  ==> " + s.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR], "Fertiger Download", JOptionPane.YES_NO_OPTION);
                     if (a != JOptionPane.YES_OPTION) {
@@ -324,7 +324,7 @@ public class GuiDownloads extends PanelVorlage {
                 // jetzt noch starten/wiederstarten
                 // Start erstellen und zur Liste hinzufügen
                 download.startMelden(DatenDownload.PROGRESS_WARTEN);
-                ddaten.starterClass.addStarts(new Starts(download));
+                ddaten.starterClass.addStarts(new Start(download));
             } else {
                 download.startMelden(DatenDownload.PROGRESS_NICHT_GESTARTET);
             }
@@ -337,9 +337,9 @@ public class GuiDownloads extends PanelVorlage {
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
             int delRow = tabelle.convertRowIndexToModel(i);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-            Starts s = ddaten.starterClass.getStart(url);
+            Start s = ddaten.starterClass.getStart(url);
             if (s != null) {
-                if (s.status < Starts.STATUS_RUN) {
+                if (s.status < Start.STATUS_RUN) {
                     ddaten.starterClass.filmLoeschen(url);
                 }
             }
@@ -351,9 +351,9 @@ public class GuiDownloads extends PanelVorlage {
         for (int i = tabelle.getRowCount() - 1; i >= 0; --i) {
             int delRow = tabelle.convertRowIndexToModel(i);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-            Starts s = ddaten.starterClass.getStart(url);
+            Start s = ddaten.starterClass.getStart(url);
             if (s != null) {
-                if (s.status >= Starts.STATUS_FERTIG) {
+                if (s.status >= Start.STATUS_FERTIG) {
                     ddaten.listeDownloads.delDownloadByUrl(url);
                     ((TModelDownload) tabelle.getModel()).removeRow(delRow);
                 }
@@ -570,9 +570,9 @@ public class GuiDownloads extends PanelVorlage {
             boolean wartenOderLaufen = false;
             if (row >= 0) {
                 int delRow = tabelle.convertRowIndexToModel(row);
-                Starts s = ddaten.starterClass.getStart(tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                Start s = ddaten.starterClass.getStart(tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
                 if (s != null) {
-                    if (s.status <= Starts.STATUS_RUN) {
+                    if (s.status <= Start.STATUS_RUN) {
                         wartenOderLaufen = true;
                     }
                 }

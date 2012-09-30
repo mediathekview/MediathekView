@@ -24,7 +24,7 @@ import java.util.ListIterator;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.IoXmlLesen;
-import mediathek.controller.io.starter.Starts;
+import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -90,7 +90,7 @@ public class MediathekAuto {
             it = ddaten.listeDownloads.listIterator(0);
             while (it.hasNext()) {
                 // alle 5 Sekungen einen Download starten
-                Starts s = new Starts(it.next());
+                Start s = new Start(it.next());
                 ddaten.starterClass.addStarts(s);
                 this.wait(5000);
             }

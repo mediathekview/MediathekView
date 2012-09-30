@@ -25,8 +25,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import javax.swing.JOptionPane;
-import mediathek.controller.io.starter.Starts;
+import mediathek.controller.io.starter.Start;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.TModelDownload;
 
@@ -58,13 +57,13 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public synchronized void listePutzen() {
         // beim Programmende fertige Downloads löschen
-        LinkedList<Starts> s = ddaten.starterClass.getStarts(Starts.QUELLE_ALLE);
-        Iterator<Starts> it = s.iterator();
+        LinkedList<Start> s = ddaten.starterClass.getStarts(Start.QUELLE_ALLE);
+        Iterator<Start> it = s.iterator();
         while (it.hasNext()) {
-            Starts st = it.next();
-            if (st != null) {
-                if (st.status >= Starts.STATUS_FERTIG) {
-                    ddaten.listeDownloads.delDownloadByUrl(st.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+            Start start = it.next();
+            if (start != null) {
+                if (start.status >= Start.STATUS_FERTIG) {
+                    ddaten.listeDownloads.delDownloadByUrl(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 }
             }
         }
@@ -73,7 +72,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public synchronized DatenDownload downloadVorziehen(String url) {
         DatenDownload d = null;
-        Starts s = ddaten.starterClass.urlVorziehen(url);
+        Start s = ddaten.starterClass.urlVorziehen(url);
         ListIterator<DatenDownload> it = this.listIterator(0);
         while (it.hasNext()) {
             d = it.next();
@@ -172,7 +171,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     abo.arr[DatenAbo.ABO_PSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
                 }
                 if (pSet != null) {
-                    this.add(new DatenDownload(pSet, film, Starts.QUELLE_ABO, abo, "", ""));
+                    this.add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", ""));
                 }
             }
         } //while
@@ -185,7 +184,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         while (it.hasNext()) {
             DatenDownload d = it.next();
             if (d.istAbo()) {
-                Starts s = ddaten.starterClass.getStart(d.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                Start s = ddaten.starterClass.getStart(d.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 if (s == null) {
                     // ansonsten läuft er schon
                     it.remove();

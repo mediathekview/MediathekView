@@ -36,7 +36,7 @@ class RuntimeExec {
     Thread clearIn;
     Thread clearOut;
     private Process process = null;
-    Starts s;
+    Start s;
     private Pattern patternFlvstreamer = Pattern.compile("([0-9.]*%)");
     private Pattern patternFfmpeg = Pattern.compile("(?<=Duration: )[^,]*");
     private Pattern patternZeit = Pattern.compile("(?<=time=)[\\d.]+");
@@ -46,7 +46,7 @@ class RuntimeExec {
     /**
      * Neue Klasse instanzieren
      */
-    public RuntimeExec(Starts st) {
+    public RuntimeExec(Start st) {
         s = st;
         prog = s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
     }
