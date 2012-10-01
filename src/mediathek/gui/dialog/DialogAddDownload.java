@@ -26,13 +26,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class DialogAddDownload extends javax.swing.JDialog {
@@ -144,9 +142,8 @@ public class DialogAddDownload extends javax.swing.JDialog {
             ddaten.listeDownloads.add(datenDownload);
             if (jCheckBoxStarten.isSelected()) {
                 // und evtl. auch gleich starten
-                ddaten.starterClass.addStarts(new Start(datenDownload));
+                datenDownload.starten(ddaten);
             }
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
         this.dispose();
     }
