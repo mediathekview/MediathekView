@@ -33,7 +33,6 @@ public final class JTableMed extends JTable {
     int[] breite;
     int[] reihe;
     private int sel;
-    private int rows;
     private String idx = "";
     private boolean stopBeob = false;
     //
@@ -68,7 +67,6 @@ public final class JTableMed extends JTable {
 
     public JTableMed(String[] sspaltenTabelle) {
         tabelle = TABELLE_STANDARD;
-
         spaltenTabelle = sspaltenTabelle;
         this.setModel(new TModel(new Object[][]{}, spaltenTabelle));
         breite = getArray(spaltenTabelle.length);
@@ -80,7 +78,6 @@ public final class JTableMed extends JTable {
     public void getSelected() {
         // Einstellungen der Tabelle merken
         sel = this.getSelectedRow();
-        rows = this.getRowCount();
         if (sel >= 0) {
             idx = this.getModel().getValueAt(this.convertRowIndexToModel(sel), 0).toString();
         } else {
@@ -107,7 +104,6 @@ public final class JTableMed extends JTable {
     public void getSpalten() {
         // Einstellungen der Tabelle merken
         getSelected();
-        rows = this.getRowCount();
         for (int i = 0; i < reihe.length && i < this.getModel().getColumnCount(); ++i) {
             reihe[i] = this.convertColumnIndexToModel(i);
         }

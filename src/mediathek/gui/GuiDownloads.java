@@ -19,12 +19,14 @@
  */
 package mediathek.gui;
 
+import com.sun.org.omg.SendingContext.CodeBasePackage.URLSeqHelper;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -54,6 +56,7 @@ import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.JTableMed;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
 import mediathek.tool.TModelDownload;
 
 public class GuiDownloads extends PanelVorlage {
@@ -217,11 +220,8 @@ public class GuiDownloads extends PanelVorlage {
                 dialog.setVisible(true);
                 if (dialog.ok) {
                     download.aufMichKopieren(d);
-                    DDaten.setGeaendert();
-                    load();
                 }
             }
-            setInfo();
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -232,16 +232,7 @@ public class GuiDownloads extends PanelVorlage {
         if (row != -1) {
             int delRow = tabelle.convertRowIndexToModel(row);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-            DatenDownload download = ddaten.listeDownloads.downloadVorziehen(url);
-            if (download != null) {
-                // hat dann geklappt
-                load();
-                setInfo();
-                if (tabelle.getRowCount() > 0) {
-                    tabelle.setRowSelectionInterval(0, 0);
-                    tabelle.scrollRectToVisible(tabelle.getCellRect(0, 0, false));
-                }
-            }
+            ddaten.listeDownloads.downloadVorziehen(url);
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -250,23 +241,27 @@ public class GuiDownloads extends PanelVorlage {
     private void downloadLoeschen(boolean dauerhaft) {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
-            for (int i = rows.length - 1; i >= 0; --i) {
-                int delRow = tabelle.convertRowIndexToModel(rows[i]);
-                String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-                DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
-                if (dauerhaft) {
-                    if (download.istAbo()) {
-                        // ein Abo wird zusätzlich ins Logfile geschrieben
-                        ddaten.erledigteAbos.zeileSchreiben(download.arr[DatenDownload.DOWNLOAD_THEMA_NR],
-                                download.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                                url);
-                    }
-                    ddaten.listeDownloads.delDownloadByUrl(url);
-                }
-                ddaten.starterClass.filmLoeschen(tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
-                ((TModelDownload) tabelle.getModel()).removeRow(delRow);
+            String[] urls = new String[rows.length];
+            for (int i = 0; i < rows.length; ++i) {
+                urls[i] = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(rows[i]), DatenDownload.DOWNLOAD_URL_NR).toString();
             }
-            setInfo();
+            for (int i = 0; i < urls.length; ++i) {
+                DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(urls[i]);
+                if (download == null) {
+                    // wie kann das sein??
+                    Log.debugMeldung("Gits ja gar nicht");
+                } else {
+                    if (dauerhaft) {
+                        if (download.istAbo()) {
+                            // ein Abo wird zusätzlich ins Logfile geschrieben
+                            ddaten.erledigteAbos.zeileSchreiben(download.arr[DatenDownload.DOWNLOAD_THEMA_NR],
+                                    download.arr[DatenDownload.DOWNLOAD_TITEL_NR], urls[i]);
+                        }
+                        ddaten.listeDownloads.delDownloadByUrl(urls[i]);
+                    }// if (dauerhaft) {
+                    ddaten.starterClass.filmLoeschen(urls[i]);
+                }
+            }
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -331,43 +326,46 @@ public class GuiDownloads extends PanelVorlage {
             if (starten) {
                 // jetzt noch starten/wiederstarten
                 // Start erstellen und zur Liste hinzufügen
-                download.startMelden(DatenDownload.PROGRESS_WARTEN);
-                ddaten.starterClass.addStarts(new Start(download));
+                download.starten(ddaten);
             } else {
                 download.startMelden(DatenDownload.PROGRESS_NICHT_GESTARTET);
             }
         } // for()
-        setInfo();
     }
 
     private void stopWartende() {
         // es werden alle noch nicht gestarteten Downloads gelöscht
+        ArrayList<String> urls = new ArrayList<String>();
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
             int delRow = tabelle.convertRowIndexToModel(i);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
             Start s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 if (s.status < Start.STATUS_RUN) {
-                    ddaten.starterClass.filmLoeschen(url);
+                    urls.add(url);
                 }
             }
-            setInfo();
+        }
+        for (int i = 0; i < urls.size(); ++i) {
+            ddaten.starterClass.filmLoeschen(urls.get(i));
         }
     }
 
     private void tabelleAufraeumen() {
+        ArrayList<String> urls = new ArrayList<String>();
         for (int i = tabelle.getRowCount() - 1; i >= 0; --i) {
             int delRow = tabelle.convertRowIndexToModel(i);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
             Start s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 if (s.status >= Start.STATUS_FERTIG) {
-                    ddaten.listeDownloads.delDownloadByUrl(url);
-                    ((TModelDownload) tabelle.getModel()).removeRow(delRow);
+                    urls.add(url);
                 }
             }
         }
-        setInfo();
+        for (int i = 0; i < urls.size(); ++i) {
+            ddaten.listeDownloads.delDownloadByUrl(urls.get(i));
+        }
         ddaten.starterClass.aufraeumen();
     }
 

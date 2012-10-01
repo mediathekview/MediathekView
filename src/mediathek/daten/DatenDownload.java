@@ -117,6 +117,12 @@ public class DatenDownload implements Comparable<DatenDownload> {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
     }
 
+    public void starten(DDaten ddaten) {
+        // Start erstellen und zur Liste hinzufügen
+        ddaten.starterClass.addStarts(new Start(this));
+        startMelden(DatenDownload.PROGRESS_WARTEN);
+    }
+
     public DatenDownload getCopy() {
         DatenDownload ret = new DatenDownload();
         for (int i = 0; i < arr.length; ++i) {
@@ -129,6 +135,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = new String(datenDownload.arr[i]);
         }
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
     }
 
     public boolean istAbo() {

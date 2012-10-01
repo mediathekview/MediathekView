@@ -88,11 +88,6 @@ public class GuiFilme extends PanelVorlage {
     private DialogDatenFilm dialogDatenFilm = null;
     private JTableMed tabelle;
 
-    /**
-     * Creates new form GuiFeed
-     *
-     * @param d
-     */
     public GuiFilme(DDaten d) {
         super(d);
         initComponents();
@@ -139,7 +134,7 @@ public class GuiFilme extends PanelVorlage {
                 for (int i = 0; i < selRows.length; i++) {
                     int selRow = selRows[i];
                     selRow = tabelle.convertRowIndexToModel(selRow);
-                    film = DDaten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
+                    film = DDaten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
                     DialogAddDownload dialog = new DialogAddDownload(null, ddaten, film);
                     dialog.setVisible(true);
                 }

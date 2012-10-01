@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.controller.io.starter.Start;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModelDownload;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
@@ -52,6 +53,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     public boolean add(DatenDownload e) {
         boolean ret = super.add(e);
         nummerEintragen();
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         return ret;
     }
 
@@ -83,6 +85,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         nummerEintragen();
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         return d;
     }
 
@@ -105,10 +108,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (it.next().arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
                 it.remove();
                 nummerEintragen();
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
                 return true;
             }
         }
         nummerEintragen();
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         return false;
     }
 
@@ -175,7 +180,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
             }
         } //while
-        nummerEintragen();
     }
 
     public synchronized void abosLoschen() {
@@ -191,6 +195,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
             }
         }
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         nummerEintragen();
     }
 

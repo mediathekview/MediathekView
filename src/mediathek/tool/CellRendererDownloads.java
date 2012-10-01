@@ -20,6 +20,7 @@
 package mediathek.tool;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import javax.swing.BorderFactory;
@@ -27,6 +28,8 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
@@ -35,8 +38,6 @@ import mediathek.daten.DatenDownload;
 public class CellRendererDownloads extends DefaultTableCellRenderer {
 
     private DDaten ddaten;
-    private JProgressBar progressBar = new JProgressBar(0, 100);
-    private JPanel panel = new JPanel(new BorderLayout());
 
     public CellRendererDownloads(DDaten d) {
         ddaten = d;
@@ -66,51 +67,8 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             // Starts
             Start s = ddaten.starterClass.getStart(url);
             if (s != null) {
-                switch (s.status) {
-                    case Start.STATUS_INIT:
-                        if (isSelected) {
-                            setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
-                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
-                        } else {
-                            setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
-                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
-                        }
-                        break;
-                    case Start.STATUS_RUN:
-                        if (isSelected) {
-                            setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
-                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
-                        } else {
-                            setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
-                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
-                        }
-                        break;
-                    case Start.STATUS_FERTIG:
-                        if (isSelected) {
-                            setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
-                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
-                        } else {
-                            setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
-                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
-                        }
-                        break;
-                    case Start.STATUS_ERR:
-                        if (isSelected) {
-                            setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
-                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
-                        } else {
-                            setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
-                            panel.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
-                        }
-                        break;
-                }
+                setColor(this, s, isSelected);
                 if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                    progressBar = new JProgressBar(0, 1000);
-                    progressBar.setBorder(BorderFactory.createEmptyBorder());
-                    progressBar.setStringPainted(true);
-                    panel = new JPanel(new BorderLayout());
-                    panel.add(progressBar);
-                    panel.setBorder(BorderFactory.createEmptyBorder());
                     int i = Integer.parseInt(s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (i == -1) {
@@ -121,6 +79,27 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     } else if (i == 1) {
                         this.setText("gestartet");
                     } else if (1 < i && i < 1000) {
+                        //JProgressBar progressBar = new JProgressBar(0, 1000);
+                        JProgressBar progressBar = new JProgressBar(0, 1000);
+                        JPanel panel = new JPanel(new BorderLayout());
+                        setColor(panel, s, isSelected);
+                        setColor(progressBar, s, isSelected);
+                        progressBar.setBorder(BorderFactory.createEmptyBorder());
+                        progressBar.setStringPainted(true);
+                        progressBar.setUI(new BasicProgressBarUI() {
+                            @Override
+                            protected Color getSelectionBackground() {
+                                return UIManager.getDefaults().getColor("Table.foreground");
+                            }
+
+                            @Override
+                            protected Color getSelectionForeground() {
+                                return Color.white;
+                            }
+                        });
+                        //JPanel panel = new JPanel(new BorderLayout());
+                        panel.add(progressBar);
+                        panel.setBorder(BorderFactory.createEmptyBorder());
                         progressBar.setValue(i);
                         double d = i / 10.0;
                         progressBar.setString(Double.toString(d) + "%");
@@ -165,5 +144,38 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             Log.fehlerMeldung(758200166, this.getClass().getName(), ex);
         }
         return this;
+    }
+
+    private void setColor(Component c, Start s, boolean isSelected) {
+        switch (s.status) {
+            case Start.STATUS_INIT:
+                if (isSelected) {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
+                } else {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
+                }
+                break;
+            case Start.STATUS_RUN:
+                if (isSelected) {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
+                } else {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
+                }
+                break;
+            case Start.STATUS_FERTIG:
+                if (isSelected) {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
+                } else {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
+                }
+                break;
+            case Start.STATUS_ERR:
+                if (isSelected) {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
+                } else {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+                }
+                break;
+        }
     }
 }
