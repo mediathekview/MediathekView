@@ -188,7 +188,6 @@ public class FilmeLaden {
 
     private void fertig_(ListenerFilmeLadenEvent event) {
         istAmLaufen = false;
-        Daten.setGeaendert();
         if (listeFilmeNeu != null) {
             Daten.listeFilme = listeFilmeNeu;
         } else {

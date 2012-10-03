@@ -27,6 +27,7 @@ import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
 import mediathek.tool.TModel;
 
 public class ListeStarts extends LinkedList<Start> {
@@ -123,7 +124,7 @@ public class ListeStarts extends LinkedList<Start> {
 
     void buttonStartsPutzen() {
         // Starts durch Button die fertig sind, löschen
-        boolean habsGetan = false;
+        boolean gefunden = false;
         Iterator<Start> it = iterator();
         while (it.hasNext()) {
             Start s = it.next();
@@ -131,11 +132,11 @@ public class ListeStarts extends LinkedList<Start> {
                 if (s.status != Start.STATUS_RUN) {
                     // dann ist er fertig oder abgebrochen
                     it.remove();
-                    habsGetan = true;
+                    gefunden = true;
                 }
             }
         }
-        if (habsGetan) {
+        if (gefunden) {
             notifyStartEvent(); // und dann bescheid geben
         }
     }
@@ -162,10 +163,10 @@ public class ListeStarts extends LinkedList<Start> {
             if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
                 s.stoppen = true;
                 it.remove();
+                notifyStartEvent();
                 break;
             }
         }
-        notifyStartEvent();
     }
 
     void delAllStart() {
@@ -174,9 +175,9 @@ public class ListeStarts extends LinkedList<Start> {
             Start s = it.next();
             s.stoppen = true;
             it.remove();
+            notifyStartEvent();
             break;
         }
-        notifyStartEvent();
     }
 
     private int getDown() {
@@ -192,14 +193,19 @@ public class ListeStarts extends LinkedList<Start> {
     }
 
     void aufraeumen() {
+        boolean gefunden = false;
         Iterator<Start> it = this.iterator();
         while (it.hasNext()) {
             Start start = it.next();
             if (start.status >= Start.STATUS_FERTIG) {
                 it.remove();
+                gefunden = true;
             }
         }
-        notifyStartEvent();
+        Log.debugMeldung("startetClass.aufraeumen--3");
+        if (gefunden) {
+            notifyStartEvent();
+        }
     }
 
     int getmax() {
@@ -374,6 +380,6 @@ public class ListeStarts extends LinkedList<Start> {
     }
 
     private void notifyStartEvent() {
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, ListeStarts.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
     }
 }

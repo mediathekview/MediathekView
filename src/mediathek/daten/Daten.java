@@ -37,7 +37,6 @@ public class Daten {
     public static boolean debug = false;
     public static boolean nogui = false;
     public static boolean auto = false;
-    private static boolean geaendert = false;
     private static String basisverzeichnis = "";
     // Klassen
     public static FilmeLaden filmeLaden;
@@ -92,19 +91,6 @@ public class Daten {
         } else {
             return system[Konstanten.SYSTEM_USER_AGENT_NR];
         }
-    }
-
-    // geändert
-    public void setGeaendertPanel() {
-        geaendert = true;
-    }
-
-    public static void setGeaendert() {
-        geaendert = true;
-    }
-
-    public static boolean isGeaendert() {
-        return geaendert;
     }
 
     public static String getBasisVerzeichnis() {

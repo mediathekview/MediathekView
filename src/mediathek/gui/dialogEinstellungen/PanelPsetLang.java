@@ -406,7 +406,6 @@ public class PanelPsetLang extends PanelVorlage {
             tabellePset();
             tabellePset.setRowSelectionInterval(neu, neu);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(neu, 0, false));
-            Daten.setGeaendert();
             notifyPset();
         } else {
             new HinweisKeineAuswahl().zeigen();
@@ -477,7 +476,6 @@ public class PanelPsetLang extends PanelVorlage {
         if (gruppe != null) {
             gruppe.addProg(prog);
             tabelleProgramme();
-            Daten.setGeaendert();
         }
     }
 
@@ -489,7 +487,6 @@ public class PanelPsetLang extends PanelVorlage {
             tabelleProgramme();
             tabelleProgramme.setRowSelectionInterval(neu, neu);
             tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(neu, 0, true));
-            Daten.setGeaendert();
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -1146,7 +1143,6 @@ public class PanelPsetLang extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
-                Daten.setGeaendert();
                 int rows = tabelleProgramme.getSelectedRow();
                 if (rows != -1) {
                     int row = tabelleProgramme.convertRowIndexToModel(rows);
@@ -1178,7 +1174,6 @@ public class PanelPsetLang extends PanelVorlage {
 
         private void eingabe() {
             if (!stopBeob) {
-                Daten.setGeaendert();
                 int rows = tabelleProgramme.getSelectedRow();
                 if (rows != -1) {
                     int row = tabelleProgramme.convertRowIndexToModel(rows);
@@ -1329,7 +1324,6 @@ public class PanelPsetLang extends PanelVorlage {
                         jTabbedPane.setTitleAt(0, "Programmset: " + gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR]);
                     }
                     notifyPset();
-                    Daten.setGeaendert();
                     stopBeob = false;
                 } else {
                     new HinweisKeineAuswahl().zeigen();
@@ -1349,7 +1343,6 @@ public class PanelPsetLang extends PanelVorlage {
                 gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
                 listePset.addPset(gruppe.copy());
                 tabellePset();
-                Daten.setGeaendert();
                 notifyPset();
             } else {
                 new HinweisKeineAuswahl().zeigen();
@@ -1378,7 +1371,6 @@ public class PanelPsetLang extends PanelVorlage {
                         pSet.getListeProg().remove(delRow);
                     }
                     tabelleProgramme();
-                    Daten.setGeaendert();
                 }
             } else {
                 new HinweisKeineAuswahl().zeigen();
@@ -1457,7 +1449,6 @@ public class PanelPsetLang extends PanelVorlage {
                 if (dialog.farbe != null) {
                     pSet.setFarbe(dialog.farbe);
                     tabellePset();
-                    Daten.setGeaendert();
                     notifyPset();
                 }
             }
@@ -1473,7 +1464,6 @@ public class PanelPsetLang extends PanelVorlage {
             if (pSet != null) {
                 pSet.arr[DatenPset.PROGRAMMSET_FARBE_NR] = "";
                 tabellePset();
-                Daten.setGeaendert();
                 notifyPset();
             }
 

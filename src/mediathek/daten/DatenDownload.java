@@ -135,7 +135,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = new String(datenDownload.arr[i]);
         }
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
     }
 
     public boolean istAbo() {
