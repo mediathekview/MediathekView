@@ -126,7 +126,6 @@ public class GuiAbo extends PanelVorlage {
                     ddaten.listeAbo.remove(delRow);
                 }
             }
-            DDaten.setGeaendert();
             load();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
         } else {
@@ -144,7 +143,6 @@ public class GuiAbo extends PanelVorlage {
             dialog.setVisible(true);
             if (dialog.ok) {
                 akt.aufMichKopieren(ret);
-                DDaten.setGeaendert();
                 load();
             }
             setInfo();
@@ -161,7 +159,6 @@ public class GuiAbo extends PanelVorlage {
                 DatenAbo akt = ddaten.listeAbo.getAboNr(modelRow);
                 akt.arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(ein);
             }
-            DDaten.setGeaendert();
             load();
             tabelle.clearSelection();
             for (int i = 0; i < rows.length; ++i) {

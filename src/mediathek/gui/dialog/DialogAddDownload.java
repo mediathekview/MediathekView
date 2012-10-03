@@ -31,6 +31,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class DialogAddDownload extends javax.swing.JDialog {
@@ -140,6 +141,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
             // jetzt wird mit den angegebenen Pfaden gearbeitet
             datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), jTextFieldPfad.getText());
             ddaten.listeDownloads.add(datenDownload);
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
             if (jCheckBoxStarten.isSelected()) {
                 // und evtl. auch gleich starten
                 datenDownload.starten(ddaten);

@@ -139,4 +139,16 @@ public class TModel extends DefaultTableModel {
         }
         return ret;
     }
+
+    public boolean delRow(int spalte, String wert) {
+        /* löscht die Zeile(n) in der die "Spalte" den "Wert" hat */
+        boolean gefunden = false;
+        for (int i = this.getRowCount() - 1; i >= 0; --i) {
+            if (this.getValueAt(i, spalte).toString().equals(wert)) {
+                this.removeRow(i);
+                gefunden = true;
+            }
+        }
+        return gefunden;
+    }
 }

@@ -368,7 +368,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO);
                 }                // den Dialog gibts 2x
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
-                Daten.setGeaendert();
             }
         }
     }
@@ -450,7 +449,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         private void tus() {
             Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR] = jTextFieldUrl.getText();
-            Daten.setGeaendert();
         }
     }
 }

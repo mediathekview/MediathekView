@@ -120,7 +120,6 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void setUserAgent() {
-        Daten.setGeaendert();
         if (jRadioButtonAuto.isSelected()) {
             Daten.setUserAgentAuto();
         } else {
@@ -343,7 +342,6 @@ public class PanelEinstellungen extends PanelVorlage {
         public void stateChanged(ChangeEvent arg0) {
             Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
                     String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue());
-            DDaten.setGeaendert();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
         }
     }
@@ -366,7 +364,6 @@ public class PanelEinstellungen extends PanelVorlage {
         }
 
         private void tus() {
-            Daten.setGeaendert();
             Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
         }
     }
@@ -375,7 +372,6 @@ public class PanelEinstellungen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Daten.setGeaendert();
             Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR] = Boolean.toString(jCheckBoxEchtzeit.isSelected());
         }
     }

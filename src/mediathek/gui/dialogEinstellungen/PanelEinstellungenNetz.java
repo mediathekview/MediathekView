@@ -73,7 +73,6 @@ public class PanelEinstellungenNetz extends PanelVorlage {
         Daten.system[Konstanten.SYSTEM_PROXY_PWD_NR] = jTextFieldPPwd.getText();
         //system setzen
         GuiFunktionen.setProxy(ddaten);
-        ddaten.setGeaendert();
     }
 
     /** This method is called from within the constructor to

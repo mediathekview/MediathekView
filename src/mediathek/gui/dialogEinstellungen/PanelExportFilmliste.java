@@ -190,7 +190,6 @@ public class PanelExportFilmliste extends PanelVorlage {
 
         void tusEinfach(DocumentEvent e) {
             Daten.system[Konstanten.SYSTEM_EXPORT_DATEI_NR] = jTextFieldPfad.getText();
-            Daten.setGeaendert();
         }
     }
 

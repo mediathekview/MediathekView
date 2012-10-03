@@ -75,6 +75,16 @@ public final class JTableMed extends JTable {
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
     }
 
+    public void fireTableDataChanged(boolean setSpalten) {
+        if (setSpalten) {
+            getSelected();
+        }
+        ((TModel) this.getModel()).fireTableDataChanged();
+        if (setSpalten) {
+            setSelected();
+        }
+    }
+
     public void getSelected() {
         // Einstellungen der Tabelle merken
         sel = this.getSelectedRow();

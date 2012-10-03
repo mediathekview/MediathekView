@@ -163,7 +163,6 @@ public class GuiFilme extends PanelVorlage {
         jComboBoxZeitraum.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.setGeaendert();
                 Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(jComboBoxZeitraum.getSelectedIndex());
                 checkBlacklist();
                 tabelleBauen();
@@ -261,9 +260,7 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                tabelle.getSelected();
-                ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
-                tabelle.setSelected();
+                tabelle.fireTableDataChanged(true /*setSpalten*/);
                 setInfo();
             }
         });
@@ -407,7 +404,7 @@ public class GuiFilme extends PanelVorlage {
                 jComboBoxFilterThema.setPopupVisible(themaOpen);
             }
             setInfo();
-            ((TModelFilm) tabelle.getModel()).fireTableDataChanged();
+            tabelle.fireTableDataChanged(false /*setSpalten*/);
             tabelle.setSpalten();
             stopBeob = false;
             //filtern
@@ -475,7 +472,6 @@ public class GuiFilme extends PanelVorlage {
             }
             ersterFilm.arr[DatenFilm.FILM_URL_NR] = url.trim();
             ddaten.starterClass.urlStarten(gruppe, ersterFilm);
-            DDaten.setGeaendert();
         }
     }
 
@@ -846,7 +842,6 @@ public class GuiFilme extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
-                Daten.setGeaendert();
                 Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = String.valueOf(jCheckBoxKeineAbos.isSelected());
                 Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = String.valueOf(jCheckBoxKeineGesehenen.isSelected());
                 tabelleBauen();

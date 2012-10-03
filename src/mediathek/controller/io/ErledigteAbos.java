@@ -64,7 +64,6 @@ public class ErledigteAbos {
     public synchronized boolean zeileSchreiben(String thema, String titel, String url) {
         boolean ret = false;
         String text;
-        Daten.setGeaendert();
         ddaten.erledigteAbos.clearLogList();
         File f = new File(Daten.getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
         if (f != null) {

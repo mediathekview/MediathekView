@@ -72,7 +72,6 @@ public class FilmUpdateServer {
         }
         retUrl = listeUpdateServer.getRand(0); //eine Zufällige Adresse wählen
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_UPDATESERVER, this.getClass().getSimpleName());
-        Daten.setGeaendert();
         return retUrl;
     }
 }

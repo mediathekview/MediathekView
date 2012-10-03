@@ -393,7 +393,6 @@ public final class MediathekGui extends javax.swing.JFrame {
                 Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
                         String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue());
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
-                DDaten.setGeaendert();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
@@ -534,7 +533,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         jCheckBoxIconKlein.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.setGeaendert();
                 setIcon(jCheckBoxIconKlein.isSelected());
             }
         });
@@ -543,7 +541,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         jCheckBoxMenuItemVideoplayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.setGeaendert();
                 Daten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemVideoplayer.isSelected());
                 ddaten.guiFilme.videoPlayerAnzeigen(jCheckBoxMenuItemVideoplayer.isSelected());
             }
@@ -556,7 +553,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         jCheckBoxMenuItemMeldungen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.setGeaendert();
                 Daten.system[Konstanten.SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemMeldungen.isSelected());
                 setPanelMeldungen();
             }
@@ -637,7 +633,6 @@ public final class MediathekGui extends javax.swing.JFrame {
         } else {
             jButtonFilmeLaden.setEnabled(false);
             jMenuItemFilmlisteLaden.setEnabled(false);
-            Daten.setGeaendert();
             Daten.filmeLaden.importFilmliste("");
         }
     }
@@ -1059,7 +1054,6 @@ public final class MediathekGui extends javax.swing.JFrame {
             itemKlein.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.setGeaendert();
                     setIcon(itemKlein.isSelected());
                 }
             });

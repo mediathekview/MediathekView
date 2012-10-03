@@ -279,7 +279,6 @@ public class PanelSenderLaden extends PanelVorlage {
                 buttonSender[i].setEnabled(false);
             }
             Daten.filmeLaden.updateSender(sender, Daten.listeFilme);
-            Daten.setGeaendert();
         }
     }
 
@@ -289,7 +288,6 @@ public class PanelSenderLaden extends PanelVorlage {
         public void stateChanged(ChangeEvent arg0) {
             Daten.system[Konstanten.SYSTEM_WARTEN_NR] =
                     String.valueOf(((Number) jSpinnerWarten.getModel().getValue()).intValue());
-            Daten.setGeaendert();
         }
     }
 }

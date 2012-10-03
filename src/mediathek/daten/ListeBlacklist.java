@@ -37,7 +37,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     @Override
     public boolean add(DatenBlacklist b) {
         boolean ret = super.add(b);
-        DDaten.setGeaendert();
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
         return ret;
     }
@@ -45,7 +44,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     @Override
     public boolean remove(Object b) {
         boolean ret = super.remove(b);
-        DDaten.setGeaendert();
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
         return ret;
     }
@@ -53,7 +51,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     @Override
     public DatenBlacklist remove(int idx) {
         DatenBlacklist ret = super.remove(idx);
-        DDaten.setGeaendert();
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
         return ret;
     }
@@ -61,7 +58,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     @Override
     public void clear() {
         super.clear();
-        DDaten.setGeaendert();
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
     }
 

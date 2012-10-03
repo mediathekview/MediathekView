@@ -19,7 +19,6 @@
  */
 package mediathek.gui;
 
-import com.sun.org.omg.SendingContext.CodeBasePackage.URLSeqHelper;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,6 +56,7 @@ import mediathek.tool.JTableMed;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 
 public class GuiDownloads extends PanelVorlage {
@@ -85,9 +85,7 @@ public class GuiDownloads extends PanelVorlage {
         ddaten.infoPanel.setIdx(InfoPanel.IDX_GUI_DOWNLOAD);
     }
 
-    //toolbar
     public void aktualisieren() {
-        Daten.setGeaendert();
         aufraeumen();
         ddaten.listeDownloads.abosLoschen();
         ddaten.listeDownloads.abosEintragen();
@@ -153,9 +151,7 @@ public class GuiDownloads extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                tabelle.getSelected();
-                ((TModelDownload) tabelle.getModel()).fireTableDataChanged();
-                tabelle.setSelected();
+                tabelle.fireTableDataChanged(true /*setSpalten*/);
                 setInfo();
                 //panelUpdate();
             }
@@ -188,7 +184,7 @@ public class GuiDownloads extends PanelVorlage {
         });
     }
 
-    private void load() {
+    private synchronized void load() {
         //Filme laden
         boolean abo, download;
         tabelle.getSpalten();
@@ -220,6 +216,7 @@ public class GuiDownloads extends PanelVorlage {
                 dialog.setVisible(true);
                 if (dialog.ok) {
                     download.aufMichKopieren(d);
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
                 }
             }
         } else {
@@ -258,7 +255,11 @@ public class GuiDownloads extends PanelVorlage {
                                     download.arr[DatenDownload.DOWNLOAD_TITEL_NR], urls[i]);
                         }
                         ddaten.listeDownloads.delDownloadByUrl(urls[i]);
-                    }// if (dauerhaft) {
+                    } else {
+                        // wenn nicht dauerhaft
+                        // dann die Url nur aus dem TModel löschen
+                        ((TModelDownload) tabelle.getModel()).delRow(DatenDownload.DOWNLOAD_URL_NR, urls[i]);
+                    }
                     ddaten.starterClass.filmLoeschen(urls[i]);
                 }
             }
@@ -352,21 +353,24 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void tabelleAufraeumen() {
-        ArrayList<String> urls = new ArrayList<String>();
-        for (int i = tabelle.getRowCount() - 1; i >= 0; --i) {
-            int delRow = tabelle.convertRowIndexToModel(i);
-            String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-            Start s = ddaten.starterClass.getStart(url);
-            if (s != null) {
-                if (s.status >= Start.STATUS_FERTIG) {
-                    urls.add(url);
+        if (tabelle.getRowCount() > 0) {
+            String[] urls = new String[tabelle.getRowCount()];
+            for (int i = 0; i < tabelle.getRowCount(); ++i) {
+                urls[i] = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_URL_NR).toString();
+            }
+            for (int i = 0; i < urls.length; ++i) {
+                Start s = ddaten.starterClass.getStart(urls[i]);
+                if (s != null) {
+                    if (s.status >= Start.STATUS_FERTIG) {
+                        ddaten.listeDownloads.delDownloadByUrl(urls[i]);
+                        ((TModel) tabelle.getModel()).delRow(DatenDownload.DOWNLOAD_URL_NR, urls[i]);
+                    }
                 }
             }
         }
-        for (int i = 0; i < urls.size(); ++i) {
-            ddaten.listeDownloads.delDownloadByUrl(urls.get(i));
-        }
+        Log.debugMeldung("startetClass.aufraeumen");
         ddaten.starterClass.aufraeumen();
+        tabelle.fireTableDataChanged(true /*setSpalten*/);
     }
 
 //    private void panelUpdate() {
