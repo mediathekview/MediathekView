@@ -20,7 +20,6 @@
 package mediathek;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -577,9 +576,8 @@ public final class MediathekGui extends javax.swing.JFrame {
     private void beenden() {
         ddaten.listeDownloads.listePutzen();
         if (ddaten.starterClass != null) {
-            ddaten.starterClass.allesAbbrechen();
+            ddaten.starterClass.delAllStart();
         }
-        //int t = this.getExtendedState();
         if (this.getExtendedState() == JFrame.MAXIMIZED_BOTH) {
             Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR] = Boolean.TRUE.toString();
         } else {

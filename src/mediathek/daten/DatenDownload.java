@@ -84,13 +84,15 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_ART_NR = 19;
     public static final String DOWNLOAD_QUELLE = "Quelle"; //Quelle: gestartet über einen Button, Download, Abo
     public static final int DOWNLOAD_QUELLE_NR = 20;
+    public static final String DOWNLOAD_ZURUECKGESTELLT = "Zurueckgestellt";
+    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 21;
     //
     public static final String DOWNLOAD = "Downlad";
-    public static final int DOWNLOAD_MAX_ELEM = 21;
+    public static final int DOWNLOAD_MAX_ELEM = 22;
     public static final String[] DOWNLOAD_COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL, DOWNLOAD_PROGRESS,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_URL, DOWNLOAD_URL_AUTH, DOWNLOAD_URL_RTMP,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
-        DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE};
+        DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT};
     public String[] arr;
 
     public DatenDownload() {
@@ -110,6 +112,14 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_URL_RTMP_NR] = film.arr[DatenFilm.FILM_URL_RTMP_NR];
         arr[DOWNLOAD_QUELLE_NR] = String.valueOf(quelle);
         aufrufBauen(pSet, film, abo, name, pfad);
+    }
+
+    public boolean istZurueckgestellt() {
+        return arr[DOWNLOAD_ZURUECKGESTELLT_NR].equals(Boolean.TRUE.toString());
+    }
+
+    public void zurueckstellen() {
+        arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.TRUE.toString();
     }
 
     public void startMelden(int status) {
@@ -359,5 +369,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[i] = "";
         }
         arr[DOWNLOAD_PROGRESS_NR] = String.valueOf(PROGRESS_NICHT_GESTARTET);
+        arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.FALSE.toString();
     }
 }

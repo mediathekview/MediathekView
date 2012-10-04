@@ -60,6 +60,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 beenden();
             }
         });
+        getRootPane().setDefaultButton(jButtonBeenden);
         new EscBeenden(this) {
             
             @Override

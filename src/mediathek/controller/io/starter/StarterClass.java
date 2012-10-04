@@ -110,7 +110,7 @@ public class StarterClass {
         listeStarts.aufraeumen();
     }
 
-    public synchronized void allesAbbrechen() {
+    public synchronized void delAllStart() {
         // Alle Downloads werden abgebrochen
         listeStarts.delAllStart();
     }
