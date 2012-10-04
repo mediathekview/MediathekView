@@ -71,7 +71,7 @@ public class GuiDownloads extends PanelVorlage {
         jScrollPane1.setViewportView(tabelle);
         dialogDatenFilm = new DialogDatenFilm(null, false, ddaten);
         init();
-        load();
+        tabelleLaden();
         tabelle.initTabelle();
     }
     //===================================
@@ -86,10 +86,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     public void aktualisieren() {
-        aufraeumen();
-        ddaten.listeDownloads.abosLoschen();
-        ddaten.listeDownloads.abosEintragen();
-        load();
+        tabelleAktualisieren();
     }
 
     public void starten(boolean alle) {
@@ -113,7 +110,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     public void aufraeumen() {
-        tabelleAufraeumen();
+        downloadsAufraeumen();
     }
 
     public void aendern() {
@@ -145,7 +142,7 @@ public class GuiDownloads extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                load();
+                tabelleLaden();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
@@ -160,7 +157,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
-                    aktualisieren();
+                    tabelleAktualisieren();
                 }
             }
         });
@@ -168,26 +165,22 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
-                    aktualisieren();
+                    tabelleAktualisieren();
                 }
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                tabelle.getSelected();
-                ((TModelDownload) tabelle.getModel()).fireTableDataChanged();
-                tabelle.setSelected();
+                tabelle.fireTableDataChanged(true /*setSpalten*/);
                 setInfo();
-                //panelUpdate();
             }
         });
     }
 
-    private synchronized void load() {
-        //Filme laden
+    private synchronized void tabelleLaden() {
+        // nur Downloads die schon in der Liste sind werden geladen
         boolean abo, download;
-        tabelle.getSpalten();
         if (jRadioButtonAlles.isSelected()) {
             abo = true;
             download = true;
@@ -199,12 +192,43 @@ public class GuiDownloads extends PanelVorlage {
             download = true;
         }
         ddaten.listeDownloads.getModel((TModelDownload) tabelle.getModel(), abo, download);
-        ((TModelDownload) tabelle.getModel()).fireTableDataChanged();
-        tabelle.setSpalten();
+        tabelle.fireTableDataChanged(true /*setSpalten*/);
         setInfo();
     }
 
-    private void downloadAendern() {
+    private synchronized void tabelleAktualisieren() {
+        // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
+        downloadsAufraeumen();
+        ddaten.listeDownloads.resetZurueckgestellt();
+        ddaten.listeDownloads.abosLoschen();
+        ddaten.listeDownloads.abosEintragen();
+        tabelleLaden();
+    }
+
+    private synchronized void downloadsAufraeumen() {
+        // abgeschlossene Downloads werden aus der Tabelle/Liste entfernt
+        // die Starts dafür werden auch gelöscht
+        if (tabelle.getRowCount() > 0) {
+            String[] urls = new String[tabelle.getRowCount()];
+            for (int i = 0; i < tabelle.getRowCount(); ++i) {
+                urls[i] = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_URL_NR).toString();
+            }
+            for (int i = 0; i < urls.length; ++i) {
+                Start s = ddaten.starterClass.getStart(urls[i]);
+                if (s != null) {
+                    if (s.status >= Start.STATUS_FERTIG) {
+                        ddaten.listeDownloads.delDownloadByUrl(urls[i]);
+                        ((TModel) tabelle.getModel()).delRow(DatenDownload.DOWNLOAD_URL_NR, urls[i]);
+                    }
+                }
+            }
+        }
+        Log.debugMeldung("startetClass.aufraeumen");
+        ddaten.starterClass.aufraeumen();
+        tabelle.fireTableDataChanged(true /*setSpalten*/);
+    }
+
+    private synchronized void downloadAendern() {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int i = rows.length - 1; i >= 0; --i) {
@@ -216,7 +240,7 @@ public class GuiDownloads extends PanelVorlage {
                 dialog.setVisible(true);
                 if (dialog.ok) {
                     download.aufMichKopieren(d);
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+                    tabelleLaden();
                 }
             }
         } else {
@@ -230,6 +254,7 @@ public class GuiDownloads extends PanelVorlage {
             int delRow = tabelle.convertRowIndexToModel(row);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
             ddaten.listeDownloads.downloadVorziehen(url);
+            tabelleLaden();
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -258,11 +283,12 @@ public class GuiDownloads extends PanelVorlage {
                     } else {
                         // wenn nicht dauerhaft
                         // dann die Url nur aus dem TModel löschen
-                        ((TModelDownload) tabelle.getModel()).delRow(DatenDownload.DOWNLOAD_URL_NR, urls[i]);
+                        download.zurueckstellen();
                     }
                     ddaten.starterClass.filmLoeschen(urls[i]);
                 }
             }
+            tabelleLaden();
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -352,32 +378,6 @@ public class GuiDownloads extends PanelVorlage {
         }
     }
 
-    private void tabelleAufraeumen() {
-        if (tabelle.getRowCount() > 0) {
-            String[] urls = new String[tabelle.getRowCount()];
-            for (int i = 0; i < tabelle.getRowCount(); ++i) {
-                urls[i] = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_URL_NR).toString();
-            }
-            for (int i = 0; i < urls.length; ++i) {
-                Start s = ddaten.starterClass.getStart(urls[i]);
-                if (s != null) {
-                    if (s.status >= Start.STATUS_FERTIG) {
-                        ddaten.listeDownloads.delDownloadByUrl(urls[i]);
-                        ((TModel) tabelle.getModel()).delRow(DatenDownload.DOWNLOAD_URL_NR, urls[i]);
-                    }
-                }
-            }
-        }
-        Log.debugMeldung("startetClass.aufraeumen");
-        ddaten.starterClass.aufraeumen();
-        tabelle.fireTableDataChanged(true /*setSpalten*/);
-    }
-
-//    private void panelUpdate() {
-//        setInfo();
-//        tabelle.repaint();
-//        this.validate();
-//    }
     private void setInfo() {
         String textLinks;
         // Text links: Zeilen Tabelle
@@ -405,7 +405,7 @@ public class GuiDownloads extends PanelVorlage {
         ddaten.infoPanel.setTextLinks(InfoPanel.IDX_GUI_DOWNLOAD, textLinks);
     }
 
-    private void table1Select() {
+    private void dialogDatenFilmSetzen() {
         DatenFilm aktFilm = new DatenFilm();
         int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
@@ -544,7 +544,7 @@ public class GuiDownloads extends PanelVorlage {
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (!event.getValueIsAdjusting()) {
-                table1Select();
+                dialogDatenFilmSetzen();
             }
         }
     }
@@ -687,7 +687,7 @@ public class GuiDownloads extends PanelVorlage {
             itemAktualisieren.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    aktualisieren();
+                    tabelleAktualisieren();
                 }
             });
             JMenuItem itemAufraeumen = new JMenuItem("Liste Aufräumen");
@@ -696,7 +696,7 @@ public class GuiDownloads extends PanelVorlage {
             itemAufraeumen.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    aufraeumen();
+                    downloadsAufraeumen();
                 }
             });
 
@@ -778,7 +778,7 @@ public class GuiDownloads extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            load();
+            tabelleLaden();
         }
     }
 }

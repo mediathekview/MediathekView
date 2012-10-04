@@ -20,7 +20,6 @@
 package mediathek.daten;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -28,7 +27,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.controller.io.starter.Start;
 import mediathek.tool.DatumZeit;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModelDownload;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
@@ -57,21 +55,24 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
+    public synchronized void resetZurueckgestellt() {
+        DatenDownload d = null;
+        ListIterator<DatenDownload> it = this.listIterator(0);
+        while (it.hasNext()) {
+            it.next().arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.FALSE.toString();
+        }
+    }
+
     public synchronized void listePutzen() {
         // beim Programmende fertige Downloads löschen
-        ArrayList<String> urls = new ArrayList<String>();
         LinkedList<Start> s = ddaten.starterClass.getStarts(Start.QUELLE_ALLE);
         Iterator<Start> it = s.iterator();
         while (it.hasNext()) {
             Start start = it.next();
-            if (start != null) {
-                if (start.status >= Start.STATUS_FERTIG) {
-                    //ddaten.listeDownloads.delDownloadByUrl(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                    urls.add(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                }
+            if (start.status >= Start.STATUS_FERTIG) {
+                delDownloadByUrl(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
             }
         }
-        ddaten.listeDownloads.delDownloadByUrl(urls.toArray(new String[]{}));
     }
 
     public synchronized DatenDownload downloadVorziehen(String url) {
@@ -87,7 +88,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         nummerEintragen();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         return d;
     }
 
@@ -104,26 +104,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-    public synchronized boolean delDownloadByUrl(String[] url) {
-        boolean gefunden = false;
-        ListIterator<DatenDownload> it;
-        for (int i = 0; i < url.length; ++i) {
-            it = this.listIterator(0);
-            while (it.hasNext()) {
-                if (it.next().arr[DatenDownload.DOWNLOAD_URL_NR].equals(url[i])) {
-                    it.remove();
-                    gefunden = true;
-                    break;
-                }
-            }
-        }
-        if (gefunden) {
-            nummerEintragen();
-//            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
-        }
-        return gefunden;
-    }
-
     public synchronized boolean delDownloadByUrl(String url) {
         boolean ret = false;
         ListIterator<DatenDownload> it = this.listIterator(0);
@@ -136,10 +116,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         if (ret) {
             nummerEintragen();
-//            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
         return ret;
     }
+
     public synchronized void getModel(TModelDownload tModel, boolean abos, boolean downloads) {
         tModel.setRowCount(0);
         Object[] object;
@@ -148,6 +128,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             ListIterator<DatenDownload> iterator = this.listIterator(0);
             while (iterator.hasNext()) {
                 download = iterator.next();
+                if (download.istZurueckgestellt()) {
+                    continue;
+                }
                 boolean istAbo = download.istAbo();
                 if (abos && istAbo || downloads && !istAbo) {
                     DatenDownload datenDownload = download.getCopy();
@@ -172,7 +155,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // in die Liste der Downloads eintragen
         DatenFilm film;
         DatenAbo abo;
-        boolean gefunden = false;
         ListIterator<DatenFilm> itFilm = Daten.listeFilme.listIterator();
         while (itFilm.hasNext()) {
             film = itFilm.next();
@@ -200,13 +182,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
                 if (pSet != null) {
                     this.add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", ""));
-                    gefunden = true;
                 }
             }
         } //while
-        if (gefunden) {
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
-        }
     }
 
     public synchronized void abosLoschen() {
@@ -226,7 +204,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         if (gefunden) {
             nummerEintragen();
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
     }
 
