@@ -38,6 +38,11 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
     private int nr = 0;
 
+    public boolean addAbo(String filmSender, String filmThema, String filmTitel) {
+        return addAbo(filmSender, filmThema, filmTitel, "", filmThema);
+
+    }
+
     public boolean addAbo(String filmSender, String filmThema, String filmTitel, String filmThemaTitel, String namePfad) {
         //abo anlegen, oder false wenns schon existiert
         boolean ret = false;
@@ -49,17 +54,11 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 addAbo(datenAbo);
                 sort();
                 ret = true;
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
             } else {
                 JOptionPane.showMessageDialog(null, "Abo existiert bereits", "Abo anlegen", JOptionPane.INFORMATION_MESSAGE);
             }
         }
         return ret;
-    }
-
-    public boolean addAbo(String filmSender, String filmThema, String filmTitel) {
-        return addAbo(filmSender, filmThema, filmTitel, "", filmThema);
-
     }
 
     public void aboLoeschen(DatenAbo abo) {

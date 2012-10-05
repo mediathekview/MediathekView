@@ -55,14 +55,13 @@ public class DialogDatenFilm extends javax.swing.JDialog {
             textarray[i] = new JTextField();
         }
         jButtonOk.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden();
             }
         });
+        getRootPane().setDefaultButton(jButtonOk);
         new EscBeenden(this) {
-
             @Override
             public void beenden_() {
                 beenden();

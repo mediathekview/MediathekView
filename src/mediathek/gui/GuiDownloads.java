@@ -208,6 +208,7 @@ public class GuiDownloads extends PanelVorlage {
     private synchronized void downloadsAufraeumen() {
         // abgeschlossene Downloads werden aus der Tabelle/Liste entfernt
         // die Starts dafür werden auch gelöscht
+        boolean gefunden = false;
         if (tabelle.getRowCount() > 0) {
             String[] urls = new String[tabelle.getRowCount()];
             for (int i = 0; i < tabelle.getRowCount(); ++i) {
@@ -218,14 +219,16 @@ public class GuiDownloads extends PanelVorlage {
                 if (s != null) {
                     if (s.status >= Start.STATUS_FERTIG) {
                         ddaten.listeDownloads.delDownloadByUrl(urls[i]);
-                        ((TModel) tabelle.getModel()).delRow(DatenDownload.DOWNLOAD_URL_NR, urls[i]);
+                        gefunden = true;
                     }
                 }
             }
         }
+        if (gefunden) {
+            tabelleLaden();
+        }
         Log.debugMeldung("startetClass.aufraeumen");
         ddaten.starterClass.aufraeumen();
-        tabelle.fireTableDataChanged(true /*setSpalten*/);
     }
 
     private synchronized void downloadAendern() {
@@ -271,22 +274,17 @@ public class GuiDownloads extends PanelVorlage {
             }
             for (int i = 0; i < urls.length; ++i) {
                 DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(urls[i]);
-                if (download == null) {
-                    // wie kann das sein??
-                    Log.debugMeldung("Gits ja gar nicht");
-                } else {
-                    if (dauerhaft) {
-                        if (download.istAbo()) {
-                            // ein Abo wird zusätzlich ins Logfile geschrieben
-                            ddaten.erledigteAbos.zeileSchreiben(download.arr[DatenDownload.DOWNLOAD_THEMA_NR], download.arr[DatenDownload.DOWNLOAD_TITEL_NR], urls[i]);
-                        }
-                        ddaten.listeDownloads.delDownloadByUrl(urls[i]);
-                    } else {
-                        // wenn nicht dauerhaft
-                        download.zurueckstellen();
+                if (dauerhaft) {
+                    if (download.istAbo()) {
+                        // ein Abo wird zusätzlich ins Logfile geschrieben
+                        ddaten.erledigteAbos.zeileSchreiben(download.arr[DatenDownload.DOWNLOAD_THEMA_NR], download.arr[DatenDownload.DOWNLOAD_TITEL_NR], urls[i]);
                     }
-                    ddaten.starterClass.filmLoeschen(urls[i]);
+                    ddaten.listeDownloads.delDownloadByUrl(urls[i]);
+                } else {
+                    // wenn nicht dauerhaft
+                    download.zurueckstellen();
                 }
+                ddaten.starterClass.filmLoeschen(urls[i]);
             }
             tabelleLaden();
         } else {
