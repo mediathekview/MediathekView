@@ -17,7 +17,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
@@ -32,6 +31,7 @@ public class DialogHilfe extends javax.swing.JDialog {
     GuiAbo guiAbo;
 
     /** Creates new form HilfeDialog
+     *
      * @param parent
      * @param modal
      * @param text
@@ -42,20 +42,17 @@ public class DialogHilfe extends javax.swing.JDialog {
         this.setTitle("Hilfe");
         jTextArea1.setText(text);
         jButtonOk.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden();
             }
-
         });
-        new EscBeenden(this){
-
+        getRootPane().setDefaultButton(jButtonOk);
+        new EscBeenden(this) {
             @Override
             public void beenden_() {
                 beenden();
             }
-            
         };
     }
 
@@ -108,7 +105,6 @@ public class DialogHilfe extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     /**
      * @param args the command line arguments
      */
@@ -118,4 +114,3 @@ public class DialogHilfe extends javax.swing.JDialog {
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
-
