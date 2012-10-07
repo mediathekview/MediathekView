@@ -66,79 +66,84 @@ public class Konstanten {
     public static final int SYSTEM_GROESSE_X_NR = 5;
     public static final String SYSTEM_GROESSE_Y = "GroesseY";
     public static final int SYSTEM_GROESSE_Y_NR = 6;
+    public static final String SYSTEM_POS_X = "PosX";
+    public static final int SYSTEM_POS_X_NR = 7;
+    public static final String SYSTEM_POS_Y = "PosY";
+    public static final int SYSTEM_POS_Y_NR = 8;
     public static final String SYSTEM_ICON_KLEIN = "system-icon-groesse";
-    public static final int SYSTEM_ICON_KLEIN_NR = 7;
+    public static final int SYSTEM_ICON_KLEIN_NR = 9;
     public static final String SYSTEM_FENSTER_MAX = "programmfenster-maximieren";
-    public static final int SYSTEM_FENSTER_MAX_NR = 8;
+    public static final int SYSTEM_FENSTER_MAX_NR = 10;
     public static final String SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN = "system-panel-videoplayer-anzeigen";
-    public static final int SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR = 9;
+    public static final int SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR = 11;
     public static final String SYSTEM_PANEL_MELDUNGEN_ANZEIGEN = "system-panel-meldungen-anzeigen";
-    public static final int SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR = 10;
+    public static final int SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR = 12;
     //proxy
     public static final String SYSTEM_PROXY_SERVER = "proxy-server";
-    public static final int SYSTEM_PROXY_SERVER_NR = 11;
+    public static final int SYSTEM_PROXY_SERVER_NR = 13;
     public static final String SYSTEM_PROXY_PORT = "proxy-port";
-    public static final int SYSTEM_PROXY_PORT_NR = 12;
+    public static final int SYSTEM_PROXY_PORT_NR = 14;
     public static final String SYSTEM_PROXY_USER = "proxy-benutzer";
-    public static final int SYSTEM_PROXY_USER_NR = 13;
+    public static final int SYSTEM_PROXY_USER_NR = 15;
     public static final String SYSTEM_PROXY_PWD = "proxy-passwort";
-    public static final int SYSTEM_PROXY_PWD_NR = 14;
+    public static final int SYSTEM_PROXY_PWD_NR = 16;
     public static final String SYSTEM_PROXY_ON = "proxy-an";
-    public static final int SYSTEM_PROXY_ON_NR = 15;
+    public static final int SYSTEM_PROXY_ON_NR = 17;
     //Einstellungen Sender
     public static final String SYSTEM_MAX_DOWNLOAD = "maxDownload";
-    public static final int SYSTEM_MAX_DOWNLOAD_NR = 16;
+    public static final int SYSTEM_MAX_DOWNLOAD_NR = 18;
     public static final String SYSTEM_LEITUNG_LOW = "Leitung";
-    public static final int SYSTEM_LEITUNG_LOW_NR = 17;
+    public static final int SYSTEM_LEITUNG_LOW_NR = 19;
     public static final String SYSTEM_SWR_LISTE = "nr-in-liste";
-    public static final int SYSTEM_SWR_LISTE_NR = 18;
+    public static final int SYSTEM_SWR_LISTE_NR = 20;
     //Einstellungen Im-Export
     public static final String SYSTEM_PFAD_EXPORT_ABOS = "Pfad_Export_Abos";
-    public static final int SYSTEM_PFAD_EXPORT_ABOS_NR = 19;
+    public static final int SYSTEM_PFAD_EXPORT_ABOS_NR = 21;
     public static final String SYSTEM_IMPORT_DATEI = "system-import-datei";
-    public static final int SYSTEM_IMPORT_DATEI_NR = 20;
+    public static final int SYSTEM_IMPORT_DATEI_NR = 22;
     public static final String SYSTEM_IMPORT_URL_AUTO = "system-import-url-auto";
-    public static final int SYSTEM_IMPORT_URL_AUTO_NR = 21;
+    public static final int SYSTEM_IMPORT_URL_AUTO_NR = 23;
     public static final String SYSTEM_IMPORT_URL_MANUELL = "system-import-url-manuell";
-    public static final int SYSTEM_IMPORT_URL_MANUELL_NR = 22;
+    public static final int SYSTEM_IMPORT_URL_MANUELL_NR = 24;
     public static final String SYSTEM_EXPORT_DATEI = "system-export-datei";
-    public static final int SYSTEM_EXPORT_DATEI_NR = 23;
+    public static final int SYSTEM_EXPORT_DATEI_NR = 25;
     //##############
     public static final String SYSTEM_WARTEN = "warten";
-    public static final int SYSTEM_WARTEN_NR = 24;
+    public static final int SYSTEM_WARTEN_NR = 26;
     public static final String SYSTEM_UDATE_SUCHEN = "update-suchen";
-    public static final int SYSTEM_UPDATE_SUCHEN_NR = 25;
+    public static final int SYSTEM_UPDATE_SUCHEN_NR = 27;
     public static final String SYSTEM_UPDATE_DATUM = "update-datum";
-    public static final int SYSTEM_UPDATE_DATUM_NR = 26;
+    public static final int SYSTEM_UPDATE_DATUM_NR = 28;
     public static final String SYSTEM_IMPORT_ART_FILME = "update-filme"; // url automatisch suchen - oder nur manuell
-    public static final int SYSTEM_IMPORT_ART_FILME_NR = 27;
+    public static final int SYSTEM_IMPORT_ART_FILME_NR = 29;
     // Filter
     public static final String SYSTEM_FILTER_TAGE = "system-filter-tage"; // index im Array GuiFilme.COMBO_ZEIT_INT
-    public static final int SYSTEM_FILTER_TAGE_NR = 28;
+    public static final int SYSTEM_FILTER_TAGE_NR = 30;
     public static final String SYSTEM_FILTER_KEINE_ABO = "system-filter-abo";
-    public static final int SYSTEM_FILTER_KEINE_ABO_NR = 29;
+    public static final int SYSTEM_FILTER_KEINE_ABO_NR = 31;
     public static final String SYSTEM_FILTER_KEINE_GESEHENE = "system-filter-gesehen";
-    public static final int SYSTEM_FILTER_KEINE_GESEHENE_NR = 30;
+    public static final int SYSTEM_FILTER_KEINE_GESEHENE_NR = 32;
     // Programmpfade
     public static final String SYSTEM_PFAD_VLC = "pfad-vlc";
-    public static final int SYSTEM_PFAD_VLC_NR = 31;
+    public static final int SYSTEM_PFAD_VLC_NR = 33;
     public static final String SYSTEM_PFAD_FLVSTREAMER = "pfad-flvstreamer";
-    public static final int SYSTEM_PFAD_FLVSTREAMER_NR = 32;
+    public static final int SYSTEM_PFAD_FLVSTREAMER_NR = 34;
     public static final String SYSTEM_PFAD_MPLAYER = "pfad-mplayer";
-    public static final int SYSTEM_PFAD_MPLAYER_NR = 33;
+    public static final int SYSTEM_PFAD_MPLAYER_NR = 35;
     //#######################
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_FILME = "Eigenschaften-Tabellen-Filme";
-    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR = 34;
+    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR = 36;
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS = "Eigenschaften-Tabellen-Downloads";
-    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR = 35;
+    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR = 37;
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS = "Eigenschaften-Tabellen-Abos";
-    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR = 36;
+    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR = 38;
     //#######################
     public static final String SYSTEM_ABOS_SOFORT_SUCHEN = "Abos-sofort-suchen";
-    public static final int SYSTEM_ABOS_SOFORT_SUCHEN_NR = 37;
+    public static final int SYSTEM_ABOS_SOFORT_SUCHEN_NR = 39;
     public static final String SYSTEM = "system";
-    public static final int SYSTEM_MAX_ELEM = 38;
-    public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION, SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y,
+    public static final int SYSTEM_MAX_ELEM = 40;
+    public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION,
+        SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y, SYSTEM_POS_X, SYSTEM_POS_Y,
         SYSTEM_ICON_KLEIN, SYSTEM_FENSTER_MAX, SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, SYSTEM_PANEL_MELDUNGEN_ANZEIGEN,
         SYSTEM_PROXY_SERVER, SYSTEM_PROXY_PORT, SYSTEM_PROXY_USER, SYSTEM_PROXY_PWD, SYSTEM_PROXY_ON,
         SYSTEM_MAX_DOWNLOAD, SYSTEM_LEITUNG_LOW,

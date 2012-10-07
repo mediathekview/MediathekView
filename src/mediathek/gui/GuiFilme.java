@@ -95,7 +95,7 @@ public class GuiFilme extends PanelVorlage {
         jScrollPane1.setViewportView(tabelle);
         dialogDatenFilm = new DialogDatenFilm(null, false, ddaten);
         init(); //alles einrichten, Beobachter anhängen
-        extra();
+        panelVideoplayer();
         tabelleBauen(); //Filme laden
         tabelle.initTabelle();
     }
@@ -111,39 +111,11 @@ public class GuiFilme extends PanelVorlage {
     }
 
     public void filmAbspielen() {
-        DatenPset gruppe = ddaten.listePset.getPsetAbspielen();
-        if (gruppe != null) {
-            open(gruppe);
-        } else {
-            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
-                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
-        }
+        filmAbspielen_();
     }
 
     public void filmSpeichern() {
-        if (ddaten.listePset.getListeSpeichern().size() == 0) {
-            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
-                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
-            // Satz mit x, war wohl nix
-        } else {
-            DatenFilm film;
-            int[] selRows = tabelle.getSelectedRows();
-            if (selRows.length == 0) {
-                new HinweisKeineAuswahl().zeigen();
-            } else {
-                for (int i = 0; i < selRows.length; i++) {
-                    int selRow = selRows[i];
-                    selRow = tabelle.convertRowIndexToModel(selRow);
-                    film = DDaten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
-                    DialogAddDownload dialog = new DialogAddDownload(null, ddaten, film);
-                    dialog.setVisible(true);
-                }
-            }
-        }
-    }
-
-    public void videoPlayerAnzeigen(boolean anzeigen) {
-        jPanelExtra.setVisible(anzeigen);
+        filmSpeichern_();
     }
 
     //===================================
@@ -169,6 +141,9 @@ public class GuiFilme extends PanelVorlage {
             }
         });
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+ 
+            ///////////////////////////
+            
             @Override
             public void start(ListenerFilmeLadenEvent event) {
                 beobMausTabelle.itemSenderLaden.setEnabled(false);
@@ -234,7 +209,7 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                extra();
+                panelVideoplayer();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, GuiFilme.class.getSimpleName()) {
@@ -266,15 +241,47 @@ public class GuiFilme extends PanelVorlage {
         });
     }
 
+    private synchronized void filmAbspielen_() {
+        DatenPset gruppe = ddaten.listePset.getPsetAbspielen();
+        if (gruppe != null) {
+            open(gruppe);
+        } else {
+            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
+                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private synchronized void filmSpeichern_() {
+        if (ddaten.listePset.getListeSpeichern().size() == 0) {
+            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+            // Satz mit x, war wohl nix
+        } else {
+            DatenFilm film;
+            int[] selRows = tabelle.getSelectedRows();
+            if (selRows.length == 0) {
+                new HinweisKeineAuswahl().zeigen();
+            } else {
+                for (int i = 0; i < selRows.length; i++) {
+                    int selRow = selRows[i];
+                    selRow = tabelle.convertRowIndexToModel(selRow);
+                    film = DDaten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
+                    DialogAddDownload dialog = new DialogAddDownload(null, ddaten, film);
+                    dialog.setVisible(true);
+                }
+            }
+        }
+    }
+
     // ############################################
     // Panel mit den Extra-Videoprogrammen
     // ############################################
-    private void extra() {
-        //erst sauber machen
-        //zum Anlegen der Button:
-        //Programmgruppe ohne Namen: Leerfeld
-        //Programmgruppe ohen Programme: Label
-        //sonst ein Button
+    private void panelVideoplayer() {
+        // erst sauber machen
+        // zum Anlegen der Button:
+        // Programmgruppe ohne Namen: Leerfeld
+        // Programmgruppe ohen Programme: Label
+        // sonst ein Button
         jPanelExtraInnen.removeAll();
         jPanelExtraInnen.updateUI();
         ListePset listeButton = ddaten.listePset.getListeButton();
@@ -298,13 +305,15 @@ public class GuiFilme extends PanelVorlage {
                 ++zeile;
             }
         }
-        //zum zusammenschieben
+        // zum zusammenschieben
         c.weightx = 10;
         c.gridx = maxSpalten + 1;
         c.gridy = 0;
         JLabel label = new JLabel();
         gridbag.setConstraints(label, c);
         jPanelExtraInnen.add(label);
+        // und jetzt noch anzeigen
+        jPanelExtra.setVisible(Boolean.parseBoolean(ddaten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR]));
     }
 
     private Component addExtraFeld(int i, int spalte, int zeile, GridBagLayout gridbag, GridBagConstraints c, JPanel panel, ListePset liste) {
@@ -336,21 +345,6 @@ public class GuiFilme extends PanelVorlage {
         return ret;
     }
 
-    //####################################
-    // Tabelle asynchron füllen
-    //####################################
-//    private synchronized void tabelleBauen() {
-//        try {
-//            SwingUtilities.invokeLater(new Runnable() {
-//                @Override
-//                public void run() {
-//                    tabelleBauen_();
-//                }
-//            });
-//        } catch (Exception ex) {
-//            Log.fehlerMeldung(562314008, "GuiFilme.listeInModellLaden", ex);
-//        }
-//    }
     private synchronized void tabelleBauen() {
         try {
             boolean themaNichtDa = false;
@@ -953,7 +947,7 @@ public class GuiFilme extends PanelVorlage {
             }
             if (arg0.getButton() == MouseEvent.BUTTON1) {
                 if (arg0.getClickCount() > 1) {
-                    filmAbspielen();
+                    filmAbspielen_();
                 }
             }
         }
@@ -975,7 +969,7 @@ public class GuiFilme extends PanelVorlage {
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    filmAbspielen();
+                    filmAbspielen_();
                 }
             });
             jPopupMenu.add(item);
@@ -985,7 +979,7 @@ public class GuiFilme extends PanelVorlage {
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    filmSpeichern();
+                    filmSpeichern_();
                 }
             });
             jPopupMenu.add(item);
@@ -1335,7 +1329,7 @@ public class GuiFilme extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            filmAbspielen();
+            filmAbspielen_();
         }
     }
 
