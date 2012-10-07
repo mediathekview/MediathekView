@@ -50,7 +50,6 @@ public class Main {
     public static void main(String args[]) {
         final String ar[] = args;
         java.awt.EventQueue.invokeLater(new Runnable() {
-
             final int NORMAL = 0;
             final int AUTO = 1;
             final int NOGUI = 2;
@@ -60,17 +59,17 @@ public class Main {
             public void run() {
 
                 if (ar != null) {
-                    for (int i = 0; i < ar.length; ++i) {
-                        if (ar[i].equalsIgnoreCase("-auto")) {
+                    for (String s : ar) {
+                        if (s.equalsIgnoreCase("-auto")) {
                             state = AUTO;
                         }
-                        if (ar[i].equalsIgnoreCase("-noGui")) {
+                        if (s.equalsIgnoreCase("-noGui")) {
                             state = NOGUI;
                         }
-                        if (ar[i].equalsIgnoreCase("-d")) {
+                        if (s.equalsIgnoreCase("-d")) {
                             Daten.debug = true;
                         }
-                        if (ar[i].equalsIgnoreCase("-v")) {
+                        if (s.equalsIgnoreCase("-v")) {
                             Log.versionsMeldungen(this.getClass().getName());
                             System.exit(0);
                         }
@@ -90,5 +89,4 @@ public class Main {
             }
         });
     }
-
 }

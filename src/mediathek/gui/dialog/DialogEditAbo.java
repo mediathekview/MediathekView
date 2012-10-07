@@ -45,18 +45,9 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private JTextField[] textfeldListe;
     private JComboBox comboboxProgramm = new JComboBox();
     private JComboBox comboboxSender = new JComboBox();
-//    private JCheckBox checkBoxExakt = new JCheckBox();
     private JCheckBox checkBoxEingeschaltet = new JCheckBox();
     public boolean ok = false;
-//    private boolean einmal = false;
 
-    /** Creates new form DialogSerienbrief
-     *
-     * @param parent
-     * @param modal
-     * @param d Daten
-     * @param aktA aktuelles Abo
-     */
     public DialogEditAbo(java.awt.Frame parent, boolean modal, DDaten d, DatenAbo aktA) {
         super(parent, modal);
         initComponents();
@@ -65,7 +56,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
         comboboxProgramm.setModel(new javax.swing.DefaultComboBoxModel(ddaten.listePset.getListeAbo().getObjectDataCombo()));
         comboboxSender.setModel(new javax.swing.DefaultComboBoxModel(GuiFunktionen.addLeerListe(DDaten.filmeLaden.getSenderNamen())));
         jButtonBeenden.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 check();
@@ -73,7 +63,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
             }
         });
         jButtonAbbrechen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden();
@@ -81,7 +70,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
         });
         getRootPane().setDefaultButton(jButtonBeenden);
         new EscBeenden(this) {
-
             @Override
             public void beenden_() {
                 beenden();
@@ -152,11 +140,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
             comboboxSender.addActionListener(new BeobComboSender());
             gridbag.setConstraints(comboboxSender, c);
             panel.add(comboboxSender);
-//        } else if (i == DatenAbo.ABO_THEMA_EXAKT_NR) {
-//            checkBoxExakt.setSelected(Boolean.parseBoolean(item[i]));
-//            checkBoxExakt.addActionListener(new BeobCheckbox());
-//            gridbag.setConstraints(checkBoxExakt, c);
-//            panel.add(checkBoxExakt);
         } else if (i == DatenAbo.ABO_EINGESCHALTET_NR) {
             checkBoxEingeschaltet.setSelected(Boolean.parseBoolean(item[i]));
             checkBoxEingeschaltet.addActionListener(new BeobCheckbox());

@@ -44,6 +44,7 @@ import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.ProgrammLog;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
+import mediathek.daten.ListePset;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
@@ -216,17 +217,22 @@ public final class MediathekGui extends javax.swing.JFrame {
         if (max || Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR])) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else {
-            int x;
-            int y;
+            int breite, hoehe, posX, posY;
             try {
-                x = Integer.parseInt(Daten.system[Konstanten.SYSTEM_GROESSE_X_NR]);
-                y = Integer.parseInt(Daten.system[Konstanten.SYSTEM_GROESSE_Y_NR]);
+                breite = Integer.parseInt(Daten.system[Konstanten.SYSTEM_GROESSE_X_NR]);
+                hoehe = Integer.parseInt(Daten.system[Konstanten.SYSTEM_GROESSE_Y_NR]);
+                posX = Integer.parseInt(Daten.system[Konstanten.SYSTEM_POS_X_NR]);
+                posY = Integer.parseInt(Daten.system[Konstanten.SYSTEM_POS_Y_NR]);
             } catch (Exception ex) {
-                x = 0;
-                y = 0;
+                breite = 0;
+                hoehe = 0;
+                posX = 0;
+                posY = 0;
             }
-            if (x > 0 && y > 0) {
-                this.setSize(new Dimension(x, y));
+            if (breite > 0 && hoehe > 0) {
+                this.setSize(new Dimension(breite, hoehe));
+                this.setLocation(posX, posY);
+//                this.setPreferredSize(new Dimension(x, y));
             }
         }
     }
@@ -536,12 +542,11 @@ public final class MediathekGui extends javax.swing.JFrame {
             }
         });
         jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR]));
-        ddaten.guiFilme.videoPlayerAnzeigen(jCheckBoxMenuItemVideoplayer.isSelected());
         jCheckBoxMenuItemVideoplayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemVideoplayer.isSelected());
-                ddaten.guiFilme.videoPlayerAnzeigen(jCheckBoxMenuItemVideoplayer.isSelected());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
             }
         });
         jCheckBoxMenuItemMeldungen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR]));
@@ -585,6 +590,8 @@ public final class MediathekGui extends javax.swing.JFrame {
         }
         Daten.system[Konstanten.SYSTEM_GROESSE_X_NR] = String.valueOf(this.getSize().width);
         Daten.system[Konstanten.SYSTEM_GROESSE_Y_NR] = String.valueOf(this.getSize().height);
+        Daten.system[Konstanten.SYSTEM_POS_X_NR] = String.valueOf(this.getLocation().x);
+        Daten.system[Konstanten.SYSTEM_POS_Y_NR] = String.valueOf(this.getLocation().y);
         ddaten.allesSpeichern();
         Log.printEndeMeldung();
         this.dispose();
