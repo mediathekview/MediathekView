@@ -335,7 +335,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
 //        }
 //        return null;
 //    }
-
     //===================================
     // private
     //===================================
@@ -381,7 +380,9 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         if (jetzt != null && filmDate != null) {
             ret = Math.round((jetzt.getTime() - filmDate.getTime()) / (1000));
-            ret = Math.abs(ret);
+            if (ret < 0) {
+                ret = 0;
+            }
         }
         return ret;
     }
