@@ -56,7 +56,6 @@ import mediathek.tool.JTableMed;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
-import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 
 public class GuiDownloads extends PanelVorlage {
@@ -232,21 +231,19 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private synchronized void downloadAendern() {
-        int rows[] = tabelle.getSelectedRows();
-        if (rows.length > 0) {
-            for (int i = rows.length - 1; i >= 0; --i) {
-                int delRow = tabelle.convertRowIndexToModel(rows[i]);
-                String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-                DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
-                DatenDownload d = download.getCopy();
-                DialogEditDownload dialog = new DialogEditDownload(null, true, d);
-                dialog.setVisible(true);
-                if (dialog.ok) {
-                    download.aufMichKopieren(d);
-                    tabelle.getSelected();
-                    tabelleLaden();
-                    tabelle.setSelected();
-                }
+        int row = tabelle.getSelectedRow();
+        if (row != -1) {
+            int delRow = tabelle.convertRowIndexToModel(row);
+            String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
+            DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
+            DatenDownload d = download.getCopy();
+            DialogEditDownload dialog = new DialogEditDownload(null, true, d);
+            dialog.setVisible(true);
+            if (dialog.ok) {
+                download.aufMichKopieren(d);
+                tabelle.getSelected();
+                tabelleLaden();
+                tabelle.setSelected();
             }
         } else {
             new HinweisKeineAuswahl().zeigen();
