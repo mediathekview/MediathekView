@@ -170,8 +170,8 @@ public class StarterClass {
                     new Thread(startenProgrammn).start();
                     break;
                 case Start.ART_DOWNLOAD:
-                    StartenDonwnload startenDonwnloadtart = new StartenDonwnload(start);
-                    new Thread(startenDonwnloadtart).start();
+                    StartenDonwnload startenDonwnload = new StartenDonwnload(start);
+                    new Thread(startenDonwnload).start();
                     break;
                 default:
                     Log.fehlerMeldung(789356001, "StartetClass.startStarten", "StarterClass.Starten - Switch-default");
@@ -352,11 +352,12 @@ public class StarterClass {
                 int downLen = 0;
                 input = feedUrl.openStream();
                 byte[] buffer = new byte[1024];
+                long p, pp = 0;
                 destStream = new FileOutputStream(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 while ((len = input.read(buffer)) != -1 && !start.stoppen) {
-                    downLen += buffer.length;
+                    downLen += len;
                     if (maxLen > 0) {
-                        long p = (downLen * (long) 1000) / maxLen;
+                        p = (downLen * (long) 1000) / maxLen;
                         // p muss zwischen 1 und 999 liegen
                         if (p == 0) {
                             p = DatenDownload.PROGRESS_GESTARTET;
@@ -364,7 +365,10 @@ public class StarterClass {
                         if (p >= 1000) {
                             p = 999;
                         }
-                        start.datenDownload.startMelden((int) p);
+                        if (p != pp) {
+                            start.datenDownload.startMelden((int) p);
+                            pp = p;
+                        }
                     }
                     destStream.write(buffer, 0, len);
                 }
