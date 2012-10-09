@@ -46,6 +46,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -141,16 +142,13 @@ public class GuiFilme extends PanelVorlage {
             }
         });
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
- 
-            ///////////////////////////
-            
             @Override
-            public void start(ListenerFilmeLadenEvent event) {
+            public void start_(ListenerFilmeLadenEvent event) {
                 beobMausTabelle.itemSenderLaden.setEnabled(false);
             }
 
             @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
+            public void fertig_(ListenerFilmeLadenEvent event) {
                 checkBlacklist();
                 tabelleBauen();
                 beobMausTabelle.itemSenderLaden.setEnabled(true);

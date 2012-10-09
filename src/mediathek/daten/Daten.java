@@ -20,12 +20,10 @@
 package mediathek.daten;
 
 import java.io.File;
-import javax.swing.event.EventListenerList;
 import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class Daten {

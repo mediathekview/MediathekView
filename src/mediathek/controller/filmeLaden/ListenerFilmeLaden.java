@@ -20,15 +20,67 @@
 package mediathek.controller.filmeLaden;
 
 import java.util.EventListener;
+import javax.swing.SwingUtilities;
+import mediathek.tool.Log;
 
 public class ListenerFilmeLaden implements EventListener {
 
-    public void start(ListenerFilmeLadenEvent event) {
+    ListenerFilmeLadenEvent event;
+
+    public void start(ListenerFilmeLadenEvent e) {
+        event = e;
+        run_(new Runnable() {
+            @Override
+            public void run() {
+                // oder da
+                start_(event);
+            }
+        });
+
     }
 
-    public void progress(ListenerFilmeLadenEvent event) {
+    public void progress(ListenerFilmeLadenEvent e) {
+        event = e;
+        run_(new Runnable() {
+            @Override
+            public void run() {
+                // oder da
+                progress_(event);
+            }
+        });
     }
 
-    public void fertig(ListenerFilmeLadenEvent event) {
+    public void fertig(ListenerFilmeLadenEvent e) {
+        event = e;
+        run_(new Runnable() {
+            @Override
+            public void run() {
+                // oder da
+                fertig_(event);
+            }
+        });
+    }
+
+    public void start_(ListenerFilmeLadenEvent event) {
+    }
+
+    public void progress_(ListenerFilmeLadenEvent event) {
+    }
+
+    public void fertig_(ListenerFilmeLadenEvent event) {
+    }
+
+    private void run_(Runnable r) {
+        try {
+            if (SwingUtilities.isEventDispatchThread()) {
+                // entweder hier
+                r.run();
+            } else {
+                SwingUtilities.invokeLater(r);
+            }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(461025879, "ListenerFilmeLaden.fertig", ex);
+        }
+
     }
 }

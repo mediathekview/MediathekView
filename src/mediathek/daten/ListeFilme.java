@@ -137,6 +137,8 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         // nur für die MediathekReader
         // ist eine URL,Sender,Thema,Titel schon vorhanden, wird sie verworfen, die aktuellste bleibt erhalten
         DatenFilm f;
+        film.arr[DatenFilm.FILM_THEMA_NR] = film.arr[DatenFilm.FILM_THEMA_NR].replace("&amp;#8230;", "…").trim(); //kommt vor ind kann das unten nicht
+        film.arr[DatenFilm.FILM_TITEL_NR] = film.arr[DatenFilm.FILM_TITEL_NR].replace("&amp;#8230;", "…").trim();
         film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
         film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_TITEL_NR].trim());
         // erst mal schauen obs das schon gibt
@@ -179,8 +181,14 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     }
 
     public synchronized boolean addWithNr(DatenFilm film) {
-        film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
-        film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_TITEL_NR].trim());
+//        if (!film.arr[DatenFilm.FILM_THEMA_NR].equals(StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim()))) {
+//            Log.debugMeldung("----");
+//        }
+//        if (!film.arr[DatenFilm.FILM_TITEL_NR].equals(StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_TITEL_NR].trim()))) {
+//            Log.debugMeldung("----");
+//        }
+//        film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
+//        film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_TITEL_NR].trim());
         film.arr[DatenFilm.FILM_NR_NR] = getNr(nr++);
         film.arr[DatenFilm.FILM_URL_NR] = film.getUrlOrg();
         return add(film);
@@ -189,7 +197,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     private String getNr(int nr) {
         final int MAX_STELLEN = 5;
         final String FUELL_ZEICHEN = "0";
-        String str = String.valueOf(nr++);
+        String str = String.valueOf(nr);
         while (str.length() < MAX_STELLEN) {
             str = FUELL_ZEICHEN + str;
         }
@@ -321,20 +329,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return ret;
     }
 
-//    public synchronized DatenFilm getFilmByTitel(String sender, String thema, String titel) {
-//        ListIterator<DatenFilm> it = this.listIterator(0);
-//        while (it.hasNext()) {
-//            DatenFilm f = it.next();
-//            if (f.arr[DatenFilm.FILM_TITEL_NR].equalsIgnoreCase(titel)) {
-//                if (f.arr[DatenFilm.FILM_THEMA_NR].equalsIgnoreCase(thema)) {
-//                    if (f.arr[DatenFilm.FILM_SENDER_NR].equals(sender)) {
-//                        return f;
-//                    }
-//                }
-//            }
-//        }
-//        return null;
-//    }
     //===================================
     // private
     //===================================
