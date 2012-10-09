@@ -154,7 +154,7 @@ public class GuiDownloads extends PanelVorlage {
         });
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
+            public void fertig_(ListenerFilmeLadenEvent event) {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
                     tabelleAktualisieren();
                 }
@@ -191,7 +191,6 @@ public class GuiDownloads extends PanelVorlage {
             download = true;
         }
         ddaten.listeDownloads.getModel((TModelDownload) tabelle.getModel(), abo, download);
-//        tabelle.fireTableDataChanged(true /*setSpalten*/);
         setInfo();
     }
 

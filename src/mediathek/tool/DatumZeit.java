@@ -28,6 +28,9 @@ import mediathek.daten.DatenFilm;
 
 public class DatumZeit {
 
+    private static SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
+    private static SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
+
     public static String getJetzt_ddMMyyyy_HHmm() {
         Date today;
         String output;
@@ -131,7 +134,6 @@ public class DatumZeit {
 //        ret = ret.replace(".", "");
 //        return ret;
 //    }
-
     public static Datum getDatumForObject(String datum) {
         Datum tmp = new Datum(0);
         if (!datum.equals("")) {
@@ -145,8 +147,8 @@ public class DatumZeit {
     }
 
     public static Datum getDatumForObject(DatenFilm film) {
-        SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
-        SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
+//        SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
+//        SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
         Datum tmp = new Datum(0);
         if (!film.arr[DatenFilm.FILM_DATUM_NR].equals("")) {
             try {
@@ -162,8 +164,6 @@ public class DatumZeit {
     }
 
     public static Datum getDatumForObject(DatenDownload datenDownload) {
-        SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
-        SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
         Datum tmp = new Datum(0);
         if (!datenDownload.arr[DatenDownload.DOWNLOAD_DATUM_NR].equals("")) {
             try {

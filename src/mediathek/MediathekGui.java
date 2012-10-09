@@ -243,19 +243,19 @@ public final class MediathekGui extends javax.swing.JFrame {
         initToolBar();
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(ListenerFilmeLadenEvent event) {
+            public void start_(ListenerFilmeLadenEvent event) {
                 //ddaten.infoPanel.setProgress();
                 jButtonFilmeLaden.setEnabled(false);
                 jMenuItemFilmlisteLaden.setEnabled(false);
             }
 
             @Override
-            public void progress(ListenerFilmeLadenEvent event) {
+            public void progress_(ListenerFilmeLadenEvent event) {
                 ddaten.infoPanel.setProgressBar(event);
             }
 
             @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
+            public void fertig_(ListenerFilmeLadenEvent event) {
                 ddaten.infoPanel.clearProgress();
                 jButtonFilmeLaden.setEnabled(true);
                 jMenuItemFilmlisteLaden.setEnabled(true);

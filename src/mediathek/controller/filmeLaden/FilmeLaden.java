@@ -161,7 +161,7 @@ public class FilmeLaden {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
             listeFilmeNeu = filmeSuchen.listeFilmeNeu;
             filmeSuchen.listeFilmeNeu = null;
-            fertig_(event);
+            undEnde(event);
         }
     }
 
@@ -182,11 +182,11 @@ public class FilmeLaden {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
             listeFilmeNeu = filmeImportieren.listeFilme;
             filmeImportieren.listeFilme = null;
-            fertig_(event);
+            undEnde(event);
         }
     }
 
-    private void fertig_(ListenerFilmeLadenEvent event) {
+    private void undEnde(ListenerFilmeLadenEvent event) {
         istAmLaufen = false;
         if (listeFilmeNeu != null) {
             Daten.listeFilme = listeFilmeNeu;

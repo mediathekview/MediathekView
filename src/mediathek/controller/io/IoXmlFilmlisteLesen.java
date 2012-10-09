@@ -35,10 +35,10 @@ import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
-import mediathek.tool.Konstanten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiKonstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
@@ -76,10 +76,10 @@ public class IoXmlFilmlisteLesen {
             }
             if (istUrl && datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
                 // da wird eine temp-Datei benutzt
-                this.notifyStart(1000);
+                this.notifyStart(200);
                 this.notifyProgress(datei);
             } else {
-                this.notifyStart(500);
+                this.notifyStart(100);
                 this.notifyProgress(datei);
             }
             if (!istUrl) {
@@ -103,14 +103,14 @@ public class IoXmlFilmlisteLesen {
                     tmpFile.deleteOnExit();
                     BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
                     FileOutputStream fOut = new FileOutputStream(tmpFile);
-                    final byte[] buffer = new byte[100];
+                    final byte[] buffer = new byte[1024];
                     int n = 0;
                     int count = 0;
                     this.notifyProgress(datei);
-                    while (!Daten.filmeLaden.getStop() && -1 != (n = in.read(buffer))) {
+                    while (!Daten.filmeLaden.getStop() && (n = in.read(buffer)) != -1) {
                         fOut.write(buffer, 0, n);
                         ++count;
-                        if (count > 30) {
+                        if (count > 25) {
                             this.notifyProgress(datei);
                             count = 0;
                         }
@@ -161,7 +161,7 @@ public class IoXmlFilmlisteLesen {
                 //Filmeliste
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     if (parser.getLocalName().equals(ListeFilme.FILMLISTE)) {
-                        get(parser, event, ListeFilme.FILMLISTE, ListeFilme.FILMLISTE_COLUMN_NAMES, listeFilme.metaDaten);
+                        get(parser, ListeFilme.FILMLISTE, ListeFilme.FILMLISTE_COLUMN_NAMES, listeFilme.metaDaten);
                         if (listeFilme.metaDaten[ListeFilme.FILMLISTE_VERSION_NR].startsWith("3")) {
                             filmTag = DatenFilm.FILME_;
                             namen = DatenFilm.FILME_COLUMN_NAMES_;
@@ -186,7 +186,7 @@ public class IoXmlFilmlisteLesen {
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     if (parser.getLocalName().equals(filmTag)) {
                         datenFilm = new DatenFilm();
-                        if (get(parser, event, filmTag, namen, datenFilm.arr)) {
+                        if (get(parser, filmTag, namen, datenFilm.arr)) {
                             if (datenFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
                                 datenFilm.arr[DatenFilm.FILM_SENDER_NR] = datenFilmAlt.arr[DatenFilm.FILM_SENDER_NR];
                             }
@@ -194,7 +194,7 @@ public class IoXmlFilmlisteLesen {
                                 datenFilm.arr[DatenFilm.FILM_THEMA_NR] = datenFilmAlt.arr[DatenFilm.FILM_THEMA_NR];
                             }
                             ++count;
-                            if (count > 100) {
+                            if (count > 250) {
                                 count = 0;
                                 this.notifyProgress(text);
                             }
@@ -211,8 +211,9 @@ public class IoXmlFilmlisteLesen {
         return ret;
     }
 
-    private boolean get(XMLStreamReader parser, int event, String xmlElem, String[] xmlNames, String[] strRet) {
+    private boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet) {
         boolean ret = true;
+        int event;
         int maxElem = strRet.length;
         for (int i = 0; i < maxElem; ++i) {
             strRet[i] = "";
