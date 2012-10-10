@@ -137,9 +137,11 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         // nur für die MediathekReader
         // ist eine URL,Sender,Thema,Titel schon vorhanden, wird sie verworfen, die aktuellste bleibt erhalten
         DatenFilm f;
-        film.arr[DatenFilm.FILM_THEMA_NR] = film.arr[DatenFilm.FILM_THEMA_NR].replace("&amp;#8230;", "…").trim(); //kommt vor ind kann das unten nicht
-        film.arr[DatenFilm.FILM_TITEL_NR] = film.arr[DatenFilm.FILM_TITEL_NR].replace("&amp;#8230;", "…").trim();
+        // Thema
+        film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeXml(film.arr[DatenFilm.FILM_THEMA_NR].trim());
         film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
+        // Titel
+        film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeXml(film.arr[DatenFilm.FILM_TITEL_NR].trim());
         film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_TITEL_NR].trim());
         // erst mal schauen obs das schon gibt
         Iterator<DatenFilm> it = this.iterator();

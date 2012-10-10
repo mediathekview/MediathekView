@@ -24,9 +24,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import mediathek.tool.Log;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
 
 public class DialogZiel extends javax.swing.JDialog {
 
