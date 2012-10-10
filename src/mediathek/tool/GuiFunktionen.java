@@ -165,10 +165,34 @@ public class GuiFunktionen {
         ret = ret.replace(":", "_");
         ret = ret.replace("'", "_");
         ret = ret.replace("|", "_");
+        ret = getAscii(ret);
         if (winPfad) {
             ret = ret.substring(0, 1) + ":\\" + ret.substring(3);
         }
         return ret;
+    }
+
+    private static String getAscii(String ret) {
+        String r = "";
+        if (!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_NUR_ASCII_NR])) {
+            return ret;
+        } else {
+            char c;
+            ret = ret.replace("ä", "ae");
+            ret = ret.replace("ö", "oe");
+            ret = ret.replace("ü", "ue");
+            ret = ret.replace("Ä", "Ae");
+            ret = ret.replace("Ö", "Oe");
+            ret = ret.replace("Ü", "Ue");
+            for (int i = 0; i < ret.length(); ++i) {
+                if ((c = ret.charAt(i)) < 127) {
+                    r += c;
+                } else {
+                    r += "_";
+                }
+            }
+        }
+        return r;
     }
 
     public static String addsPfad(String pfad1, String pfad2) {
