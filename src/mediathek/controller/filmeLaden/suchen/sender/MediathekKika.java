@@ -23,7 +23,6 @@ import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
@@ -43,13 +42,14 @@ public class MediathekKika extends MediathekReader implements Runnable {
         final String ADRESSE = "http://kikaplus.net/clients/kika/kikaplus/";
         final String MUSTER_URL = "<a style=\"margin-left:20px;\" href=\"";
         final String MUSTER_THEMA = "<strong style=\"margin-left:10px;\">";
+        final String MUSTER_DATUM = "title=\"Sendung vom ";
         listeThemen.clear();
         StringBuffer seite = new StringBuffer();
         meldungStart();
         seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 3, seite, "KiKA: Startseite");
         int pos = 0;
-        int pos1, pos2, stop, pTitel1, pTitel2;
-        String url, thema, titel;
+        int pos1, pos2, stop, pDatum1, pDatum2, pTitel1, pTitel2;
+        String url, thema, datum, titel;
         while ((pos = seite.indexOf(MUSTER_THEMA, pos)) != -1) {
             try {
                 thema = "";
@@ -61,6 +61,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
                 }
                 while ((pos1 = seite.indexOf(MUSTER_URL, pos1)) != -1) {
                     titel = "";
+                    datum = "";
                     if (stop != -1 && pos1 > stop) {
                         // dann schon das nächste Thema
                         break;
@@ -69,14 +70,28 @@ public class MediathekKika extends MediathekReader implements Runnable {
                     if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
                         url = seite.substring(pos1, pos2);
                         if (!url.equals("")) {
+                            // Datum
+                            if ((pDatum1 = seite.indexOf(MUSTER_DATUM, pos2)) != -1) {
+                                pDatum1 += MUSTER_DATUM.length();
+                                if ((pDatum2 = seite.indexOf("\"", pDatum1)) != -1) {
+                                    if (stop != -1 && pDatum1 < stop && pDatum2 < stop) {
+                                        // dann schon das nächste Thema
+                                        datum = seite.substring(pDatum1, pDatum2);
+                                    }
+                                }
+                            }
+
+                            // Titel
                             if ((pTitel1 = seite.indexOf(">", pos2)) != -1) {
                                 pTitel1 += 1;
                                 if ((pTitel2 = seite.indexOf("<", pTitel1)) != -1) {
-                                    titel = seite.substring(pTitel1, pTitel2);
+                                    if (stop != -1 && pTitel1 > stop && pTitel2 > stop) {
+                                        titel = seite.substring(pTitel1, pTitel2);
+                                    }
                                 }
                             }
                             // in die Liste eintragen
-                            String[] add = new String[]{ADRESSE + url, thema, titel};
+                            String[] add = new String[]{ADRESSE + url, thema, titel, datum};
                             listeThemen.addUrl(add);
                         }
                     }
@@ -111,7 +126,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
                 String[] link;
                 while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
                     meldungProgress(link[0]);
-                    laden(link[0] /* url */, link[1] /* Thema */, link[2] /* Titel */);
+                    laden(link[0] /* url */, link[1] /* Thema */, link[2] /* Titel */, link[3] /*Datum*/);
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-987452384, "Mediathek3Sat.ThemaLaden.run", ex.getMessage());
@@ -119,7 +134,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
             meldungThreadUndFertig();
         }
 
-        void laden(String url, String thema, String titel) {
+        void laden(String url, String thema, String titel, String datum) {
             //so.addVariable("pfad","rtmp://88.198.74.226/vod/mp4:1348908081-7b8b1356b478db154fdbf8bf6a01fc1f.mp4");
             //so.addVariable("fullscreenPfad", "rtmp://88.198.74.226/vod/mp4:1348908081-7b8b1356b478db154fdbf8bf6a01fc1f-01.mp4");	
             final String MUSTER_URL_1 = "so.addVariable(\"pfad\",\"";
@@ -143,7 +158,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
             }
             if (!urlFilm.equals("")) {
                 meldung(urlFilm);
-                addFilm(new DatenFilm(nameSenderMReader, thema, url, titel, urlFilm, urlFilm /* urlOrg */, "-r " + urlFilm + " --flashVer WIN11,4,402,265"/* urlRtmp */, ""/*datum*/, ""/*zeit*/));
+                addFilm(new DatenFilm(nameSenderMReader, thema, url, titel, urlFilm, urlFilm /* urlOrg */, "-r " + urlFilm + " --flashVer WIN11,4,402,265"/* urlRtmp */, datum/*datum*/, ""/*zeit*/));
             }
 
 
