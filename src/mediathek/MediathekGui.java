@@ -24,10 +24,15 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import javax.swing.AbstractAction;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -35,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
@@ -85,6 +91,13 @@ public final class MediathekGui extends javax.swing.JFrame {
         String pfad = "";
         boolean max = false;
         initComponents();
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.CTRL_DOWN_MASK), "mac-einstellungen");
+        getRootPane().getActionMap().put("mac-einstellungen", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialogEinstellungen.setVisible(true);
+            }
+        });
         if (ar != null) {
             if (ar.length > 0) {
                 if (!ar[0].startsWith("-")) {
