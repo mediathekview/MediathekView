@@ -24,9 +24,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -91,13 +89,16 @@ public final class MediathekGui extends javax.swing.JFrame {
         String pfad = "";
         boolean max = false;
         initComponents();
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.CTRL_DOWN_MASK), "mac-einstellungen");
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.META_DOWN_MASK), "mac-einstellungen");
         getRootPane().getActionMap().put("mac-einstellungen", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dialogEinstellungen.setVisible(true);
             }
         });
+
+
+
         if (ar != null) {
             if (ar.length > 0) {
                 if (!ar[0].startsWith("-")) {

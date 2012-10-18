@@ -20,7 +20,6 @@
 package mediathek.tool;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -38,7 +37,7 @@ public class EscBeenden {
                 beenden_();
             }
         });
-        dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK), "mac-cancel");
+        dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.META_DOWN_MASK), "mac-cancel");
         dialog.getRootPane().getActionMap().put("mac-cancel", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
