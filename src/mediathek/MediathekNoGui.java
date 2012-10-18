@@ -27,6 +27,7 @@ import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
@@ -105,7 +106,7 @@ public class MediathekNoGui {
         if (!url.equals("")) {
             Log.systemMeldung("Filmliste importieren von: " + url);
             ListeFilme tmpListe = new ListeFilme();
-            Daten.ioXmlFilmlisteLesen.filmlisteLesen(url, false /* istDatei */, tmpListe);
+            Daten.ioXmlFilmlisteLesen.filmlisteLesen(url, GuiFunktionen.istUrl(url) /* istUrl */, tmpListe);
             Daten.listeFilme.updateListe(tmpListe, false /* nur URL vergleichen */);
             tmpListe.clear();
         }
