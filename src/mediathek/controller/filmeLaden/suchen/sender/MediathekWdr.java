@@ -29,7 +29,7 @@ import mediathek.tool.Log;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekWdr extends MediathekReader implements Runnable {
 
@@ -39,8 +39,8 @@ public class MediathekWdr extends MediathekReader implements Runnable {
 
     /**
      *
-     *  @param ddaten
-     *  @param dde
+     * @param ddaten
+     * @param dde
      */
     public MediathekWdr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
@@ -54,11 +54,12 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         //Theman suchen
         listeThemen.clear();
         meldungStart();
-        addToList__("http://www.wdr.de/mediathek/html/regional/index.xml");
+        ////////////addToList__("http://www.wdr.de/mediathek/html/regional/index.xml");
+        addDatumToList__("http://www.wdr.de/mediathek/html/regional/index.xml");
         if (suchen.allesLaden) {
             //TH Rockpalast hinzu
-            String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
-            listeThemen.addUrl(add);
+//////////////            String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
+//////////////            listeThemen.addUrl(add);
         }
         if (Daten.filmeLaden.getStop()) {
             meldungThreadUndFertig();
@@ -123,6 +124,39 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             }
         } else {
             Log.fehlerMeldungMReader(-778521300, "MediathekWdr", "nix gefunden!!");
+        }
+    }
+
+    private void addDatumToList__(String ADRESSE) {
+        //Theman suchen
+        final String MUSTER_URL_DATUM = "href=\"/mediathek/html/regional/ergebnisse/datum.xml?";
+        StringBuffer strSeite = new StringBuffer();
+        strSeite = getUrlIo.getUri_Iso(nameSenderMReader, ADRESSE, strSeite, "");
+        int pos;
+        int pos1;
+        int pos2;
+        String url;
+        String thema;
+        pos = 0;
+        while (!Daten.filmeLaden.getStop() && (pos = strSeite.indexOf(MUSTER_URL_DATUM, pos)) != -1) {
+            thema = "";
+            pos += MUSTER_URL_DATUM.length();
+            if ((pos2 = strSeite.indexOf("\"", pos)) != -1) {
+                url = strSeite.substring(pos, pos2);
+                if (url.equals("")) {
+                    Log.fehlerMeldungMReader(-656360477, "MediathekWdr.addToList__", "keine URL");
+                } else {
+                    url = url.replace("&amp;", "&");
+                    String[] add;
+                    final String a = "http://www.wdr.de/mediathek/html/regional/ergebnisse/datum.xml?";
+                    if (suchen.allesLaden) {
+                        add = new String[]{a + url + "&rankingcount=20", thema};
+                    } else {
+                        add = new String[]{a + url + "&rankingcount=10", thema};
+                    }
+                    listeThemen.addUrl(add);
+                }
+            }
         }
     }
 
@@ -263,6 +297,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             // <p class="wsArticleAutor">Ein Beitrag von Heinke Schröder, 24.11.2010	</p>
             final String MUSTER_URL = "dslSrc=";
             final String MUSTER_DATUM = "<p class=\"wsArticleAutor\">";
+            final String MUSTER_THEMA = "Homepage der Sendung ["; //Homepage der Sendung [west.art]</a>
             meldung(urlFilm);
             strSeite2 = getUrl.getUri_Iso(nameSenderMReader, urlFilm, strSeite2, "");
             int pos;
@@ -270,7 +305,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             int pos2;
             String url;
             String datum = "";
-            //url suchen
+            // Datum suchen
             if ((pos = strSeite2.indexOf(MUSTER_DATUM)) != -1) {
                 pos += MUSTER_DATUM.length();
                 pos1 = pos;
@@ -283,6 +318,38 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     }
                 }
             }
+            // Thema suchen
+            if (thema.equals("")) {
+                if ((pos = strSeite2.indexOf(MUSTER_THEMA)) != -1) {
+                    pos += MUSTER_THEMA.length();
+                    pos1 = pos;
+                    if ((pos2 = strSeite2.indexOf("]", pos)) != -1) {
+                        if (pos1 < pos2) {
+                            thema = strSeite2.substring(pos1, pos2).trim();
+                        }
+                    }
+                }
+                if (thema.equals("")) {
+                    final String MUSTER = "]\" ";
+                    if ((pos = strSeite2.indexOf(MUSTER)) != -1) {
+                        pos += MUSTER.length();
+                        if (pos > 100) {
+                            String sub = strSeite2.substring(pos - 100, pos);
+                            if ((pos = sub.indexOf("[")) != -1) {
+                                pos += 1;
+                                if ((pos2 = sub.indexOf("]", pos)) != -1) {
+                                    thema = sub.substring(pos, pos2).trim();
+                                }
+                            }
+                        }
+                    }
+                }
+                if (thema.equals("")) {
+                    // dann gehts halt nicht
+                    thema = nameSenderFilmliste;
+                }
+            }
+            // URL suchen
             if ((pos = strSeite2.indexOf(MUSTER_URL)) != -1) {
                 pos += MUSTER_URL.length();
                 pos1 = pos;
