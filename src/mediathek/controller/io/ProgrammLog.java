@@ -28,6 +28,7 @@ import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Log;
@@ -51,7 +52,7 @@ public class ProgrammLog {
                     bw.write("#####################################################");
                     bw.newLine();
                     bw.newLine();
-                    bw.write(Log.getCompileDate());
+                    bw.write(Funktionen.getCompileDate());
                     bw.newLine();
                     bw.write("Betriebssystem: " + System.getProperty("os.name"));
                     if (System.getProperty("os.name").toLowerCase().contains("windows")) {
@@ -63,7 +64,7 @@ public class ProgrammLog {
                         }
                     }
                     bw.newLine();
-                    bw.write("Programmpfad: " + GuiFunktionenProgramme.getPathJar());
+                    bw.write("Programmpfad: " + Funktionen.getPathJar());
                     bw.newLine();
                     bw.write("Verzeichnis Einstellungen: " + Daten.getBasisVerzeichnis());
                     bw.newLine();

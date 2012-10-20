@@ -39,21 +39,6 @@ import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 
 public class GuiFunktionenProgramme {
 
-    public static String getPathJar() {
-        String pFilePath = "pFile";
-        File propFile = new File(pFilePath);
-        if (!propFile.exists()) {
-            try {
-                CodeSource cS = Main.class.getProtectionDomain().getCodeSource();
-                File jarFile = new File(cS.getLocation().toURI().getPath());
-                String jarDir = jarFile.getParentFile().getPath();
-                propFile = new File(jarDir + File.separator + pFilePath);
-            } catch (Exception ex) {
-            }
-        }
-        return propFile.getAbsolutePath().replace(pFilePath, "");
-    }
-
     private static String getWindowsMplayerPath() {
         //Für Windows den Pfad des VLC ermitteln
         //sonst den deutschen Defaultpfad für Programme verwenden verwenden
@@ -147,7 +132,7 @@ public class GuiFunktionenProgramme {
         final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
         String pfad = "";
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            pfad = GuiFunktionenProgramme.getPathJar() + PFAD_WINDOWS_FLV;
+            pfad = Funktionen.getPathJar() + PFAD_WINDOWS_FLV;
         } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
             pfad = PFAD_LINUX_FLV;
         }
@@ -184,11 +169,11 @@ public class GuiFunktionenProgramme {
         final String PFAD_LINUX_SCRIPT = "bin/flv.sh";
         final String PFAD_WINDOWS_SCRIPT = "bin\\flv.bat";
         if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_LINUX_SCRIPT;
+            pfadScript = Funktionen.getPathJar() + PFAD_LINUX_SCRIPT;
         } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_LINUX_SCRIPT;
+            pfadScript = Funktionen.getPathJar() + PFAD_LINUX_SCRIPT;
         } else {
-            pfadScript = GuiFunktionenProgramme.getPathJar() + PFAD_WINDOWS_SCRIPT;
+            pfadScript = Funktionen.getPathJar() + PFAD_WINDOWS_SCRIPT;
         }
         return pfadScript;
     }

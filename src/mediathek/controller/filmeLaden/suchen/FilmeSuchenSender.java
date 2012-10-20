@@ -47,6 +47,7 @@ import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
@@ -322,7 +323,7 @@ public class FilmeSuchenSender {
         }
         listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR] = String.valueOf(listeFilmeNeu.size());
         listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
-        listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = Log.getCompileDate();
+        listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = Funktionen.getCompileDate();
     }
 
     private String textLaenge(int max, String text) {

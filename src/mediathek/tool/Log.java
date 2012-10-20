@@ -44,33 +44,6 @@ public class Log {
     private static Date startZeit = new Date(System.currentTimeMillis());
     private static Date stopZeit = null;
 
-    public static String getCompileDate() {
-        String ret = "";
-        try {
-            //Version
-            Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-            ret = Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + "  [Buildnummer: " + Log.getBuildNr() + "] - Compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d);
-        } catch (Exception ex) {
-            Log.fehlerMeldung(569614756, "Log.getCompileDate: ", ex);
-        }
-        return ret;
-    }
-
-    public static String getBuildNr() {
-        final ResourceBundle rb;
-        String propToken = "BUILD";
-        String msg = "";
-        try {
-            ResourceBundle.clearCache();
-            rb = ResourceBundle.getBundle("version");
-            msg = rb.getString(propToken);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            System.err.println("Token " + propToken + " not in Propertyfile!");
-        }
-        return msg;
-    }
-
     public void resetFehlerListe() {
         fehlerListe.clear();
     }
@@ -95,15 +68,15 @@ public class Log {
         Log.systemMeldung("freeMemory: " + freeMem / (1024L * 1024L) + " MB");
         Log.systemMeldung("###########################################################");
         //Version
-        Log.systemMeldung(getCompileDate());
-        Log.systemMeldung("Buildnummer: " + getBuildNr());
+        Log.systemMeldung(Funktionen.getCompileDate());
+        Log.systemMeldung("Buildnummer: " + Funktionen.getBuildNr());
         Log.systemMeldung("Klassenname: " + classname);
         Log.systemMeldung("###########################################################");
     }
 
     public static synchronized void startMeldungen(String classname) {
         versionsMeldungen(classname);
-        Log.systemMeldung("Programmpfad: " + GuiFunktionenProgramme.getPathJar());
+        Log.systemMeldung("Programmpfad: " + Funktionen.getPathJar());
         Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getBasisVerzeichnis());
         Log.systemMeldung("Useragent: " + Daten.getUserAgent());
         Log.systemMeldung("###########################################################");
