@@ -28,6 +28,7 @@ import mediathek.controller.io.ProgrammLog;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.BeobWeb;
+import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
@@ -44,7 +45,7 @@ public class PanelHilfe extends PanelVorlage {
         //init
         try {
             Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-            jTextFieldVersion.setText(Konstanten.VERSION + "  [Buildnummer: " + Log.getBuildNr() + "]  vom: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
+            jTextFieldVersion.setText(Konstanten.VERSION + "  [Buildnummer: " + Funktionen.getBuildNr() + "]  vom: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
         } catch (Exception e) {
             jTextFieldVersion.setText(Konstanten.VERSION);
         }
