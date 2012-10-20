@@ -31,7 +31,7 @@ import mediathek.tool.Log;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekMdr extends MediathekReader implements Runnable {
 
@@ -41,7 +41,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *  @param ddaten
      */
     public MediathekMdr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 1000, startPrio);
@@ -127,7 +127,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             try {
                 meldungAddThread();
                 String[] link;
-                while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
+                while (!Daten.filmeLaden.getStop() && (link = listeThemen.getListeThemen()) != null) {
                     meldungProgress(link[0]);
                     addThema(link[0]);
                 }
@@ -351,7 +351,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, url /* orgUrl */, rtmpUrl, datum, zeit);
                             addFilm(film);
                         } else {
-                            Log.systemMeldung("MDR: Film doppelt");
+                            Log.debugMeldung("MDR: Film doppelt");
                         }
                     }
                 }

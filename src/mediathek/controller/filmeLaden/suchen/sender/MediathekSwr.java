@@ -114,7 +114,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             try {
                 meldungAddThread();
                 String[] link = null;
-                while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
+                while (!Daten.filmeLaden.getStop() && (link = listeThemen.getListeThemen()) != null) {
                     themenSeitenSuchen(link[0] /* url */, link[1] /* Thema */);
                     meldungProgress(link[0]);
                 }

@@ -109,7 +109,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
             try {
                 meldungAddThread();
                 String[] link;
-                while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
+                while (!Daten.filmeLaden.getStop() && (link = listeThemen.getListeThemen()) != null) {
                     meldungProgress(link[0]);
                     feedEinerSeiteSuchen(link[0] /* url */, link[1] /* Thema */);
                 }

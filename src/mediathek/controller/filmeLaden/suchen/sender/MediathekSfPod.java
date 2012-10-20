@@ -98,7 +98,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
             try {
                 meldungAddThread();
                 String link[];
-                while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
+                while (!Daten.filmeLaden.getStop() && (link = listeThemen.getListeThemen()) != null) {
                     meldungProgress(link[0] /* url */);
                     addFilme(link[1], link[0] /* url */);
                 }
