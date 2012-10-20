@@ -29,18 +29,19 @@ import mediathek.tool.Log;
 
 /**
  *
- * @author
+ *    @author
  */
 public class MediathekWdr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "WDR";
     private final int MAX_COUNT = 5;
     final String ROCKPALAST_URL = "http://www.wdr.de/tv/rockpalast/videos/uebersicht.jsp"; //TH
+    private LinkedListUrl listeFilme = new LinkedListUrl();
 
     /**
      *
-     * @param ddaten
-     * @param dde
+     *    @param ddaten
+     *    @param dde
      */
     public MediathekWdr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
@@ -53,13 +54,13 @@ public class MediathekWdr extends MediathekReader implements Runnable {
     public synchronized void addToList() {
         //Theman suchen
         listeThemen.clear();
+        listeFilme.clear();
         meldungStart();
-        ////////////addToList__("http://www.wdr.de/mediathek/html/regional/index.xml");
-        addDatumToList__("http://www.wdr.de/mediathek/html/regional/index.xml");
+        addToList__("http://www.wdr.de/mediathek/html/regional/index.xml");
         if (suchen.allesLaden) {
             //TH Rockpalast hinzu
-//////////////            String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
-//////////////            listeThemen.addUrl(add);
+            String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
+            listeThemen.addUrl(add);
         }
         if (Daten.filmeLaden.getStop()) {
             meldungThreadUndFertig();
@@ -88,6 +89,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         int pos2;
         String url;
         String thema;
+        // nach Sendungen suchen
         int ende = strSeite.indexOf(ENDE);
         int start = strSeite.indexOf(START);
         if (start != -1 && ende != -1) {
@@ -125,18 +127,8 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         } else {
             Log.fehlerMeldungMReader(-778521300, "MediathekWdr", "nix gefunden!!");
         }
-    }
-
-    private void addDatumToList__(String ADRESSE) {
-        //Theman suchen
+        // nach Datum suchen
         final String MUSTER_URL_DATUM = "href=\"/mediathek/html/regional/ergebnisse/datum.xml?";
-        StringBuffer strSeite = new StringBuffer();
-        strSeite = getUrlIo.getUri_Iso(nameSenderMReader, ADRESSE, strSeite, "");
-        int pos;
-        int pos1;
-        int pos2;
-        String url;
-        String thema;
         pos = 0;
         while (!Daten.filmeLaden.getStop() && (pos = strSeite.indexOf(MUSTER_URL_DATUM, pos)) != -1) {
             thema = "";
@@ -171,7 +163,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             try {
                 meldungAddThread();
                 String[] link;
-                while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
+                while (!Daten.filmeLaden.getStop() && (link = listeThemen.getListeThemen()) != null) {
                     //TH Weiche für Rockpalast
                     if (ROCKPALAST_URL.equals(link[0])) {
                         themenSeiteRockpalast();
@@ -185,8 +177,8 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-633250489, "MediathekWdr.SenderThemaLaden.run", ex.getMessage());
             }
         }
-        //TH
 
+        //TH
         private void themenSeiteRockpalast() {
             final String ROOTADR = "http://www.wdr.de";
             final String ITEM_1 = "<a href=\"/tv/rockpalast/extra/videos";
@@ -254,15 +246,20 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     if (pos1 != -1 && pos2 != -1 && pos1 != pos2) {
                         url = strSeite1.substring(pos1, pos2).trim();
                         if (!url.equals("")) {
-                            pos1 = strSeite1.indexOf(TITEL, pos);
-                            if (pos1 != -1) {
-                                pos1 += TITEL.length();
-                                pos2 = strSeite1.indexOf("'", pos1);
-                                if (pos2 != -1 && pos1 < pos2) {
-                                    titel = strSeite1.substring(pos1, pos2);
-                                    //weiter gehts
-                                    addFilme2(strUrlFeed, thema, titel, url);
+                            // erst mal schauen obs die schon gab
+                            if (listeFilme.addUrl(new String[]{url})) {
+                                pos1 = strSeite1.indexOf(TITEL, pos);
+                                if (pos1 != -1) {
+                                    pos1 += TITEL.length();
+                                    pos2 = strSeite1.indexOf("'", pos1);
+                                    if (pos2 != -1 && pos1 < pos2) {
+                                        titel = strSeite1.substring(pos1, pos2);
+                                        //weiter gehts
+                                        addFilme2(strUrlFeed, thema, titel, url);
+                                    }
                                 }
+                            } else {
+                                Log.debugMeldung("WDR-doppelt");
                             }
                         } else {
                             Log.fehlerMeldungMReader(-375862100, "MediathekWdr.themenSeiteSuchen-1", "keine Url" + thema);

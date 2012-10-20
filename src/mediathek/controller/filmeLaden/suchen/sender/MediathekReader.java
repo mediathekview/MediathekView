@@ -29,7 +29,7 @@ import mediathek.tool.Log;
 
 /**
  *
- *   @author
+ *  @author
  */
 public class MediathekReader implements Runnable {
 
@@ -49,7 +49,7 @@ public class MediathekReader implements Runnable {
 
     /**
      *
-     *   @param ddaten
+     *  @param ddaten
      */
     public MediathekReader(FilmeSuchenSender ssearch, String nameMreader, int ssenderMaxThread, int ssenderWartenSeiteLaden, int sstartPrio) {
         suchen = ssearch;
@@ -66,12 +66,16 @@ public class MediathekReader implements Runnable {
 
     class LinkedListUrl extends LinkedList<String[]> {
 
-        public boolean addUrl(String[] e) {
+        synchronized boolean addUrl(String[] e) {
             // e[0] ist immer die URL
-            if (!istInListe(listeThemen, e[0], 0)) {
+            if (!istInListe(this, e[0], 0)) {
                 return super.add(e);
             }
             return false;
+        }
+
+        synchronized String[] getListeThemen() {
+            return this.pollFirst();
         }
     };
 
@@ -112,7 +116,6 @@ public class MediathekReader implements Runnable {
 //    void setInfo(int feld, String wert) {
 //        suchen.listeFilmeNeu.setInfo(feld, wert);
 //    }
-
     boolean addFilm(DatenFilm film) {
         return suchen.listeFilmeNeu.addFilmVomSender(film);
     }
@@ -139,10 +142,6 @@ public class MediathekReader implements Runnable {
             }
         }
         return ret;
-    }
-
-    synchronized String[] getListeThemen() {
-        return listeThemen.pollFirst();
     }
 
 //    boolean themaLaden(String sender, String thema) {

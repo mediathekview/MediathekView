@@ -117,7 +117,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             try {
                 meldungAddThread();
                 String[] link;
-                while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
+                while (!Daten.filmeLaden.getStop() && (link = listeThemen.getListeThemen()) != null) {
                     try {
                         meldungProgress(link[1]);
                         feedEinerSeiteSuchen(link[0], link[1] /* thema */);

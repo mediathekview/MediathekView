@@ -170,7 +170,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                     new Thread(new ArteFilmseitenLaden()).start();
                 }
                 //
-                while (!Daten.filmeLaden.getStop() && (link = getListeThemen()) != null) {
+                while (!Daten.filmeLaden.getStop() && (link = listeThemen.getListeThemen()) != null) {
                     themenSeitenSuchen(link[0] /* url */, link[1] /* Thema */);
                     meldungProgress(link[0]);
                 }
