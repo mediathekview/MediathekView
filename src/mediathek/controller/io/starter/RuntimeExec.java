@@ -37,6 +37,7 @@ class RuntimeExec {
     Thread clearOut;
     private Process process = null;
     Start s;
+    private static int procnr = 0; //TH
     private Pattern patternFlvstreamer = Pattern.compile("([0-9.]*%)");
     private Pattern patternFfmpeg = Pattern.compile("(?<=Duration: )[^,]*");
     private Pattern patternZeit = Pattern.compile("(?<=time=)[\\d.]+");
@@ -107,7 +108,10 @@ class RuntimeExec {
                         break;
                     case ERROR:
                         in = process.getErrorStream();
-                        titel = "ERRORSTREAM";
+                        //TH
+                        synchronized (this) {
+                            titel = "ERRORSTREAM [" + (++procnr) + "]";
+                        }
                         break;
                 }
                 buff = new BufferedReader(new InputStreamReader(in));
