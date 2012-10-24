@@ -40,6 +40,15 @@ public class MediathekNoGui {
     private String pfad = "";
     private Daten daten;
 
+    public MediathekNoGui(String ppfad, boolean aallesLaden, String ooutput, String iimprtUrl, String uuserAgent) {
+
+        pfad = ppfad;
+        allesLaden = aallesLaden;
+        output = ooutput;
+        importUrl = iimprtUrl;
+        userAgent = uuserAgent;
+    }
+
     public MediathekNoGui(String[] ar) {
         if (ar != null) {
             if (ar.length > 0) {
@@ -71,6 +80,9 @@ public class MediathekNoGui {
                 }
             }
         }
+    }
+
+    public void starten() {
         daten = new Daten(pfad);
         Daten.nogui = true;
         if (!userAgent.equals("")) {
@@ -87,9 +99,6 @@ public class MediathekNoGui {
         Log.systemMeldung("Outputfile: " + output);
         Log.systemMeldung("");
         Log.systemMeldung("");
-    }
-
-    public void starten() {
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
