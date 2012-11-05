@@ -39,14 +39,16 @@ public class MediathekNoGui {
     private boolean allesLaden = false;
     private String pfad = "";
     private Daten daten;
+    private boolean serverLaufen = false;
 
     public MediathekNoGui(String ppfad, boolean aallesLaden, String ooutput, String iimprtUrl, String uuserAgent) {
-
+        // NUR für den Start vom MediathekServer
         pfad = ppfad;
         allesLaden = aallesLaden;
         output = ooutput;
         importUrl = iimprtUrl;
         userAgent = uuserAgent;
+        serverLaufen = true;
     }
 
     public MediathekNoGui(String[] ar) {
@@ -82,6 +84,42 @@ public class MediathekNoGui {
         }
     }
 
+    public synchronized void serverStarten() {
+        daten = new Daten(pfad);
+        Daten.nogui = true;
+        if (!userAgent.equals("")) {
+            Daten.setUserAgentManuel(userAgent);
+        }
+        // Infos schreiben
+        Log.startMeldungen(this.getClass().getName());
+        if (allesLaden) {
+            Log.systemMeldung("Programmstart: alles laden");
+        } else {
+            Log.systemMeldung("Programmstart: nur update laden");
+        }
+        Log.systemMeldung("ImportUrl: " + importUrl);
+        Log.systemMeldung("Outputfile: " + output);
+        Log.systemMeldung("");
+        Log.systemMeldung("");
+        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                serverLaufen = false;
+            }
+        });
+        // laden was es schon gibt
+        Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
+        // das eigentliche Suchen der Filme bei den Sendern starten
+        Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, allesLaden);
+        try {
+            while (serverLaufen) {
+                this.wait(10);
+            }
+        } catch (Exception ex) {
+        }
+        undTschuess(false /* exit */);
+    }
+
     public void starten() {
         daten = new Daten(pfad);
         Daten.nogui = true;
@@ -102,7 +140,7 @@ public class MediathekNoGui {
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                undTschuess();
+                undTschuess(true /* exit */);
             }
         });
         // laden was es schon gibt
@@ -121,7 +159,7 @@ public class MediathekNoGui {
         }
     }
 
-    private void undTschuess() {
+    private void undTschuess(boolean exit) {
         if (!importUrl.equals("")) {
             // wenn eine ImportUrl angegeben, dann noch eine Liste importieren
             addImportListe(importUrl);
@@ -149,11 +187,14 @@ public class MediathekNoGui {
             }
         }
         Log.printEndeMeldung();
-        if (Daten.listeFilme.isEmpty()) {
-            //Satz mit x, war wohl nix
-            System.exit(1);
-        } else {
-            System.exit(0);
+        if (exit) {
+            // nur dann das Programm beenden
+            if (Daten.listeFilme.isEmpty()) {
+                //Satz mit x, war wohl nix
+                System.exit(1);
+            } else {
+                System.exit(0);
+            }
         }
     }
 }
