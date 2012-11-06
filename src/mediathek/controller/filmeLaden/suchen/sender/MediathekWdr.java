@@ -259,7 +259,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                                     }
                                 }
                             } else {
-                                Log.debugMeldung("WDR-doppelt");
+                                //Log.debugMeldung("WDR-doppelt");
                             }
                         } else {
                             Log.fehlerMeldungMReader(-375862100, "MediathekWdr.themenSeiteSuchen-1", "keine Url" + thema);

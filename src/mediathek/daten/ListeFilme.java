@@ -384,6 +384,10 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     }
 
     public boolean filmlisteIstAelter() {
+        return filmlisteIstAelter(FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE);
+    }
+
+    public boolean filmlisteIstAelter(int sekunden) {
         // Filmliste ist älter als: FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE
         int ret = -1;
         Date jetzt = new Date(System.currentTimeMillis());
@@ -401,7 +405,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         if (ret != -1) {
             Log.systemMeldung("Die Filmliste ist " + ret / 60 + " Minuten alt");
         }
-        if (ret > FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE) {
+        if (ret > sekunden) {
             return true;
         } else if (ret == -1) {
             return true;

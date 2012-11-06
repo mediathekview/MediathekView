@@ -351,7 +351,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, url /* orgUrl */, rtmpUrl, datum, zeit);
                             addFilm(film);
                         } else {
-                            Log.debugMeldung("MDR: Film doppelt");
+                            //Log.debugMeldung("MDR: Film doppelt");
                         }
                     }
                 }
