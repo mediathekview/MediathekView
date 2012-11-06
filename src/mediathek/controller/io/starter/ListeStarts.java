@@ -202,7 +202,6 @@ public class ListeStarts extends LinkedList<Start> {
                 gefunden = true;
             }
         }
-        Log.debugMeldung("startetClass.aufraeumen--3");
         if (gefunden) {
             notifyStartEvent();
         }

@@ -64,8 +64,13 @@ public class ImportFilmliste {
                     //10 mal mit einem anderen Server probieren
                     if (urlLaden(FilmeLaden.updateUrl, true)) {
                         // hat geklappt, nix wie weiter
-                        ret = true;
-                        break;
+                        if (listeFilme.filmlisteIstAelter(5 * 60 * 60 /*sekunden*/)) {
+                            Log.systemMeldung("Filmliste zu alt, neuer Versuch");
+                            ret = false;
+                        } else {
+                            ret = true;
+                            break;
+                        }
                     }
                     FilmeLaden.updateUrl = filmUpdateServer.listeUpdateServer.getRand(i); //nächste Adresse in der Liste wählen
                 }

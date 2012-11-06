@@ -181,7 +181,7 @@ public class FilmeLaden {
         public synchronized void fertig(ListenerFilmeLadenEvent event) {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
             listeFilmeNeu = filmeImportieren.listeFilme;
-            filmeImportieren.listeFilme = null;
+            //////////filmeImportieren.listeFilme = null;
             undEnde(event);
         }
     }

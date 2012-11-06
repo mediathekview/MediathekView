@@ -230,7 +230,6 @@ public class GuiDownloads extends PanelVorlage {
         if (gefunden) {
             tabelleLaden();
         }
-        Log.debugMeldung("startetClass.aufraeumen");
         ddaten.starterClass.aufraeumen();
     }
 
