@@ -64,33 +64,27 @@ public class ImportFilmliste {
                     //10 mal mit einem anderen Server probieren
                     if (urlLaden(FilmeLaden.updateUrl, true)) {
                         // hat geklappt, nix wie weiter
+                        ret = true; // keine Fehlermeldung
                         if (listeFilme.filmlisteIstAelter(5 * 60 * 60 /*sekunden*/)) {
                             Log.systemMeldung("Filmliste zu alt, neuer Versuch");
-                            ret = false;
                         } else {
-                            ret = true;
                             break;
                         }
                     }
                     FilmeLaden.updateUrl = filmUpdateServer.listeUpdateServer.getRand(i); //nächste Adresse in der Liste wählen
                 }
-            } else {
-                fertigMelden();
             }
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {
                 JOptionPane.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
                 Log.fehlerMeldung(951235497, "Filme laden", "Es konnten keine Filme geladen werden!");
             }
+            fertigMelden();
         }
     }
 
     // #######################################
     // Filme aus Datei laden
     // #######################################
-    public void filmeDirektImportierenDatei(String pfad, boolean istUrl) {
-        urlLaden(pfad, istUrl);
-    }
-
     public void filmeImportierenDatei(String pfad, boolean istUrl) {
         new Thread(new filmeImportierenDateiThread(pfad, istUrl)).start();
     }
@@ -110,6 +104,7 @@ public class ImportFilmliste {
             if (!urlLaden(pfad, istUrl)) {
                 JOptionPane.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
             }
+            fertigMelden();
         }
     }
 
@@ -161,9 +156,9 @@ public class ImportFilmliste {
 
         @Override
         public synchronized void fertig(ListenerFilmeLadenEvent event) {
-            for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-                l.fertig(event);
-            }
+//            for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
+//                l.fertig(event);
+//            }
         }
     }
 }

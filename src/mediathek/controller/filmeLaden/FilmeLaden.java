@@ -159,9 +159,9 @@ public class FilmeLaden {
         @Override
         public synchronized void fertig(ListenerFilmeLadenEvent event) {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
-            listeFilmeNeu = filmeSuchen.listeFilmeNeu;
-            filmeSuchen.listeFilmeNeu = null;
-            undEnde(event);
+//            listeFilmeNeu = filmeSuchen.listeFilmeNeu;
+//            filmeSuchen.listeFilmeNeu = null;
+            undEnde(event, filmeSuchen.listeFilmeNeu);
         }
     }
 
@@ -180,16 +180,16 @@ public class FilmeLaden {
         @Override
         public synchronized void fertig(ListenerFilmeLadenEvent event) {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
-            listeFilmeNeu = filmeImportieren.listeFilme;
-            //////////filmeImportieren.listeFilme = null;
-            undEnde(event);
+//            listeFilmeNeu = filmeImportieren.listeFilme;
+//            filmeImportieren.listeFilme = null;
+            undEnde(event, filmeImportieren.listeFilme);
         }
     }
 
-    private void undEnde(ListenerFilmeLadenEvent event) {
+    private void undEnde(ListenerFilmeLadenEvent event, ListeFilme listeFilme) {
         istAmLaufen = false;
-        if (listeFilmeNeu != null) {
-            Daten.listeFilme = listeFilmeNeu;
+        if (listeFilme != null) {
+            Daten.listeFilme = listeFilme;
         } else {
             Daten.listeFilme = new ListeFilme();
         }
