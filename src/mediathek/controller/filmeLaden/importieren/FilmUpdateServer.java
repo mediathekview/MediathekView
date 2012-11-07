@@ -19,10 +19,11 @@
  */
 package mediathek.controller.filmeLaden.importieren;
 
-import mediathek.daten.Daten;
+import mediathek.daten.DDaten;
+import mediathek.gui.GuiDebug;
 import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
 
 public class FilmUpdateServer {
     //Tags FilmUpdateServer Filmliste
@@ -51,7 +52,11 @@ public class FilmUpdateServer {
         String retUrl;
         ListeFilmUpdateServer tmp = new ListeFilmUpdateServer();
         try {
-            FilmUpdateServerSuchen.getListe(Konstanten.ADRESSE_UPDATE_SERVER, tmp);
+            if (DDaten.debug) {
+                FilmUpdateServerSuchen.getListe(GuiDebug.updateXml, tmp);
+            } else {
+                FilmUpdateServerSuchen.getListe(Konstanten.ADRESSE_UPDATE_SERVER, tmp);
+            }
         } catch (Exception ex) {
             Log.fehlerMeldung(347895642, "FilmUpdateServer.suchen", ex);
         }
