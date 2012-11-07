@@ -215,9 +215,9 @@ public class IoXmlFilmlisteLesen {
         boolean ret = true;
         int event;
         int maxElem = strRet.length;
-        for (int i = 0; i < maxElem; ++i) {
-            strRet[i] = "";
-        }
+//        for (int i = 0; i < maxElem; ++i) {
+//            strRet[i] = "";
+//        }
         try {
             while (parser.hasNext()) {
                 event = parser.next();
