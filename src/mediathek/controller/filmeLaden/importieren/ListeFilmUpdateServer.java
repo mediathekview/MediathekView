@@ -148,14 +148,14 @@ public class ListeFilmUpdateServer extends LinkedList<DatenFilmUpdateServer> {
         return ret;
     }
 
-    public void listeSchreiben() {
-        DatenFilmUpdateServer filmUpdate;
-        Iterator<DatenFilmUpdateServer> it = this.iterator();
-        while (it.hasNext()) {
-            filmUpdate = it.next();
-            System.out.println("Datum: " + filmUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_DATUM_NR]
-                    + "   Uhrzeit: " + filmUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_ZEIT_NR]
-                    + "   URL: " + filmUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR]);
-        }
-    }
+//    public void listeSchreiben() {
+//        DatenFilmUpdateServer filmUpdate;
+//        Iterator<DatenFilmUpdateServer> it = this.iterator();
+//        while (it.hasNext()) {
+//            filmUpdate = it.next();
+//            System.out.println("Datum: " + filmUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_DATUM_NR]
+//                    + "   Uhrzeit: " + filmUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_ZEIT_NR]
+//                    + "   URL: " + filmUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR]);
+//        }
+//    }
 }

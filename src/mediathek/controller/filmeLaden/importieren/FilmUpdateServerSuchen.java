@@ -19,6 +19,7 @@
  */
 package mediathek.controller.filmeLaden.importieren;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -29,26 +30,32 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.daten.Daten;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 
 public class FilmUpdateServerSuchen {
 
-    public static String[] getListe(String url, ListeFilmUpdateServer sListe) throws MalformedURLException, IOException, XMLStreamException {
+    public static String[] getListe(String dateiUrl, ListeFilmUpdateServer sListe) throws MalformedURLException, IOException, XMLStreamException {
         String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
-        //String parsername = "";
         sListe.clear();
         int event;
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
         XMLStreamReader parser;
         InputStreamReader inReader;
-        int timeout = 10000;
-        URLConnection conn;
-        conn = new URL(url).openConnection();
-        conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-        conn.setReadTimeout(timeout);
-        conn.setConnectTimeout(timeout);
-        inReader = new InputStreamReader(conn.getInputStream(), Konstanten.KODIERUNG_UTF);
+        if (GuiFunktionen.istUrl(dateiUrl)) {
+            // eine URL verarbeiten
+            int timeout = 10000;
+            URLConnection conn;
+            conn = new URL(dateiUrl).openConnection();
+            conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+            conn.setReadTimeout(timeout);
+            conn.setConnectTimeout(timeout);
+            inReader = new InputStreamReader(conn.getInputStream(), Konstanten.KODIERUNG_UTF);
+        } else {
+            // eine Datei verarbeiten
+            inReader = new InputStreamReader(new FileInputStream(dateiUrl), Konstanten.KODIERUNG_UTF);
+        }
         parser = inFactory.createXMLStreamReader(inReader);
         while (parser.hasNext()) {
             event = parser.next();
