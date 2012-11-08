@@ -25,6 +25,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class MediathekKika extends MediathekReader implements Runnable {
 
@@ -69,8 +70,9 @@ public class MediathekKika extends MediathekReader implements Runnable {
                     pos1 += MUSTER_URL.length();
                     if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
                         url = seite.substring(pos1, pos2);
-                        if (!url.equals("")) {
-                            // Datum
+                        //if (!url.equals("")) {
+                        url = StringEscapeUtils.unescapeXml(url);
+                        if (!url.equals("") && !url.startsWith("http://") && !url.startsWith("/")) {                            // Datum
                             if ((pDatum1 = seite.indexOf(MUSTER_DATUM, pos2)) != -1) {
                                 pDatum1 += MUSTER_DATUM.length();
                                 if ((pDatum2 = seite.indexOf("\"", pDatum1)) != -1) {
@@ -85,7 +87,8 @@ public class MediathekKika extends MediathekReader implements Runnable {
                             if ((pTitel1 = seite.indexOf(">", pos2)) != -1) {
                                 pTitel1 += 1;
                                 if ((pTitel2 = seite.indexOf("<", pTitel1)) != -1) {
-                                    if (stop != -1 && pTitel1 > stop && pTitel2 > stop) {
+                                    //if (stop != -1 && pTitel1 > stop && pTitel2 > stop) {
+                                    if (stop != -1 && pTitel1 < stop && pTitel2 < stop) {
                                         titel = seite.substring(pTitel1, pTitel2);
                                     }
                                 }
