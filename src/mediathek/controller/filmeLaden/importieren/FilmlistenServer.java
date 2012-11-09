@@ -25,19 +25,18 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Iterator;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
-import mediathek.gui.GuiDebug;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
-public class FilmUpdateServer {
+public class FilmlistenServer {
     //Tags FilmUpdateServer Filmliste
 
     public static final String FILM_UPDATE_SERVER_PRIO_1 = "1";
@@ -65,10 +64,17 @@ public class FilmUpdateServer {
         String retUrl;
         ListeUrlFilmlisten tmp = new ListeUrlFilmlisten();
         try {
-            if (DDaten.debug) {
-                getListe(GuiDebug.updateXml, tmp);
-            } else {
-                getListe(Konstanten.ADRESSE_UPDATE_SERVER, tmp);
+            getListe(Konstanten.ADRESSE_UPDATE_SERVER, tmp);
+            if (tmp.size() > 0) {
+                // dann die Liste Filmlistenserver aktualisieren
+                Iterator<DatenUrlFilmliste> it = tmp.iterator();
+                listeFilmlistenServer.clear();
+                while (it.hasNext()) {
+                    String serverUrl = it.next().arr[FILM_UPDATE_SERVER_URL_NR];
+                    String url = serverUrl.replace(GuiFunktionen.getDateiName(serverUrl), "");
+                    listeFilmlistenServer.addCheck(new DatenFilmlistenServer(url));
+                }
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_FILMLISTEN_SERVER, this.getClass().getSimpleName());
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(347895642, "FilmUpdateServer.suchen", ex);
@@ -89,11 +95,11 @@ public class FilmUpdateServer {
             listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_22.bz2", "1"));
         }
         retUrl = listeUrlFilmlisten.getRand(0); //eine Zufällige Adresse wählen
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_UPDATESERVER, this.getClass().getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_URL_FILMLISTEN, this.getClass().getSimpleName());
         return retUrl;
     }
 
-    private static String[] getListe(String dateiUrl, ListeUrlFilmlisten sListe) throws MalformedURLException, IOException, XMLStreamException {
+    private String[] getListe(String dateiUrl, ListeUrlFilmlisten sListe) throws MalformedURLException, IOException, XMLStreamException {
         String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
         sListe.clear();
         int event;
@@ -134,7 +140,7 @@ public class FilmUpdateServer {
         return ret;
     }
 
-    private static void getServer(XMLStreamReader parser, ListeUrlFilmlisten sListe) {
+    private void getServer(XMLStreamReader parser, ListeUrlFilmlisten sListe) {
         String anzahl = "";
         String zeit = "";
         String datum = "";
@@ -144,7 +150,7 @@ public class FilmUpdateServer {
         int event;
         try {
             while (parser.hasNext()) {
-                prio = FilmUpdateServer.FILM_UPDATE_SERVER_PRIO_1;
+                prio = FilmlistenServer.FILM_UPDATE_SERVER_PRIO_1;
                 event = parser.next();
                 if (event == XMLStreamConstants.END_ELEMENT) {
                     //parsername = parser.getLocalName();
@@ -160,10 +166,10 @@ public class FilmUpdateServer {
                     //parsername = parser.getLocalName();
                     if (parser.getLocalName().equals("Download_Filme_1")) {
                         serverUrl = parser.getElementText();
-                        prio = FilmUpdateServer.FILM_UPDATE_SERVER_PRIO_1;
+                        prio = FilmlistenServer.FILM_UPDATE_SERVER_PRIO_1;
                     } else if (parser.getLocalName().equals("Download_Filme_2")) {
                         serverUrl = parser.getElementText();
-                        prio = FilmUpdateServer.FILM_UPDATE_SERVER_PRIO_2;
+                        prio = FilmlistenServer.FILM_UPDATE_SERVER_PRIO_2;
                     } else if (parser.getLocalName().equals("Datum")) {
                         datum = parser.getElementText();
                     } else if (parser.getLocalName().equals("Zeit")) {

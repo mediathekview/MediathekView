@@ -32,7 +32,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.controller.filmeLaden.importieren.DatenFilmlistenServer;
 import mediathek.controller.filmeLaden.importieren.DatenUrlFilmliste;
-import mediathek.controller.filmeLaden.importieren.FilmUpdateServer;
+import mediathek.controller.filmeLaden.importieren.FilmlistenServer;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
@@ -255,10 +255,10 @@ public class IoXmlLesen {
                             if (get(parser, event, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
                                 blacklist.add(datenBlacklist);
                             }
-                        } else if (parser.getLocalName().equals(FilmUpdateServer.FILM_UPDATE_SERVER)) {
+                        } else if (parser.getLocalName().equals(FilmlistenServer.FILM_UPDATE_SERVER)) {
                             //Urls Filmlisten
                             DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
-                            if (get(parser, event, FilmUpdateServer.FILM_UPDATE_SERVER, FilmUpdateServer.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
+                            if (get(parser, event, FilmlistenServer.FILM_UPDATE_SERVER, FilmlistenServer.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
                                 DDaten.filmeLaden.getListeUrlFilmlisten(false).addWithCheck(datenUrlFilmliste);
                             }
                         } else if (parser.getLocalName().equals(DatenFilmlistenServer.FILM_LISTEN_SERVER)) {

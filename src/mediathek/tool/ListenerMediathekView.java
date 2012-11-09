@@ -30,9 +30,10 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_LISTE_PSET = 3;
     public static final int EREIGNIS_FILMLISTE_GEAENDERT = 5;
     public static final int EREIGNIS_ANZAHL_DOWNLOADS = 6;
-    public static final int EREIGNIS_LISTE_UPDATESERVER = 7;
-    public static final int EREIGNIS_LISTE_DOWNLOADS = 8;
-    public static final int EREIGNIS_LISTE_ABOS = 9;
+    public static final int EREIGNIS_LISTE_URL_FILMLISTEN = 7;
+    public static final int EREIGNIS_LISTE_FILMLISTEN_SERVER = 8;
+    public static final int EREIGNIS_LISTE_DOWNLOADS = 9;
+    public static final int EREIGNIS_LISTE_ABOS = 10;
     public static final int EREIGNIS_LISTE_ERLEDIGTE_ABOS = 11;
     public static final int EREIGNIS_ART_IMPORT_FILMLISTE = 12;
     public static final int EREIGNIS_ART_DOWNLOAD_PROZENT = 13;
