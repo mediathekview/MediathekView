@@ -36,21 +36,21 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
 
     public DatenUrlFilmliste(String url, String prio) {
         makeArr();
-        arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR] = url;
-        arr[FilmUpdateServer.FILM_UPDATE_SERVER_PRIO_NR] = prio;
+        arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR] = url;
+        arr[FilmlistenServer.FILM_UPDATE_SERVER_PRIO_NR] = prio;
     }
 
     public DatenUrlFilmliste(String url, String prio, String zeit, String datum, String anzahl) {
         makeArr();
-        arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR] = url;
-        arr[FilmUpdateServer.FILM_UPDATE_SERVER_PRIO_NR] = prio;
-        arr[FilmUpdateServer.FILM_UPDATE_SERVER_DATUM_NR] = datum;
-        arr[FilmUpdateServer.FILM_UPDATE_SERVER_ZEIT_NR] = zeit;
-        arr[FilmUpdateServer.FILM_UPDATE_SERVER_ANZAHL_NR] = anzahl;
+        arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR] = url;
+        arr[FilmlistenServer.FILM_UPDATE_SERVER_PRIO_NR] = prio;
+        arr[FilmlistenServer.FILM_UPDATE_SERVER_DATUM_NR] = datum;
+        arr[FilmlistenServer.FILM_UPDATE_SERVER_ZEIT_NR] = zeit;
+        arr[FilmlistenServer.FILM_UPDATE_SERVER_ANZAHL_NR] = anzahl;
     }
 
     public DatenUrlFilmliste getCopy() {
-        DatenUrlFilmliste ret = new DatenUrlFilmliste(new String(arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR]), new String(arr[FilmUpdateServer.FILM_UPDATE_SERVER_PRIO_NR]));
+        DatenUrlFilmliste ret = new DatenUrlFilmliste(new String(arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR]), new String(arr[FilmlistenServer.FILM_UPDATE_SERVER_PRIO_NR]));
         return ret;
     }
 
@@ -59,8 +59,8 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
         int ret = 0;
         try {
             //31.10.2010	16:54:17
-            String ich = arr[FilmUpdateServer.FILM_UPDATE_SERVER_DATUM_NR] + ", " + arr[FilmUpdateServer.FILM_UPDATE_SERVER_ZEIT_NR];
-            String du = arg0.arr[FilmUpdateServer.FILM_UPDATE_SERVER_DATUM_NR] + ", " + arg0.arr[FilmUpdateServer.FILM_UPDATE_SERVER_ZEIT_NR];
+            String ich = arr[FilmlistenServer.FILM_UPDATE_SERVER_DATUM_NR] + ", " + arr[FilmlistenServer.FILM_UPDATE_SERVER_ZEIT_NR];
+            String du = arg0.arr[FilmlistenServer.FILM_UPDATE_SERVER_DATUM_NR] + ", " + arg0.arr[FilmlistenServer.FILM_UPDATE_SERVER_ZEIT_NR];
             if (ich.equals(du)) {
                 return 0;
             }
@@ -77,7 +77,7 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
         boolean ret = false;
         try {
             //31.10.2010	16:54:17
-            String ich = arr[FilmUpdateServer.FILM_UPDATE_SERVER_DATUM_NR] + ", " + arr[FilmUpdateServer.FILM_UPDATE_SERVER_ZEIT_NR];
+            String ich = arr[FilmlistenServer.FILM_UPDATE_SERVER_DATUM_NR] + ", " + arr[FilmlistenServer.FILM_UPDATE_SERVER_ZEIT_NR];
             Date d_ich = sdf.parse(ich);
             Calendar cal = Calendar.getInstance();
             // tage vom calendar abziehen
@@ -90,7 +90,7 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
     }
 
     private void makeArr() {
-        arr = new String[FilmUpdateServer.FILM_UPDATE_SERVER_MAX_ELEM];
+        arr = new String[FilmlistenServer.FILM_UPDATE_SERVER_MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }

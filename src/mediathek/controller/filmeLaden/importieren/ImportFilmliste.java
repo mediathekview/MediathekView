@@ -34,7 +34,7 @@ public class ImportFilmliste {
     public String[] filmlisteMetaDaten;
     private EventListenerList listeners = new EventListenerList();
     private IoXmlFilmlisteLesen ioXmlFilmlisteLesen = null;
-    public FilmUpdateServer filmUpdateServer = new FilmUpdateServer();
+    public FilmlistenServer filmlistenServer = new FilmlistenServer();
 
     /**
      *
@@ -58,7 +58,7 @@ public class ImportFilmliste {
         public synchronized void run() {
             //wenn auto-update-url dann erst mal die Updateserver aktualiseren laden
             boolean ret = false;
-            FilmeLaden.updateUrl = filmUpdateServer.suchen();
+            FilmeLaden.updateUrl = filmlistenServer.suchen();
             if (!FilmeLaden.updateUrl.equals("")) {
                 for (int i = 0; i < 10; ++i) {
                     //10 mal mit einem anderen Server probieren
@@ -71,7 +71,7 @@ public class ImportFilmliste {
                             break;
                         }
                     }
-                    FilmeLaden.updateUrl = filmUpdateServer.listeUrlFilmlisten.getRand(i); //nächste Adresse in der Liste wählen
+                    FilmeLaden.updateUrl = filmlistenServer.listeUrlFilmlisten.getRand(i); //nächste Adresse in der Liste wählen
                 }
             }
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {

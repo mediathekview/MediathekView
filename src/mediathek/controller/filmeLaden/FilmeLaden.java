@@ -93,13 +93,13 @@ public class FilmeLaden {
 
     public ListeUrlFilmlisten getListeUrlFilmlisten(boolean update) {
         if (update) {
-            filmeImportieren.filmUpdateServer.suchen();
+            filmeImportieren.filmlistenServer.suchen();
         }
-        return filmeImportieren.filmUpdateServer.listeUrlFilmlisten;
+        return filmeImportieren.filmlistenServer.listeUrlFilmlisten;
     }
 
     public ListeFilmlistenServer getListeFilmlistnServer() {
-        return filmeImportieren.filmUpdateServer.listeFilmlistenServer;
+        return filmeImportieren.filmlistenServer.listeFilmlistenServer;
     }
 
     public String[] getSenderNamen() {

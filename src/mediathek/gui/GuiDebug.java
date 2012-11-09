@@ -32,13 +32,13 @@ import javax.swing.event.DocumentListener;
 import mediathek.MediathekGui;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
+import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.gui.dialogEinstellungen.PanelSenderLaden;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 
 public class GuiDebug extends PanelVorlage {
 
-    public static String updateXml = Konstanten.ADRESSE_UPDATE_SERVER;
     private JButton[] buttonSender;
     private String[] sender;
 
@@ -74,23 +74,8 @@ public class GuiDebug extends PanelVorlage {
         });
         jPanelSenderLaden.setLayout(new BorderLayout());
         jPanelSenderLaden.add(new PanelSenderLaden(ddaten));
-        jTextFieldUpdateXml.setText(updateXml);
-        jTextFieldUpdateXml.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateXml = jTextFieldUpdateXml.getText();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateXml = jTextFieldUpdateXml.getText();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateXml = jTextFieldUpdateXml.getText();
-            }
-        });
+        jPanelListen.setLayout(new BorderLayout());
+        jPanelListen.add(new PanelListeFilmlistenServer(d));
     }
 
     private void addSender() {
@@ -138,8 +123,7 @@ public class GuiDebug extends PanelVorlage {
         jPanelSenderLaden = new javax.swing.JPanel();
         jButtonFilmlisteLoeschen = new javax.swing.JButton();
         jButtonAllesSpeichern = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jTextFieldUpdateXml = new javax.swing.JTextField();
+        jPanelListen = new javax.swing.JPanel();
 
         jToggleButtonAllesLaden.setText("[-alles] setzen");
 
@@ -173,15 +157,25 @@ public class GuiDebug extends PanelVorlage {
 
         jButtonAllesSpeichern.setText("alles speichern");
 
-        jLabel1.setText("update.xml");
+        javax.swing.GroupLayout jPanelListenLayout = new javax.swing.GroupLayout(jPanelListen);
+        jPanelListen.setLayout(jPanelListenLayout);
+        jPanelListenLayout.setHorizontalGroup(
+            jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanelListenLayout.setVerticalGroup(
+            jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 231, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanelListen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jPanelSender, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -193,11 +187,7 @@ public class GuiDebug extends PanelVorlage {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonAllesSpeichern)
                                 .addGap(0, 208, Short.MAX_VALUE))
-                            .addComponent(jPanelSenderLaden, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldUpdateXml)))
+                            .addComponent(jPanelSenderLaden, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -212,20 +202,17 @@ public class GuiDebug extends PanelVorlage {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanelSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanelSenderLaden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 224, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextFieldUpdateXml, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanelListen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAllesSpeichern;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanelListen;
     private javax.swing.JPanel jPanelSender;
     private javax.swing.JPanel jPanelSenderLaden;
-    private javax.swing.JTextField jTextFieldUpdateXml;
     private javax.swing.JToggleButton jToggleButtonAllesLaden;
     // End of variables declaration//GEN-END:variables
 
