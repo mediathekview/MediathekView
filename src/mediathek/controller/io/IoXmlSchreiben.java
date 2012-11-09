@@ -28,7 +28,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import mediathek.controller.filmeLaden.importieren.DatenFilmUpdateServer;
+import mediathek.controller.filmeLaden.importieren.DatenFilmlistenServer;
+import mediathek.controller.filmeLaden.importieren.DatenUrlFilmliste;
 import mediathek.controller.filmeLaden.importieren.FilmUpdateServer;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
@@ -65,7 +66,7 @@ public class IoXmlSchreiben {
             xmlSchreibenPset(pSet);
             xmlSchreibenEnde(datei);
         } catch (Exception ex) {
-            Log.fehlerMeldung(392846204,"IoXmlSchreiben.exportPset", ex, "nach: " + datei);
+            Log.fehlerMeldung(392846204, "IoXmlSchreiben.exportPset", ex, "nach: " + datei);
         }
     }
 
@@ -86,7 +87,7 @@ public class IoXmlSchreiben {
             xmlSchreibenFilmUpdateServer(daten);
             xmlSchreibenEnde();
         } catch (Exception ex) {
-            Log.fehlerMeldung(656328109,"IoXml.xmlDatenSchreiben", ex);
+            Log.fehlerMeldung(656328109, "IoXml.xmlDatenSchreiben", ex);
         }
     }
 
@@ -175,13 +176,19 @@ public class IoXmlSchreiben {
     }
 
     private void xmlSchreibenFilmUpdateServer(DDaten daten) {
-        Iterator<DatenFilmUpdateServer> iterator;
+        Iterator<DatenUrlFilmliste> iterator;
         //FilmUpdate schreibem
-        DatenFilmUpdateServer datenFilmUpdate;
-        iterator = DDaten.filmeLaden.getListeFilmUpdateServer(false).iterator();
+        DatenUrlFilmliste datenUrlFilmliste;
+        iterator = DDaten.filmeLaden.getListeUrlFilmlisten(false).iterator();
         while (iterator.hasNext()) {
-            datenFilmUpdate = iterator.next();
-            xmlSchreibenDaten(FilmUpdateServer.FILM_UPDATE_SERVER, FilmUpdateServer.FILM_UPDATE_SERVER_COLUMN_NAMES, datenFilmUpdate.arr);
+            datenUrlFilmliste = iterator.next();
+            xmlSchreibenDaten(FilmUpdateServer.FILM_UPDATE_SERVER, FilmUpdateServer.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr);
+        }
+        Iterator<DatenFilmlistenServer> it;
+        it = DDaten.filmeLaden.getListeFilmlistnServer().iterator();
+        while (it.hasNext()) {
+          DatenFilmlistenServer f = it.next();
+            xmlSchreibenDaten(DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, f.arr);
         }
     }
 
@@ -199,7 +206,7 @@ public class IoXmlSchreiben {
             writer.writeEndElement();
             writer.writeCharacters("\n");//neue Zeile
         } catch (Exception ex) {
-            Log.fehlerMeldung(198325017,"IoXmlSchreiben.xmlSchreibenDaten", ex);
+            Log.fehlerMeldung(198325017, "IoXmlSchreiben.xmlSchreibenDaten", ex);
         }
     }
 

@@ -25,22 +25,22 @@ import java.util.Calendar;
 import java.util.Date;
 import mediathek.tool.Log;
 
-public class DatenFilmUpdateServer implements Comparable<DatenFilmUpdateServer> {
+public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
 
     public String[] arr;
     public static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss");
 
-    public DatenFilmUpdateServer() {
+    public DatenUrlFilmliste() {
         makeArr();
     }
 
-    public DatenFilmUpdateServer(String url, String prio) {
+    public DatenUrlFilmliste(String url, String prio) {
         makeArr();
         arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR] = url;
         arr[FilmUpdateServer.FILM_UPDATE_SERVER_PRIO_NR] = prio;
     }
 
-    public DatenFilmUpdateServer(String url, String prio, String zeit, String datum, String anzahl) {
+    public DatenUrlFilmliste(String url, String prio, String zeit, String datum, String anzahl) {
         makeArr();
         arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR] = url;
         arr[FilmUpdateServer.FILM_UPDATE_SERVER_PRIO_NR] = prio;
@@ -49,13 +49,13 @@ public class DatenFilmUpdateServer implements Comparable<DatenFilmUpdateServer> 
         arr[FilmUpdateServer.FILM_UPDATE_SERVER_ANZAHL_NR] = anzahl;
     }
 
-    public DatenFilmUpdateServer getCopy() {
-        DatenFilmUpdateServer ret = new DatenFilmUpdateServer(new String(arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR]), new String(arr[FilmUpdateServer.FILM_UPDATE_SERVER_PRIO_NR]));
+    public DatenUrlFilmliste getCopy() {
+        DatenUrlFilmliste ret = new DatenUrlFilmliste(new String(arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR]), new String(arr[FilmUpdateServer.FILM_UPDATE_SERVER_PRIO_NR]));
         return ret;
     }
 
     @Override
-    public int compareTo(DatenFilmUpdateServer arg0) {
+    public int compareTo(DatenUrlFilmliste arg0) {
         int ret = 0;
         try {
             //31.10.2010	16:54:17

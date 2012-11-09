@@ -199,7 +199,7 @@ public class GuiFunktionen {
         String ret = "";
         if (pfad1 != null && pfad2 != null) {
             if (!pfad1.equals("") && !pfad2.equals("")) {
-                if (pfad1.charAt(pfad1.length() - 1) == File.separatorChar) {
+                if (pfad1.endsWith(File.separator)) {
                     ret = pfad1.substring(0, pfad1.length() - 1);
                 } else {
                     ret = pfad1;
@@ -215,6 +215,18 @@ public class GuiFunktionen {
             Log.fehlerMeldung(283946015, "GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
         }
         return ret;
+    }
+
+    public static String addUrl(String u1, String u2) {
+        if (u1.endsWith("/")) {
+            return u1 + u2;
+        } else {
+            return u1 + "/" + u2;
+        }
+    }
+
+    public static boolean istUrl(String dateiUrl) {
+        return dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
     }
 
     public static String getDateiName(String pfad) {
@@ -291,9 +303,5 @@ public class GuiFunktionen {
             ret = GuiKonstanten.UPDATE_FILME_AUTO;
         }
         return ret;
-    }
-
-    public static boolean istUrl(String dateiUrl) {
-        return dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
     }
 }

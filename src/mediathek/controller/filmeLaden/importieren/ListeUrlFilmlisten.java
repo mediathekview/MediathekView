@@ -28,10 +28,10 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Random;
 
-public class ListeFilmUpdateServer extends LinkedList<DatenFilmUpdateServer> {
+public class ListeUrlFilmlisten extends LinkedList<DatenUrlFilmliste> {
 
-    public boolean addWithCheck(DatenFilmUpdateServer film) {
-        ListIterator<DatenFilmUpdateServer> it = listIterator();
+    public boolean addWithCheck(DatenUrlFilmliste film) {
+        ListIterator<DatenUrlFilmliste> it = listIterator();
         while (it.hasNext()) {
             if (it.next().arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR].equals(film.arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR])) {
                 return false;
@@ -42,8 +42,8 @@ public class ListeFilmUpdateServer extends LinkedList<DatenFilmUpdateServer> {
 
     public void sort() {
         int nr = 0;
-        Collections.<DatenFilmUpdateServer>sort(this);
-        Iterator<DatenFilmUpdateServer> it = this.iterator();
+        Collections.<DatenUrlFilmliste>sort(this);
+        Iterator<DatenUrlFilmliste> it = this.iterator();
         while (it.hasNext()) {
             String str = String.valueOf(nr++);
             while (str.length() < 3) {
@@ -54,9 +54,9 @@ public class ListeFilmUpdateServer extends LinkedList<DatenFilmUpdateServer> {
     }
 
     public String[][] getTableObjectData() {
-        DatenFilmUpdateServer filmUpdate;
+        DatenUrlFilmliste filmUpdate;
         String[][] object;
-        ListIterator<DatenFilmUpdateServer> iterator = this.listIterator();
+        ListIterator<DatenUrlFilmliste> iterator = this.listIterator();
         object = new String[this.size()][FilmUpdateServer.FILM_UPDATE_SERVER_MAX_ELEM];
         int i = 0;
         while (iterator.hasNext()) {
@@ -69,7 +69,7 @@ public class ListeFilmUpdateServer extends LinkedList<DatenFilmUpdateServer> {
 
     public int getNr(String url) {
         int nr = 0;
-        ListIterator<DatenFilmUpdateServer> iterator = this.listIterator();
+        ListIterator<DatenUrlFilmliste> iterator = this.listIterator();
         while (iterator.hasNext()) {
             if (iterator.next().arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR].equals(url)) {
                 break;
@@ -82,9 +82,9 @@ public class ListeFilmUpdateServer extends LinkedList<DatenFilmUpdateServer> {
         return nr;
     }
 
-    public DatenFilmUpdateServer getNrUpdate(String url) {
-        DatenFilmUpdateServer update;
-        ListIterator<DatenFilmUpdateServer> iterator = this.listIterator();
+    public DatenUrlFilmliste getNrUpdate(String url) {
+        DatenUrlFilmliste update;
+        ListIterator<DatenUrlFilmliste> iterator = this.listIterator();
         while (iterator.hasNext()) {
             update = iterator.next();
             if (update.arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR].equals(url)) {
@@ -102,10 +102,10 @@ public class ListeFilmUpdateServer extends LinkedList<DatenFilmUpdateServer> {
         }
         String ret = "";
         if (!this.isEmpty()) {
-            DatenFilmUpdateServer filmUpdate;
-            Iterator<DatenFilmUpdateServer> it;
-            LinkedList<DatenFilmUpdateServer> listePrio = new LinkedList<DatenFilmUpdateServer>();
-            LinkedList<DatenFilmUpdateServer> listeZeit = new LinkedList<DatenFilmUpdateServer>();
+            DatenUrlFilmliste filmUpdate;
+            Iterator<DatenUrlFilmliste> it;
+            LinkedList<DatenUrlFilmliste> listePrio = new LinkedList<DatenUrlFilmliste>();
+            LinkedList<DatenUrlFilmliste> listeZeit = new LinkedList<DatenUrlFilmliste>();
             //aktuellsten auswählen
             it = this.iterator();
             Date today = new Date(System.currentTimeMillis());
