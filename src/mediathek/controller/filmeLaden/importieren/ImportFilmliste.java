@@ -71,7 +71,7 @@ public class ImportFilmliste {
                             break;
                         }
                     }
-                    FilmeLaden.updateUrl = filmUpdateServer.listeUpdateServer.getRand(i); //nächste Adresse in der Liste wählen
+                    FilmeLaden.updateUrl = filmUpdateServer.listeUrlFilmlisten.getRand(i); //nächste Adresse in der Liste wählen
                 }
             }
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {

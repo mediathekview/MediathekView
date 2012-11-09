@@ -21,7 +21,8 @@ package mediathek.controller.filmeLaden;
 
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filmeLaden.importieren.ImportFilmliste;
-import mediathek.controller.filmeLaden.importieren.ListeFilmUpdateServer;
+import mediathek.controller.filmeLaden.importieren.ListeFilmlistenServer;
+import mediathek.controller.filmeLaden.importieren.ListeUrlFilmlisten;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
@@ -90,11 +91,15 @@ public class FilmeLaden {
         return stop;
     }
 
-    public ListeFilmUpdateServer getListeFilmUpdateServer(boolean update) {
+    public ListeUrlFilmlisten getListeUrlFilmlisten(boolean update) {
         if (update) {
             filmeImportieren.filmUpdateServer.suchen();
         }
-        return filmeImportieren.filmUpdateServer.listeUpdateServer;
+        return filmeImportieren.filmUpdateServer.listeUrlFilmlisten;
+    }
+
+    public ListeFilmlistenServer getListeFilmlistnServer() {
+        return filmeImportieren.filmUpdateServer.listeFilmlistenServer;
     }
 
     public String[] getSenderNamen() {

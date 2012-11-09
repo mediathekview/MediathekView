@@ -30,7 +30,8 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.controller.filmeLaden.importieren.DatenFilmUpdateServer;
+import mediathek.controller.filmeLaden.importieren.DatenFilmlistenServer;
+import mediathek.controller.filmeLaden.importieren.DatenUrlFilmliste;
 import mediathek.controller.filmeLaden.importieren.FilmUpdateServer;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
@@ -255,10 +256,16 @@ public class IoXmlLesen {
                                 blacklist.add(datenBlacklist);
                             }
                         } else if (parser.getLocalName().equals(FilmUpdateServer.FILM_UPDATE_SERVER)) {
-                            //Filmliste update
-                            DatenFilmUpdateServer datenFilmUpdateServer = new DatenFilmUpdateServer();
-                            if (get(parser, event, FilmUpdateServer.FILM_UPDATE_SERVER, FilmUpdateServer.FILM_UPDATE_SERVER_COLUMN_NAMES, datenFilmUpdateServer.arr)) {
-                                DDaten.filmeLaden.getListeFilmUpdateServer(false).addWithCheck(datenFilmUpdateServer);
+                            //Urls Filmlisten
+                            DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
+                            if (get(parser, event, FilmUpdateServer.FILM_UPDATE_SERVER, FilmUpdateServer.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
+                                DDaten.filmeLaden.getListeUrlFilmlisten(false).addWithCheck(datenUrlFilmliste);
+                            }
+                        } else if (parser.getLocalName().equals(DatenFilmlistenServer.FILM_LISTEN_SERVER)) {
+                            //Filmlisteserver
+                            DatenFilmlistenServer datenFilmlistenServer = new DatenFilmlistenServer();
+                            if (get(parser, event, DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, datenFilmlistenServer.arr)) {
+                                DDaten.filmeLaden.getListeFilmlistnServer().add(datenFilmlistenServer);
                             }
                         }
                     }
@@ -268,7 +275,7 @@ public class IoXmlLesen {
             Log.fehlerMeldung(392840096, "IoXml.xmlDatenLesen", ex);
         } finally {
             //ListeFilmUpdateServer aufbauen
-            DDaten.filmeLaden.getListeFilmUpdateServer(false).sort();
+            DDaten.filmeLaden.getListeUrlFilmlisten(false).sort();
         }
     }
 
