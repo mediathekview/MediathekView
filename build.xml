@@ -74,6 +74,7 @@
 	<target name="-pre-jar" >
 		<propertyfile file="${src.dir}\version.properties">
 			<entry key="BUILD" value="1" type="int" operation="+"/>
+			<entry key="BUILDDATE" type="date" pattern="dd.MM.yyyy / HH:mm:ss" value="now"/>
 		</propertyfile>
 	</target>
 	<target name="-post-jar">
