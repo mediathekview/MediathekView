@@ -26,6 +26,7 @@ public class Konstanten {
     public static final String USER_AGENT_DEFAULT = PROGRAMMNAME + " " + VERSION;
     // MediathekView URLs
     public static final String ADRESSE_UPDATE_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
+    public static final String DATEINAME_LISTE_FILMLISTEN = "filmlisten.xml";
     public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/version.xml";
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";
     public static final String ADRESSE_ANLEITUNG = "http://zdfmediathk.sourceforge.net";
@@ -102,7 +103,7 @@ public class Konstanten {
     public static final String SYSTEM_IMPORT_DATEI = "system-import-datei";
     public static final int SYSTEM_IMPORT_DATEI_NR = 22;
     public static final String SYSTEM_IMPORT_URL_AUTO = "system-import-url-auto";
-    public static final int SYSTEM_IMPORT_URL_AUTO_NR = 23;
+//    public static final int SYSTEM_IMPORT_URL_AUTO_NR = 23;
     public static final String SYSTEM_IMPORT_URL_MANUELL = "system-import-url-manuell";
     public static final int SYSTEM_IMPORT_URL_MANUELL_NR = 24;
     public static final String SYSTEM_EXPORT_DATEI = "system-export-datei";
