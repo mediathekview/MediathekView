@@ -67,10 +67,11 @@ public class FilmlistenServer {
         ListeUrlFilmlisten tmp = new ListeUrlFilmlisten();
         try {
             ////////////////////////
-            if (DDaten.debug && !PanelListeFilmlistenServer.updateUrl.equals("")) {
-                getListe(PanelListeFilmlistenServer.updateUrl, tmp);
+            // Ausweichen auf andere Listenserver bei Bedarf
+            if (DDaten.debug && !DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR].equals("")) {
+                getFilmlisten(DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR], tmp, Daten.getUserAgent());
             } else {
-                getListe(Konstanten.ADRESSE_UPDATE_SERVER, tmp);
+                getFilmlisten(Konstanten.ADRESSE_UPDATE_SERVER, tmp, Daten.getUserAgent());
                 if (tmp.size() > 0) {
                     // dann die Liste Filmlistenserver aktualisieren
                     Iterator<DatenUrlFilmliste> it = tmp.iterator();
@@ -78,6 +79,7 @@ public class FilmlistenServer {
                     while (it.hasNext()) {
                         String serverUrl = it.next().arr[FILM_UPDATE_SERVER_URL_NR];
                         String url = serverUrl.replace(GuiFunktionen.getDateiName(serverUrl), "");
+                        url = GuiFunktionen.addUrl(url, Konstanten.DATEINAME_LISTE_FILMLISTEN);
                         listeFilmlistenServer.addCheck(new DatenFilmlistenServer(url));
                     }
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_FILMLISTEN_SERVER, this.getClass().getSimpleName());
@@ -106,7 +108,7 @@ public class FilmlistenServer {
         return retUrl;
     }
 
-    private String[] getListe(String dateiUrl, ListeUrlFilmlisten sListe) throws MalformedURLException, IOException, XMLStreamException {
+    public static String[] getFilmlisten(String dateiUrl, ListeUrlFilmlisten sListe, String userAgent) throws MalformedURLException, IOException, XMLStreamException {
         String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
         sListe.clear();
         int event;
@@ -119,7 +121,7 @@ public class FilmlistenServer {
             int timeout = 10000; //ms
             URLConnection conn;
             conn = new URL(dateiUrl).openConnection();
-            conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+            conn.setRequestProperty("User-Agent", userAgent);
             conn.setReadTimeout(timeout);
             conn.setConnectTimeout(timeout);
             inReader = new InputStreamReader(conn.getInputStream(), Konstanten.KODIERUNG_UTF);
@@ -147,7 +149,7 @@ public class FilmlistenServer {
         return ret;
     }
 
-    private void getServer(XMLStreamReader parser, ListeUrlFilmlisten sListe) {
+    private static void getServer(XMLStreamReader parser, ListeUrlFilmlisten sListe) {
         String anzahl = "";
         String zeit = "";
         String datum = "";
