@@ -20,11 +20,11 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Insets;
-import mediathek.daten.Daten;
-import mediathek.tool.Konstanten;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.BeobWeb;
+import mediathek.tool.Konstanten;
 
 public class PanelInfo extends PanelVorlage {
 

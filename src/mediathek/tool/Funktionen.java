@@ -17,13 +17,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mediathek.tool;
 
 import java.io.File;
 import java.security.CodeSource;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ResourceBundle;
 import mediathek.Main;
 
@@ -45,14 +42,26 @@ public class Funktionen {
     }
 
     public static String getCompileDate() {
-        String ret = "";
+//        String ret = "";
+//        try {
+//            Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
+//            ret = Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + "  [Buildnummer: " + getBuildNr() + "] - Compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d);
+//        } catch (Exception ex) {
+//            Log.fehlerMeldung(569614756, "Log.getCompileDate: ", ex);
+//        }
+//        return ret;
+        final ResourceBundle rb;
+        String propToken = "BUILDDATE";
+        String msg = "";
         try {
-            Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-            ret = Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + "  [Buildnummer: " + getBuildNr() + "] - Compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d);
-        } catch (Exception ex) {
-            Log.fehlerMeldung(569614756, "Log.getCompileDate: ", ex);
+            ResourceBundle.clearCache();
+            rb = ResourceBundle.getBundle("version");
+            msg = rb.getString(propToken);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.err.println("Token " + propToken + " not in Propertyfile!");
         }
-        return ret;
+        return Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + "  [Buildnummer: " + getBuildNr() + "] - Compiled: " + msg;
     }
 
     public static String getBuildNr() {
@@ -69,5 +78,4 @@ public class Funktionen {
         }
         return msg;
     }
-
 }

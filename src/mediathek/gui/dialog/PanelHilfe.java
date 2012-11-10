@@ -21,7 +21,6 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import mediathek.Main;
 import mediathek.controller.io.ProgrammLog;
@@ -30,14 +29,13 @@ import mediathek.gui.PanelVorlage;
 import mediathek.tool.BeobWeb;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
 
 public class PanelHilfe extends PanelVorlage {
 
     /**
-     * Creates new form GuiFeed
+     *  Creates new form GuiFeed
      *
-     * @param d
+     *  @param d
      */
     public PanelHilfe(DDaten dd) {
         super(dd);
@@ -45,7 +43,7 @@ public class PanelHilfe extends PanelVorlage {
         //init
         try {
             Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-            jTextFieldVersion.setText(Konstanten.VERSION + "  [Buildnummer: " + Funktionen.getBuildNr() + "]  vom: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d));
+            jTextFieldVersion.setText(Funktionen.getCompileDate());
         } catch (Exception e) {
             jTextFieldVersion.setText(Konstanten.VERSION);
         }
