@@ -30,7 +30,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
+import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
@@ -64,17 +66,22 @@ public class FilmlistenServer {
         String retUrl;
         ListeUrlFilmlisten tmp = new ListeUrlFilmlisten();
         try {
-            getListe(Konstanten.ADRESSE_UPDATE_SERVER, tmp);
-            if (tmp.size() > 0) {
-                // dann die Liste Filmlistenserver aktualisieren
-                Iterator<DatenUrlFilmliste> it = tmp.iterator();
-                listeFilmlistenServer.clear();
-                while (it.hasNext()) {
-                    String serverUrl = it.next().arr[FILM_UPDATE_SERVER_URL_NR];
-                    String url = serverUrl.replace(GuiFunktionen.getDateiName(serverUrl), "");
-                    listeFilmlistenServer.addCheck(new DatenFilmlistenServer(url));
+            ////////////////////////
+            if (DDaten.debug && !PanelListeFilmlistenServer.updateUrl.equals("")) {
+                getListe(PanelListeFilmlistenServer.updateUrl, tmp);
+            } else {
+                getListe(Konstanten.ADRESSE_UPDATE_SERVER, tmp);
+                if (tmp.size() > 0) {
+                    // dann die Liste Filmlistenserver aktualisieren
+                    Iterator<DatenUrlFilmliste> it = tmp.iterator();
+                    listeFilmlistenServer.clear();
+                    while (it.hasNext()) {
+                        String serverUrl = it.next().arr[FILM_UPDATE_SERVER_URL_NR];
+                        String url = serverUrl.replace(GuiFunktionen.getDateiName(serverUrl), "");
+                        listeFilmlistenServer.addCheck(new DatenFilmlistenServer(url));
+                    }
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_FILMLISTEN_SERVER, this.getClass().getSimpleName());
                 }
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_FILMLISTEN_SERVER, this.getClass().getSimpleName());
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(347895642, "FilmUpdateServer.suchen", ex);
@@ -109,7 +116,7 @@ public class FilmlistenServer {
         InputStreamReader inReader;
         if (GuiFunktionen.istUrl(dateiUrl)) {
             // eine URL verarbeiten
-            int timeout = 10000;
+            int timeout = 10000; //ms
             URLConnection conn;
             conn = new URL(dateiUrl).openConnection();
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
@@ -124,14 +131,14 @@ public class FilmlistenServer {
         while (parser.hasNext()) {
             event = parser.next();
             if (event == XMLStreamConstants.START_ELEMENT) {
-                //parsername = parser.getLocalName();
-                if (parser.getLocalName().equals("Program_Version")) {
+                String parsername = parser.getLocalName();
+                if (parsername.equals("Program_Version")) {
                     ret[0] = parser.getElementText();
-                } else if (parser.getLocalName().equals("Program_Release_Info")) {
+                } else if (parsername.equals("Program_Release_Info")) {
                     ret[1] = parser.getElementText();
-                } else if (parser.getLocalName().equals("Download_Programm")) {
+                } else if (parsername.equals("Download_Programm")) {
                     ret[2] = parser.getElementText();
-                } else if (parser.getLocalName().equals("Server")) {
+                } else if (parsername.equals("Server")) {
                     //wieder ein neuer Server, toll
                     getServer(parser, sListe);
                 }

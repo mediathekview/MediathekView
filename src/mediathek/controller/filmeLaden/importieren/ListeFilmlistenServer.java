@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Konstanten;
 
 public class ListeFilmlistenServer extends LinkedList<DatenFilmlistenServer> {
 
@@ -56,6 +58,7 @@ public class ListeFilmlistenServer extends LinkedList<DatenFilmlistenServer> {
         while (iterator.hasNext()) {
             filmUpdate = iterator.next();
             object[i] = filmUpdate.arr;
+            object[i][DatenFilmlistenServer.FILM_LISTEN_SERVER_URL_NR] = GuiFunktionen.addUrl(filmUpdate.arr[DatenFilmlistenServer.FILM_LISTEN_SERVER_URL_NR], Konstanten.DATEINAME_LISTE_FILMLISTEN);
             ++i;
         }
         return object;
