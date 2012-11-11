@@ -323,7 +323,7 @@ public class FilmeSuchenSender {
         }
         listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR] = String.valueOf(listeFilmeNeu.size());
         listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
-        listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = Funktionen.getCompileDate();
+        listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = Funktionen.getProgVersionString();
     }
 
     private String textLaenge(int max, String text) {

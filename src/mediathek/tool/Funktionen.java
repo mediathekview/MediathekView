@@ -41,17 +41,9 @@ public class Funktionen {
         return propFile.getAbsolutePath().replace(pFilePath, "");
     }
 
-    public static String getCompileDate() {
-//        String ret = "";
-//        try {
-//            Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-//            ret = Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + "  [Buildnummer: " + getBuildNr() + "] - Compiled: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(d);
-//        } catch (Exception ex) {
-//            Log.fehlerMeldung(569614756, "Log.getCompileDate: ", ex);
-//        }
-//        return ret;
+    public static String getProgVersionString() {
         final ResourceBundle rb;
-        String propToken = "BUILDDATE";
+        String propToken = "DATE";
         String msg = "";
         try {
             ResourceBundle.clearCache();

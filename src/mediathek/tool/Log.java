@@ -68,7 +68,7 @@ public class Log {
         Log.systemMeldung("freeMemory: " + freeMem / (1024L * 1024L) + " MB");
         Log.systemMeldung("###########################################################");
         //Version
-        Log.systemMeldung(Funktionen.getCompileDate());
+        Log.systemMeldung(Funktionen.getProgVersionString());
         Log.systemMeldung("Buildnummer: " + Funktionen.getBuildNr());
         Log.systemMeldung("Klassenname: " + classname);
         Log.systemMeldung("###########################################################");
