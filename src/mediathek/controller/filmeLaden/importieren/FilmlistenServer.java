@@ -121,7 +121,7 @@ public class FilmlistenServer {
         return retUrl;
     }
 
-    public String getTag(String zeit) {
+    private String getTag(String zeit) {
         Date tmp;
         SimpleDateFormat sdf_zeit = new SimpleDateFormat("dd.MM.yyyy__HH:mm:ss");
         try {

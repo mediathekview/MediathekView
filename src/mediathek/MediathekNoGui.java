@@ -90,16 +90,13 @@ public class MediathekNoGui {
         if (!userAgent.equals("")) {
             Daten.setUserAgentManuel(userAgent);
         }
-        // Infos schreiben
-        Log.startMeldungen(this.getClass().getName());
         if (allesLaden) {
-            Log.systemMeldung("Programmstart: alles laden");
+            Log.systemMeldung("Filme laden: alles laden");
         } else {
-            Log.systemMeldung("Programmstart: nur update laden");
+            Log.systemMeldung("Filme laden: nur update laden");
         }
         Log.systemMeldung("ImportUrl: " + importUrl);
         Log.systemMeldung("Outputfile: " + output);
-        Log.systemMeldung("");
         Log.systemMeldung("");
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
