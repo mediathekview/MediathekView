@@ -25,6 +25,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -73,7 +75,7 @@ public class FilmlistenServer {
                 getFilmlisten(DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR], tmp, Daten.getUserAgent());
             } else {
                 getFilmlisten(Konstanten.ADRESSE_UPDATE_SERVER, tmp, Daten.getUserAgent());
-                ////getFilmlisten("asdf", tmp, Daten.getUserAgent());
+                ///getFilmlisten("asdf", tmp, Daten.getUserAgent());
                 if (tmp.size() == 0) {
                     // neue URL Filmlisten versuchen
                     ////////////////////
@@ -101,23 +103,37 @@ public class FilmlistenServer {
             listeUrlFilmlisten = tmp;
         }
         if (listeUrlFilmlisten.size() == 0) {
-            ////////////////// die in der Zukunft mit DAtum gestern
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_02.bz2", "1", "03:40:00", DatumZeit.getHeute_dd_MM_yyyy()));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_06.bz2", "1", "07:10:00", DatumZeit.getHeute_dd_MM_yyyy()));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_08.bz2", "1", "09:10:00", DatumZeit.getHeute_dd_MM_yyyy()));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_10.bz2", "1", "11:10:00", DatumZeit.getHeute_dd_MM_yyyy()));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek2/Mediathek_12.bz2", "1", "13:10:00", DatumZeit.getHeute_dd_MM_yyyy()));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek3/Mediathek_14.bz2", "1", "15:10:00", DatumZeit.getHeute_dd_MM_yyyy()));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek4/Mediathek_16.bz2", "1", "17:10:00", DatumZeit.getHeute_dd_MM_yyyy()));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_18.bz2", "1", "19:10:00", DatumZeit.getHeute_dd_MM_yyyy()));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_20.bz2", "1", "21:10:00", DatumZeit.getHeute_dd_MM_yyyy()));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_22.bz2", "1", "23:10:00", DatumZeit.getHeute_dd_MM_yyyy()));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_00.bz2", "1", "01:10:00", DatumZeit.getHeute_dd_MM_yyyy()));
+            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_02.bz2", "1", "03:40:00", getTag("03:40:00")));
+            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_06.bz2", "1", "07:10:00", getTag("07:10:00")));
+            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_08.bz2", "1", "09:10:00", getTag("09:10:00")));
+            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_10.bz2", "1", "11:10:00", getTag("11:10:00")));
+            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek2/Mediathek_12.bz2", "1", "13:10:00", getTag("13:10:00")));
+            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek3/Mediathek_14.bz2", "1", "15:10:00", getTag("15:10:00")));
+            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek4/Mediathek_16.bz2", "1", "17:10:00", getTag("17:10:00")));
+            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_18.bz2", "1", "19:10:00", getTag("19:10:00")));
+            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_20.bz2", "1", "21:10:00", getTag("21:10:00")));
+            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_22.bz2", "1", "23:10:00", getTag("23:10:00")));
+            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_00.bz2", "1", "01:10:00", getTag("01:10:00")));
         }
         listeUrlFilmlisten.sort();
         retUrl = listeUrlFilmlisten.getRand(0); //eine Zufällige Adresse wählen
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_URL_FILMLISTEN, this.getClass().getSimpleName());
         return retUrl;
+    }
+
+    public String getTag(String zeit) {
+        Date tmp;
+        SimpleDateFormat sdf_zeit = new SimpleDateFormat("dd.MM.yyyy__HH:mm:ss");
+        try {
+            tmp = sdf_zeit.parse(DatumZeit.getHeute_dd_MM_yyyy() + "__" + zeit);
+            if (tmp.compareTo(new Date()) > 0) {
+                return DatumZeit.getGestern_dd_MM_yyyy();
+            } else {
+                return DatumZeit.getHeute_dd_MM_yyyy();
+            }
+        } catch (Exception ex) {
+        }
+        return DatumZeit.getHeute_dd_MM_yyyy();
     }
 
     public static String[] getFilmlisten(String dateiUrl, ListeUrlFilmlisten sListe, String userAgent) {
