@@ -160,11 +160,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
             return "";
         }
         if (!ret.contains(".")) {
-            Log.fehlerMeldung(591143690, "DatenFilm.CheckDatum-1 [", datum + "] " + fehlermeldung);
+            Log.debugMeldung("DatenFilm.CheckDatum-1 [" + datum + "] " + fehlermeldung);
             return "";
         }
         if (ret.length() != 10) {
-            Log.fehlerMeldung(507629943, "DatenFilm.CheckDatum-2 [", datum + "] " + fehlermeldung);
+            Log.debugMeldung("DatenFilm.CheckDatum-2 [" + datum + "] " + fehlermeldung);
             return "";
         }
         try {
@@ -172,11 +172,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
             Date filmDate = sdfIn.parse(ret);
             if (filmDate.getTime() < 0) {
                 //Datum vor 1970
-                Log.fehlerMeldung(930665317, "DatenFilm.CheckDatum-3", "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
+                Log.debugMeldung("DatenFilm.CheckDatum-3 - " + "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
                 ret = "";
             }
             if ((new Date().getTime() + MAX) < filmDate.getTime()) {
-                Log.fehlerMeldung(632088649, "DatenFilm.CheckDatum-4", "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
+                Log.debugMeldung("DatenFilm.CheckDatum-4 - " + "Unsinniger Wert: [" + datum + "] " + fehlermeldung);
                 ret = "";
             }
         } catch (Exception ex) {
@@ -203,7 +203,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
                     ret = "";
                 }
                 if (ret.equals("")) {
-                    Log.fehlerMeldungMReader(392865321, "DatenFilm.CheckZeit [", zeit + "] " + text);
+                    Log.debugMeldung("DatenFilm.CheckZeit [" + zeit + "] " + text);
                 }
             }
         }
