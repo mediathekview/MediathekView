@@ -43,7 +43,7 @@ public class PanelHilfe extends PanelVorlage {
         //init
         try {
             Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-            jTextFieldVersion.setText(Funktionen.getCompileDate());
+            jTextFieldVersion.setText(Funktionen.getProgVersionString());
         } catch (Exception e) {
             jTextFieldVersion.setText(Konstanten.VERSION);
         }

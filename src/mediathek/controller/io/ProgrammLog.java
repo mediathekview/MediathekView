@@ -52,7 +52,7 @@ public class ProgrammLog {
                     bw.write("#####################################################");
                     bw.newLine();
                     bw.newLine();
-                    bw.write(Funktionen.getCompileDate());
+                    bw.write(Funktionen.getProgVersionString());
                     bw.newLine();
                     bw.write("Betriebssystem: " + System.getProperty("os.name"));
                     if (System.getProperty("os.name").toLowerCase().contains("windows")) {
