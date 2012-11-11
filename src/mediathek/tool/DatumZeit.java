@@ -81,6 +81,16 @@ public class DatumZeit {
         return output;
     }
 
+    public static String getGestern_dd_MM_yyyy() {
+        Date today;
+        String output;
+        SimpleDateFormat formatter;
+        formatter = new SimpleDateFormat("dd.MM.yyyy");
+        today = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) /* ein Tag */);
+        output = formatter.format(today);
+        return output;
+    }
+
     public static String convertDatum(String datum) {
         //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
         try {
