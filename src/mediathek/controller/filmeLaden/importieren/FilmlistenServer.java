@@ -20,9 +20,7 @@
 package mediathek.controller.filmeLaden.importieren;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
@@ -34,7 +32,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
-import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
