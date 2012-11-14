@@ -125,25 +125,18 @@ public class FilmeSuchenSender {
         }
     }
 
-    public void updateSender(String nameSenderFilmliste, ListeFilme alteListe) {
+    public void updateSender(String[] nameSenderFilmliste, ListeFilme alteListe) {
         // nur für den Mauskontext "Sender aktualisieren"
         initStart(alteListe);
-        MediathekReader reader = getMReaderNameSenderFilmliste(nameSenderFilmliste);
-        if (reader != null) {
-            new Thread(reader).start();
-        }
-    }
-
-    public MediathekReader getMReaderNameSenderFilmliste(String nameSenderFilmliste) {
-        // liefert den MediathekReader für den Sender mit dem in der Filmliste angezeigten Namen
         Iterator<MediathekReader> it = mediathekListe.iterator();
         while (it.hasNext()) {
             MediathekReader reader = it.next();
-            if (reader.checkNameSenderFilmliste(nameSenderFilmliste)) {
-                return reader;
+            for (String s : nameSenderFilmliste) {
+                if (reader.checkNameSenderFilmliste(s)) {
+                    new Thread(reader).start();
+                }
             }
         }
-        return null;
     }
 
     public MediathekReader getMReaderNameSenderMreader(String nameSenderMreader) {

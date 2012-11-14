@@ -138,7 +138,7 @@ public class FilmeLaden {
         }
     }
 
-    public void updateSender(String sender, ListeFilme llisteFilme) {
+    public void updateSender(String[] sender, ListeFilme llisteFilme) {
         // Filme nur bei EINEM Sender suchen (nur update)
         if (!istAmLaufen) {
             // nicht doppelt starten

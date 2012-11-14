@@ -274,7 +274,7 @@ public class PanelSenderLaden extends PanelVorlage {
             for (int i = 0; i < buttonSender.length; ++i) {
                 buttonSender[i].setEnabled(false);
             }
-            Daten.filmeLaden.updateSender(sender, Daten.listeFilme);
+            Daten.filmeLaden.updateSender(new String[]{sender}, Daten.listeFilme);
         }
     }
 

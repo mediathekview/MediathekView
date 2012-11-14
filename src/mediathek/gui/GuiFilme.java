@@ -46,7 +46,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -472,7 +471,7 @@ public class GuiFilme extends PanelVorlage {
         int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
             int sel = tabelle.convertRowIndexToModel(selectedTableRow);
-            Daten.filmeLaden.updateSender(tabelle.getModel().getValueAt(sel, DatenFilm.FILM_SENDER_NR).toString(), Daten.listeFilme);
+            Daten.filmeLaden.updateSender(new String[]{tabelle.getModel().getValueAt(sel, DatenFilm.FILM_SENDER_NR).toString()}, Daten.listeFilme);
         }
     }
 
