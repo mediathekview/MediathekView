@@ -21,10 +21,8 @@ package mediathek.tool;
 
 import java.io.File;
 import java.io.InputStream;
-import java.security.CodeSource;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
-import mediathek.Main;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;

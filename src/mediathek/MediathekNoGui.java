@@ -84,7 +84,7 @@ public class MediathekNoGui {
         }
     }
 
-    public synchronized void serverStarten(String sender) {
+    public synchronized void serverStarten(String[] sender) {
         daten = new Daten(pfad);
         Daten.nogui = true;
         if (!userAgent.equals("")) {
@@ -107,7 +107,7 @@ public class MediathekNoGui {
         // laden was es schon gibt
         Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
         // das eigentliche Suchen der Filme bei den Sendern starten
-        if (sender.equals("")) {
+        if (sender == null) {
             Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, allesLaden);
         } else {
             Daten.filmeLaden.updateSender(sender, Daten.listeFilme);

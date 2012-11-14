@@ -254,7 +254,7 @@ public class Log {
             System.out.print("                                                                            \r");
             prog = false;
         }
-        final String FEHLER = "Fehler: ";
+        final String FEHLER = "Fehler(" + Konstanten.PROGRAMMNAME + "): ";
         final String z = "*";
         System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
         System.out.println(z + " Fehlernr: " + fehlerNummer);
