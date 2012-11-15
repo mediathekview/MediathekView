@@ -71,8 +71,8 @@ public class FilmlistenServer {
             if (DDaten.debug && !DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR].equals("")) {
                 getFilmlisten(DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR], tmp, Daten.getUserAgent());
             } else {
-                getFilmlisten(Konstanten.ADRESSE_UPDATE_SERVER, tmp, Daten.getUserAgent());
-                ///getFilmlisten("asdf", tmp, Daten.getUserAgent());
+                ////////getFilmlisten(Konstanten.ADRESSE_UPDATE_SERVER, tmp, Daten.getUserAgent());
+                getFilmlisten("asdf", tmp, Daten.getUserAgent());
                 if (tmp.size() == 0) {
                     // neue URL Filmlisten versuchen
                     ////////////////////
@@ -101,7 +101,6 @@ public class FilmlistenServer {
         }
         if (listeUrlFilmlisten.size() == 0) {
             listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_02.bz2", "1", "03:40:00", getTag("03:40:00")));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_06.bz2", "1", "07:10:00", getTag("07:10:00")));
             listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_08.bz2", "1", "09:10:00", getTag("09:10:00")));
             listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_10.bz2", "1", "11:10:00", getTag("11:10:00")));
             listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek2/Mediathek_12.bz2", "1", "13:10:00", getTag("13:10:00")));

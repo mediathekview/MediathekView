@@ -132,7 +132,8 @@ public final class MediathekGui extends javax.swing.JFrame {
         registerForMacOSXEvents();
         new CheckUpdate(this, ddaten).suchen();
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
-            if (Daten.listeFilme.filmlisteIstAelter()) {
+            if (Daten.listeFilme.filmlisteZuAlt()) {
+                Log.systemMeldung("Neue Fillmliste laden");
                 DDaten.filmeLaden.importFilmliste("");
             }
         }

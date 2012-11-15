@@ -377,7 +377,10 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return ret;
     }
 
-    public boolean filmlisteIstAelter() {
+    public boolean filmlisteZuAlt() {
+        if (this.size()==0){
+            return true;
+        }
         // Filmliste ist älter als: FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE
         return filmlisteIstAelter(FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE);
     }
