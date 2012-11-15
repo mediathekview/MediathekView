@@ -171,10 +171,10 @@ public class IoXmlFilmlisteLesen {
                         }
                         int anz = 1;
                         try {
-                            anz = Integer.parseInt(listeFilme.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR]);
+//                            anz = Integer.parseInt(listeFilme.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR]);
                         } catch (Exception ex) {
-                        }
                     }
+                }
                 }
                 //FilmeInfos
 //                if (event == XMLStreamConstants.START_ELEMENT) {
