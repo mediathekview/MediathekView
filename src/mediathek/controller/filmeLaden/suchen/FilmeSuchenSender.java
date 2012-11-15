@@ -307,14 +307,12 @@ public class FilmeSuchenSender {
         listeFilmeNeu.metaDaten = ListeFilme.newMetaDaten();
         if (!Daten.filmeLaden.getStop() /* löschen */) {
             listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_DATUM_NR] = DatumZeit.getJetzt_ddMMyyyy_HHmm();
-            listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_NUR_ZEIT_NR] = DatumZeit.getJetzt_HH_MM_SS();
-            listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_NUR_DATUM_NR] = DatumZeit.getHeute_dd_MM_yyyy();
+            listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR] = DatumZeit.getJetzt_ddMMyyyy_HHmm_gmt();
         } else {
             listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_DATUM_NR] = "";
-            listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_NUR_ZEIT_NR] = "";
-            listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_NUR_DATUM_NR] = "";
+            listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR] = "";
         }
-        listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR] = String.valueOf(listeFilmeNeu.size());
+        //listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR] = String.valueOf(listeFilmeNeu.size());
         listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
         listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = Funktionen.getProgVersionString();
     }

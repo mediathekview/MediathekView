@@ -45,47 +45,28 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public static final String THEMA_LIVE = "Livestream";
     //Tags Infos Filmliste, erste Zeile der .filme-Datei
     public static final String FILMLISTE = "Filmliste";
-    public static final int FILMLISTE_MAX_ELEM = 6;
+    public static final int FILMLISTE_MAX_ELEM = 4;
     public static final String FILMLISTE_DATUM = "Filmliste-Datum";
     public static final int FILMLISTE_DATUM_NR = 0;
-    public static final String FILMLISTE_ZEIT = "Filmliste-Nur-Zeit";
-    public static final int FILMLISTE_NUR_ZEIT_NR = 1;
-    public static final String FILMLISTE_DATUM_ZEIT = "Filmliste-Nur-Datum";
-    public static final int FILMLISTE_NUR_DATUM_NR = 2;
-    public static final String FILMLISTE_ANZAHL = "Filmliste-Anzahl";
-    public static final int FILMLISTE_ANZAHL_NR = 3;
+    public static final String FILMLISTE_DATUM_GMT = "Filmliste-Datum-GMT";
+    public static final int FILMLISTE_DATUM_GMT_NR = 1;
     public static final String FILMLISTE_VERSION = "Filmliste-Version";
-    public static final int FILMLISTE_VERSION_NR = 4;
+    public static final int FILMLISTE_VERSION_NR = 2;
     public static final String FILMLISTE_PROGRAMM = "Filmliste-Programm";
-    public static final int FILMLISTE_PRGRAMM_NR = 5;
-    public static final String[] FILMLISTE_COLUMN_NAMES = {FILMLISTE_DATUM, FILMLISTE_ZEIT, FILMLISTE_DATUM_ZEIT,
-        FILMLISTE_ANZAHL, FILMLISTE_VERSION, FILMLISTE_PROGRAMM};
-    // Infos
-//    public static final String FILMLISTE_INFOS = "Filmliste-Infos";
-//    public static final int FILMLISTE_INFOS_MAX_ELEM = 2;
-//    public static final String FILMLISTE_INFOS_SWR_NR_THEMA = "Filmliste-Infos-Swr-NrThema";
-//    public static final int FILMLISTE_INFOS_SWR_NR_THEMA_NR = 0;
-//    public static final String FILMLISTE_INFOS_frei = "Filmliste-Infos-frei";
-//    public static final int FILMLISTE_INFOS_frei_NR = 1;
-//    public static final String[] FILMLISTE_INFOS_COLUMN_NAMES = {FILMLISTE_INFOS_SWR_NR_THEMA, FILMLISTE_INFOS_frei};
+    public static final int FILMLISTE_PRGRAMM_NR = 3;
+    public static final String[] FILMLISTE_COLUMN_NAMES = {FILMLISTE_DATUM, FILMLISTE_DATUM_GMT, FILMLISTE_VERSION, FILMLISTE_PROGRAMM};
     private int nr = 0;
-//    public String[] infos;
     public String[] metaDaten;
     private HashSet<String> treeGetModelOfField = new HashSet<String>();
     private LinkedList<String> listGetModelOfField = new LinkedList<String>();
 
-    /**
-     *
-     * @param ddaten
-     */
     public ListeFilme() {
-//        infos = newInfo();
         metaDaten = newMetaDaten();
     }
+
     //===================================
     // public
     //===================================
-
     public static String[] newMetaDaten() {
         String[] ret = new String[FILMLISTE_MAX_ELEM];
         for (int i = 0; i < ret.length; ++i) {
@@ -94,13 +75,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return ret;
     }
 
-//    public static String[] newInfo() {
-//        String[] ret = new String[FILMLISTE_INFOS_MAX_ELEM];
-//        for (int i = 0; i < ret.length; ++i) {
-//            ret[i] = "";
-//        }
-//        return ret;
-//    }
     @Override
     public synchronized void clear() {
         nr = 0;
@@ -117,15 +91,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
     }
 
-//    public synchronized void setInfo(int feld, String wert) {
-//        infos[feld] = wert;
-//    }
-//
-//    public synchronized void setInfo(String[] iinfo) {
-//        for (int i = 0; i < FILMLISTE_INFOS_MAX_ELEM; ++i) {
-//            infos[i] = iinfo[i].toString();
-//        }
-//    }
     public synchronized void setMeta(String[] mmeta) {
         for (int i = 0; i < FILMLISTE_MAX_ELEM; ++i) {
             metaDaten[i] = mmeta[i].toString();
@@ -183,14 +148,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     }
 
     public synchronized boolean addWithNr(DatenFilm film) {
-//        if (!film.arr[DatenFilm.FILM_THEMA_NR].equals(StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim()))) {
-//            Log.debugMeldung("----");
-//        }
-//        if (!film.arr[DatenFilm.FILM_TITEL_NR].equals(StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_TITEL_NR].trim()))) {
-//            Log.debugMeldung("----");
-//        }
-//        film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
-//        film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_TITEL_NR].trim());
         film.arr[DatenFilm.FILM_NR_NR] = getNr(nr++);
         film.arr[DatenFilm.FILM_URL_NR] = film.getUrlOrg();
         return add(film);
