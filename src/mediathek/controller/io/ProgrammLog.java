@@ -30,7 +30,6 @@ import mediathek.gui.dialog.DialogZiel;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Log;
 
 public class ProgrammLog {
