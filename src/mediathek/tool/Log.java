@@ -23,8 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.ResourceBundle;
-import mediathek.Main;
 import mediathek.daten.Daten;
 
 public class Log {

@@ -23,7 +23,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 
@@ -80,12 +79,6 @@ public class DatumZeit {
         today = new Date();
         output = formatter.format(today);
         return output;
-    }
-
-    public static String getJetzt_ddMMyyyy_HHmm_gmt() {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));;
-        return formatter.format(new Date());
     }
 
     public static String getGestern_dd_MM_yyyy() {

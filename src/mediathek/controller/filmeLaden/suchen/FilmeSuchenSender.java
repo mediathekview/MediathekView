@@ -225,7 +225,8 @@ public class FilmeSuchenSender {
             }
             listeFilmeNeu.sort();
             listeFilmeAlt = null; // brauchmer nicht mehr
-            metaDatenSchreiben();
+            // FilmlisteMetaDaten
+            listeFilmeNeu.metaDatenSchreiben(!Daten.filmeLaden.getStop() /* löschen */);
             stopZeit = new Date(System.currentTimeMillis());
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -300,21 +301,6 @@ public class FilmeSuchenSender {
             text += " ]  " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER) + " Seiten  /  " + proz + "% von " + max + " Themen  /  Filme: " + listeFilmeNeu.size();
             Log.progress(text);
         }
-    }
-
-    private void metaDatenSchreiben() {
-        // FilmlisteMetaDaten
-        listeFilmeNeu.metaDaten = ListeFilme.newMetaDaten();
-        if (!Daten.filmeLaden.getStop() /* löschen */) {
-            listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_DATUM_NR] = DatumZeit.getJetzt_ddMMyyyy_HHmm();
-            listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR] = DatumZeit.getJetzt_ddMMyyyy_HHmm_gmt();
-        } else {
-            listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_DATUM_NR] = "";
-            listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR] = "";
-        }
-        //listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR] = String.valueOf(listeFilmeNeu.size());
-        listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
-        listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = Funktionen.getProgVersionString();
     }
 
     private String textLaenge(int max, String text) {

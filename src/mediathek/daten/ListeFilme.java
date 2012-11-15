@@ -27,6 +27,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekArd;
@@ -35,7 +37,9 @@ import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekWdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.tool.TModelFilm;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -59,6 +63,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public String[] metaDaten;
     private HashSet<String> treeGetModelOfField = new HashSet<String>();
     private LinkedList<String> listGetModelOfField = new LinkedList<String>();
+    private final String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
 
     public ListeFilme() {
         metaDaten = newMetaDaten();
@@ -320,12 +325,44 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
     }
 
+    public String erstellt() {
+        // Tag, Zeit in lokaler Zeit wann die Filmliste erstellt wurde
+        String ret;
+        SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
+        String date;
+        if (metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR].equals("")) {
+            // noch eine alte Filmliste
+            ret = metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
+        } else {
+            date = metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR];
+            sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+            Date filmDate = null;
+            try {
+                filmDate = sdf.parse(date);
+            } catch (ParseException ex) {
+            }
+            if (filmDate == null) {
+                ret = metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR];
+            } else {
+                SimpleDateFormat formatter = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
+                ret = formatter.format(filmDate);
+            }
+        }
+        return ret;
+    }
+
     public int alterFilmlisteSek() {
         // Alter der Filmliste in Sekunden
         int ret = 0;
         Date jetzt = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
-        String date = metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
+        SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
+        String date;
+        if (!metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR].equals("")) {
+            date = metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR];
+            sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+        } else {
+            date = metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
+        }
         Date filmDate = null;
         try {
             filmDate = sdf.parse(date);
@@ -341,32 +378,54 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     }
 
     public boolean filmlisteIstAelter() {
+        // Filmliste ist älter als: FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE
         return filmlisteIstAelter(FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE);
     }
 
     public boolean filmlisteIstAelter(int sekunden) {
-        // Filmliste ist älter als: FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE
-        int ret = -1;
-        Date jetzt = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
-        String date = metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
-        Date filmDate = null;
-        try {
-            filmDate = sdf.parse(date);
-        } catch (ParseException ex) {
-        }
-        if (jetzt != null && filmDate != null) {
-            ret = Math.round((jetzt.getTime() - filmDate.getTime()) / (1000));
-            ret = Math.abs(ret);
-        }
-        if (ret != -1) {
+        int ret = alterFilmlisteSek();
+//        Date jetzt = new Date(System.currentTimeMillis());
+//        SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
+//        String date = metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
+//        Date filmDate = null;
+//        try {
+//            filmDate = sdf.parse(date);
+//        } catch (ParseException ex) {
+//        }
+//        if (jetzt != null && filmDate != null) {
+//            ret = Math.round((jetzt.getTime() - filmDate.getTime()) / (1000));
+//            ret = Math.abs(ret);
+//        }
+        if (ret != 0) {
             Log.systemMeldung("Die Filmliste ist " + ret / 60 + " Minuten alt");
         }
-        if (ret > sekunden) {
-            return true;
-        } else if (ret == -1) {
-            return true;
+        return ret > sekunden;
+    }
+
+    public void metaDatenSchreiben(boolean stop) {
+        // FilmlisteMetaDaten
+        metaDaten = ListeFilme.newMetaDaten();
+        if (!Daten.filmeLaden.getStop() /* löschen */) {
+            metaDaten[ListeFilme.FILMLISTE_DATUM_NR] = getJetzt_ddMMyyyy_HHmm();
+            metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR] = getJetzt_ddMMyyyy_HHmm_gmt();
+        } else {
+            metaDaten[ListeFilme.FILMLISTE_DATUM_NR] = "";
+            metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR] = "";
         }
-        return false;
+        //listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR] = String.valueOf(listeFilmeNeu.size());
+        metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
+        metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = Funktionen.getProgVersionString();
+
+    }
+
+    private String getJetzt_ddMMyyyy_HHmm() {
+        SimpleDateFormat formatter = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
+        return formatter.format(new Date());
+    }
+
+    private String getJetzt_ddMMyyyy_HHmm_gmt() {
+        SimpleDateFormat formatter = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
+        formatter.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+        return formatter.format(new Date());
     }
 }

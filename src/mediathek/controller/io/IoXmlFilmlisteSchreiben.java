@@ -27,11 +27,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.GuiKonstanten;
+import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 public class IoXmlFilmlisteSchreiben {
@@ -85,7 +85,6 @@ public class IoXmlFilmlisteSchreiben {
         //Filmliste Metadaten schreiben
         listeFilme.metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
         xmlSchreibenDaten(ListeFilme.FILMLISTE, ListeFilme.FILMLISTE_COLUMN_NAMES, listeFilme.metaDaten);
-//        xmlSchreibenDaten(ListeFilme.FILMLISTE_INFOS, ListeFilme.FILMLISTE_INFOS_COLUMN_NAMES, listeFilme.infos);
         xmlSchreibenFeldInfo();
         //Filme schreiben
         ListIterator<DatenFilm> iterator;
