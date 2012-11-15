@@ -55,7 +55,7 @@ public class MediathekAuto {
         if (IoXmlLesen.einstellungenExistieren()) {
             ddaten.allesLaden();
             DDaten.filmeLaden.addAdListener(new BeobachterLadenFilme());
-            if (Daten.listeFilme.filmlisteIstAelter()) {
+            if (Daten.listeFilme.filmlisteZuAlt()) {
                 Log.systemMeldung("Neue Fillmliste laden");
                 DDaten.filmeLaden.importFilmliste("");
             } else {

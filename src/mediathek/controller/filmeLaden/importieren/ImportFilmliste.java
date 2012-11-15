@@ -35,7 +35,7 @@ public class ImportFilmliste {
     private EventListenerList listeners = new EventListenerList();
     private IoXmlFilmlisteLesen ioXmlFilmlisteLesen = null;
     public FilmlistenServer filmlistenServer = new FilmlistenServer();
-    
+
     /**
      *
      * @param ddaten
@@ -65,9 +65,10 @@ public class ImportFilmliste {
                     if (urlLaden(FilmeLaden.updateUrl, true)) {
                         // hat geklappt, nix wie weiter
                         ret = true; // keine Fehlermeldung
-                        if (listeFilme.filmlisteIstAelter(5 * 60 * 60 /*sekunden*/)) {
+                        if (i < 5 && listeFilme.filmlisteIstAelter(5 * 60 * 60 /*sekunden*/)) {
                             Log.systemMeldung("Filmliste zu alt, neuer Versuch");
                         } else {
+                            // 5 Versuche mit einer alten Liste sind genug
                             break;
                         }
                     }
