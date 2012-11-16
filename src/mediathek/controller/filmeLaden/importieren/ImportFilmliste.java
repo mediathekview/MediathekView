@@ -58,11 +58,12 @@ public class ImportFilmliste {
         public synchronized void run() {
             //wenn auto-update-url dann erst mal die Updateserver aktualiseren laden
             boolean ret = false;
-            FilmeLaden.updateUrl = filmlistenServer.suchen();
-            if (!FilmeLaden.updateUrl.equals("")) {
+            String[] versuchteUrls = new String[]{};
+            String updateUrl = filmlistenServer.suchen(versuchteUrls);
+            if (!updateUrl.equals("")) {
                 for (int i = 0; i < 10; ++i) {
                     //10 mal mit einem anderen Server probieren
-                    if (urlLaden(FilmeLaden.updateUrl, true)) {
+                    if (urlLaden(updateUrl, true)) {
                         // hat geklappt, nix wie weiter
                         ret = true; // keine Fehlermeldung
                         if (i < 5 && listeFilme.filmlisteIstAelter(5 * 60 * 60 /*sekunden*/)) {
@@ -72,7 +73,7 @@ public class ImportFilmliste {
                             break;
                         }
                     }
-                    FilmeLaden.updateUrl = filmlistenServer.listeUrlFilmlisten.getRand(i); //nächste Adresse in der Liste wählen
+                    updateUrl = filmlistenServer.listeDownloadUrlsFilmlisten.getRand(i); //nächste Adresse in der Liste wählen
                 }
             }
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {

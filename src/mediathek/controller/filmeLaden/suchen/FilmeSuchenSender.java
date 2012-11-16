@@ -47,8 +47,6 @@ import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.DatumZeit;
-import mediathek.tool.Funktionen;
-import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
 public class FilmeSuchenSender {

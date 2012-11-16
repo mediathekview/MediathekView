@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Random;
 
-public class ListeUrlFilmlisten extends LinkedList<DatenUrlFilmliste> {
+public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
 
     public boolean addWithCheck(DatenUrlFilmliste film) {
         ListIterator<DatenUrlFilmliste> it = listIterator();
