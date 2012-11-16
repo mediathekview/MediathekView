@@ -21,6 +21,7 @@ package mediathek.controller.filmeLaden.importieren;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -94,9 +95,9 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
         return null;
     }
 
-    public String getRand(int errcount) {
+    public String getRand(ArrayList<String> bereitsGebraucht, int errcount) {
         final int MAXMINUTEN = 50;
-        int minCount = 2;
+        int minCount = 3;
         if (errcount > 0) {
             minCount = 2 * errcount;
         }
@@ -104,8 +105,8 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
         if (!this.isEmpty()) {
             DatenUrlFilmliste filmUpdate;
             Iterator<DatenUrlFilmliste> it;
-            LinkedList<DatenUrlFilmliste> listePrio = new LinkedList<DatenUrlFilmliste>();
             LinkedList<DatenUrlFilmliste> listeZeit = new LinkedList<DatenUrlFilmliste>();
+            LinkedList<DatenUrlFilmliste> listePrio = new LinkedList<DatenUrlFilmliste>();
             //aktuellsten auswählen
             it = this.iterator();
             Date today = new Date(System.currentTimeMillis());
@@ -116,6 +117,12 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
             int count = 0;
             while (it.hasNext()) {
                 filmUpdate = it.next();
+                if (bereitsGebraucht != null) {
+                    if (bereitsGebraucht.contains(filmUpdate.arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR])) {
+                        // wurde schon versucht
+                        continue;
+                    }
+                }
                 date = filmUpdate.arr[FilmlistenServer.FILM_UPDATE_SERVER_DATUM_NR] + " " + filmUpdate.arr[FilmlistenServer.FILM_UPDATE_SERVER_ZEIT_NR];
                 try {
                     d = sdf.parse(date);
@@ -147,7 +154,6 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
         }
         return ret;
     }
-
 //    public void listeSchreiben() {
 //        DatenFilmUpdateServer filmUpdate;
 //        Iterator<DatenFilmUpdateServer> it = this.iterator();

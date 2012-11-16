@@ -19,6 +19,7 @@
  */
 package mediathek.controller.filmeLaden;
 
+import java.util.ArrayList;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filmeLaden.importieren.ImportFilmliste;
 import mediathek.controller.filmeLaden.importieren.ListeFilmlistenServer;
@@ -92,7 +93,7 @@ public class FilmeLaden {
 
     public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten(boolean update) {
         if (update) {
-            filmeImportieren.filmlistenServer.suchen(new String[]{});
+            filmeImportieren.filmlistenServer.suchen(null);
         }
         return filmeImportieren.filmlistenServer.listeDownloadUrlsFilmlisten;
     }
