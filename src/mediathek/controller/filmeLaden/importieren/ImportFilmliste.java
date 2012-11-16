@@ -19,9 +19,9 @@
  */
 package mediathek.controller.filmeLaden.importieren;
 
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
-import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
@@ -58,7 +58,7 @@ public class ImportFilmliste {
         public synchronized void run() {
             //wenn auto-update-url dann erst mal die Updateserver aktualiseren laden
             boolean ret = false;
-            String[] versuchteUrls = new String[]{};
+            ArrayList<String> versuchteUrls = new ArrayList<String>();
             String updateUrl = filmlistenServer.suchen(versuchteUrls);
             if (!updateUrl.equals("")) {
                 for (int i = 0; i < 10; ++i) {
@@ -73,7 +73,7 @@ public class ImportFilmliste {
                             break;
                         }
                     }
-                    updateUrl = filmlistenServer.listeDownloadUrlsFilmlisten.getRand(i); //nächste Adresse in der Liste wählen
+                    updateUrl = filmlistenServer.listeDownloadUrlsFilmlisten.getRand(versuchteUrls, i); //nächste Adresse in der Liste wählen
                 }
             }
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {

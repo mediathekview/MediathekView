@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import javax.xml.stream.XMLInputFactory;
@@ -62,7 +63,7 @@ public class FilmlistenServer {
     public ListeDownloadUrlsFilmlisten listeDownloadUrlsFilmlisten = new ListeDownloadUrlsFilmlisten();
     public ListeFilmlistenServer listeFilmlistenServer = new ListeFilmlistenServer();
 
-    public String suchen(String[] bereitsVersucht) {
+    public String suchen(ArrayList<String> bereitsVersucht) {
         // passende URL zum Laden der Filmliste suchen
         String retUrl;
         ListeDownloadUrlsFilmlisten tmp = new ListeDownloadUrlsFilmlisten();
@@ -73,8 +74,8 @@ public class FilmlistenServer {
 
             } else {
                 // Ausweichen auf andere Listenserver bei Bedarf
-                ////getDownloadUrlsFilmlisten(Konstanten.ADRESSE_UPDATE_SERVER, tmp, Daten.getUserAgent());
-                getDownloadUrlsFilmlisten("asdf", tmp, Daten.getUserAgent());
+                getDownloadUrlsFilmlisten(Konstanten.ADRESSE_UPDATE_SERVER, tmp, Daten.getUserAgent());
+                //getDownloadUrlsFilmlisten("asdf", tmp, Daten.getUserAgent());
                 if (tmp.size() > 0) {
                     // dann die Liste Filmlistenserver aktualisieren
                     Iterator<DatenUrlFilmliste> it = tmp.iterator();
@@ -116,8 +117,11 @@ public class FilmlistenServer {
             listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_00.bz2", "1", "01:10:00", getTag("01:10:00")));
         }
         listeDownloadUrlsFilmlisten.sort();
-        retUrl = listeDownloadUrlsFilmlisten.getRand(0); //eine Zufällige Adresse wählen
+        retUrl = listeDownloadUrlsFilmlisten.getRand(bereitsVersucht, 0); //eine Zufällige Adresse wählen
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_URL_FILMLISTEN, this.getClass().getSimpleName());
+        if (bereitsVersucht != null) {
+            bereitsVersucht.add(retUrl);
+        }
         return retUrl;
     }
 
@@ -137,17 +141,23 @@ public class FilmlistenServer {
     }
 
     private void getDownloadUrlsFilmlisten__backuplisten(ListeDownloadUrlsFilmlisten sListe, String userAgent) {
-        String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
+        getDownloadUrlsFilmlisten(GuiFunktionen.addUrl("http://176.28.14.91/mediathek1", Konstanten.DATEINAME_LISTE_FILMLISTEN), sListe, userAgent);
+        getDownloadUrlsFilmlisten(GuiFunktionen.addUrl("http://176.28.14.91/mediathek2", Konstanten.DATEINAME_LISTE_FILMLISTEN), sListe, userAgent);
+        getDownloadUrlsFilmlisten(GuiFunktionen.addUrl("http://176.28.14.91/mediathek3", Konstanten.DATEINAME_LISTE_FILMLISTEN), sListe, userAgent);
+        getDownloadUrlsFilmlisten(GuiFunktionen.addUrl("http://176.28.14.91/mediathek4", Konstanten.DATEINAME_LISTE_FILMLISTEN), sListe, userAgent);
         Iterator<DatenFilmlistenServer> it = listeFilmlistenServer.iterator();
         while (it.hasNext()) {
+            if (sListe.size() > 100) {
+                // genug
+                break;
+            }
             DatenFilmlistenServer fs = it.next();
             getDownloadUrlsFilmlisten(fs.arr[DatenFilmlistenServer.FILM_LISTEN_SERVER_URL_NR], sListe, userAgent);
         }
     }
 
-    public static String[] getDownloadUrlsFilmlisten(String dateiUrl, ListeDownloadUrlsFilmlisten sListe, String userAgent) {
-        String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
-        ///sListe.clear();
+    public static void getDownloadUrlsFilmlisten(String dateiUrl, ListeDownloadUrlsFilmlisten sListe, String userAgent) {
+        //String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
         try {
             int event;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
@@ -173,11 +183,11 @@ public class FilmlistenServer {
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     String parsername = parser.getLocalName();
                     if (parsername.equals("Program_Version")) {
-                        ret[0] = parser.getElementText();
+                        //ret[0] = parser.getElementText();
                     } else if (parsername.equals("Program_Release_Info")) {
-                        ret[1] = parser.getElementText();
+                        //ret[1] = parser.getElementText();
                     } else if (parsername.equals("Download_Programm")) {
-                        ret[2] = parser.getElementText();
+                        //ret[2] = parser.getElementText();
                     } else if (parsername.equals("Server")) {
                         //wieder ein neuer Server, toll
                         getServer(parser, sListe);
@@ -187,7 +197,7 @@ public class FilmlistenServer {
         } catch (Exception ex) {
             Log.fehlerMeldung(821069874, FilmlistenServer.class.getName(), ex, "Die URL-Filmlisten konnte nicht geladen werden: " + dateiUrl);
         }
-        return ret;
+        //return ret;
     }
 
     private static void getServer(XMLStreamReader parser, ListeDownloadUrlsFilmlisten sListe) {
