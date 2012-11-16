@@ -71,8 +71,8 @@ public class FilmlistenServer {
             if (DDaten.debug && !DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR].equals("")) {
                 getFilmlisten(DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR], tmp, Daten.getUserAgent());
             } else {
-                ////////getFilmlisten(Konstanten.ADRESSE_UPDATE_SERVER, tmp, Daten.getUserAgent());
-                getFilmlisten("asdf", tmp, Daten.getUserAgent());
+                getFilmlisten(Konstanten.ADRESSE_UPDATE_SERVER, tmp, Daten.getUserAgent());
+                /////getFilmlisten("asdf", tmp, Daten.getUserAgent());
                 if (tmp.size() == 0) {
                     // neue URL Filmlisten versuchen
                     ////////////////////
