@@ -179,7 +179,7 @@ public class IoXmlSchreiben {
         Iterator<DatenUrlFilmliste> iterator;
         //FilmUpdate schreibem
         DatenUrlFilmliste datenUrlFilmliste;
-        iterator = DDaten.filmeLaden.getListeUrlFilmlisten(false).iterator();
+        iterator = DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).iterator();
         while (iterator.hasNext()) {
             datenUrlFilmliste = iterator.next();
             xmlSchreibenDaten(FilmlistenServer.FILM_UPDATE_SERVER, FilmlistenServer.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr);

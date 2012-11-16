@@ -59,24 +59,23 @@ public class FilmlistenServer {
     public static final int FILM_UPDATE_SERVER_PRIO_NR = 5;
     public static final String[] FILM_UPDATE_SERVER_COLUMN_NAMES = {FILM_UPDATE_SERVER_NR, FILM_UPDATE_SERVER_URL, FILM_UPDATE_SERVER_DATUM, FILM_UPDATE_SERVER_ZEIT, FILM_UPDATE_SERVER_ANZAHL, FILM_UPDATE_SERVER_PRIO};
     public static final String[] FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE = {"Nr", "Update-Url", "Datum", "Zeit", "Anzahl", FILM_UPDATE_SERVER_PRIO};
-    public ListeUrlFilmlisten listeUrlFilmlisten = new ListeUrlFilmlisten();
+    public ListeDownloadUrlsFilmlisten listeDownloadUrlsFilmlisten = new ListeDownloadUrlsFilmlisten();
     public ListeFilmlistenServer listeFilmlistenServer = new ListeFilmlistenServer();
 
-    public String suchen() {
+    public String suchen(String[] bereitsVersucht) {
+        // passende URL zum Laden der Filmliste suchen
         String retUrl;
-        ListeUrlFilmlisten tmp = new ListeUrlFilmlisten();
+        ListeDownloadUrlsFilmlisten tmp = new ListeDownloadUrlsFilmlisten();
         try {
-            ////////////////////////
-            // Ausweichen auf andere Listenserver bei Bedarf
             if (DDaten.debug && !DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR].equals("")) {
-                getFilmlisten(DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR], tmp, Daten.getUserAgent());
+                // zum Debuggen
+                getDownloadUrlsFilmlisten(DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR], tmp, Daten.getUserAgent());
+
             } else {
-                getFilmlisten(Konstanten.ADRESSE_UPDATE_SERVER, tmp, Daten.getUserAgent());
-                /////getFilmlisten("asdf", tmp, Daten.getUserAgent());
-                if (tmp.size() == 0) {
-                    // neue URL Filmlisten versuchen
-                    ////////////////////
-                } else {
+                // Ausweichen auf andere Listenserver bei Bedarf
+                ////getDownloadUrlsFilmlisten(Konstanten.ADRESSE_UPDATE_SERVER, tmp, Daten.getUserAgent());
+                getDownloadUrlsFilmlisten("asdf", tmp, Daten.getUserAgent());
+                if (tmp.size() > 0) {
                     // dann die Liste Filmlistenserver aktualisieren
                     Iterator<DatenUrlFilmliste> it = tmp.iterator();
                     listeFilmlistenServer.clear();
@@ -88,31 +87,36 @@ public class FilmlistenServer {
                     }
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_FILMLISTEN_SERVER, this.getClass().getSimpleName());
                 }
+                if (tmp.size() == 0) {
+                    // mit den Backuplisten versuchen
+                    getDownloadUrlsFilmlisten__backuplisten(tmp, Daten.getUserAgent());
+                }
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(347895642, "FilmUpdateServer.suchen", ex);
         }
-        if (tmp.isEmpty()) {
+        if (tmp.size() == 0) {
             Log.systemMeldung(new String[]{"Es ist ein Fehler aufgetreten!",
                         "Es konnten keine Updateserver zum aktualisieren der Filme",
                         "gefunden werden."});
         } else {
-            listeUrlFilmlisten = tmp;
+            listeDownloadUrlsFilmlisten = tmp;
         }
-        if (listeUrlFilmlisten.size() == 0) {
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_02.bz2", "1", "03:40:00", getTag("03:40:00")));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_08.bz2", "1", "09:10:00", getTag("09:10:00")));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_10.bz2", "1", "11:10:00", getTag("11:10:00")));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek2/Mediathek_12.bz2", "1", "13:10:00", getTag("13:10:00")));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek3/Mediathek_14.bz2", "1", "15:10:00", getTag("15:10:00")));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek4/Mediathek_16.bz2", "1", "17:10:00", getTag("17:10:00")));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_18.bz2", "1", "19:10:00", getTag("19:10:00")));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_20.bz2", "1", "21:10:00", getTag("21:10:00")));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_22.bz2", "1", "23:10:00", getTag("23:10:00")));
-            listeUrlFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_00.bz2", "1", "01:10:00", getTag("01:10:00")));
+        if (listeDownloadUrlsFilmlisten.size() == 0) {
+            // dann gibts ein paar fest hinterlegt URLs
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_02.bz2", "1", "03:40:00", getTag("03:40:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_08.bz2", "1", "09:10:00", getTag("09:10:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_10.bz2", "1", "11:10:00", getTag("11:10:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek2/Mediathek_12.bz2", "1", "13:10:00", getTag("13:10:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek3/Mediathek_14.bz2", "1", "15:10:00", getTag("15:10:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek4/Mediathek_16.bz2", "1", "17:10:00", getTag("17:10:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_18.bz2", "1", "19:10:00", getTag("19:10:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_20.bz2", "1", "21:10:00", getTag("21:10:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_22.bz2", "1", "23:10:00", getTag("23:10:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_00.bz2", "1", "01:10:00", getTag("01:10:00")));
         }
-        listeUrlFilmlisten.sort();
-        retUrl = listeUrlFilmlisten.getRand(0); //eine Zufällige Adresse wählen
+        listeDownloadUrlsFilmlisten.sort();
+        retUrl = listeDownloadUrlsFilmlisten.getRand(0); //eine Zufällige Adresse wählen
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_URL_FILMLISTEN, this.getClass().getSimpleName());
         return retUrl;
     }
@@ -132,9 +136,18 @@ public class FilmlistenServer {
         return DatumZeit.getHeute_dd_MM_yyyy();
     }
 
-    public static String[] getFilmlisten(String dateiUrl, ListeUrlFilmlisten sListe, String userAgent) {
+    private void getDownloadUrlsFilmlisten__backuplisten(ListeDownloadUrlsFilmlisten sListe, String userAgent) {
         String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
-        sListe.clear();
+        Iterator<DatenFilmlistenServer> it = listeFilmlistenServer.iterator();
+        while (it.hasNext()) {
+            DatenFilmlistenServer fs = it.next();
+            getDownloadUrlsFilmlisten(fs.arr[DatenFilmlistenServer.FILM_LISTEN_SERVER_URL_NR], sListe, userAgent);
+        }
+    }
+
+    public static String[] getDownloadUrlsFilmlisten(String dateiUrl, ListeDownloadUrlsFilmlisten sListe, String userAgent) {
+        String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
+        ///sListe.clear();
         try {
             int event;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
@@ -177,7 +190,7 @@ public class FilmlistenServer {
         return ret;
     }
 
-    private static void getServer(XMLStreamReader parser, ListeUrlFilmlisten sListe) {
+    private static void getServer(XMLStreamReader parser, ListeDownloadUrlsFilmlisten sListe) {
         String zeit = "";
         String datum = "";
         String serverUrl = "";

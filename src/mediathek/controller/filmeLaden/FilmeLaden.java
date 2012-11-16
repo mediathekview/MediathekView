@@ -22,7 +22,7 @@ package mediathek.controller.filmeLaden;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filmeLaden.importieren.ImportFilmliste;
 import mediathek.controller.filmeLaden.importieren.ListeFilmlistenServer;
-import mediathek.controller.filmeLaden.importieren.ListeUrlFilmlisten;
+import mediathek.controller.filmeLaden.importieren.ListeDownloadUrlsFilmlisten;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
@@ -35,7 +35,6 @@ public class FilmeLaden {
     public static final int UPDATE_FILME_URL = 1; // manuell laden, Url automatisch wählen
     public static final int UPDATE_FILME_AUTO = 2; // beim Start, immer mal wieder, + Url auto
     public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
-    public static String updateUrl = "";
     // private
     private boolean stop = false;
     private ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
@@ -91,11 +90,11 @@ public class FilmeLaden {
         return stop;
     }
 
-    public ListeUrlFilmlisten getListeUrlFilmlisten(boolean update) {
+    public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten(boolean update) {
         if (update) {
-            filmeImportieren.filmlistenServer.suchen();
+            filmeImportieren.filmlistenServer.suchen(new String[]{});
         }
-        return filmeImportieren.filmlistenServer.listeUrlFilmlisten;
+        return filmeImportieren.filmlistenServer.listeDownloadUrlsFilmlisten;
     }
 
     public ListeFilmlistenServer getListeFilmlistnServer() {

@@ -101,7 +101,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
     private void updateSuchen() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        DDaten.filmeLaden.getListeUrlFilmlisten(true); // Liste neu laden und eine URL auswählen
+        DDaten.filmeLaden.getDownloadUrlsFilmlisten(true); // Liste neu laden und eine URL auswählen
         stopBeob = true;
         jTextFieldUrl.setText(Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
         tabelleLaden();
@@ -110,7 +110,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        TModel model = new TModel(DDaten.filmeLaden.getListeUrlFilmlisten(false).getTableObjectData(), FilmlistenServer.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE);
+        TModel model = new TModel(DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).getTableObjectData(), FilmlistenServer.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE);
         jTable1.setModel(model);
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
             if (i == FilmlistenServer.FILM_UPDATE_SERVER_URL_NR) {
@@ -134,7 +134,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         DatenUrlFilmliste datenUrlFilmliste = null;
         int selectedTableRow = jTable1.getSelectedRow();
         if (selectedTableRow >= 0) {
-            datenUrlFilmliste = Daten.filmeLaden.getListeUrlFilmlisten(false).getNrUpdate(jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow),
+            datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten(false).getNrUpdate(jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow),
                     FilmlistenServer.FILM_UPDATE_SERVER_URL_NR).toString());
         }
         if (datenUrlFilmliste != null) {
