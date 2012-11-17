@@ -33,9 +33,9 @@ import mediathek.tool.Konstanten;
 public class PanelHilfe extends PanelVorlage {
 
     /**
-     *  Creates new form GuiFeed
+     * Creates new form GuiFeed
      *
-     *  @param d
+     * @param d
      */
     public PanelHilfe(DDaten dd) {
         super(dd);
@@ -43,7 +43,7 @@ public class PanelHilfe extends PanelVorlage {
         //init
         try {
             Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
-            jTextFieldVersion.setText(Funktionen.getProgVersionString());
+            jTextFieldVersion.setText(Funktionen.getProgVersionString() + " vom: " + Funktionen.getCompileDate());
         } catch (Exception e) {
             jTextFieldVersion.setText(Konstanten.VERSION);
         }

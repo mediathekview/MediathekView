@@ -42,6 +42,10 @@ public class Funktionen {
     }
 
     public static String getProgVersionString() {
+        return Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + "  [Buildnummer: " + getBuildNr() + "]";
+    }
+
+    public static String getCompileDate() {
         final ResourceBundle rb;
         String propToken = "DATE";
         String msg = "";
@@ -53,7 +57,7 @@ public class Funktionen {
             System.err.println(e.getMessage());
             System.err.println("Token " + propToken + " not in Propertyfile!");
         }
-        return Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + "  [Buildnummer: " + getBuildNr() + "] - Compiled: " + msg;
+        return msg;
     }
 
     public static String getBuildNr() {
