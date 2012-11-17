@@ -55,6 +55,29 @@ public class PanelEinstellungen extends PanelVorlage {
         }
         jComboBoxLook.setSelectedIndex(Integer.parseInt(Daten.system[Konstanten.SYSTEM_LOOK_NR]));
         jComboBoxLook.addActionListener(new BeobLook());
+        jButtonName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(null, true, "\n"
+                        + "Die Dateinamen der Filme\n"
+                        + "die gespeichert werden,\n"
+                        + "enthalten nur noch ASCII-Zeichen.\n"
+                        + "\n"
+                        + "Sonderzeichen werden durch \"_\" \n"
+                        + "und Umlaute zB. ä mit ae ersetzt.").setVisible(true);
+            }
+        });
+        jButtonAnzahl.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(null, true, "\n"
+                        + "Hier kann angegeben werden, wie viele\n"
+                        + "Downloads gleichzeitig gestartet werden.\n"
+                        + "Es gibt jedoch noch eine Begrenzung \n"
+                        + "auf 2 Downloads pro Server\n"
+                        + "die trotzdem nicht überschritten wird.").setVisible(true);
+            }
+        });
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -145,6 +168,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jSpinnerDownload = new javax.swing.JSpinner();
         jCheckBoxEchtzeit = new javax.swing.JCheckBox();
         jCheckBoxAboSuchen = new javax.swing.JCheckBox();
+        jButtonAnzahl = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jTextFieldUserAgent = new javax.swing.JTextField();
         jButtonHilfe = new javax.swing.JButton();
@@ -158,6 +182,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jComboBoxLook = new javax.swing.JComboBox();
         jPanel3 = new javax.swing.JPanel();
         jCheckBoxNurAscii = new javax.swing.JCheckBox();
+        jButtonName = new javax.swing.JButton();
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
@@ -169,6 +194,8 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jCheckBoxAboSuchen.setText("beim Neuladen der Filmliste, Abos automatisch suchen");
 
+        jButtonAnzahl.setText("Hilfe");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -179,7 +206,9 @@ public class PanelEinstellungen extends PanelVorlage {
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3))
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonAnzahl))
                     .addComponent(jCheckBoxAboSuchen)
                     .addComponent(jCheckBoxEchtzeit))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -194,7 +223,8 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonAnzahl))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -298,6 +328,8 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jCheckBoxNurAscii.setText("nur ASCII-Zeichen erlauben");
 
+        jButtonName.setText("Hilfe");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -305,13 +337,17 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jCheckBoxNurAscii)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonName)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxNurAscii)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBoxNurAscii)
+                    .addComponent(jButtonName))
                 .addContainerGap(13, Short.MAX_VALUE))
         );
 
@@ -342,12 +378,14 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton jButtonAnzahl;
     private javax.swing.JButton jButtonHilfe;
+    private javax.swing.JButton jButtonName;
     private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxAboSuchen;
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
