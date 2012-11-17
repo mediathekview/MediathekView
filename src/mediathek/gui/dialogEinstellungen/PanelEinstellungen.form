@@ -46,7 +46,7 @@
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="74" max="32767" attributes="0"/>
+              <EmptySpace pref="63" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -71,6 +71,8 @@
                           <Component id="jSpinnerDownload" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButtonAnzahl" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jCheckBoxAboSuchen" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="jCheckBoxEchtzeit" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -90,6 +92,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jSpinnerDownload" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonAnzahl" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -117,6 +120,11 @@
         <Component class="javax.swing.JCheckBox" name="jCheckBoxAboSuchen">
           <Properties>
             <Property name="text" type="java.lang.String" value="beim Neuladen der Filmliste, Abos automatisch suchen"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonAnzahl">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Hilfe"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -310,6 +318,8 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jCheckBoxNurAscii" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jButtonName" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -318,7 +328,10 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jCheckBoxNurAscii" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jCheckBoxNurAscii" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonName" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace pref="13" max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -328,6 +341,11 @@
         <Component class="javax.swing.JCheckBox" name="jCheckBoxNurAscii">
           <Properties>
             <Property name="text" type="java.lang.String" value="nur ASCII-Zeichen erlauben"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonName">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Hilfe"/>
           </Properties>
         </Component>
       </SubComponents>
