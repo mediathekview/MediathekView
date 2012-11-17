@@ -66,7 +66,7 @@ public class ImportFilmliste {
                     if (urlLaden(updateUrl, true)) {
                         // hat geklappt, nix wie weiter
                         ret = true; // keine Fehlermeldung
-                        if (i < 5 && listeFilme.filmlisteIstAelter(5 * 60 * 60 /*sekunden*/)) {
+                        if (i < 4 && listeFilme.filmlisteIstAelter(5 * 60 * 60 /*sekunden*/)) {
                             Log.systemMeldung("Filmliste zu alt, neuer Versuch");
                         } else {
                             // 5 Versuche mit einer alten Liste sind genug
@@ -74,6 +74,7 @@ public class ImportFilmliste {
                         }
                     }
                     updateUrl = filmlistenServer.listeDownloadUrlsFilmlisten.getRand(versuchteUrls, i); //nächste Adresse in der Liste wählen
+                    versuchteUrls.add(updateUrl);
                 }
             }
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {

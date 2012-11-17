@@ -103,7 +103,7 @@ public class FilmlistenServer {
         } else {
             listeDownloadUrlsFilmlisten = tmp;
         }
-        if (listeDownloadUrlsFilmlisten.size() == 0) {
+        if (listeDownloadUrlsFilmlisten.size() < 5) {
             // dann gibts ein paar fest hinterlegt URLs
             listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_02.bz2", "1", "03:40:00", getTag("03:40:00")));
             listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_08.bz2", "1", "09:10:00", getTag("09:10:00")));
