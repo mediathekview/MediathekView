@@ -377,7 +377,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     }
 
     public boolean filmlisteZuAlt() {
-        if (this.size()==0){
+        if (this.size() == 0) {
             return true;
         }
         // Filmliste ist älter als: FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE
@@ -416,8 +416,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         //listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR] = String.valueOf(listeFilmeNeu.size());
         metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
-        metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = Funktionen.getProgVersionString();
-
+        metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = Funktionen.getProgVersionString() + " - Compiled: " + Funktionen.getCompileDate();
     }
 
     private String getJetzt_ddMMyyyy_HHmm() {

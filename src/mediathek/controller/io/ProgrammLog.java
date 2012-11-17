@@ -53,6 +53,8 @@ public class ProgrammLog {
                     bw.newLine();
                     bw.write(Funktionen.getProgVersionString());
                     bw.newLine();
+                    bw.write("Compiled: " + Funktionen.getCompileDate());
+                    bw.newLine();
                     bw.write("Betriebssystem: " + System.getProperty("os.name"));
                     if (System.getProperty("os.name").toLowerCase().contains("windows")) {
                         if (System.getenv("ProgramFiles(x86)") != null) {
@@ -111,7 +113,7 @@ public class ProgrammLog {
                     bw.flush();
                     bw.close();
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(319865493,"ProgrammLog.zeileSchreiben-1", ex);
+                    Log.fehlerMeldung(319865493, "ProgrammLog.zeileSchreiben-1", ex);
                     JOptionPane.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                             "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
                 } finally {

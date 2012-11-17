@@ -67,6 +67,7 @@ public class Log {
         Log.systemMeldung("###########################################################");
         //Version
         Log.systemMeldung(Funktionen.getProgVersionString());
+        Log.systemMeldung("Compiled: " + Funktionen.getCompileDate());
         Log.systemMeldung("Klassenname: " + classname);
         Log.systemMeldung("###########################################################");
     }
