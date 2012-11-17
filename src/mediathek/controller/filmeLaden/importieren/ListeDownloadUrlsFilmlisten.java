@@ -99,7 +99,7 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
         final int MAXMINUTEN = 50;
         int minCount = 3;
         if (errcount > 0) {
-            minCount = 2 * errcount;
+            minCount = 3 + 2 * errcount;
         }
         String ret = "";
         if (!this.isEmpty()) {
@@ -148,8 +148,13 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
                     listePrio.add(filmUpdate.getCopy());
                 }
             }
-            int nr = new Random().nextInt(listePrio.size());
-            filmUpdate = listePrio.get(nr);
+            if (listePrio.size() > 0) {
+                int nr = new Random().nextInt(listePrio.size());
+                filmUpdate = listePrio.get(nr);
+            } else {
+                int nr = new Random().nextInt(this.size());
+                filmUpdate = this.get(nr);
+            }
             ret = filmUpdate.arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR];
         }
         return ret;
