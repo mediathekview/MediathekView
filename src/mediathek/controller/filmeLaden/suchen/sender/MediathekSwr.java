@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *
- *           @author
+ * @author
  */
 public class MediathekSwr extends MediathekReader implements Runnable {
 
@@ -155,11 +155,19 @@ public class MediathekSwr extends MediathekReader implements Runnable {
         }
 
         protected void jason(String strUrlFeed, String thema, String urlJson) {
+            //:"entry_media","attr":{"val0":"h264","val1":"3","val2":"rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/landesschau-rp/aktuell/2012/11/582111.l.mp4",
+            // oder
+            // "entry_media":"http://mp4-download.swr.de/swr-fernsehen/zur-sache-baden-wuerttemberg/das-letzte-wort-podcast/20120913-2015.m.mp4"
+            // oder
+            // :"entry_media","attr":{"val0":"flashmedia","val1":"1","val2":"rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/eisenbahn-romantik/381104.s.flv","val3":"rtmp://fc-ondemand.swr.de/a4332/e6/"},"sub":[]},{"name":"entry_media","attr":{"val0":"flashmedia","val1":"2","val2":"rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/eisenbahn-romantik/381104.m.flv","val3":"rtmp://fc-ondemand.swr.de/a4332/e6/"},"sub":[]
             final String MUSTER_TITEL = "\"entry_title\":\"";
             final String MUSTER_DATUM = "\"entry_pdatehd\":\"";
             final String MUSTER_DAUER = "\"entry_durat\":\"";
             final String MUSTER_ZEIT = "\"entry_pdateht\":\"";
-            final String MUSTER_URL = "\"entry_media\":\"";
+            final String MUSTER_URL_START = "rtmp://";
+            final String MUSTER_URL_1 = "\"entry_media\":\"";
+            final String MUSTER_URL_2 = "\"entry_media\",\"attr\":{\"val0\":\"h264\"";
+            final String MUSTER_URL_3 = "\"entry_media\",\"attr\":{\"val0\":\"flashmedia\"";
             int pos1;
             int pos2;
             String url;
@@ -223,8 +231,10 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     }
                 }
             }
-            if ((pos1 = strSeite2.indexOf(MUSTER_URL)) != -1) {
-                pos1 += MUSTER_URL.length();
+            url = "";
+            // entweder
+            if ((pos1 = strSeite2.indexOf(MUSTER_URL_1)) != -1) {
+                pos1 += MUSTER_URL_1.length();
                 if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
                     url = strSeite2.substring(pos1, pos2);
                     if (!url.equals("")) {
@@ -240,6 +250,47 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         Log.fehlerMeldungMReader(-468200690, "MediathekSwr.addFilme2-4", thema + " " + urlJson);
                     }
                 }
+            }
+            // oder
+            if (url.equals("") && (pos1 = strSeite2.indexOf(MUSTER_URL_2)) != -1) {
+                pos1 += MUSTER_URL_2.length();
+                if ((pos1 = strSeite2.indexOf(MUSTER_URL_START, pos1)) != -1) {
+                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                        url = strSeite2.substring(pos1, pos2);
+                        if (!url.equals("")) {
+                            // hohe Auflösung
+                            // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
+                            url = url.replace(".m.mp4", ".l.mp4");
+                            // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
+                            addFilm(film);
+                        } else {
+                            Log.fehlerMeldungMReader(-468200690, "MediathekSwr.jason-1", thema + " " + urlJson);
+                        }
+                    }
+                }
+            }
+            // oder
+            if (url.equals("") && (pos1 = strSeite2.indexOf(MUSTER_URL_3)) != -1) {
+                pos1 += MUSTER_URL_3.length();
+                if ((pos1 = strSeite2.indexOf(MUSTER_URL_START, pos1)) != -1) {
+                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                        url = strSeite2.substring(pos1, pos2);
+                        if (!url.equals("")) {
+                            // hohe Auflösung
+                            // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
+                            url = url.replace(".s.mp4", ".m.mp4");
+                            // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
+                            addFilm(film);
+                        } else {
+                            Log.fehlerMeldungMReader(-468200690, "MediathekSwr.jason-1", thema + " " + urlJson);
+                        }
+                    }
+                }
+            }
+            if (url.equals("")) {
+                Log.fehlerMeldungMReader(-203690478, "MediathekSwr.jason-2", thema + " " + urlJson);
             }
         }
     }
