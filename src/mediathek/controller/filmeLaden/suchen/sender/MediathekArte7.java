@@ -44,7 +44,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     private LinkedList<String[]> listeFilmseiten = new LinkedList<String[]>();
     private LinkedList<String[]> listeFilmseitenFertig = new LinkedList<String[]>();
     private static final int MAX_THREADS_ALLES = 5;
-    private static final int MAX_THREADS_UPDATE = 15;
+    private static final int MAX_THREADS_UPDATE = 4;
 
     /**
      *
@@ -52,7 +52,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
      * @param dde
      */
     public MediathekArte7(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ "", /* threads */ MAX_THREADS_ALLES, /* urlWarten */ 1000, startPrio);
+        super(ssearch, /* name */ "", /* threads */ MAX_THREADS_ALLES, /* urlWarten */ 500, startPrio);
         nameSenderMReader = SENDER_ARTE;
         getUrlIo.setTimeout(15000);
     }

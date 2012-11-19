@@ -44,7 +44,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
      *  @param ddaten
      */
     public MediathekMdr(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 1000, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 3, /* urlWarten */ 500, startPrio);
     }
 
     /**

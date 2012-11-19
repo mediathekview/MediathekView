@@ -73,23 +73,22 @@ public class FilmeSuchenSender {
     public FilmeSuchenSender() {
         //Reader laden Spaltenweises Laden
         mediathekListe.add(new MediathekArd(this, 0));
-        mediathekListe.add(new MediathekArdPodcast(this, 0));
+        mediathekListe.add(new MediathekArdPodcast(this, 1));
         mediathekListe.add(new MediathekZdf(this, 0));
         mediathekListe.add(new MediathekArte7(this, 1));
-        mediathekListe.add(new Mediathek3Sat(this, 2));
+        mediathekListe.add(new Mediathek3Sat(this, 0));
         mediathekListe.add(new MediathekSwr(this, 1));
         mediathekListe.add(new MediathekNdr(this, 1));
-        mediathekListe.add(new MediathekKika(this, 2));
+        mediathekListe.add(new MediathekKika(this, 0));
         // Spalte 2
-//        mediathekListe.add(new MediathekMdr_old(this, 1));
-        mediathekListe.add(new MediathekMdr(this, 1));
+        mediathekListe.add(new MediathekMdr(this, 0));
         mediathekListe.add(new MediathekWdr(this, 0));
-        mediathekListe.add(new MediathekHr(this, 2));
+        mediathekListe.add(new MediathekHr(this, 0));
         mediathekListe.add(new MediathekRbb(this, 1));
-        mediathekListe.add(new MediathekBr(this, 2));
+        mediathekListe.add(new MediathekBr(this, 0));
         mediathekListe.add(new MediathekSf(this, 1));
-        mediathekListe.add(new MediathekSfPod(this, 2));
-        mediathekListe.add(new MediathekOrf(this, 1));
+        mediathekListe.add(new MediathekSfPod(this, 0));
+        mediathekListe.add(new MediathekOrf(this, 0));
     }
 
     public void addAdListener(ListenerFilmeLaden listener) {
@@ -103,7 +102,6 @@ public class FilmeSuchenSender {
         // die mReader nach Prio starten
         mrStarten(0);
         mrStarten(1);
-        mrStarten(2);
     }
 
     private synchronized void mrStarten(int prio) {
@@ -117,7 +115,7 @@ public class FilmeSuchenSender {
             }
         }
         try {
-            this.wait(2 * 60 * 1000); // 2 Min. warten, Sender nach der Gesamtlaufzeit starten
+            this.wait(3 * 60 * 1000); // 3 Min. warten, Sender nach der Gesamtlaufzeit starten
         } catch (Exception ex) {
             Log.fehlerMeldung(952210369, "FilmeSuchenSender.mrStarten", ex);
         }

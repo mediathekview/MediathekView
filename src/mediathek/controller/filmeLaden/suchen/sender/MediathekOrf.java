@@ -57,7 +57,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekOrf(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER, /* threads */ 3, /* urlWarten */ 1000, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 500, startPrio);
     }
 
     @Override

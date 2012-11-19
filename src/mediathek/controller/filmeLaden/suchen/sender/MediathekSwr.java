@@ -160,7 +160,11 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             // "entry_media":"http://mp4-download.swr.de/swr-fernsehen/zur-sache-baden-wuerttemberg/das-letzte-wort-podcast/20120913-2015.m.mp4"
             // oder
             // :"entry_media","attr":{"val0":"flashmedia","val1":"1","val2":"rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/eisenbahn-romantik/381104.s.flv","val3":"rtmp://fc-ondemand.swr.de/a4332/e6/"},"sub":[]},{"name":"entry_media","attr":{"val0":"flashmedia","val1":"2","val2":"rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/eisenbahn-romantik/381104.m.flv","val3":"rtmp://fc-ondemand.swr.de/a4332/e6/"},"sub":[]
-            final String MUSTER_TITEL = "\"entry_title\":\"";
+
+            // "entry_title":"\"Troika-Tragödie - Verspielt die Regierung unser Steuergeld?\"
+
+            final String MUSTER_TITEL_1 = "\"entry_title\":\"";
+            final String MUSTER_TITEL_2 = "\"entry_title\":\"\\\"";
             final String MUSTER_DATUM = "\"entry_pdatehd\":\"";
             final String MUSTER_DAUER = "\"entry_durat\":\"";
             final String MUSTER_ZEIT = "\"entry_pdateht\":\"";
@@ -177,11 +181,20 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             String dauer = "";
             String tmp;
             strSeite2 = getUrl.getUri_Utf(nameSenderMReader, urlJson, strSeite2, "");
-            if ((pos1 = strSeite2.indexOf(MUSTER_TITEL)) != -1) {
-                pos1 += MUSTER_TITEL.length();
+            if ((pos1 = strSeite2.indexOf(MUSTER_TITEL_1)) != -1) {
+                pos1 += MUSTER_TITEL_1.length();
 
                 if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
                     titel = strSeite2.substring(pos1, pos2);
+                }
+            }
+            if (titel.startsWith("\\") && (pos1 = strSeite2.indexOf(MUSTER_TITEL_2)) != -1) {
+                pos1 += MUSTER_TITEL_2.length();
+                if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                    titel = strSeite2.substring(pos1, pos2);
+                    if (titel.endsWith("\\")) {
+                        titel = titel.substring(0, titel.length() - 2);
+                    }
                 }
             }
             if ((pos1 = strSeite2.indexOf(MUSTER_DATUM)) != -1) {
