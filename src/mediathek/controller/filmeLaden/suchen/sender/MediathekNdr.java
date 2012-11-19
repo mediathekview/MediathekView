@@ -34,7 +34,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
     //private final int MAX_PER_FEED = 5;
 
     public MediathekNdr(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER, /* threads */ 6, /* urlWarten */ 1000, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
     }
 
     //-> erste Seite:
