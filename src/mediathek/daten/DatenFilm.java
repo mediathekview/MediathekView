@@ -48,7 +48,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final String FILM_URL = "Url";
     public static final int FILM_URL_NR = 6;
     public static final String FILM_URL_ORG = "UrlOrg";
-    public static final int FILM_URL_ORG_NR = 7;
+    //public static final int FILM_URL_ORG_NR = 7;
     public static final String FILM_URL_RTMP = "UrlRTMP";
     public static final int FILM_URL_RTMP_NR = 8;
     public static final String FILM_URL_AUTH = "UrlAuth";
@@ -57,9 +57,9 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final int FILM_URL_THEMA_NR = 10;
     public static final String FILM_ABO_NAME = "Abo-Name";// wird vor dem Speichern gelöscht!
     public static final int FILM_ABO_NAME_NR = 11;
-    public static final String[] FILME_COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT,
-        FILM_URL, FILM_URL_ORG, FILM_URL_RTMP, FILM_URL_AUTH, FILM_URL_THEMA, FILM_ABO_NAME};
-    public static final String[] FILME_COLUMN_NAMES_ = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"};
+    public static final String[] FILME_COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT /* f */,
+        FILM_URL /* g*/ /*, FILM_URL_ORG  h*/, FILM_URL_RTMP, FILM_URL_AUTH, FILM_URL_THEMA, FILM_ABO_NAME /* l */};
+    public static final String[] FILME_COLUMN_NAMES_ = {"a", "b", "c", "d", "e", "f", "g" /*, "h"*/, "i", "j", "k", "l"};
     public String[] arr;
 
     public DatenFilm() {
@@ -77,14 +77,13 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_URL_THEMA_NR] = urlThema;
     }
 
-    public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp,
+    public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlRtmp,
             String datum, String zeit) {
         makeArr();
         arr[FILM_SENDER_NR] = ssender;
         arr[FILM_THEMA_NR] = tthema;
         arr[FILM_TITEL_NR] = ttitel;
         arr[FILM_URL_NR] = uurl;
-        arr[FILM_URL_ORG_NR] = uurlorg;
         arr[FILM_URL_RTMP_NR] = uurlRtmp;
         arr[FILM_URL_THEMA_NR] = urlThema;
         arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
@@ -100,7 +99,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
         // vor dem Speichern nicht benötigte Felder löschen
         arr[FILM_NR_NR] = "";
         arr[FILM_ABO_NAME_NR] = "";
-        arr[FILM_URL_ORG_NR] = "";
         return this;
     }
 
@@ -123,23 +121,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getUrlOrg() {
-        return getUrlOrg(arr[FILM_URL_RTMP_NR], arr[FILM_URL_ORG_NR], arr[FILM_URL_NR]);
-    }
-
-    public static String getUrlOrg(String url_rtmp, String url_org, String url) {
-        //wenn es ein url_rtmp ("--host .....") gipt, steht die org in url_org ("rtmp://......"), ansonsten ist die url_org leer
-        //und es gibt nur url und es wird bei Flash-Urls entweder "-r" davorgesetzt ("für flvstreamer vorbereiten ..") oder nicht
-        String ret;
-        if (!url_org.equals("")) {
-            ret = url_org;
-        } else {
-            if (url.startsWith(GuiKonstanten.RTMP_FLVSTREAMER)) {
-                ret = url.substring(GuiKonstanten.RTMP_FLVSTREAMER.length());
-            } else {
-                ret = url;
-            }
-        }
-        return ret;
+        return arr[FILM_URL_NR];
     }
 
     private void makeArr() {

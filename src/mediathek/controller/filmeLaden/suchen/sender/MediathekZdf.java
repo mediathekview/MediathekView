@@ -450,7 +450,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-356047809, "MediathekZdf.flash-3 " + senderName, "kein Host: " + urlFilm);
             } else {
                 url = "rtmpt://" + host + "/" + app + "/" + url;
-                ret = new DatenFilm(senderName, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit);
+                ret = new DatenFilm(senderName, thema, urlThema, titel, url, ""/* urlRtmp */, datum, zeit);
             }
         } catch (Exception ex) {
             Log.fehlerMeldungMReader(-860248073, "MediathekZdf.flash" + senderName, new String[]{ex.getMessage(), urlFilm});

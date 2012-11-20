@@ -161,7 +161,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
             }
             if (!urlFilm.equals("")) {
                 meldung(urlFilm);
-                addFilm(new DatenFilm(nameSenderMReader, thema, url, titel, urlFilm, urlFilm /* urlOrg */, "-r " + urlFilm + " --flashVer WIN11,4,402,265"/* urlRtmp */, datum/*datum*/, ""/*zeit*/));
+                addFilm(new DatenFilm(nameSenderMReader, thema, url, titel, urlFilm, "-r " + urlFilm + " --flashVer WIN11,4,402,265"/* urlRtmp */, datum/*datum*/, ""/*zeit*/));
             }
 
 

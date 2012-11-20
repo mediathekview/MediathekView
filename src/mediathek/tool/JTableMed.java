@@ -252,8 +252,7 @@ public final class JTableMed extends JTable {
         for (int i = 0; i < spaltenTabelle.length; ++i) {
             switch (tabelle) {
                 case TABELLE_TAB_FILME:
-                    if (i == DatenFilm.FILM_URL_ORG_NR
-                            || i == DatenFilm.FILM_URL_RTMP_NR
+                    if ( i == DatenFilm.FILM_URL_RTMP_NR
                             || i == DatenFilm.FILM_URL_AUTH_NR
                             || i == DatenFilm.FILM_URL_THEMA_NR) {
                         breite[i] = 0;

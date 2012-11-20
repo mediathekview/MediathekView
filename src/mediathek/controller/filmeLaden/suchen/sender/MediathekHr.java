@@ -290,7 +290,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                             datum = getDate(url);
                         }
                         // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String datum, String zeit) {
-                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, url, furl, datum, "");
+                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, furl, datum, "");
                         addFilm(film);
                     } else {
                         Log.fehlerMeldungMReader(-649882036, "MediathekHr.addFilme", "keine URL");
