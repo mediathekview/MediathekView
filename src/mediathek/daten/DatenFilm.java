@@ -31,7 +31,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final String FELD_INFO = "Feldinfo";
     public static final String FILME = "Filme";
     public static final String FILME_ = "X";
-    public static final int FILME_MAX_ELEM = 12;
+    public static final int FILME_MAX_ELEM = 11;
     //
     public static final String FILM_NR = "Nr"; // wird vor dem Speichern gelöscht!
     public static final int FILM_NR_NR = 0;
@@ -47,16 +47,16 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final int FILM_ZEIT_NR = 5;
     public static final String FILM_URL = "Url";
     public static final int FILM_URL_NR = 6;
-    public static final String FILM_URL_ORG = "UrlOrg";
+    //public static final String FILM_URL_ORG = "UrlOrg";
     //public static final int FILM_URL_ORG_NR = 7;
     public static final String FILM_URL_RTMP = "UrlRTMP";
-    public static final int FILM_URL_RTMP_NR = 8;
+    public static final int FILM_URL_RTMP_NR = 7;
     public static final String FILM_URL_AUTH = "UrlAuth";
-    public static final int FILM_URL_AUTH_NR = 9;
+    public static final int FILM_URL_AUTH_NR = 8;
     public static final String FILM_URL_THEMA = "UrlThema";//url des Themas zum nachladen
-    public static final int FILM_URL_THEMA_NR = 10;
+    public static final int FILM_URL_THEMA_NR = 9;
     public static final String FILM_ABO_NAME = "Abo-Name";// wird vor dem Speichern gelöscht!
-    public static final int FILM_ABO_NAME_NR = 11;
+    public static final int FILM_ABO_NAME_NR = 10;
     public static final String[] FILME_COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT /* f */,
         FILM_URL /* g*/ /*, FILM_URL_ORG  h*/, FILM_URL_RTMP, FILM_URL_AUTH, FILM_URL_THEMA, FILM_ABO_NAME /* l */};
     public static final String[] FILME_COLUMN_NAMES_ = {"a", "b", "c", "d", "e", "f", "g" /*, "h"*/, "i", "j", "k", "l"};
