@@ -302,7 +302,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
 
 
                                                     //addFilm(new DatenFilm(senderName, thema, strUrlFeed, titel, url, datum, zeit));
-                                                    addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, url, urlRtmp, datum, zeit));
+                                                    addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, urlRtmp, datum, zeit));
                                                 }
                                             }
                                         }

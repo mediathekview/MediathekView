@@ -96,9 +96,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             if (!start) {
                 if (!live) {
                     // bei livestreams keine History anzeigen
-                    if (history.contains(DatenFilm.getUrlOrg(table.getModel().getValueAt(r, DatenFilm.FILM_URL_RTMP_NR).toString(),
-                            table.getModel().getValueAt(r, DatenFilm.FILM_URL_ORG_NR).toString(),
-                            table.getModel().getValueAt(r, DatenFilm.FILM_URL_NR).toString()))) {
+                    if (history.contains(table.getModel().getValueAt(r, DatenFilm.FILM_URL_NR).toString())) {
                         if (isSelected) {
                             setBackground(GuiKonstanten.FARBE_GRAU_SEL);
                         } else {
@@ -111,7 +109,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(630098552,this.getClass().getName(), ex);
+            Log.fehlerMeldung(630098552, this.getClass().getName(), ex);
         }
         return this;
     }

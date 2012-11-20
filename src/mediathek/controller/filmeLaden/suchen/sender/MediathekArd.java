@@ -425,9 +425,9 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     String urlRtmp = "--host " + url1a + " --app " + url1b + " --playpath " + url2;
                     //flvstreamer --host vod.daserste.de --app ardfs --playpath mp4:videoportal/Film/c_100000/106579/format106899.f4v > bla.flv
                     //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
-                    film = new DatenFilm(nameSenderMReader, thema, urlFeed, titel, urlOrg, urlOrg /* orgUrl */, urlRtmp, datum, zeit);
+                    film = new DatenFilm(nameSenderMReader, thema, urlFeed, titel, urlOrg, urlRtmp, datum, zeit);
                 } else {
-                    film = new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url2 /* url */, ""/* urlOrg */, "" /* urlRtmp */, datum, zeit);
+                    film = new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url2 /* url */, "" /* urlRtmp */, datum, zeit);
                 }
                 addFilm(film);
                 ret = true;

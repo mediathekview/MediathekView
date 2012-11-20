@@ -94,8 +94,7 @@ public class DialogDatenFilm extends javax.swing.JDialog {
         int zeile = 0;
         for (int i = 0; i < DatenFilm.FILME_MAX_ELEM; ++i) {
             if (!daten.debug) {
-                if (i == DatenFilm.FILM_URL_RTMP_NR
-                        || i == DatenFilm.FILM_URL_ORG_NR) {
+                if (i == DatenFilm.FILM_URL_RTMP_NR) {
                     continue;
                 }
             }

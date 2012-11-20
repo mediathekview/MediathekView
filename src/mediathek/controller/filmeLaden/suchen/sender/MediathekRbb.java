@@ -159,7 +159,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                             String filmurl = seite3.substring(mpos, mpos2);
                             String urlRtmp = "--host ondemand.rbb-online.de --app ondemand/ --playpath " + filmurl;
                             String urlOrg = addsUrl("rtmp://ondemand.rbb-online.de/ondemand/", filmurl);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlOrg, urlOrg, urlRtmp, datum, ""/* zeit */);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlOrg, urlRtmp, datum, ""/* zeit */);
                             addFilm(film);
                         }
                         rpos = rpos2; // hinter Element gehts weiter

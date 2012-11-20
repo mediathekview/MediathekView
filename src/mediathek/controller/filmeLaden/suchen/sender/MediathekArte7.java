@@ -33,7 +33,7 @@ import mediathek.tool.Log;
  * @author
  */
 public class MediathekArte7 extends MediathekReader implements Runnable {
-    
+
     public static final String SENDER_ARTE_DE = "ARTE.DE";
     public static final String SENDER_ARTE_FR = "ARTE.FR";
     public static final String SENDER_ARTE = "ARTE";
@@ -64,12 +64,12 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     public String[] getNameSenderFilmliste() {
         return new String[]{SENDER_ARTE_DE, SENDER_ARTE_FR};
     }
-    
+
     @Override
     public boolean checkNameSenderFilmliste(String name) {
         return SENDER_ARTE_DE.equalsIgnoreCase(name) || SENDER_ARTE_FR.equalsIgnoreCase(name);
     }
-    
+
     @Override
     public synchronized void addToList() {
         try {
@@ -96,7 +96,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             Log.fehlerMeldungMReader(-782563914, "MediathekArte7.addToList_de_fr", ex.getMessage());
         }
     }
-    
+
 //    private boolean addToList__(String ADRESSE) {
 //        //Theman suchen
 //        boolean ret = false;
@@ -150,15 +150,14 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
 //        }
 //        return ret;
 //    }
-
     //===================================
     // private
     //===================================
     private class ArteThemaLaden implements Runnable {
-        
+
         String[] link = null;
         private StringBuffer strSeite1 = new StringBuffer();
-        
+
         @Override
         public void run() {
             try {
@@ -180,7 +179,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-251436904, "MediathekArte7.ArteThemaLaden.run", ex.getMessage());
             }
         }
-        
+
         private void themenSeitenSuchen(String strUrlFeed, String thema) {
             //weitere Seiten
             //<div class="pagination">
@@ -194,11 +193,11 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
 
             final String MUSTER_THEMA_START = "<div class=\"pagination";
             final String MUSTER_THEMA_STOP = "Weiter</a></li>";
-            
+
             final String MUSTER_THEMA_URL = "<li><a href=\"";
             final String MUSTER_URL = "<h2><a href=\"";
             final String URL_THEMA_PREFIX = "http://videos.arte.tv";
-            
+
             LinkedList<String> themenseiten = new LinkedList<String>();
             themenseiten.add(strUrlFeed); //erste Themenseite
             int count = 0;
@@ -286,12 +285,12 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             }
         }
     }
-    
+
     private class ArteFilmseitenLaden implements Runnable {
-        
+
         private StringBuffer strSeite2 = new StringBuffer();
         private StringBuffer strSeite3 = new StringBuffer();
-        
+
         @Override
         public synchronized void run() {
             try {
@@ -316,7 +315,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-381069831, "MediathekArte7.ArteFilmseitenLaden.run", ex.getMessage());
             }
         }
-        
+
         private void addFilme2(String strUrlFeed, String thema, String titel, String urlFilm) {
             //Film eines Themas laden
             // Muster zum Suchen:
@@ -371,7 +370,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 }
             }
         }
-        
+
         private void addFilme3(String strUrlFeed, String thema, String titel, String urlFilm, String authurl) {
             //Film eines Themas laden
             // Muster zum Suchen:
@@ -430,7 +429,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-693258440, "MediathekArte.addFilme3-2", "keine Url " + SENDER_ARTE_FR + " " + urlFilm);
             }
         }
-        
+
         private void addFilme4(String senderArte, String strUrlFeed, String thema, String titel, String urlFilm, String authurl) {
             //Film eines Themas laden
             // Muster zum Suchen:
@@ -492,7 +491,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                         Log.fehlerMeldungMReader(-306921883, "MediathekArte.addfilme4-2", "keine Url: " + senderArte + " " + urlFilm);
                     } else {
                         // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                        DatenFilm film = new DatenFilm(senderArte, thema, strUrlFeed, name, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit);
+                        DatenFilm film = new DatenFilm(senderArte, thema, strUrlFeed, name, url, ""/* urlRtmp */, datum, zeit);
                         film.arr[DatenFilm.FILM_URL_AUTH_NR] = authurl;
                         addFilm(film);
                     }
@@ -500,12 +499,12 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             }
         }
     }
-    
+
     private synchronized int getAddThemenLaufen(int addThema) {
         themenLaufen += addThema;
         return themenLaufen;
     }
-    
+
     private synchronized String[] getAddListeFilmseiten(String[] add) {
         if (add != null) {
             this.meldungAddMax(1);
@@ -515,7 +514,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             return listeFilmseiten.pollFirst();
         }
     }
-    
+
     private synchronized boolean istInListeFilmseiteFertig(String[] link) {
         boolean ret = false;
         //(String strUrlFeed, String thema, String titel, String urlFilm) {
