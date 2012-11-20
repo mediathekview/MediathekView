@@ -97,14 +97,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public DatenFilm getClean() {
-        DatenFilm ret = new DatenFilm();
-        for (int i = 0; i < arr.length; ++i) {
-            ret.arr[i] = new String(this.arr[i]);
-        }
         // vor dem Speichern nicht benötigte Felder löschen
-        ret.arr[FILM_NR_NR] = "";
-        ret.arr[FILM_ABO_NAME_NR] = "";
-        return ret;
+        arr[FILM_NR_NR] = "";
+        arr[FILM_ABO_NAME_NR] = "";
+        arr[FILM_URL_ORG_NR] = "";
+        return this;
     }
 
     public DatenFilm getCopy() {
