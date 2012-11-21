@@ -40,14 +40,16 @@ public class MediathekNoGui {
     private String pfad = "";
     private Daten daten;
     private boolean serverLaufen = false;
+    private File logfile = null;
 
-    public MediathekNoGui(String ppfad, boolean aallesLaden, String ooutput, String iimprtUrl, String uuserAgent) {
+    public MediathekNoGui(String ppfad, boolean aallesLaden, String ooutput, String iimprtUrl, String uuserAgent, File log) {
         // NUR für den Start vom MediathekServer
         pfad = ppfad;
         allesLaden = aallesLaden;
         output = ooutput;
         importUrl = iimprtUrl;
         userAgent = uuserAgent;
+        logfile = log;
         serverLaufen = true;
     }
 
@@ -94,6 +96,9 @@ public class MediathekNoGui {
             Log.systemMeldung("Filme laden: alles laden");
         } else {
             Log.systemMeldung("Filme laden: nur update laden");
+        }
+        if (logfile!=null) {
+            Log.setLogFile(logfile);
         }
         Log.systemMeldung("ImportUrl: " + importUrl);
         Log.systemMeldung("Outputfile: " + output);
