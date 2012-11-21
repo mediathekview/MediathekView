@@ -28,6 +28,7 @@ public class Main {
     public static final String STARTP_USER_AGENT = "-agent";
     public static final String STARTP_EXPORT_DATEI = "-o";
     public static final String STARTP_IMPORT_URL = "-i";
+    public static final String STARTP_LOGFILE = "-log";
 
     /*
      * Aufruf:

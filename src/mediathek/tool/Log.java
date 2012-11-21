@@ -19,6 +19,9 @@
  */
 package mediathek.tool;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -41,14 +44,16 @@ public class Log {
     private static boolean prog = false;
     private static Date startZeit = new Date(System.currentTimeMillis());
     private static Date stopZeit = null;
+    private static File logfile = null;
 
     public void resetFehlerListe() {
         fehlerListe.clear();
     }
 
-//    public static void addAdListener(ListenerMediathekView listener) {
-//        listeners.add(ListenerMediathekView.class, listener);
-//    }
+    public static void setLogFile(File log) {
+        logfile = log;
+    }
+
     public static synchronized void versionsMeldungen(String classname) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         Log.systemMeldung("");
@@ -302,6 +307,35 @@ public class Log {
             notifyMediathekListener(LOG_SYSTEM, " ");
             System.out.println(z + zeile);
         }
+        logFileSchreiben(texte);
+    }
+
+    private synchronized static void logFileSchreiben(String[] texte) {
+        // ins Logfile eintragen
+        if (logfile != null) {
+            OutputStreamWriter writer = null;
+            try {
+                writer = new OutputStreamWriter(new FileOutputStream(logfile, true));
+                for (int i = 0; i < texte.length; ++i) {
+                    String s = texte[i];
+                    if (s.equals("")) {
+                        writer.write("\n"); // nur leere Zeile schrieben
+                    } else {
+                        writer.write(DatumZeit.getJetzt_ddMMyyyy_HHmm() + "     " + s);
+                        writer.write("\n");
+                    }
+                }
+                writer.close();
+            } catch (Exception ex) {
+                System.out.println("Fehler beim Logfile schreiben: " + ex.getMessage());
+            } finally {
+                try {
+                    writer.close();
+                } catch (Exception ex) {
+                }
+            }
+        }
+
     }
 
     private static void playermeldung(String[] texte) {
@@ -326,8 +360,11 @@ public class Log {
             textSystem.setLength(0);
         } else if (art == LOG_PLAYER) {
             textProgramm.setLength(0);
+
+
         }
-        ListenerMediathekView.notify(art, Log.class.getName());
+        ListenerMediathekView.notify(art, Log.class
+                .getName());
 //        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
 //            if (l.ereignis == art) {
 //                l.ping();
@@ -342,8 +379,11 @@ public class Log {
             addText(textSystem, zeile);
         } else if (art == LOG_PLAYER) {
             addText(textProgramm, zeile);
+
+
         }
-        ListenerMediathekView.notify(art, Log.class.getName());
+        ListenerMediathekView.notify(art, Log.class
+                .getName());
 //        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
 //            if (l.ereignis == art) {
 //                l.ping();
