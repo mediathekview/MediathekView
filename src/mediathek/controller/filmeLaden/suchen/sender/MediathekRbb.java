@@ -25,6 +25,7 @@ import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
 public class MediathekRbb extends MediathekReader implements Runnable {
@@ -40,8 +41,8 @@ public class MediathekRbb extends MediathekReader implements Runnable {
     void addToList() {
         int pos1 = 0;
         int pos2;
-        StringBuffer seite1 = new StringBuffer();
-        StringBuffer seite2 = new StringBuffer();
+        StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         final String ADRESSE = "http://mediathek.rbb-online.de/fernsehen";
         final String ITEM_1 = "<a href=\"/rbb/servlet/ajax-cache/";
         final String ITEM_URL = "http://mediathek.rbb-online.de/rbb/servlet/ajax-cache/";
@@ -91,9 +92,9 @@ public class MediathekRbb extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer();
-        private StringBuffer seite2 = new StringBuffer();
-        private StringBuffer seite3 = new StringBuffer();
+        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seite3 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {

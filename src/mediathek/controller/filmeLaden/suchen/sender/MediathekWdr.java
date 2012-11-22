@@ -25,6 +25,7 @@ import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
 /**
@@ -82,7 +83,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         final String MUSTER_URL = "<a href=\"";
         final String START = "<h2>Sendungen A-Z</h2>";
         final String ENDE = "<h2>Themen</h2>";
-        StringBuffer strSeite = new StringBuffer();
+        StringBuffer strSeite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         strSeite = getUrlIo.getUri_Iso(nameSenderMReader, ADRESSE, strSeite, "");
         int pos;
         int pos1;
@@ -155,9 +156,9 @@ public class MediathekWdr extends MediathekReader implements Runnable {
     private class SenderThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer strSeite1 = new StringBuffer();
-        private StringBuffer strSeite2 = new StringBuffer();
-        private StringBuffer strVideoSeite = new StringBuffer();
+        private StringBuffer strSeite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer strSeite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer strVideoSeite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {

@@ -48,7 +48,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
         final String MUSTER_URL = "?documentId=";
         final String MUSTER_THEMA = "{ \"titel\": \"";
         listeThemen.clear();
-        StringBuffer seite = new StringBuffer();
+        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         meldungStart();
         seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, "" /* Meldung */);
         if (seite.length() == 0) {
@@ -125,10 +125,10 @@ public class MediathekArd extends MediathekReader implements Runnable {
 
         public ArdThemaLaden() {
         }
-        private StringBuffer seite1 = new StringBuffer();
-        private StringBuffer seiteFehler = new StringBuffer();
-        private StringBuffer seiteWeiter = new StringBuffer();
-        private StringBuffer seite2 = new StringBuffer();
+        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seiteFehler = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seiteWeiter = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public synchronized void run() {

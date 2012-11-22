@@ -33,7 +33,7 @@ import mediathek.tool.Log;
 public class MediathekZdf extends MediathekReader implements Runnable {
 
     public static final String SENDER = "ZDF";
-    private StringBuffer seite = new StringBuffer();
+    private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
     private final int ANZAHL_ZDF_ALLE = 500;
     private final int ANZAHL_ZDF_UPDATE = 20;
     private final int ANZAHL_ZDF_KURZ = 10;
@@ -83,7 +83,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         final String MUSTER_URL = "<p><b><a href=\"/ZDFmediathek/kanaluebersicht/aktuellste/";
         //GetUrl(int ttimeout, long wwartenBasis) {
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        StringBuffer seiteR = new StringBuffer();
+        StringBuffer seiteR = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         seiteR = getUrl.getUri(nameSenderMReader, addr, Konstanten.KODIERUNG_UTF, 6 /* versuche */, seiteR, "" /* Meldung */);
         if (seiteR.length() == 0) {
             Log.fehlerMeldungMReader(-774200364, "MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
@@ -177,8 +177,8 @@ public class MediathekZdf extends MediathekReader implements Runnable {
     private class ZdfThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer();
-        private StringBuffer seite2 = new StringBuffer();
+        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {
@@ -371,24 +371,25 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             orgUrl = orgUrl.replace("http://wgeostreaming.zdf.de", "http://fgeostreaming.zdf.de");
             orgUrl = orgUrl.replace(".asx", ".smil");
             seiteFlash = getUrl.getUri_Utf(senderName, orgUrl, seiteFlash, "urlThema: " + urlThema);
-            if ((pos1 = seiteFlash.indexOf(MUSTER_HOST, 0)) != -1) {
+            String strSeiteFlash = seiteFlash.toString();
+            if ((pos1 = strSeiteFlash.indexOf(MUSTER_HOST, 0)) != -1) {
                 pos1 += MUSTER_HOST.length();
-                if ((pos2 = seiteFlash.indexOf("\"", pos1)) != -1) {
-                    host = seiteFlash.substring(pos1, pos2);
+                if ((pos2 = strSeiteFlash.indexOf("\"", pos1)) != -1) {
+                    host = strSeiteFlash.substring(pos1, pos2);
                 }
             }
-            if ((pos1 = seiteFlash.indexOf(MUSTER_APP, 0)) != -1) {
+            if ((pos1 = strSeiteFlash.indexOf(MUSTER_APP, 0)) != -1) {
                 pos1 += MUSTER_APP.length();
-                if ((pos2 = seiteFlash.indexOf("\"", pos1)) != -1) {
-                    app = seiteFlash.substring(pos1, pos2);
+                if ((pos2 = strSeiteFlash.indexOf("\"", pos1)) != -1) {
+                    app = strSeiteFlash.substring(pos1, pos2);
                 }
             }
             pos1 = 0;
             boolean gefunden = false;
-            while ((pos1 = seiteFlash.indexOf(MUSTER_URL, pos1)) != -1) {
+            while ((pos1 = strSeiteFlash.indexOf(MUSTER_URL, pos1)) != -1) {
                 pos1 += MUSTER_URL.length();
-                if ((pos2 = seiteFlash.indexOf("\"", pos1)) != -1) {
-                    tmpUrl = seiteFlash.substring(pos1, pos2);
+                if ((pos2 = strSeiteFlash.indexOf("\"", pos1)) != -1) {
+                    tmpUrl = strSeiteFlash.substring(pos1, pos2);
                 }
                 if (url.equals("")) {
                     url = tmpUrl;
@@ -413,11 +414,11 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 //<param name="quality" value="veryhigh" />
                 //</video>
                 pos1 = 0;
-                while ((pos1 = seiteFlash.indexOf(MUSTER_URL, pos1)) != -1) {
+                while ((pos1 = strSeiteFlash.indexOf(MUSTER_URL, pos1)) != -1) {
                     int max = 0;
                     pos1 += MUSTER_URL.length();
-                    if ((pos2 = seiteFlash.indexOf("\"", pos1)) != -1) {
-                        tmpUrl = seiteFlash.substring(pos1, pos2);
+                    if ((pos2 = strSeiteFlash.indexOf("\"", pos1)) != -1) {
+                        tmpUrl = strSeiteFlash.substring(pos1, pos2);
                     }
                     if (url.equals("")) {
                         url = tmpUrl;

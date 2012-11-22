@@ -27,6 +27,7 @@ import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
 /**
@@ -58,7 +59,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
         final String MUSTER_ADD = "http://www.mdr.de/mediathek/fernsehen/a-z/sendungenabisz100_letter-";
         final String MUSTER_TAGE = "<a href=\"/mediathek/fernsehen/sendungverpasst100-multiGroupClosed_boxIndex-";
         final String MUSTER_ADD_TAGE = "http://www.mdr.de/mediathek/fernsehen/sendungverpasst100-multiGroupClosed_boxIndex-";
-        StringBuffer seite = new StringBuffer();
+        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         listeThemen.clear();
         listeTage.clear();
         listeGesucht.clear();
@@ -117,10 +118,10 @@ public class MediathekMdr extends MediathekReader implements Runnable {
     private class MdrThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer();
-        private StringBuffer seite2 = new StringBuffer();
-        private StringBuffer seite3 = new StringBuffer();
-        private StringBuffer seite4 = new StringBuffer();
+        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seite3 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seite4 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {

@@ -50,7 +50,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         final String MUSTER_URL1 = "<broadcast id=\"";
         listeThemen.clear();
         meldungStart();
-        StringBuffer seite = new StringBuffer();
+        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, ""/* meldung */);
         int pos = 0;
         int pos1;
@@ -109,8 +109,8 @@ public class MediathekNdr extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer();
-        private StringBuffer seite2 = new StringBuffer();
+        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public synchronized void run() {

@@ -23,6 +23,7 @@ import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
 /**
@@ -33,7 +34,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
 
     public static final String SENDER = "SF";
     private final int MAX_FILME_THEMA = 5;
-    private StringBuffer seite = new StringBuffer();
+    private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
     /**
      *
@@ -94,8 +95,8 @@ public class MediathekSf extends MediathekReader implements Runnable {
     private class SfThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer();
-        private StringBuffer seite2 = new StringBuffer();
+        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {

@@ -24,6 +24,7 @@ import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
 public class Mediathek3Sat extends MediathekReader implements Runnable {
@@ -40,7 +41,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
         final String ADRESSE = "http://www.3sat.de/page/?source=/specials/133576/index.html";
         final String MUSTER_URL = "<a href=\"/mediaplayer/rss/mediathek";
         listeThemen.clear();
-        StringBuffer seite = new StringBuffer();
+        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         meldungStart();
         //seite = new GetUrl(daten).getUriArd(ADRESSE, seite, "");
         seite = getUrlIo.getUri_Iso(nameSenderMReader, ADRESSE, seite, "");
@@ -84,8 +85,8 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer();
-        private StringBuffer seite2 = new StringBuffer();
+        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public synchronized void run() {
