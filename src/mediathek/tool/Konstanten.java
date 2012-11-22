@@ -50,6 +50,7 @@ public class Konstanten {
     public static final String LEITUNG_DSL1000 = "dsl1000";
     public static final String LEITUNG_DSL2000 = "dsl2000";
     public static final int MAX_SENDER_FILME_LADEN = 2;//es können maximal soviele Filme eines Senders/Servers gleichzeitig geladen werden
+    public static final int STRING_BUFFER_START_BUFFER = 10 * 1024 * 8; // 10kb
     // ################################
     // Tags System
     // ################################

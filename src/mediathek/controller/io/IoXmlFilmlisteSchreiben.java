@@ -89,20 +89,31 @@ public class IoXmlFilmlisteSchreiben {
         //Filme schreiben
         ListIterator<DatenFilm> iterator;
         DatenFilm datenFilm;
-        DatenFilm datenFilmAlt = new DatenFilm();
-        DatenFilm kopie;
+        String sender = "", thema = "";
+//        DatenFilm datenFilmAlt = new DatenFilm();
+//        DatenFilm kopie;
         iterator = listeFilme.listIterator();
         while (iterator.hasNext()) {
             datenFilm = iterator.next();
-            kopie = datenFilm.getCopy();
-            if (kopie.arr[DatenFilm.FILM_SENDER_NR].equals(datenFilmAlt.arr[DatenFilm.FILM_SENDER_NR])) {
-                kopie.arr[DatenFilm.FILM_SENDER_NR] = "";
+            if (!sender.equals(datenFilm.arr[DatenFilm.FILM_SENDER_NR])) {
+                sender = datenFilm.arr[DatenFilm.FILM_SENDER_NR];
+            } else {
+                datenFilm.arr[DatenFilm.FILM_SENDER_NR] = "";
             }
-            if (kopie.arr[DatenFilm.FILM_THEMA_NR].equals(datenFilmAlt.arr[DatenFilm.FILM_THEMA_NR])) {
-                kopie.arr[DatenFilm.FILM_THEMA_NR] = "";
+            if (!thema.equals(datenFilm.arr[DatenFilm.FILM_THEMA_NR])) {
+                thema = datenFilm.arr[DatenFilm.FILM_THEMA_NR];
+            } else {
+                datenFilm.arr[DatenFilm.FILM_THEMA_NR] = "";
             }
-            xmlSchreibenDaten(DatenFilm.FILME_, DatenFilm.FILME_COLUMN_NAMES_, kopie.getClean().arr);
-            datenFilmAlt = datenFilm;
+//            kopie = datenFilm.getCopy();
+//            if (kopie.arr[DatenFilm.FILM_SENDER_NR].equals(datenFilmAlt.arr[DatenFilm.FILM_SENDER_NR])) {
+//                kopie.arr[DatenFilm.FILM_SENDER_NR] = "";
+//            }
+//            if (kopie.arr[DatenFilm.FILM_THEMA_NR].equals(datenFilmAlt.arr[DatenFilm.FILM_THEMA_NR])) {
+//                kopie.arr[DatenFilm.FILM_THEMA_NR] = "";
+//            }
+            xmlSchreibenDaten(DatenFilm.FILME_, DatenFilm.FILME_COLUMN_NAMES_, datenFilm.getClean().arr);
+//            datenFilmAlt = datenFilm;
         }
     }
 

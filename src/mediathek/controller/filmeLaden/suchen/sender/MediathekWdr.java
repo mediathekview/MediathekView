@@ -29,7 +29,7 @@ import mediathek.tool.Log;
 
 /**
  *
- *    @author
+ * @author
  */
 public class MediathekWdr extends MediathekReader implements Runnable {
 
@@ -40,8 +40,8 @@ public class MediathekWdr extends MediathekReader implements Runnable {
 
     /**
      *
-     *    @param ddaten
-     *    @param dde
+     * @param ddaten
+     * @param dde
      */
     public MediathekWdr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
@@ -157,6 +157,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer strSeite1 = new StringBuffer();
         private StringBuffer strSeite2 = new StringBuffer();
+        private StringBuffer strVideoSeite = new StringBuffer();
 
         @Override
         public void run() {
@@ -183,7 +184,6 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             final String ROOTADR = "http://www.wdr.de";
             final String ITEM_1 = "<a href=\"/tv/rockpalast/extra/videos";
             // <li><a href="/tv/rockpalast/extra/videos/2009/0514/trail_of_dead.jsp">...And you will know us by the Trail Of Dead (2009)</a></li>
-            StringBuffer strVideoSeite = new StringBuffer();
             int pos = 0;
             strVideoSeite = getUrl.getUri_Iso(nameSenderMReader, ROCKPALAST_URL, strVideoSeite, "");
             try {

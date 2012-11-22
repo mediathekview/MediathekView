@@ -39,6 +39,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "HR";
     private StringBuffer seite = new StringBuffer();
+    private StringBuffer rubrikSeite = new StringBuffer();
 
     /**
      *
@@ -54,7 +55,6 @@ public class MediathekHr extends MediathekReader implements Runnable {
     @Override
     public void addToList() {
         final String MUSTER = "sendEvent('load','";
-        listeThemen.clear();
         meldungStart();
         seite = getUrlIo.getUri_Utf(nameSenderMReader, "http://www.hr-online.de/website/fernsehen/sendungen/index.jsp", seite, "");
         int pos = 0;
@@ -114,7 +114,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
         final String MUSTER = "\"http%3A%2F%2Fwww.hr-online.de%2Fwebsite%2Fincludes%2Fmedianew-playlist.xml.jsp%3Flogic%3Dstart_multimedia_document_logic";
         final String MUSTER_TITEL = "<meta property=\"og:title\" content=\"";
 
-        StringBuffer rubrikSeite = getUrlIo.getUri_Iso(nameSenderMReader, rubrikUrl, new StringBuffer(), "");
+        rubrikSeite = getUrlIo.getUri_Iso(nameSenderMReader, rubrikUrl, rubrikSeite, "");
         int pos = 0;
         int pos2;
         String url;
