@@ -62,24 +62,25 @@ public class MediathekOrf extends MediathekReader implements Runnable {
 
     @Override
     void addToList() {
+        StringBuffer seite = new StringBuffer();
         listeThemen.clear();
         meldungStart();
-        bearbeiteAdresse(TOPICURL);
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/archiv");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/wednesday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/thursday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/friday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday_prev");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday_prev");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/wednesday_prev");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/thursday_prev");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/friday_prev");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday_prev");
-        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday_prev");
+        bearbeiteAdresse(TOPICURL, seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/archiv", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/wednesday", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/thursday", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/friday", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/monday_prev", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/tuesday_prev", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/wednesday_prev", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/thursday_prev", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/friday_prev", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/saturday_prev", seite);
+        bearbeiteAdresse("http://tvthek.orf.at/schedule/last/sunday_prev", seite);
         if (Daten.filmeLaden.getStop()) {
             meldungThreadUndFertig();
         } else if (listeThemen.size() == 0) {
@@ -96,12 +97,12 @@ public class MediathekOrf extends MediathekReader implements Runnable {
     /**
      * @param adresse Starter-URL von dem aus Sendungen gefunden werden
      */
-    private void bearbeiteAdresse(String adresse) {
+    private void bearbeiteAdresse(String adresse, StringBuffer seite) {
         //System.out.println("bearbeiteAdresse: " + adresse);
         final String MUSTER_URL1 = "<a href=\""; //TH
         final String MUSTER_URL2 = "/programs/";
         final String MUSTER_URL2b = "/topics/"; //TH
-        StringBuffer seite = getUrlIo.getUri(nameSenderMReader, adresse, Konstanten.KODIERUNG_UTF, 3, new StringBuffer(), "");
+        seite = getUrlIo.getUri(nameSenderMReader, adresse, Konstanten.KODIERUNG_UTF, 3, seite, "");
         int pos = 0;
         int pos1;
         int pos2;
@@ -164,6 +165,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
         if (adresse.equals(TOPICURL)) {
             final String MUSTERURL_MORE = "<a class=\"more\" href=\"";
             pos = 0;
+            StringBuffer s2 = new StringBuffer(); // zum Reduzieren der StringBuffer
             while ((pos = seite.indexOf(MUSTERURL_MORE, pos)) != -1) {
                 try {
                     pos += MUSTERURL_MORE.length();
@@ -172,7 +174,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                     if (pos1 != -1 && pos2 != -1) {
                         url = ROOTURL + seite.substring(pos1, pos2);
                         if (!url.equals(adresse)) {
-                            bearbeiteAdresse(url);
+                            bearbeiteAdresse(url, s2);
                         }
                     }
                 } catch (Exception ex) {
@@ -186,7 +188,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer();
-        private StringBuffer seiteAsx = new StringBuffer();
+        //private StringBuffer seiteAsx = new StringBuffer();
 
         @Override
         public synchronized void run() {

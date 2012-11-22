@@ -22,7 +22,6 @@ package mediathek.daten;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import mediathek.tool.GermanStringSorter;
-import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Log;
 
 public class DatenFilm implements Comparable<DatenFilm> {
