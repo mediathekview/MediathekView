@@ -25,6 +25,7 @@ import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.Konstanten;
 
 /**
  *
@@ -49,7 +50,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
         final String MUSTER_THEMA = "{ \"titel\": \"";
         final String MUSTER_SET = "http://www.ardmediathek.de";
         listeThemen.clear();
-        StringBuffer seite = new StringBuffer();
+        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         meldungStart();
         seite = getUrlIo.getUri_Utf(nameSenderMReader, ADRESSE, seite, "");
         int pos = 0;
@@ -101,8 +102,8 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
     private class ArdThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite = new StringBuffer();
-        private StringBuffer seite2 = new StringBuffer();
+        private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public synchronized void run() {

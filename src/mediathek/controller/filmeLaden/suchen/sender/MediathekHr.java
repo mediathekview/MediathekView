@@ -30,6 +30,7 @@ import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Datum;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Konstanten;
 
 /**
  *
@@ -38,8 +39,8 @@ import mediathek.tool.GuiFunktionen;
 public class MediathekHr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "HR";
-    private StringBuffer seite = new StringBuffer();
-    private StringBuffer rubrikSeite = new StringBuffer();
+    private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+    private StringBuffer rubrikSeite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
     /**
      *
@@ -204,7 +205,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
     private class HrThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer();
+        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         //private StringBuffer seite2 = new StringBuffer();
 
         @Override

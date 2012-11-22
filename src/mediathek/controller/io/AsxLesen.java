@@ -36,7 +36,7 @@ public class AsxLesen {
             return datei;
         }
         String url = datei;
-        StringBuffer seite = new StringBuffer();
+        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         String kodierung = Konstanten.KODIERUNG_UTF;
         int timeout = 20000; //10 Sekunden
         char[] zeichen = new char[1];

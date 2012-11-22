@@ -156,7 +156,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     private class ArteThemaLaden implements Runnable {
 
         String[] link = null;
-        private StringBuffer strSeite1 = new StringBuffer();
+        private StringBuffer strSeite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {
@@ -288,8 +288,8 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
 
     private class ArteFilmseitenLaden implements Runnable {
 
-        private StringBuffer strSeite2 = new StringBuffer();
-        private StringBuffer strSeite3 = new StringBuffer();
+        private StringBuffer strSeite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer strSeite3 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public synchronized void run() {

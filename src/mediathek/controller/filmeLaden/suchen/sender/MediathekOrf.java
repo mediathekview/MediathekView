@@ -62,7 +62,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
 
     @Override
     void addToList() {
-        StringBuffer seite = new StringBuffer();
+        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         listeThemen.clear();
         meldungStart();
         bearbeiteAdresse(TOPICURL, seite);
@@ -165,7 +165,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
         if (adresse.equals(TOPICURL)) {
             final String MUSTERURL_MORE = "<a class=\"more\" href=\"";
             pos = 0;
-            StringBuffer s2 = new StringBuffer(); // zum Reduzieren der StringBuffer
+            StringBuffer s2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER); // zum Reduzieren der StringBuffer
             while ((pos = seite.indexOf(MUSTERURL_MORE, pos)) != -1) {
                 try {
                     pos += MUSTERURL_MORE.length();
@@ -187,7 +187,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
     private class OrfThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer();
+        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         //private StringBuffer seiteAsx = new StringBuffer();
 
         @Override
