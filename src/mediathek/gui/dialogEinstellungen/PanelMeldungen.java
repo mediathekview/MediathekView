@@ -21,9 +21,10 @@ package mediathek.gui.dialogEinstellungen;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.text.DefaultCaret;
 import mediathek.daten.DDaten;
-import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
@@ -31,6 +32,7 @@ public class PanelMeldungen extends PanelVorlage {
 
     private StringBuffer text;
     private int logArt;
+    int zeilenNr = 1;
 
     /**
      * Creates new form GuiFeed
@@ -60,17 +62,60 @@ public class PanelMeldungen extends PanelVorlage {
                 setText();
             }
         });
-
-
         jButtonLoeschen.addActionListener(new BeobLoeschen());
+        jCheckBoxAuto.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setAuto();
+            }
+        });
+        jCheckBoxZeilen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setLineWrab();
+            }
+        });
+        setAuto();
+        setLineWrab();
+    }
+
+    private void setAuto() {
+        if (jCheckBoxAuto.isSelected()) {
+            DefaultCaret caret = (DefaultCaret) jTextArea.getCaret();
+            caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        } else {
+            DefaultCaret caret = (DefaultCaret) jTextArea.getCaret();
+            caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+        }
+    }
+
+    private void setLineWrab() {
+        jTextArea.setLineWrap(jCheckBoxZeilen.isSelected());
+        jTextArea.setWrapStyleWord(false);
+        setText();
     }
 
     private void setText() {
-        jTextArea.setText(text.toString());
-        if (jCheckBoxAuto.isSelected()) {
-            jTextArea.setCaretPosition(jTextArea.getDocument().getLength());
-        }
+        String s = text.toString();
+//        if (jCheckBoxAuto.isSelected() && jTextArea.getLineWrap()) {
+//            StringBuilder b = new StringBuilder(s.length() + 200);
+//            for (int i = 0; i < s.length(); i++) {
+//                String t = s.substring(i, i + 1);
+//                if (t.equals("\n")) {
+//                    b.append("\n").append(getNr(zeilenNr++)).append(" ");
+//                } else {
+//                    b.append(t);
+//                }
+//            }
+//            s = b.toString();
+//        }
+        jTextArea.setText(s);
+//        if (jCheckBoxAuto.isSelected()) {
+//            jTextArea.setCaretPosition(jTextArea.getDocument().getLength());
+//        }
     }
+
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -79,9 +124,13 @@ public class PanelMeldungen extends PanelVorlage {
         jTextArea = new javax.swing.JTextArea();
         jLabelHeader = new javax.swing.JLabel();
         jCheckBoxAuto = new javax.swing.JCheckBox();
+        jCheckBoxZeilen = new javax.swing.JCheckBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
 
         jButtonLoeschen.setText("löschen");
 
+        jTextArea.setEditable(false);
         jTextArea.setColumns(20);
         jTextArea.setRows(5);
         jScrollPane.setViewportView(jTextArea);
@@ -91,19 +140,26 @@ public class PanelMeldungen extends PanelVorlage {
         jCheckBoxAuto.setSelected(true);
         jCheckBoxAuto.setText("Autoscroll");
 
+        jCheckBoxZeilen.setText("Zeilen umbrechen");
+
+        jScrollPane1.setViewportView(jTextPane1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(jCheckBoxAuto)
+                        .addGap(18, 18, 18)
+                        .addComponent(jCheckBoxZeilen)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonLoeschen))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(jLabelHeader)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -114,20 +170,26 @@ public class PanelMeldungen extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jLabelHeader)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+                .addComponent(jScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonLoeschen)
-                    .addComponent(jCheckBoxAuto))
+                    .addComponent(jCheckBoxAuto)
+                    .addComponent(jCheckBoxZeilen))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonLoeschen;
     private javax.swing.JCheckBox jCheckBoxAuto;
+    private javax.swing.JCheckBox jCheckBoxZeilen;
     private javax.swing.JLabel jLabelHeader;
     private javax.swing.JScrollPane jScrollPane;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea;
+    private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
 
     private class BeobLoeschen implements ActionListener {
