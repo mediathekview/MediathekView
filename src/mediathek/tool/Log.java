@@ -39,7 +39,10 @@ public class Log {
     public static StringBuffer textSystem = new StringBuffer();
     public static StringBuffer textProgramm = new StringBuffer();
     public static StringBuffer textFehler = new StringBuffer();
-//    private static EventListenerList listeners = new EventListenerList();
+    private static int zeilenNrSystem = 0;
+    private static int zeilenNrProgramm = 0;
+    private static int zeilenNrFehler = 0;
+    //    private static EventListenerList listeners = new EventListenerList();
     private static LinkedList<Integer[]> fehlerListe = new LinkedList<Integer[]>(); // [Fehlernummer, Anzahl]
     private static boolean prog = false;
     private static Date startZeit = new Date(System.currentTimeMillis());
@@ -355,40 +358,37 @@ public class Log {
 
     public static void clearText(int art) {
         if (art == LOG_FEHLER) {
+            zeilenNrFehler = 0;
             textFehler.setLength(0);
         } else if (art == LOG_SYSTEM) {
+            zeilenNrSystem = 0;
             textSystem.setLength(0);
         } else if (art == LOG_PLAYER) {
+            zeilenNrProgramm = 0;
             textProgramm.setLength(0);
-
-
         }
-        ListenerMediathekView.notify(art, Log.class
-                .getName());
-//        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
-//            if (l.ereignis == art) {
-//                l.ping();
-//            }
-//        }
+        ListenerMediathekView.notify(art, Log.class.getName());
     }
 
     private static void notifyMediathekListener(int art, String zeile) {
         if (art == LOG_FEHLER) {
-            addText(textFehler, zeile);
+            addText(textFehler, "[" + getNr(zeilenNrFehler++) + "]   " + zeile);
         } else if (art == LOG_SYSTEM) {
-            addText(textSystem, zeile);
+            addText(textSystem, "[" + getNr(zeilenNrSystem++) + "]   " + zeile);
         } else if (art == LOG_PLAYER) {
-            addText(textProgramm, zeile);
-
-
+            addText(textProgramm, "[" + getNr(zeilenNrProgramm++) + "]   " + zeile);
         }
-        ListenerMediathekView.notify(art, Log.class
-                .getName());
-//        for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
-//            if (l.ereignis == art) {
-//                l.ping();
-//            }
-//        }
+        ListenerMediathekView.notify(art, Log.class.getName());
+    }
+
+    private static String getNr(int nr) {
+        final int MAX_STELLEN = 5;
+        final String FUELL_ZEICHEN = "0";
+        String str = String.valueOf(nr);
+        while (str.length() < MAX_STELLEN) {
+            str = FUELL_ZEICHEN + str;
+        }
+        return str;
     }
 
     private static void addText(StringBuffer text, String texte) {

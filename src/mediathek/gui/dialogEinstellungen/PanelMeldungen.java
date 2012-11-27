@@ -19,12 +19,17 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JEditorPane;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
@@ -33,12 +38,18 @@ public class PanelMeldungen extends PanelVorlage {
     private StringBuffer text;
     private int logArt;
     int zeilenNr = 1;
+    final static SimpleAttributeSet BLUE = new SimpleAttributeSet();
+    final static SimpleAttributeSet DEFAULT = new SimpleAttributeSet();
 
-    /**
-     * Creates new form GuiFeed
-     *
-     * @param d
-     */
+    static {
+        StyleConstants.setForeground(BLUE, Color.blue);
+        //StyleConstants.setFontFamily(BLUE, "Helvetica");
+        //StyleConstants.setFontSize(BLUE, 12);
+        StyleConstants.setForeground(DEFAULT, Color.black);
+        //StyleConstants.setFontFamily(DEFAULT, "Helvetica");
+        //StyleConstants.setFontSize(DEFAULT, 12);
+    }
+
     public PanelMeldungen(DDaten d, StringBuffer ttext, int llogArt, String header) {
         super(d);
         initComponents();
@@ -47,15 +58,6 @@ public class PanelMeldungen extends PanelVorlage {
         logArt = llogArt;
         setText();
         //init
-//        Log.addAdListener(new ListenerMediathekView() {
-//
-//            @Override
-//            public void ping(String fromm) {
-//                if (logArt.equals(fromm)) {
-//                    setText();
-//                }
-//            }
-//        });
         ListenerMediathekView.addListener(new ListenerMediathekView(logArt, PanelMeldungen.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -115,7 +117,6 @@ public class PanelMeldungen extends PanelVorlage {
 //        }
     }
 
-
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -125,8 +126,6 @@ public class PanelMeldungen extends PanelVorlage {
         jLabelHeader = new javax.swing.JLabel();
         jCheckBoxAuto = new javax.swing.JCheckBox();
         jCheckBoxZeilen = new javax.swing.JCheckBox();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
 
         jButtonLoeschen.setText("löschen");
 
@@ -142,24 +141,21 @@ public class PanelMeldungen extends PanelVorlage {
 
         jCheckBoxZeilen.setText("Zeilen umbrechen");
 
-        jScrollPane1.setViewportView(jTextPane1);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jCheckBoxAuto)
                         .addGap(18, 18, 18)
                         .addComponent(jCheckBoxZeilen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
                         .addComponent(jButtonLoeschen))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelHeader)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -170,10 +166,8 @@ public class PanelMeldungen extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jLabelHeader)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonLoeschen)
                     .addComponent(jCheckBoxAuto)
@@ -187,9 +181,7 @@ public class PanelMeldungen extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxZeilen;
     private javax.swing.JLabel jLabelHeader;
     private javax.swing.JScrollPane jScrollPane;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea;
-    private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
 
     private class BeobLoeschen implements ActionListener {
