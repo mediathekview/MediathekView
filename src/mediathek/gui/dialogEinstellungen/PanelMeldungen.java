@@ -19,15 +19,9 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JEditorPane;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.ListenerMediathekView;
@@ -37,18 +31,6 @@ public class PanelMeldungen extends PanelVorlage {
 
     private StringBuffer text;
     private int logArt;
-    int zeilenNr = 1;
-    final static SimpleAttributeSet BLUE = new SimpleAttributeSet();
-    final static SimpleAttributeSet DEFAULT = new SimpleAttributeSet();
-
-    static {
-        StyleConstants.setForeground(BLUE, Color.blue);
-        //StyleConstants.setFontFamily(BLUE, "Helvetica");
-        //StyleConstants.setFontSize(BLUE, 12);
-        StyleConstants.setForeground(DEFAULT, Color.black);
-        //StyleConstants.setFontFamily(DEFAULT, "Helvetica");
-        //StyleConstants.setFontSize(DEFAULT, 12);
-    }
 
     public PanelMeldungen(DDaten d, StringBuffer ttext, int llogArt, String header) {
         super(d);
@@ -99,22 +81,7 @@ public class PanelMeldungen extends PanelVorlage {
 
     private void setText() {
         String s = text.toString();
-//        if (jCheckBoxAuto.isSelected() && jTextArea.getLineWrap()) {
-//            StringBuilder b = new StringBuilder(s.length() + 200);
-//            for (int i = 0; i < s.length(); i++) {
-//                String t = s.substring(i, i + 1);
-//                if (t.equals("\n")) {
-//                    b.append("\n").append(getNr(zeilenNr++)).append(" ");
-//                } else {
-//                    b.append(t);
-//                }
-//            }
-//            s = b.toString();
-//        }
         jTextArea.setText(s);
-//        if (jCheckBoxAuto.isSelected()) {
-//            jTextArea.setCaretPosition(jTextArea.getDocument().getLength());
-//        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
