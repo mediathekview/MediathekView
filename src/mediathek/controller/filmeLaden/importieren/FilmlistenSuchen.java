@@ -39,7 +39,7 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
-public class FilmlistenServer {
+public class FilmlistenSuchen {
     //Tags FilmUpdateServer Filmliste
 
     public static final String FILM_UPDATE_SERVER_PRIO_1 = "1";
@@ -195,7 +195,7 @@ public class FilmlistenServer {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(821069874, FilmlistenServer.class.getName(), ex, "Die URL-Filmlisten konnte nicht geladen werden: " + dateiUrl);
+            Log.fehlerMeldung(821069874, FilmlistenSuchen.class.getName(), ex, "Die URL-Filmlisten konnte nicht geladen werden: " + dateiUrl);
         }
         //return ret;
     }
@@ -209,7 +209,7 @@ public class FilmlistenServer {
         int event;
         try {
             while (parser.hasNext()) {
-                prio = FilmlistenServer.FILM_UPDATE_SERVER_PRIO_1;
+                prio = FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_1;
                 event = parser.next();
                 if (event == XMLStreamConstants.END_ELEMENT) {
                     //parsername = parser.getLocalName();
@@ -225,10 +225,10 @@ public class FilmlistenServer {
                     //parsername = parser.getLocalName();
                     if (parser.getLocalName().equals("Download_Filme_1")) {
                         serverUrl = parser.getElementText();
-                        prio = FilmlistenServer.FILM_UPDATE_SERVER_PRIO_1;
+                        prio = FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_1;
                     } else if (parser.getLocalName().equals("Download_Filme_2")) {
                         serverUrl = parser.getElementText();
-                        prio = FilmlistenServer.FILM_UPDATE_SERVER_PRIO_2;
+                        prio = FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_2;
                     } else if (parser.getLocalName().equals("Datum")) {
                         datum = parser.getElementText();
                     } else if (parser.getLocalName().equals("Zeit")) {
