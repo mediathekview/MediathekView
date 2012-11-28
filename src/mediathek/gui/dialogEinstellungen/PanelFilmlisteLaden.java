@@ -31,7 +31,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import mediathek.controller.filmeLaden.importieren.DatenUrlFilmliste;
-import mediathek.controller.filmeLaden.importieren.FilmlistenServer;
+import mediathek.controller.filmeLaden.importieren.FilmlistenSuchen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
@@ -110,14 +110,14 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        TModel model = new TModel(DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).getTableObjectData(), FilmlistenServer.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE);
+        TModel model = new TModel(DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).getTableObjectData(), FilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE);
         jTable1.setModel(model);
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
-            if (i == FilmlistenServer.FILM_UPDATE_SERVER_URL_NR) {
+            if (i == FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(10);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(350);
-            } else if (i == FilmlistenServer.FILM_UPDATE_SERVER_PRIO_NR || i == FilmlistenServer.FILM_UPDATE_SERVER_ANZAHL_NR) {
+            } else if (i == FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR || i == FilmlistenSuchen.FILM_UPDATE_SERVER_ANZAHL_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(0);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(0);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(0);
@@ -135,13 +135,13 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         int selectedTableRow = jTable1.getSelectedRow();
         if (selectedTableRow >= 0) {
             datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten(false).getNrUpdate(jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow),
-                    FilmlistenServer.FILM_UPDATE_SERVER_URL_NR).toString());
+                    FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR).toString());
         }
         if (datenUrlFilmliste != null) {
             //jRadioButtonUpdateAus.setSelected(true);
             //daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(Konstanten.UPDATE_FILME_AUS);
-            jTextFieldUrl.setText(datenUrlFilmliste.arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR]);
-            Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR] = datenUrlFilmliste.arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR];
+            jTextFieldUrl.setText(datenUrlFilmliste.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR]);
+            Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR] = datenUrlFilmliste.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR];
             if (doppel) {
                 // dann wars ein Doppelklick, gleich laden
                 Daten.filmeLaden.importFilmliste(Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);

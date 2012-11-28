@@ -30,7 +30,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 import mediathek.controller.filmeLaden.importieren.DatenFilmlistenServer;
 import mediathek.controller.filmeLaden.importieren.DatenUrlFilmliste;
-import mediathek.controller.filmeLaden.importieren.FilmlistenServer;
+import mediathek.controller.filmeLaden.importieren.FilmlistenSuchen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
@@ -182,7 +182,7 @@ public class IoXmlSchreiben {
         iterator = DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).iterator();
         while (iterator.hasNext()) {
             datenUrlFilmliste = iterator.next();
-            xmlSchreibenDaten(FilmlistenServer.FILM_UPDATE_SERVER, FilmlistenServer.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr);
+            xmlSchreibenDaten(FilmlistenSuchen.FILM_UPDATE_SERVER, FilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr);
         }
         Iterator<DatenFilmlistenServer> it;
         it = DDaten.filmeLaden.getListeFilmlistnServer().iterator();

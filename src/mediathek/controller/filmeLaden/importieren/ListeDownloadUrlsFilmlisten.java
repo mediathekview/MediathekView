@@ -34,7 +34,7 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
     public boolean addWithCheck(DatenUrlFilmliste film) {
         ListIterator<DatenUrlFilmliste> it = listIterator();
         while (it.hasNext()) {
-            if (it.next().arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR].equals(film.arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR])) {
+            if (it.next().arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR].equals(film.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR])) {
                 return false;
             }
         }
@@ -50,7 +50,7 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
             while (str.length() < 3) {
                 str = "0" + str;
             }
-            it.next().arr[FilmlistenServer.FILM_UPDATE_SERVER_NR_NR] = str;
+            it.next().arr[FilmlistenSuchen.FILM_UPDATE_SERVER_NR_NR] = str;
         }
     }
 
@@ -58,7 +58,7 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
         DatenUrlFilmliste filmUpdate;
         String[][] object;
         ListIterator<DatenUrlFilmliste> iterator = this.listIterator();
-        object = new String[this.size()][FilmlistenServer.FILM_UPDATE_SERVER_MAX_ELEM];
+        object = new String[this.size()][FilmlistenSuchen.FILM_UPDATE_SERVER_MAX_ELEM];
         int i = 0;
         while (iterator.hasNext()) {
             filmUpdate = iterator.next();
@@ -72,7 +72,7 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
         int nr = 0;
         ListIterator<DatenUrlFilmliste> iterator = this.listIterator();
         while (iterator.hasNext()) {
-            if (iterator.next().arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR].equals(url)) {
+            if (iterator.next().arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR].equals(url)) {
                 break;
             }
             ++nr;
@@ -88,7 +88,7 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
         ListIterator<DatenUrlFilmliste> iterator = this.listIterator();
         while (iterator.hasNext()) {
             update = iterator.next();
-            if (update.arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR].equals(url)) {
+            if (update.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR].equals(url)) {
                 return update;
             }
         }
@@ -118,12 +118,12 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
             while (it.hasNext()) {
                 filmUpdate = it.next();
                 if (bereitsGebraucht != null) {
-                    if (bereitsGebraucht.contains(filmUpdate.arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR])) {
+                    if (bereitsGebraucht.contains(filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR])) {
                         // wurde schon versucht
                         continue;
                     }
                 }
-                date = filmUpdate.arr[FilmlistenServer.FILM_UPDATE_SERVER_DATUM_NR] + " " + filmUpdate.arr[FilmlistenServer.FILM_UPDATE_SERVER_ZEIT_NR];
+                date = filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR] + " " + filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR];
                 try {
                     d = sdf.parse(date);
                     minuten = Math.round((today.getTime() - d.getTime()) / (1000 * 60));
@@ -141,7 +141,7 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
             it = listeZeit.iterator();
             while (it.hasNext()) {
                 filmUpdate = it.next();
-                if (filmUpdate.arr[FilmlistenServer.FILM_UPDATE_SERVER_PRIO_NR].equals(FilmlistenServer.FILM_UPDATE_SERVER_PRIO_1)) {
+                if (filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR].equals(FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_1)) {
                     listePrio.add(filmUpdate.getCopy());
                 } else {
                     listePrio.add(filmUpdate.getCopy());
@@ -155,7 +155,7 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
                 int nr = new Random().nextInt(this.size());
                 filmUpdate = this.get(nr);
             }
-            ret = filmUpdate.arr[FilmlistenServer.FILM_UPDATE_SERVER_URL_NR];
+            ret = filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR];
         }
         return ret;
     }
