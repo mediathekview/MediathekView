@@ -21,6 +21,8 @@ package mediathek.daten;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import mediathek.tool.Datum;
+import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.Log;
 
@@ -60,6 +62,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         FILM_URL /* g*/ /*, FILM_URL_ORG  h*/, FILM_URL_RTMP, FILM_URL_AUTH, FILM_URL_THEMA, FILM_ABO_NAME /* l */};
     public static final String[] FILME_COLUMN_NAMES_ = {"a", "b", "c", "d", "e", "f", "g" /*, "h"*/, "i", "j", "k", "l"};
     public String[] arr;
+    public Datum datumFilm = new Datum(0);
 
     public DatenFilm() {
         makeArr();
@@ -74,6 +77,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_URL_THEMA_NR] = urlThema;
+        setDatum();
     }
 
     public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlRtmp,
@@ -87,6 +91,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_URL_THEMA_NR] = urlThema;
         arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
+        setDatum();
     }
 
     public String getIndex() {
@@ -106,6 +111,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         for (int i = 0; i < arr.length; ++i) {
             ret.arr[i] = new String(this.arr[i]);
         }
+        ret.datumFilm = this.datumFilm;
         return ret;
     }
 
@@ -128,6 +134,10 @@ public class DatenFilm implements Comparable<DatenFilm> {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }
+    }
+
+    public void setDatum() {
+        datumFilm = DatumZeit.getDatumForObject(this);
     }
 
     private static String checkDatum(String datum, String fehlermeldung) {

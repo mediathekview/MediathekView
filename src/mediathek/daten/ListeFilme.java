@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.SimpleTimeZone;
+import java.util.TreeSet;
 import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekArd;
@@ -35,8 +36,8 @@ import mediathek.controller.filmeLaden.suchen.sender.MediathekMdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekWdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
+import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
@@ -60,8 +61,10 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public static final String[] FILMLISTE_COLUMN_NAMES = {FILMLISTE_DATUM, FILMLISTE_DATUM_GMT, FILMLISTE_VERSION, FILMLISTE_PROGRAMM};
     private int nr = 0;
     public String[] metaDaten;
-    private HashSet<String> treeGetModelOfField = new HashSet<String>();
+    private HashSet<String> hashSetModelOfField = new HashSet<String>();
     private LinkedList<String> listGetModelOfField = new LinkedList<String>();
+    //private TreeSet<String> ts = new TreeSet<String>();
+    private TreeSet<String> ts = new TreeSet<String>(GermanStringSorter.getInstance());
     private final String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
 
     public ListeFilme() {
@@ -154,6 +157,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public synchronized boolean addWithNr(DatenFilm film) {
         film.arr[DatenFilm.FILM_NR_NR] = getNr(nr++);
         film.arr[DatenFilm.FILM_URL_NR] = film.getUrlOrg();
+        film.setDatum();
         return add(film);
     }
 
@@ -251,8 +255,8 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 str = it.next().arr[feld];
                 //hinzufügen
                 s = str.toLowerCase();
-                if (!treeGetModelOfField.contains(s)) {
-                    treeGetModelOfField.add(s);
+                if (!hashSetModelOfField.contains(s)) {
+                    hashSetModelOfField.add(s);
                     listGetModelOfField.add(str);
                 }
             }
@@ -264,19 +268,66 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 if (film.arr[filterFeld].equalsIgnoreCase(filterString)) {
                     //hinzufügen
                     s = str.toLowerCase();
-                    if (!treeGetModelOfField.contains(s)) {
-                        treeGetModelOfField.add(s);
+                    if (!hashSetModelOfField.contains(s)) {
+                        hashSetModelOfField.add(s);
                         listGetModelOfField.add(str);
                     }
                 }
             }
         }
-        treeGetModelOfField.clear();
+        hashSetModelOfField.clear();
         GuiFunktionen.listeSort(listGetModelOfField);
         String[] ret = new String[0];
         ret = listGetModelOfField.toArray(ret);
         listGetModelOfField.clear();
         return ret;
+    }
+
+    public synchronized String[] getModelOfField_(int feld, String filterString, int filterFeld) {
+        // erstellt ein StringArray mit den Daten des Feldes und filtert nach filterFeld
+        // ist für die Filterfelder im GuiFilme
+        // doppelte Einträge (bei der Groß- und Klienschribung) werden entfernt
+        //TreeSet<String> ts = new TreeSet<String>(GermanStringSorter.getInstance());
+        String str;
+        String s;
+        //listGetModelOfField.add("");
+        ts.add("");
+        DatenFilm film;
+        Iterator<DatenFilm> it = this.iterator();
+        if (filterString.equals("")) {
+            //alle Werte dieses Feldes
+            while (it.hasNext()) {
+                str = it.next().arr[feld];
+                //hinzufügen
+                s = str.toLowerCase();
+                if (!hashSetModelOfField.contains(s)) {
+                    hashSetModelOfField.add(s);
+                    ts.add(str);
+                }
+            }
+        } else {
+            //Werte dieses Feldes, filtern nach filterString im FilterFeld
+            while (it.hasNext()) {
+                film = it.next();
+                str = film.arr[feld];
+                if (film.arr[filterFeld].equalsIgnoreCase(filterString)) {
+                    //hinzufügen
+                    s = str.toLowerCase();
+                    if (!hashSetModelOfField.contains(s)) {
+                        hashSetModelOfField.add(s);
+                        ts.add(str);
+                    }
+                }
+            }
+        }
+        hashSetModelOfField.clear();
+        //GuiFunktionen.listeSort(listGetModelOfField);
+        //String[] ret = new String[0];
+        //ret = listGetModelOfField.toArray(ret);
+        //listGetModelOfField.clear();
+        String[] a = ts.toArray(new String[]{});
+        ts.clear();
+        return a;
     }
 
     public synchronized DatenFilm getFilmByUrl(String url) {
@@ -314,7 +365,8 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 object = new Object[DatenFilm.FILME_MAX_ELEM];
                 for (int m = 0; m < DatenFilm.FILME_MAX_ELEM; ++m) {
                     if (m == DatenFilm.FILM_DATUM_NR) {
-                        object[m] = DatumZeit.getDatumForObject(film);
+                        //object[m] = DatumZeit.getDatumForObject(film);
+                        object[m] = film.datumFilm;
                     } else {
                         object[m] = film.arr[m];
                     }
