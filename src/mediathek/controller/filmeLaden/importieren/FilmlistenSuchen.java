@@ -78,14 +78,7 @@ public class FilmlistenSuchen {
                 //getDownloadUrlsFilmlisten("asdf", tmp, Daten.getUserAgent());
                 if (tmp.size() > 0) {
                     // dann die Liste Filmlistenserver aktualisieren
-                    Iterator<DatenUrlFilmliste> it = tmp.iterator();
-                    listeFilmlistenServer.clear();
-                    while (it.hasNext()) {
-                        String serverUrl = it.next().arr[FILM_UPDATE_SERVER_URL_NR];
-                        String url = serverUrl.replace(GuiFunktionen.getDateiName(serverUrl), "");
-                        url = GuiFunktionen.addUrl(url, Konstanten.DATEINAME_LISTE_FILMLISTEN);
-                        listeFilmlistenServer.addCheck(new DatenFilmlistenServer(url));
-                    }
+                    updateListeFilmlistenServer(tmp);
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_FILMLISTEN_SERVER, this.getClass().getSimpleName());
                 }
                 if (tmp.size() == 0) {
@@ -123,6 +116,19 @@ public class FilmlistenSuchen {
             bereitsVersucht.add(retUrl);
         }
         return retUrl;
+    }
+
+    private void updateListeFilmlistenServer(ListeDownloadUrlsFilmlisten tmp) {
+        Iterator<DatenUrlFilmliste> it = tmp.iterator();
+        //listeFilmlistenServer.clear();
+        while (it.hasNext()) {
+            String serverUrl = it.next().arr[FILM_UPDATE_SERVER_URL_NR];
+            String url = serverUrl.replace(GuiFunktionen.getDateiName(serverUrl), "");
+            url = GuiFunktionen.addUrl(url, Konstanten.DATEINAME_LISTE_FILMLISTEN);
+            listeFilmlistenServer.addCheck(new DatenFilmlistenServer(url));
+        }
+        // die Liste der Filmlistenserver aufräumen
+        listeFilmlistenServer.alteLoeschen();
     }
 
     private String getTag(String zeit) {

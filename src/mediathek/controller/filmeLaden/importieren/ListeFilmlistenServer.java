@@ -26,14 +26,31 @@ import java.util.ListIterator;
 
 public class ListeFilmlistenServer extends LinkedList<DatenFilmlistenServer> {
 
+    private final static int MAX_ALTER = 25; // entspricht 25x laden der update.xml auf sf.net
+    
     public boolean addCheck(DatenFilmlistenServer d) {
+        // neuer Eintag
         Iterator<DatenFilmlistenServer> it = this.iterator();
         while (it.hasNext()) {
-            if (it.next().compareTo(d) == 0) {
+            DatenFilmlistenServer df = it.next();
+            if (df.compareTo(d) == 0) {
+                df.arr[DatenFilmlistenServer.FILM_LISTEN_SERVER_ALTER_NR] = "0"; // Alter zurücksetzen
                 return false;
             }
         }
         return super.add(d);
+    }
+
+    public void alteLoeschen() {
+        // zu alte entfernen
+        Iterator<DatenFilmlistenServer> it = this.iterator();
+        while (it.hasNext()) {
+            DatenFilmlistenServer df = it.next();
+            df.incAlter();
+            if (df.getAlter() > MAX_ALTER) {
+                it.remove();
+            }
+        }
     }
 
     public void sort() {
