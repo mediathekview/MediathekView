@@ -19,11 +19,10 @@
  */
 package mediathek.controller.filmeLaden;
 
-import java.util.ArrayList;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filmeLaden.importieren.ImportFilmliste;
-import mediathek.controller.filmeLaden.importieren.ListeFilmlistenServer;
 import mediathek.controller.filmeLaden.importieren.ListeDownloadUrlsFilmlisten;
+import mediathek.controller.filmeLaden.importieren.ListeFilmlistenServer;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
@@ -39,7 +38,7 @@ public class FilmeLaden {
     // private
     private boolean stop = false;
     private ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
-    private ListeFilme listeFilmeNeu = null; //ist eine NEUE ungefilterte Liste, wird beim Laden NEU erstellt
+//    private ListeFilme listeFilmeNeu = null; //ist eine NEUE ungefilterte Liste, wird beim Laden NEU erstellt
     private FilmeSuchenSender filmeSuchen;
     private ImportFilmliste filmeImportieren;
     private EventListenerList listeners = new EventListenerList();
