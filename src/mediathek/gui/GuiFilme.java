@@ -438,11 +438,12 @@ public class GuiFilme extends PanelVorlage {
         int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
             int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
-            for (int i = 0; i < DatenFilm.FILME_MAX_ELEM; ++i) {
-                aktFilm.arr[i] = tabelle.getModel().getValueAt(selectedModelRow, i).toString();
+            DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+            if (film != null) {
+                aktFilm = film;
             }
-            dialogDatenFilm.setAktFilm(aktFilm);
         }
+        dialogDatenFilm.setAktFilm(aktFilm);
     }
 
     private void open(DatenPset gruppe) {

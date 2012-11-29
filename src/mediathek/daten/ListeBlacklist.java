@@ -142,7 +142,8 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         // true wenn der Film angezeigt werden kann!
         long d;
         try {
-            d = DatumZeit.getDatumForObject(film).getTime();
+            d = film.datumFilm.getTime();
+            //d = DatumZeit.getDatumForObject(film).getTime();
             if (d == 0 || d > tage) {
                 return true;
             } else {
