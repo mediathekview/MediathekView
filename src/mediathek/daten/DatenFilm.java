@@ -117,7 +117,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
 
     @Override
     public int compareTo(DatenFilm arg0) {
-        int ret = 0;
+        int ret;
         GermanStringSorter sorter = GermanStringSorter.getInstance();
         if ((ret = sorter.compare(arr[FILM_SENDER_NR], arg0.arr[FILM_SENDER_NR])) == 0) {
             ret = sorter.compare(arr[FILM_THEMA_NR], arg0.arr[FILM_THEMA_NR]);
@@ -136,7 +136,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         }
     }
 
-    public void setDatum() {
+    final public void setDatum() {
         datumFilm = DatumZeit.getDatumForObject(this);
     }
 

@@ -240,7 +240,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
     }
 
-    public synchronized String[] getModelOfField(int feld, String filterString, int filterFeld) {
+    public synchronized String[] getModelOfField_(int feld, String filterString, int filterFeld) {
         // erstellt ein StringArray mit den Daten des Feldes und filtert nach filterFeld
         // ist für die Filterfelder im GuiFilme
         // doppelte Einträge (bei der Groß- und Klienschribung) werden entfernt
@@ -283,21 +283,18 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return ret;
     }
 
-    public synchronized String[] getModelOfField_(int feld, String filterString, int filterFeld) {
+    public synchronized String[] getModelOfFieldThema(String sender) {
         // erstellt ein StringArray mit den Daten des Feldes und filtert nach filterFeld
         // ist für die Filterfelder im GuiFilme
         // doppelte Einträge (bei der Groß- und Klienschribung) werden entfernt
-        //TreeSet<String> ts = new TreeSet<String>(GermanStringSorter.getInstance());
-        String str;
-        String s;
-        //listGetModelOfField.add("");
+        String str, s;
         ts.add("");
         DatenFilm film;
         Iterator<DatenFilm> it = this.iterator();
-        if (filterString.equals("")) {
-            //alle Werte dieses Feldes
+        if (sender.equals("")) {
+            //alle Theman
             while (it.hasNext()) {
-                str = it.next().arr[feld];
+                str = it.next().arr[DatenFilm.FILM_THEMA_NR];
                 //hinzufügen
                 s = str.toLowerCase();
                 if (!hashSetModelOfField.contains(s)) {
@@ -306,12 +303,12 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 }
             }
         } else {
-            //Werte dieses Feldes, filtern nach filterString im FilterFeld
+            //nur Theman des Senders
             while (it.hasNext()) {
                 film = it.next();
-                str = film.arr[feld];
-                if (film.arr[filterFeld].equalsIgnoreCase(filterString)) {
+                if (film.arr[DatenFilm.FILM_SENDER_NR].equals(sender)) { // Filterstring ist immer "Sender"
                     //hinzufügen
+                    str = film.arr[DatenFilm.FILM_THEMA_NR];
                     s = str.toLowerCase();
                     if (!hashSetModelOfField.contains(s)) {
                         hashSetModelOfField.add(s);
@@ -321,10 +318,27 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             }
         }
         hashSetModelOfField.clear();
-        //GuiFunktionen.listeSort(listGetModelOfField);
-        //String[] ret = new String[0];
-        //ret = listGetModelOfField.toArray(ret);
-        //listGetModelOfField.clear();
+        String[] a = ts.toArray(new String[]{});
+        ts.clear();
+        return a;
+    }
+
+    public synchronized String[] getModelOfFieldSender() {
+        // erstellt ein StringArray mit den Sendernamen
+        String str;
+        ts.add("");
+        Iterator<DatenFilm> it = this.iterator();
+        // Sendernamen gibts nur in einer Schreibweise
+        int max = DDaten.filmeLaden.getSenderNamen().length; // gibt nur so viele
+        while (it.hasNext()) {
+            str = it.next().arr[DatenFilm.FILM_SENDER_NR];
+            if (!ts.contains(str)) {
+                ts.add(str);
+                if (ts.size() > max) { // eins mehr wegen Leerzeile
+                    break;
+                }
+            }
+        }
         String[] a = ts.toArray(new String[]{});
         ts.clear();
         return a;
@@ -354,6 +368,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             ListIterator<DatenFilm> iterator = this.listIterator(0);
             while (iterator.hasNext()) {
                 film = iterator.next();
+                ///////////////////// beim Laden der Liste gleich eintragen
                 datenAbo = ddaten.listeAbo.getAbo(film.arr[DatenFilm.FILM_SENDER_NR],
                         film.arr[DatenFilm.FILM_THEMA_NR],
                         film.arr[DatenFilm.FILM_TITEL_NR]);
@@ -372,6 +387,23 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                     }
                 }
                 model.addRow(object);
+            }
+        }
+    }
+
+    public void abosEintragen(DDaten ddaten) {
+        DatenFilm film;
+        DatenAbo datenAbo;
+        ListIterator<DatenFilm> iterator = this.listIterator(0);
+        while (iterator.hasNext()) {
+            film = iterator.next();
+            datenAbo = ddaten.listeAbo.getAbo(film.arr[DatenFilm.FILM_SENDER_NR],
+                    film.arr[DatenFilm.FILM_THEMA_NR],
+                    film.arr[DatenFilm.FILM_TITEL_NR]);
+            if (datenAbo != null) {
+                film.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
+            } else {
+                film.arr[DatenFilm.FILM_ABO_NAME_NR] = "";
             }
         }
     }
