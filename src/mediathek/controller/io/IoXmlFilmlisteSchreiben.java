@@ -90,30 +90,24 @@ public class IoXmlFilmlisteSchreiben {
         ListIterator<DatenFilm> iterator;
         DatenFilm datenFilm;
         String sender = "", thema = "";
-//        DatenFilm datenFilmAlt = new DatenFilm();
-//        DatenFilm kopie;
+        DatenFilm datenFilmSchreiben = new DatenFilm();
         iterator = listeFilme.listIterator();
         while (iterator.hasNext()) {
             datenFilm = iterator.next();
-            if (!sender.equals(datenFilm.arr[DatenFilm.FILM_SENDER_NR])) {
+            for (int i = 0; i < datenFilm.arr.length; ++i) {
+                datenFilmSchreiben.arr[i] = datenFilm.arr[i];
+            }
+            if (sender.equals(datenFilm.arr[DatenFilm.FILM_SENDER_NR])) {
+                datenFilmSchreiben.arr[DatenFilm.FILM_SENDER_NR] = "";
+            } else {
                 sender = datenFilm.arr[DatenFilm.FILM_SENDER_NR];
-            } else {
-                datenFilm.arr[DatenFilm.FILM_SENDER_NR] = "";
             }
-            if (!thema.equals(datenFilm.arr[DatenFilm.FILM_THEMA_NR])) {
+            if (thema.equals(datenFilm.arr[DatenFilm.FILM_THEMA_NR])) {
+                datenFilmSchreiben.arr[DatenFilm.FILM_THEMA_NR] = "";
+            } else {
                 thema = datenFilm.arr[DatenFilm.FILM_THEMA_NR];
-            } else {
-                datenFilm.arr[DatenFilm.FILM_THEMA_NR] = "";
             }
-//            kopie = datenFilm.getCopy();
-//            if (kopie.arr[DatenFilm.FILM_SENDER_NR].equals(datenFilmAlt.arr[DatenFilm.FILM_SENDER_NR])) {
-//                kopie.arr[DatenFilm.FILM_SENDER_NR] = "";
-//            }
-//            if (kopie.arr[DatenFilm.FILM_THEMA_NR].equals(datenFilmAlt.arr[DatenFilm.FILM_THEMA_NR])) {
-//                kopie.arr[DatenFilm.FILM_THEMA_NR] = "";
-//            }
-            xmlSchreibenDaten(DatenFilm.FILME_, DatenFilm.FILME_COLUMN_NAMES_, datenFilm.getClean().arr);
-//            datenFilmAlt = datenFilm;
+            xmlSchreibenDaten(DatenFilm.FILME_, DatenFilm.FILME_COLUMN_NAMES_, datenFilmSchreiben.getClean().arr);
         }
     }
 

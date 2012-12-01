@@ -58,9 +58,9 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final int FILM_URL_THEMA_NR = 9;
     public static final String FILM_ABO_NAME = "Abo-Name";// wird vor dem Speichern gelöscht!
     public static final int FILM_ABO_NAME_NR = 10;
-    public static final String[] FILME_COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT /* f */,
-        FILM_URL /* g*/ /*, FILM_URL_ORG  h*/, FILM_URL_RTMP, FILM_URL_AUTH, FILM_URL_THEMA, FILM_ABO_NAME /* l */};
-    public static final String[] FILME_COLUMN_NAMES_ = {"a", "b", "c", "d", "e", "f", "g" /*, "h"*/, "i", "j", "k", "l"};
+    public static final String[] FILME_COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT /*f*/,
+        FILM_URL /*g*/ /*FILM_URL_ORG h*/, FILM_URL_RTMP, FILM_URL_AUTH, FILM_URL_THEMA, FILM_ABO_NAME /*l*/};
+    public static final String[] FILME_COLUMN_NAMES_ = {"a", "b", "c", "d", "e", "f", "g" /*"h"*/, "i", "j", "k", "l"};
     public String[] arr;
     public Datum datumFilm = new Datum(0);
 
