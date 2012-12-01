@@ -239,6 +239,13 @@ public class GuiFilme extends PanelVorlage {
                 setInfo();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDownloads.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                checkBlacklist();
+                tabelleBauen();
+            }
+        });
     }
 
     private void themenLaden() {

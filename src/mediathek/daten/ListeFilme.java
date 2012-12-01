@@ -363,20 +363,20 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     private void addObjectDataTabFilme(DDaten ddaten, TModelFilm model) {
         Object[] object;
         DatenFilm film;
-        DatenAbo datenAbo;
+        //DatenAbo datenAbo;
         if (this.size() > 0) {
             ListIterator<DatenFilm> iterator = this.listIterator(0);
             while (iterator.hasNext()) {
                 film = iterator.next();
-                ///////////////////// beim Laden der Liste gleich eintragen
-//                datenAbo = ddaten.listeAbo.getAbo(film.arr[DatenFilm.FILM_SENDER_NR],
-//                        film.arr[DatenFilm.FILM_THEMA_NR],
-//                        film.arr[DatenFilm.FILM_TITEL_NR]);
-//                if (datenAbo != null) {
-//                    film.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
-//                } else {
-//                    film.arr[DatenFilm.FILM_ABO_NAME_NR] = "";
-//                }
+                // wird beim Laden der Liste gleich eintragen
+                // datenAbo = ddaten.listeAbo.getAbo(film.arr[DatenFilm.FILM_SENDER_NR],
+                //        film.arr[DatenFilm.FILM_THEMA_NR],
+                //        film.arr[DatenFilm.FILM_TITEL_NR]);
+                // if (datenAbo != null) {
+                //    film.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
+                // } else {
+                //    film.arr[DatenFilm.FILM_ABO_NAME_NR] = "";
+                // }
                 object = new Object[DatenFilm.FILME_MAX_ELEM];
                 for (int m = 0; m < DatenFilm.FILME_MAX_ELEM; ++m) {
                     if (m == DatenFilm.FILM_DATUM_NR) {

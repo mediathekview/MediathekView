@@ -144,6 +144,7 @@ public class GuiAbo extends PanelVorlage {
             if (dialog.ok) {
                 akt.aufMichKopieren(ret);
                 load();
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
             }
             setInfo();
         } else {

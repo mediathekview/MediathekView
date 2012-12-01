@@ -19,17 +19,20 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
-import mediathek.daten.Daten;
-import mediathek.tool.Log;
+import java.util.Locale;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
@@ -37,7 +40,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
     /**
      *
-     *  @param ddaten
+     * @param ddaten
      */
     public MediathekArdPodcast(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
@@ -217,27 +220,28 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
         }
 
-        private void filmLaden(String strUrlFeed, String url, String thema) {
+        private void filmLaden(String strUrlFeed, String urlIn, String thema) {
             int pos = 0;
             int pos1 = 0;
             int pos2 = 0;
             final String MUSTER_ = "http://www.ardmediathek.de/ard/servlet/content/3517244";
-            if (url.contains("?")) {
+            if (urlIn.contains("?")) {
                 //3517136 ersetzen mit 3517244
                 //http://www.ardmediathek.de/ard/servlet/content/3516968?documentId=2584998
                 //
-                url = MUSTER_ + url.substring(url.indexOf("?"));
+                urlIn = MUSTER_ + urlIn.substring(urlIn.indexOf("?"));
                 //++++++++++++++++++++++++++++++++++ 3te Seite
                 //<input name="" type="text" value="http://www1.swr.de/podcast/xml/swr-fernsehen/60-jahre-rlp.xml" />
                 //final String MUSTER_3 = "<input name=\"\" type=\"text\" value=\"";
                 final String MUSTER_3 = "addMediaStream(0, 1, \"\", \"";
-                String tmpUrl = url;
                 seite2.setLength(0);
-                seite2 = getUrl.getUri_Utf(nameSenderMReader, url, seite2, "Thema: " + thema);
+                seite2 = getUrl.getUri_Utf(nameSenderMReader, urlIn, seite2, "Thema: " + thema);
                 pos = 0;
                 pos1 = 0;
                 pos2 = 0;
-                url = "";
+                String url = "";
+                String datum = "";
+                String titel = "";
                 if ((pos = seite2.indexOf(MUSTER_3, pos)) != -1) {
                     pos += MUSTER_3.length();
                     pos1 = pos;
@@ -247,52 +251,90 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     }
                     if (url.equals("")) {
                         //-------------
-                        Log.fehlerMeldungMReader(-789628694, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + tmpUrl);
+                        Log.fehlerMeldungMReader(-789628694, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + urlIn);
                         Log.fehlerMeldungMReader(-495623876, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + strUrlFeed);
-                    } else {
-                        //<title>ARD Mediathek: DiD-Folge 925: Die Dünnbrett-Bohrer - 16.05.2012 | Bayerisches Fernsehen</title>
-                        //<title>ARD Mediathek: 28 Stunden Ausnahmezustand in Freiburg | SWR Fernsehen BW</title>
-                        //<title>ARD Mediathek: Die Alpenüberquerung - Hoffentlich schwindelfrei | SWR Fernsehen</title>
-                        //<title>ARD Mediathek: Die Wahrheit über Deutschland: Leidenschaft | DW-TV</title>
-                        //<title>ARD Mediathek: Gipfeltreffen mit Ilse Neubauer - 17.05.2012 | Bayerisches Fernsehen</title>
-                        //<title>ARD Mediathek: Angeklickt: 18.05.2012, Es muss nicht immer Facebook sein | WDR Fernsehen</title>
-                        final String MUSTER_TITEL = "<title>";
-                        if ((pos1 = seite2.indexOf(MUSTER_TITEL, 0)) != -1) {
-                            pos1 += MUSTER_TITEL.length();
-                            if ((pos2 = seite2.indexOf("<", pos1)) != -1) {
-                                String titel = seite2.substring(pos1, pos2);
-                                if (titel.startsWith("ARD Mediathek:")) {
-                                    titel = titel.replaceFirst("ARD Mediathek:", "").trim();
-                                    if (titel.contains("|")) {
-                                        titel = titel.substring(0, titel.lastIndexOf("|"));
-                                        titel = titel.trim();
-                                        String datum = "";
-                                        if (titel.contains(" - ") && titel.contains("20")) {
-                                            datum = titel.substring(titel.lastIndexOf(" - ") + 3).trim();
-                                            if (datum.length() != 10) {
-                                                //noch ein Versuch
-                                                if (titel.contains(".20")) {
-                                                    int p = titel.indexOf(".20");
-                                                    if (p > 6 && (p + 6) < titel.length()) {
-                                                        datum = titel.substring(titel.indexOf(".20") - 5, titel.indexOf(".20") + 5);
-                                                        titel = titel.replace(datum, "").trim();
-                                                    }
-                                                }
-                                            } else {
-                                                titel = titel.substring(0, titel.lastIndexOf(" - ")).trim();
-                                            }
-                                        }
-                                        //  DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
-                                        meldung(url);
-                                        addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""));
-                                    }
+                        return;
+                    }
+                }
+                // Titel und Datum suchen
+                //<title>ARD Mediathek: DiD-Folge 925: Die Dünnbrett-Bohrer - 16.05.2012 | Bayerisches Fernsehen</title>
+                //<title>ARD Mediathek: 28 Stunden Ausnahmezustand in Freiburg | SWR Fernsehen BW</title>
+                //<title>ARD Mediathek: Die Alpenüberquerung - Hoffentlich schwindelfrei | SWR Fernsehen</title>
+                //<title>ARD Mediathek: Die Wahrheit über Deutschland: Leidenschaft | DW-TV</title>
+                //<title>ARD Mediathek: Gipfeltreffen mit Ilse Neubauer - 17.05.2012 | Bayerisches Fernsehen</title>
+                //<title>ARD Mediathek: Angeklickt: 18.05.2012, Es muss nicht immer Facebook sein | WDR Fernsehen</title>
+                //<title>ARD Mediathek: angeklickt: 30.11.2012, Online Videos bearbeiten | WDR Fernsehen</title>
 
-                                }
+                final String MUSTER_TITEL = "<title>";
+                if ((pos1 = seite2.indexOf(MUSTER_TITEL, 0)) == -1) {
+                    return;
+                }
+                pos1 += MUSTER_TITEL.length();
+                if ((pos2 = seite2.indexOf("<", pos1)) == -1) {
+                    return;
+                }
+                titel = seite2.substring(pos1, pos2);
+                if (!titel.startsWith("ARD Mediathek:")) {
+                    return;
+                }
+                titel = titel.replaceFirst("ARD Mediathek:", "").trim();
+                if (!titel.contains("|")) {
+                    return;
+                }
+                titel = titel.substring(0, titel.lastIndexOf("|"));
+                titel = titel.trim();
+                if (titel.contains(" - ") && titel.contains("20")) {
+                    datum = titel.substring(titel.lastIndexOf(" - ") + 3).trim();
+                    if (datum.length() != 10) {
+                        //noch ein Versuch
+                        if (titel.contains(".20")) {
+                            int p = titel.indexOf(".20");
+                            if (p > 6 && (p + 6) < titel.length()) {
+                                datum = titel.substring(titel.indexOf(".20") - 5, titel.indexOf(".20") + 5);
+                                titel = titel.replace(datum, "").trim();
+                            }
+                        }
+                    } else {
+                        titel = titel.substring(0, titel.lastIndexOf(" - ")).trim();
+                    }
+                } else {
+                    if (titel.toLowerCase().contains("angeklickt:")) {
+                        titel = titel.substring(titel.indexOf(":") + 1);
+                        datum = titel.substring(0, titel.indexOf(",")).trim();
+                    }
+                }
+                meldung(url);
+                if (datum.equals("")) {
+                    // xt_pageDate="201210211909";
+                    final String MUSTER_DATUM = "xt_pageDate=\"";
+                    if ((pos1 = seite2.indexOf(MUSTER_DATUM)) != -1) {
+                        pos1 += MUSTER_DATUM.length();
+                        if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
+                            datum = seite2.substring(pos1, pos2);
+                            if (datum.length() > 8) {
+                                datum = datum.substring(0, 8);
+                                datum = convertDatum(datum);
                             }
                         }
                     }
                 }
+                if (datum.equals("")) {
+                    Log.fehlerMeldungMReader(-102589463, "MediathekArdPodcast.filmeEinerSeiteSuchen-4", "kein Datum für: " + urlIn);
+                }
+                //  DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
+                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""));
             }
         }
+    }
+
+    public static String convertDatum(String datum) {
+        //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
+        try {
+            Date filmDate = new SimpleDateFormat("yyyyMMdd").parse(datum);
+            datum = new SimpleDateFormat("dd.MM.yyyy").format(filmDate);
+        } catch (Exception ex) {
+            Log.fehlerMeldung(-979451236, "MediathekArdPodcast.convertDatum", ex);
+        }
+        return datum;
     }
 }
