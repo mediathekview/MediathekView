@@ -217,7 +217,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Phoenix" + " " + THEMA_LIVE, "http://hstreaming.zdf.de/encoder/phoenix_vh.mov", ""/* datum */, ""/* zeit */));
     }
 
-    public synchronized void getModelTabFilme(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {
+    public synchronized void getModelTabFilme___(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {
         modelFilm.setRowCount(0);
         if (this.size() != 0) {
             if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("")) {
@@ -238,6 +238,31 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 liste.addObjectDataTabFilme(ddaten, modelFilm);
             }
         }
+    }
+
+    public synchronized TModelFilm getModelTabFilme(DDaten ddaten, TModelFilm modelFilm__, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {
+        TModelFilm modelFilm = new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES);
+        modelFilm.setRowCount(0);
+        if (this.size() != 0) {
+            if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("")) {
+                addObjectDataTabFilme(ddaten, modelFilm);
+            } else {
+                ListeFilme liste = new ListeFilme();
+                DatenFilm film;
+                Iterator<DatenFilm> it = this.iterator();
+                while (it.hasNext()) {
+                    film = it.next();
+                    // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
+                    //                     String imSender, String imThema, String imText) {
+                    if (ListeAbo.filterAufAboPruefen(filterSender, filterThema, filterTitel, filterThemaTitel,
+                            film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
+                        liste.add(film);
+                    }
+                }
+                liste.addObjectDataTabFilme(ddaten, modelFilm);
+            }
+        }
+        return modelFilm;
     }
 
     public synchronized String[] getModelOfField_(int feld, String filterString, int filterFeld) {
