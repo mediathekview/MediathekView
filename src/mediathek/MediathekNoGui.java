@@ -25,13 +25,14 @@ import java.util.LinkedList;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
+import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
-public class MediathekNoGui {
+public class MediathekNoGui implements Runnable {
 
     private String output = "";
     private String importUrl = "";
@@ -86,7 +87,48 @@ public class MediathekNoGui {
         }
     }
 
-    public synchronized void serverStarten(String[] sender) {
+//    public synchronized void serverStarten(String[] sender) {
+//        daten = new Daten(pfad);
+//        Daten.nogui = true;
+//        if (!userAgent.equals("")) {
+//            Daten.setUserAgentManuel(userAgent);
+//        }
+//        if (allesLaden) {
+//            Log.systemMeldung("Filme laden: alles laden");
+//        } else {
+//            Log.systemMeldung("Filme laden: nur update laden");
+//        }
+//        if (logfile!=null) {
+//            Log.setLogFile(logfile);
+//        }
+//        Log.systemMeldung("ImportUrl: " + importUrl);
+//        Log.systemMeldung("Outputfile: " + output);
+//        Log.systemMeldung("");
+//        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+//            @Override
+//            public void fertig(ListenerFilmeLadenEvent event) {
+//                serverLaufen = false;
+//            }
+//        });
+//        // laden was es schon gibt
+//        Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
+//        // das eigentliche Suchen der Filme bei den Sendern starten
+//        if (sender == null) {
+//            Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, allesLaden);
+//        } else {
+//            Daten.filmeLaden.updateSender(sender, Daten.listeFilme);
+//        }
+//        try {
+//            while (serverLaufen) {
+//                this.wait(5000);
+//            }
+//        } catch (Exception ex) {
+//            Log.fehlerMeldung(965451236, MediathekNoGui.class.getName(), "ServerStarten");
+//        }
+//        undTschuess(false /* exit */);
+//    }
+    public synchronized void init(String[] sender) {
+        // für den MediathekServer zum Starten
         daten = new Daten(pfad);
         Daten.nogui = true;
         if (!userAgent.equals("")) {
@@ -97,7 +139,7 @@ public class MediathekNoGui {
         } else {
             Log.systemMeldung("Filme laden: nur update laden");
         }
-        if (logfile!=null) {
+        if (logfile != null) {
             Log.setLogFile(logfile);
         }
         Log.systemMeldung("ImportUrl: " + importUrl);
@@ -117,6 +159,11 @@ public class MediathekNoGui {
         } else {
             Daten.filmeLaden.updateSender(sender, Daten.listeFilme);
         }
+    }
+
+    @Override
+    public synchronized void run() {
+        // für den MediathekServer zum Warten aufs Ende
         try {
             while (serverLaufen) {
                 this.wait(5000);
@@ -125,6 +172,11 @@ public class MediathekNoGui {
             Log.fehlerMeldung(965451236, MediathekNoGui.class.getName(), "ServerStarten");
         }
         undTschuess(false /* exit */);
+    }
+
+    public void stoppen() {
+        // für den MediathekServer zum Stroppen/Unerbrechen
+        Daten.filmeLaden.setStop();
     }
 
     public void starten() {
