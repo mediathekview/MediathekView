@@ -338,20 +338,37 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
             //swr
             ret = arr[DOWNLOAD_URL_NR].replace(".m.mp4", ".l.mp4");
-        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER)) {
-            //3Sat
-            //ret = arr[DOWNLOAD_URL_NR].replace("/veryhigh/", "/300/");
-            ret = arr[DOWNLOAD_URL_NR].replace("vh.mp4", "h.mp4");
-        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
-            //ZDF
-            //ret = arr[DOWNLOAD_URL_NR].replace("/veryhigh/", "/300/");
-            ret = arr[DOWNLOAD_URL_NR].replace("vh.mp4", "h.mp4");
+        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER) || arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
+            // ZDF und 3sat
+            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_51k_p7v9.mp4" system-bitrate="62000">
+            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_536k_p9v9.mp4" system-bitrate="700000">
+            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_1596k_p13v9.mp4" system-bitrate="1700000">
+            ret = arr[DOWNLOAD_URL_NR].replace("1596k_p13v9.mp4", "51k_p7v9.mp4");
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekNdr.SENDER)) {
             //NDR
             ret = arr[DOWNLOAD_URL_NR].replace(".hq.", ".lo.");
         }
         return ret;
     }
+//    private String getUrlLow() {
+//        String ret = arr[DOWNLOAD_URL_NR];
+//        if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
+//            //swr
+//            ret = arr[DOWNLOAD_URL_NR].replace(".m.mp4", ".l.mp4");
+//        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER)) {
+//            //3Sat
+//            //ret = arr[DOWNLOAD_URL_NR].replace("/veryhigh/", "/300/");
+//            ret = arr[DOWNLOAD_URL_NR].replace("vh.mp4", "h.mp4");
+//        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
+//            //ZDF
+//            //ret = arr[DOWNLOAD_URL_NR].replace("/veryhigh/", "/300/");
+//            ret = arr[DOWNLOAD_URL_NR].replace("vh.mp4", "h.mp4");
+//        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekNdr.SENDER)) {
+//            //NDR
+//            ret = arr[DOWNLOAD_URL_NR].replace(".hq.", ".lo.");
+//        }
+//        return ret;
+//    }
 
     @Override
     public int compareTo(DatenDownload arg0) {
