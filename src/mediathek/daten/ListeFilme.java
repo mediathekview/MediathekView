@@ -242,7 +242,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
 
     public synchronized TModelFilm getModelTabFilme(DDaten ddaten, TModelFilm modelFilm__, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {
         TModelFilm modelFilm = new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES);
-        modelFilm.setRowCount(0);
+//        modelFilm.setRowCount(0);
         if (this.size() != 0) {
             if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("")) {
                 addObjectDataTabFilme(ddaten, modelFilm);
