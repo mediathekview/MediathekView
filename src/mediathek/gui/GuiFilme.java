@@ -121,6 +121,10 @@ public class GuiFilme extends PanelVorlage {
         filmSpeichern_();
     }
 
+    public void tabelleSpeichern() {
+        tabelle.tabelleNachDatenSchreiben();
+    }
+
     //===================================
     // Private
     //===================================
@@ -426,7 +430,7 @@ public class GuiFilme extends PanelVorlage {
                 jComboBoxFilterThema.setPopupVisible(themaOpen);
             }
             setInfo();
-            tabelle.fireTableDataChanged(false /*setSpalten*/);
+////            tabelle.fireTableDataChanged(false /*setSpalten*/);
             tabelle.setSpalten();
             stopBeob = false;
             //filtern

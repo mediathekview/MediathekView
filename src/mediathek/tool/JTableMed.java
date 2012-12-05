@@ -190,7 +190,7 @@ public final class JTableMed extends JTable {
             // setSpalten wird im resetTabelle gemacht
         }
         // und jetzt erst der Beobachter, damit Daten.system nicht vorher schon überschrieben wird
-        this.getColumnModel().addColumnModelListener(new BeobSpalten());
+        ////////this.getColumnModel().addColumnModelListener(new BeobSpalten());
     }
     
     public void resetTabelle() {
@@ -281,7 +281,7 @@ public final class JTableMed extends JTable {
         }
     }
     
-    private void tabelleNachDatenSchreiben() {
+    public void tabelleNachDatenSchreiben() {
         if (tabelle == TABELLE_STANDARD) {
             // wird nur für eingerichtet Tabellen gemacht
             return;
@@ -306,36 +306,36 @@ public final class JTableMed extends JTable {
         DDaten.system[nrDatenSystem] = b + FELDTRENNER + r;
     }
     
-    private class BeobSpalten implements TableColumnModelListener {
-        
-        @Override
-        public void columnAdded(TableColumnModelEvent arg0) {
-        }
-        
-        @Override
-        public void columnRemoved(TableColumnModelEvent arg0) {
-        }
-        
-        @Override
-        public void columnMoved(TableColumnModelEvent arg0) {
-            set();
-        }
-        
-        @Override
-        public void columnMarginChanged(ChangeEvent arg0) {
-            set();
-        }
-        
-        @Override
-        public void columnSelectionChanged(ListSelectionEvent arg0) {
-        }
-        
-        private void set() {
-            if (!stopBeob) {
-                tabelleNachDatenSchreiben();
-            }
-        }
-    }
+//    private class BeobSpalten implements TableColumnModelListener {
+//        
+//        @Override
+//        public void columnAdded(TableColumnModelEvent arg0) {
+//        }
+//        
+//        @Override
+//        public void columnRemoved(TableColumnModelEvent arg0) {
+//        }
+//        
+//        @Override
+//        public void columnMoved(TableColumnModelEvent arg0) {
+//            set();
+//        }
+//        
+//        @Override
+//        public void columnMarginChanged(ChangeEvent arg0) {
+//            set();
+//        }
+//        
+//        @Override
+//        public void columnSelectionChanged(ListSelectionEvent arg0) {
+//        }
+//        
+//        private void set() {
+//            if (!stopBeob) {
+//////////                tabelleNachDatenSchreiben();
+//            }
+//        }
+//    }
     
     private int[] getArray(int anzahl) {
         int[] arr = new int[anzahl];
