@@ -71,7 +71,6 @@ public class FilmlistenSuchen {
             if (DDaten.debug && !DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR].equals("")) {
                 // zum Debuggen
                 getDownloadUrlsFilmlisten(DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR], tmp, Daten.getUserAgent());
-
             } else {
                 // Ausweichen auf andere Listenserver bei Bedarf
                 getDownloadUrlsFilmlisten(Konstanten.ADRESSE_UPDATE_SERVER, tmp, Daten.getUserAgent());
@@ -172,7 +171,7 @@ public class FilmlistenSuchen {
             InputStreamReader inReader;
             if (GuiFunktionen.istUrl(dateiUrl)) {
                 // eine URL verarbeiten
-                int timeout = 10000; //ms
+                int timeout = 20000; //ms
                 URLConnection conn;
                 conn = new URL(dateiUrl).openConnection();
                 conn.setRequestProperty("User-Agent", userAgent);

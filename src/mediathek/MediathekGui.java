@@ -593,6 +593,7 @@ public final class MediathekGui extends javax.swing.JFrame {
     }
 
     private void beenden() {
+        ddaten.guiFilme.tabelleSpeichern();
         ddaten.listeDownloads.listePutzen();
         if (ddaten.starterClass != null) {
             ddaten.starterClass.delAllStart();
