@@ -60,8 +60,6 @@ public class PanelPsetLang extends PanelVorlage {
     private ListePset listePset;
     private JTableMed tabellePset;
     private JTableMed tabelleProgramme;
-    
-    
 
     public PanelPsetLang(DDaten d) {
         super(d);
@@ -77,6 +75,10 @@ public class PanelPsetLang extends PanelVorlage {
     public PanelPsetLang(DDaten d, ListePset llistePset) {
         super(d);
         initComponents();
+        tabellePset = new JTableMed(DatenPset.PROGRAMMSET_COLUMN_NAMES_);
+        jScrollPane3.setViewportView(tabellePset);
+        tabelleProgramme = new JTableMed(DatenProg.PROGRAMM_COLUMN_NAMES_);
+        jScrollPane1.setViewportView(tabelleProgramme);
         listePset = llistePset;
         init();
     }

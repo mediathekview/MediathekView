@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Mediathek>
+
     <Programmset>
         <Name>Abspielen</Name>
         <Abspielen>true</Abspielen>
@@ -9,29 +10,18 @@
         <max-Laenge>25</max-Laenge>
         <Beschreibung>Standardset zum direkten Abspielen der Filme</Beschreibung>
     </Programmset>
-
     <Programm>
         <Programmname>skript</Programmname>
-        <Programmpfad>PFAD_SCRIPT</Programmpfad>
-        <Programmschalter>"PFAD_FLVSTREAMER" "PFAD_VLC" -r "%f"</Programmschalter>
-        <Praefix>rtmp://arte</Praefix>
-        <Restart>false</Restart>
-    </Programm>
-
-    <Programm>
-        <Programmname>skript</Programmname>
-        <Programmpfad>PFAD_SCRIPT</Programmpfad>
+        <Programmpfad>"PFAD_SCRIPT"</Programmpfad>
         <Programmschalter>"PFAD_FLVSTREAMER" "PFAD_VLC" %F</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>false</Restart>
     </Programm>
-
     <Programm>
         <Programmname>Vlc</Programmname>
         <Programmpfad>PFAD_VLC</Programmpfad>
         <Programmschalter>%f --play-and-exit</Programmschalter>
     </Programm>
-
 
     <Programmset>
         <Name>Speichern</Name>
@@ -46,16 +36,14 @@
         <max-Laenge>25</max-Laenge>
         <Beschreibung>Standardset zum Speichern der Filme</Beschreibung>
     </Programmset>
-
     <Programm>
         <Programmname>flvstreamer (rtmp &lt;#&gt; )</Programmname>
         <Zieldateiname>%t-%T-%N.flv</Zieldateiname>
-        <Programmpfad>PFAD_FLVSTREAMER</Programmpfad>
+        <Programmpfad>"PFAD_FLVSTREAMER"</Programmpfad>
         <Programmschalter>%F --resume -o "**"</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>true</Restart>
     </Programm>
-
     <Programm>
         <Programmname>vlc (mms://ndr &lt;#&gt; wmv)</Programmname>
         <Zieldateiname>%t-%T-%N.wmv</Zieldateiname>
@@ -64,13 +52,11 @@
         <Praefix>mms://ndr</Praefix>
         <Suffix>wmv</Suffix>
     </Programm>
-
     <Programm>
         <Programmname>vlc ( &lt;#&gt; )</Programmname>
         <Zieldateiname>%t-%T-%N.asf</Zieldateiname>
         <Programmpfad>PFAD_VLC</Programmpfad>
         <Programmschalter>%f :sout=#standard{access=file,mux=asf,dst="**"} -I "dummy" --play-and-exit</Programmschalter>
     </Programm>
-
 
 </Mediathek>

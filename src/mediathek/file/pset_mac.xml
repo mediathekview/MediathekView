@@ -9,7 +9,13 @@
         <max-Laenge>25</max-Laenge>
         <Beschreibung>Standardset zum direkten Abspielen der Filme</Beschreibung>
     </Programmset>
-
+    <Programm>
+        <Programmname>skript</Programmname>
+        <Programmpfad>PFAD_SCRIPT</Programmpfad>
+        <Programmschalter>PFAD_FLVSTREAMER PFAD_VLC %F</Programmschalter>
+        <Praefix>rtmp</Praefix>
+        <Restart>false</Restart>
+    </Programm>
     <Programm>
         <Programmname>Vlc</Programmname>
         <Programmpfad>PFAD_VLC</Programmpfad>
@@ -29,7 +35,6 @@
         <max-Laenge>25</max-Laenge>
         <Beschreibung>Standardset zum Speichern der Filme</Beschreibung>
     </Programmset>
-
     <Programm>
         <Programmname>flvstreamer</Programmname>
         <Programmpfad>PFAD_FLVSTREAMER</Programmpfad>
@@ -37,7 +42,6 @@
         <Praefix>rtmp</Praefix>
         <Restart>true</Restart>
     </Programm>
-
     <Programm>
         <Programmname>Vlc</Programmname>
         <Programmpfad>PFAD_VLC</Programmpfad>

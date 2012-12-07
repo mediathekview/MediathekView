@@ -29,7 +29,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.tool.Log;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.ListePsetVorlagen;
 import mediathek.daten.DDaten;
@@ -37,6 +36,7 @@ import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.Log;
 import mediathek.tool.TModel;
 
 public class PanelPsetImport extends PanelVorlage {

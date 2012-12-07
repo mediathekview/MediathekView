@@ -9,15 +9,6 @@
         <max-Laenge>25</max-Laenge>
         <Beschreibung>Standardset zum direkten Abspielen der Filme</Beschreibung>
     </Programmset>
-
-    <Programm>
-        <Programmname>skript</Programmname>
-        <Programmpfad>PFAD_SCRIPT</Programmpfad>
-        <Programmschalter>PFAD_FLVSTREAMER PFAD_VLC -r %f</Programmschalter>
-        <Praefix>rtmp://arte</Praefix>
-        <Restart>false</Restart>
-    </Programm>
-
     <Programm>
         <Programmname>skript</Programmname>
         <Programmpfad>PFAD_SCRIPT</Programmpfad>
@@ -25,14 +16,11 @@
         <Praefix>rtmp</Praefix>
         <Restart>false</Restart>
     </Programm>
-
     <Programm>
         <Programmname>Vlc</Programmname>
         <Programmpfad>PFAD_VLC</Programmpfad>
         <Programmschalter>%f --play-and-exit</Programmschalter>
     </Programm>
-
-
 
     <Programmset>
         <Name>Linux Speichern</Name>
@@ -47,14 +35,6 @@
         <max-Laenge>25</max-Laenge>
         <Beschreibung>Standardset zum Speichern der Filme</Beschreibung>
     </Programmset>
-
-    <Programm>
-        <Programmname>flvstreamer</Programmname>
-        <Programmpfad>PFAD_FLVSTREAMER</Programmpfad>
-        <Programmschalter>-r %f --resume -o **</Programmschalter>
-        <Praefix>rtmp://arte</Praefix>
-        <Restart>true</Restart>
-    </Programm>
     <Programm>
         <Programmname>flvstreamer</Programmname>
         <Programmpfad>PFAD_FLVSTREAMER</Programmpfad>
@@ -62,7 +42,6 @@
         <Praefix>rtmp</Praefix>
         <Restart>true</Restart>
     </Programm>
-
     <Programm>
         <Programmname>Vlc</Programmname>
         <Programmpfad>PFAD_VLC</Programmpfad>

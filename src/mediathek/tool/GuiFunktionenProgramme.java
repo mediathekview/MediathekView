@@ -91,7 +91,7 @@ public class GuiFunktionenProgramme {
 
     public static String getMusterPfadMplayer() {
         final String PFAD_LINUX = "/usr/bin/mplayer";
-        final String PFAD_MAC = "/Applications/VLC.app/Contents/MacOS/VLC";
+        final String PFAD_MAC = "/opt/local/bin/mplayer";
         String pfad = "";
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
             pfad = getWindowsMplayerPath();
@@ -128,11 +128,14 @@ public class GuiFunktionenProgramme {
     public static String getMusterPfadFlv() {
         final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
         final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
+        final String PFAD_MAC_FLV = "bin\\flvstreamer_macosx_intel_32bit_latest";
         String pfad = "";
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
             pfad = Funktionen.getPathJar() + PFAD_WINDOWS_FLV;
         } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
             pfad = PFAD_LINUX_FLV;
+        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            pfad = Funktionen.getPathJar() + PFAD_MAC_FLV;
         }
         if (new File(pfad).exists()) {
             return pfad;

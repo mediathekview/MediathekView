@@ -21,14 +21,14 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.daten.Daten;
-import mediathek.tool.Konstanten;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.PanelPsetLang;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.Konstanten;
 
 public class DialogStarteinstellungen extends javax.swing.JDialog {
 
@@ -45,31 +45,14 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         ddaten = dd;
         this.setTitle("Erster Start");
         jButtonStandard.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 jCheckBoxAnpassen.setVisible(false);
                 weiter();
             }
         });
-//        jButtonAlt.addActionListener(new ActionListener() {
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                alt();
-//            }
-//        });
-//        jButtonZiel.addActionListener(new ZielBeobachter());
-//        new EscBeenden(this) {
-//
-//            @Override
-//            public void beenden_() {
-//                weiter();
-//            }
-//        };
         jCheckBoxAlleEinstellungen.setVisible(false);
         jCheckBoxAlleEinstellungen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 status = STAT_PSET;
@@ -79,8 +62,6 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         jCheckBoxSuchen.setSelected(true);
         Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
         jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
-//        String dateiAlt = IoXmlLesen__old.altExistiert();
-//        jTextFieldPfad.setText(dateiAlt);
         Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = GuiFunktionenProgramme.getMusterPfadMplayer();
         Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = GuiFunktionenProgramme.getMusterPfadVlc();
         Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = GuiFunktionenProgramme.getMusterPfadFlv();
@@ -102,14 +83,6 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                 break;
         }
     }
-
-//    private void alt() {
-//        if (!jTextFieldPfad.getText().equals("")) {
-//            new IoXmlLesen__old().importOld(ddaten, jTextFieldPfad.getText());
-//            status = STAT_PSET;
-//            weiter();
-//        }
-//    }
 
     private void statusStart() {
         jButtonStandard.setText("Weiter");
@@ -286,28 +259,6 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
-
-//    private class ZielBeobachter implements ActionListener {
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            int returnVal;
-//            JFileChooser chooser = new JFileChooser();
-//            chooser.setFileHidingEnabled(false);
-//            if (!jTextFieldPfad.getText().equals("")) {
-//                chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
-//            }
-//            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-//            returnVal = chooser.showOpenDialog(null);
-//            if (returnVal == JFileChooser.APPROVE_OPTION) {
-//                try {
-//                    jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
-//                } catch (Exception ex) {
-//                    Log.fehlerMeldung(926487463,"DialogImportOld.ZielBeobachter", ex);
-//                }
-//            }
-//        }
-//    }
 
     private class BeobCheckBoxSuchen implements ActionListener {
 
