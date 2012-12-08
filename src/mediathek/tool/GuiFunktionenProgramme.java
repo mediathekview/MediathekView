@@ -37,6 +37,12 @@ import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 
 public class GuiFunktionenProgramme {
 
+    public static final int OS_UNKNOWN = 0;
+    public static final int OS_WIN_32BIT = 1;
+    public static final int OS_WIN_64BIT = 2;
+    public static final int OS_LINUX = 3;
+    public static final int OS_MAC = 4;
+
     private static String getWindowsMplayerPath() {
         //Für Windows den Pfad des VLC ermitteln
         //sonst den deutschen Defaultpfad für Programme verwenden verwenden
@@ -129,13 +135,19 @@ public class GuiFunktionenProgramme {
         final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
         final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
         final String PFAD_MAC_FLV = "bin\\flvstreamer_macosx_intel_32bit_latest";
-        String pfad = "";
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            pfad = Funktionen.getPathJar() + PFAD_WINDOWS_FLV;
-        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            pfad = PFAD_LINUX_FLV;
-        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            pfad = Funktionen.getPathJar() + PFAD_MAC_FLV;
+        String pfad;
+        switch (getOs()) {
+            case OS_LINUX:
+                pfad = PFAD_LINUX_FLV;
+                break;
+            case OS_MAC:
+                pfad = Funktionen.getPathJar() + PFAD_MAC_FLV;
+                break;
+            case OS_WIN_32BIT:
+            case OS_WIN_64BIT:
+            case OS_UNKNOWN:
+            default:
+                pfad = Funktionen.getPathJar() + PFAD_WINDOWS_FLV;
         }
         if (new File(pfad).exists()) {
             return pfad;
@@ -165,16 +177,40 @@ public class GuiFunktionenProgramme {
         return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
     }
 
+    public static int getOs() {
+        int os = OS_UNKNOWN;
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            if (System.getenv("ProgramFiles") != null) {
+                // win 32Bit
+                os = OS_WIN_32BIT;
+            } else if (System.getenv("ProgramFiles(x86)") != null) {
+                // win 64Bit
+                os = OS_WIN_64BIT;
+            }
+        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            os = OS_LINUX;
+        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            os = OS_MAC;
+        }
+        return os;
+    }
+
     public static String getPfadScript() {
         String pfadScript;
         final String PFAD_LINUX_SCRIPT = "bin/flv.sh";
         final String PFAD_WINDOWS_SCRIPT = "bin\\flv.bat";
-        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            pfadScript = Funktionen.getPathJar() + PFAD_LINUX_SCRIPT;
-        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            pfadScript = Funktionen.getPathJar() + PFAD_LINUX_SCRIPT;
-        } else {
-            pfadScript = Funktionen.getPathJar() + PFAD_WINDOWS_SCRIPT;
+        switch (getOs()) {
+            case OS_LINUX:
+                pfadScript = Funktionen.getPathJar() + PFAD_LINUX_SCRIPT;
+                break;
+            case OS_MAC:
+                pfadScript = Funktionen.getPathJar() + PFAD_LINUX_SCRIPT;
+                break;
+            case OS_WIN_32BIT:
+            case OS_WIN_64BIT:
+            case OS_UNKNOWN:
+            default:
+                pfadScript = Funktionen.getPathJar() + PFAD_WINDOWS_SCRIPT;
         }
         return pfadScript;
     }
@@ -182,12 +218,18 @@ public class GuiFunktionenProgramme {
     public static ListePset getStandardprogramme(DDaten ddaten) {
         ListePset pSet;
         InputStream datei;
-        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            datei = new GetFile().getPsetVorlageLinux();
-        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            datei = new GetFile().getPsetVorlageMac();
-        } else {
-            datei = new GetFile().getPsetVorlageWindows();
+        switch (getOs()) {
+            case OS_LINUX:
+                datei = new GetFile().getPsetVorlageLinux();
+                break;
+            case OS_MAC:
+                datei = new GetFile().getPsetVorlageMac();
+                break;
+            case OS_WIN_32BIT:
+            case OS_WIN_64BIT:
+            case OS_UNKNOWN:
+            default:
+                datei = new GetFile().getPsetVorlageWindows();
         }
         // Standardgruppen laden
         pSet = IoXmlLesen.importPset(datei, true);

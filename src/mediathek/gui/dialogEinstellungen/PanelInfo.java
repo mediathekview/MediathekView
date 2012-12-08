@@ -24,15 +24,11 @@ import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.BeobWeb;
+import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 
 public class PanelInfo extends PanelVorlage {
 
-    /**
-     *  Creates new form GuiFeed
-     *
-     *  @param d
-     */
     public PanelInfo(DDaten d) {
         super(d);
         initComponents();
@@ -46,16 +42,19 @@ public class PanelInfo extends PanelVorlage {
         String abos = Daten.getBasisVerzeichnis(false) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS;
         String einstellungen = Daten.getBasisVerzeichnis(false) + Konstanten.XML_DATEI;
         String filme = Daten.getBasisVerzeichnis(false) + Konstanten.XML_DATEI_FILME;
+        String programm = Funktionen.getPathJar();
         //
         jTextFieldAbos.setMargin(new Insets(1, 5, 1, 5));
         jTextFieldEinstellungen.setMargin(new Insets(1, 5, 1, 5));
         jTextFieldFilme.setMargin(new Insets(1, 5, 1, 5));
         jTextFieldVersion.setMargin(new Insets(1, 5, 1, 5));
+        jTextFieldPfadProgramm.setMargin(new Insets(1, 5, 1, 5));
         //
         jTextFieldAbos.setText(abos);
         jTextFieldEinstellungen.setText(einstellungen);
         jTextFieldFilme.setText(filme);
         jTextFieldVersion.setText(Konstanten.VERSION);
+        jTextFieldPfadProgramm.setText(programm);
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -69,6 +68,8 @@ public class PanelInfo extends PanelVorlage {
         jButtonAnleitung = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jTextFieldFilme = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jTextFieldPfadProgramm = new javax.swing.JTextField();
 
         jLabel1.setText("Version:");
 
@@ -89,6 +90,10 @@ public class PanelInfo extends PanelVorlage {
 
         jTextFieldFilme.setEditable(false);
 
+        jLabel4.setText("Pfad Programm:");
+
+        jTextFieldPfadProgramm.setEditable(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -96,25 +101,27 @@ public class PanelInfo extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jButtonAnleitung))
+                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(jLabel2)
                             .addComponent(jLabel1)
-                            .addComponent(jLabel5))
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel4))
                         .addGap(48, 48, 48)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldPfadProgramm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextFieldEinstellungen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextFieldVersion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextFieldAbos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextFieldFilme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jButtonAnleitung)))
+                            .addComponent(jTextFieldFilme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(114, Short.MAX_VALUE))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jTextFieldAbos, jTextFieldEinstellungen, jTextFieldFilme, jTextFieldVersion});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jTextFieldAbos, jTextFieldEinstellungen, jTextFieldFilme, jTextFieldPfadProgramm, jTextFieldVersion});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,7 +142,11 @@ public class PanelInfo extends PanelVorlage {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jTextFieldAbos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jTextFieldPfadProgramm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addComponent(jButtonAnleitung)
                 .addContainerGap())
         );
@@ -148,10 +159,12 @@ public class PanelInfo extends PanelVorlage {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JTextField jTextFieldAbos;
     private javax.swing.JTextField jTextFieldEinstellungen;
     private javax.swing.JTextField jTextFieldFilme;
+    private javax.swing.JTextField jTextFieldPfadProgramm;
     private javax.swing.JTextField jTextFieldVersion;
     // End of variables declaration//GEN-END:variables
 }
