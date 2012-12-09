@@ -263,7 +263,7 @@ public class GuiFunktionen extends Funktionen {
     public static String getStandardDownloadPath() {
         //lifert den Standardpfad für Downloads
         if (getOs() == OS_MAC) {
-            return addsPfad(getHomePath(), addsPfad("Desktop", Konstanten.VERZEICNHISS_DOWNLOADS));
+            return addsPfad(getHomePath(), "Desktop");
         }
         return addsPfad(getHomePath(), Konstanten.VERZEICNHISS_DOWNLOADS);
     }
