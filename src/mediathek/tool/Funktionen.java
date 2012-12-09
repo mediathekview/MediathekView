@@ -26,6 +26,30 @@ import mediathek.Main;
 
 public class Funktionen {
 
+    public static final int OS_UNKNOWN = 0;
+    public static final int OS_WIN_32BIT = 1;
+    public static final int OS_WIN_64BIT = 2;
+    public static final int OS_LINUX = 3;
+    public static final int OS_MAC = 4;
+
+    public static int getOs() {
+        int os = OS_UNKNOWN;
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            if (System.getenv("ProgramFiles") != null) {
+                // win 32Bit
+                os = OS_WIN_32BIT;
+            } else if (System.getenv("ProgramFiles(x86)") != null) {
+                // win 64Bit
+                os = OS_WIN_64BIT;
+            }
+        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            os = OS_LINUX;
+        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            os = OS_MAC;
+        }
+        return os;
+    }
+
     public static String getPathJar() {
         String pFilePath = "pFile";
         File propFile = new File(pFilePath);

@@ -35,106 +35,74 @@ import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 
-public class GuiFunktionenProgramme {
-
-    public static final int OS_UNKNOWN = 0;
-    public static final int OS_WIN_32BIT = 1;
-    public static final int OS_WIN_64BIT = 2;
-    public static final int OS_LINUX = 3;
-    public static final int OS_MAC = 4;
-
-    private static String getWindowsMplayerPath() {
-        //Für Windows den Pfad des VLC ermitteln
-        //sonst den deutschen Defaultpfad für Programme verwenden verwenden
-        final String PFAD_WIN_DEFAULT = "C:\\Program Files\\SMPlayer\\mplayer\\mplayer.exe";
-        final String PFAD_WIN = "\\SMPlayer\\mplayer\\mplayer.exe";
-        String vlcPfad;
-        try {
-            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-                if (System.getenv("ProgramFiles") != null) {
-                    vlcPfad = System.getenv("ProgramFiles") + PFAD_WIN;
-                    if (new File(vlcPfad).exists()) {
-                        return vlcPfad;
-                    }
-                }
-            }
-            if (System.getenv("ProgramFiles(x86)") != null) {
-                vlcPfad = System.getenv("ProgramFiles(x86)") + PFAD_WIN;
-                if (new File(vlcPfad).exists()) {
-                    return vlcPfad;
-                }
-            }
-        } catch (Exception ex) {
-        }
-        return PFAD_WIN_DEFAULT;
-    }
-
-    private static String getWindowsVlcPath() {
-        //Für Windows den Pfad des VLC ermitteln
-        //sonst den deutschen Defaultpfad für Programme verwenden verwenden
-        final String PFAD_WIN_DEFAULT = "C:\\Programme\\VideoLAN\\VLC\\vlc.exe";
-        final String PFAD_WIN = "\\VideoLAN\\VLC\\vlc.exe";
-        String vlcPfad;
-        try {
-            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-                if (System.getenv("ProgramFiles") != null) {
-                    vlcPfad = System.getenv("ProgramFiles") + PFAD_WIN;
-                    if (new File(vlcPfad).exists()) {
-                        return vlcPfad;
-                    }
-                }
-            }
-            if (System.getenv("ProgramFiles(x86)") != null) {
-                vlcPfad = System.getenv("ProgramFiles(x86)") + PFAD_WIN;
-                if (new File(vlcPfad).exists()) {
-                    return vlcPfad;
-                }
-            }
-        } catch (Exception ex) {
-        }
-        return PFAD_WIN_DEFAULT;
-    }
+public class GuiFunktionenProgramme extends GuiFunktionen{
 
     public static String getMusterPfadMplayer() {
         final String PFAD_LINUX = "/usr/bin/mplayer";
         final String PFAD_MAC = "/opt/local/bin/mplayer";
-        String pfad = "";
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            pfad = getWindowsMplayerPath();
-        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            pfad = PFAD_LINUX;
-        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            pfad = PFAD_MAC;
+        final String PFAD_WIN_DEFAULT = "C:\\Program Files\\SMPlayer\\mplayer\\mplayer.exe";
+        final String PFAD_WIN = "\\SMPlayer\\mplayer\\mplayer.exe";
+        String pfad;
+        switch (getOs()) {
+            case OS_LINUX:
+                pfad = PFAD_LINUX;
+                break;
+            case OS_MAC:
+                pfad = PFAD_MAC;
+                break;
+            case OS_WIN_32BIT:
+            case OS_WIN_64BIT:
+            case OS_UNKNOWN:
+            default:
+                if (System.getenv("ProgramFiles") != null) {
+                    pfad = System.getenv("ProgramFiles") + PFAD_WIN;
+                } else if (System.getenv("ProgramFiles(x86)") != null) {
+                    pfad = System.getenv("ProgramFiles(x86)") + PFAD_WIN;
+                } else {
+                    pfad = PFAD_WIN_DEFAULT;
+                }
         }
-        if (new File(pfad).exists()) {
-            return pfad;
-        } else {
-            return "";
+        if (!new File(pfad).exists()) {
+            pfad = "";
         }
+        return pfad;
     }
 
     public static String getMusterPfadVlc() {
         final String PFAD_LINUX_VLC = "/usr/bin/vlc";
         final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
-        String pfad = "";
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            pfad = getWindowsVlcPath();
-        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            pfad = PFAD_LINUX_VLC;
-        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            pfad = PFAD_MAC_VLC;
+        final String PFAD_WIN_DEFAULT = "C:\\Programme\\VideoLAN\\VLC\\vlc.exe";
+        final String PFAD_WIN = "\\VideoLAN\\VLC\\vlc.exe";
+        String pfad;
+        switch (getOs()) {
+            case OS_LINUX:
+                pfad = PFAD_LINUX_VLC;
+                break;
+            case OS_MAC:
+                pfad = PFAD_MAC_VLC;
+                break;
+            case OS_WIN_32BIT:
+            case OS_WIN_64BIT:
+            case OS_UNKNOWN:
+            default:
+                if (System.getenv("ProgramFiles") != null) {
+                    pfad = System.getenv("ProgramFiles") + PFAD_WIN;
+                } else if (System.getenv("ProgramFiles(x86)") != null) {
+                    pfad = System.getenv("ProgramFiles(x86)") + PFAD_WIN;
+                } else {
+                    pfad = PFAD_WIN_DEFAULT;
+                }
         }
-        if (new File(pfad).exists()) {
-            return pfad;
-        } else {
-            return "";
+        if (!new File(pfad).exists()) {
+            pfad = "";
         }
+        return pfad;
     }
 
     public static String getMusterPfadFlv() {
         final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
+        final String PFAD_MAC_FLV = "bin/flvstreamer_macosx_intel_32bit_latest";
         final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
-        final String PFAD_MAC_FLV = "bin\\flvstreamer_macosx_intel_32bit_latest";
         String pfad;
         switch (getOs()) {
             case OS_LINUX:
@@ -177,40 +145,22 @@ public class GuiFunktionenProgramme {
         return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
     }
 
-    public static int getOs() {
-        int os = OS_UNKNOWN;
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            if (System.getenv("ProgramFiles") != null) {
-                // win 32Bit
-                os = OS_WIN_32BIT;
-            } else if (System.getenv("ProgramFiles(x86)") != null) {
-                // win 64Bit
-                os = OS_WIN_64BIT;
-            }
-        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            os = OS_LINUX;
-        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            os = OS_MAC;
-        }
-        return os;
-    }
-
     public static String getPfadScript() {
         String pfadScript;
         final String PFAD_LINUX_SCRIPT = "bin/flv.sh";
         final String PFAD_WINDOWS_SCRIPT = "bin\\flv.bat";
         switch (getOs()) {
             case OS_LINUX:
-                pfadScript = Funktionen.getPathJar() + PFAD_LINUX_SCRIPT;
+                pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
                 break;
             case OS_MAC:
-                pfadScript = Funktionen.getPathJar() + PFAD_LINUX_SCRIPT;
+                pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
                 break;
             case OS_WIN_32BIT:
             case OS_WIN_64BIT:
             case OS_UNKNOWN:
             default:
-                pfadScript = Funktionen.getPathJar() + PFAD_WINDOWS_SCRIPT;
+                pfadScript = getPathJar() + PFAD_WINDOWS_SCRIPT;
         }
         return pfadScript;
     }

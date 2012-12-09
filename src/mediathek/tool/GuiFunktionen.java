@@ -33,7 +33,7 @@ import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 
-public class GuiFunktionen {
+public class GuiFunktionen extends Funktionen {
 
     public static boolean setLook(JFrame frame) {
         int look;
@@ -262,6 +262,9 @@ public class GuiFunktionen {
 
     public static String getStandardDownloadPath() {
         //lifert den Standardpfad für Downloads
+        if (getOs() == OS_MAC) {
+            return addsPfad(getHomePath(), addsPfad("Desktop", Konstanten.VERZEICNHISS_DOWNLOADS));
+        }
         return addsPfad(getHomePath(), Konstanten.VERZEICNHISS_DOWNLOADS);
     }
 
