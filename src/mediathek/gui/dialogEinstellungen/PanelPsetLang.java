@@ -60,10 +60,12 @@ public class PanelPsetLang extends PanelVorlage {
     private ListePset listePset;
     private JTableMed tabellePset;
     private JTableMed tabelleProgramme;
+    private boolean modalHilfe = false;
 
     public PanelPsetLang(DDaten d) {
         super(d);
         initComponents();
+        modalHilfe = false;
         tabellePset = new JTableMed(DatenPset.PROGRAMMSET_COLUMN_NAMES_);
         jScrollPane3.setViewportView(tabellePset);
         tabelleProgramme = new JTableMed(DatenProg.PROGRAMM_COLUMN_NAMES_);
@@ -75,6 +77,7 @@ public class PanelPsetLang extends PanelVorlage {
     public PanelPsetLang(DDaten d, ListePset llistePset) {
         super(d);
         initComponents();
+        modalHilfe = true;
         tabellePset = new JTableMed(DatenPset.PROGRAMMSET_COLUMN_NAMES_);
         jScrollPane3.setViewportView(tabellePset);
         tabelleProgramme = new JTableMed(DatenProg.PROGRAMM_COLUMN_NAMES_);
@@ -190,7 +193,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PRGRAMME)).setVisible(true);
+                new DialogHilfe(null, modalHilfe, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PRGRAMME)).setVisible(true);
             }
         });
         jButtonPruefen.addActionListener(new BeobPuefen());

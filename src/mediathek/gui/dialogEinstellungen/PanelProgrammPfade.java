@@ -30,13 +30,13 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.daten.Daten;
-import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
 import mediathek.file.GetFile;
-import mediathek.tool.BeobWeb;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.tool.BeobWeb;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 public class PanelProgrammPfade extends JPanel {
 
