@@ -27,7 +27,7 @@
         <Praefix>http</Praefix>
         <Suffix>mp4,mp3,m4v,flv</Suffix>
         <Zielpfad>ZIELPFAD</Zielpfad>
-        <Zieldateiname>%t-%T-%N.mp4</Zieldateiname>
+        <Zieldateiname>%t-%T-%N.flv</Zieldateiname>
         <Abspielen>false</Abspielen>
         <Speichern>true</Speichern>
         <Button>true</Button>
