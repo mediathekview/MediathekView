@@ -56,7 +56,7 @@ public class DialogHilfe extends javax.swing.JDialog {
         };
     }
 
-    private void beenden() {
+   void beenden() {
         this.dispose();
     }
 
