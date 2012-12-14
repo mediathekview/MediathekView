@@ -140,7 +140,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         if (ok) {
             // jetzt wird mit den angegebenen Pfaden gearbeitet
             datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), jTextFieldPfad.getText());
-            ddaten.listeDownloads.add(datenDownload);
+            ddaten.listeDownloads.addMitNummer(datenDownload);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
             if (jCheckBoxStarten.isSelected()) {
                 // und evtl. auch gleich starten

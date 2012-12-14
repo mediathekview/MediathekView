@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.controller.io.starter.Start;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModelDownload;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
@@ -48,8 +49,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         Collections.<DatenDownload>sort(this);
     }
 
-    @Override
-    public boolean add(DatenDownload e) {
+    public boolean addMitNummer(DatenDownload e) {
         boolean ret = super.add(e);
         nummerEintragen();
         return ret;
@@ -65,14 +65,20 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public synchronized void listePutzen() {
         // beim Programmende fertige Downloads löschen
+        boolean gefunden = false;
         LinkedList<Start> s = ddaten.starterClass.getStarts(Start.QUELLE_ALLE);
         Iterator<Start> it = s.iterator();
         while (it.hasNext()) {
             Start start = it.next();
             if (start.status >= Start.STATUS_FERTIG) {
+                gefunden = true;
                 delDownloadByUrl(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
             }
         }
+        if (gefunden) {
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+        }
+        ddaten.starterClass.aufraeumen();
     }
 
     public synchronized DatenDownload downloadVorziehen(String url) {
@@ -153,6 +159,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     public synchronized void abosEintragen() {
         // in der Filmliste nach passenden Filmen suchen und 
         // in die Liste der Downloads eintragen
+        boolean gefunden = false;
         DatenFilm film;
         DatenAbo abo;
         ListIterator<DatenFilm> itFilm = Daten.listeFilme.listIterator();
@@ -181,10 +188,14 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     abo.arr[DatenAbo.ABO_PSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
                 }
                 if (pSet != null) {
-                    this.add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", ""));
+                    add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", ""));
+                    gefunden = true;
                 }
             }
         } //while
+        if (gefunden) {
+            nummerEintragen();
+        }
     }
 
     public synchronized void abosLoschen() {
@@ -207,10 +218,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    //===================================
-    // private
-    //===================================
-    private void nummerEintragen() {
+    public void nummerEintragen() {
         int i = 0;
         ListIterator<DatenDownload> it = listIterator();
         while (it.hasNext()) {

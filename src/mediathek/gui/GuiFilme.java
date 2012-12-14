@@ -436,7 +436,7 @@ public class GuiFilme extends PanelVorlage {
             //filtern
             if (themaNichtDa) {
                 // nochmal filtern anschieben
-                this.tabelleBauen();
+                tabelleBauen();
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(558965421, "GuiFilme.tabelleBauen", ex);
@@ -1308,7 +1308,7 @@ public class GuiFilme extends PanelVorlage {
                             }
                         }
                         stopBeob = false;
-                        tabelleBauen();
+////                        tabelleBauen();
                     }
                 }
             }
@@ -1333,7 +1333,7 @@ public class GuiFilme extends PanelVorlage {
                         ddaten.listeAbo.addAbo(jComboBoxFilterSender.getSelectedItem().toString(), jComboBoxFilterThema.getSelectedItem().toString(),
                                 jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(), filmThema);
                         stopBeob = false;
-                        tabelleBauen();
+////                        tabelleBauen();
                     }
                 }
             }

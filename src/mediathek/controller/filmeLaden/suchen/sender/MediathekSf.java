@@ -184,8 +184,8 @@ public class MediathekSf extends MediathekReader implements Runnable {
             seite2 = getUrl.getUri_Utf(nameSenderMReader, url, seite2, "");
             try {
                 int pos = 0;
-                int pos1 = 0;
-                int pos2 = 0;
+                int pos1;
+                int pos2;
                 if ((pos = seite2.indexOf(MUSTER_URL, pos)) != -1) {
                     pos += MUSTER_URL.length();
                     pos1 = pos;
