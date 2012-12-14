@@ -274,6 +274,7 @@ public class IoXmlLesen {
         } catch (Exception ex) {
             Log.fehlerMeldung(392840096, "IoXml.xmlDatenLesen", ex);
         } finally {
+            ddaten.listeDownloads.nummerEintragen();
             //ListeFilmUpdateServer aufbauen
             DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).sort();
         }
