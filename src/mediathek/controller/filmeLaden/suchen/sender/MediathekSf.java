@@ -28,7 +28,7 @@ import mediathek.tool.Log;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekSf extends MediathekReader implements Runnable {
 
@@ -38,7 +38,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
 
     /**
      *
-     *  @param ddaten
+     * @param ddaten
      */
     public MediathekSf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
@@ -97,6 +97,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer seite3 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {
@@ -193,6 +194,13 @@ public class MediathekSf extends MediathekReader implements Runnable {
                         url = seite2.substring(pos1, pos2);
                         if (!url.equals("")) {
                             url = url.replace("\\", "");
+                            if (url.endsWith("m3u8")) {
+                                String tmp = getUrlFrom_m3u8(url);
+                                if (!tmp.equals("")) {
+                                    url = tmp;
+                                    // thema = "--- test ----";
+                                }
+                            }
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
                             addFilm(film);
@@ -204,6 +212,35 @@ public class MediathekSf extends MediathekReader implements Runnable {
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-556320087, "MediathekSf.addFilme2", ex.getMessage());
             }
+        }
+
+        private String getUrlFrom_m3u8(String url_) {
+            // http://srfvod-vh.akamaihd.net/i/vod/chfilmszene/2012/12/chfilmszene_20121213_001157_web_h264_16zu9_,lq1,mq1,hq1,.mp4.csmil/index_0_av.m3u8?null=&e=ace6e3bb3f9f8597
+            // rtmp://cp50792.edgefcs.net/ondemand/mp4:aka/vod/chfilmszene/2012/12/chfilmszene_20121213_001157_web_h264_16zu9_hq1.mp4
+            String url = "";
+            final String MUSTER_URL = "http://";
+            meldung(url_);
+            seite3 = getUrl.getUri_Utf(nameSenderMReader, url_, seite3, "");
+            try {
+                int pos1;
+                int pos2;
+                if ((pos1 = seite3.indexOf(MUSTER_URL)) != -1) {
+                    pos1 += MUSTER_URL.length();
+                    if ((pos2 = seite3.indexOf("?", pos1)) != -1) {
+                        url = seite3.substring(pos1, pos2);
+                        url = url.substring(url.indexOf("/vod/"));
+                        url = "rtmp://cp50792.edgefcs.net/ondemand/mp4:aka" + url;
+                        url = url.substring(0, url.indexOf("h264"));
+                        url = url + "h264_16zu9_hq1.mp4";
+                        if (url.equals("")) {
+                            Log.fehlerMeldungMReader(-362514789, "MediathekSf.getUrlFrom_m3u8", "keine URL" + url);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldungMReader(-827485890, "MediathekSf.getUrlFrom_m3u8", ex.getMessage());
+            }
+            return url;
         }
     }
 }
