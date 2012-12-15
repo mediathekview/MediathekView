@@ -109,10 +109,10 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     seite.setLength(0);
                     addFilme(link[1], link[0] /* url */);
                 }
-                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-832002877, "MediathekSf.SfThemaLaden.run", ex.getMessage());
             }
+            meldungThreadUndFertig();
         }
 
         private void addFilme(String thema, String strUrlFeed) {

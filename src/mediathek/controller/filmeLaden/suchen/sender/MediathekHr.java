@@ -34,7 +34,7 @@ import mediathek.tool.Konstanten;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekHr extends MediathekReader implements Runnable {
 
@@ -44,7 +44,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *  @param ddaten
      */
     public MediathekHr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 500, startPrio);
@@ -218,10 +218,10 @@ public class MediathekHr extends MediathekReader implements Runnable {
                     seite.setLength(0);
                     addFilme(link[1], link[0] /* url */);
                 }
-                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-894330854, "MediathekHr.ThemaLaden.run", ex.getMessage());
             }
+            meldungThreadUndFertig();
         }
 
         private void addFilme(String thema, String strUrlFeed) {

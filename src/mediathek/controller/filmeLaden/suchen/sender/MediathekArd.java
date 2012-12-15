@@ -28,7 +28,7 @@ import mediathek.tool.Log;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekArd extends MediathekReader implements Runnable {
 
@@ -36,7 +36,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *  @param ddaten
      */
     public MediathekArd(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 6, /* urlWarten */ 500, startPrio);
@@ -139,11 +139,10 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     meldungProgress(link[0]);
                     feedSuchen(link[0] /* url */, link[1] /* Thema */);
                 }
-                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-487326921, "MediathekArdThemaLaden.run", ex.getMessage());
             }
-
+            meldungThreadUndFertig();
         }
 
         private void feedSuchen(String strUrlFeed, String thema) {

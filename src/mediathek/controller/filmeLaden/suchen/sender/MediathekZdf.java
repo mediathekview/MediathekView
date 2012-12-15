@@ -190,10 +190,10 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     addFilme(link[0]/* url */, link[1]/* urlThema */, link[2]/* Thema */);
                     meldungProgress(link[0]);
                 }
-                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-496583200, "MediathekZdf.ZdfThemaLaden.run", ex.getMessage());
             }
+            meldungThreadUndFertig();
         }
 
         private void addFilme(String url, String urlThema, String thema) {
