@@ -28,7 +28,7 @@ import mediathek.tool.Log;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekSfPod extends MediathekReader implements Runnable {
 
@@ -37,7 +37,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
 
     /**
      *
-     *  @param ddaten
+     * @param ddaten
      */
     public MediathekSfPod(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
@@ -103,10 +103,10 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                     meldungProgress(link[0] /* url */);
                     addFilme(link[1], link[0] /* url */);
                 }
-                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-286931004, "MediathekSfPod.SfThemaLaden.run", ex.getMessage());
             }
+            meldungThreadUndFertig();
         }
 
         void addFilme(String thema, String strUrlFeed) {

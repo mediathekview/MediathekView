@@ -125,10 +125,10 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                         Log.fehlerMeldungMReader(-336901211, "MediathekNdr.ThemaLaden.run.1", ex.getMessage());
                     }
                 }
-                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldung(-554632590, "MediathekNdr.ThemaLaden.run.2", ex);
             }
+            meldungThreadUndFertig();
         }
 
         void feedEinerSeiteSuchen(String strUrlFeed, String tthema) {

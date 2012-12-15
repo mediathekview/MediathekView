@@ -203,10 +203,10 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                         Log.fehlerMeldungMReader(-795633581, "MediathekOrf.OrfThemaLaden.run", ex.getMessage());
                     }
                 }
-                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-554012398, "MediathekOrf.OrfThemaLaden.run", ex.getMessage());
             }
+            meldungThreadUndFertig();
         }
 
         void feedEinerSeiteSuchen(String strUrlFeed, String thema) {

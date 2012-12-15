@@ -137,10 +137,10 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                     meldungProgress(url);
                     addTage(url);
                 }
-                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-115896304, "MediathekMdr.MdrThemaLaden.run", ex.getMessage());
             }
+            meldungThreadUndFertig();
         }
 
         void addTage(String urlSeite) {

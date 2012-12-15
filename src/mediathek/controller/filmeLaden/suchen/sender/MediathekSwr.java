@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *
- * @author
+ *  @author
  */
 public class MediathekSwr extends MediathekReader implements Runnable {
 
@@ -118,10 +118,10 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     themenSeitenSuchen(link[0] /* url */, link[1] /* Thema */);
                     meldungProgress(link[0]);
                 }
-                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-739285690, "MediathekSwr.SenderThemaLaden.run", ex.getMessage());
             }
+            meldungThreadUndFertig();
         }
 
         private void themenSeitenSuchen(String strUrlFeed, String thema) {
@@ -146,7 +146,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         Log.fehlerMeldungMReader(-875012369, "MediathekSwr.addFilme2", "keine URL, Thema: " + thema);
                     } else {
                         url = "http://swrmediathek.de/AjaxEntry?callback=jsonp1347979401564&ekey=" + url;
-                        jason(strUrlFeed, thema, url);
+                        json(strUrlFeed, thema, url);
                     }
 
                 }
@@ -154,7 +154,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             }
         }
 
-        protected void jason(String strUrlFeed, String thema, String urlJson) {
+        private void json(String strUrlFeed, String thema, String urlJson) {
             //:"entry_media","attr":{"val0":"h264","val1":"3","val2":"rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/landesschau-rp/aktuell/2012/11/582111.l.mp4",
             // oder
             // "entry_media":"http://mp4-download.swr.de/swr-fernsehen/zur-sache-baden-wuerttemberg/das-letzte-wort-podcast/20120913-2015.m.mp4"
@@ -217,7 +217,6 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             }
             if ((pos1 = strSeite2.indexOf(MUSTER_DAUER)) != -1) {
                 pos1 += MUSTER_DAUER.length();
-
                 if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
                     dauer = strSeite2.substring(pos1, pos2);
                 }

@@ -30,7 +30,7 @@ import mediathek.tool.Log;
 
 /**
  *
- * @author
+ *   @author
  */
 public class MediathekArte7 extends MediathekReader implements Runnable {
 
@@ -48,8 +48,8 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
-     * @param dde
+     *   @param ddaten
+     *   @param dde
      */
     public MediathekArte7(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ "", /* threads */ MAX_THREADS_ALLES, /* urlWarten */ 500, startPrio);
@@ -174,10 +174,10 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                     meldungProgress(link[0]);
                 }
                 getAddThemenLaufen(-1);
-                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-251436904, "MediathekArte7.ArteThemaLaden.run", ex.getMessage());
             }
+            meldungThreadUndFertig();
         }
 
         private void themenSeitenSuchen(String strUrlFeed, String thema) {
@@ -310,10 +310,10 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                     }
                 } while (!Daten.filmeLaden.getStop() && getAddThemenLaufen(0) > 0);
                 meldung("");
-                meldungThreadUndFertig(); // und im SeitenThread gelöscht
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-381069831, "MediathekArte7.ArteFilmseitenLaden.run", ex.getMessage());
             }
+            meldungThreadUndFertig(); // und im SeitenThread gelöscht
         }
 
         private void addFilme2(String strUrlFeed, String thema, String titel, String urlFilm) {

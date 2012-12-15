@@ -105,10 +105,10 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                     meldungProgress(link[0]);
                     addFilme(link[0] /* url */);
                 }
-                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-794625882, "MediathekRBB.ThemaLaden.run", ex.getMessage());
             }
+            meldungThreadUndFertig();
         }
 
         void addFilme(String url) {

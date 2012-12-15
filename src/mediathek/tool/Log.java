@@ -102,7 +102,7 @@ public class Log {
 
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex, String text) {
         String[] str = new String[2];
-        str[0] = ex.getLocalizedMessage();
+        str[0] = ex.getMessage();
         str[1] = text;
         fehlermeldung_(fehlerNummer, klasse, str);
     }

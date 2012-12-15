@@ -174,10 +174,10 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     }
                     meldungProgress(link[0]);
                 }
-                meldungThreadUndFertig();
             } catch (Exception ex) {
                 Log.fehlerMeldungMReader(-633250489, "MediathekWdr.SenderThemaLaden.run", ex.getMessage());
             }
+            meldungThreadUndFertig();
         }
 
         //TH
