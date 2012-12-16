@@ -106,8 +106,6 @@ public class ProgrammUpdateSuchen {
                         text.append(h[1]);
                         text.append("\n");
                         text.append("\n");
-                        text.append("\n");
-                        text.append("\n");
                     }
                 }
                 if (text.length() > 0) {
