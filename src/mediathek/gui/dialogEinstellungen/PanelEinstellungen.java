@@ -107,7 +107,8 @@ public class PanelEinstellungen extends PanelVorlage {
             }
         });
         jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
-        jButtonSuchen.addActionListener(new BeobSuchen());
+        jButtonSuchen.addActionListener(new BeobSuchen(false));
+        jButtonInfos.addActionListener(new BeobSuchen(true));
         jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR]));
         jCheckBoxAboSuchen.addActionListener(new ActionListener() {
             @Override
@@ -178,6 +179,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jPanel7 = new javax.swing.JPanel();
         jCheckBoxSuchen = new javax.swing.JCheckBox();
         jButtonSuchen = new javax.swing.JButton();
+        jButtonInfos = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jComboBoxLook = new javax.swing.JComboBox();
         jPanel3 = new javax.swing.JPanel();
@@ -281,6 +283,8 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jButtonSuchen.setText("Jetzt suchen");
 
+        jButtonInfos.setText("Programminfos anzeigen");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -291,15 +295,22 @@ public class PanelEinstellungen extends PanelVorlage {
                     .addComponent(jCheckBoxSuchen)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(jButtonSuchen)))
-                .addContainerGap(38, Short.MAX_VALUE))
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonInfos)
+                            .addComponent(jButtonSuchen))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jPanel7Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonInfos, jButtonSuchen});
+
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addComponent(jCheckBoxSuchen)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonSuchen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonInfos)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -373,18 +384,19 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonAnzahl;
     private javax.swing.JButton jButtonHilfe;
+    private javax.swing.JButton jButtonInfos;
     private javax.swing.JButton jButtonName;
     private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxAboSuchen;
@@ -470,9 +482,15 @@ public class PanelEinstellungen extends PanelVorlage {
 
     private class BeobSuchen implements ActionListener {
 
+        private boolean infos = false;
+
+        public BeobSuchen(boolean iinfos) {
+            infos = iinfos;
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            new ProgrammUpdateSuchen().checkVersion(ddaten, true);
+            new ProgrammUpdateSuchen().checkVersion(ddaten, !infos /* bei aktuell anzeigen */, infos /* Hinweis */, true /* hinweiseAlleAnzeigen */);
         }
     }
 }
