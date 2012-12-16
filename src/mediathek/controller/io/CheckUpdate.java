@@ -19,11 +19,11 @@
  */
 package mediathek.controller.io;
 
-import mediathek.daten.Daten;
-import mediathek.tool.Konstanten;
 import mediathek.MediathekGui;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.Konstanten;
 
 public class CheckUpdate {
 
@@ -50,7 +50,7 @@ public class CheckUpdate {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR])) {
                     if (!Daten.system[Konstanten.SYSTEM_UPDATE_DATUM_NR].equals(DatumZeit.getHeute_yyyyMMdd())) {
                         ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
-                        if (pgrUpdate.checkVersion(ddaten, false)) {
+                        if (pgrUpdate.checkVersion(ddaten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
                             gui.setTitle("Neue Version verfügbar");
                         } else {
                             gui.setTitle("Alles aktuell");
