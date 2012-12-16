@@ -115,6 +115,9 @@ public class ProgrammUpdateSuchen {
             } catch (Exception ex) {
                 Log.fehlerMeldung(693298731, "ProgrammUpdateSuchen.checkVersion", ex);
             }
+        } else if (alleAnzeigen) {
+            // dann wenigstens einen Hinweis, dass es keine gibt
+            new DialogHinweisUpdate(null, true, "Infos", "keine vorhanden").setVisible(true);
         }
     }
 
