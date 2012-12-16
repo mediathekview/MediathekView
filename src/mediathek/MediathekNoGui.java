@@ -43,7 +43,7 @@ public class MediathekNoGui implements Runnable {
     private boolean serverLaufen = false;
     private File logfile = null;
 
-    public MediathekNoGui(String ppfad, boolean aallesLaden, String ooutput, String iimprtUrl, String uuserAgent, File log) {
+    public MediathekNoGui(String ppfad, boolean aallesLaden, String ooutput, String iimprtUrl, String uuserAgent, File log, boolean ddebug) {
         // NUR für den Start vom MediathekServer
         pfad = ppfad;
         allesLaden = aallesLaden;
@@ -52,6 +52,9 @@ public class MediathekNoGui implements Runnable {
         userAgent = uuserAgent;
         logfile = log;
         serverLaufen = true;
+        if (ddebug) {
+            Daten.debug = ddebug;
+        }
     }
 
     public MediathekNoGui(String[] ar) {
@@ -87,50 +90,13 @@ public class MediathekNoGui implements Runnable {
         }
     }
 
-//    public synchronized void serverStarten(String[] sender) {
-//        daten = new Daten(pfad);
-//        Daten.nogui = true;
-//        if (!userAgent.equals("")) {
-//            Daten.setUserAgentManuel(userAgent);
-//        }
-//        if (allesLaden) {
-//            Log.systemMeldung("Filme laden: alles laden");
-//        } else {
-//            Log.systemMeldung("Filme laden: nur update laden");
-//        }
-//        if (logfile!=null) {
-//            Log.setLogFile(logfile);
-//        }
-//        Log.systemMeldung("ImportUrl: " + importUrl);
-//        Log.systemMeldung("Outputfile: " + output);
-//        Log.systemMeldung("");
-//        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
-//            @Override
-//            public void fertig(ListenerFilmeLadenEvent event) {
-//                serverLaufen = false;
-//            }
-//        });
-//        // laden was es schon gibt
-//        Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
-//        // das eigentliche Suchen der Filme bei den Sendern starten
-//        if (sender == null) {
-//            Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, allesLaden);
-//        } else {
-//            Daten.filmeLaden.updateSender(sender, Daten.listeFilme);
-//        }
-//        try {
-//            while (serverLaufen) {
-//                this.wait(5000);
-//            }
-//        } catch (Exception ex) {
-//            Log.fehlerMeldung(965451236, MediathekNoGui.class.getName(), "ServerStarten");
-//        }
-//        undTschuess(false /* exit */);
-//    }
     public synchronized void init(String[] sender) {
         // für den MediathekServer zum Starten
         daten = new Daten(pfad);
         Daten.nogui = true;
+        if (Daten.debug) {
+            Log.systemMeldung("Debug on");
+        }
         if (!userAgent.equals("")) {
             Daten.setUserAgentManuel(userAgent);
         }
