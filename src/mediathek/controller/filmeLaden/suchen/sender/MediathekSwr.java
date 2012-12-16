@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekSwr extends MediathekReader implements Runnable {
 
@@ -180,129 +180,133 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             String zeit = "";
             String dauer = "";
             String tmp;
-            strSeite2 = getUrl.getUri_Utf(nameSenderMReader, urlJson, strSeite2, "");
-            if ((pos1 = strSeite2.indexOf(MUSTER_TITEL_1)) != -1) {
-                pos1 += MUSTER_TITEL_1.length();
+            try {
+                strSeite2 = getUrl.getUri_Utf(nameSenderMReader, urlJson, strSeite2, "");
+                if ((pos1 = strSeite2.indexOf(MUSTER_TITEL_1)) != -1) {
+                    pos1 += MUSTER_TITEL_1.length();
 
-                if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-                    titel = strSeite2.substring(pos1, pos2);
-                }
-            }
-            if (titel.startsWith("\\") && (pos1 = strSeite2.indexOf(MUSTER_TITEL_2)) != -1) {
-                pos1 += MUSTER_TITEL_2.length();
-                if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-                    titel = strSeite2.substring(pos1, pos2);
-                    if (titel.endsWith("\\")) {
-                        titel = titel.substring(0, titel.length() - 2);
+                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                        titel = strSeite2.substring(pos1, pos2);
                     }
                 }
-            }
-            if ((pos1 = strSeite2.indexOf(MUSTER_DATUM)) != -1) {
-                pos1 += MUSTER_DATUM.length();
-                if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-                    datum = strSeite2.substring(pos1, pos2);
-                    if (datum.length() < 10) {
-                        if (datum.contains(".")) {
-                            if ((tmp = datum.substring(0, datum.indexOf("."))).length() != 2) {
-                                datum = "0" + datum;
-                            }
-                        }
-                        if (datum.indexOf(".") != datum.lastIndexOf(".")) {
-                            if ((tmp = datum.substring(datum.indexOf(".") + 1, datum.lastIndexOf("."))).length() != 2) {
-                                datum = datum.substring(0, datum.indexOf(".") + 1) + "0" + datum.substring(datum.indexOf(".") + 1);
-                            }
+                if (titel.startsWith("\\") && (pos1 = strSeite2.indexOf(MUSTER_TITEL_2)) != -1) {
+                    pos1 += MUSTER_TITEL_2.length();
+                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                        titel = strSeite2.substring(pos1, pos2);
+                        if (titel.endsWith("\\")) {
+                            titel = titel.substring(0, titel.length() - 2);
                         }
                     }
                 }
-            }
-            if ((pos1 = strSeite2.indexOf(MUSTER_DAUER)) != -1) {
-                pos1 += MUSTER_DAUER.length();
-                if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-                    dauer = strSeite2.substring(pos1, pos2);
-                }
-            }
-            if ((pos1 = strSeite2.indexOf(MUSTER_ZEIT)) != -1) {
-                pos1 += MUSTER_ZEIT.length();
-                if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-                    zeit = strSeite2.substring(pos1, pos2);
-                    if (zeit.length() <= 5) {
-                        zeit = zeit.trim() + ":00";
-                    }
-                    zeit = zeit.replace(".", ":");
-                    if (zeit.length() < 8) {
-                        if (zeit.contains(":")) {
-                            if ((tmp = zeit.substring(0, zeit.indexOf(":"))).length() != 2) {
-                                zeit = "0" + zeit;
+                if ((pos1 = strSeite2.indexOf(MUSTER_DATUM)) != -1) {
+                    pos1 += MUSTER_DATUM.length();
+                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                        datum = strSeite2.substring(pos1, pos2);
+                        if (datum.length() < 10) {
+                            if (datum.contains(".")) {
+                                if ((tmp = datum.substring(0, datum.indexOf("."))).length() != 2) {
+                                    datum = "0" + datum;
+                                }
                             }
-                        }
-                        if (zeit.indexOf(":") != zeit.lastIndexOf(":")) {
-                            if ((tmp = zeit.substring(zeit.indexOf(":") + 1, zeit.lastIndexOf(":"))).length() != 2) {
-                                zeit = zeit.substring(0, zeit.indexOf(":") + 1) + "0" + zeit + zeit.substring(zeit.lastIndexOf(":"));
+                            if (datum.indexOf(".") != datum.lastIndexOf(".")) {
+                                if ((tmp = datum.substring(datum.indexOf(".") + 1, datum.lastIndexOf("."))).length() != 2) {
+                                    datum = datum.substring(0, datum.indexOf(".") + 1) + "0" + datum.substring(datum.indexOf(".") + 1);
+                                }
                             }
                         }
                     }
                 }
-            }
-            url = "";
-            // entweder
-            if ((pos1 = strSeite2.indexOf(MUSTER_URL_1)) != -1) {
-                pos1 += MUSTER_URL_1.length();
-                if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-                    url = strSeite2.substring(pos1, pos2);
-                    if (!url.equals("")) {
-                        // hohe Auflösung
-                        if (url.startsWith("rtmp:")) {
-                            // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
-                            url = url.replace(".m.mp4", ".l.mp4");
-                        }
-                        // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                        addFilm(film);
-                    } else {
-                        Log.fehlerMeldungMReader(-468200690, "MediathekSwr.addFilme2-4", thema + " " + urlJson);
+                if ((pos1 = strSeite2.indexOf(MUSTER_DAUER)) != -1) {
+                    pos1 += MUSTER_DAUER.length();
+                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                        dauer = strSeite2.substring(pos1, pos2);
                     }
                 }
-            }
-            // oder
-            if (url.equals("") && (pos1 = strSeite2.indexOf(MUSTER_URL_2)) != -1) {
-                pos1 += MUSTER_URL_2.length();
-                if ((pos1 = strSeite2.indexOf(MUSTER_URL_START, pos1)) != -1) {
+                if ((pos1 = strSeite2.indexOf(MUSTER_ZEIT)) != -1) {
+                    pos1 += MUSTER_ZEIT.length();
+                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                        zeit = strSeite2.substring(pos1, pos2);
+                        if (zeit.length() <= 5) {
+                            zeit = zeit.trim() + ":00";
+                        }
+                        zeit = zeit.replace(".", ":");
+                        if (zeit.length() < 8) {
+                            if (zeit.contains(":")) {
+                                if ((tmp = zeit.substring(0, zeit.indexOf(":"))).length() != 2) {
+                                    zeit = "0" + zeit;
+                                }
+                            }
+                            if (zeit.indexOf(":") != zeit.lastIndexOf(":")) {
+                                if ((tmp = zeit.substring(zeit.indexOf(":") + 1, zeit.lastIndexOf(":"))).length() != 2) {
+                                    zeit = zeit.substring(0, zeit.indexOf(":") + 1) + "0" + zeit + zeit.substring(zeit.lastIndexOf(":"));
+                                }
+                            }
+                        }
+                    }
+                }
+                url = "";
+                // entweder
+                if ((pos1 = strSeite2.indexOf(MUSTER_URL_1)) != -1) {
+                    pos1 += MUSTER_URL_1.length();
                     if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
                         url = strSeite2.substring(pos1, pos2);
                         if (!url.equals("")) {
                             // hohe Auflösung
-                            // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
-                            url = url.replace(".m.mp4", ".l.mp4");
+                            if (url.startsWith("rtmp:")) {
+                                // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
+                                url = url.replace(".m.mp4", ".l.mp4");
+                            }
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
                             addFilm(film);
                         } else {
-                            Log.fehlerMeldungMReader(-468200690, "MediathekSwr.jason-1", thema + " " + urlJson);
+                            Log.fehlerMeldungMReader(-468200690, "MediathekSwr.addFilme2-4", thema + " " + urlJson);
                         }
                     }
                 }
-            }
-            // oder
-            if (url.equals("") && (pos1 = strSeite2.indexOf(MUSTER_URL_3)) != -1) {
-                pos1 += MUSTER_URL_3.length();
-                if ((pos1 = strSeite2.indexOf(MUSTER_URL_START, pos1)) != -1) {
-                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-                        url = strSeite2.substring(pos1, pos2);
-                        if (!url.equals("")) {
-                            // hohe Auflösung
-                            // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
-                            url = url.replace(".s.mp4", ".m.mp4");
-                            // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                            addFilm(film);
-                        } else {
-                            Log.fehlerMeldungMReader(-468200690, "MediathekSwr.jason-1", thema + " " + urlJson);
+                // oder
+                if (url.equals("") && (pos1 = strSeite2.indexOf(MUSTER_URL_2)) != -1) {
+                    pos1 += MUSTER_URL_2.length();
+                    if ((pos1 = strSeite2.indexOf(MUSTER_URL_START, pos1)) != -1) {
+                        if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                            url = strSeite2.substring(pos1, pos2);
+                            if (!url.equals("")) {
+                                // hohe Auflösung
+                                // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
+                                url = url.replace(".m.mp4", ".l.mp4");
+                                // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
+                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
+                                addFilm(film);
+                            } else {
+                                Log.fehlerMeldungMReader(-468200690, "MediathekSwr.json-1", thema + " " + urlJson);
+                            }
                         }
                     }
                 }
-            }
-            if (url.equals("")) {
-                Log.fehlerMeldungMReader(-203690478, "MediathekSwr.jason-2", thema + " " + urlJson);
+                // oder
+                if (url.equals("") && (pos1 = strSeite2.indexOf(MUSTER_URL_3)) != -1) {
+                    pos1 += MUSTER_URL_3.length();
+                    if ((pos1 = strSeite2.indexOf(MUSTER_URL_START, pos1)) != -1) {
+                        if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                            url = strSeite2.substring(pos1, pos2);
+                            if (!url.equals("")) {
+                                // hohe Auflösung
+                                // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
+                                url = url.replace(".s.mp4", ".m.mp4");
+                                // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
+                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
+                                addFilm(film);
+                            } else {
+                                Log.fehlerMeldungMReader(-468200690, "MediathekSwr.json-1", thema + " " + urlJson);
+                            }
+                        }
+                    }
+                }
+                if (url.equals("")) {
+                    Log.fehlerMeldungMReader(-203690478, "MediathekSwr.jason-2", thema + " " + urlJson);
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldungMReader(-939584720, "MediathekSwr.json-3", thema + " " + urlJson);
             }
         }
     }

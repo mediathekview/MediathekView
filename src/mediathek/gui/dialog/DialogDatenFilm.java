@@ -39,13 +39,6 @@ public class DialogDatenFilm extends javax.swing.JDialog {
     private DatenFilm aktFilm = null;
     private JTextField[] textarray = new JTextField[DatenFilm.FILME_MAX_ELEM];
 
-    /** Creates new form DialogSerienbrief
-     *
-     * @param parent
-     * @param modal
-     * @param d Daten
-     * @param aaktFilm
-     */
     public DialogDatenFilm(java.awt.Frame parent, boolean modal, DDaten d) {
         super(parent, modal);
         initComponents();
