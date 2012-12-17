@@ -19,16 +19,20 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
 /**
  *
- * @author
+ *        @author
  */
 public class MediathekSfPod extends MediathekReader implements Runnable {
 
@@ -37,7 +41,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
 
     /**
      *
-     * @param ddaten
+     *        @param ddaten
      */
     public MediathekSfPod(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
@@ -51,7 +55,8 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
         //Liste von http://www.sf.tv/podcasts/index.php holen
         //http://www.podcast.sf.tv/Podcasts/al-dente
         // class="" href="/Podcasts/al-dente" rel="2" >
-        final String MUSTER = "class=\"\" href=\"/Podcasts/";
+        final String MUSTER_1 = "value=\"http://feeds.sf.tv/podcast";
+        final String MUSTER_2 = "value=\"http://pod.drs.ch/";
         String addr1 = "http://www.podcast.sf.tv/";
         listeThemen.clear();
         meldungStart();
@@ -60,15 +65,29 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
         int pos1 = 0;
         int pos2 = 0;
         String url = "";
-        while (!Daten.filmeLaden.getStop() && (pos = seite.indexOf(MUSTER, pos)) != -1) {
-            pos += MUSTER.length();
+        while (!Daten.filmeLaden.getStop() && (pos = seite.indexOf(MUSTER_1, pos)) != -1) {
+            pos += MUSTER_1.length();
             pos1 = pos;
             pos2 = seite.indexOf("\"", pos);
             if (pos1 != -1 && pos2 != -1) {
                 url = seite.substring(pos1, pos2);
-                if (!url.startsWith("http://www.sf.tv")) {
-                    url = "http://www.podcast.sf.tv/Podcasts/" + url;
-                }
+                url = "http://feeds.sf.tv/podcast" + url;
+            }
+            if (url.equals("")) {
+                Log.fehlerMeldungMReader(-698875503, "MediathekSfPod.addToList", "keine URL");
+            } else {
+                String[] add = new String[]{url, ""};
+                listeThemen.addUrl(add);
+            }
+        }
+        pos = 0;
+        while (!Daten.filmeLaden.getStop() && (pos = seite.indexOf(MUSTER_2, pos)) != -1) {
+            pos += MUSTER_2.length();
+            pos1 = pos;
+            pos2 = seite.indexOf("\"", pos);
+            if (pos1 != -1 && pos2 != -1) {
+                url = seite.substring(pos1, pos2);
+                url = "http://pod.drs.ch/" + url;
             }
             if (url.equals("")) {
                 Log.fehlerMeldungMReader(-698875503, "MediathekSfPod.addToList", "keine URL");
@@ -113,61 +132,60 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
             //<title>al dente - Podcasts - Schweizer Fernsehen</title>
             // <h2 class="sf-hl1">al dente vom 28.06.2010</h2>
             // <li><a href="
+            // <pubDate>Wed, 21 Nov 2012 00:02:00 +0100</pubDate>
             final String MUSTER_THEMA_1 = "<title>";
             final String MUSTER_THEMA_2 = "</title>";
-            final String MUSTER_TITEL_1 = "<h2 class=\"sf-hl1\">";
-            final String MUSTER_TITEL_2 = "</h2>";
-            final String MUSTER_URL_1 = "<li><a href=\"";
-            final String MUSTER_URL_2 = "\"";
-            int pos = 0;
-            int posEnd = 0;
-            String titel = "";
+            final String MUSTER_URL_1 = "url=\"http://";
+            final String MUSTER_DATE = "<pubDate>";
+            int pos = 0, pos1;
+            int pos2;
+            String titel;
             String url = "";
-            String datum = "";
+            String datum, zeit = "";
             try {
                 meldung(strUrlFeed);
                 seite = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite, "Thema: " + thema);
-                pos = seite.indexOf(MUSTER_THEMA_1);
-                if (pos != -1) {
-                    pos = pos + MUSTER_THEMA_1.length();
+                if ((pos1 = seite.indexOf(MUSTER_THEMA_1)) != -1) {
+                    pos1 = pos1 + MUSTER_THEMA_1.length();
                 }
-                posEnd = seite.indexOf(MUSTER_THEMA_2);
-                if (posEnd != -1) {
-                    if (pos < posEnd) {
-                        thema = seite.substring(pos, posEnd);
-                        if (thema.contains(" ")) {
-                            thema = thema.substring(0, thema.indexOf(" "));
-                        }
-                    }
+                if ((pos2 = seite.indexOf(MUSTER_THEMA_2, pos1)) != -1) {
+                    thema = seite.substring(pos1, pos2).trim();
+//                        if (thema.contains(" ")) {
+//                            thema = thema.substring(0, thema.indexOf(" "));
+//                        }
                 }
-                pos = seite.indexOf(MUSTER_TITEL_1, pos); //start der Einträge, erster Eintrag ist der Titel
-                if (pos != -1) {
-                    pos = pos + MUSTER_TITEL_1.length();
-                    while ((pos = seite.indexOf(MUSTER_TITEL_1, pos)) != -1) {
-                        url = "";
-                        pos += MUSTER_TITEL_1.length();
-                        posEnd = seite.indexOf(MUSTER_TITEL_2, pos);
-                        if (posEnd != -1) {
-                            titel = seite.substring(pos, posEnd);
-                            titel = titel.trim();
-                        }
+                while ((pos = seite.indexOf(MUSTER_THEMA_1, pos)) != -1) { //start der Einträge, erster Eintrag ist der Titel
+                    pos += MUSTER_THEMA_1.length();
+                    pos1 = pos;
+                    if ((pos2 = seite.indexOf(MUSTER_THEMA_2, pos1)) != -1) {
+                        titel = seite.substring(pos1, pos2).trim();
+                        datum = "";
+                        zeit = "";
                         if (titel.contains("vom")) {
                             datum = titel.substring(titel.indexOf("vom") + 3).trim();
-                        }
-                        pos = seite.indexOf(MUSTER_URL_1, pos);
-                        if (pos == -1) {
-                            break;
-                        }
-                        pos += MUSTER_URL_1.length();
-                        posEnd = seite.indexOf(MUSTER_URL_2, pos);
-                        if (posEnd != -1) {
-                            url = seite.substring(pos, posEnd);
-                        }
-                        if (url.equals("")) {
-                            Log.fehlerMeldungMReader(-463820049, "MediathekSfPod.addFilme", "keine URL: " + strUrlFeed);
                         } else {
+                            int p1, p2;
+                            if ((p1 = seite.indexOf(MUSTER_DATE, pos1)) != -1) {
+                                p1 += MUSTER_DATE.length();
+                                if ((p2 = seite.indexOf("<", p1)) != -1) {
+                                    String tmp = seite.substring(p1, p2);
+                                    datum = DatumZeit.convertDatum(tmp);
+                                    zeit = DatumZeit.convertTime(tmp);
+                                }
+                            }
+                        }
+                        if ((pos1 = seite.indexOf(MUSTER_URL_1, pos1)) != -1) {
+                            pos1 += MUSTER_URL_1.length();
+                            if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
+                                url = seite.substring(pos1, pos2);
+                                url = "http://" + url;
+                            }
+                            if (url.equals("")) {
+                                Log.fehlerMeldungMReader(-463820049, "MediathekSfPod.addFilme", "keine URL: " + strUrlFeed);
+                            } else {
 //                            urlorg = urlorg.replace("%20", "\u0020;");
-                            addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""/* zeit */));
+                                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit));
+                            }
                         }
                     }
                 }
@@ -175,5 +193,19 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-496352007, "MediathekSfPod.addFilme", ex.getMessage());
             }
         }
+    }
+
+    public static String[] convertDatum(String ddatum) {
+        // <pubDate>Wed, 21 Nov 2012 00:02:00 +0100</pubDate>
+        //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
+        String datum = "", zeit = "";
+        try {
+            Date filmDate = new SimpleDateFormat("dd, MMM yyyy HH:mm:ss Z", Locale.US).parse(ddatum);
+            datum = new SimpleDateFormat("dd.MM.yyyy").format(filmDate);
+            zeit = new SimpleDateFormat("HH:mm:ss").format(filmDate);
+        } catch (Exception ex) {
+            Log.fehlerMeldung(-979451236, "MediathekArdPodcast.convertDatum", ex);
+        }
+        return new String[]{datum, zeit};
     }
 }

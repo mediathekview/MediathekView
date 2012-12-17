@@ -25,13 +25,14 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *
  * @author
  */
 public class MediathekSf extends MediathekReader implements Runnable {
-
+    
     public static final String SENDER = "SF";
     private final int MAX_FILME_THEMA = 5;
     private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
@@ -50,15 +51,16 @@ public class MediathekSf extends MediathekReader implements Runnable {
     @Override
     public void addToList() {
         //Liste von http://www.videoportal.sf.tv/sendungen holen
-        //<a class="sendung_name" href="/sendung?id=6fd27ab0-d10f-450f-aaa9-836f1cac97bd">1 gegen 100</a><p class="az_description">Gameshow, in der ein Kandidat gegen 100 Kontrahenten antritt.</p></div>
-        final String MUSTER = "sendung_name\" href=\"/sendung?id=";
+        //<a class="sendung_name" href="/player/tv/sendung/1-gegen-100?id=6fd27ab0-d10f-450f-aaa9-836f1cac97bd">1 gegen 100</a>
+        final String MUSTER = "sendung_name\" href=\"/player/tv";
+        final String MUSTER_ID = "?id=";
         listeThemen.clear();
         meldungStart();
         seite = getUrlIo.getUri_Utf(nameSenderMReader, "http://www.videoportal.sf.tv/sendungen", seite, "");
         int pos = 0;
-        int pos1 = 0;
-        int pos2 = 0;
-        String url = "";
+        int pos1;
+        int pos2;
+        String url;
         String thema = "";
         while ((pos = seite.indexOf(MUSTER, pos)) != -1) {
             pos += MUSTER.length();
@@ -66,6 +68,11 @@ public class MediathekSf extends MediathekReader implements Runnable {
             pos2 = seite.indexOf("\"", pos);
             if (pos1 != -1 && pos2 != -1) {
                 url = seite.substring(pos1, pos2);
+                if (url.contains(MUSTER_ID)) {
+                    url = url.substring(url.indexOf(MUSTER_ID) + MUSTER_ID.length());
+                } else {
+                    url = "";
+                }
                 if (!url.equals("")) {
                     pos1 = seite.indexOf(">", pos);
                     pos2 = seite.indexOf("</a>", pos);
@@ -76,7 +83,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     listeThemen.addUrl(add);
                 } else {
                     Log.fehlerMeldungMReader(-198620778, "MediathekSf.addToList", "keine URL");
-
+                    
                 }
             }
         }
@@ -91,14 +98,14 @@ public class MediathekSf extends MediathekReader implements Runnable {
             }
         }
     }
-
+    
     private class SfThemaLaden implements Runnable {
-
+        
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         private StringBuffer seite3 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-
+        
         @Override
         public void run() {
             try {
@@ -114,18 +121,24 @@ public class MediathekSf extends MediathekReader implements Runnable {
             }
             meldungThreadUndFertig();
         }
-
+        
         private void addFilme(String thema, String strUrlFeed) {
-            //&lt;li&gt;&lt;a href="/video?id=1887caf6-ec0e-4557-87f6-e92245cd66b8;DCSext.zugang=videoportal_sendungsuebersicht"&gt;sportaktuell vom 11.09.2010&lt;/a&gt;&lt;/li&gt;
-            //<title>10vor10 vom 17.11.2010, 21:50</title>
-
+            // href="/player/tv/die-groessten-schweizer-talente/video/andrea-sutter-der-weg-ins-finale?id=06411758-1bd6-42ea-bc0e-cb8ebde3dfaa"
+            // <title>Die grössten Schweizer Talente vom 17.03.2012, 20:11</title>
+            // href="/player/tv/die-groessten-schweizer-talente/video/andrea-sutter-der-weg-ins-finale?id=06411758-1bd6-42ea-bc0e-cb8ebde3dfaa"&gt;Andrea Sutter - der Weg ins Finale&lt;/a&gt;&lt;/li&gt;
             final String MUSTER_TITEL = "&gt;"; //bis zum &
-            final String MUSTER_URL = "href=\"/video?id="; //bis zum ;
+            final String MUSTER_URL = "href=\"/player/tv"; //bis zum ;
+            final String MUSTER_ID = "?id=";
             final String MUSTER_ITEM_1 = "<item>";
             final String MUSTER_ITEM_2 = "</item>";
             final String MUSTER_DATUM = "<title>";
             meldung(strUrlFeed);
             seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "");
+//            String s = seite.toString();
+//            s = s.replace("&lt;", "<");
+//            s = s.replace("&gt;", ">");
+//            seite.setLength(0);
+//            seite.append(s);
             try {
                 int counter = 0;
                 int posItem1 = 0;
@@ -157,10 +170,15 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     }
                     if ((pos1 = seite1.indexOf(MUSTER_URL, posItem1)) != -1) {
                         pos1 += MUSTER_URL.length();
-                        if ((pos2 = seite1.indexOf(";", pos1)) != -1) {
+                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
                             url = seite1.substring(pos1, pos2);
+                            if (url.contains(MUSTER_ID)) {
+                                url = url.substring(url.indexOf(MUSTER_ID) + MUSTER_ID.length());
+                            } else {
+                                url = "";
+                            }
                             if (!url.equals("")) {
-                                if ((pos1 = seite1.indexOf(MUSTER_TITEL, pos2)) != -1) {
+                                if ((pos1 = seite1.indexOf(MUSTER_TITEL, pos1)) != -1) {
                                     pos1 += MUSTER_TITEL.length();
                                     if ((pos2 = seite1.indexOf("&", pos1)) != -1) {
                                         titel = seite1.substring(pos1, pos2);
@@ -177,7 +195,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-795638103, "MediathekSf.addFilme", ex.getMessage());
             }
         }
-
+        
         private void addFilme2(String thema, String strUrlFeed, String url, String titel, String datum, String zeit) {
             final String MUSTER_URL = "\"url\":\""; //bis zum "
             meldung(url);
@@ -213,7 +231,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-556320087, "MediathekSf.addFilme2", ex.getMessage());
             }
         }
-
+        
         private String getUrlFrom_m3u8(String url_) {
             // http://srfvod-vh.akamaihd.net/i/vod/chfilmszene/2012/12/chfilmszene_20121213_001157_web_h264_16zu9_,lq1,mq1,hq1,.mp4.csmil/index_0_av.m3u8?null=&e=ace6e3bb3f9f8597
             // rtmp://cp50792.edgefcs.net/ondemand/mp4:aka/vod/chfilmszene/2012/12/chfilmszene_20121213_001157_web_h264_16zu9_hq1.mp4
