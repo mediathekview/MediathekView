@@ -25,15 +25,15 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *
  * @author
  */
 public class MediathekSf extends MediathekReader implements Runnable {
-    
+
     public static final String SENDER = "SF";
+    ///public static final String SENDER = "SRF";
     private final int MAX_FILME_THEMA = 5;
     private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
@@ -56,7 +56,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
         final String MUSTER_ID = "?id=";
         listeThemen.clear();
         meldungStart();
-        seite = getUrlIo.getUri_Utf(nameSenderMReader, "http://www.videoportal.sf.tv/sendungen", seite, "");
+        seite = getUrlIo.getUri_Utf(nameSenderMReader, "http://www.srf.ch/player/sendungen", seite, "");
         int pos = 0;
         int pos1;
         int pos2;
@@ -83,7 +83,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     listeThemen.addUrl(add);
                 } else {
                     Log.fehlerMeldungMReader(-198620778, "MediathekSf.addToList", "keine URL");
-                    
+
                 }
             }
         }
@@ -98,14 +98,14 @@ public class MediathekSf extends MediathekReader implements Runnable {
             }
         }
     }
-    
+
     private class SfThemaLaden implements Runnable {
-        
+
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         private StringBuffer seite3 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        
+
         @Override
         public void run() {
             try {
@@ -121,7 +121,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
             }
             meldungThreadUndFertig();
         }
-        
+
         private void addFilme(String thema, String strUrlFeed) {
             // href="/player/tv/die-groessten-schweizer-talente/video/andrea-sutter-der-weg-ins-finale?id=06411758-1bd6-42ea-bc0e-cb8ebde3dfaa"
             // <title>Die grössten Schweizer Talente vom 17.03.2012, 20:11</title>
@@ -195,7 +195,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-795638103, "MediathekSf.addFilme", ex.getMessage());
             }
         }
-        
+
         private void addFilme2(String thema, String strUrlFeed, String url, String titel, String datum, String zeit) {
             final String MUSTER_URL = "\"url\":\""; //bis zum "
             meldung(url);
@@ -231,7 +231,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 Log.fehlerMeldungMReader(-556320087, "MediathekSf.addFilme2", ex.getMessage());
             }
         }
-        
+
         private String getUrlFrom_m3u8(String url_) {
             // http://srfvod-vh.akamaihd.net/i/vod/chfilmszene/2012/12/chfilmszene_20121213_001157_web_h264_16zu9_,lq1,mq1,hq1,.mp4.csmil/index_0_av.m3u8?null=&e=ace6e3bb3f9f8597
             // rtmp://cp50792.edgefcs.net/ondemand/mp4:aka/vod/chfilmszene/2012/12/chfilmszene_20121213_001157_web_h264_16zu9_hq1.mp4
