@@ -32,7 +32,7 @@ import mediathek.tool.Log;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
@@ -40,7 +40,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
     /**
      *
-     *  @param ddaten
+     * @param ddaten
      */
     public MediathekArdPodcast(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
@@ -328,7 +328,6 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
     }
 
     public static String convertDatum(String datum) {
-        //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
         try {
             Date filmDate = new SimpleDateFormat("yyyyMMdd").parse(datum);
             datum = new SimpleDateFormat("dd.MM.yyyy").format(filmDate);

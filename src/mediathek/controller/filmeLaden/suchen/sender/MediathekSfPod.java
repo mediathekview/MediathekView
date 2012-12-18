@@ -32,16 +32,17 @@ import mediathek.tool.Log;
 
 /**
  *
- *        @author
+ * @author
  */
 public class MediathekSfPod extends MediathekReader implements Runnable {
 
     public static final String SENDER = "SF.Podcast";
+    ///public static final String SENDER = "SRF.Podcast";
     private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
     /**
      *
-     *        @param ddaten
+     * @param ddaten
      */
     public MediathekSfPod(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
@@ -57,7 +58,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
         // class="" href="/Podcasts/al-dente" rel="2" >
         final String MUSTER_1 = "value=\"http://feeds.sf.tv/podcast";
         final String MUSTER_2 = "value=\"http://pod.drs.ch/";
-        String addr1 = "http://www.podcast.sf.tv/";
+        String addr1 = "http://www.srf.ch/podcasts";
         listeThemen.clear();
         meldungStart();
         seite = getUrlIo.getUri_Utf(nameSenderMReader, addr1, seite, "");
