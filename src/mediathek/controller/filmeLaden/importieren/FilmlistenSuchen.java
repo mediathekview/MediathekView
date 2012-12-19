@@ -43,9 +43,8 @@ public class FilmlistenSuchen {
     //Tags FilmUpdateServer Filmliste
 
     public static final String FILM_UPDATE_SERVER_PRIO_1 = "1";
-    public static final String FILM_UPDATE_SERVER_PRIO_2 = "2";
     public static final String FILM_UPDATE_SERVER = "film-update-server";
-    public static final int FILM_UPDATE_SERVER_MAX_ELEM = 6;
+    public static final int FILM_UPDATE_SERVER_MAX_ELEM = 5;
     public static final String FILM_UPDATE_SERVER_NR = "film-update-server-nr";
     public static final int FILM_UPDATE_SERVER_NR_NR = 0;
     public static final String FILM_UPDATE_SERVER_URL = "film-update-server-url";
@@ -54,12 +53,11 @@ public class FilmlistenSuchen {
     public static final int FILM_UPDATE_SERVER_DATUM_NR = 2;
     public static final String FILM_UPDATE_SERVER_ZEIT = "film-update-server-zeit";
     public static final int FILM_UPDATE_SERVER_ZEIT_NR = 3;
-    public static final String FILM_UPDATE_SERVER_ANZAHL = "film-update-server-anzahl";
-    public static final int FILM_UPDATE_SERVER_ANZAHL_NR = 4;
     public static final String FILM_UPDATE_SERVER_PRIO = "film-update-server-prio";
-    public static final int FILM_UPDATE_SERVER_PRIO_NR = 5;
-    public static final String[] FILM_UPDATE_SERVER_COLUMN_NAMES = {FILM_UPDATE_SERVER_NR, FILM_UPDATE_SERVER_URL, FILM_UPDATE_SERVER_DATUM, FILM_UPDATE_SERVER_ZEIT, FILM_UPDATE_SERVER_ANZAHL, FILM_UPDATE_SERVER_PRIO};
-    public static final String[] FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE = {"Nr", "Update-Url", "Datum", "Zeit", "Anzahl", FILM_UPDATE_SERVER_PRIO};
+    public static final int FILM_UPDATE_SERVER_PRIO_NR = 4;
+    public static final String[] FILM_UPDATE_SERVER_COLUMN_NAMES = {FILM_UPDATE_SERVER_NR, FILM_UPDATE_SERVER_URL,
+        FILM_UPDATE_SERVER_DATUM, FILM_UPDATE_SERVER_ZEIT, FILM_UPDATE_SERVER_PRIO};
+    public static final String[] FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE = {"Nr", "Update-Url", "Datum", "Zeit", "Prio"};
     public ListeDownloadUrlsFilmlisten listeDownloadUrlsFilmlisten = new ListeDownloadUrlsFilmlisten();
     public ListeFilmlistenServer listeFilmlistenServer = new ListeFilmlistenServer();
 
@@ -209,35 +207,36 @@ public class FilmlistenSuchen {
         String zeit = "";
         String datum = "";
         String serverUrl = "";
-        //String parsername = "";
-        String prio;
+        String prio = "";
         int event;
         try {
             while (parser.hasNext()) {
-                prio = FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_1;
                 event = parser.next();
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    //parsername = parser.getLocalName();
+                    if (parser.getLocalName().equals("Download_Filme_1")) {
+                        serverUrl = parser.getElementText();
+                    } else if (parser.getLocalName().equals("URL")) { // für die Zukunft
+                        serverUrl = parser.getElementText();
+                    } else if (parser.getLocalName().equals("Prio")) {
+                        prio = parser.getElementText();
+                    } else if (parser.getLocalName().equals("Datum")) {
+                        datum = parser.getElementText();
+                    } else if (parser.getLocalName().equals("Zeit")) {
+                        zeit = parser.getElementText();
+                    }
+                }
                 if (event == XMLStreamConstants.END_ELEMENT) {
                     //parsername = parser.getLocalName();
                     if (parser.getLocalName().equals("Server")) {
                         if (!serverUrl.equals("")) {
                             //public DatenFilmUpdate(String url, String prio, String zeit, String datum, String anzahl) {
+                            if (prio.equals("")) {
+                                prio = FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_1;
+                            }
                             sListe.addWithCheck(new DatenUrlFilmliste(serverUrl, prio, zeit, datum));
                         }
                         break;
-                    }
-                }
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    //parsername = parser.getLocalName();
-                    if (parser.getLocalName().equals("Download_Filme_1")) {
-                        serverUrl = parser.getElementText();
-                        prio = FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_1;
-                    } else if (parser.getLocalName().equals("Download_Filme_2")) {
-                        serverUrl = parser.getElementText();
-                        prio = FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_2;
-                    } else if (parser.getLocalName().equals("Datum")) {
-                        datum = parser.getElementText();
-                    } else if (parser.getLocalName().equals("Zeit")) {
-                        zeit = parser.getElementText();
                     }
                 }
             }

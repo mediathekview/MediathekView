@@ -76,7 +76,7 @@ public class IoXmlFilmlisteLesen {
             }
             if (istUrl && datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
                 // da wird eine temp-Datei benutzt
-                this.notifyStart(200);
+                this.notifyStart(300);
                 this.notifyProgress(datei);
             } else {
                 this.notifyStart(100);

@@ -117,7 +117,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(10);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(350);
-            } else if (i == FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR || i == FilmlistenSuchen.FILM_UPDATE_SERVER_ANZAHL_NR) {
+            } else if (!Daten.debug && i == FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(0);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(0);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(0);
@@ -134,7 +134,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         DatenUrlFilmliste datenUrlFilmliste = null;
         int selectedTableRow = jTable1.getSelectedRow();
         if (selectedTableRow >= 0) {
-            datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten(false).getNrUpdate(jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow),
+            datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten(false).getDatenUrlFilmliste(jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow),
                     FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR).toString());
         }
         if (datenUrlFilmliste != null) {
