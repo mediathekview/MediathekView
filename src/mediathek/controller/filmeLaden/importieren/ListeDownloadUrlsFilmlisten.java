@@ -83,7 +83,7 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
         return nr;
     }
 
-    public DatenUrlFilmliste getNrUpdate(String url) {
+    public DatenUrlFilmliste getDatenUrlFilmliste(String url) {
         DatenUrlFilmliste update;
         ListIterator<DatenUrlFilmliste> iterator = this.listIterator();
         while (iterator.hasNext()) {
