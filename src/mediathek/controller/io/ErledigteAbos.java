@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.daten.DDaten;
@@ -40,15 +41,29 @@ public class ErledigteAbos {
     private DDaten ddaten;
     private final String TRENNER = "  |###|  ";
     private final String PAUSE = " |#| ";
+    private HashSet<String> listeErledigteAbos;
+    private LinkedList<String> listeErledigteAbos_ = new LinkedList<String>();
 
     public ErledigteAbos(DDaten d) {
         ddaten = d;
+        listeErledigteAbos = new HashSet<String>() {
+            @Override
+            public boolean add(String e) {
+                listeErledigteAbos_.add(e);
+                return super.add(e);
+            }
+            @Override
+            public void clear(){
+                listeErledigteAbos_.clear();
+                super.clear();
+            }
+        };
+        listeBauen();
     }
-    private LinkedList<String> logListeZdf = null;
 
     public synchronized boolean alleLoeschen() {
         boolean ret = false;
-        clearLogList();
+        listeErledigteAbos.clear();
         File f = new File(Daten.getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
         if (f != null) {
             if (f.exists()) {
@@ -59,94 +74,6 @@ public class ErledigteAbos {
         }
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         return ret;
-    }
-
-    public synchronized boolean zeileSchreiben(String thema, String titel, String url) {
-        boolean ret = false;
-        String text;
-        ddaten.erledigteAbos.clearLogList();
-        File f = new File(Daten.getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
-        if (f != null) {
-            OutputStreamWriter writer = null;
-            try {
-                writer = new OutputStreamWriter(new FileOutputStream(f, true));
-                thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
-                titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
-                text = DatumZeit.getHeute_dd_MM_yyyy() + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
-                writer.write(text);
-                writer.close();
-                ret = true;
-            } catch (Exception ex) {
-                Log.fehlerMeldung(945258023, "LogDownload.zeileSchreiben-1", ex);
-            } finally {
-                try {
-                    writer.close();
-                } catch (Exception ex) {
-                }
-            }
-        }
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
-        return ret;
-    }
-
-    public void clearLogList() {
-        if (logListeZdf != null) {
-            logListeZdf.clear();
-            logListeZdf = null;
-        }
-    }
-
-    public synchronized boolean urlPruefen(String urlFilm) {
-        //wenn url gefunden, dann true zurück
-        return listeBauen().contains(urlFilm);
-    }
-
-    private String putzen(String s) {
-        s = s.replace("\n", "");
-        s = s.replace("|", "");
-        s = s.replace(TRENNER, "");
-        return s;
-    }
-
-    public synchronized Object[][] getObjectData() {
-        Object[][] object;
-        int i = 0;
-        Iterator<String> iterator = listeBauen().iterator();
-        object = new Object[logListeZdf.size()][1];
-        while (iterator.hasNext()) {
-            object[i][0] = iterator.next();
-            ++i;
-        }
-        return object;
-    }
-
-    private LinkedList<String> listeBauen() {
-        //LinkedList mit den URLs aus dem Logfile bauen
-        LineNumberReader in = null;
-        File datei = null;
-        if (logListeZdf == null) {
-            logListeZdf = new LinkedList<String>();
-            try {
-                datei = new File(Daten.getBasisVerzeichnis(false) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
-                if (datei.exists()) {
-                    in = new LineNumberReader(new InputStreamReader(new FileInputStream(datei)));
-                    String zeile;
-                    while ((zeile = in.readLine()) != null) {
-                        logListeZdf.add(getUrlAusZeile(zeile));
-                    }
-                }
-            } catch (Exception ex) {
-                System.err.println("Log.listeBauen-1: " + ex.getMessage());
-            } finally {
-                try {
-                    if (datei.exists()) {
-                        in.close();
-                    }
-                } catch (Exception ex) {
-                }
-            }
-        }
-        return logListeZdf;
     }
 
     public synchronized boolean urlAusLogfileLoeschen(String urlFilm) {
@@ -204,10 +131,91 @@ public class ErledigteAbos {
                     }
                 }
             }
-            ddaten.erledigteAbos.clearLogList();
+            listeErledigteAbos.clear();
+            listeBauen();
         }
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         return gefunden;
+    }
+
+    public synchronized boolean zeileSchreiben(String thema, String titel, String url) {
+        boolean ret = false;
+        String text;
+        listeErledigteAbos.add(url);
+        File f = new File(Daten.getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
+        if (f != null) {
+            OutputStreamWriter writer = null;
+            try {
+                writer = new OutputStreamWriter(new FileOutputStream(f, true));
+                thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
+                titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
+                text = DatumZeit.getHeute_dd_MM_yyyy() + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
+                writer.write(text);
+                writer.close();
+                ret = true;
+            } catch (Exception ex) {
+                Log.fehlerMeldung(945258023, "LogDownload.zeileSchreiben-1", ex);
+            } finally {
+                try {
+                    writer.close();
+                } catch (Exception ex) {
+                }
+            }
+        }
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
+        return ret;
+    }
+
+    public synchronized boolean urlPruefen(String urlFilm) {
+        //wenn url gefunden, dann true zurück
+        return listeErledigteAbos.contains(urlFilm);
+    }
+
+    public synchronized Object[][] getObjectData() {
+        Object[][] object;
+        int i = 0;
+        Iterator<String> iterator = listeErledigteAbos_.iterator();
+        object = new Object[listeErledigteAbos_.size()][1];
+        while (iterator.hasNext()) {
+            object[i][0] = iterator.next();
+            ++i;
+        }
+        return object;
+    }
+
+    // ==============================
+    // private
+    // ==============================
+    private void listeBauen() {
+        //LinkedList mit den URLs aus dem Logfile bauen
+        LineNumberReader in = null;
+        File datei = null;
+        try {
+            datei = new File(Daten.getBasisVerzeichnis(false) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
+            if (datei.exists()) {
+                in = new LineNumberReader(new InputStreamReader(new FileInputStream(datei)));
+                String zeile;
+                while ((zeile = in.readLine()) != null) {
+                    listeErledigteAbos.add(getUrlAusZeile(zeile));
+                }
+            }
+        } catch (Exception ex) {
+            System.err.println("Log.listeBauen-1: " + ex.getMessage());
+        } finally {
+            try {
+                if (datei.exists()) {
+                    in.close();
+                }
+            } catch (Exception ex) {
+            }
+        }
+    }
+
+    private String putzen(String s) {
+        s = s.replace("\n", "");
+        s = s.replace("|", "");
+        s = s.replace(TRENNER, "");
+        return s;
     }
 
     private String getUrlAusZeile(String zeile) {

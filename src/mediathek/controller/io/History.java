@@ -33,7 +33,7 @@ import mediathek.tool.ListenerMediathekView;
 
 public class History extends HashSet<String> {
 
-    public String datei = "";
+    private String datei = "";
 
     public History(String history_datei) {
         datei = history_datei;
