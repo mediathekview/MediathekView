@@ -201,9 +201,9 @@ public class GuiDownloads extends PanelVorlage {
     private synchronized void tabelleAktualisieren() {
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
         downloadsAufraeumen();
-        ddaten.listeDownloads.resetZurueckgestellt();
-        ddaten.listeDownloads.abosLoschen();
-        ddaten.listeDownloads.abosEintragen();
+        ddaten.listeDownloads.zurueckgestellteWiederAktivieren();
+        ddaten.listeDownloads.abosLoschenWennNochNichtGestartet();
+        ddaten.listeDownloads.abosSuchen();
         tabelleLaden();
     }
 
