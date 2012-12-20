@@ -51,11 +51,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public boolean addMitNummer(DatenDownload e) {
         boolean ret = super.add(e);
-        nummerEintragen();
+        listeNummerieren();
         return ret;
     }
 
-    public synchronized void resetZurueckgestellt() {
+    public synchronized void zurueckgestellteWiederAktivieren() {
         DatenDownload d = null;
         ListIterator<DatenDownload> it = this.listIterator(0);
         while (it.hasNext()) {
@@ -93,7 +93,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 break;
             }
         }
-        nummerEintragen();
+        listeNummerieren();
         return d;
     }
 
@@ -121,7 +121,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (ret) {
-            nummerEintragen();
+            listeNummerieren();
         }
         return ret;
     }
@@ -156,7 +156,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized void abosEintragen() {
+    public synchronized void abosSuchen() {
         // in der Filmliste nach passenden Filmen suchen und 
         // in die Liste der Downloads eintragen
         boolean gefunden = false;
@@ -194,11 +194,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         } //while
         if (gefunden) {
-            nummerEintragen();
+            listeNummerieren();
         }
     }
 
-    public synchronized void abosLoschen() {
+    public synchronized void abosLoschenWennNochNichtGestartet() {
         // es werden alle Abos (DIE NOCH NICHT GESTARTET SIND) aus der Liste gelöscht
         boolean gefunden = false;
         Iterator<DatenDownload> it = this.iterator();
@@ -214,11 +214,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            nummerEintragen();
+            listeNummerieren();
         }
     }
 
-    public void nummerEintragen() {
+    public void listeNummerieren() {
         int i = 0;
         ListIterator<DatenDownload> it = listIterator();
         while (it.hasNext()) {

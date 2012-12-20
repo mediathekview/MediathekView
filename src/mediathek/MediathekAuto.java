@@ -72,8 +72,8 @@ public class MediathekAuto {
     private synchronized void filmeLaden() {
         try {
             Log.playerMeldungenAus = true;
-            ddaten.listeDownloads.abosLoschen();
-            ddaten.listeDownloads.abosEintragen();
+            ddaten.listeDownloads.abosLoschenWennNochNichtGestartet();
+            ddaten.listeDownloads.abosSuchen();
             Log.systemMeldung(ddaten.listeDownloads.size() + " Filme zum Laden");
             // erst mal die Filme schreiben
             int i = 0;
@@ -102,7 +102,7 @@ public class MediathekAuto {
             Log.fehlerMeldung(769325469, "MediathekAuto.filmeLaden", ex);
         }
         ddaten.listeDownloads.listePutzen();
-        ddaten.listeDownloads.abosLoschen();
+        ddaten.listeDownloads.abosLoschenWennNochNichtGestartet();
         ddaten.allesSpeichern();
         Log.printEndeMeldung();
         System.exit(0);
