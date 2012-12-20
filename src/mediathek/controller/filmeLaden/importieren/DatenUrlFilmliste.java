@@ -48,10 +48,10 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
         arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR] = zeit;
     }
 
-    public DatenUrlFilmliste getCopy() {
-        DatenUrlFilmliste ret = new DatenUrlFilmliste(new String(arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR]), new String(arr[FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR]));
-        return ret;
-    }
+//    public DatenUrlFilmliste getCopy() {
+//        DatenUrlFilmliste ret = new DatenUrlFilmliste(new String(arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR]), new String(arr[FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR]));
+//        return ret;
+//    }
 
     @Override
     public int compareTo(DatenUrlFilmliste arg0) {

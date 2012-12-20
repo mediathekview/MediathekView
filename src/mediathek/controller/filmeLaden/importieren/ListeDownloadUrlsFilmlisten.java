@@ -104,14 +104,12 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
         String ret = "";
         if (!this.isEmpty()) {
             DatenUrlFilmliste filmUpdate;
-            Iterator<DatenUrlFilmliste> it;
             LinkedList<DatenUrlFilmliste> listeZeit = new LinkedList<DatenUrlFilmliste>();
             LinkedList<DatenUrlFilmliste> listePrio = new LinkedList<DatenUrlFilmliste>();
             //aktuellsten auswählen
-            it = this.iterator();
+            Iterator<DatenUrlFilmliste> it = this.iterator();
             Date today = new Date(System.currentTimeMillis());
             String date;
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
             Date d;
             int minuten = 200;
             int count = 0;
@@ -125,7 +123,7 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
                 }
                 date = filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR] + " " + filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR];
                 try {
-                    d = sdf.parse(date);
+                    d = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse(date);
                     minuten = Math.round((today.getTime() - d.getTime()) / (1000 * 60));
                 } catch (ParseException ex) {
                 }
@@ -142,10 +140,10 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
             while (it.hasNext()) {
                 filmUpdate = it.next();
                 if (filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR].equals(FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_1)) {
-                    listePrio.add(filmUpdate.getCopy());
+                    listePrio.add(filmUpdate);
                 } else {
-                    listePrio.add(filmUpdate.getCopy());
-                    listePrio.add(filmUpdate.getCopy());
+                    listePrio.add(filmUpdate);
+                    listePrio.add(filmUpdate);
                 }
             }
             if (listePrio.size() > 0) {
@@ -159,14 +157,4 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
         }
         return ret;
     }
-//    public void listeSchreiben() {
-//        DatenFilmUpdateServer filmUpdate;
-//        Iterator<DatenFilmUpdateServer> it = this.iterator();
-//        while (it.hasNext()) {
-//            filmUpdate = it.next();
-//            System.out.println("Datum: " + filmUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_DATUM_NR]
-//                    + "   Uhrzeit: " + filmUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_ZEIT_NR]
-//                    + "   URL: " + filmUpdate.arr[FilmUpdateServer.FILM_UPDATE_SERVER_URL_NR]);
-//        }
-//    }
 }

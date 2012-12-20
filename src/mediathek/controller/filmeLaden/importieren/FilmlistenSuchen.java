@@ -200,7 +200,6 @@ public class FilmlistenSuchen {
         } catch (Exception ex) {
             Log.fehlerMeldung(821069874, FilmlistenSuchen.class.getName(), ex, "Die URL-Filmlisten konnte nicht geladen werden: " + dateiUrl);
         }
-        //return ret;
     }
 
     private static void getServer(XMLStreamReader parser, ListeDownloadUrlsFilmlisten sListe) {
@@ -214,9 +213,7 @@ public class FilmlistenSuchen {
                 event = parser.next();
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     //parsername = parser.getLocalName();
-                    if (parser.getLocalName().equals("Download_Filme_1")) {
-                        serverUrl = parser.getElementText();
-                    } else if (parser.getLocalName().equals("URL")) { // für die Zukunft
+                    if (parser.getLocalName().equals("URL")) {
                         serverUrl = parser.getElementText();
                     } else if (parser.getLocalName().equals("Prio")) {
                         prio = parser.getElementText();
