@@ -79,7 +79,7 @@ public class ListenerFilmeLaden implements EventListener {
                 SwingUtilities.invokeLater(r);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(461025879, "ListenerFilmeLaden.fertig", ex);
+            Log.fehlerMeldung(461025879, Log.FEHLER_ART_PROG, "ListenerFilmeLaden.fertig", ex);
         }
 
     }

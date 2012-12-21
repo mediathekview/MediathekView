@@ -77,7 +77,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                 url = seite.substring(pos1, pos2);
             }
             if (url.equals("")) {
-                Log.fehlerMeldungMReader(-889216307, "MediathekMdr.addToList", "keine URL");
+                Log.fehlerMeldung(-889216307, Log.FEHLER_ART_MREADER, "MediathekMdr.addToList", "keine URL");
             } else {
                 url = MUSTER_ADD + url;
                 listeThemen.addUrl(new String[]{url});
@@ -94,7 +94,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                 url = seite.substring(pos1, pos2);
             }
             if (url.equals("")) {
-                Log.fehlerMeldungMReader(-461225808, "MediathekMdr.addToList-2", "keine URL");
+                Log.fehlerMeldung(-461225808, Log.FEHLER_ART_MREADER, "MediathekMdr.addToList-2", "keine URL");
             } else {
                 url = MUSTER_ADD_TAGE + url;
                 if (!istInListe(listeTage, url)) {
@@ -138,7 +138,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                     addTage(url);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-115896304, "MediathekMdr.MdrThemaLaden.run", ex.getMessage());
+                Log.fehlerMeldung(-115896304, Log.FEHLER_ART_MREADER, "MediathekMdr.MdrThemaLaden.run", ex, "");
             }
             meldungThreadUndFertig();
         }
@@ -178,7 +178,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                         }
                     }
                     if (url.equals("")) {
-                        Log.fehlerMeldungMReader(-392854069, "MediathekMdr.addTage", new String[]{"keine URL: " + urlSeite});
+                        Log.fehlerMeldung(-392854069, Log.FEHLER_ART_MREADER, "MediathekMdr.addTage", new String[]{"keine URL: " + urlSeite});
                     } else {
                         url = MUSTER_ADD + url;
                         meldung(url);
@@ -186,7 +186,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                     }
                 }// while
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-556320478, "MediathekMdr.addThema", ex.getMessage());
+                Log.fehlerMeldung(-556320478, Log.FEHLER_ART_MREADER, "MediathekMdr.addThema", ex, "");
             }
         }
 
@@ -215,7 +215,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                                 pos = pos2;
                             }
                             if (url.equals("")) {
-                                Log.fehlerMeldungMReader(-766250249, "MediathekMdr.addThema", "keine URL: " + strUrlFeed);
+                                Log.fehlerMeldung(-766250249, Log.FEHLER_ART_MREADER, "MediathekMdr.addThema", "keine URL: " + strUrlFeed);
                             } else {
                                 meldung(url);
                                 addSendug(strUrlFeed, thema, MUSTER_ADD + url);
@@ -224,7 +224,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-316874602, "MediathekMdr.addThema", ex.getMessage());
+                Log.fehlerMeldung(-316874602, Log.FEHLER_ART_MREADER, "MediathekMdr.addThema", ex);
             }
         }
 
@@ -246,7 +246,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                         url = seite3.substring(pos1, pos2);
                     }
                     if (url.equals("")) {
-                        Log.fehlerMeldungMReader(-256987304, "MediathekMdr.addSendug", new String[]{"keine URL: " + urlThema, "Thema: " + thema, "UrlFeed: " + strUrlFeed});
+                        Log.fehlerMeldung(-256987304,Log.FEHLER_ART_MREADER, "MediathekMdr.addSendug", new String[]{"keine URL: " + urlThema, "Thema: " + thema, "UrlFeed: " + strUrlFeed});
                     } else {
                         url = MUSTER_ADD + url;
                         if (!tmpListe.contains(url)) {
@@ -279,12 +279,12 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             try {
                 seite4 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite4, "Thema: " + thema);
                 if ((pos = seite4.indexOf(MUSTER_START)) == -1) {
-                    Log.fehlerMeldungMReader(-903656532, "MediathekMdr.addXml", urlFilm);
+                    Log.fehlerMeldung(-903656532,Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", urlFilm);
                     return;
                 }
                 while ((pos = seite4.indexOf(MUSTER_TITEL, pos)) != -1) {
                     if ((posEnde = seite4.indexOf(MUSTER_ENDE, pos)) == -1) {
-                        Log.fehlerMeldungMReader(-804142536, "MediathekMdr.addXml", urlFilm);
+                        Log.fehlerMeldung(-804142536, Log.FEHLER_ART_MREADER,"MediathekMdr.addXml", urlFilm);
                         continue;
                     }
                     url1 = "";
@@ -339,7 +339,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                         }
                     }// while
                     if (url1.equals("") || url2.equals("")) {
-                        Log.fehlerMeldungMReader(-326541230, "MediathekMdr.addXml", new String[]{"keine URL: " + urlFilm, "Thema: " + thema, " UrlFeed: " + strUrlFeed});
+                        Log.fehlerMeldung(-326541230,Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", new String[]{"keine URL: " + urlFilm, "Thema: " + thema, " UrlFeed: " + strUrlFeed});
                     } else {
                         //<flashMediaServerApplicationURL>rtmp://x4100mp4dynonlc22033.f.o.f.lb.core-cdn.net/22033mdr/ondemand</flashMediaServerApplicationURL>
                         //<flashMediaServerURL>mp4:4100mp4dynonl/FCMS-1582b584-bb95-4fd2-94d8-389e10a4e1bd-8442e17c3177.mp4</flashMediaServerURL>
@@ -357,7 +357,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-446286970, "MediathekMdr.addFilme1", ex.getMessage());
+                Log.fehlerMeldung(-446286970,Log.FEHLER_ART_MREADER, "MediathekMdr.addFilme1", ex);
             }
         }
     }
@@ -371,7 +371,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             sdfOut = new SimpleDateFormat("dd.MM.yyyy");
             datum = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldungMReader(-435209987, "MediathekMdr.convertDatum", ex.getMessage());
+            Log.fehlerMeldung(-435209987, Log.FEHLER_ART_MREADER,"MediathekMdr.convertDatum", ex);
         }
         return datum;
     }
@@ -385,7 +385,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             sdfOut = new SimpleDateFormat("HH:mm:ss");
             datum = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldungMReader(-102658736, "MediathekMdr.convertDatum", ex.getMessage());
+            Log.fehlerMeldung(-102658736,Log.FEHLER_ART_MREADER, "MediathekMdr.convertDatum", ex);
         }
         return datum;
     }

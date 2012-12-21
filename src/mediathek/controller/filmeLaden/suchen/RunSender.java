@@ -51,7 +51,7 @@ public class RunSender {
                 ret = min + ":" + sek;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(976431583,"Suchen.RunSender.getLaufzeitMinuten", ex, sender);
+            Log.fehlerMeldung(976431583, Log.FEHLER_ART_PROG, "Suchen.RunSender.getLaufzeitMinuten", ex, sender);
         }
         return ret;
     }

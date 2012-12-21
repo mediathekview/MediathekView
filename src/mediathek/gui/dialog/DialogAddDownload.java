@@ -372,7 +372,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 try {
                     jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(356871087, "DialogAddDownload.ZielBeobachter", ex);
+                    Log.fehlerMeldung(356871087, Log.FEHLER_ART_PROG,"DialogAddDownload.ZielBeobachter", ex);
                 }
             }
         }

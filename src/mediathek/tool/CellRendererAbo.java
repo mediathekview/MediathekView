@@ -26,7 +26,6 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
-import mediathek.tool.GuiKonstanten;
 
 public class CellRendererAbo extends DefaultTableCellRenderer {
 
@@ -73,7 +72,7 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(630365892,this.getClass().getName(), ex);
+            Log.fehlerMeldung(630365892,Log.FEHLER_ART_PROG,this.getClass().getName(), ex);
         }
         return this;
     }

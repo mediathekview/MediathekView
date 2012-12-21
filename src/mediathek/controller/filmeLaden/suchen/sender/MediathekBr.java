@@ -54,7 +54,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
             try {
                 laden();
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-761355948, "MediathekBr.ThemaLaden.run", ex.getMessage());
+                Log.fehlerMeldung(-761355948, Log.FEHLER_ART_MREADER, "MediathekBr.ThemaLaden.run", ex, "");
             }
             meldungThreadUndFertig();
         }
@@ -62,7 +62,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
         void laden() {
             getUrlIo.getDummy(nameSenderMReader);
             //        <video application="a792/o16" host="gffstream.fcod.llnwd.net" groesse="xlarge" stream="br/b7/b7konks25277.mp4" typ="aufzeichnung"/>
-            StringBuilder seite = new StringBuilder(200*1024*8);
+            StringBuilder seite = new StringBuilder(200 * 1024 * 8);
             int pos = 0;
             int posEnde;
             int pos1;
@@ -202,7 +202,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                     }
                 } //while, die ganz große Schleife
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-963486054, "MediathekBr.laden", ex.getMessage());
+                Log.fehlerMeldung(-963486054, Log.FEHLER_ART_MREADER, "MediathekBr.laden", ex, "");
             }
         }
 
@@ -215,7 +215,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                 sdfOut = new SimpleDateFormat("dd.MM.yyyy");
                 datum = sdfOut.format(filmDate);
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-210365944, "MediathekBr.convertDatum", ex.getMessage());
+                Log.fehlerMeldung(-210365944, Log.FEHLER_ART_MREADER, "MediathekBr.convertDatum", ex, "");
             }
             return datum;
         }
@@ -229,7 +229,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                 sdfOut = new SimpleDateFormat("HH:mm:ss");
                 datum = sdfOut.format(filmDate);
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-573690176, "MediatheBr.convertTime", ex.getMessage());
+                Log.fehlerMeldung(-573690176, Log.FEHLER_ART_MREADER, "MediatheBr.convertTime", ex, "");
             }
             return datum;
         }

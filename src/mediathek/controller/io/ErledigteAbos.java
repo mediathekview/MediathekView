@@ -52,8 +52,9 @@ public class ErledigteAbos {
                 listeErledigteAbos_.add(e);
                 return super.add(e);
             }
+
             @Override
-            public void clear(){
+            public void clear() {
                 listeErledigteAbos_.clear();
                 super.clear();
             }
@@ -100,7 +101,7 @@ public class ErledigteAbos {
             }
             in.close();
         } catch (Exception ex) {
-            Log.fehlerMeldung(281006874, "LogDownload.urlAusLogfileLoeschen-1", ex);
+            Log.fehlerMeldung(281006874, Log.FEHLER_ART_PROG, "LogDownload.urlAusLogfileLoeschen-1", ex);
         } finally {
             try {
                 if (in != null) {
@@ -122,12 +123,12 @@ public class ErledigteAbos {
                     }
                     writer.close();
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(566277080, "LogDownload.urlAusLogfileLoeschen-3", ex);
+                    Log.fehlerMeldung(566277080, Log.FEHLER_ART_PROG, "LogDownload.urlAusLogfileLoeschen-3", ex);
                 } finally {
                     try {
                         writer.close();
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(256648801, "LogDownload.urlAusLogfileLoeschen-4", ex);
+                        Log.fehlerMeldung(256648801, Log.FEHLER_ART_PROG, "LogDownload.urlAusLogfileLoeschen-4", ex);
                     }
                 }
             }
@@ -154,7 +155,7 @@ public class ErledigteAbos {
                 writer.close();
                 ret = true;
             } catch (Exception ex) {
-                Log.fehlerMeldung(945258023, "LogDownload.zeileSchreiben-1", ex);
+                Log.fehlerMeldung(945258023, Log.FEHLER_ART_PROG, "LogDownload.zeileSchreiben-1", ex);
             } finally {
                 try {
                     writer.close();
@@ -200,13 +201,14 @@ public class ErledigteAbos {
                 }
             }
         } catch (Exception ex) {
-            System.err.println("Log.listeBauen-1: " + ex.getMessage());
+            Log.fehlerMeldung(203632125, Log.FEHLER_ART_PROG, ErledigteAbos.class.getName(), ex);
         } finally {
             try {
                 if (datei.exists()) {
                     in.close();
                 }
             } catch (Exception ex) {
+                Log.fehlerMeldung(898743697, Log.FEHLER_ART_PROG, ErledigteAbos.class.getName(), ex);
             }
         }
     }
@@ -231,7 +233,7 @@ public class ErledigteAbos {
                 url = zeile;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(398853224, "LogDownload.getUrlAusZeile: " + zeile, ex);
+            Log.fehlerMeldung(398853224, Log.FEHLER_ART_PROG, "ErledigteAbos.getUrlAusZeile: " + zeile, ex);
         }
         return url;
     }

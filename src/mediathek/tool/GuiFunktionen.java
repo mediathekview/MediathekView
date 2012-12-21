@@ -69,7 +69,7 @@ public class GuiFunktionen extends Funktionen {
             }
             ret = true;
         } catch (Exception e) {
-            Log.fehlerMeldung(305964198, "GuiFunktionen.setLook", e, "Kann das Look and Feel nicht ändern!");
+            Log.fehlerMeldung(305964198, Log.FEHLER_ART_PROG,"GuiFunktionen.setLook", e, "Kann das Look and Feel nicht ändern!");
         }
         return ret;
     }
@@ -113,7 +113,7 @@ public class GuiFunktionen extends Funktionen {
                     ret = tmp;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006, "DatenFilm.datumDrehen", ex, datum);
+                Log.fehlerMeldung(775421006,Log.FEHLER_ART_PROG, "DatenFilm.datumDrehen", ex, datum);
             }
 
         }
@@ -212,7 +212,7 @@ public class GuiFunktionen extends Funktionen {
             }
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(283946015, "GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
+            Log.fehlerMeldung(283946015, Log.FEHLER_ART_PROG,"GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
         }
         return ret;
     }
@@ -244,7 +244,7 @@ public class GuiFunktionen extends Funktionen {
             ret = ret.substring(0, ret.indexOf("&"));
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(395019631, "GuiFunktionen.getDateiName", pfad);
+            Log.fehlerMeldung(395019631,Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiName", pfad);
         }
         return ret;
     }

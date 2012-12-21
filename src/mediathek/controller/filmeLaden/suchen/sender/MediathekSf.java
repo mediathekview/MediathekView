@@ -82,7 +82,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     String[] add = new String[]{"http://www.videoportal.sf.tv/rss/sendung?id=" + url, thema};
                     listeThemen.addUrl(add);
                 } else {
-                    Log.fehlerMeldungMReader(-198620778, "MediathekSf.addToList", "keine URL");
+                    Log.fehlerMeldung(-198620778, Log.FEHLER_ART_MREADER, "MediathekSf.addToList", "keine URL");
 
                 }
             }
@@ -117,7 +117,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     addFilme(link[1], link[0] /* url */);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-832002877, "MediathekSf.SfThemaLaden.run", ex.getMessage());
+                Log.fehlerMeldung(-832002877, Log.FEHLER_ART_MREADER, "MediathekSf.SfThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
         }
@@ -184,7 +184,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                                         titel = seite1.substring(pos1, pos2);
                                         addFilme2(thema, strUrlFeed, "http://www.videoportal.sf.tv/cvis/segment/" + url + "/.json", titel, datum, zeit);
                                     } else {
-                                        Log.fehlerMeldungMReader(-499556023, "MediathekSf.addFilme", "keine URL: " + strUrlFeed);
+                                        Log.fehlerMeldung(-499556023, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme", "keine URL: " + strUrlFeed);
                                     }
                                 }
                             }
@@ -192,7 +192,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-795638103, "MediathekSf.addFilme", ex.getMessage());
+                Log.fehlerMeldung(-795638103, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme", ex);
             }
         }
 
@@ -223,12 +223,12 @@ public class MediathekSf extends MediathekReader implements Runnable {
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
                             addFilm(film);
                         } else {
-                            Log.fehlerMeldungMReader(-698325618, "MediathekSf.addFilme2", "keine URL" + url);
+                            Log.fehlerMeldung(-698325618, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme2", "keine URL" + url);
                         }
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-556320087, "MediathekSf.addFilme2", ex.getMessage());
+                Log.fehlerMeldung(-556320087, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme2", ex);
             }
         }
 
@@ -251,12 +251,12 @@ public class MediathekSf extends MediathekReader implements Runnable {
                         url = url.substring(0, url.indexOf("h264"));
                         url = url + "h264_16zu9_hq1.mp4";
                         if (url.equals("")) {
-                            Log.fehlerMeldungMReader(-362514789, "MediathekSf.getUrlFrom_m3u8", "keine URL" + url);
+                            Log.fehlerMeldung(-362514789, Log.FEHLER_ART_MREADER, "MediathekSf.getUrlFrom_m3u8", "keine URL" + url);
                         }
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-827485890, "MediathekSf.getUrlFrom_m3u8", ex.getMessage());
+                Log.fehlerMeldung(-827485890, Log.FEHLER_ART_MREADER, "MediathekSf.getUrlFrom_m3u8", ex);
             }
             return url;
         }

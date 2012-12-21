@@ -37,13 +37,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.tool.Log;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
 
 public class PanelPsetKurz extends PanelVorlage {
 
@@ -399,7 +399,7 @@ public class PanelPsetKurz extends PanelVorlage {
                         arr[idx] = textField.getText();
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(613986500,"DialogZielPset.ZielBeobachter", ex);
+                    Log.fehlerMeldung(613986500,Log.FEHLER_ART_PROG,"DialogZielPset.ZielBeobachter", ex);
                 }
             }
         }

@@ -86,7 +86,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 String[] add = new String[]{MUSTER_SET + url, thema};
                 listeThemen.addUrl(add);
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-764238903, "MediathekArdPodcast.addToList", new String[]{ex.getMessage(), "kein Thema"});
+                Log.fehlerMeldung(-764238903, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.addToList", ex, "kein Thema");
             }
         }
         if (Daten.filmeLaden.getStop()) {
@@ -118,7 +118,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     feedEinerSeiteSuchen(link[0] /* url */, link[1] /* Thema */);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-460287629, "MediathekArdPodcast.ArdThemaLaden.run", ex.getMessage());
+                Log.fehlerMeldung(-460287629, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.ArdThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
         }
@@ -149,7 +149,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 }
                 if (url.equals("")) {
                     //-------------
-                    Log.fehlerMeldungMReader(-643188097, "MediathekArdPodcast.filmeEinerSeiteSuchen-1", "keine URL für: " + strUrlFeed);
+                    Log.fehlerMeldung(-643188097, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-1", "keine URL für: " + strUrlFeed);
                 } else {
                     url = MUSTER_SET + url;
                     //++++++++++++++++++++++++++++++++++ 2te Seite
@@ -198,10 +198,10 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                                 }
                             }
                             if (url.equals("#")) {
-                                Log.fehlerMeldungMReader(-698025468, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + tmpUrl);
+                                Log.fehlerMeldung(-698025468, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + tmpUrl);
                             } else if (url.equals("")) {
                                 //-------------
-                                Log.fehlerMeldungMReader(-456903578, "MediathekArdPodcast.filmeEinerSeiteSuchen-2", "keine URL für: " + strUrlFeed);
+                                Log.fehlerMeldung(-456903578, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-2", "keine URL für: " + strUrlFeed);
                             } else {
                                 url = MUSTER_SET + url;
                                 filmLaden(strUrlFeed, url, thema);
@@ -251,8 +251,8 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     }
                     if (url.equals("")) {
                         //-------------
-                        Log.fehlerMeldungMReader(-789628694, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + urlIn);
-                        Log.fehlerMeldungMReader(-495623876, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + strUrlFeed);
+                        Log.fehlerMeldung(-789628694, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + urlIn);
+                        Log.fehlerMeldung(-495623876, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + strUrlFeed);
                         return;
                     }
                 }
@@ -319,7 +319,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     }
                 }
                 if (datum.equals("")) {
-                    Log.fehlerMeldungMReader(-102589463, "MediathekArdPodcast.filmeEinerSeiteSuchen-4", "kein Datum für: " + urlIn);
+                    Log.fehlerMeldung(-102589463, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-4", "kein Datum für: " + urlIn);
                 }
                 //  DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
                 addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""));
@@ -332,7 +332,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
             Date filmDate = new SimpleDateFormat("yyyyMMdd").parse(datum);
             datum = new SimpleDateFormat("dd.MM.yyyy").format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung(-979451236, "MediathekArdPodcast.convertDatum", ex);
+            Log.fehlerMeldung(-979451236, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.convertDatum", ex, "Datum: " + datum);
         }
         return datum;
     }

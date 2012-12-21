@@ -23,6 +23,7 @@ import java.io.File;
 import java.security.CodeSource;
 import java.util.ResourceBundle;
 import mediathek.Main;
+import mediathek.controller.io.History;
 
 public class Funktionen {
 
@@ -78,8 +79,7 @@ public class Funktionen {
             rb = ResourceBundle.getBundle("version");
             msg = rb.getString(propToken);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
-            System.err.println("Token " + propToken + " not in Propertyfile!");
+            Log.fehlerMeldung(807293847, Log.FEHLER_ART_PROG, Funktionen.class.getName(), e);
         }
         return msg;
     }
@@ -93,8 +93,7 @@ public class Funktionen {
             rb = ResourceBundle.getBundle("version");
             msg = rb.getString(propToken);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
-            System.err.println("Token " + propToken + " not in Propertyfile!");
+            Log.fehlerMeldung(134679898, Log.FEHLER_ART_PROG, Funktionen.class.getName(), e);
         }
         return msg;
     }

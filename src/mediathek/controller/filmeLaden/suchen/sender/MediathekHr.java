@@ -20,7 +20,6 @@
 package mediathek.controller.filmeLaden.suchen.sender;
 
 import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import mediathek.daten.Daten;
@@ -28,13 +27,12 @@ import mediathek.tool.Log;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
-import mediathek.tool.Datum;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekHr extends MediathekReader implements Runnable {
 
@@ -44,7 +42,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
 
     /**
      *
-     *  @param ddaten
+     * @param ddaten
      */
     public MediathekHr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 500, startPrio);
@@ -75,7 +73,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                     bearbeiteRubrik(url);
                 }
             } else {
-                Log.fehlerMeldungMReader(-456933258, "MediathekHr.addToList-1", "keine URL");
+                Log.fehlerMeldung(-456933258, Log.FEHLER_ART_MREADER, "MediathekHr.addToList-1", "keine URL");
             }
         }
         pos = 0;
@@ -92,7 +90,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                         listeThemen.add(add);
                     }
                 } else {
-                    Log.fehlerMeldungMReader(-203659403, "MediathekHr.addToList-2", "keine URL");
+                    Log.fehlerMeldung(-203659403, Log.FEHLER_ART_MREADER, "MediathekHr.addToList-2", "keine URL");
                 }
             }
         }
@@ -153,7 +151,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                     } catch (UnsupportedEncodingException ex) {
                     }
                 } else {
-                    Log.fehlerMeldungMReader(-653210697, "MediathekHr.bearbeiteRubrik", "keine URL");
+                    Log.fehlerMeldung(-653210697, Log.FEHLER_ART_MREADER, "MediathekHr.bearbeiteRubrik", "keine URL");
                 }
             }
         }
@@ -219,7 +217,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                     addFilme(link[1], link[0] /* url */);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-894330854, "MediathekHr.ThemaLaden.run", ex.getMessage());
+                Log.fehlerMeldung(-894330854, Log.FEHLER_ART_MREADER, "MediathekHr.ThemaLaden.run", ex, "");
             }
             meldungThreadUndFertig();
         }
@@ -294,11 +292,11 @@ public class MediathekHr extends MediathekReader implements Runnable {
                         DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, furl, datum, "");
                         addFilm(film);
                     } else {
-                        Log.fehlerMeldungMReader(-649882036, "MediathekHr.addFilme", "keine URL");
+                        Log.fehlerMeldung(-649882036, Log.FEHLER_ART_MREADER, "MediathekHr.addFilme", "keine URL");
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-487774126, "MediathekHr.addFilme", ex.getMessage());
+                Log.fehlerMeldung(-487774126,Log.FEHLER_ART_MREADER,  "MediathekHr.addFilme", ex, "");
             }
         }
 
@@ -316,7 +314,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                 }
             } catch (Exception ex) {
                 ret = "";
-                Log.fehlerMeldungMReader(-356408790, "MediathekHr.getDate", "kein Datum");
+                Log.fehlerMeldung(-356408790, Log.FEHLER_ART_MREADER, "MediathekHr.getDate", "kein Datum");
             }
             return ret;
         }

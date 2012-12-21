@@ -112,7 +112,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                         thema = strSeite.substring(pos1 + 2, pos2).trim();
                     }
                     if (url.equals("")) {
-                        Log.fehlerMeldungMReader(-995122047, "MediathekWdr.addToList__", "keine URL");
+                        Log.fehlerMeldung(-995122047, Log.FEHLER_ART_MREADER, "MediathekWdr.addToList__", "keine URL");
                     } else {
                         url = url.replace("&amp;", "&");
                         String[] add;
@@ -126,7 +126,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 }
             }
         } else {
-            Log.fehlerMeldungMReader(-778521300, "MediathekWdr", "nix gefunden!!");
+            Log.fehlerMeldung(-778521300, Log.FEHLER_ART_MREADER, "MediathekWdr", "nix gefunden!!");
         }
         // nach Datum suchen
         final String MUSTER_URL_DATUM = "href=\"/mediathek/html/regional/ergebnisse/datum.xml?";
@@ -137,7 +137,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             if ((pos2 = strSeite.indexOf("\"", pos)) != -1) {
                 url = strSeite.substring(pos, pos2);
                 if (url.equals("")) {
-                    Log.fehlerMeldungMReader(-656360477, "MediathekWdr.addToList__", "keine URL");
+                    Log.fehlerMeldung(-656360477, Log.FEHLER_ART_MREADER, "MediathekWdr.addToList__", "keine URL");
                 } else {
                     url = url.replace("&amp;", "&");
                     String[] add;
@@ -175,7 +175,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     meldungProgress(link[0]);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-633250489, "MediathekWdr.SenderThemaLaden.run", ex.getMessage());
+                Log.fehlerMeldung(-633250489, Log.FEHLER_ART_MREADER, "MediathekWdr.SenderThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
         }
@@ -205,7 +205,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     pos = pos3;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-696963025, "MediathekWdr.themenSeiteRockpalast", ex.getMessage());
+                Log.fehlerMeldung(-696963025, Log.FEHLER_ART_MREADER, "MediathekWdr.themenSeiteRockpalast", ex);
             }
         }
 
@@ -263,10 +263,10 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                                 //Log.debugMeldung("WDR-doppelt");
                             }
                         } else {
-                            Log.fehlerMeldungMReader(-375862100, "MediathekWdr.themenSeiteSuchen-1", "keine Url" + thema);
+                            Log.fehlerMeldung(-375862100, Log.FEHLER_ART_MREADER, "MediathekWdr.themenSeiteSuchen-1", "keine Url" + thema);
                         }
                     } else {
-                        Log.fehlerMeldungMReader(-752589666, "MediathekWdr.themenSeiteSuchen-2", "keine Url" + thema);
+                        Log.fehlerMeldung(-752589666, Log.FEHLER_ART_MREADER, "MediathekWdr.themenSeiteSuchen-2", "keine Url" + thema);
                     }
                 }
                 if (suchen.allesLaden) {
@@ -368,12 +368,12 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""/* zeit */);
                             addFilm(film);
                         } else {
-                            Log.fehlerMeldungMReader(-763299001, "MediathekWdr.addFilme2-1", "keine Url" + thema);
+                            Log.fehlerMeldung(-763299001, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme2-1", "keine Url" + thema);
                         }
                     }
                 }
             } else {
-                Log.fehlerMeldungMReader(-596631004, "MediathekWdr.addFilme2-2", "keine Url" + thema);
+                Log.fehlerMeldung(-596631004, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme2-2", "keine Url" + thema);
             }
         }
     }

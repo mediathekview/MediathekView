@@ -439,7 +439,7 @@ public class GuiFilme extends PanelVorlage {
                 tabelleBauen();
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(558965421, "GuiFilme.tabelleBauen", ex);
+            Log.fehlerMeldung(558965421,Log.FEHLER_ART_PROG, "GuiFilme.tabelleBauen", ex);
         }
     }
 
@@ -948,7 +948,7 @@ public class GuiFilme extends PanelVorlage {
                         ddaten.starterClass.filmLoeschen(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                     }
                 } catch (Exception ex) {
-                    System.err.println("GuiFilme.BeobProgramm: " + ex.getMessage());
+                    System.err.println("GuiFilme.BeobProgramm: " + ex);
                 }
             }
         }
@@ -1187,7 +1187,7 @@ public class GuiFilme extends PanelVorlage {
                 try {
                     tabelle.print();
                 } catch (PrinterException ex) {
-                    Log.fehlerMeldung(688542239, "GuiFilme.BeobPrint", ex);
+                    Log.fehlerMeldung(688542239, Log.FEHLER_ART_PROG,"GuiFilme.BeobPrint", ex);
                 }
             }
         }

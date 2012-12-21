@@ -70,11 +70,11 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                         }
                     }
                 } else {
-                    Log.fehlerMeldungMReader(-894562036, "MediathekRBB.addToList", "keine URL");
+                    Log.fehlerMeldung(-894562036,Log.FEHLER_ART_MREADER, "MediathekRBB.addToList", "keine URL");
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldungMReader(-398214058, "MediathekRBB.addToList", ex.getMessage());
+            Log.fehlerMeldung(-398214058,Log.FEHLER_ART_MREADER, "MediathekRBB.addToList", ex);
         }
         if (Daten.filmeLaden.getStop()) {
             meldungThreadUndFertig();
@@ -106,7 +106,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                     addFilme(link[0] /* url */);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-794625882, "MediathekRBB.ThemaLaden.run", ex.getMessage());
+                Log.fehlerMeldung(-794625882,Log.FEHLER_ART_MREADER, "MediathekRBB.ThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
         }

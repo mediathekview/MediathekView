@@ -75,7 +75,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                 url = "http://feeds.sf.tv/podcast" + url;
             }
             if (url.equals("")) {
-                Log.fehlerMeldungMReader(-698875503, "MediathekSfPod.addToList", "keine URL");
+                Log.fehlerMeldung(-698875503, Log.FEHLER_ART_MREADER, "MediathekSfPod.addToList", "keine URL");
             } else {
                 String[] add = new String[]{url, ""};
                 listeThemen.addUrl(add);
@@ -91,7 +91,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                 url = "http://pod.drs.ch/" + url;
             }
             if (url.equals("")) {
-                Log.fehlerMeldungMReader(-698875503, "MediathekSfPod.addToList", "keine URL");
+                Log.fehlerMeldung(-698875503, Log.FEHLER_ART_MREADER, "MediathekSfPod.addToList", "keine URL");
             } else {
                 String[] add = new String[]{url, ""};
                 listeThemen.addUrl(add);
@@ -124,7 +124,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                     addFilme(link[1], link[0] /* url */);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-286931004, "MediathekSfPod.SfThemaLaden.run", ex.getMessage());
+                Log.fehlerMeldung(-286931004, Log.FEHLER_ART_MREADER, "MediathekSfPod.SfThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
         }
@@ -182,7 +182,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                                 url = "http://" + url;
                             }
                             if (url.equals("")) {
-                                Log.fehlerMeldungMReader(-463820049, "MediathekSfPod.addFilme", "keine URL: " + strUrlFeed);
+                                Log.fehlerMeldung(-463820049, Log.FEHLER_ART_MREADER, "MediathekSfPod.addFilme", "keine URL: " + strUrlFeed);
                             } else {
 //                            urlorg = urlorg.replace("%20", "\u0020;");
                                 addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit));
@@ -191,7 +191,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-496352007, "MediathekSfPod.addFilme", ex.getMessage());
+                Log.fehlerMeldung(-496352007, Log.FEHLER_ART_MREADER, "MediathekSfPod.addFilme", ex);
             }
         }
     }
@@ -205,7 +205,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
             datum = new SimpleDateFormat("dd.MM.yyyy").format(filmDate);
             zeit = new SimpleDateFormat("HH:mm:ss").format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung(-979451236, "MediathekArdPodcast.convertDatum", ex);
+            Log.fehlerMeldung(-979451236, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.convertDatum", ex);
         }
         return new String[]{datum, zeit};
     }

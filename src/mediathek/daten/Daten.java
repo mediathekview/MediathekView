@@ -110,7 +110,7 @@ public class Daten {
             File basisF = new File(ret);
             if (!basisF.exists()) {
                 if (!basisF.mkdir()) {
-                    Log.fehlerMeldung(898736548, "Daten.getBasisVerzeichnis", new String[]{"Kann den Ordner zum Speichern der Daten nicht anlegen!",
+                    Log.fehlerMeldung(898736548,Log.FEHLER_ART_PROG, "Daten.getBasisVerzeichnis", new String[]{"Kann den Ordner zum Speichern der Daten nicht anlegen!",
                                 "Daten.getBasisVerzeichnis"});
                 }
 

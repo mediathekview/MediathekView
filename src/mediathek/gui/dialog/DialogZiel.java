@@ -49,7 +49,6 @@ public class DialogZiel extends javax.swing.JDialog {
         jTextFieldPfad.setText(zziel);
         ziel = zziel;
         new EscBeenden(this) {
-
             @Override
             public void beenden_() {
                 ok = false;
@@ -215,7 +214,7 @@ public class DialogZiel extends javax.swing.JDialog {
                 try {
                     jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(642109058,"DialogExport.ZielBeobachter", ex);
+                    Log.fehlerMeldung(642109058, Log.FEHLER_ART_PROG, "DialogExport.ZielBeobachter", ex);
                 }
             }
         }

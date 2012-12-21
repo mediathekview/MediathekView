@@ -86,7 +86,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         StringBuffer seiteR = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         seiteR = getUrl.getUri(nameSenderMReader, addr, Konstanten.KODIERUNG_UTF, 6 /* versuche */, seiteR, "" /* Meldung */);
         if (seiteR.length() == 0) {
-            Log.fehlerMeldungMReader(-774200364, "MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
+            Log.fehlerMeldung(-774200364, Log.FEHLER_ART_MREADER, "MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
         }
         int pos = 0;
         int pos1;
@@ -103,7 +103,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 url = seiteR.substring(pos1, pos2);
             }
             if (url.equals("")) {
-                Log.fehlerMeldungMReader(-754126900, "MediathekZdf.addToList_addr", "keine URL: " + addr);
+                Log.fehlerMeldung(-754126900, Log.FEHLER_ART_MREADER, "MediathekZdf.addToList_addr", "keine URL: " + addr);
             } else {
                 url = "http://www.zdf.de/ZDFmediathek/kanaluebersicht/aktuellste/" + url + "?bc=rub";
                 addToList_addr(url, ANZAHL_ZDF_UPDATE); // immer nur eine "kurz"
@@ -117,7 +117,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         seite = getUrl.getUri(nameSenderMReader, addr, Konstanten.KODIERUNG_UTF, 6 /* versuche */, seite, "" /* Meldung */);
         if (seite.length() == 0) {
-            Log.fehlerMeldungMReader(-596004563, "MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
+            Log.fehlerMeldung(-596004563, Log.FEHLER_ART_MREADER, "MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
         }
         int pos = 0;
         int pos1;
@@ -148,7 +148,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 thema = seite.substring(pos1 + 2, pos2);
             }
             if (url.equals("")) {
-                Log.fehlerMeldungMReader(-946325890, "MediathekZdf.addToList_addr", "keine URL: " + addr);
+                Log.fehlerMeldung(-946325890, Log.FEHLER_ART_MREADER, "MediathekZdf.addToList_addr", "keine URL: " + addr);
             } else {
                 url = "http://www.zdf.de/ZDFmediathek/kanaluebersicht/aktuellste/" + url;
                 urlThema = url;
@@ -191,7 +191,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     meldungProgress(link[0]);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-496583200, "MediathekZdf.ZdfThemaLaden.run", ex.getMessage());
+                Log.fehlerMeldung(-496583200, Log.FEHLER_ART_MREADER, "MediathekZdf.ZdfThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
         }
@@ -232,14 +232,14 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                         titel = seite1.substring(pos1 + 2, pos2);
                     }
                     if (urlFilm.equals("")) {
-                        Log.fehlerMeldungMReader(-643269690, "MediathekZdf.addFilme", "keine URL: " + url);
+                        Log.fehlerMeldung(-643269690, Log.FEHLER_ART_MREADER, "MediathekZdf.addFilme", "keine URL: " + url);
                     } else {
                         urlFilm = "http://www.zdf.de/ZDFmediathek/beitrag/video/" + urlFilm;
                         filmHolen(thema, titel, urlThema, urlFilm);
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-796325800, "MediathekZdf.addFilme", new String[]{ex.getMessage(), url});
+                Log.fehlerMeldung(-796325800, Log.FEHLER_ART_MREADER, "MediathekZdf.addFilme", ex, url);
             }
         }
 
@@ -305,11 +305,11 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                         urlFilm = seite2.substring(pos1, pos2);
                     }
                     if (urlFilm.equals("")) {
-                        Log.fehlerMeldungMReader(-690048078, "MediathekZdf.filmHolen-1", "keine URL: " + urlFilm);
+                        Log.fehlerMeldung(-690048078, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen-1", "keine URL: " + urlFilm);
                     } else {
                         urlFilm = "http://wstreaming.zdf.de/zdf/veryhigh/" + urlFilm;
                         if (!urlFilm.endsWith("asx")) {
-                            Log.fehlerMeldungMReader(-200480752, "MediathekZdf.filmHolen-2", "keine URL: " + urlFilm);
+                            Log.fehlerMeldung(-200480752, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen-2", "keine URL: " + urlFilm);
                         } else {
                             //addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
                             flashHolen(thema, titel, urlThema, urlFilm, datum, zeit);
@@ -317,7 +317,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-860248073, "MediathekZdf.filmHolen", new String[]{ex.getMessage(), urlFilm});
+                Log.fehlerMeldung(-860248073, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", ex, urlFilm);
             }
         }
 
@@ -441,20 +441,20 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 }
             }
             if (!gefunden) {
-                Log.fehlerMeldung(-302125078, "MediathekZdf.flash-1 " + senderName, "!gefunden: " + urlFilm);
+                Log.fehlerMeldung(-302125078, Log.FEHLER_ART_MREADER, "MediathekZdf.flash-1 " + senderName, "!gefunden: " + urlFilm);
             }
             if (url.equals("")) {
                 ret = null;
-                Log.fehlerMeldungMReader(-783012580, "MediathekZdf.flash-2 " + senderName, "keine URL: " + urlFilm);
+                Log.fehlerMeldung(-783012580, Log.FEHLER_ART_MREADER, "MediathekZdf.flash-2 " + senderName, "keine URL: " + urlFilm);
             } else if (host.equals("")) {
                 ret = null;
-                Log.fehlerMeldungMReader(-356047809, "MediathekZdf.flash-3 " + senderName, "kein Host: " + urlFilm);
+                Log.fehlerMeldung(-356047809, Log.FEHLER_ART_MREADER, "MediathekZdf.flash-3 " + senderName, "kein Host: " + urlFilm);
             } else {
                 url = "rtmpt://" + host + "/" + app + "/" + url;
                 ret = new DatenFilm(senderName, thema, urlThema, titel, url, ""/* urlRtmp */, datum, zeit);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldungMReader(-860248073, "MediathekZdf.flash" + senderName, new String[]{ex.getMessage(), urlFilm});
+            Log.fehlerMeldung(-860248073, Log.FEHLER_ART_MREADER, "MediathekZdf.flash" + senderName, ex, urlFilm);
         }
         return ret;
     }

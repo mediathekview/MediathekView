@@ -90,7 +90,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     thema = StringEscapeUtils.unescapeHtml4(thema.trim()); //wird gleich benutzt und muss dann schon stimmen
                 }
                 if (url.equals("")) {
-                    Log.fehlerMeldungMReader(-163255009, "MediathekSwr.addToList__", "keine URL");
+                    Log.fehlerMeldung(-163255009, Log.FEHLER_ART_MREADER, "MediathekSwr.addToList__", "keine URL");
                 } else {
                     //url = url.replace("&amp;", "&");
                     String[] add = new String[]{"http://swrmediathek.de/tvshow.htm?show=" + url, thema};
@@ -119,7 +119,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     meldungProgress(link[0]);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-739285690, "MediathekSwr.SenderThemaLaden.run", ex.getMessage());
+                Log.fehlerMeldung(-739285690, Log.FEHLER_ART_MREADER, "MediathekSwr.SenderThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
         }
@@ -143,7 +143,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                 if ((pos2 = strSeite1.indexOf("\"", pos1)) != -1) {
                     url = strSeite1.substring(pos1, pos2);
                     if (url.equals("")) {
-                        Log.fehlerMeldungMReader(-875012369, "MediathekSwr.addFilme2", "keine URL, Thema: " + thema);
+                        Log.fehlerMeldung(-875012369, Log.FEHLER_ART_MREADER, "MediathekSwr.addFilme2", "keine URL, Thema: " + thema);
                     } else {
                         url = "http://swrmediathek.de/AjaxEntry?callback=jsonp1347979401564&ekey=" + url;
                         json(strUrlFeed, thema, url);
@@ -260,7 +260,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
                             addFilm(film);
                         } else {
-                            Log.fehlerMeldungMReader(-468200690, "MediathekSwr.addFilme2-4", thema + " " + urlJson);
+                            Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.addFilme2-4", thema + " " + urlJson);
                         }
                     }
                 }
@@ -278,7 +278,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                                 DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
                                 addFilm(film);
                             } else {
-                                Log.fehlerMeldungMReader(-468200690, "MediathekSwr.json-1", thema + " " + urlJson);
+                                Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.json-1", thema + " " + urlJson);
                             }
                         }
                     }
@@ -297,16 +297,16 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                                 DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
                                 addFilm(film);
                             } else {
-                                Log.fehlerMeldungMReader(-468200690, "MediathekSwr.json-1", thema + " " + urlJson);
+                                Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.json-1", thema + " " + urlJson);
                             }
                         }
                     }
                 }
                 if (url.equals("")) {
-                    Log.fehlerMeldungMReader(-203690478, "MediathekSwr.jason-2", thema + " " + urlJson);
+                    Log.fehlerMeldung(-203690478, Log.FEHLER_ART_MREADER, "MediathekSwr.jason-2", thema + " " + urlJson);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-939584720, "MediathekSwr.json-3", thema + " " + urlJson);
+                Log.fehlerMeldung(-939584720, Log.FEHLER_ART_MREADER, "MediathekSwr.json-3", thema + " " + urlJson);
             }
         }
     }

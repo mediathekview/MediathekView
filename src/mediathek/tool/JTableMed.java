@@ -6,10 +6,6 @@ package mediathek.tool;
 
 import java.util.List;
 import javax.swing.JTable;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.TableColumnModelListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
@@ -155,7 +151,7 @@ public final class JTableMed extends JTable {
             }
             this.validate();
         } catch (Exception ex) {
-            Log.fehlerMeldung(965001463, "JTableMed.setSpalten", ex);
+            Log.fehlerMeldung(965001463, Log.FEHLER_ART_PROG,"JTableMed.setSpalten", ex);
         }
         stopBeob = false;
     }

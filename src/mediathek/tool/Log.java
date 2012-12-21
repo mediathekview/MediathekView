@@ -30,16 +30,22 @@ import mediathek.daten.Daten;
 
 public class Log {
 
+    public static StringBuffer textSystem = new StringBuffer(10000);
+    public static StringBuffer textProgramm = new StringBuffer(10000);
+    public static StringBuffer textFehler = new StringBuffer();
     public static boolean playerMeldungenAus = false;
     public static final int LOG_FEHLER = ListenerMediathekView.EREIGNIS_LOG_FEHLER;
     public static final int LOG_SYSTEM = ListenerMediathekView.EREIGNIS_LOG_SYSTEM;
     public static final int LOG_PLAYER = ListenerMediathekView.EREIGNIS_LOG_PLAYER;
+    public static final int FEHLER_ART_PROG = 1;
+    public static final int FEHLER_ART_GETURL = 2;
+    public static final int FEHLER_ART_MREADER = 3;
+    public static final int FEHLER_ART_FILME_SUCHEN = 4;
+    public static final int FEHLER_ART_AUTO = 5;
+    public static final int FEHLER_ART_NOGUI = 6;
+    // private
     private static final int MAX_LAENGE_1 = 50000;
     private static final int MAX_LAENGE_2 = 30000;
-    private static final int LAENGE__init = 10000;
-    public static StringBuffer textSystem = new StringBuffer(LAENGE__init);
-    public static StringBuffer textProgramm = new StringBuffer(LAENGE__init);
-    public static StringBuffer textFehler = new StringBuffer();
     private static int zeilenNrSystem = 0;
     private static int zeilenNrProgramm = 0;
     private static int zeilenNrFehler = 0;
@@ -96,37 +102,47 @@ public class Log {
         }
     }
 
-    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex) {
-        fehlermeldung_(fehlerNummer, klasse, new String[]{ex.getMessage(), ""});
+    // Fehlermeldung mit Exceptions
+    public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, Exception ex) {
+        fehlermeldung_(fehlerNummer, klasse, new String[]{ex.getMessage()});
     }
 
-    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex, String text) {
+    public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, Exception ex, String text) {
         String[] str = new String[2];
         str[0] = ex.getMessage();
         str[1] = text;
         fehlermeldung_(fehlerNummer, klasse, str);
     }
 
-    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String text) {
+    public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, Exception ex, String text[]) {
+        String[] str = new String[text.length + 1];
+        str[0] = ex.getMessage();
+        for (int i = 1; i < str.length; ++i) {
+            str[i] = text[i - 1];
+        }
+        fehlermeldung_(fehlerNummer, klasse, str);
+    }
+
+    // Fehlermeldungen
+    public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, String text) {
         fehlermeldung_(fehlerNummer, klasse, new String[]{text});
     }
 
-    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String[] text) {
+    public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, String[] text) {
         fehlermeldung_(fehlerNummer, klasse, text);
     }
 
-    public static synchronized void fehlerMeldungMReader(int fehlerNummer, String klasse, String text) {
-        fehlermeldung_mReader(fehlerNummer, klasse, new String[]{text});
-    }
-
-    public static synchronized void fehlerMeldungMReader(int fehlerNummer, String klasse, String[] text) {
-        fehlermeldung_mReader(fehlerNummer, klasse, text);
-    }
-
-    public static synchronized void fehlerMeldungGetUrl(int fehlerNummer, Exception ex, String sender, String text[]) {
-        fehlermeldung_getUrl(fehlerNummer, sender, ex, text);
-    }
-
+//    public static synchronized void fehlerMeldungMReader(int fehlerNummer, int art, String klasse, String text) {
+//        fehlermeldung_mReader(fehlerNummer, klasse, new String[]{text});
+//    }
+//
+//    public static synchronized void fehlerMeldungMReader(int fehlerNummer, String klasse, String[] text) {
+//        fehlermeldung_mReader(fehlerNummer, klasse, text);
+//    }
+//
+//    public static synchronized void fehlerMeldungGetUrl(int fehlerNummer, Exception ex, String sender, String text[]) {
+//        fehlermeldung_getUrl(fehlerNummer, sender, ex, text);
+//    }
     public static synchronized void systemMeldung(String[] text) {
         systemmeldung(text);
     }

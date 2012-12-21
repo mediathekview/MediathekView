@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.gui.GuiFilme;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
@@ -150,7 +149,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 return false;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(462558700, "ListeBlacklist.checkDate: ", ex);
+            Log.fehlerMeldung(462558700, Log.FEHLER_ART_PROG,"ListeBlacklist.checkDate: ", ex);
         }
         return true;
     }

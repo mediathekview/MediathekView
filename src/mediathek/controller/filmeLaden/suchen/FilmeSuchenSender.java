@@ -117,7 +117,7 @@ public class FilmeSuchenSender {
         try {
             this.wait(3 * 60 * 1000); // 3 Min. warten, Sender nach der Gesamtlaufzeit starten
         } catch (Exception ex) {
-            Log.fehlerMeldung(952210369, "FilmeSuchenSender.mrStarten", ex);
+            Log.fehlerMeldung(952210369,Log.FEHLER_ART_PROG, "FilmeSuchenSender.mrStarten", ex);
         }
     }
 
