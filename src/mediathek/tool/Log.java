@@ -37,19 +37,26 @@ public class Log {
     public static final int LOG_FEHLER = ListenerMediathekView.EREIGNIS_LOG_FEHLER;
     public static final int LOG_SYSTEM = ListenerMediathekView.EREIGNIS_LOG_SYSTEM;
     public static final int LOG_PLAYER = ListenerMediathekView.EREIGNIS_LOG_PLAYER;
-    public static final int FEHLER_ART_PROG = 1;
-    public static final int FEHLER_ART_GETURL = 2;
-    public static final int FEHLER_ART_MREADER = 3;
-    public static final int FEHLER_ART_FILME_SUCHEN = 4;
-    public static final int FEHLER_ART_AUTO = 5;
-    public static final int FEHLER_ART_NOGUI = 6;
+    public static final int FEHLER_ART_PROG = 0;
+    public static final String FEHLER_ART_PROG_TEXT = "   Prog: ";
+    public static final int FEHLER_ART_GETURL = 1;
+    public static final String FEHLER_ART_GETURL_TEXT = " GetUrl: ";
+    public static final int FEHLER_ART_MREADER = 2;
+    public static final String FEHLER_ART_MREADER_TEXT = "MReader: ";
+    public static final int FEHLER_ART_FILME_SUCHEN = 3;
+    public static final String FEHLER_ART_FILME_SUCHEN_TEXT = "  Filme: ";
+    public static final int FEHLER_ART_AUTO = 4;
+    public static final String FEHLER_ART_AUTO_TEXT = "   Auto: ";
+    public static final int FEHLER_ART_NOGUI = 5;
+    public static final String FEHLER_ART_NOGUI_TEXT = "  NoGui: ";
+    public static final int FEHLER_ART_MAX = 6;
     // private
     private static final int MAX_LAENGE_1 = 50000;
     private static final int MAX_LAENGE_2 = 30000;
     private static int zeilenNrSystem = 0;
     private static int zeilenNrProgramm = 0;
     private static int zeilenNrFehler = 0;
-    private static LinkedList<Integer[]> fehlerListe = new LinkedList<Integer[]>(); // [Fehlernummer, Anzahl]
+    private static LinkedList<Integer[]> fehlerListe = new LinkedList<Integer[]>(); // [Art, Fehlernummer, Anzahl, Exception(0,1 für ja, nein)]
     private static boolean prog = false;
     private static Date startZeit = new Date(System.currentTimeMillis());
     private static Date stopZeit = null;
@@ -104,45 +111,26 @@ public class Log {
 
     // Fehlermeldung mit Exceptions
     public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, Exception ex) {
-        fehlermeldung_(fehlerNummer, klasse, new String[]{ex.getMessage()});
+        fehlermeldung_(fehlerNummer, art, klasse, ex, new String[]{});
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, Exception ex, String text) {
-        String[] str = new String[2];
-        str[0] = ex.getMessage();
-        str[1] = text;
-        fehlermeldung_(fehlerNummer, klasse, str);
+        fehlermeldung_(fehlerNummer, art, klasse, ex, new String[]{text});
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, Exception ex, String text[]) {
-        String[] str = new String[text.length + 1];
-        str[0] = ex.getMessage();
-        for (int i = 1; i < str.length; ++i) {
-            str[i] = text[i - 1];
-        }
-        fehlermeldung_(fehlerNummer, klasse, str);
+        fehlermeldung_(fehlerNummer, art, klasse, ex, text);
     }
 
     // Fehlermeldungen
     public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, String text) {
-        fehlermeldung_(fehlerNummer, klasse, new String[]{text});
+        fehlermeldung_(fehlerNummer, art, klasse, null, new String[]{text});
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, String[] text) {
-        fehlermeldung_(fehlerNummer, klasse, text);
+        fehlermeldung_(fehlerNummer, art, klasse, null, text);
     }
 
-//    public static synchronized void fehlerMeldungMReader(int fehlerNummer, int art, String klasse, String text) {
-//        fehlermeldung_mReader(fehlerNummer, klasse, new String[]{text});
-//    }
-//
-//    public static synchronized void fehlerMeldungMReader(int fehlerNummer, String klasse, String[] text) {
-//        fehlermeldung_mReader(fehlerNummer, klasse, text);
-//    }
-//
-//    public static synchronized void fehlerMeldungGetUrl(int fehlerNummer, Exception ex, String sender, String text[]) {
-//        fehlermeldung_getUrl(fehlerNummer, sender, ex, text);
-//    }
     public static synchronized void systemMeldung(String[] text) {
         systemmeldung(text);
     }
@@ -172,6 +160,7 @@ public class Log {
             // Fehler ausgeben
             int i_1;
             int i_2;
+            int i_3;
             for (int i = 1; i < fehlerListe.size(); ++i) {
                 for (int k = i; k > 0; --k) {
                     i_1 = fehlerListe.get(k - 1)[1];
@@ -188,10 +177,40 @@ public class Log {
             Iterator<Integer[]> it = fehlerListe.iterator();
             while (it.hasNext()) {
                 Integer[] integers = it.next();
-                if (integers[0] < 0) {
-                    systemMeldung(" Fehlernummer: " + integers[0] + " Anzahl: " + integers[1]);
+                String z;
+                switch (integers[0]) {
+                    case FEHLER_ART_MREADER:
+                        z = FEHLER_ART_MREADER_TEXT;
+                        break;
+                    case FEHLER_ART_FILME_SUCHEN:
+                        z = FEHLER_ART_FILME_SUCHEN_TEXT;
+                        break;
+                    case FEHLER_ART_GETURL:
+                        z = FEHLER_ART_GETURL_TEXT;
+                        break;
+                    case FEHLER_ART_PROG:
+                        z = FEHLER_ART_PROG_TEXT;
+                        break;
+                    case FEHLER_ART_NOGUI:
+                        z = FEHLER_ART_NOGUI_TEXT;
+                        break;
+                    case FEHLER_ART_AUTO:
+                        z = FEHLER_ART_AUTO_TEXT;
+                        break;
+                    default:
+                        z = "";
+                }
+                boolean ex = integers[3] == 1;
+                String strEx;
+                if (ex) {
+                    strEx = "Ex! ";
                 } else {
-                    systemMeldung(" Fehlernummer:  " + integers[0] + " Anzahl: " + integers[1]);
+                    strEx = "    ";
+                }
+                if (integers[1] < 0) {
+                    systemMeldung(strEx + z + " Fehlernummer: " + integers[1] + " Anzahl: " + integers[2]);
+                } else {
+                    systemMeldung(strEx + z + " Fehlernummer:  " + integers[1] + " Anzahl: " + integers[2]);
                 }
             }
             systemMeldung("###########################################################");
@@ -219,75 +238,101 @@ public class Log {
         systemMeldung("###########################################################");
     }
 
-    private static void addFehlerNummer(int nr) {
+    private static void addFehlerNummer(int nr, int art, boolean exception) {
         Iterator<Integer[]> it = fehlerListe.iterator();
+        int ex = exception ? (ex = 1) : (ex = 2);
         while (it.hasNext()) {
             Integer[] i = it.next();
-            if (i[0].intValue() == nr) {
-                i[1]++;
+            if (i[1].intValue() == nr) {
+                i[0] = art;
+                i[2]++;
+                i[3] = ex;
                 return;
             }
         }
         // dann gibts die Nummer noch nicht
-        fehlerListe.add(new Integer[]{new Integer(nr), new Integer(1)});
+        fehlerListe.add(new Integer[]{new Integer(art), new Integer(nr), new Integer(1), new Integer(ex)});
     }
 
-    private static void fehlermeldung_mReader(int fehlerNummer, String sender, String[] texte) {
-        addFehlerNummer(fehlerNummer);
-        if (Daten.debug) {
+//    private static void fehlermeldung_mReader(int fehlerNummer, String sender, String[] texte) {
+//        addFehlerNummer(fehlerNummer);
+//        if (Daten.debug) {
+//            if (prog) {
+//                // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
+//                System.out.print("                                                                            \r");
+//                prog = false;
+//            }
+//            final String FEHLER = "MReader: ";
+//            final String z = "  ==>";
+//            System.out.println(" Fehlernr: " + fehlerNummer);
+//            System.out.println(z + " " + FEHLER + sender);
+//            notifyMediathekListener(LOG_FEHLER, FEHLER + sender);
+//            for (int i = 0; i < texte.length; ++i) {
+//                System.out.println("                " + texte[i]);
+//                notifyMediathekListener(LOG_FEHLER, texte[i]);
+//            }
+//        }
+//    }
+//
+//    private static void fehlermeldung_getUrl(int fehlerNummer, String sender, Exception ex, String text[]) {
+//        addFehlerNummer(fehlerNummer);
+//        if (prog) {
+//            // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
+//            System.out.print("                                                                            \r");
+//            prog = false;
+//        }
+//        final String FEHLER = "GetUrl: ";
+//        final String z = "  ++>";
+//        System.out.println(" Fehlernr: " + fehlerNummer);
+//        System.out.println(z + " " + FEHLER + sender + " " + ex.getMessage());
+//        notifyMediathekListener(LOG_FEHLER, FEHLER + sender + " - " + ex.getMessage());
+//        for (int i = 0; i < text.length; ++i) {
+//            System.out.println("                " + text[i]);
+//            notifyMediathekListener(LOG_FEHLER, text[i]);
+//        }
+//    }
+    private static void fehlermeldung_(int fehlerNummer, int art, String klasse, Exception ex, String[] texte) {
+        addFehlerNummer(fehlerNummer, art, ex != null);
+        if (ex != null || Daten.debug) {
+            // Exceptions immer ausgeben
             if (prog) {
                 // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
                 System.out.print("                                                                            \r");
                 prog = false;
             }
-            final String FEHLER = "MReader: ";
-            final String z = "  ==>";
-            System.out.println(" Fehlernr: " + fehlerNummer);
-            System.out.println(z + " " + FEHLER + sender);
-            notifyMediathekListener(LOG_FEHLER, FEHLER + sender);
+            final String FEHLER = "Fehler(" + Konstanten.PROGRAMMNAME + "): ";
+            String x, z;
+            if (ex != null) {
+                x = "!";
+            } else {
+                x = "=";
+            }
+            switch (art) {
+                case FEHLER_ART_MREADER:
+                    z = "  ==>";
+                    break;
+                case FEHLER_ART_FILME_SUCHEN:
+                    z = "   >>";
+                    break;
+                case FEHLER_ART_GETURL:
+                    z = "  ++>";
+                    break;
+                case FEHLER_ART_PROG:
+                case FEHLER_ART_NOGUI:
+                case FEHLER_ART_AUTO:
+                default:
+                    z = "*";
+            }
+            System.out.println(x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x);
+            System.out.println(z + " Fehlernr: " + fehlerNummer);
+            System.out.println(z + " " + FEHLER + klasse);
+            notifyMediathekListener(LOG_FEHLER, FEHLER + klasse);
             for (int i = 0; i < texte.length; ++i) {
-                System.out.println("                " + texte[i]);
+                System.out.println(z + "           " + texte[i]);
                 notifyMediathekListener(LOG_FEHLER, texte[i]);
             }
+            System.out.println("");
         }
-    }
-
-    private static void fehlermeldung_getUrl(int fehlerNummer, String sender, Exception ex, String text[]) {
-        addFehlerNummer(fehlerNummer);
-        if (prog) {
-            // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
-            System.out.print("                                                                            \r");
-            prog = false;
-        }
-        final String FEHLER = "GetUrl: ";
-        final String z = "  ++>";
-        System.out.println(" Fehlernr: " + fehlerNummer);
-        System.out.println(z + " " + FEHLER + sender + " " + ex.getMessage());
-        notifyMediathekListener(LOG_FEHLER, FEHLER + sender + " - " + ex.getMessage());
-        for (int i = 0; i < text.length; ++i) {
-            System.out.println("                " + text[i]);
-            notifyMediathekListener(LOG_FEHLER, text[i]);
-        }
-    }
-
-    private static void fehlermeldung_(int fehlerNummer, String klasse, String[] texte) {
-        addFehlerNummer(fehlerNummer);
-        if (prog) {
-            // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
-            System.out.print("                                                                            \r");
-            prog = false;
-        }
-        final String FEHLER = "Fehler(" + Konstanten.PROGRAMMNAME + "): ";
-        final String z = "*";
-        System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
-        System.out.println(z + " Fehlernr: " + fehlerNummer);
-        System.out.println(z + " " + FEHLER + klasse);
-        notifyMediathekListener(LOG_FEHLER, FEHLER + klasse);
-        for (int i = 0; i < texte.length; ++i) {
-            System.out.println(z + "           " + texte[i]);
-            notifyMediathekListener(LOG_FEHLER, texte[i]);
-        }
-        System.out.println(z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z + z);
     }
 
     private static void debugmeldung(String texte) {
