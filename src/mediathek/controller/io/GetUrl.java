@@ -26,6 +26,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.TimeoutException;
 import mediathek.daten.Daten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
@@ -247,16 +248,19 @@ public class GetUrl {
                 seite.append(zeichen);
                 incSeitenZaehler(LISTE_SUMME_BYTE, sender, 1);
             }
-        } catch (Exception ex) {
+
+        } catch (IOException ex) {
             if (lVersuch) {
                 String[] text;
                 if (meldung.equals("")) {
-                    text = new String[]{"Sender - timout: " + timeo + " Versuche: " + versuch, addr};
+                    text = new String[]{sender + " - timout: " + timeo + " Versuche: " + versuch, addr};
                 } else {
-                    text = new String[]{"Sender - timout: " + timeo + " Versuche: " + versuch, addr, meldung};
+                    text = new String[]{sender + " - timout: " + timeo + " Versuche: " + versuch, addr, meldung};
                 }
                 Log.fehlerMeldung(502739817, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, text);
             }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(973969801, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex);
         } finally {
             try {
                 if (in != null) {
