@@ -79,7 +79,7 @@ public class ImportFilmliste {
             }
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {
                 JOptionPane.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                Log.fehlerMeldung(951235497, "Filme laden", "Es konnten keine Filme geladen werden!");
+                Log.fehlerMeldung(951235497, Log.FEHLER_ART_PROG,"Filme laden", "Es konnten keine Filme geladen werden!");
             }
             fertigMelden();
         }
@@ -123,7 +123,7 @@ public class ImportFilmliste {
                 ret = ioXmlFilmlisteLesen.filmlisteLesen(dateiUrl, istUrl, listeFilme);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(965412378, "ImportListe.urlLaden: ", ex);
+            Log.fehlerMeldung(965412378, Log.FEHLER_ART_PROG,"ImportListe.urlLaden: ", ex);
         }
         return ret;
     }

@@ -157,7 +157,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                     break; //TH muss sein da muster 2 manchmal nicht fündig - dann Endlosschleife
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-896234580, "MediathekOrf.addToList", ex.getMessage());
+                Log.fehlerMeldung(-896234580, Log.FEHLER_ART_MREADER, "MediathekOrf.addToList", ex);
             }
         }
 
@@ -178,7 +178,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                         }
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldungMReader(-468320478, "MediathekOrf.addToList", ex.getMessage());
+                    Log.fehlerMeldung(-468320478, Log.FEHLER_ART_MREADER, "MediathekOrf.addToList", ex);
                 }
             }
         }
@@ -200,11 +200,11 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                         meldungProgress(link[0]);
                         feedEinerSeiteSuchen(link[0] /* url */, link[1] /* Thema */);
                     } catch (Exception ex) {
-                        Log.fehlerMeldungMReader(-795633581, "MediathekOrf.OrfThemaLaden.run", ex.getMessage());
+                        Log.fehlerMeldung(-795633581, Log.FEHLER_ART_MREADER, "MediathekOrf.OrfThemaLaden.run", ex);
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungMReader(-554012398, "MediathekOrf.OrfThemaLaden.run", ex.getMessage());
+                Log.fehlerMeldung(-554012398, Log.FEHLER_ART_MREADER, "MediathekOrf.OrfThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
         }
@@ -313,11 +313,11 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                             }
                         }
                     } catch (SAXException ex) {
-                        Log.fehlerMeldungMReader(-643206531, "MediathekOrf.feedEinerSeiteSuchen", ex.getMessage());
+                        Log.fehlerMeldung(-643206531, Log.FEHLER_ART_MREADER, "MediathekOrf.feedEinerSeiteSuchen", ex);
                     } catch (IOException ex) {
-                        Log.fehlerMeldungMReader(-201456987, "MediathekOrf.feedEinerSeiteSuchen", ex.getMessage());
+                        Log.fehlerMeldung(-201456987, Log.FEHLER_ART_MREADER, "MediathekOrf.feedEinerSeiteSuchen", ex);
                     } catch (ParserConfigurationException ex) {
-                        Log.fehlerMeldungMReader(-121036907, "MediathekOrf.feedEinerSeiteSuchen", ex.getMessage());
+                        Log.fehlerMeldung(-121036907, Log.FEHLER_ART_MREADER, "MediathekOrf.feedEinerSeiteSuchen", ex);
                     }
                 }
             }

@@ -76,7 +76,7 @@ class RuntimeExec {
             //bescheid geben
             if (process == null) {
             }
-            Log.fehlerMeldung(450028932, "RuntimeExec.exec", ex, "Fehler beim Starten");
+            Log.fehlerMeldung(450028932,Log.FEHLER_ART_PROG, "RuntimeExec.exec", ex, "Fehler beim Starten");
         }
         return process;
     }
@@ -142,7 +142,7 @@ class RuntimeExec {
                     meldenDouble(d);
                 } catch (Exception ex) {
                     s.datenDownload.startMelden(DatenDownload.PROGRESS_GESTARTET);
-                    Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream-1", input);
+                    Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG,"RuntimeExec.GetPercentageFromErrorStream-1", input);
                 }
             } else {
                 // für ffmpeg
@@ -167,7 +167,7 @@ class RuntimeExec {
                     }
                 } catch (Exception ex) {
                     s.datenDownload.startMelden(DatenDownload.PROGRESS_GESTARTET);
-                    Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream-2", input);
+                    Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG,"RuntimeExec.GetPercentageFromErrorStream-2", input);
                 }
             }
         }

@@ -83,7 +83,7 @@ public class IoXmlLesen {
             }
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung(630048926, "IoXml.importPset", ex);
+                Log.fehlerMeldung(630048926,Log.FEHLER_ART_PROG, "IoXml.importPset", ex);
             }
             return null;
         }
@@ -131,7 +131,7 @@ public class IoXmlLesen {
             }
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung(467810360, "IoXml.importPset", ex);
+                Log.fehlerMeldung(467810360,Log.FEHLER_ART_PROG, "IoXml.importPset", ex);
             }
             return null;
         }
@@ -185,7 +185,7 @@ public class IoXmlLesen {
             }
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung(100298325, "IoXml.importPset", ex);
+                Log.fehlerMeldung(100298325, Log.FEHLER_ART_PROG,"IoXml.importPset", ex);
             }
             return null;
         }
@@ -272,7 +272,7 @@ public class IoXmlLesen {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(392840096, "IoXml.xmlDatenLesen", ex);
+            Log.fehlerMeldung(392840096,Log.FEHLER_ART_PROG, "IoXml.xmlDatenLesen", ex);
         } finally {
             ddaten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
@@ -313,7 +313,7 @@ public class IoXmlLesen {
         } catch (Exception ex) {
             ret = false;
             if (log) {
-                Log.fehlerMeldung(739530149, "IoXmlLesen.get", ex);
+                Log.fehlerMeldung(739530149, Log.FEHLER_ART_PROG,"IoXmlLesen.get", ex);
             }
         }
         return ret;

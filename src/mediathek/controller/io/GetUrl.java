@@ -122,7 +122,7 @@ public class GetUrl {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldungGetUrl(698963200, ex, sender, new String[]{"GetUrl.getUri"});
+                Log.fehlerMeldung(698963200, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, sender);
             }
         } while (!Daten.filmeLaden.getStop() && aktVer < maxVersuche);
         return seite;
@@ -231,7 +231,7 @@ public class GetUrl {
             long w = wartenBasis * faktorWarten;
             this.wait(w);
         } catch (Exception ex) {
-            Log.fehlerMeldungGetUrl(462800147, ex, sender, new String[]{"GetUrl.getUri"});
+            Log.fehlerMeldung(976120379, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, sender);
         }
         try {
             URL url = new URL(addr);
@@ -251,11 +251,11 @@ public class GetUrl {
             if (lVersuch) {
                 String[] text;
                 if (meldung.equals("")) {
-                    text = new String[]{"timout: " + timeo + " Versuche: " + versuch, addr};
+                    text = new String[]{"Sender - timout: " + timeo + " Versuche: " + versuch, addr};
                 } else {
-                    text = new String[]{"timout: " + timeo + " Versuche: " + versuch, addr, meldung};
+                    text = new String[]{"Sender - timout: " + timeo + " Versuche: " + versuch, addr, meldung};
                 }
-                Log.fehlerMeldungGetUrl(894120069, ex, sender, text);
+                Log.fehlerMeldung(502739817, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, text);
             }
         } finally {
             try {

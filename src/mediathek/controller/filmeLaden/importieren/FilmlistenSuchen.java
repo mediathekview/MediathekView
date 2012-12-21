@@ -84,7 +84,7 @@ public class FilmlistenSuchen {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(347895642, "FilmUpdateServer.suchen", ex);
+            Log.fehlerMeldung(347895642,Log.FEHLER_ART_PROG, "FilmUpdateServer.suchen", ex);
         }
         if (tmp.size() == 0) {
             Log.systemMeldung(new String[]{"Es ist ein Fehler aufgetreten!",
@@ -198,7 +198,7 @@ public class FilmlistenSuchen {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(821069874, FilmlistenSuchen.class.getName(), ex, "Die URL-Filmlisten konnte nicht geladen werden: " + dateiUrl);
+            Log.fehlerMeldung(821069874, Log.FEHLER_ART_PROG,FilmlistenSuchen.class.getName(), ex, "Die URL-Filmlisten konnte nicht geladen werden: " + dateiUrl);
         }
     }
 

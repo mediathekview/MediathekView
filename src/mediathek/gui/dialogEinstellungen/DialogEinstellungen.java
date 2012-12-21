@@ -40,8 +40,8 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private PanelExportFilmliste panelExportFilmliste;
     private PanelSenderLaden panelSenderLaden;
     private PanelBlacklist panelBlacklist;
-    private PanelHistory panelHistory;
-    private PanelErledigteAbos panelErledigteAbos;
+    private PanelErledigteUrls panelErledigteAbos;
+    private PanelErledigteUrls panelHistory;
     private PanelPsetLang panelPset;
     private PanelPsetImport panelPsetVorlagen;
     // Infos
@@ -87,8 +87,10 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         panelExportFilmliste = new PanelExportFilmliste(ddaten);
         panelSenderLaden = new PanelSenderLaden(ddaten);
         panelBlacklist = new PanelBlacklist(ddaten);
-        panelHistory = new PanelHistory(ddaten);
-        panelErledigteAbos = new PanelErledigteAbos(ddaten);
+        panelHistory = new PanelErledigteUrls(ddaten);
+        panelHistory.initHistory();
+        panelErledigteAbos = new PanelErledigteUrls(ddaten);
+        panelErledigteAbos.initAbo();
         panelPset = new PanelPsetLang(ddaten);
         panelPsetVorlagen = new PanelPsetImport(ddaten);
         // Infos

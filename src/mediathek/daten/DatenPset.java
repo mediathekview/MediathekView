@@ -237,7 +237,7 @@ public class DatenPset {
             try {
                 ret = new Color(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
             } catch (Exception ex) {
-                Log.fehlerMeldung(669254033, this.getClass().getName() + ".getFarbe", ex);
+                Log.fehlerMeldung(669254033, Log.FEHLER_ART_PROG,this.getClass().getName() + ".getFarbe", ex);
             }
         }
         return ret;

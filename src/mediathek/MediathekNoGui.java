@@ -135,7 +135,7 @@ public class MediathekNoGui implements Runnable {
                 this.wait(5000);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(965451236, MediathekNoGui.class.getName(), "ServerStarten");
+            Log.fehlerMeldung(965451236, Log.FEHLER_ART_NOGUI, MediathekNoGui.class.getName(), "ServerStarten");
         }
         undTschuess(false /* exit */);
     }

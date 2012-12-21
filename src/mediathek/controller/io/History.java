@@ -30,6 +30,7 @@ import java.io.OutputStreamWriter;
 import java.util.HashSet;
 import java.util.Iterator;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
 
 public class History extends HashSet<String> {
 
@@ -71,7 +72,8 @@ public class History extends HashSet<String> {
             in.close();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
         } catch (Exception e) {//Catch exception if any
-            System.err.println("Fehler: " + e.getMessage());
+            System.err.println("Fehler: " + e);
+            Log.fehlerMeldung(303049876, Log.FEHLER_ART_PROG, History.class.getName(), e);
         }
     }
 
@@ -86,7 +88,7 @@ public class History extends HashSet<String> {
             br.flush();
             out.close();
         } catch (Exception e) {//Catch exception if any
-            System.err.println("Fehler: " + e.getMessage());
+            Log.fehlerMeldung(978786563, Log.FEHLER_ART_PROG, History.class.getName(), e);
         }
     }
 

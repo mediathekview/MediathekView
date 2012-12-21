@@ -31,20 +31,22 @@ import mediathek.gui.PanelVorlage;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
 
-public class PanelErledigteAbos extends PanelVorlage {
+public class PanelErledigteUrls extends PanelVorlage {
 
-    public PanelErledigteAbos(DDaten d) {
+    private boolean abo;
+
+    public PanelErledigteUrls(DDaten d) {
         super(d);
         initComponents();
         jTable1.addMouseListener(new BeobMausTabelle());
-        init();
     }
 
-    private void init() {
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, PanelErledigteAbos.class.getSimpleName()) {
+    public void initAbo() {
+        abo = true;
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, PanelErledigteUrls.class.getSimpleName()) {
             @Override
             public void ping() {
-                tabelleLaden();
+                jTable1.setModel(new TModel(ddaten.erledigteAbos.getObjectData(), new String[]{"Url"}));
             }
         });
         jButtonLoeschen.addActionListener(new ActionListener() {
@@ -53,11 +55,24 @@ public class PanelErledigteAbos extends PanelVorlage {
                 ddaten.erledigteAbos.alleLoeschen();
             }
         });
-        tabelleLaden();
+        jTable1.setModel(new TModel(ddaten.erledigteAbos.getObjectData(), new String[]{"Url"}));
     }
 
-    private void tabelleLaden() {
-        jTable1.setModel(new TModel(ddaten.erledigteAbos.getObjectData(), new String[]{"Url"}));
+    public void initHistory() {
+        abo = false;
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, PanelErledigteUrls.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                jTable1.setModel(new TModel(ddaten.history.getObjectData(), new String[]{"Url"}));
+            }
+        });
+        jButtonLoeschen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.history.loschen();
+            }
+        });
+        jTable1.setModel(new TModel(ddaten.history.getObjectData(), new String[]{"Url"}));
     }
 
     /** This method is called from within the constructor to
@@ -151,7 +166,12 @@ public class PanelErledigteAbos extends PanelVorlage {
                 int selectedTableRow = jTable1.getSelectedRow();
                 if (selectedTableRow >= 0) {
                     String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), 0).toString();
-                    ddaten.erledigteAbos.urlAusLogfileLoeschen(del);
+                    if (abo) {
+                        ddaten.erledigteAbos.urlAusLogfileLoeschen(del);
+                    } else {
+                        ddaten.history.remove(del);
+
+                    }
                 }
             }
         }

@@ -169,8 +169,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
             }
         } catch (Exception ex) {
             ret = "";
-            Log.fehlerMeldung(794630593, "DatenFilm.checkDatum-5", ex);
-            Log.fehlerMeldung(946301596, "DatenFilm.CheckDatum-6 [", datum + "] " + fehlermeldung);
+            Log.fehlerMeldung(794630593,Log.FEHLER_ART_PROG, "DatenFilm.checkDatum-5", ex);
+            Log.fehlerMeldung(946301596, Log.FEHLER_ART_PROG,"DatenFilm.CheckDatum-6 [", datum + "] " + fehlermeldung);
         }
         if (ret.equals("")) {
         }
