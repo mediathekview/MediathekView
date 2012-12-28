@@ -117,21 +117,28 @@ public class FilmeSuchenSender {
         try {
             this.wait(3 * 60 * 1000); // 3 Min. warten, Sender nach der Gesamtlaufzeit starten
         } catch (Exception ex) {
-            Log.fehlerMeldung(952210369,Log.FEHLER_ART_PROG, "FilmeSuchenSender.mrStarten", ex);
+            Log.fehlerMeldung(952210369, Log.FEHLER_ART_PROG, "FilmeSuchenSender.mrStarten", ex);
         }
     }
 
     public void updateSender(String[] nameSenderFilmliste, ListeFilme alteListe) {
         // nur für den Mauskontext "Sender aktualisieren"
+        boolean starten = false;
         initStart(alteListe);
         Iterator<MediathekReader> it = mediathekListe.iterator();
         while (it.hasNext()) {
             MediathekReader reader = it.next();
             for (String s : nameSenderFilmliste) {
                 if (reader.checkNameSenderFilmliste(s)) {
+                    starten = true;
                     new Thread(reader).start();
                 }
             }
+        }
+        if (!starten) {
+            // dann fertig
+            meldenFertig("");
+
         }
     }
 
@@ -189,6 +196,7 @@ public class FilmeSuchenSender {
         RunSender run = listeSenderLaufen.senderFertig(sender);
         if (run != null) {
             // Zeile 1
+            fertigMeldung.add("");
             String zeile = "==================================================================================================================";
             fertigMeldung.add(zeile);
             zeile = textLaenge(MAX_SENDER, run.sender);
@@ -214,6 +222,7 @@ public class FilmeSuchenSender {
         }
         // wird einmal aufgerufen, wenn alle Sender fertig sind
         if (listeSenderLaufen.listeFertig()) {
+            Log.progressEnde();
             int anzFilme = listeFilmeNeu.size();
             if (!allesLaden) {
                 // alte Filme eintragen
@@ -233,11 +242,15 @@ public class FilmeSuchenSender {
                 sekunden = -1;
             }
             Log.systemMeldung("");
+            Log.systemMeldung("");
             Log.systemMeldung("==================================================================================================================");
-            Log.systemMeldung("Sender ===========================================================================================================");
-            if (fertigMeldung.size() > 0) {
-                Log.systemMeldung(fertigMeldung.toArray(new String[0]));
+            Log.systemMeldung("==  Sender  ======================================================================================================");
+            Log.systemMeldung("");
+            Iterator<String> it = fertigMeldung.iterator();
+            while (it.hasNext()) {
+                Log.systemMeldung(it.next());
             }
+            Log.systemMeldung("");
             Log.systemMeldung("==================================================================================================================");
             Log.systemMeldung("");
             Log.systemMeldung("        Filme geladen: " + anzFilme);

@@ -67,7 +67,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
 
     @Override
     public boolean checkNameSenderFilmliste(String name) {
-        return SENDER_ARTE_DE.equalsIgnoreCase(name) || SENDER_ARTE_FR.equalsIgnoreCase(name);
+        return SENDER_ARTE_DE.equalsIgnoreCase(name) || SENDER_ARTE_FR.equalsIgnoreCase(name) || SENDER_ARTE.equalsIgnoreCase(name);
     }
 
     @Override
@@ -306,7 +306,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                         //da ist die Themenliste noch nicht fertig
                         this.wait(500);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(-561408963,Log.FEHLER_ART_MREADER,  "MediathekArte7.ArteFilmseitenLaden.run", ex, "");
+                        Log.fehlerMeldung(-561408963, Log.FEHLER_ART_MREADER, "MediathekArte7.ArteFilmseitenLaden.run", ex, "");
                     }
                 } while (!Daten.filmeLaden.getStop() && getAddThemenLaufen(0) > 0);
                 meldung("");

@@ -22,11 +22,14 @@ package mediathek.controller.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.concurrent.TimeoutException;
 import mediathek.daten.Daten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
@@ -222,11 +225,15 @@ public class GetUrl {
 
     private synchronized StringBuffer getUri(String sender, String addr, StringBuffer seite, String kodierung, int timeout, String meldung, int versuch, boolean lVersuch) {
         int timeo = timeout;
+        boolean proxyB = false;
         char[] zeichen = new char[1];
         seite.setLength(0);
         URLConnection conn;
+        int code = 0;
         InputStream in = null;
         InputStreamReader inReader = null;
+        Proxy proxy = null;
+        SocketAddress saddr = null;
         // immer etwas bremsen
         try {
             long w = wartenBasis * faktorWarten;
@@ -236,11 +243,35 @@ public class GetUrl {
         }
         try {
             URL url = new URL(addr);
+            // conn = url.openConnection(Proxy.NO_PROXY);
             conn = url.openConnection();
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
             if (timeout > 0) {
                 conn.setReadTimeout(timeout);
                 conn.setConnectTimeout(timeout);
+            }
+            if (conn instanceof HttpURLConnection) {
+                HttpURLConnection httpConnection = (HttpURLConnection) conn;
+                code = httpConnection.getResponseCode();
+//                if (code >= 400) {
+//                    if (true) {
+//                        // wenn möglich, einen Proxy einrichten
+//                        Log.fehlerMeldung(236597125, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", "---Proxy---");
+//                        proxyB = true;
+//                        saddr = new InetSocketAddress("localhost", 9050);
+//                        proxy = new Proxy(Proxy.Type.SOCKS, saddr);
+//                        conn = url.openConnection(proxy);
+//                        conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+//                        if (timeout > 0) {
+//                            conn.setReadTimeout(timeout);
+//                            conn.setConnectTimeout(timeout);
+//                        }
+//                    } else {
+//                        Log.fehlerMeldung(864123698, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", "returncode >= 400");
+//                    }
+//                }
+            } else {
+                Log.fehlerMeldung(949697315, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", "keine HTTPcon");
             }
             in = conn.getInputStream();
             inReader = new InputStreamReader(in, kodierung);
@@ -248,7 +279,6 @@ public class GetUrl {
                 seite.append(zeichen);
                 incSeitenZaehler(LISTE_SUMME_BYTE, sender, 1);
             }
-
         } catch (IOException ex) {
             if (lVersuch) {
                 String[] text;
@@ -257,10 +287,10 @@ public class GetUrl {
                 } else {
                     text = new String[]{sender + " - timout: " + timeo + " Versuche: " + versuch, addr, meldung};
                 }
-                Log.fehlerMeldung(502739817, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, text);
+                Log.fehlerMeldung(502739817, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, (proxyB ? "Porxy - " : "") + text);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(973969801, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex);
+            Log.fehlerMeldung(973969801, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, (proxyB ? "Porxy - " : ""));
         } finally {
             try {
                 if (in != null) {

@@ -79,12 +79,12 @@ public class GuiFunktionen extends Funktionen {
     }
 
     public static void setProxy(DDaten daten) {
-        if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PROXY_ON_NR])) {
+        if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_HTTP_PROXY_ON_NR])) {
             System.setProperty("proxySet", "true");
-            System.setProperty("http.proxyHost", DDaten.system[Konstanten.SYSTEM_PROXY_SERVER_NR]);
-            System.setProperty("http.proxyPort", DDaten.system[Konstanten.SYSTEM_PROXY_PORT_NR]);
-            System.setProperty("http.proxyUser", DDaten.system[Konstanten.SYSTEM_PROXY_USER_NR]);
-            System.setProperty("http.proxyPassword", DDaten.system[Konstanten.SYSTEM_PROXY_PWD_NR]);
+            System.setProperty("http.proxyHost", DDaten.system[Konstanten.SYSTEM_HTTP_PROXY_SERVER_NR]);
+            System.setProperty("http.proxyPort", DDaten.system[Konstanten.SYSTEM_HTTP_PROXY_PORT_NR]);
+            System.setProperty("http.proxyUser", DDaten.system[Konstanten.SYSTEM_HTTP_PROXY_USER_NR]);
+            System.setProperty("http.proxyPassword", DDaten.system[Konstanten.SYSTEM_HTTP_PROXY_PWD_NR]);
         } else {
             System.setProperty("proxySet", "false");
         }

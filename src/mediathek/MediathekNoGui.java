@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.GuiFunktionen;

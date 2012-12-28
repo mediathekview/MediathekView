@@ -81,16 +81,16 @@ public class Konstanten {
     public static final String SYSTEM_PANEL_MELDUNGEN_ANZEIGEN = "system-panel-meldungen-anzeigen";
     public static final int SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR = 12;
     //proxy
-    public static final String SYSTEM_PROXY_SERVER = "proxy-server";
-    public static final int SYSTEM_PROXY_SERVER_NR = 13;
-    public static final String SYSTEM_PROXY_PORT = "proxy-port";
-    public static final int SYSTEM_PROXY_PORT_NR = 14;
-    public static final String SYSTEM_PROXY_USER = "proxy-benutzer";
-    public static final int SYSTEM_PROXY_USER_NR = 15;
-    public static final String SYSTEM_PROXY_PWD = "proxy-passwort";
-    public static final int SYSTEM_PROXY_PWD_NR = 16;
-    public static final String SYSTEM_PROXY_ON = "proxy-an";
-    public static final int SYSTEM_PROXY_ON_NR = 17;
+    public static final String SYSTEM_HTTP_PROXY_SERVER = "proxy-server";
+    public static final int SYSTEM_HTTP_PROXY_SERVER_NR = 13;
+    public static final String SYSTEM_HTTP_PROXY_PORT = "proxy-port";
+    public static final int SYSTEM_HTTP_PROXY_PORT_NR = 14;
+    public static final String SYSTEM_HTTP_PROXY_USER = "proxy-benutzer";
+    public static final int SYSTEM_HTTP_PROXY_USER_NR = 15;
+    public static final String SYSTEM_HTTP_PROXY_PWD = "proxy-passwort";
+    public static final int SYSTEM_HTTP_PROXY_PWD_NR = 16;
+    public static final String SYSTEM_HTTP_PROXY_ON = "proxy-an";
+    public static final int SYSTEM_HTTP_PROXY_ON_NR = 17;
     //Einstellungen Sender
     public static final String SYSTEM_MAX_DOWNLOAD = "maxDownload";
     public static final int SYSTEM_MAX_DOWNLOAD_NR = 18;
@@ -151,7 +151,7 @@ public class Konstanten {
     public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION,
         SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y, SYSTEM_POS_X, SYSTEM_POS_Y,
         SYSTEM_ICON_KLEIN, SYSTEM_FENSTER_MAX, SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, SYSTEM_PANEL_MELDUNGEN_ANZEIGEN,
-        SYSTEM_PROXY_SERVER, SYSTEM_PROXY_PORT, SYSTEM_PROXY_USER, SYSTEM_PROXY_PWD, SYSTEM_PROXY_ON,
+        SYSTEM_HTTP_PROXY_SERVER, SYSTEM_HTTP_PROXY_PORT, SYSTEM_HTTP_PROXY_USER, SYSTEM_HTTP_PROXY_PWD, SYSTEM_HTTP_PROXY_ON,
         SYSTEM_MAX_DOWNLOAD, SYSTEM_LEITUNG_LOW,
         SYSTEM_SWR_LISTE, SYSTEM_PFAD_EXPORT_ABOS, SYSTEM_IMPORT_DATEI, SYSTEM_URL_FILMLISTEN, SYSTEM_IMPORT_URL_MANUELL,
         SYSTEM_EXPORT_DATEI, SYSTEM_WARTEN, SYSTEM_UDATE_SUCHEN, SYSTEM_UPDATE_DATUM, SYSTEM_IMPORT_ART_FILME,
