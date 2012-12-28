@@ -227,6 +227,8 @@
                   <Component id="jButtonFilmlisteLoeschen" linkSize="1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jButtonAllesSpeichern" linkSize="1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jButtonFehler" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -239,6 +241,7 @@
                       <Component id="jToggleButtonAllesLaden" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonFilmlisteLoeschen" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonAllesSpeichern" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonFehler" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -259,6 +262,11 @@
         <Component class="javax.swing.JButton" name="jButtonAllesSpeichern">
           <Properties>
             <Property name="text" type="java.lang.String" value="alles speichern"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonFehler">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Fehler ausgeben"/>
           </Properties>
         </Component>
       </SubComponents>

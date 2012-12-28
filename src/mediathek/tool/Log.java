@@ -57,7 +57,8 @@ public class Log {
     private static int zeilenNrProgramm = 0;
     private static int zeilenNrFehler = 0;
     private static LinkedList<Integer[]> fehlerListe = new LinkedList<Integer[]>(); // [Art, Fehlernummer, Anzahl, Exception(0,1 für ja, nein)]
-    private static boolean prog = false;
+    private static boolean progress = false;
+    private static String progressText = "";
     private static Date startZeit = new Date(System.currentTimeMillis());
     private static Date stopZeit = null;
     private static File logfile = null;
@@ -146,21 +147,32 @@ public class Log {
     }
 
     public static synchronized void progress(String texte) {
-        prog = true;
+        progress = true;
         texte += "\r";
+        progressText = texte;
         System.out.print(texte);
     }
 
+    public static synchronized void progressEnde() {
+        progress = false;
+        progressText = "";
+        System.out.print("                                                                            \r");
+        System.out.println();
+        System.out.println();
+    }
+
     public static void printEndeMeldung() {
+        systemMeldung("");
+        systemMeldung("");
+        systemMeldung("");
+        systemMeldung("");
+        systemMeldung("###########################################################");
         if (fehlerListe.size() == 0) {
-            systemMeldung("###########################################################");
             systemMeldung(" Keine Fehler :)");
-            systemMeldung("###########################################################");
         } else {
             // Fehler ausgeben
             int i_1;
             int i_2;
-            int i_3;
             for (int i = 1; i < fehlerListe.size(); ++i) {
                 for (int k = i; k > 0; --k) {
                     i_1 = fehlerListe.get(k - 1)[1];
@@ -173,7 +185,6 @@ public class Log {
                     }
                 }
             }
-            systemMeldung("###########################################################");
             Iterator<Integer[]> it = fehlerListe.iterator();
             while (it.hasNext()) {
                 Integer[] integers = it.next();
@@ -213,8 +224,8 @@ public class Log {
                     systemMeldung(strEx + z + " Fehlernummer:  " + integers[1] + " Anzahl: " + integers[2]);
                 }
             }
-            systemMeldung("###########################################################");
         }
+        systemMeldung("###########################################################");
         // Laufzeit ausgeben
         stopZeit = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -254,51 +265,13 @@ public class Log {
         fehlerListe.add(new Integer[]{new Integer(art), new Integer(nr), new Integer(1), new Integer(ex)});
     }
 
-//    private static void fehlermeldung_mReader(int fehlerNummer, String sender, String[] texte) {
-//        addFehlerNummer(fehlerNummer);
-//        if (Daten.debug) {
-//            if (prog) {
-//                // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
-//                System.out.print("                                                                            \r");
-//                prog = false;
-//            }
-//            final String FEHLER = "MReader: ";
-//            final String z = "  ==>";
-//            System.out.println(" Fehlernr: " + fehlerNummer);
-//            System.out.println(z + " " + FEHLER + sender);
-//            notifyMediathekListener(LOG_FEHLER, FEHLER + sender);
-//            for (int i = 0; i < texte.length; ++i) {
-//                System.out.println("                " + texte[i]);
-//                notifyMediathekListener(LOG_FEHLER, texte[i]);
-//            }
-//        }
-//    }
-//
-//    private static void fehlermeldung_getUrl(int fehlerNummer, String sender, Exception ex, String text[]) {
-//        addFehlerNummer(fehlerNummer);
-//        if (prog) {
-//            // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
-//            System.out.print("                                                                            \r");
-//            prog = false;
-//        }
-//        final String FEHLER = "GetUrl: ";
-//        final String z = "  ++>";
-//        System.out.println(" Fehlernr: " + fehlerNummer);
-//        System.out.println(z + " " + FEHLER + sender + " " + ex.getMessage());
-//        notifyMediathekListener(LOG_FEHLER, FEHLER + sender + " - " + ex.getMessage());
-//        for (int i = 0; i < text.length; ++i) {
-//            System.out.println("                " + text[i]);
-//            notifyMediathekListener(LOG_FEHLER, text[i]);
-//        }
-//    }
     private static void fehlermeldung_(int fehlerNummer, int art, String klasse, Exception ex, String[] texte) {
         addFehlerNummer(fehlerNummer, art, ex != null);
         if (ex != null || Daten.debug) {
             // Exceptions immer ausgeben
-            if (prog) {
+            if (progress) {
                 // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
                 System.out.print("                                                                            \r");
-                prog = false;
             }
             final String FEHLER = "Fehler(" + Konstanten.PROGRAMMNAME + "): ";
             String x, z;
@@ -332,23 +305,27 @@ public class Log {
                 notifyMediathekListener(LOG_FEHLER, texte[i]);
             }
             System.out.println("");
+            if (progress) {
+                System.out.print(progressText);
+            }
         }
     }
 
     private static void debugmeldung(String texte) {
-        if (prog) {
+        if (progress) {
             // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
             System.out.print("                                                                            \r");
-            prog = false;
         }
         System.out.println("|||| " + texte);
+        if (progress) {
+            System.out.print(progressText);
+        }
     }
 
     private static void systemmeldung(String[] texte) {
-        if (prog) {
+        if (progress) {
             // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
             System.out.print("                                                                            \r");
-            prog = false;
         }
         final String z = ". ";
         if (texte.length <= 1) {
@@ -370,6 +347,9 @@ public class Log {
             }
             notifyMediathekListener(LOG_SYSTEM, " ");
             System.out.println(z + zeile);
+        }
+        if (progress) {
+            System.out.print(progressText);
         }
         logFileSchreiben(texte);
     }
@@ -403,10 +383,9 @@ public class Log {
     }
 
     private static void playermeldung(String[] texte) {
-        if (prog) {
+        if (progress) {
             // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
             System.out.print("                                                                            \r");
-            prog = false;
         }
         final String z = "  >>";
         System.out.println(z + " " + texte[0]);
@@ -414,6 +393,9 @@ public class Log {
         for (int i = 1; i < texte.length; ++i) {
             System.out.println(z + " " + texte[i]);
             notifyMediathekListener(LOG_PLAYER, texte[i]);
+        }
+        if (progress) {
+            System.out.print(progressText);
         }
     }
 

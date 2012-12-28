@@ -33,6 +33,7 @@ import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.gui.dialogEinstellungen.PanelSenderLaden;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
 
 public class GuiDebug extends PanelVorlage {
 
@@ -67,6 +68,12 @@ public class GuiDebug extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 DDaten.listeFilme.clear();
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+            }
+        });
+        jButtonFehler.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Log.printEndeMeldung();
             }
         });
         jPanelSenderLaden.setLayout(new BorderLayout());
@@ -126,6 +133,7 @@ public class GuiDebug extends PanelVorlage {
         jToggleButtonAllesLaden = new javax.swing.JToggleButton();
         jButtonFilmlisteLoeschen = new javax.swing.JButton();
         jButtonAllesSpeichern = new javax.swing.JButton();
+        jButtonFehler = new javax.swing.JButton();
 
         jPanelSenderLaden.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender starten"));
 
@@ -229,6 +237,8 @@ public class GuiDebug extends PanelVorlage {
 
         jButtonAllesSpeichern.setText("alles speichern");
 
+        jButtonFehler.setText("Fehler ausgeben");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -240,6 +250,8 @@ public class GuiDebug extends PanelVorlage {
                 .addComponent(jButtonFilmlisteLoeschen)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonAllesSpeichern)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonFehler)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -252,7 +264,8 @@ public class GuiDebug extends PanelVorlage {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jToggleButtonAllesLaden)
                     .addComponent(jButtonFilmlisteLoeschen)
-                    .addComponent(jButtonAllesSpeichern))
+                    .addComponent(jButtonAllesSpeichern)
+                    .addComponent(jButtonFehler))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -279,6 +292,7 @@ public class GuiDebug extends PanelVorlage {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAllesSpeichern;
+    private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

@@ -37,12 +37,12 @@ public class PanelEinstellungenNetz extends PanelVorlage {
         initComponents();
         ddaten = d;
         //proxy
-        jCheckBoxProxy.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PROXY_ON_NR]));
+        jCheckBoxProxy.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_HTTP_PROXY_ON_NR]));
         jCheckBoxProxy.addActionListener(new BeobProxy());
-        jTextFieldPServer.setText(Daten.system[Konstanten.SYSTEM_PROXY_SERVER_NR]);
-        jTextFieldPPort.setText(Daten.system[Konstanten.SYSTEM_PROXY_PORT_NR]);
-        jTextFieldPUser.setText(Daten.system[Konstanten.SYSTEM_PROXY_USER_NR]);
-        jTextFieldPPwd.setText(Daten.system[Konstanten.SYSTEM_PROXY_PWD_NR]);
+        jTextFieldPServer.setText(Daten.system[Konstanten.SYSTEM_HTTP_PROXY_SERVER_NR]);
+        jTextFieldPPort.setText(Daten.system[Konstanten.SYSTEM_HTTP_PROXY_PORT_NR]);
+        jTextFieldPUser.setText(Daten.system[Konstanten.SYSTEM_HTTP_PROXY_USER_NR]);
+        jTextFieldPPwd.setText(Daten.system[Konstanten.SYSTEM_HTTP_PROXY_PWD_NR]);
         setProxy();
         jTextFieldPPort.getDocument().addDocumentListener(new BeobDocProxy());
         jTextFieldPPwd.getDocument().addDocumentListener(new BeobDocProxy());
@@ -52,7 +52,7 @@ public class PanelEinstellungenNetz extends PanelVorlage {
     }
 
     private void setProxy() {
-        Daten.system[Konstanten.SYSTEM_PROXY_ON_NR] = Boolean.toString(jCheckBoxProxy.isSelected());
+        Daten.system[Konstanten.SYSTEM_HTTP_PROXY_ON_NR] = Boolean.toString(jCheckBoxProxy.isSelected());
         //textfelder setzen
         jTextFieldPPort.setEnabled(jCheckBoxProxy.isSelected());
         jTextFieldPPort.setEditable(jCheckBoxProxy.isSelected());
@@ -67,10 +67,10 @@ public class PanelEinstellungenNetz extends PanelVorlage {
         jLabelServer.setEnabled(jCheckBoxProxy.isSelected());
         jLabelUser.setEnabled(jCheckBoxProxy.isSelected());
         //auswerten
-        Daten.system[Konstanten.SYSTEM_PROXY_SERVER_NR] = jTextFieldPServer.getText();
-        Daten.system[Konstanten.SYSTEM_PROXY_PORT_NR] = jTextFieldPPort.getText();
-        Daten.system[Konstanten.SYSTEM_PROXY_USER_NR] = jTextFieldPUser.getText();
-        Daten.system[Konstanten.SYSTEM_PROXY_PWD_NR] = jTextFieldPPwd.getText();
+        Daten.system[Konstanten.SYSTEM_HTTP_PROXY_SERVER_NR] = jTextFieldPServer.getText();
+        Daten.system[Konstanten.SYSTEM_HTTP_PROXY_PORT_NR] = jTextFieldPPort.getText();
+        Daten.system[Konstanten.SYSTEM_HTTP_PROXY_USER_NR] = jTextFieldPUser.getText();
+        Daten.system[Konstanten.SYSTEM_HTTP_PROXY_PWD_NR] = jTextFieldPPwd.getText();
         //system setzen
         GuiFunktionen.setProxy(ddaten);
     }
