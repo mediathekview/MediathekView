@@ -6,6 +6,8 @@ package mediathek.tool;
 
 import java.util.List;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
@@ -16,7 +18,7 @@ import mediathek.daten.DatenFilm;
  * @author emil
  */
 public final class JTableMed extends JTable {
-    
+
     public static final String TABELLEN = "Tabellen";
     public static final int TABELLE_EIGENSCHAFTEN_MAX = 2; // Breite, Reihenfolge
     public static final int TABELLEN_MAX = 3; // GuiFilme, GuiDownlaod, GuiAbo
@@ -28,14 +30,15 @@ public final class JTableMed extends JTable {
     private List<? extends javax.swing.RowSorter.SortKey> listeSortKeys = null;
     int[] breite;
     int[] reihe;
-    private int sel;
+    private int sel = -1;
+    private int[] selection;
     private String idx = "";
     private boolean stopBeob = false;
     //
     String[] spaltenTabelle;
     int nrDatenSystem;
     int tabelle;
-    
+
     public JTableMed(int ttabelle) {
         tabelle = ttabelle;
         switch (tabelle) {
@@ -60,7 +63,7 @@ public final class JTableMed extends JTable {
         this.setAutoCreateRowSorter(true);
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
     }
-    
+
     public JTableMed(String[] sspaltenTabelle) {
         tabelle = TABELLE_STANDARD;
         spaltenTabelle = sspaltenTabelle;
@@ -70,7 +73,7 @@ public final class JTableMed extends JTable {
         this.setAutoCreateRowSorter(true);
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
     }
-    
+
     public void fireTableDataChanged(boolean setSpalten) {
         if (setSpalten) {
             getSelected();
@@ -80,33 +83,53 @@ public final class JTableMed extends JTable {
             setSelected();
         }
     }
-    
+
     public void getSelected() {
         // Einstellungen der Tabelle merken
         sel = this.getSelectedRow();
+        selection = this.getSelectedRows();
         if (sel >= 0) {
             idx = this.getModel().getValueAt(this.convertRowIndexToModel(sel), 0).toString();
         } else {
             idx = "";
         }
     }
-    
+
     public void setSelected() {
         // gemerkte Einstellungen der Tabelle wieder setzten
         stopBeob = true;
-        if (!idx.equals("")) {
-            int r = ((TModel) this.getModel()).getIdxRow(idx);
-            if (r >= 0) {
-                // ansonsten gibts die Zeile nicht mehr
-                r = this.convertRowIndexToView(r);
-                this.setRowSelectionInterval(r, r);
-                this.scrollRectToVisible(getCellRect(r, 0, false));
-            }
+        switch (tabelle) {
+            case TABELLE_TAB_FILME:
+                if (!idx.equals("")) {
+                    int r = ((TModel) this.getModel()).getIdxRow(idx);
+                    if (r >= 0) {
+                        // ansonsten gibts die Zeile nicht mehr
+                        r = this.convertRowIndexToView(r);
+                        this.setRowSelectionInterval(r, r);
+                        this.scrollRectToVisible(getCellRect(r, 0, false));
+                    }
+                }
+                idx = "";
+                break;
+            case TABELLE_TAB_DOWNLOADS:
+            case TABELLE_TAB_ABOS:
+            case TABELLE_STANDARD:
+                if (sel >= 0) {
+                    this.setRowSelectionInterval(sel, sel);
+                    this.scrollRectToVisible(getCellRect(sel, 0, false));
+                }
+                if (selection != null) {
+                    if (selection.length > 0) {
+                        for (int i = 0; i < selection.length; ++i) {
+                            this.addRowSelectionInterval(selection[i], selection[i]);
+                        }
+                    }
+                }
+                break;
         }
-        idx = "";
         stopBeob = false;
     }
-    
+
     public void getSpalten() {
         // Einstellungen der Tabelle merken
         getSelected();
@@ -123,7 +146,7 @@ public final class JTableMed extends JTable {
             listeSortKeys = null;
         }
     }
-    
+
     public void setSpalten() {
         // gemerkte Einstellungen der Tabelle wieder setzten
         stopBeob = true;
@@ -151,11 +174,11 @@ public final class JTableMed extends JTable {
             }
             this.validate();
         } catch (Exception ex) {
-            Log.fehlerMeldung(965001463, Log.FEHLER_ART_PROG,"JTableMed.setSpalten", ex);
+            Log.fehlerMeldung(965001463, Log.FEHLER_ART_PROG, "JTableMed.setSpalten", ex);
         }
         stopBeob = false;
     }
-    
+
     public void initTabelle() {
         // Tabelle das erste Mal initialisieren,
         // mit den gespeicherten Daten oder
@@ -186,9 +209,9 @@ public final class JTableMed extends JTable {
             // setSpalten wird im resetTabelle gemacht
         }
         // und jetzt erst der Beobachter, damit Daten.system nicht vorher schon überschrieben wird
-        ////////this.getColumnModel().addColumnModelListener(new BeobSpalten());
+        ///this.getColumnModel().addColumnModelListener(new BeobSpalten());
     }
-    
+
     public void resetTabelle() {
         // Standardwerte wetzen
         for (int i = 0; i < spaltenTabelle.length; ++i) {
@@ -243,12 +266,12 @@ public final class JTableMed extends JTable {
         this.setAutoCreateRowSorter(true);
         setSpalten();
     }
-    
+
     public void spaltenAusschalten() {
         for (int i = 0; i < spaltenTabelle.length; ++i) {
             switch (tabelle) {
                 case TABELLE_TAB_FILME:
-                    if ( i == DatenFilm.FILM_URL_RTMP_NR
+                    if (i == DatenFilm.FILM_URL_RTMP_NR
                             || i == DatenFilm.FILM_URL_AUTH_NR
                             || i == DatenFilm.FILM_URL_THEMA_NR) {
                         breite[i] = 0;
@@ -276,7 +299,7 @@ public final class JTableMed extends JTable {
             }
         }
     }
-    
+
     public void tabelleNachDatenSchreiben() {
         if (tabelle == TABELLE_STANDARD) {
             // wird nur für eingerichtet Tabellen gemacht
@@ -301,7 +324,7 @@ public final class JTableMed extends JTable {
         }
         DDaten.system[nrDatenSystem] = b + FELDTRENNER + r;
     }
-    
+
 //    private class BeobSpalten implements TableColumnModelListener {
 //        
 //        @Override
@@ -328,11 +351,10 @@ public final class JTableMed extends JTable {
 //        
 //        private void set() {
 //            if (!stopBeob) {
-//////////                tabelleNachDatenSchreiben();
+///                tabelleNachDatenSchreiben();
 //            }
 //        }
 //    }
-    
     private int[] getArray(int anzahl) {
         int[] arr = new int[anzahl];
         for (int i = 0; i < arr.length; ++i) {
@@ -340,7 +362,7 @@ public final class JTableMed extends JTable {
         }
         return arr;
     }
-    
+
     private boolean arrLesen(String s, int[] arr) {
         String sub;
         if (spaltenTabelle.length != countString(s) + 1) {
@@ -366,7 +388,7 @@ public final class JTableMed extends JTable {
         }
         return true;
     }
-    
+
     private int countString(String s) {
         int ret = 0;
         for (int i = 0; i < s.length(); ++i) {
