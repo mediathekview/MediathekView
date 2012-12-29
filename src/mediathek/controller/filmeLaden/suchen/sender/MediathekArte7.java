@@ -43,8 +43,6 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
     private int MAX_SEITEN = 10;
     private LinkedList<String[]> listeFilmseiten = new LinkedList<String[]>();
     private LinkedList<String[]> listeFilmseitenFertig = new LinkedList<String[]>();
-    private static final int MAX_THREADS_ALLES = 5;
-    private static final int MAX_THREADS_UPDATE = 4;
 
     /**
      *
@@ -52,7 +50,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
      * @param dde
      */
     public MediathekArte7(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ "", /* threads */ MAX_THREADS_ALLES, /* urlWarten */ 500, startPrio);
+        super(ssearch, /* name */ "", /* threads */ 5, /* urlWarten */ 500, startPrio);
         nameSenderMReader = SENDER_ARTE;
         getUrlIo.setTimeout(15000);
     }
@@ -77,18 +75,9 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             listeFilmseiten.clear();
             listeFilmseitenFertig.clear();
             meldungStart();
-            //immer erst mal Arte7!!
+            //nur Arte7!!
             String[] add = new String[]{"http://videos.arte.tv/de/videos", THEMA_ARTE_7};
             listeThemen.add(add);
-            //und der Rest nur auf Wunsch
-////            if (suchen.allesLaden) {
-////                this.maxThreadLaufen = MAX_THREADS_ALLES;
-////                //erst mal alle Themen suchen um die Filme nicht doppelt zu suchen
-////                addToList__("http://videos.arte.tv/de/videos/sendungen");
-////                addToList__("http://videos.arte.tv/de/videos/alleVideos");
-////            } else {
-////                this.maxThreadLaufen = MAX_THREADS_UPDATE;
-////            }
             meldungAddMax(listeThemen.size());
             // für die Themenseiten
             new Thread(new ArteThemaLaden()).start(); // 
@@ -97,59 +86,6 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
         }
     }
 
-//    private boolean addToList__(String ADRESSE) {
-//        //Theman suchen
-//        boolean ret = false;
-//        final String START = "<div class=\"navTop\"></div>";
-//        final String STOP = "<div id=\"content\">";
-//        final String MUSTER_URL = "<li><a href=\"";
-//        final String URL_THEMA_PREFIX = "http://videos.arte.tv";
-//        //url-Thema
-//        // http://videos.arte.tv/de/videos/sendungen/360_geo/index-3188704.html
-//        //url
-//        // <li><a href="/de/videos/sendungen/360_geo/index-3188704.html">360° - GEO-Reportage<span id="3188704"></span></a></li>
-////        de = Boolean.parseBoolean(daten.system[Konstanten.SYSTEM_ARTE_DE_NR]);
-////        fr = Boolean.parseBoolean(daten.system[Konstanten.SYSTEM_ARTE_FR_NR]);
-//        StringBuffer strSeite = new StringBuffer();
-//        //strSeite = getUrlIo.getUri_Utf(senderName, ADRESSE, strSeite, "");
-//        strSeite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, strSeite, "" /* Meldung */);
-//        int pos = 0;
-//        int pos1;
-//        int pos2;
-//        int ende = strSeite.indexOf(STOP);
-//        String url;
-//        String thema;
-//        if ((pos = strSeite.indexOf(START, pos)) != -1) {
-//            while (!Daten.filmeLaden.getStop() && (pos = strSeite.indexOf(MUSTER_URL, pos)) != -1) {
-//                if (pos > ende) {
-//                    //Themenbereich zu Ende
-//                    break;
-//                }
-//                thema = "";
-//                pos += MUSTER_URL.length();
-//                pos1 = pos;
-//                pos2 = strSeite.indexOf("\"", pos);
-//                if (pos1 != -1 && pos2 != -1 && pos1 != pos2) {
-//                    url = strSeite.substring(pos1, pos2);
-//                    pos1 = strSeite.indexOf("\">", pos);
-//                    pos2 = strSeite.indexOf("<", pos);
-//                    if (!url.equals("")) {
-//                        ret = true;
-//                    }
-//                    if (pos1 != -1 && pos2 != -1) {
-//                        thema = strSeite.substring(pos1 + 2, pos2);
-//                    }
-//                    if (url.equals("")) {
-//                        Log.fehlerMeldungMReader(-762138540, "MediathekArte.addToList__", "keine URL" + nameSenderMReader + thema);
-//                    } else {
-//                        String[] add = new String[]{URL_THEMA_PREFIX + url, thema};
-//                        listeThemen.addUrl(add);
-//                    }
-//                }
-//            }
-//        }
-//        return ret;
-//    }
     //===================================
     // private
     //===================================

@@ -55,6 +55,9 @@ public class GuiAbo extends PanelVorlage {
         initBeobachter();
         load();
         tabelle.initTabelle();
+        if (tabelle.getRowCount() > 0) {
+            tabelle.setRowSelectionInterval(0, 0);
+        }
     }
     //===================================
     //public

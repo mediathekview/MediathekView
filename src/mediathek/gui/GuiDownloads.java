@@ -71,6 +71,10 @@ public class GuiDownloads extends PanelVorlage {
         init();
         tabelleLaden();
         tabelle.initTabelle();
+        tabelleAktualisieren();
+        if (tabelle.getRowCount() > 0) {
+            tabelle.setRowSelectionInterval(0, 0);
+        }
     }
     //===================================
     //public

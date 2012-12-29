@@ -101,6 +101,9 @@ public class GuiFilme extends PanelVorlage {
         panelVideoplayer();
         tabelleBauen(); //Filme laden
         tabelle.initTabelle();
+        if (tabelle.getRowCount() > 0) {
+            tabelle.setRowSelectionInterval(0, 0);
+        }
     }
 
     //===================================
@@ -430,7 +433,6 @@ public class GuiFilme extends PanelVorlage {
                 jComboBoxFilterThema.setPopupVisible(themaOpen);
             }
             setInfo();
-////            tabelle.fireTableDataChanged(false /*setSpalten*/);
             tabelle.setSpalten();
             stopBeob = false;
             //filtern
@@ -439,18 +441,13 @@ public class GuiFilme extends PanelVorlage {
                 tabelleBauen();
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(558965421,Log.FEHLER_ART_PROG, "GuiFilme.tabelleBauen", ex);
+            Log.fehlerMeldung(558965421, Log.FEHLER_ART_PROG, "GuiFilme.tabelleBauen", ex);
         }
     }
 
     private synchronized void listeInModellLaden() {
         TModelFilm m = DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), jComboBoxFilterSender.getSelectedItem().toString(),
                 jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText());
-//////        if (((TModelFilm) tabelle.getModel()).getRowCount() > 0) {
-//////            if (jCheckBoxKeineGesehenen.isSelected() || jCheckBoxKeineAbos.isSelected() || jToggleButtonLivestram.isSelected()) {
-//////                ((TModelFilm) tabelle.getModel()).filter(ddaten, jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jToggleButtonLivestram.isSelected());
-//////            }
-//////        }
         if (m.getRowCount() > 0) {
             if (jCheckBoxKeineGesehenen.isSelected() || jCheckBoxKeineAbos.isSelected() || jToggleButtonLivestram.isSelected()) {
                 m.filter(ddaten, jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jToggleButtonLivestram.isSelected());
@@ -1187,7 +1184,7 @@ public class GuiFilme extends PanelVorlage {
                 try {
                     tabelle.print();
                 } catch (PrinterException ex) {
-                    Log.fehlerMeldung(688542239, Log.FEHLER_ART_PROG,"GuiFilme.BeobPrint", ex);
+                    Log.fehlerMeldung(688542239, Log.FEHLER_ART_PROG, "GuiFilme.BeobPrint", ex);
                 }
             }
         }
@@ -1308,7 +1305,6 @@ public class GuiFilme extends PanelVorlage {
                             }
                         }
                         stopBeob = false;
-////                        tabelleBauen();
                     }
                 }
             }
@@ -1333,7 +1329,6 @@ public class GuiFilme extends PanelVorlage {
                         ddaten.listeAbo.addAbo(jComboBoxFilterSender.getSelectedItem().toString(), jComboBoxFilterThema.getSelectedItem().toString(),
                                 jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(), filmThema);
                         stopBeob = false;
-////                        tabelleBauen();
                     }
                 }
             }
