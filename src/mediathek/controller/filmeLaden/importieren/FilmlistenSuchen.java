@@ -71,7 +71,7 @@ public class FilmlistenSuchen {
                 getDownloadUrlsFilmlisten(DDaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR], tmp, Daten.getUserAgent());
             } else {
                 // Ausweichen auf andere Listenserver bei Bedarf
-                getDownloadUrlsFilmlisten(Konstanten.ADRESSE_UPDATE_SERVER, tmp, Daten.getUserAgent());
+                getDownloadUrlsFilmlisten(Konstanten.ADRESSE_FILMLISTEN_SERVER, tmp, Daten.getUserAgent());
                 //getDownloadUrlsFilmlisten("asdf", tmp, Daten.getUserAgent());
                 if (tmp.size() > 0) {
                     // dann die Liste Filmlistenserver aktualisieren

@@ -50,7 +50,6 @@ public class PanelHilfe extends PanelVorlage {
         jTextFieldPfad.setText(Funktionen.getPathJar());
         jButtonWebsite.addActionListener(new BeobWeb(jTextFieldWebsite.getText()));
         jButtonAnleitung.addActionListener(new BeobWeb(jTextFieldAnleitung.getText()));
-        jButtonFaq.addActionListener(new BeobWeb(jTextFieldFAQ.getText()));
         jButtonForum.addActionListener(new BeobWeb(jTextFieldForum.getText()));
         jButtonLogErstellen.addActionListener(new ActionListener() {
             @Override
@@ -73,13 +72,10 @@ public class PanelHilfe extends PanelVorlage {
         jButtonWebsite = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jButtonAnleitung = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
-        jButtonFaq = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jButtonForum = new javax.swing.JButton();
         jTextFieldWebsite = new javax.swing.JTextField();
         jTextFieldAnleitung = new javax.swing.JTextField();
-        jTextFieldFAQ = new javax.swing.JTextField();
         jTextFieldForum = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jTextFieldPfad = new javax.swing.JTextField();
@@ -114,11 +110,6 @@ public class PanelHilfe extends PanelVorlage {
         jButtonAnleitung.setText("Browser");
         jButtonAnleitung.setToolTipText("http://zdfmediathk.sourceforge.net/");
 
-        jLabel8.setText("FAQ:");
-
-        jButtonFaq.setText("Browser");
-        jButtonFaq.setToolTipText("http://zdfmediathk.sourceforge.net/");
-
         jLabel9.setText("Forum:");
 
         jButtonForum.setText("Browser");
@@ -132,12 +123,7 @@ public class PanelHilfe extends PanelVorlage {
         jTextFieldAnleitung.setEditable(false);
         jTextFieldAnleitung.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         jTextFieldAnleitung.setForeground(new java.awt.Color(0, 51, 204));
-        jTextFieldAnleitung.setText("http://zdfmediathk.sourceforge.net/vorab.html");
-
-        jTextFieldFAQ.setEditable(false);
-        jTextFieldFAQ.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        jTextFieldFAQ.setForeground(new java.awt.Color(0, 51, 204));
-        jTextFieldFAQ.setText("http://zdfmediathk.sourceforge.net/faq.html");
+        jTextFieldAnleitung.setText("https://sourceforge.net/p/zdfmediathk/wiki/Home/");
 
         jTextFieldForum.setEditable(false);
         jTextFieldForum.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
@@ -153,19 +139,16 @@ public class PanelHilfe extends PanelVorlage {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addComponent(jLabel7)
-                    .addComponent(jLabel8)
                     .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jTextFieldWebsite, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextFieldAnleitung, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldFAQ, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextFieldForum, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonWebsite, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButtonAnleitung, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButtonFaq, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButtonForum, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
@@ -184,18 +167,13 @@ public class PanelHilfe extends PanelVorlage {
                     .addComponent(jButtonAnleitung))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldFAQ, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
-                    .addComponent(jButtonFaq))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldForum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
                     .addComponent(jButtonForum))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonAnleitung, jButtonFaq, jButtonForum, jButtonWebsite, jTextFieldAnleitung, jTextFieldFAQ, jTextFieldForum, jTextFieldWebsite});
+        jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonAnleitung, jButtonForum, jButtonWebsite, jTextFieldAnleitung, jTextFieldForum, jTextFieldWebsite});
 
         jLabel2.setText("Programmpfad:");
 
@@ -235,7 +213,7 @@ public class PanelHilfe extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -253,7 +231,6 @@ public class PanelHilfe extends PanelVorlage {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAnleitung;
-    private javax.swing.JButton jButtonFaq;
     private javax.swing.JButton jButtonForum;
     private javax.swing.JButton jButtonLogErstellen;
     private javax.swing.JButton jButtonWebsite;
@@ -261,14 +238,12 @@ public class PanelHilfe extends PanelVorlage {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextFieldAnleitung;
-    private javax.swing.JTextField jTextFieldFAQ;
     private javax.swing.JTextField jTextFieldForum;
     private javax.swing.JTextField jTextFieldPfad;
     private javax.swing.JTextField jTextFieldVersion;
