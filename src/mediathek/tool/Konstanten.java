@@ -21,11 +21,11 @@ package mediathek.tool;
 
 public class Konstanten {
 
-    public static final String VERSION = "3.0.0";
+    public static final String VERSION = "3.1.0";
     public static final String PROGRAMMNAME = "MediathekView";
     public static final String USER_AGENT_DEFAULT = PROGRAMMNAME + " " + VERSION;
     // MediathekView URLs
-    public static final String ADRESSE_UPDATE_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
+    public static final String ADRESSE_FILMLISTEN_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
     public static final String DATEINAME_LISTE_FILMLISTEN = "filmlisten.xml";
     public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/version.xml";
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";

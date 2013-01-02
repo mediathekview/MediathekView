@@ -29,7 +29,7 @@
 	- Eine Filtereinstellung kann als Abo (Kontextmenü Maus) übernommen werden, es werden dann alle Filme
 	geladen, auf die die Filtereinstellungen passen
 	- mit dem Schalter "-auto" lädt das Programm automatisch die Filmliste, erledigt alle Abos und beendet sich 
-	dann wieder. Das funtioniert jetzt auch auf Rechnern ohne grafische Oberfläche (ohne X)
+	dann wieder. Das funktioniert jetzt auch auf Rechnern ohne grafische Oberfläche (ohne X)
 
 # Version 3.0.0
 	- Die gesamte Oberfläche des Programms wurde überarbeitet
