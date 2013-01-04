@@ -60,7 +60,6 @@ import mediathek.tool.TModelDownload;
 public class GuiDownloads extends PanelVorlage {
 
     private DialogDatenFilm dialogDatenFilm = null;
-    private JTableMed tabelle;
 
     public GuiDownloads(DDaten d) {
         super(d);
@@ -69,9 +68,8 @@ public class GuiDownloads extends PanelVorlage {
         jScrollPane1.setViewportView(tabelle);
         dialogDatenFilm = new DialogDatenFilm(null, false, ddaten);
         init();
-        tabelleLaden();
+        downloadsAktualisieren(); // die Tabelle wird dabei gleich geladen
         tabelle.initTabelle();
-        tabelleAktualisieren();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
@@ -88,7 +86,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     public void aktualisieren() {
-        tabelleAktualisieren();
+        downloadsAktualisieren();
     }
 
     public void starten(boolean alle) {
@@ -164,7 +162,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void fertig_(ListenerFilmeLadenEvent event) {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
-                    tabelleAktualisieren();
+                    downloadsAktualisieren();
                 }
             }
         });
@@ -172,7 +170,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
-                    tabelleAktualisieren();
+                    downloadsAktualisieren();
                 }
             }
         });
@@ -188,6 +186,7 @@ public class GuiDownloads extends PanelVorlage {
     private synchronized void tabelleLaden() {
         // nur Downloads die schon in der Liste sind werden geladen
         boolean abo, download;
+        tabelle.getSpalten();
         if (jRadioButtonAlles.isSelected()) {
             abo = true;
             download = true;
@@ -199,10 +198,11 @@ public class GuiDownloads extends PanelVorlage {
             download = true;
         }
         ddaten.listeDownloads.getModel((TModelDownload) tabelle.getModel(), abo, download);
+        tabelle.setSpalten();
         setInfo();
     }
 
-    private synchronized void tabelleAktualisieren() {
+    private synchronized void downloadsAktualisieren() {
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
         downloadsAufraeumen();
         ddaten.listeDownloads.zurueckgestellteWiederAktivieren();
@@ -698,7 +698,7 @@ public class GuiDownloads extends PanelVorlage {
             itemAktualisieren.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    tabelleAktualisieren();
+                    downloadsAktualisieren();
                 }
             });
             JMenuItem itemAufraeumen = new JMenuItem("Liste Aufräumen");
