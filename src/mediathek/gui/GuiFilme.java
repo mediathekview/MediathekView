@@ -86,7 +86,6 @@ public class GuiFilme extends PanelVorlage {
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 4, 5, 10, 15, 20, 30};
     private BeobMausTabelle beobMausTabelle;
     private DialogDatenFilm dialogDatenFilm = null;
-    private JTableMed tabelle;
     private String[] sender;
     private String[][] themenPerSender;
     //private String[] alleThemen;
@@ -99,7 +98,7 @@ public class GuiFilme extends PanelVorlage {
         dialogDatenFilm = new DialogDatenFilm(null, false, ddaten);
         init(); //alles einrichten, Beobachter anhängen
         panelVideoplayer();
-        tabelleBauen(); //Filme laden
+        tabelleLaden(); //Filme laden
         tabelle.initTabelle();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
@@ -124,10 +123,6 @@ public class GuiFilme extends PanelVorlage {
         filmSpeichern_();
     }
 
-    public void tabelleSpeichern() {
-        tabelle.tabelleNachDatenSchreiben();
-    }
-
     //===================================
     // Private
     //===================================
@@ -147,7 +142,7 @@ public class GuiFilme extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(jComboBoxZeitraum.getSelectedIndex());
                 checkBlacklist();
-                tabelleBauen();
+                tabelleLaden();
             }
         });
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
@@ -159,7 +154,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void fertig_(ListenerFilmeLadenEvent event) {
                 checkBlacklist();
-                tabelleBauen();
+                tabelleLaden();
                 beobMausTabelle.itemSenderLaden.setEnabled(true);
             }
         });
@@ -192,7 +187,7 @@ public class GuiFilme extends PanelVorlage {
                     jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen("")));
                     jTextFieldFilterTitel.setText("");
                 }
-                tabelleBauen();
+                tabelleLaden();
             }
         });
         //Combo Sender
@@ -222,21 +217,21 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                tabelleBauen();
+                tabelleLaden();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 checkBlacklist();
-                tabelleBauen();
+                tabelleLaden();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 checkBlacklist();
-                tabelleBauen();
+                tabelleLaden();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
@@ -250,7 +245,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void ping() {
                 checkBlacklist();
-                tabelleBauen();
+                tabelleLaden();
             }
         });
     }
@@ -380,7 +375,7 @@ public class GuiFilme extends PanelVorlage {
         return ret;
     }
 
-    private synchronized void tabelleBauen() {
+    private synchronized void tabelleLaden() {
         try {
             boolean themaNichtDa = false;
             stopBeob = true;
@@ -438,7 +433,7 @@ public class GuiFilme extends PanelVorlage {
             //filtern
             if (themaNichtDa) {
                 // nochmal filtern anschieben
-                tabelleBauen();
+                tabelleLaden();
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(558965421, Log.FEHLER_ART_PROG, "GuiFilme.tabelleBauen", ex);
@@ -467,7 +462,7 @@ public class GuiFilme extends PanelVorlage {
         jTextFieldFilterTitel.setText("");
         jTextFieldFilterThemaTitel.setText("");
         //neu laden
-        tabelleBauen();
+        tabelleLaden();
         stopBeob = false;
     }
 
@@ -865,7 +860,7 @@ public class GuiFilme extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
-                tabelleBauen();
+                tabelleLaden();
             }
         }
     }
@@ -877,7 +872,7 @@ public class GuiFilme extends PanelVorlage {
             if (!stopBeob) {
                 Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = String.valueOf(jCheckBoxKeineAbos.isSelected());
                 Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = String.valueOf(jCheckBoxKeineGesehenen.isSelected());
-                tabelleBauen();
+                tabelleLaden();
             }
         }
     }
@@ -1201,7 +1196,7 @@ public class GuiFilme extends PanelVorlage {
                     jComboBoxFilterThema.setSelectedIndex(0);
                     jComboBoxFilterThema.setSelectedItem(thema);
                     stopBeob = false;
-                    tabelleBauen();
+                    tabelleLaden();
                 }
             }
         }
@@ -1218,7 +1213,7 @@ public class GuiFilme extends PanelVorlage {
                     jComboBoxFilterSender.setSelectedIndex(0);
                     jComboBoxFilterSender.setSelectedItem(sender);
                     stopBeob = false;
-                    tabelleBauen();
+                    tabelleLaden();
                 }
             }
         }
@@ -1237,7 +1232,7 @@ public class GuiFilme extends PanelVorlage {
                     jComboBoxFilterThema.setSelectedIndex(0);
                     jComboBoxFilterThema.setSelectedItem(thema);
                     stopBeob = false;
-                    tabelleBauen();
+                    tabelleLaden();
                 }
             }
         }
@@ -1258,7 +1253,7 @@ public class GuiFilme extends PanelVorlage {
                     String titel = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_TITEL_NR).toString();
                     jTextFieldFilterTitel.setText(titel);
                     stopBeob = false;
-                    tabelleBauen();
+                    tabelleLaden();
                 }
             }
         }
@@ -1391,7 +1386,7 @@ public class GuiFilme extends PanelVorlage {
             checkPattern(jTextFieldFilterThemaTitel);
             checkPattern(jTextFieldFilterTitel);
             if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
-                tabelleBauen();
+                tabelleLaden();
             }
         }
     }

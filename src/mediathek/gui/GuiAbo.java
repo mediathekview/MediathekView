@@ -45,15 +45,13 @@ import mediathek.tool.TModelAbo;
 
 public class GuiAbo extends PanelVorlage {
 
-    private JTableMed tabelle;
-
     public GuiAbo(DDaten d) {
         super(d);
         initComponents();
         tabelle = new JTableMed(JTableMed.TABELLE_TAB_ABOS);
         jScrollPane1.setViewportView(tabelle);
         initBeobachter();
-        load();
+        tabelleLaden();
         tabelle.initTabelle();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
@@ -89,7 +87,7 @@ public class GuiAbo extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName()) {
             @Override
             public void ping() {
-                load();
+                tabelleLaden();
             }
         });
         tabelle.addMouseListener(new BeobMausTabelle1());
@@ -104,7 +102,7 @@ public class GuiAbo extends PanelVorlage {
         im.put(enter, "aendern");
     }
 
-    private void load() {
+    private void tabelleLaden() {
         tabelle.getSpalten();
         ddaten.listeAbo.addObjectData((TModelAbo) tabelle.getModel());
         tabelle.setSpalten();
@@ -129,7 +127,7 @@ public class GuiAbo extends PanelVorlage {
                     ddaten.listeAbo.remove(delRow);
                 }
             }
-            load();
+            tabelleLaden();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
         } else {
             new HinweisKeineAuswahl().zeigen();
@@ -146,7 +144,7 @@ public class GuiAbo extends PanelVorlage {
             dialog.setVisible(true);
             if (dialog.ok) {
                 akt.aufMichKopieren(ret);
-                load();
+                tabelleLaden();
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
             }
             setInfo();
@@ -163,7 +161,7 @@ public class GuiAbo extends PanelVorlage {
                 DatenAbo akt = ddaten.listeAbo.getAboNr(modelRow);
                 akt.arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(ein);
             }
-            load();
+            tabelleLaden();
             tabelle.clearSelection();
             for (int i = 0; i < rows.length; ++i) {
                 tabelle.addRowSelectionInterval(rows[i], rows[i]);

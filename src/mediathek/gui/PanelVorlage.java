@@ -20,11 +20,13 @@
 package mediathek.gui;
 
 import mediathek.daten.DDaten;
+import mediathek.tool.JTableMed;
 
 public class PanelVorlage extends javax.swing.JPanel {
 
     public DDaten ddaten;
     public boolean stopBeob = false;
+    JTableMed tabelle = null;
 
     /**
      *
@@ -33,7 +35,6 @@ public class PanelVorlage extends javax.swing.JPanel {
     public PanelVorlage(DDaten d) {
         ddaten = d;
         addComponentListener(new java.awt.event.ComponentAdapter() {
-
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 isShown();
@@ -43,5 +44,11 @@ public class PanelVorlage extends javax.swing.JPanel {
 
     public void isShown() {
         // immer wenn isShown
+    }
+
+    public void tabelleSpeichern() {
+        if (tabelle != null) {
+            tabelle.tabelleNachDatenSchreiben();
+        }
     }
 }

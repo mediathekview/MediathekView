@@ -114,14 +114,16 @@ public final class JTableMed extends JTable {
             case TABELLE_TAB_DOWNLOADS:
             case TABELLE_TAB_ABOS:
             case TABELLE_STANDARD:
-                if (sel >= 0) {
+                if (sel >= 0 && sel < this.getRowCount()) {
                     this.setRowSelectionInterval(sel, sel);
                     this.scrollRectToVisible(getCellRect(sel, 0, false));
                 }
                 if (selection != null) {
                     if (selection.length > 0) {
                         for (int i = 0; i < selection.length; ++i) {
-                            this.addRowSelectionInterval(selection[i], selection[i]);
+                            if (selection[i] < this.getRowCount()) {
+                                this.addRowSelectionInterval(selection[i], selection[i]);
+                            }
                         }
                     }
                 }
