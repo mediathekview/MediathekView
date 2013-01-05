@@ -32,8 +32,8 @@ import mediathek.tool.Log;
  */
 public class MediathekSf extends MediathekReader implements Runnable {
 
-    public static final String SENDER = "SF";
-    ///public static final String SENDER = "SRF";
+    //public static final String SENDER = "SF";
+    public static final String SENDER = "SRF";
     private final int MAX_FILME_THEMA = 5;
     private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 

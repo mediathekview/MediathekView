@@ -36,8 +36,8 @@ import mediathek.tool.Log;
  */
 public class MediathekSfPod extends MediathekReader implements Runnable {
 
-    public static final String SENDER = "SF.Podcast";
-    ///public static final String SENDER = "SRF.Podcast";
+    //public static final String SENDER = "SF.Podcast";
+    public static final String SENDER = "SRF.Podcast";
     private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
     /**
