@@ -23,13 +23,18 @@ Wer das Programm selbst übersetzten will, sollte sich Netbeans installieren:
 http://www.netbeans.org/
 
 Die Quelltexte gibts hier (Repository Name: MediathekView-3):
-http://zdfmediathk.git.sourceforge.net/git/gitweb-index.cgi
+http://sourceforge.net/p/zdfmediathk/code/commit_browser
+
+Die Quelltexte kann man mit GIT laden:
+git clone git://git.code.sf.net/p/zdfmediathk/code zdfmediathk-code
+
 
 In Netbeans ein neues Projekt "with existing Sources" anlegen und den Ordner mit den
 Quelltexten (in dem muss der Ordner "mediathek" enthalten sein) importieren.
 
 Es müssen noch die benötigten Libs importiert werden:
-http://zdfmediathk.sourceforge.net/installation.html
+http://zdfmediathk.sourceforge.net/anleitung.html
+http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/#installation_1
 
 Dann kann das Projekt übersetzt und gestartet werden.
 
