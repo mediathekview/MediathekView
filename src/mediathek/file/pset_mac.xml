@@ -38,7 +38,7 @@
     <Programm>
         <Programmname>flvstreamer</Programmname>
         <Programmpfad>PFAD_FLVSTREAMER</Programmpfad>
-        <Programmschalter>-r %f --resume -o **</Programmschalter>
+        <Programmschalter>%F --resume -o **</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>true</Restart>
     </Programm>
