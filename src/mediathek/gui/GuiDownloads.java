@@ -573,7 +573,19 @@ public class GuiDownloads extends PanelVorlage {
                 if (arg0.getClickCount() > 1) {
                     downloadAendern();
                 }
-            } else if (arg0.getButton() == MouseEvent.BUTTON3) {
+//            } else if (arg0.getButton() == MouseEvent.BUTTON3) {
+//                showMenu(arg0);
+            }
+        }
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }

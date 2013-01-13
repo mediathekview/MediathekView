@@ -900,9 +900,22 @@ public class GuiFilme extends PanelVorlage {
     public class BeobMausLaufendeProgramme extends MouseAdapter {
         //rechhte Maustaste im Rahmen um die Tabelle
 
+//        @Override
+//        public void mouseClicked(MouseEvent arg0) {
+//            if (arg0.getButton() == MouseEvent.BUTTON3) {
+//                showMenu(arg0);
+//            }
+//        }
         @Override
-        public void mouseClicked(MouseEvent arg0) {
-            if (arg0.getButton() == MouseEvent.BUTTON3) {
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
@@ -976,13 +989,27 @@ public class GuiFilme extends PanelVorlage {
 
         @Override
         public void mouseClicked(MouseEvent arg0) {
-            if (arg0.getButton() == MouseEvent.BUTTON3) {
-                showMenu(arg0);
-            }
+//            if (arg0.getButton() == MouseEvent.BUTTON3) {
+//                showMenu(arg0);
+//            }
             if (arg0.getButton() == MouseEvent.BUTTON1) {
                 if (arg0.getClickCount() > 1) {
                     filmAbspielen_();
                 }
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
             }
         }
 

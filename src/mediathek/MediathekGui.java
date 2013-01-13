@@ -1056,9 +1056,22 @@ public final class MediathekGui extends javax.swing.JFrame {
             itemKlein.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ICON_KLEIN_NR]));
         }
 
+//        @Override
+//        public void mouseClicked(MouseEvent arg0) {
+//            if (arg0.getButton() == MouseEvent.BUTTON3) {
+//                showMenu(arg0);
+//            }
+//        }
         @Override
-        public void mouseClicked(MouseEvent arg0) {
-            if (arg0.getButton() == MouseEvent.BUTTON3) {
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
