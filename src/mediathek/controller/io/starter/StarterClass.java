@@ -157,7 +157,7 @@ public class StarterClass {
                     buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     this.wait(3000);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(613822015, Log.FEHLER_ART_PROG,"StarterClass.Starten.run", ex);
+                    Log.fehlerMeldung(613822015, Log.FEHLER_ART_PROG, "StarterClass.Starten.run", ex);
                 }
             } //while(true)
         }
@@ -170,11 +170,11 @@ public class StarterClass {
                     new Thread(startenProgrammn).start();
                     break;
                 case Start.ART_DOWNLOAD:
-                    StartenDonwnload startenDonwnload = new StartenDonwnload(start);
-                    new Thread(startenDonwnload).start();
+                    StartenDownload startenDownload = new StartenDownload(start);
+                    new Thread(startenDownload).start();
                     break;
                 default:
-                    Log.fehlerMeldung(789356001,Log.FEHLER_ART_PROG, "StartetClass.startStarten", "StarterClass.Starten - Switch-default");
+                    Log.fehlerMeldung(789356001, Log.FEHLER_ART_PROG, "StartetClass.startStarten", "StarterClass.Starten - Switch-default");
                     break;
             }
         }
@@ -194,7 +194,7 @@ public class StarterClass {
             try {
                 new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
             } catch (Exception ex) {
-                Log.fehlerMeldung(469365281,Log.FEHLER_ART_PROG, "StarterClass.StartenProgramm-1", ex);
+                Log.fehlerMeldung(469365281, Log.FEHLER_ART_PROG, "StarterClass.StartenProgramm-1", ex);
             }
         }
 
@@ -307,7 +307,7 @@ public class StarterClass {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(395623710,Log.FEHLER_ART_PROG, "StarterClass.StartenProgramm-2", ex);
+                Log.fehlerMeldung(395623710, Log.FEHLER_ART_PROG, "StarterClass.StartenProgramm-2", ex);
             }
             leeresFileLoeschen(file);
             fertigmeldung(start);
@@ -329,11 +329,11 @@ public class StarterClass {
         }
     }
 
-    private class StartenDonwnload implements Runnable {
+    private class StartenDownload implements Runnable {
 
         Start start;
 
-        public StartenDonwnload(Start s) {
+        public StartenDownload(Start s) {
             start = s;
             start.status = Start.STATUS_RUN;
             notifyStartEvent();
@@ -375,7 +375,7 @@ public class StarterClass {
                 input.close();
                 destStream.close();
             } catch (Exception ex) {
-                Log.fehlerMeldung(502039078,Log.FEHLER_ART_PROG, "StarterClass.StartenDonwnload-1", ex);
+                Log.fehlerMeldung(502039078, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload-1", ex);
             }
             if (!start.stoppen) {
                 if (start.datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
@@ -403,7 +403,7 @@ public class StarterClass {
             ret = u.openConnection().getContentLength();
         } catch (Exception ex) {
             ret = -1;
-            Log.fehlerMeldung(643298301,Log.FEHLER_ART_PROG, "StarterClass.StartenDonwnload.laenge", ex);
+            Log.fehlerMeldung(643298301, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload.laenge", ex);
         }
         if (ret < 100) {
             // dann wars nix
@@ -417,9 +417,9 @@ public class StarterClass {
         boolean ret = false;
         File file = new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         if (!file.exists()) {
-            Log.fehlerMeldung(550236231,Log.FEHLER_ART_PROG, "StartetClass.pruefen-1", "Download fehlgeschlagen: Datei existiert nicht" + start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(550236231, Log.FEHLER_ART_PROG, "StartetClass.pruefen-1", "Download fehlgeschlagen: Datei existiert nicht" + start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_KB * 1024) {
-            Log.fehlerMeldung(795632500, Log.FEHLER_ART_PROG,"StartetClass.pruefen-2", "Download fehlgeschlagen: Datei zu klein" + start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(795632500, Log.FEHLER_ART_PROG, "StartetClass.pruefen-2", "Download fehlgeschlagen: Datei zu klein" + start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else {
             if (start.datenDownload.istAbo()) {
                 ddaten.erledigteAbos.zeileSchreiben(start.datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
@@ -447,7 +447,7 @@ public class StarterClass {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(795632500, Log.FEHLER_ART_PROG,"StartetClass.leeresFileLoeschen", "Fehler beim löschen" + file.getAbsolutePath());
+            Log.fehlerMeldung(795632500, Log.FEHLER_ART_PROG, "StartetClass.leeresFileLoeschen", "Fehler beim löschen" + file.getAbsolutePath());
         }
     }
 

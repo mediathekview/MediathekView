@@ -49,6 +49,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
         final String ar[] = args;
         java.awt.EventQueue.invokeLater(new Runnable() {
             final int NORMAL = 0;
