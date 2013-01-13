@@ -251,12 +251,26 @@ public class GuiAbo extends PanelVorlage {
         private Point p;
 
         @Override
-        public void mousePressed(MouseEvent arg0) {
+        public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
                 if (arg0.getClickCount() > 1) {
                     aboAendern();
                 }
-            } else if (arg0.getButton() == MouseEvent.BUTTON3) {
+//            } else if (arg0.getButton() == MouseEvent.BUTTON3) {
+//                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }

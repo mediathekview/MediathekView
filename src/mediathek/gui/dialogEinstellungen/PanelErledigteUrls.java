@@ -137,9 +137,22 @@ public class PanelErledigteUrls extends PanelVorlage {
         BeobLoeschen beobLoeschen = new BeobLoeschen();
         private Point p;
 
+//        @Override
+//        public void mouseClicked(MouseEvent arg0) {
+//            if (arg0.getButton() == MouseEvent.BUTTON3) {
+//                showMenu(arg0);
+//            }
+//        }
         @Override
-        public void mouseClicked(MouseEvent arg0) {
-            if (arg0.getButton() == MouseEvent.BUTTON3) {
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
