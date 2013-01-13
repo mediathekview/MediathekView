@@ -22,24 +22,24 @@ package mediathek;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import javax.swing.AbstractAction;
+import java.io.IOException;
+import java.net.URL;
+import javax.imageio.ImageIO;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
-import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
@@ -63,22 +63,26 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
+import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
-import mediathek.tool.OSXAdapter;
+import org.simplericity.macify.eawt.Application;
+import org.simplericity.macify.eawt.ApplicationEvent;
+import org.simplericity.macify.eawt.ApplicationListener;
+import org.simplericity.macify.eawt.DefaultApplication;
 
-public final class MediathekGui extends javax.swing.JFrame {
+public final class MediathekGui extends javax.swing.JFrame implements ApplicationListener {
 
     public static final int ButtonAus = 0;
     public static final int ButtonFilme = 1;
     public static final int ButtonDonwload = 2;
     public static final int ButtonAbo = 3;
     private DDaten ddaten;
-    // Check that we are on Mac OS X.  This is crucial to loading and using the OSXAdapter class.
-    public static boolean MAC_OS_X = (System.getProperty("os.name").toLowerCase().startsWith("mac os x"));
+////////    // Check that we are on Mac OS X.  This is crucial to loading and using the OSXAdapter class.
+////////    public static boolean MAC_OS_X = (System.getProperty("os.name").toLowerCase().startsWith("mac os x"));
     private BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     private DialogEinstellungen dialogEinstellungen;
     private JSpinner jSpinnerAnzahl = new JSpinner(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
@@ -90,14 +94,14 @@ public final class MediathekGui extends javax.swing.JFrame {
         String pfad = "";
         boolean max = false;
         initComponents();
-        // für den Mac
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-einstellungen");
-        getRootPane().getActionMap().put("mac-einstellungen", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialogEinstellungen.setVisible(true);
-            }
-        });
+////////        // für den Mac
+////////        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-einstellungen");
+////////        getRootPane().getActionMap().put("mac-einstellungen", new AbstractAction() {
+////////            @Override
+////////            public void actionPerformed(ActionEvent e) {
+////////                dialogEinstellungen.setVisible(true);
+////////            }
+////////        });
         if (ar != null) {
             if (ar.length > 0) {
                 if (!ar[0].startsWith("-")) {
@@ -107,8 +111,8 @@ public final class MediathekGui extends javax.swing.JFrame {
                     pfad = ar[0];
                 }
             }
-            for (int i = 0; i < ar.length; ++i) {
-                if (ar[i].equals("-M")) {
+            for (String anAr : ar) {
+                if (anAr.equals("-M")) {
                     max = true;
                 }
             }
@@ -128,8 +132,8 @@ public final class MediathekGui extends javax.swing.JFrame {
         init();
         setSize(max);
         dialogEinstellungen = new DialogEinstellungen(null, false, ddaten);
-        // Set up our application to respond to the Mac OS X application menu
-        registerForMacOSXEvents();
+////////        // Set up our application to respond to the Mac OS X application menu
+////////        registerForMacOSXEvents();
         new CheckUpdate(this, ddaten).suchen();
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.filmlisteZuAlt()) {
@@ -399,6 +403,36 @@ public final class MediathekGui extends javax.swing.JFrame {
         }
     }
 
+    private void setupUserInterfaceForOsx() {
+        //OS X specific menu initializations
+        Application application = new DefaultApplication();
+        application.addApplicationListener(this);
+        application.addAboutMenuItem();
+        application.addPreferencesMenuItem();
+        application.setEnabledAboutMenu(true);
+        application.setEnabledPreferencesMenu(true);
+
+        //setup the MediathekView Dock Icon
+        try {
+            URL url = this.getClass().getResource("res/MediathekView.png");
+            BufferedImage appImage = ImageIO.read(url);
+            application.setApplicationIconImage(appImage);
+        } catch (IOException ex) {
+            System.err.println("Application image could not be loaded");
+        }
+
+        //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
+        if (application.isMac()) {
+            //Datei->Beenden
+            jMenu1.remove(jSeparator2);
+            jMenu1.remove(jMenuItemBeenden);
+
+            //Datei->Einstellungen
+            jMenu1.remove(jMenuItemEinstellungen);
+        }
+
+    }
+
     private void initMenue() {
         initSpinner();
         // Anzahl gleichzeitiger Downlaods
@@ -590,6 +624,37 @@ public final class MediathekGui extends javax.swing.JFrame {
                 ProgrammLog.LogDateiSchreiben(ddaten);
             }
         });
+        setupUserInterfaceForOsx();
+    }
+
+    public void handleQuit(ApplicationEvent event) {
+        beenden();
+    }
+
+    public void handleReOpenApplication(ApplicationEvent event) {
+        //unused
+    }
+
+    public void handlePrintFile(ApplicationEvent event) {
+        //unused
+    }
+
+    public void handlePreferences(ApplicationEvent event) {
+        dialogEinstellungen.setVisible(true);
+    }
+
+    public void handleOpenFile(ApplicationEvent event) {
+        //unused
+    }
+
+    public void handleOpenApplication(ApplicationEvent event) {
+        //unused
+    }
+
+    public void handleAbout(ApplicationEvent event) {
+        //TODO implement about handler
+        JOptionPane.showMessageDialog(this, Funktionen.getProgVersionString());
+        event.setHandled(true);
     }
 
     private void beenden() {
@@ -1027,26 +1092,25 @@ public final class MediathekGui extends javax.swing.JFrame {
     private javax.swing.JToolBar jToolBar;
     // End of variables declaration//GEN-END:variables
 
-    // Generic registration with the Mac OS X application menu
-    // Checks the platform, then attempts to register with the Apple EAWT
-    // See OSXAdapter.java to see how this is done without directly referencing any Apple APIs
-    public void registerForMacOSXEvents() {
-        if (MAC_OS_X) {
-            try {
-                // Generate and register the OSXAdapter, passing it a hash of all the methods we wish to
-                // use as delegates for various com.apple.eawt.ApplicationListener methods
-                OSXAdapter.setQuitHandler(this, getClass().getDeclaredMethod("quitForMac", (Class[]) null));
-            } catch (Exception e) {
-                System.err.println("Error while loading the OSXAdapter:");
-                //e.printStackTrace();
-            }
-        }
-    }
-
-    public void quitForMac() {
-        beenden();
-    }
-
+////////    // Generic registration with the Mac OS X application menu
+////////    // Checks the platform, then attempts to register with the Apple EAWT
+////////    // See OSXAdapter.java to see how this is done without directly referencing any Apple APIs
+////////    public void registerForMacOSXEvents() {
+////////        if (MAC_OS_X) {
+////////            try {
+////////                // Generate and register the OSXAdapter, passing it a hash of all the methods we wish to
+////////                // use as delegates for various com.apple.eawt.ApplicationListener methods
+////////                OSXAdapter.setQuitHandler(this, getClass().getDeclaredMethod("quitForMac", (Class[]) null));
+////////            } catch (Exception e) {
+////////                System.err.println("Error while loading the OSXAdapter:");
+////////                //e.printStackTrace();
+////////            }
+////////        }
+////////    }
+////////
+////////    public void quitForMac() {
+////////        beenden();
+////////    }
     class BeobMausToolBar extends MouseAdapter {
 
         JCheckBoxMenuItem itemKlein = new JCheckBoxMenuItem("kleine Icons");
