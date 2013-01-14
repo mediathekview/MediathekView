@@ -58,6 +58,7 @@ import mediathek.gui.InfoPanel;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.gui.dialog.PanelAbout;
 import mediathek.gui.dialog.PanelHilfe;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
@@ -250,7 +251,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             if (breite > 0 && hoehe > 0) {
                 this.setSize(new Dimension(breite, hoehe));
                 this.setLocation(posX, posY);
-//                this.setPreferredSize(new Dimension(x, y));
             }
         }
     }
@@ -613,8 +613,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAnleitung.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                DialogOk dialogOk = new DialogOk(null, true, new PanelHilfe(ddaten), "Hilfe zum Programm");
+                DialogOk dialogOk = new DialogOk(ddaten.mediathekGui, true, new PanelHilfe(ddaten), "Hilfe zum Programm");
+                dialogOk.setVisible(true);
+            }
+        });
+        // Über
+        jMenuItemAbout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DialogOk dialogOk = new DialogOk(ddaten.mediathekGui, true, new PanelAbout(ddaten), "Über MediathekView");
                 dialogOk.setVisible(true);
             }
         });
@@ -660,7 +667,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     @Override
     public void handleAbout(ApplicationEvent event) {
         //TODO implement about handler
-        JOptionPane.showMessageDialog(this, Funktionen.getProgVersionString());
+        DialogOk dialogOk = new DialogOk(ddaten.mediathekGui, true, new PanelAbout(ddaten), "Über MediathekView");
+        dialogOk.setVisible(true);
+        //JOptionPane.showMessageDialog(this, Funktionen.getProgVersionString());
         event.setHandled(true);
     }
 
@@ -798,6 +807,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenu3 = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
         jMenuItemProgrammlog = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -1028,6 +1039,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jMenuItemProgrammlog.setText("Programmlog in Datei schreiben");
         jMenu3.add(jMenuItemProgrammlog);
+        jMenu3.add(jSeparator4);
+
+        jMenuItemAbout.setText("Über MediathekView");
+        jMenu3.add(jMenuItemAbout);
 
         jMenuBar1.add(jMenu3);
 
@@ -1079,6 +1094,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JMenuItem jMenuItemAbosAusschalten;
     private javax.swing.JMenuItem jMenuItemAbosEinschalten;
     private javax.swing.JMenuItem jMenuItemAbosLoeschen;
+    private javax.swing.JMenuItem jMenuItemAbout;
     private javax.swing.JMenuItem jMenuItemAnleitung;
     private javax.swing.JMenuItem jMenuItemBeenden;
     private javax.swing.JMenuItem jMenuItemDownloadAendern;
@@ -1101,6 +1117,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JToolBar jToolBar;
     // End of variables declaration//GEN-END:variables
