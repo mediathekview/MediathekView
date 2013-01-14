@@ -35,7 +35,7 @@ import mediathek.tool.Log;
 public class ProgrammLog {
 
     public static void LogDateiSchreiben(DDaten ddaten) {
-        DialogZiel dialog = new DialogZiel(null, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log");
+        DialogZiel dialog = new DialogZiel(ddaten.mediathekGui, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log");
         dialog.setVisible(true);
         if (dialog.ok) {
             File f = new File(dialog.ziel);
@@ -113,7 +113,7 @@ public class ProgrammLog {
                     bw.flush();
                     bw.close();
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(319865493, Log.FEHLER_ART_PROG,"ProgrammLog.zeileSchreiben-1", ex);
+                    Log.fehlerMeldung(319865493, Log.FEHLER_ART_PROG, "ProgrammLog.zeileSchreiben-1", ex);
                     JOptionPane.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                             "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
                 } finally {

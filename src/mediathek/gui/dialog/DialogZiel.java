@@ -24,9 +24,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import mediathek.tool.Log;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
 
 public class DialogZiel extends javax.swing.JDialog {
 
@@ -48,6 +48,9 @@ public class DialogZiel extends javax.swing.JDialog {
         jButtonZiel.addActionListener(new ZielBeobachter());
         jTextFieldPfad.setText(zziel);
         ziel = zziel;
+        if (parent != null) {
+            setLocationRelativeTo(parent);
+        }
         new EscBeenden(this) {
             @Override
             public void beenden_() {

@@ -41,15 +41,16 @@ public class DialogOk extends javax.swing.JDialog {
         jPanelExtra.setLayout(new BorderLayout());
         jPanelExtra.add(panel);
         this.pack();
+        if (parent != null) {
+            setLocationRelativeTo(parent);
+        }
         jButtonBeenden.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden();
             }
         });
         new EscBeenden(this) {
-
             @Override
             public void beenden_() {
                 beenden();
