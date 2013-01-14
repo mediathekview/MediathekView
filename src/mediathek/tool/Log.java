@@ -298,6 +298,9 @@ public class Log {
             }
             System.out.println(x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x);
             System.out.println(z + " Fehlernr: " + fehlerNummer);
+            if (ex != null) {
+                System.out.println(z + " Exception: " + ex.getMessage());
+            }
             System.out.println(z + " " + FEHLER + klasse);
             notifyMediathekListener(LOG_FEHLER, FEHLER + klasse);
             for (int i = 0; i < texte.length; ++i) {

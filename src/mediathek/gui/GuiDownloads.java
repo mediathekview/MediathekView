@@ -19,12 +19,14 @@
  */
 package mediathek.gui;
 
+import java.awt.Desktop;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -55,6 +57,7 @@ import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.JTableMed;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
 import mediathek.tool.TModelDownload;
 
 public class GuiDownloads extends PanelVorlage {
@@ -264,6 +267,38 @@ public class GuiDownloads extends PanelVorlage {
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
             ddaten.listeDownloads.downloadVorziehen(url);
             tabelleLaden();
+        } else {
+            new HinweisKeineAuswahl().zeigen();
+        }
+    }
+
+    private void zielordnerOeffnen() {
+        int row = tabelle.getSelectedRow();
+        if (row >= 0) {
+            String url = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_URL_NR).toString();
+            DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
+            String s = download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
+            if (!s.endsWith(File.separator)) {
+                s += File.separator;
+            }
+            try {
+                if (Desktop.isDesktopSupported()) {
+                    Desktop d = Desktop.getDesktop();
+                    if (d.isSupported(Desktop.Action.OPEN)) {
+                        d.open(new File(s));
+                        //d.browse(new File(s).toURI());
+                    }
+                }
+            } catch (Exception ex) {
+                if (!new File(s).exists()) {
+                    JOptionPane.showMessageDialog(null, "Der Download wurde noch nicht gestartet, der Ordner existiert noch nicht!",
+                            "Fehler", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Kann den Dateimanager nicht öffnen!",
+                            "Fehler", JOptionPane.ERROR_MESSAGE);
+                    Log.fehlerMeldung(976402157, Log.FEHLER_ART_PROG, GuiDownloads.class.getName(), ex, "Ordner öffnen: " + download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
+                }
+            }
         } else {
             new HinweisKeineAuswahl().zeigen();
         }
@@ -577,12 +612,14 @@ public class GuiDownloads extends PanelVorlage {
 //                showMenu(arg0);
             }
         }
+
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
+
         @Override
         public void mouseReleased(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
@@ -597,6 +634,7 @@ public class GuiDownloads extends PanelVorlage {
                 tabelle.setRowSelectionInterval(nr, nr);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();
+
             //Film vorziehen
             int row = tabelle.getSelectedRow();
             boolean wartenOderLaufen = false;
@@ -609,6 +647,8 @@ public class GuiDownloads extends PanelVorlage {
                     }
                 }
             }
+
+            // Download starten
             JMenuItem itemStarten = new JMenuItem("Download starten");
             itemStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_16.png")));
             itemStarten.setEnabled(!wartenOderLaufen);
@@ -619,6 +659,8 @@ public class GuiDownloads extends PanelVorlage {
                     filmStartenWiederholenStoppen(false /* alle */, true /* starten */);
                 }
             });
+
+            // Download stoppen
             JMenuItem itemStoppen = new JMenuItem("Download stoppen");
             itemStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
             itemStoppen.setEnabled(wartenOderLaufen);
@@ -629,6 +671,18 @@ public class GuiDownloads extends PanelVorlage {
                     filmStartenWiederholenStoppen(false /* alle */, false /* starten */);
                 }
             });
+
+            // Zielordner öffnen
+            JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
+            itemOeffnen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png")));
+            jPopupMenu.add(itemOeffnen);
+            itemOeffnen.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    zielordnerOeffnen();
+                }
+            });
+
 
             //#######################################
             jPopupMenu.addSeparator();
@@ -727,7 +781,7 @@ public class GuiDownloads extends PanelVorlage {
             jPopupMenu.addSeparator();
             //#######################################
 
-            //url
+            // url
             JMenuItem itemUrl = new JMenuItem("URL kopieren");
             itemUrl.addActionListener(new ActionListener() {
                 @Override
@@ -741,7 +795,8 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemUrl);
-            //Player
+
+            // Player
             JMenuItem itemPlayer = new JMenuItem("Film abspielen");
             itemPlayer.addActionListener(new ActionListener() {
                 @Override
@@ -766,7 +821,8 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemPlayer);
-            //Infos
+
+            // Infos
             JMenuItem itemInfo = new JMenuItem("Infos anzeigen");
             itemInfo.addActionListener(new ActionListener() {
                 @Override
@@ -775,6 +831,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemInfo);
+
             // Tabellenspalten zurücksetzen
             JMenuItem item = new JMenuItem("Spalten zurücksetzen");
             item.addActionListener(new ActionListener() {
@@ -784,7 +841,9 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             jPopupMenu.add(item);
-            //Menü anzeigen
+            // 
+            // ######################
+            // Menü anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }

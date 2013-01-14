@@ -50,6 +50,9 @@ public class DialogAddDownload extends javax.swing.JDialog {
         this.setTitle("Film Speichern");
         // Felder init
         init();
+        if (parent != null) {
+            setLocationRelativeTo(parent);
+        }
     }
 
     private void init() {

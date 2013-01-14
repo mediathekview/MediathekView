@@ -40,9 +40,10 @@ public class DialogZiel extends javax.swing.JDialog {
      * @param d
      * @param zziel
      */
-    public DialogZiel(java.awt.Frame parent, boolean modal, String zziel) {
+    public DialogZiel(java.awt.Frame parent, boolean modal, String zziel, String titel) {
         super(parent, modal);
         initComponents();
+        setTitle(titel);
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
         jButtonZiel.addActionListener(new ZielBeobachter());
