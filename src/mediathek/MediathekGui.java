@@ -627,30 +627,37 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         setupUserInterfaceForOsx();
     }
 
+    @Override
     public void handleQuit(ApplicationEvent event) {
         beenden();
     }
 
+    @Override
     public void handleReOpenApplication(ApplicationEvent event) {
         //unused
     }
 
+    @Override
     public void handlePrintFile(ApplicationEvent event) {
         //unused
     }
 
+    @Override
     public void handlePreferences(ApplicationEvent event) {
         dialogEinstellungen.setVisible(true);
     }
 
+    @Override
     public void handleOpenFile(ApplicationEvent event) {
         //unused
     }
 
+    @Override
     public void handleOpenApplication(ApplicationEvent event) {
         //unused
     }
 
+    @Override
     public void handleAbout(ApplicationEvent event) {
         //TODO implement about handler
         JOptionPane.showMessageDialog(this, Funktionen.getProgVersionString());
@@ -670,10 +677,16 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         } else {
             Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR] = Boolean.FALSE.toString();
         }
+        // Hauptfenster
         Daten.system[Konstanten.SYSTEM_GROESSE_X_NR] = String.valueOf(this.getSize().width);
         Daten.system[Konstanten.SYSTEM_GROESSE_Y_NR] = String.valueOf(this.getSize().height);
         Daten.system[Konstanten.SYSTEM_POS_X_NR] = String.valueOf(this.getLocation().x);
         Daten.system[Konstanten.SYSTEM_POS_Y_NR] = String.valueOf(this.getLocation().y);
+        // Dialog Einstellungen
+        Daten.system[Konstanten.SYSTEM_GROESSE_EINSTELLUNEN_X_NR] = String.valueOf(dialogEinstellungen.getSize().width);
+        Daten.system[Konstanten.SYSTEM_GROESSE_EINSTELLUNEN_Y_NR] = String.valueOf(dialogEinstellungen.getSize().height);
+        Daten.system[Konstanten.SYSTEM_POS_EINSTELLUNEN_X_NR] = String.valueOf(dialogEinstellungen.getLocation().x);
+        Daten.system[Konstanten.SYSTEM_POS_EINSTELLUNEN_Y_NR] = String.valueOf(dialogEinstellungen.getLocation().y);
         ddaten.allesSpeichern();
         Log.printEndeMeldung();
         this.dispose();

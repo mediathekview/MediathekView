@@ -19,6 +19,8 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JPanel;
@@ -27,7 +29,9 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
 public class DialogEinstellungen extends javax.swing.JDialog {
@@ -66,6 +70,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         ddaten = d;
         init();
         initTree();
+        setSize();
         jButtonBeenden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -78,6 +83,30 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                 beenden();
             }
         };
+    }
+
+    private void setSize() {
+        int breite, hoehe, posX, posY;
+        try {
+            breite = Integer.parseInt(Daten.system[Konstanten.SYSTEM_GROESSE_EINSTELLUNEN_X_NR]);
+            hoehe = Integer.parseInt(Daten.system[Konstanten.SYSTEM_GROESSE_EINSTELLUNEN_Y_NR]);
+            posX = Integer.parseInt(Daten.system[Konstanten.SYSTEM_POS_EINSTELLUNEN_X_NR]);
+            posY = Integer.parseInt(Daten.system[Konstanten.SYSTEM_POS_EINSTELLUNEN_Y_NR]);
+        } catch (Exception ex) {
+            breite = 0;
+            hoehe = 0;
+            posX = 0;
+            posY = 0;
+        }
+        if (breite > 0 && hoehe > 0) {
+            this.setSize(new Dimension(breite, hoehe));
+        }
+        if (posX > 0 && posY > 0) {
+            this.setLocation(posX, posY);
+        } else {
+            int x = ddaten.mediathekGui.getLocation().x;
+            setLocationRelativeTo(ddaten.mediathekGui);
+        }
     }
 
     private void init() {

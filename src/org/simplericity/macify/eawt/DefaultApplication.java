@@ -15,20 +15,27 @@ package org.simplericity.macify.eawt;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import javax.imageio.ImageIO;
 
 /**
  * Implements Application by calling the Mac OS X API through reflection.
@@ -76,10 +83,12 @@ public class DefaultApplication implements Application {
 
     }
 
+    @Override
     public boolean isMac() {
         return application != null;
     }
 
+    @Override
     public void addAboutMenuItem() {
         if (isMac()) {
             callMethod(application, "addAboutMenuItem");
@@ -88,6 +97,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public void addApplicationListener(ApplicationListener applicationListener) {
 
         if (!Modifier.isPublic(applicationListener.getClass().getModifiers())) {
@@ -105,6 +115,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public void addPreferencesMenuItem() {
         if (isMac()) {
             callMethod("addPreferencesMenuItem");
@@ -113,6 +124,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public boolean getEnabledAboutMenu() {
         if (isMac()) {
             return callMethod("getEnabledAboutMenu").equals(Boolean.TRUE);
@@ -121,6 +133,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public boolean getEnabledPreferencesMenu() {
         if (isMac()) {
             Object result = callMethod("getEnabledPreferencesMenu");
@@ -130,6 +143,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public Point getMouseLocationOnScreen() {
         if (isMac()) {
             try {
@@ -147,6 +161,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public boolean isAboutMenuItemPresent() {
         if (isMac()) {
             return callMethod("isAboutMenuItemPresent").equals(Boolean.TRUE);
@@ -155,6 +170,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public boolean isPreferencesMenuItemPresent() {
         if (isMac()) {
             return callMethod("isPreferencesMenuItemPresent").equals(Boolean.TRUE);
@@ -163,6 +179,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public void removeAboutMenuItem() {
         if (isMac()) {
             callMethod("removeAboutMenuItem");
@@ -171,6 +188,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public synchronized void removeApplicationListener(ApplicationListener applicationListener) {
         if (isMac()) {
             Object listener = listenerMap.get(applicationListener);
@@ -180,6 +198,7 @@ public class DefaultApplication implements Application {
         listenerMap.remove(applicationListener);
     }
 
+    @Override
     public void removePreferencesMenuItem() {
         if (isMac()) {
             callMethod("removeAboutMenuItem");
@@ -188,6 +207,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public void setEnabledAboutMenu(boolean enabled) {
         if (isMac()) {
             callMethod(application, "setEnabledAboutMenu", new Class[]{Boolean.TYPE}, new Object[]{Boolean.valueOf(enabled)});
@@ -196,6 +216,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public void setEnabledPreferencesMenu(boolean enabled) {
         if (isMac()) {
             callMethod(application, "setEnabledPreferencesMenu", new Class[]{Boolean.TYPE}, new Object[]{Boolean.valueOf(enabled)});
@@ -205,6 +226,7 @@ public class DefaultApplication implements Application {
 
     }
 
+    @Override
     public int requestUserAttention(int type) {
         if (type != REQUEST_USER_ATTENTION_TYPE_CRITICAL && type != REQUEST_USER_ATTENTION_TYPE_INFORMATIONAL) {
             throw new IllegalArgumentException("Requested user attention type is not allowed: " + type);
@@ -230,6 +252,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public void cancelUserAttentionRequest(int request) {
         try {
             Object application = getNSApplication();
@@ -258,6 +281,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public void setApplicationIconImage(BufferedImage image) {
         if (isMac()) {
             try {
@@ -307,6 +331,7 @@ public class DefaultApplication implements Application {
         }
     }
 
+    @Override
     public BufferedImage getApplicationIconImage() {
         if (isMac()) {
 
@@ -387,6 +412,7 @@ public class DefaultApplication implements Application {
             this.applicationListener = applicationListener;
         }
 
+        @Override
         public Object invoke(Object object, Method appleMethod, Object[] objects) throws Throwable {
 
             ApplicationEvent event = createApplicationEvent(objects[0]);
@@ -404,6 +430,7 @@ public class DefaultApplication implements Application {
 
     private ApplicationEvent createApplicationEvent(final Object appleApplicationEvent) {
         return (ApplicationEvent) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{ApplicationEvent.class}, new InvocationHandler() {
+            @Override
             public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
                 return appleApplicationEvent.getClass().getMethod(method.getName(), method.getParameterTypes()).invoke(appleApplicationEvent, objects);
             }
