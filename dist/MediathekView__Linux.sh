@@ -1,6 +1,8 @@
 #!/bin/sh
 
-dir=`dirname "$0"`
+
+#dir=`dirname "$0"`
+dir=$(dirname $(readlink -f "$0"))
 cd "$dir"
 
 if [ -n "$JAVA_HOME" ]; then
