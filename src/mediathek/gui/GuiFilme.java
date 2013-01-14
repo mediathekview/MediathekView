@@ -296,7 +296,7 @@ public class GuiFilme extends PanelVorlage {
                     int selRow = selRows[i];
                     selRow = tabelle.convertRowIndexToModel(selRow);
                     film = DDaten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
-                    DialogAddDownload dialog = new DialogAddDownload(null, ddaten, film);
+                    DialogAddDownload dialog = new DialogAddDownload(ddaten.mediathekGui, ddaten, film);
                     dialog.setVisible(true);
                 }
             }
