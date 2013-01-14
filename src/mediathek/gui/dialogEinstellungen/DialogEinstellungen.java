@@ -30,6 +30,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
+import mediathek.gui.dialog.PanelAbout;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
@@ -49,7 +50,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private PanelPsetLang panelPset;
     private PanelPsetImport panelPsetVorlagen;
     // Infos
-    private PanelInfo panelInfo;
+    private PanelAbout panelAbout;
     //private PanelInfoStarts panelStarts;
     private PanelMeldungen panelMeldungenFehler;
     private PanelMeldungen panelMeldungenSystem;
@@ -123,7 +124,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         panelPset = new PanelPsetLang(ddaten);
         panelPsetVorlagen = new PanelPsetImport(ddaten);
         // Infos
-        panelInfo = new PanelInfo(ddaten);
+        panelAbout = new PanelAbout(ddaten);
         //panelStarts = new PanelInfoStarts(ddaten);
         panelMeldungenFehler = new PanelMeldungen(ddaten, Log.textFehler, Log.LOG_FEHLER, "Fehlermeldungen");
         panelMeldungenSystem = new PanelMeldungen(ddaten, Log.textSystem, Log.LOG_SYSTEM, "Systemmeldungen");
@@ -243,7 +244,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                         jPanelExtra.add(panelPsetVorlagen);
                     } else if (name.equals(NAME_allgemeineInfos)) {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelInfo);
+                        jPanelExtra.add(panelAbout);
                         //} else if (name.equals(NAME_infosStarts)) {
                         //jPanelExtra.removeAll();
                         //jPanelExtra.add(panelStarts);
