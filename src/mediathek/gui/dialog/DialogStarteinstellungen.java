@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialog;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.daten.DDaten;
@@ -38,9 +39,11 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private final int STAT_PSET = 3;
     private final int STAT_FERTIG = 4;
     private int status = STAT_START;
+    private Component parentComponent;
 
     public DialogStarteinstellungen(java.awt.Frame parent, boolean modal, DDaten dd) {
         super(parent, modal);
+        parentComponent = parent;
         initComponents();
         ddaten = dd;
         this.setTitle("Erster Start");
@@ -120,9 +123,9 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             ddaten.listePset.addPset(GuiFunktionenProgramme.getStandardprogramme(ddaten));
         }
         if (jCheckBoxAlleEinstellungen.isSelected()) {
-            jScrollPane1.setViewportView(new PanelPsetLang(ddaten, ddaten.listePset));
+            jScrollPane1.setViewportView(new PanelPsetLang(ddaten, parentComponent, ddaten.listePset));
         } else {
-            jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, ddaten.listePset));
+            jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, parentComponent, ddaten.listePset));
         }
         status = STAT_FERTIG;
         jButtonStandard.setText("Weiter");

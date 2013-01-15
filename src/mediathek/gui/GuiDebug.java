@@ -20,6 +20,7 @@
 package mediathek.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -40,8 +41,8 @@ public class GuiDebug extends PanelVorlage {
     private JButton[] buttonSender;
     private String[] sender;
 
-    public GuiDebug(DDaten d) {
-        super(d);
+    public GuiDebug(DDaten d, Component parentComponent) {
+        super(d, parentComponent);
         initComponents();
         ddaten = d;
         sender = Daten.filmeLaden.getSenderNamen();
@@ -77,9 +78,9 @@ public class GuiDebug extends PanelVorlage {
             }
         });
         jPanelSenderLaden.setLayout(new BorderLayout());
-        jPanelSenderLaden.add(new PanelSenderLaden(ddaten));
+        jPanelSenderLaden.add(new PanelSenderLaden(ddaten, ddaten.mediathekGui));
         jPanelListen.setLayout(new BorderLayout());
-        jPanelListen.add(new PanelListeFilmlistenServer(d));
+        jPanelListen.add(new PanelListeFilmlistenServer(d, ddaten.mediathekGui));
     }
 
     private void addSender() {

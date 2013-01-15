@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialog;
 
+import java.awt.Component;
 import java.util.Date;
 import mediathek.Main;
 import mediathek.daten.DDaten;
@@ -35,8 +36,8 @@ public class PanelAbout extends PanelVorlage {
      *
      * @param d
      */
-    public PanelAbout(DDaten dd) {
-        super(dd);
+    public PanelAbout(DDaten dd, Component parentComponent) {
+        super(dd, parentComponent);
         initComponents();
         //init
         try {

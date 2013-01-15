@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,15 +47,15 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
     private JDialog dialog = null;
 
-    public PanelFilmlisteLaden(DDaten d, JDialog ddialog) {
-        super(d);
+    public PanelFilmlisteLaden(DDaten d, Component parentComponent, JDialog ddialog) {
+        super(d, parentComponent);
         dialog = ddialog;
         initComponents();
         init();
     }
 
-    public PanelFilmlisteLaden(DDaten d) {
-        super(d);
+    public PanelFilmlisteLaden(DDaten d, Component parentComponent) {
+        super(d, parentComponent);
         initComponents();
         init();
     }

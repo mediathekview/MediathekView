@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.daten.DDaten;
@@ -30,16 +31,17 @@ public class DialogImportPset extends javax.swing.JDialog {
     public boolean ok = false;
     private ListePset liste;
     private DDaten ddaten;
+    private Component parentComponent;
 
     public DialogImportPset(java.awt.Frame parent, boolean modal, DDaten dd, ListePset lliste) {
         super(parent, modal);
+        parentComponent = parent;
         initComponents();
         ddaten = dd;
         this.setTitle("Programmset");
         liste = lliste;
-        jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, liste));
+        jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, parentComponent, liste));
         jButtonOk.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (check()) {
@@ -48,7 +50,6 @@ public class DialogImportPset extends javax.swing.JDialog {
             }
         });
         jButtonAbbrechen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ok = false;
@@ -56,7 +57,6 @@ public class DialogImportPset extends javax.swing.JDialog {
             }
         });
         new EscBeenden(this) {
-
             @Override
             public void beenden_() {
                 ok = false;
@@ -64,13 +64,12 @@ public class DialogImportPset extends javax.swing.JDialog {
             }
         };
         jCheckBoxAlleEinstellungen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (jCheckBoxAlleEinstellungen.isSelected()) {
-                    jScrollPane1.setViewportView(new PanelPsetLang(ddaten, liste));
+                    jScrollPane1.setViewportView(new PanelPsetLang(ddaten, parentComponent, liste));
                 } else {
-                    jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, liste));
+                    jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, parentComponent, liste));
                 }
             }
         });

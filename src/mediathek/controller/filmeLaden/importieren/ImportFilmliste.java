@@ -78,6 +78,7 @@ public class ImportFilmliste {
                 }
             }
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {
+                ///
                 JOptionPane.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
                 Log.fehlerMeldung(951235497, Log.FEHLER_ART_PROG,"Filme laden", "Es konnten keine Filme geladen werden!");
             }

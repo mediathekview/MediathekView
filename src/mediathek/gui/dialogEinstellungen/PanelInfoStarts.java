@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.controller.io.starter.ListeStarts;
@@ -39,8 +40,8 @@ public class PanelInfoStarts extends PanelVorlage {
      *
      * @param d
      */
-    public PanelInfoStarts(DDaten d) {
-        super(d);
+    public PanelInfoStarts(DDaten d, Component parentComponent) {
+        super(d, parentComponent);
         initComponents();
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
             @Override

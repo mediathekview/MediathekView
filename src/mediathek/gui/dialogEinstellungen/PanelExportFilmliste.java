@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,8 +39,8 @@ public class PanelExportFilmliste extends PanelVorlage {
 
     public String ziel;
 
-    public PanelExportFilmliste(DDaten d) {
-        super(d);
+    public PanelExportFilmliste(DDaten d, Component parent) {
+        super(d, parent);
         initComponents();
         init();
     }
@@ -55,11 +56,11 @@ public class PanelExportFilmliste extends PanelVorlage {
         int ret;
         String exporDatei = Daten.system[Konstanten.SYSTEM_EXPORT_DATEI_NR];
         if (exporDatei.equals("")) {
-            JOptionPane.showMessageDialog(null, "Keine Datei angegeben", "Pfad", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(parentComponent, "Keine Datei angegeben", "Pfad", JOptionPane.INFORMATION_MESSAGE);
         } else {
             try {
                 if (new File(exporDatei).exists()) {
-                    ret = JOptionPane.showConfirmDialog(null, "Datei:  " + "\"" + exporDatei + "\"" + "  existiert bereits", "Überschreiben?",
+                    ret = JOptionPane.showConfirmDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  existiert bereits", "Überschreiben?",
                             JOptionPane.YES_NO_OPTION);
                 } else {
                     ret = JOptionPane.OK_OPTION;
@@ -68,11 +69,11 @@ public class PanelExportFilmliste extends PanelVorlage {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     new IoXmlFilmlisteSchreiben().filmeSchreiben(exporDatei, Daten.listeFilme);
                     if (!new File(exporDatei).exists()) {
-                        JOptionPane.showMessageDialog(null, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(464589201,Log.FEHLER_ART_PROG,"PanelExportImportDateiUrl.filmeExportieren", ex);
+                Log.fehlerMeldung(464589201, Log.FEHLER_ART_PROG, "PanelExportImportDateiUrl.filmeExportieren", ex);
             }
         }
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -209,7 +210,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 try {
                     jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(911025463,Log.FEHLER_ART_PROG,"PanelExportImportDateiUrl.BeobImport", ex);
+                    Log.fehlerMeldung(911025463, Log.FEHLER_ART_PROG, "PanelExportImportDateiUrl.BeobImport", ex);
                 }
             }
         }

@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -38,8 +39,8 @@ import mediathek.tool.TModel;
 public class PanelListeFilmlistenServer extends PanelVorlage {
 
 
-    public PanelListeFilmlistenServer(DDaten d) {
-        super(d);
+    public PanelListeFilmlistenServer(DDaten d, Component parentComponent) {
+        super(d, parentComponent);
         initComponents();
         init();
     }

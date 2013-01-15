@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,8 +38,8 @@ public class PanelBlacklist extends PanelVorlage {
     public boolean ok = false;
     public String ziel;
 
-    public PanelBlacklist(DDaten d) {
-        super(d);
+    public PanelBlacklist(DDaten d, Component parentComponent) {
+        super(d, parentComponent);
         initComponents();
         init();
     }

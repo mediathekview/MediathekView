@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -32,7 +33,7 @@ public class DialogZiel extends javax.swing.JDialog {
 
     public boolean ok = false;
     public String ziel = "";
-
+    private Component parentComponent = null;
     /**
      *
      * @param parent
@@ -43,6 +44,7 @@ public class DialogZiel extends javax.swing.JDialog {
      */
     public DialogZiel(java.awt.Frame parent, boolean modal, String pfad, String name) {
         super(parent, modal);
+        parentComponent = parent;
         initComponents();
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonZiel.addActionListener(new ZielBeobachter());
@@ -63,11 +65,11 @@ public class DialogZiel extends javax.swing.JDialog {
     private boolean check() {
         String pfad = jTextFieldPfad.getText();
         if (pfad.equals("")) {
-            JOptionPane.showMessageDialog(null, "Pfad ist leer", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parentComponent, "Pfad ist leer", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (new File(pfad).exists()) {
-            if (JOptionPane.showConfirmDialog(this, "Die Datei existiert schon!", "Überschreiben?", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+            if (JOptionPane.showConfirmDialog(parentComponent, "Die Datei existiert schon!", "Überschreiben?", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return false;
             }
         }

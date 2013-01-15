@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialog;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -32,6 +33,7 @@ public class DialogZiel extends javax.swing.JDialog {
 
     public boolean ok = false;
     public String ziel;
+    private Component parentComponent = null;
 
     /**
      *
@@ -42,6 +44,7 @@ public class DialogZiel extends javax.swing.JDialog {
      */
     public DialogZiel(java.awt.Frame parent, boolean modal, String zziel, String titel) {
         super(parent, modal);
+        parentComponent = parent;
         initComponents();
         setTitle(titel);
         jButtonOk.addActionListener(new OkBeobachter());
@@ -68,7 +71,7 @@ public class DialogZiel extends javax.swing.JDialog {
             try {
                 int ook;
                 if (new File(pfad).exists()) {
-                    ook = JOptionPane.showConfirmDialog(null, "Datei:  " + "\"" + pfad + "\"" + "  existiert bereits", "Überschreiben?",
+                    ook = JOptionPane.showConfirmDialog(parentComponent, "Datei:  " + "\"" + pfad + "\"" + "  existiert bereits", "Überschreiben?",
                             JOptionPane.YES_NO_OPTION);
                 } else {
                     ook = JOptionPane.OK_OPTION;

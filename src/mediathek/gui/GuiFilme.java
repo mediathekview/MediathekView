@@ -90,8 +90,8 @@ public class GuiFilme extends PanelVorlage {
     private String[][] themenPerSender;
     //private String[] alleThemen;
 
-    public GuiFilme(DDaten d) {
-        super(d);
+    public GuiFilme(DDaten d, Component parentComponent) {
+        super(d, parentComponent);
         initComponents();
         tabelle = new JTableMed(JTableMed.TABELLE_TAB_FILME);
         jScrollPane1.setViewportView(tabelle);
@@ -276,21 +276,21 @@ public class GuiFilme extends PanelVorlage {
         if (gruppe != null) {
             open(gruppe);
         } else {
-            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
+            JOptionPane.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
     private synchronized void filmSpeichern_() {
         if (ddaten.listePset.getListeSpeichern().size() == 0) {
-            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+            JOptionPane.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
             // Satz mit x, war wohl nix
         } else {
             DatenFilm film;
             int[] selRows = tabelle.getSelectedRows();
             if (selRows.length == 0) {
-                new HinweisKeineAuswahl().zeigen();
+                new HinweisKeineAuswahl().zeigen(parentComponent);
             } else {
                 for (int i = 0; i < selRows.length; i++) {
                     int selRow = selRows[i];
@@ -482,7 +482,7 @@ public class GuiFilme extends PanelVorlage {
     private void open(DatenPset gruppe) {
         // Url mit Prognr. starten
         if (tabelle.getSelectedRow() == -1) {
-            new HinweisKeineAuswahl().zeigen();
+            new HinweisKeineAuswahl().zeigen(parentComponent);
         } else {
             String url = "";
             DatenFilm ersterFilm = new DatenFilm();
@@ -1304,7 +1304,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (ddaten.listePset.getListeAbo().size() == 0) {
-                    JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+                    JOptionPane.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                             "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     int nr = tabelle.rowAtPoint(p);
@@ -1337,7 +1337,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (ddaten.listePset.getListeAbo().size() == 0) {
-                    JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+                    JOptionPane.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                             "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     int nr = tabelle.rowAtPoint(p);

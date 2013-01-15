@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -41,8 +42,8 @@ public class PanelSenderLaden extends PanelVorlage {
     private JButton[] buttonSender;
     private String[] sender;
 
-    public PanelSenderLaden(DDaten d) {
-        super(d);
+    public PanelSenderLaden(DDaten d, Component parentComponent) {
+        super(d, parentComponent);
         initComponents();
         ddaten = d;
         init();

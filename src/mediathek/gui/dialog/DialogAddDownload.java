@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialog;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -41,9 +42,11 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private DatenDownload datenDownload = null;
     private DDaten ddaten;
     private DatenFilm datenFilm;
+    private Component parentComponent = null;
 
     public DialogAddDownload(java.awt.Frame parent, DDaten dd, DatenFilm film) {
         super(parent, true);
+        parentComponent = parent;
         initComponents();
         ddaten = dd;
         datenFilm = film;
@@ -57,7 +60,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
 
     private void init() {
         if (ddaten.listePset.getListeSpeichern().size() == 0) {
-            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+            JOptionPane.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
             // Satz mit x, war wohl nix
             ok = false;
@@ -124,7 +127,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         String name = jTextFieldName.getText();
         if (datenDownload != null) {
             if (pfad.equals("") || name.equals("")) {
-                JOptionPane.showMessageDialog(null, "Pfad oder Name ist leer", "Fehlerhafter Pfad/Name!", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(parentComponent, "Pfad oder Name ist leer", "Fehlerhafter Pfad/Name!", JOptionPane.ERROR_MESSAGE);
             } else {
                 if (!pfad.substring(pfad.length() - 1).equals(File.separator)) {
                     pfad += File.separator;
@@ -132,7 +135,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 if (GuiFunktionenProgramme.checkPfadBeschreibbar(pfad)) {
                     ok = true;
                 } else {
-                    JOptionPane.showMessageDialog(null, "Pfad ist nicht beschreibbar", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(parentComponent, "Pfad ist nicht beschreibbar", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
