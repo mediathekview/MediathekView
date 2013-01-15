@@ -132,7 +132,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         GuiFunktionen.setLook(this);
         init();
         setSize(max);
-        dialogEinstellungen = new DialogEinstellungen(null, false, ddaten);
+        dialogEinstellungen = new DialogEinstellungen(ddaten.mediathekGui, false, ddaten);
 ////////        // Set up our application to respond to the Mac OS X application menu
 ////////        registerForMacOSXEvents();
         new CheckUpdate(this, ddaten).suchen();
@@ -290,15 +290,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
     private void initTabs() {
         ddaten.mediathekGui = this;
-        ddaten.guiFilme = new GuiFilme(ddaten);
-        ddaten.guiDownloads = new GuiDownloads(ddaten);
-        ddaten.guiAbo = new GuiAbo(ddaten);
+        ddaten.guiFilme = new GuiFilme(ddaten, ddaten.mediathekGui);
+        ddaten.guiDownloads = new GuiDownloads(ddaten, ddaten.mediathekGui);
+        ddaten.guiAbo = new GuiAbo(ddaten, ddaten.mediathekGui);
         jTabbedPane.addTab("Filme", ddaten.guiFilme);
         jTabbedPane.addTab("Downloads", ddaten.guiDownloads);
         jTabbedPane.addTab("Abos", ddaten.guiAbo);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                new PanelMeldungen(ddaten, Log.textSystem, ListenerMediathekView.EREIGNIS_LOG_SYSTEM, "Systemmeldungen"),
-                new PanelMeldungen(ddaten, Log.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Videoplayer"));
+                new PanelMeldungen(ddaten, ddaten.mediathekGui, Log.textSystem, ListenerMediathekView.EREIGNIS_LOG_SYSTEM, "Systemmeldungen"),
+                new PanelMeldungen(ddaten, ddaten.mediathekGui, Log.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Videoplayer"));
         splitPane.setName("Meldungen");
         splitPane.addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
@@ -308,8 +308,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
         if (Daten.debug) {
-            jTabbedPane.addTab("Debug", new GuiDebug(ddaten));
-            jTabbedPane.addTab("Starts", new PanelInfoStarts(ddaten));
+            jTabbedPane.addTab("Debug", new GuiDebug(ddaten, ddaten.mediathekGui));
+            jTabbedPane.addTab("Starts", new PanelInfoStarts(ddaten, ddaten.mediathekGui));
         }
     }
 
@@ -613,7 +613,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAnleitung.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogOk dialogOk = new DialogOk(ddaten.mediathekGui, true, new PanelHilfe(ddaten), "Hilfe zum Programm");
+                DialogOk dialogOk = new DialogOk(ddaten.mediathekGui, true, new PanelHilfe(ddaten, ddaten.mediathekGui), "Hilfe zum Programm");
                 dialogOk.setVisible(true);
             }
         });
@@ -621,7 +621,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAbout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogOk dialogOk = new DialogOk(ddaten.mediathekGui, true, new PanelAbout(ddaten), "Über MediathekView");
+                DialogOk dialogOk = new DialogOk(ddaten.mediathekGui, true, new PanelAbout(ddaten, ddaten.mediathekGui), "Über MediathekView");
                 dialogOk.setVisible(true);
             }
         });
@@ -667,7 +667,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     @Override
     public void handleAbout(ApplicationEvent event) {
         //TODO implement about handler
-        DialogOk dialogOk = new DialogOk(ddaten.mediathekGui, true, new PanelAbout(ddaten), "Über MediathekView");
+        DialogOk dialogOk = new DialogOk(ddaten.mediathekGui, true, new PanelAbout(ddaten, ddaten.mediathekGui), "Über MediathekView");
         dialogOk.setVisible(true);
         //JOptionPane.showMessageDialog(this, Funktionen.getProgVersionString());
         event.setHandled(true);
@@ -737,7 +737,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private void filmeLaden() {
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUS) {
             DialogLeer dialog = new DialogLeer(this, true);
-            dialog.init("Einstellungen zum Laden der Filme", new PanelFilmlisteLaden(ddaten, dialog));
+            dialog.init("Einstellungen zum Laden der Filme", new PanelFilmlisteLaden(ddaten, ddaten.mediathekGui, dialog));
             dialog.setVisible(true);
         } else {
             jButtonFilmeLaden.setEnabled(false);

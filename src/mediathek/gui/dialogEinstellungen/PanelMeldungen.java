@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.text.DefaultCaret;
@@ -32,8 +33,8 @@ public class PanelMeldungen extends PanelVorlage {
     private StringBuffer text;
     private int logArt;
 
-    public PanelMeldungen(DDaten d, StringBuffer ttext, int llogArt, String header) {
-        super(d);
+    public PanelMeldungen(DDaten d, Component parentComponent, StringBuffer ttext, int llogArt, String header) {
+        super(d, parentComponent);
         initComponents();
         text = ttext;
         jLabelHeader.setText(header);

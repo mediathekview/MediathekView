@@ -19,8 +19,8 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JPanel;
@@ -56,6 +56,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private PanelMeldungen panelMeldungenSystem;
     private PanelMeldungen panelMeldungenPlayer;
     private JPanel panelLeer = new JPanel();
+    private Component parentComponent = null;
 
     /**
      *
@@ -66,6 +67,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
      */
     public DialogEinstellungen(java.awt.Frame parent, boolean modal, DDaten d) {
         super(parent, modal);
+        parentComponent = parent;
         initComponents();
         setTitle("Programmeinstellungen");
         ddaten = d;
@@ -111,24 +113,24 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     }
 
     private void init() {
-        panelEinstellungen = new PanelEinstellungen(ddaten);
-        panelEinstellungenNetz = new PanelEinstellungenNetz(ddaten);
-        panelImportFilme = new PanelFilmlisteLaden(ddaten);
-        panelExportFilmliste = new PanelExportFilmliste(ddaten);
-        panelSenderLaden = new PanelSenderLaden(ddaten);
-        panelBlacklist = new PanelBlacklist(ddaten);
-        panelHistory = new PanelErledigteUrls(ddaten);
+        panelEinstellungen = new PanelEinstellungen(ddaten, parentComponent);
+        panelEinstellungenNetz = new PanelEinstellungenNetz(ddaten, parentComponent);
+        panelImportFilme = new PanelFilmlisteLaden(ddaten, parentComponent);
+        panelExportFilmliste = new PanelExportFilmliste(ddaten, parentComponent);
+        panelSenderLaden = new PanelSenderLaden(ddaten, parentComponent);
+        panelBlacklist = new PanelBlacklist(ddaten, parentComponent);
+        panelHistory = new PanelErledigteUrls(ddaten, parentComponent);
         panelHistory.initHistory();
-        panelErledigteAbos = new PanelErledigteUrls(ddaten);
+        panelErledigteAbos = new PanelErledigteUrls(ddaten, parentComponent);
         panelErledigteAbos.initAbo();
-        panelPset = new PanelPsetLang(ddaten);
-        panelPsetVorlagen = new PanelPsetImport(ddaten);
+        panelPset = new PanelPsetLang(ddaten, parentComponent);
+        panelPsetVorlagen = new PanelPsetImport(ddaten, parentComponent);
         // Infos
-        panelAbout = new PanelAbout(ddaten);
+        panelAbout = new PanelAbout(ddaten, parentComponent);
         //panelStarts = new PanelInfoStarts(ddaten);
-        panelMeldungenFehler = new PanelMeldungen(ddaten, Log.textFehler, Log.LOG_FEHLER, "Fehlermeldungen");
-        panelMeldungenSystem = new PanelMeldungen(ddaten, Log.textSystem, Log.LOG_SYSTEM, "Systemmeldungen");
-        panelMeldungenPlayer = new PanelMeldungen(ddaten, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer");
+        panelMeldungenFehler = new PanelMeldungen(ddaten, parentComponent, Log.textFehler, Log.LOG_FEHLER, "Fehlermeldungen");
+        panelMeldungenSystem = new PanelMeldungen(ddaten, parentComponent, Log.textSystem, Log.LOG_SYSTEM, "Systemmeldungen");
+        panelMeldungenPlayer = new PanelMeldungen(ddaten, parentComponent, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer");
     }
 
     private void initTree() {

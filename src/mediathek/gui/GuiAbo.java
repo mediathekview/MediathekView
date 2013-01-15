@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,8 +46,8 @@ import mediathek.tool.TModelAbo;
 
 public class GuiAbo extends PanelVorlage {
 
-    public GuiAbo(DDaten d) {
-        super(d);
+    public GuiAbo(DDaten d, Component parentComponent) {
+        super(d, parentComponent);
         initComponents();
         tabelle = new JTableMed(JTableMed.TABELLE_TAB_ABOS);
         jScrollPane1.setViewportView(tabelle);
@@ -119,7 +120,7 @@ public class GuiAbo extends PanelVorlage {
             } else {
                 text = rows.length + " Abos löschen?";
             }
-            int ret = JOptionPane.showConfirmDialog(null, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+            int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
                 for (int i = rows.length - 1; i >= 0; --i) {
                     int delRow = tabelle.convertRowIndexToModel(rows[i]);
@@ -130,7 +131,7 @@ public class GuiAbo extends PanelVorlage {
             tabelleLaden();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
         } else {
-            new HinweisKeineAuswahl().zeigen();
+            new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
 
@@ -149,7 +150,7 @@ public class GuiAbo extends PanelVorlage {
             }
             setInfo();
         } else {
-            new HinweisKeineAuswahl().zeigen();
+            new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
 
@@ -169,7 +170,7 @@ public class GuiAbo extends PanelVorlage {
             setInfo();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
         } else {
-            new HinweisKeineAuswahl().zeigen();
+            new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
 

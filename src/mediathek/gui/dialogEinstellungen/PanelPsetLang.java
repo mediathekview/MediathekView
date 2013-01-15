@@ -20,6 +20,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -62,8 +63,8 @@ public class PanelPsetLang extends PanelVorlage {
     private JTableMed tabelleProgramme;
     private boolean modalHilfe = false;
 
-    public PanelPsetLang(DDaten d) {
-        super(d);
+    public PanelPsetLang(DDaten d, Component parentComponent) {
+        super(d, parentComponent);
         initComponents();
         modalHilfe = false;
         tabellePset = new JTableMed(DatenPset.PROGRAMMSET_COLUMN_NAMES_);
@@ -74,8 +75,8 @@ public class PanelPsetLang extends PanelVorlage {
         init();
     }
 
-    public PanelPsetLang(DDaten d, ListePset llistePset) {
-        super(d);
+    public PanelPsetLang(DDaten d, Component parentComponent, ListePset llistePset) {
+        super(d, parentComponent);
         initComponents();
         modalHilfe = true;
         tabellePset = new JTableMed(DatenPset.PROGRAMMSET_COLUMN_NAMES_);
@@ -412,7 +413,7 @@ public class PanelPsetLang extends PanelVorlage {
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(neu, 0, false));
             notifyPset();
         } else {
-            new HinweisKeineAuswahl().zeigen();
+            new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
 
@@ -433,7 +434,7 @@ public class PanelPsetLang extends PanelVorlage {
             } else {
                 text = rows.length + " Programmgruppen löschen?";
             }
-            int ret = JOptionPane.showConfirmDialog(null, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+            int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
                 for (int i = rows.length - 1; i >= 0; --i) {
                     int delRow = tabellePset.convertRowIndexToModel(rows[i]);
@@ -444,7 +445,7 @@ public class PanelPsetLang extends PanelVorlage {
                 notifyPset();
             }
         } else {
-            new HinweisKeineAuswahl().zeigen();
+            new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
 
@@ -471,7 +472,7 @@ public class PanelPsetLang extends PanelVorlage {
                 ddaten.ioXmlSchreiben.exportPset(liste.toArray(new DatenPset[0]), dialogZiel.ziel);
             }
         } else {
-            new HinweisKeineAuswahl().zeigen();
+            new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
 
@@ -492,7 +493,7 @@ public class PanelPsetLang extends PanelVorlage {
             tabelleProgramme.setRowSelectionInterval(neu, neu);
             tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(neu, 0, true));
         } else {
-            new HinweisKeineAuswahl().zeigen();
+            new HinweisKeineAuswahl().zeigen(parentComponent);
         }
 
     }
@@ -1275,7 +1276,7 @@ public class PanelPsetLang extends PanelVorlage {
                 DatenProg prog = getPset().getListeProg().get(row);
                 progNeueZeile(prog.copy());
             } else {
-                new HinweisKeineAuswahl().zeigen();
+                new HinweisKeineAuswahl().zeigen(parentComponent);
             }
         }
     }
@@ -1330,7 +1331,7 @@ public class PanelPsetLang extends PanelVorlage {
                     notifyPset();
                     stopBeob = false;
                 } else {
-                    new HinweisKeineAuswahl().zeigen();
+                    new HinweisKeineAuswahl().zeigen(parentComponent);
                 }
             }
             setNamePruefen();
@@ -1349,7 +1350,7 @@ public class PanelPsetLang extends PanelVorlage {
                 tabellePset();
                 notifyPset();
             } else {
-                new HinweisKeineAuswahl().zeigen();
+                new HinweisKeineAuswahl().zeigen(parentComponent);
             }
         }
     }
@@ -1368,7 +1369,7 @@ public class PanelPsetLang extends PanelVorlage {
                 } else {
                     text = rows.length + " Programme löschen?";
                 }
-                int ret = JOptionPane.showConfirmDialog(null, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+                int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
                 if (ret == JOptionPane.OK_OPTION) {
                     for (int i = rows.length - 1; i >= 0; --i) {
                         int delRow = tabelleProgramme.convertRowIndexToModel(rows[i]);
@@ -1377,7 +1378,7 @@ public class PanelPsetLang extends PanelVorlage {
                     tabelleProgramme();
                 }
             } else {
-                new HinweisKeineAuswahl().zeigen();
+                new HinweisKeineAuswahl().zeigen(parentComponent);
             }
         }
     }

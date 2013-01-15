@@ -20,6 +20,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -52,8 +53,8 @@ public class PanelPsetKurz extends PanelVorlage {
     private DatenPset pSet;
     private ListePset listePset;
 
-    public PanelPsetKurz(DDaten d, ListePset llistePset) {
-        super(d);
+    public PanelPsetKurz(DDaten d, Component parentComponent, ListePset llistePset) {
+        super(d, parentComponent);
         initComponents();
         listePset = llistePset;
         jListPset.setModel(new DefaultComboBoxModel(listePset.getObjectDataCombo()));
@@ -167,7 +168,7 @@ public class PanelPsetKurz extends PanelVorlage {
     private boolean check() {
         ok = false;
         if (jTextFieldName.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Name ist leer", "Kein Name für das Programmset!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parentComponent, "Name ist leer", "Kein Name für das Programmset!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 //        if (zielPfad.equals("")) {

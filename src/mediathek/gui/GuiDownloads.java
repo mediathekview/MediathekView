@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -64,8 +65,8 @@ public class GuiDownloads extends PanelVorlage {
 
     private DialogDatenFilm dialogDatenFilm = null;
 
-    public GuiDownloads(DDaten d) {
-        super(d);
+    public GuiDownloads(DDaten d, Component parentComponent) {
+        super(d, parentComponent);
         initComponents();
         tabelle = new JTableMed(JTableMed.TABELLE_TAB_DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
@@ -256,7 +257,7 @@ public class GuiDownloads extends PanelVorlage {
                 tabelle.setSelected();
             }
         } else {
-            new HinweisKeineAuswahl().zeigen();
+            new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
 
@@ -268,7 +269,7 @@ public class GuiDownloads extends PanelVorlage {
             ddaten.listeDownloads.downloadVorziehen(url);
             tabelleLaden();
         } else {
-            new HinweisKeineAuswahl().zeigen();
+            new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
 
@@ -285,22 +286,21 @@ public class GuiDownloads extends PanelVorlage {
                 if (Desktop.isDesktopSupported()) {
                     Desktop d = Desktop.getDesktop();
                     if (d.isSupported(Desktop.Action.OPEN)) {
-                        d.open(new File(s));
+                        File sFile = new File(s);
+                        if (!sFile.exists()) {
+                            sFile = sFile.getParentFile();
+                        }
+                        d.open(sFile);
                         //d.browse(new File(s).toURI());
                     }
                 }
             } catch (Exception ex) {
-                if (!new File(s).exists()) {
-                    JOptionPane.showMessageDialog(null, "Der Download wurde noch nicht gestartet, der Ordner existiert noch nicht!",
-                            "Fehler", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Kann den Dateimanager nicht öffnen!",
-                            "Fehler", JOptionPane.ERROR_MESSAGE);
-                    Log.fehlerMeldung(976402157, Log.FEHLER_ART_PROG, GuiDownloads.class.getName(), ex, "Ordner öffnen: " + download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
-                }
+                JOptionPane.showMessageDialog(parentComponent, "Kann den Dateimanager nicht öffnen!",
+                        "Fehler", JOptionPane.ERROR_MESSAGE);
+                Log.fehlerMeldung(976402157, Log.FEHLER_ART_PROG, GuiDownloads.class.getName(), ex, "Ordner öffnen: " + download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
             }
         } else {
-            new HinweisKeineAuswahl().zeigen();
+            new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
 
@@ -327,7 +327,7 @@ public class GuiDownloads extends PanelVorlage {
             }
             tabelleLaden();
         } else {
-            new HinweisKeineAuswahl().zeigen();
+            new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
 
@@ -355,7 +355,7 @@ public class GuiDownloads extends PanelVorlage {
                     urls[i] = url;
                 }
             } else {
-                new HinweisKeineAuswahl().zeigen();
+                new HinweisKeineAuswahl().zeigen(parentComponent);
             }
         }
         // ========================
@@ -371,7 +371,7 @@ public class GuiDownloads extends PanelVorlage {
                     if (s.status > Start.STATUS_RUN) {
                         // wenn er noch läuft gibts nix
                         // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
-                        int a = JOptionPane.showConfirmDialog(null, "Film nochmal starten?  ==> " + s.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR], "Fertiger Download", JOptionPane.YES_NO_OPTION);
+                        int a = JOptionPane.showConfirmDialog(parentComponent, "Film nochmal starten?  ==> " + s.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR], "Fertiger Download", JOptionPane.YES_NO_OPTION);
                         if (a != JOptionPane.YES_OPTION) {
                             // weiter mit der nächsten URL
                             continue;
@@ -671,17 +671,19 @@ public class GuiDownloads extends PanelVorlage {
                     filmStartenWiederholenStoppen(false /* alle */, false /* starten */);
                 }
             });
-
-            // Zielordner öffnen
-            JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png")));
-            jPopupMenu.add(itemOeffnen);
-            itemOeffnen.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    zielordnerOeffnen();
-                }
-            });
+            if (ddaten.debug) {
+                /// geht noch nicht ganz
+                // Zielordner öffnen
+                JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
+                itemOeffnen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png")));
+                jPopupMenu.add(itemOeffnen);
+                itemOeffnen.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent arg0) {
+                        zielordnerOeffnen();
+                    }
+                });
+            }
 
 
             //#######################################
@@ -814,7 +816,7 @@ public class GuiDownloads extends PanelVorlage {
                                 ddaten.starterClass.urlStarten(gruppe, film);
                             }
                         } else {
-                            JOptionPane.showMessageDialog(null, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
+                            JOptionPane.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
                                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }

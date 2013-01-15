@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,8 +36,8 @@ public class PanelErledigteUrls extends PanelVorlage {
 
     private boolean abo;
 
-    public PanelErledigteUrls(DDaten d) {
-        super(d);
+    public PanelErledigteUrls(DDaten d, Component parentComponent) {
+        super(d, parentComponent);
         initComponents();
         jTable1.addMouseListener(new BeobMausTabelle());
     }
