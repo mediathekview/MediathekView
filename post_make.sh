@@ -20,3 +20,6 @@ cd /mnt/daten/software/java/Mediathek_3/dist/
 datum=$(date +%Y.%m.%d )
 zip -r MediathekView_3.0.0_$datum.zip .
  
+
+# Dateien ins share-Verzeichnis von VmWare kopieren
+cp -r /mnt/daten/software/java/Mediathek_3/dist/* /mnt/daten/virtualbox/share/aktMed

@@ -28,7 +28,7 @@ import mediathek.tool.Log;
 
 /**
  *
- *  @author
+ * @author
  */
 public class MediathekArd extends MediathekReader implements Runnable {
 
@@ -36,7 +36,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
 
     /**
      *
-     *  @param ddaten
+     * @param ddaten
      */
     public MediathekArd(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 6, /* urlWarten */ 500, startPrio);
@@ -92,7 +92,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 String[] add = new String[]{"http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=" + url + "/index.html", thema};
                 listeThemen.addUrl(add);
             } catch (Exception ex) {
-                Log.fehlerMeldung(-698732167,Log.FEHLER_ART_MREADER,  "MediathekArd.addToList", ex, "kein Thema");
+                Log.fehlerMeldung(-698732167, Log.FEHLER_ART_MREADER, "MediathekArd.addToList", ex, "kein Thema");
             }
         }
         if (Daten.filmeLaden.getStop()) {
@@ -112,7 +112,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
         try {
             // war wohl nix, warten und dann nochmal
             // timeout: the maximum time to wait in milliseconds.
-            long warten = 60 * 1000;
+            long warten = 2 * 60 * 1000;
             this.wait(warten);
         } catch (InterruptedException ex) {
             Log.fehlerMeldung(-369502367, Log.FEHLER_ART_MREADER, "MediathekArd.warten", ex, "2. Versuch");
@@ -140,7 +140,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     feedSuchen(link[0] /* url */, link[1] /* Thema */);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-487326921,Log.FEHLER_ART_MREADER,  "MediathekArdThemaLaden.run", ex);
+                Log.fehlerMeldung(-487326921, Log.FEHLER_ART_MREADER, "MediathekArdThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
         }
@@ -157,12 +157,12 @@ public class MediathekArd extends MediathekReader implements Runnable {
             int pos2;
             String url;
             //erst mal die erste Seite holen
-            if (!feedEinerSeiteSuchen(seite1, strUrlFeed, thema, false)) {
+            if (!feedEinerSeiteSuchen(seite1, strUrlFeed, thema)) {
                 // http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=3322404/index.html
                 // http://www.ardmediathek.de/ard/servlet/ajax-cache/3516992/view=switch/documentId=3322404/index.html
                 String tmp = strUrlFeed.replace("ajax-cache/3516962/view=list", "ajax-cache/3516992/view=switch");
                 seiteFehler = getUrl.getUri_Utf(nameSenderMReader, tmp, seiteFehler, "Thema: " + thema);
-                feedEinerSeiteSuchen(seiteFehler, tmp, thema, false);
+                feedEinerSeiteSuchen(seiteFehler, tmp, thema);
             }
             //nach weitern Seiten schauen
             if (suchen.allesLaden) {
@@ -181,15 +181,15 @@ public class MediathekArd extends MediathekReader implements Runnable {
                             continue;
                         }
                         seiteWeiter = getUrl.getUri_Utf(nameSenderMReader, "http://www.ardmediathek.de" + url, seiteWeiter, "Thema: " + thema);
-                        feedEinerSeiteSuchen(seiteWeiter, strUrlFeed, thema, true);
+                        feedEinerSeiteSuchen(seiteWeiter, strUrlFeed, thema);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(-497321681,Log.FEHLER_ART_MREADER,  "MediathekArd.feedSuchen", ex, "Weitere Seiten suchen");
+                        Log.fehlerMeldung(-497321681, Log.FEHLER_ART_MREADER, "MediathekArd.feedSuchen", ex, "Weitere Seiten suchen");
                     }
                 }
             }
         }
 
-        private boolean feedEinerSeiteSuchen(StringBuffer seite, String strUrlFeed, String thema, boolean alt) {
+        private boolean feedEinerSeiteSuchen(StringBuffer seite, String strUrlFeed, String thema) {
             //url: http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=443668/index.html
             //Feed eines Themas laden
             //<h3 class="mt-title"><a href="/ard/servlet/content/3517136?documentId=3743644"
@@ -263,7 +263,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                             }
                         }
                         gefunden = true;
-                        ret = filmLaden(strUrlFeed, MUSTER_SET + url, thema, titel, datum, zeit, alt);
+                        ret = filmLaden(strUrlFeed, MUSTER_SET + url, thema, titel, datum, zeit);
                     } catch (Exception ex) {
                         Log.fehlerMeldung(-321648296, Log.FEHLER_ART_MREADER, "MediathekArd.feedEinerSeiteSuchen-1", ex, "Thema hat keine Links");
                     }
@@ -303,9 +303,9 @@ public class MediathekArd extends MediathekReader implements Runnable {
                                 }
                             }
                         }
-                        ret = filmLaden(strUrlFeed, MUSTER_SET + url, thema, titel, datum, zeit, alt);
+                        ret = filmLaden(strUrlFeed, MUSTER_SET + url, thema, titel, datum, zeit);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(-487369532,Log.FEHLER_ART_MREADER,  "MediathekArd.feedEinerSeiteSuchen-2", ex, "Thema hat keine Links");
+                        Log.fehlerMeldung(-487369532, Log.FEHLER_ART_MREADER, "MediathekArd.feedEinerSeiteSuchen-2", ex, "Thema hat keine Links");
                     }
                 }
 
@@ -313,7 +313,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             return ret;
         }
 
-        boolean filmLaden(String urlFeed, String urlFilm, String thema, String titel, String datum, String zeit, boolean alt) {
+        boolean filmLaden(String urlFeed, String urlFilm, String thema, String titel, String datum, String zeit) {
             //mediaCollection.addMediaStream(0, 0, "rtmp://vod.daserste.de/ardfs/", "mp4:videoportal/Film/c_110000/115698/format117354.f4v?sen=Beckmann&amp;for=Web-S&amp;clip=Simone+Rethel+%FCber+Altern+in+W%FCrde");
             //mediaCollection.addMediaStream(0, 1, "rtmp://vod.daserste.de/ardfs/", "mp4:videoportal/Film/c_110000/115698/format117353.f4v?sen=Beckmann&amp;for=Web-M&amp;clip=Simone+Rethel+%FCber+Altern+in+W%FCrde");
             //mediaCollection.addMediaStream(0, 2, "rtmp://vod.daserste.de/ardfs/", "mp4:videoportal/Film/c_110000/115698/format117383.f4v?sen=Beckmann&amp;for=Web-L&amp;clip=Simone+Rethel+%FCber+Altern+in+W%FCrde");
@@ -431,7 +431,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 addFilm(film);
                 ret = true;
             } else {
-                Log.fehlerMeldung(-673219867,Log.FEHLER_ART_MREADER,  "MediathekArd.filmLaden", "keine Url für: " + urlFilm);
+                Log.fehlerMeldung(-673219867, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm);
             }
             return ret;
         }

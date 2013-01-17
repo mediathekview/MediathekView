@@ -155,7 +155,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         try {
             return Integer.parseInt(arr[DOWNLOAD_ART_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(946325800, Log.FEHLER_ART_PROG,this.getClass().getName(), ex);
+            Log.fehlerMeldung(946325800, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
             return Start.ART_PROGRAMM;
         }
     }
@@ -164,7 +164,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         try {
             return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(649632580, Log.FEHLER_ART_PROG,this.getClass().getName(), ex);
+            Log.fehlerMeldung(649632580, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
             return Start.QUELLE_BUTTON;
         }
     }
@@ -206,7 +206,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             dateinamePfadBauen(pSet, film, abo, nname, ppfad);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
-            Log.fehlerMeldung(825600145,Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
+            Log.fehlerMeldung(825600145, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
         }
     }
 
@@ -337,16 +337,19 @@ public class DatenDownload implements Comparable<DatenDownload> {
         String ret = arr[DOWNLOAD_URL_NR];
         if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
             //swr
-            ret = arr[DOWNLOAD_URL_NR].replace(".m.mp4", ".l.mp4");
+            ret = arr[DOWNLOAD_URL_NR].replace(".l.mp4", ".m.mp4");
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER) || arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
             // ZDF und 3sat
             // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_51k_p7v9.mp4" system-bitrate="62000">
             // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_536k_p9v9.mp4" system-bitrate="700000">
             // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_1596k_p13v9.mp4" system-bitrate="1700000">
-            ret = arr[DOWNLOAD_URL_NR].replace("1596k_p13v9.mp4", "51k_p7v9.mp4");
+            ret = arr[DOWNLOAD_URL_NR].replace("1596k_p13v9.mp4", "536k_p9v9.mp4");
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekNdr.SENDER)) {
             //NDR
-            ret = arr[DOWNLOAD_URL_NR].replace(".hq.", ".lo.");
+            ret = arr[DOWNLOAD_URL_NR].replace(".hq.", ".hi.");
+        } else if (ret.startsWith("rtmpt://cp160844.edgefcs.net") && ret.endsWith(".hq.mp4")) {
+            // für die NDR-Filme beim ARD
+            ret = arr[DOWNLOAD_URL_NR].replace(".hq.", ".hi.");
         }
         return ret;
     }
