@@ -35,7 +35,6 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSpinner;
@@ -970,10 +969,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemDownloadVorziehen.setText("Download vorziehen");
         jMenuDownload.add(jMenuItemDownloadVorziehen);
 
+        jMenuItemDownloadsZurueckstellen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_BACK_SPACE, 0));
         jMenuItemDownloadsZurueckstellen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_16.png"))); // NOI18N
         jMenuItemDownloadsZurueckstellen.setText("Download zurückstellen");
         jMenuDownload.add(jMenuItemDownloadsZurueckstellen);
 
+        jMenuItemDownloadsLoeschen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         jMenuItemDownloadsLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
         jMenuItemDownloadsLoeschen.setText("Download löschen");
         jMenuDownload.add(jMenuItemDownloadsLoeschen);
@@ -983,6 +984,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuDownload.add(jMenuItemDownloadAendern);
         jMenuDownload.add(jSeparator3);
 
+        jMenuItemDownloadsAktualisieren.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_SPACE, 0));
         jMenuItemDownloadsAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png"))); // NOI18N
         jMenuItemDownloadsAktualisieren.setText("Downloads aktualisieren");
         jMenuDownload.add(jMenuItemDownloadsAktualisieren);
