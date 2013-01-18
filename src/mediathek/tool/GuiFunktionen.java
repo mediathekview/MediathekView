@@ -69,7 +69,7 @@ public class GuiFunktionen extends Funktionen {
             }
             ret = true;
         } catch (Exception e) {
-            Log.fehlerMeldung(305964198, Log.FEHLER_ART_PROG,"GuiFunktionen.setLook", e, "Kann das Look and Feel nicht ändern!");
+            Log.fehlerMeldung(305964198, Log.FEHLER_ART_PROG, "GuiFunktionen.setLook", e, "Kann das Look and Feel nicht ändern!");
         }
         return ret;
     }
@@ -113,7 +113,7 @@ public class GuiFunktionen extends Funktionen {
                     ret = tmp;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006,Log.FEHLER_ART_PROG, "DatenFilm.datumDrehen", ex, datum);
+                Log.fehlerMeldung(775421006, Log.FEHLER_ART_PROG, "DatenFilm.datumDrehen", ex, datum);
             }
 
         }
@@ -132,10 +132,14 @@ public class GuiFunktionen extends Funktionen {
         //verbotene Zeichen entfernen
         String ret = pfad;
         boolean winPfad = false;
-        if (pfad.length() > 3) {
-            if (pfad.substring(1, 3).equals(":\\")) {
+        if (pfad.length() >= 2) {
+            if (pfad.charAt(1) == ':') {
+                // damit auch "d:" als Pfad geht
                 winPfad = true;
             }
+//            if (pfad.substring(1, 3).equals(":\\")) {
+//                winPfad = true;
+//            }
         }
         if (pfadtrennerEntfernen) {
             ret = ret.replace("\\", "-");
@@ -167,7 +171,11 @@ public class GuiFunktionen extends Funktionen {
         ret = ret.replace("|", "_");
         ret = getAscii(ret);
         if (winPfad) {
-            ret = ret.substring(0, 1) + ":\\" + ret.substring(3);
+            if (ret.length() >= 3) {
+                ret = ret.substring(0, 1) + ":" + ret.substring(2);
+            } else if (ret.length() >= 2) {
+                ret = ret.substring(0, 1) + ":";
+            }
         }
         return ret;
     }
@@ -212,7 +220,7 @@ public class GuiFunktionen extends Funktionen {
             }
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(283946015, Log.FEHLER_ART_PROG,"GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
+            Log.fehlerMeldung(283946015, Log.FEHLER_ART_PROG, "GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
         }
         return ret;
     }
@@ -244,7 +252,7 @@ public class GuiFunktionen extends Funktionen {
             ret = ret.substring(0, ret.indexOf("&"));
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(395019631,Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiName", pfad);
+            Log.fehlerMeldung(395019631, Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiName", pfad);
         }
         return ret;
     }
