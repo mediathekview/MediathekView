@@ -74,12 +74,12 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     if (i == -1) {
                         // noch nicht gestartet
                         this.setText("");
-                    } else if (i == 0) {
+                    } else if (i == DatenDownload.PROGRESS_WARTEN) {
                         this.setText("warten");
-                    } else if (i == 1) {
+                    } else if (i == DatenDownload.PROGRESS_GESTARTET) {
                         this.setText("gestartet");
-                    } else if (1 < i && i < 1000) {
-                        //JProgressBar progressBar = new JProgressBar(0, 1000);
+                    } else if (1 < i && i < DatenDownload.PROGRESS_FERTIG) {
+//////                        return new ProgressPanel(s).progressPanel();
                         JProgressBar progressBar = new JProgressBar(0, 1000);
                         JPanel panel = new JPanel(new BorderLayout());
                         setColor(panel, s, isSelected);
@@ -97,14 +97,13 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                                 return Color.white;
                             }
                         });
-                        //JPanel panel = new JPanel(new BorderLayout());
                         panel.add(progressBar);
                         panel.setBorder(BorderFactory.createEmptyBorder());
                         progressBar.setValue(i);
                         double d = i / 10.0;
                         progressBar.setString(Double.toString(d) + "%");
                         return panel;
-                    } else if (i == 1000) {
+                    } else if (i == DatenDownload.PROGRESS_FERTIG) {
                         if (s != null) {
                             if (s.status == Start.STATUS_ERR) {
                                 this.setText("fehlerhaft");
@@ -141,7 +140,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(758200166, Log.FEHLER_ART_PROG,this.getClass().getName(), ex);
+            Log.fehlerMeldung(758200166, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
         }
         return this;
     }
@@ -178,4 +177,56 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 break;
         }
     }
+
+//    private class ProgressPanel extends JPanel {
+//
+//        private JPanel panel = new JPanel(new BorderLayout());
+//        private Start s = null;
+//        private int i = 0;
+//        private JProgressBar progressBar = new JProgressBar(0, 1000);
+//
+//        public ProgressPanel(Start s_) {
+//            s = s_;
+//            ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, CellRendererDownloads.class.getSimpleName()) {
+//                @Override
+//                public void ping() {
+//                    panelUpdate();
+//                }
+//            });
+//            setHorizontalAlignment(SwingConstants.CENTER);
+//            // JProgressBar progressBar = new JProgressBar(0, 1000);
+//            // JPanel panel = new JPanel(new BorderLayout());
+//            // setColor(panel, s, isSelected);
+//            // setColor(progressBar, s, isSelected);
+//            progressBar.setBorder(BorderFactory.createEmptyBorder());
+//            progressBar.setStringPainted(true);
+//            progressBar.setUI(new BasicProgressBarUI() {
+//                @Override
+//                protected Color getSelectionBackground() {
+//                    return UIManager.getDefaults().getColor("Table.foreground");
+//                }
+//
+//                @Override
+//                protected Color getSelectionForeground() {
+//                    return Color.white;
+//                }
+//            });
+//            panel.add(progressBar);
+//            panel.setBorder(BorderFactory.createEmptyBorder());
+//        }
+//
+//        public JPanel progressPanel() {
+//            return panel;
+//        }
+//
+//        private void panelUpdate() {
+//            if (s != null) {
+//                i = Integer.parseInt(s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
+//                progressBar.setValue(i);
+//                double d = i / 10.0;
+//                progressBar.setString(Double.toString(d) + "%");
+//                this.updateUI();
+//            }
+//        }
+//    }
 }
