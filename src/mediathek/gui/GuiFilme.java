@@ -526,10 +526,13 @@ public class GuiFilme extends PanelVorlage {
     private void setInfo() {
         String textLinks;
         // Text links: Zeilen Tabelle
-        String leer = "   -   ";
+        boolean open = false;
         int gesamt = Daten.listeFilme.size();
         int anzListe = tabelle.getModel().getRowCount();
         int runs = ddaten.starterClass.getStarts(Start.QUELLE_BUTTON).size();
+        int laufen = ddaten.starterClass.getDownloadsLaufen();
+        int warten = ddaten.starterClass.getDownloadsWarten();
+        // Anzahl der Filme
         if (gesamt == anzListe) {
             if (anzListe == 1) {
                 textLinks = "1 Film";
@@ -542,15 +545,50 @@ public class GuiFilme extends PanelVorlage {
             } else {
                 textLinks = anzListe + " Filme";
             }
-            textLinks += ", (insgesamt: " + gesamt + " Filme)";
+            textLinks = ifOpen(open, textLinks);
+            open = true;
+            textLinks += "insgesamt: " + gesamt + " Filme";
         }
+        // laufende Programme
         if (runs == 1) {
-            textLinks += (leer + runs + "    laufender Film");
+            textLinks = ifOpen(open, textLinks);
+            open = true;
+            textLinks += ( runs + " laufender Film");
         } else if (runs > 1) {
-            textLinks += (leer + runs + "    laufende Filme");
+            textLinks = ifOpen(open, textLinks);
+            open = true;
+            textLinks += ( runs + " laufende Filme");
+        }
+        // auch die Downloads anzeigen
+        if (laufen > 0 || warten > 0) {
+            textLinks = ifOpen(open, textLinks);
+            open = true;
+            textLinks += "Downloads: ";
+            if (laufen == 1) {
+                textLinks += "1 läuft,";
+            } else {
+                textLinks += laufen + " laufen,";
+            }
+            if (warten == 1) {
+                textLinks += " 1 wartet";
+            } else {
+                textLinks += " " + warten + " warten";
+            }
+        }
+        if (open) {
+            textLinks += ")";
         }
         // Infopanel setzen
         ddaten.infoPanel.setTextLinks(InfoPanel.IDX_GUI_FILME, textLinks);
+    }
+
+    private String ifOpen(boolean open, String textLinks) {
+        if (!open) {
+            textLinks += ", (";
+        } else {
+            textLinks += "  -  ";
+        }
+        return textLinks;
     }
 
     private void checkBlacklist() {
