@@ -63,7 +63,6 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
-import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
