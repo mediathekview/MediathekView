@@ -1035,7 +1035,7 @@ public class GuiFilme extends PanelVorlage {
             });
             jPopupMenu.add(item);
             //Url
-            item = new JMenuItem("Film speichern");
+            item = new JMenuItem("Film aufzeichnen");
             item.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_rec_16.png")));
             item.addActionListener(new ActionListener() {
                 @Override

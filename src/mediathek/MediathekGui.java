@@ -844,7 +844,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jToolBar.add(jButtonFilmAbspielen);
 
         jButtonFilmSpeichern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_rec_32.png"))); // NOI18N
-        jButtonFilmSpeichern.setToolTipText("Film speichern");
+        jButtonFilmSpeichern.setToolTipText("Film aufzeichnen");
         jButtonFilmSpeichern.setFocusable(false);
         jButtonFilmSpeichern.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButtonFilmSpeichern.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

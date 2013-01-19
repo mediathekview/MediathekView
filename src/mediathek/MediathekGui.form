@@ -383,7 +383,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/player_rec_32.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Film speichern"/>
+                <Property name="toolTipText" type="java.lang.String" value="Film aufzeichnen"/>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
