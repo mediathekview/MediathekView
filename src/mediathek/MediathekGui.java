@@ -873,7 +873,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jToolBar.add(jButtonDownloadZurueckstellen);
 
         jButtonDownloadLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_32.png"))); // NOI18N
-        jButtonDownloadLoeschen.setToolTipText("Download löschen");
+        jButtonDownloadLoeschen.setToolTipText("Download dauerhaft löschen");
         jButtonDownloadLoeschen.setFocusable(false);
         jButtonDownloadLoeschen.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButtonDownloadLoeschen.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -976,7 +976,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jMenuItemDownloadsLoeschen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         jMenuItemDownloadsLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
-        jMenuItemDownloadsLoeschen.setText("Download löschen");
+        jMenuItemDownloadsLoeschen.setText("Download dauerhaft löschen");
         jMenuDownload.add(jMenuItemDownloadsLoeschen);
 
         jMenuItemDownloadAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png"))); // NOI18N

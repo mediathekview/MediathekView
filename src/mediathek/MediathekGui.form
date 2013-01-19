@@ -140,7 +140,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/del_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Download l&#xf6;schen"/>
+                <Property name="text" type="java.lang.String" value="Download dauerhaft l&#xf6;schen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadAendern">
@@ -443,7 +443,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/del_32.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Download l&#xf6;schen"/>
+                <Property name="toolTipText" type="java.lang.String" value="Download dauerhaft l&#xf6;schen"/>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
