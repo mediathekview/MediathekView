@@ -45,28 +45,29 @@ public class Main {
     public Main() {
     }
 
+    private enum StartupMode {
+
+        NORMAL, AUTO, NOGUI
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         final String ar[] = args;
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            final int NORMAL = 0;
-            final int AUTO = 1;
-            final int NOGUI = 2;
-            int state = NORMAL;
 
+        java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-
+                StartupMode state = StartupMode.NORMAL;
                 if (ar != null) {
                     for (String s : ar) {
                         if (s.equalsIgnoreCase("-auto")) {
-                            state = AUTO;
+                            state = StartupMode.AUTO;
                         }
                         if (s.equalsIgnoreCase("-noGui")) {
-                            state = NOGUI;
+                            state = StartupMode.NOGUI;
                         }
                         if (s.equalsIgnoreCase("-d")) {
                             Daten.debug = true;
