@@ -57,6 +57,7 @@ import mediathek.gui.InfoPanel;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.gui.dialog.MVAboutDialog;
 import mediathek.gui.dialog.PanelAbout;
 import mediathek.gui.dialog.PanelHilfe;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
@@ -609,8 +610,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAbout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogOk dialogOk = new DialogOk(ddaten.mediathekGui, true, new PanelAbout(ddaten, ddaten.mediathekGui), "Über MediathekView");
-                dialogOk.setVisible(true);
+//////                DialogOk dialogOk = new DialogOk(ddaten.mediathekGui, true, new PanelAbout(ddaten, ddaten.mediathekGui), "Über MediathekView");
+//////                dialogOk.setVisible(true);
+                showAboutDialog();
             }
         });
         jMenuItemProgrammlog.addActionListener(new ActionListener() {
@@ -620,6 +622,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
         setupUserInterfaceForOsx();
+    }
+
+    private void showAboutDialog() {
+        MVAboutDialog aboutDialog = new MVAboutDialog(this, false);
+        aboutDialog.setVisible(true);
+        aboutDialog.dispose();
     }
 
     @Override
@@ -654,8 +662,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
     @Override
     public void handleAbout(ApplicationEvent event) {
-        DialogOk dialogOk = new DialogOk(ddaten.mediathekGui, true, new PanelAbout(ddaten, ddaten.mediathekGui), "Über MediathekView");
-        dialogOk.setVisible(true);
+        MVAboutDialog aboutDialog = new MVAboutDialog(this, true);
+        aboutDialog.setVisible(true);
+        aboutDialog.dispose();
         event.setHandled(true);
     }
 
