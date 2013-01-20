@@ -20,6 +20,7 @@
 package mediathek.gui.dialog;
 
 import java.awt.Component;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -367,18 +368,36 @@ public class DialogAddDownload extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int returnVal;
-            JFileChooser chooser = new JFileChooser();
-            if (!jTextFieldPfad.getText().equals("")) {
-                chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
-            }
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(356871087, Log.FEHLER_ART_PROG,"DialogAddDownload.ZielBeobachter", ex);
+            //we can use native directory chooser on Mac...
+            if (ddaten.mediathekGui.isMac()) {
+                //we want to select a directory only, so temporarily change properties
+                System.setProperty("apple.awt.fileDialogForDirectories", "true");
+                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Film speichern");
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    //A directory was selected, that means Cancel was not pressed
+                    try {
+                        jTextFieldPfad.setText(chooser.getDirectory() + chooser.getFile());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(356871087, Log.FEHLER_ART_PROG, "DialogAddDownload.ZielBeobachter", ex);
+                    }
+                }
+                System.setProperty("apple.awt.fileDialogForDirectories", "false");
+            } else {
+                //use the cross-platform swing chooser
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jTextFieldPfad.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(356871087, Log.FEHLER_ART_PROG, "DialogAddDownload.ZielBeobachter", ex);
+                    }
                 }
             }
         }
