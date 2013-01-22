@@ -219,26 +219,6 @@ public class GuiDownloads extends PanelVorlage {
         // abgeschlossene Downloads werden aus der Tabelle/Liste entfernt
         // die Starts dafür werden auch gelöscht
         ddaten.listeDownloads.listePutzen();
-//        boolean gefunden = false;
-//        if (tabelle.getRowCount() > 0) {
-//            String[] urls = new String[tabelle.getRowCount()];
-//            for (int i = 0; i < tabelle.getRowCount(); ++i) {
-//                urls[i] = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_URL_NR).toString();
-//            }
-//            for (int i = 0; i < urls.length; ++i) {
-//                Start s = ddaten.starterClass.getStart(urls[i]);
-//                if (s != null) {
-//                    if (s.status >= Start.STATUS_FERTIG) {
-//                        ddaten.listeDownloads.delDownloadByUrl(urls[i]);
-//                        gefunden = true;
-//                    }
-//                }
-//            }
-//        }
-//        if (gefunden) {
-//            tabelleLaden();
-//        }
-//        ddaten.starterClass.aufraeumen();
     }
 
     private synchronized void downloadAendern() {

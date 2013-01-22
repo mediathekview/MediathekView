@@ -53,16 +53,15 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(final String args[]) {
         System.setProperty("apple.laf.useScreenMenuBar", "true");
-        final String ar[] = args;
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 StartupMode state = StartupMode.NORMAL;
-                if (ar != null) {
-                    for (String s : ar) {
+                if (args != null) {
+                    for (String s : args) {
                         if (s.equalsIgnoreCase("-auto")) {
                             state = StartupMode.AUTO;
                         }
@@ -80,13 +79,13 @@ public class Main {
                 }
                 switch (state) {
                     case AUTO:
-                        new MediathekAuto(ar).starten();
+                        new MediathekAuto(args).starten();
                         break;
                     case NOGUI:
-                        new MediathekNoGui(ar).starten();
+                        new MediathekNoGui(args).starten();
                         break;
                     default:
-                        new MediathekGui(ar).setVisible(true);
+                        new MediathekGui(args).setVisible(true);
                         break;
                 }
             }

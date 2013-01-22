@@ -395,6 +395,12 @@ public class StarterClass {
             notifyStartEvent();
         }
     }
+    private void programmBeenden(){
+        if (ddaten.nachDownloadShutDown){
+            // Sicherheitsabfrage, dann beenden
+            
+        }
+    }
 
     private int laenge(String url) {
         int ret;
