@@ -343,7 +343,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
             // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_51k_p7v9.mp4" system-bitrate="62000">
             // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_536k_p9v9.mp4" system-bitrate="700000">
             // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_1596k_p13v9.mp4" system-bitrate="1700000">
-            ret = arr[DOWNLOAD_URL_NR].replace("1596k_p13v9.mp4", "536k_p9v9.mp4");
+            if (arr[DOWNLOAD_URL_NR].endsWith("vh.mp4")) {
+                ret = arr[DOWNLOAD_URL_NR].replace("vh.mp4", "h.mp4");
+            } else {
+                ret = arr[DOWNLOAD_URL_NR].replace("1596k_p13v9.mp4", "536k_p9v9.mp4");
+            }
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekNdr.SENDER)) {
             //NDR
             ret = arr[DOWNLOAD_URL_NR].replace(".hq.", ".hi.");
