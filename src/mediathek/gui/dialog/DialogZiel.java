@@ -20,11 +20,13 @@
 package mediathek.gui.dialog;
 
 import java.awt.Component;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import mediathek.daten.DDaten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
@@ -34,6 +36,7 @@ public class DialogZiel extends javax.swing.JDialog {
     public boolean ok = false;
     public String ziel;
     private Component parentComponent = null;
+    private DDaten ddaten = null;
 
     /**
      *
@@ -42,9 +45,10 @@ public class DialogZiel extends javax.swing.JDialog {
      * @param d
      * @param zziel
      */
-    public DialogZiel(java.awt.Frame parent, boolean modal, String zziel, String titel) {
+    public DialogZiel(java.awt.Frame parent, DDaten dd, boolean modal, String zziel, String titel) {
         super(parent, modal);
         parentComponent = parent;
+        ddaten = dd;
         initComponents();
         setTitle(titel);
         jButtonOk.addActionListener(new OkBeobachter());
@@ -80,7 +84,7 @@ public class DialogZiel extends javax.swing.JDialog {
                     ziel = pfad;
                     ret = true;
                 }
-            } catch (Exception ex) {
+            } catch (Exception ignored) {
             }
         }
         ok = ret;
@@ -208,20 +212,34 @@ public class DialogZiel extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int returnVal;
-            JFileChooser chooser = new JFileChooser();
-            if (!jTextFieldPfad.getText().equals("")) {
-                chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
+            //we can use native chooser on Mac...
+            if (ddaten.mediathekGui.isMac()) {
+                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Logdatei speichern");
+                chooser.setMode(FileDialog.SAVE);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        jTextFieldPfad.setText(new File(chooser.getFile()).getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(642109058, Log.FEHLER_ART_PROG, "DialogExport.ZielBeobachter", ex);
+                    }
+                }
             } else {
-                chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
-            }
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(642109058, Log.FEHLER_ART_PROG, "DialogExport.ZielBeobachter", ex);
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jTextFieldPfad.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
+                } else {
+                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(642109058, Log.FEHLER_ART_PROG, "DialogExport.ZielBeobachter", ex);
+                    }
                 }
             }
         }

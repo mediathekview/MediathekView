@@ -35,7 +35,7 @@ public final class DDaten extends Daten {
     // Listen
 
     public static ListeFilme listeFilmeNachBlackList = null;
-    public ListeBlacklist listeBlacklist=null;
+    public ListeBlacklist listeBlacklist = null;
     public ListePset listePset = null;
     public ListeAbo listeAbo = null;
     public ListeDownloads listeDownloads = null;
@@ -45,7 +45,7 @@ public final class DDaten extends Daten {
     public IoXmlLesen ioXmlLesen = null;
     public IoXmlSchreiben ioXmlSchreiben = null;
     public StarterClass starterClass = null;
-    public InfoPanel infoPanel=null;
+    public InfoPanel infoPanel = null;
     // Panel
     public MediathekGui mediathekGui = null;
     public GuiFilme guiFilme = null;
@@ -53,10 +53,8 @@ public final class DDaten extends Daten {
     public GuiAbo guiAbo = null;
     // für die Tabellen
     public String[] tabFilmeBreit = new String[DatenFilm.FILME_MAX_ELEM];
-    
-    
-    
-    
+    public boolean nachDownloadShutDown = false;
+
     public DDaten(String basis, boolean gui) {
         super(basis);
         listeFilmeNachBlackList = new ListeFilme();
@@ -87,5 +85,4 @@ public final class DDaten extends Daten {
         super.allesSpeichern();
         ioXmlSchreiben.datenSchreiben(this);
     }
-
 }

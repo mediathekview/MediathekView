@@ -35,7 +35,7 @@ import mediathek.tool.Log;
 public class ProgrammLog {
 
     public static void LogDateiSchreiben(DDaten ddaten) {
-        DialogZiel dialog = new DialogZiel(ddaten.mediathekGui, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
+        DialogZiel dialog = new DialogZiel(ddaten.mediathekGui, ddaten, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
         dialog.setVisible(true);
         if (dialog.ok) {
             File f = new File(dialog.ziel);
