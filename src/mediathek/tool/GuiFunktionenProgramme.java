@@ -35,7 +35,7 @@ import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 
-public class GuiFunktionenProgramme extends GuiFunktionen{
+public class GuiFunktionenProgramme extends GuiFunktionen {
 
     public static String getMusterPfadMplayer() {
         final String PFAD_LINUX = "/usr/bin/mplayer";
@@ -124,23 +124,23 @@ public class GuiFunktionenProgramme extends GuiFunktionen{
         }
     }
 
-    public static String getPfadMplayer() {
+    public static String getPfadMplayer(DDaten dd) {
         if (Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(false /* vlc */, false /* flvstreamer */, true /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(dd, false /* vlc */, false /* flvstreamer */, true /* mplayer */), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR];
     }
 
-    public static String getPfadVlc() {
+    public static String getPfadVlc(DDaten dd) {
         if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(true /* vlc */, false /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(dd, true /* vlc */, false /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR];
     }
 
-    public static String getPfadFlv() {
+    public static String getPfadFlv(DDaten dd) {
         if (Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(false /* vlc */, true /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(dd, false /* vlc */, true /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
     }
@@ -182,7 +182,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen{
                 datei = new GetFile().getPsetVorlageWindows();
         }
         // Standardgruppen laden
-        pSet = IoXmlLesen.importPset(datei, true);
+        pSet = IoXmlLesen.importPset(ddaten, datei, true);
         return pSet;
     }
 

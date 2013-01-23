@@ -110,7 +110,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         // erst Programmpfad prüfen
         jCheckBoxAnpassen.setVisible(false);
         jCheckBoxAlleEinstellungen.setVisible(false);
-        jScrollPane1.setViewportView(new PanelProgrammPfade(true /* vlc */, true /* flvstreamer */, false /* mplayer */));
+        jScrollPane1.setViewportView(new PanelProgrammPfade(ddaten, true /* vlc */, true /* flvstreamer */, false /* mplayer */));
         status = STAT_PSET;
         jButtonStandard.setText("Weiter");
     }

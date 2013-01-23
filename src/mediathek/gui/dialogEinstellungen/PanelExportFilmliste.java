@@ -21,6 +21,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -198,19 +199,33 @@ public class PanelExportFilmliste extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int returnVal;
-            JFileChooser chooser = new JFileChooser();
-            if (!jTextFieldPfad.getText().equals("")) {
-                chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
-            }
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            chooser.setFileHidingEnabled(false);
-            returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(911025463, Log.FEHLER_ART_PROG, "PanelExportImportDateiUrl.BeobImport", ex);
+            //we can use native chooser on Mac...
+            if (ddaten.mediathekGui.isMac()) {
+                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Filme exportieren");
+                chooser.setMode(FileDialog.SAVE);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        jTextFieldPfad.setText(new File(chooser.getFile()).getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(679890147, Log.FEHLER_ART_PROG, "PanelExportImportDateiUrl.BeobImport", ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jTextFieldPfad.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setFileHidingEnabled(false);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(911025463, Log.FEHLER_ART_PROG, "PanelExportImportDateiUrl.BeobImport", ex);
+                    }
                 }
             }
         }

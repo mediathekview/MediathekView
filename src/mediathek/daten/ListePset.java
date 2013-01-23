@@ -183,19 +183,19 @@ public class ListePset extends LinkedList<DatenPset> {
         return ret;
     }
 
-    public boolean addVorlage(ListePset liste) {
+    public boolean addVorlage(DDaten dd,ListePset liste) {
         boolean ret = true;
         Iterator<DatenPset> it = liste.iterator();
         while (it.hasNext()) {
             DatenPset pSet = it.next();
-            if (!addVorlage(pSet)) {
+            if (!addVorlage(dd,pSet)) {
                 ret = false;
             }
         }
         return ret;
     }
 
-    private boolean addVorlage(DatenPset pSet) {
+    private boolean addVorlage(DDaten dd ,DatenPset pSet) {
         pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
         String mplayer = "";
         String vlc = "";
@@ -205,21 +205,21 @@ public class ListePset extends LinkedList<DatenPset> {
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_MPLAYER) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_MPLAYER)) {
-                mplayer = GuiFunktionenProgramme.getPfadMplayer();
+                mplayer = GuiFunktionenProgramme.getPfadMplayer(dd);
                 break;
             }
         }
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_VLC) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_VLC)) {
-                vlc = GuiFunktionenProgramme.getPfadVlc();
+                vlc = GuiFunktionenProgramme.getPfadVlc(dd);
                 break;
             }
         }
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_FLV) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_FLV)) {
-                flvstreamer = GuiFunktionenProgramme.getPfadFlv();
+                flvstreamer = GuiFunktionenProgramme.getPfadFlv(dd);
                 break;
             }
         }

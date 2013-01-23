@@ -21,6 +21,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -413,19 +414,33 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int returnVal;
-            JFileChooser chooser = new JFileChooser();
-            if (!jTextFieldUrl.getText().equals("")) {
-                chooser.setCurrentDirectory(new File(jTextFieldUrl.getText()));
-            }
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            chooser.setFileHidingEnabled(false);
-            returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(733025319,Log.FEHLER_ART_PROG, "PanelImportFilme.BeobPfad", ex);
+            //we can use native chooser on Mac...
+            if (ddaten.mediathekGui.isMac()) {
+                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Filmliste laden");
+                chooser.setMode(FileDialog.LOAD);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        jTextFieldUrl.setText(new File(chooser.getFile()).getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(102036579, Log.FEHLER_ART_PROG, "PanelImportFilme.BeobPfad", ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jTextFieldUrl.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldUrl.getText()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setFileHidingEnabled(false);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(733025319, Log.FEHLER_ART_PROG, "PanelImportFilme.BeobPfad", ex);
+                    }
                 }
             }
         }

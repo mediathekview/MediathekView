@@ -68,7 +68,7 @@ public class IoXmlLesen {
         return false;
     }
 
-    public static ListePset importPset(String dateiUrl, boolean log) {
+    public static ListePset importPset(DDaten dd, String dateiUrl, boolean log) {
         int timeout = 10000; //10 Sekunden
         try {
             if (GuiFunktionen.istUrl(dateiUrl)) {
@@ -77,19 +77,19 @@ public class IoXmlLesen {
                 conn.setConnectTimeout(timeout);
                 conn.setReadTimeout(timeout);
                 conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                return importPset(conn.getInputStream(), log);
+                return importPset(dd, conn.getInputStream(), log);
             } else {
-                return importPset(new FileInputStream(dateiUrl), log);
+                return importPset(dd, new FileInputStream(dateiUrl), log);
             }
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung(630048926,Log.FEHLER_ART_PROG, "IoXml.importPset", ex);
+                Log.fehlerMeldung(630048926, Log.FEHLER_ART_PROG, "IoXml.importPset", ex);
             }
             return null;
         }
     }
 
-    public static ListePset importPset(InputStream datei, boolean log) {
+    public static ListePset importPset(DDaten dd, InputStream datei, boolean log) {
         DatenPset datenPset = null;
         ListePset liste = new ListePset();
         try {
@@ -131,7 +131,7 @@ public class IoXmlLesen {
             }
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung(467810360,Log.FEHLER_ART_PROG, "IoXml.importPset", ex);
+                Log.fehlerMeldung(467810360, Log.FEHLER_ART_PROG, "IoXml.importPset", ex);
             }
             return null;
         }
@@ -139,12 +139,12 @@ public class IoXmlLesen {
             return null;
         } else {
             ListePset ll = new ListePset();
-            ll.addVorlage(liste);
+            ll.addVorlage(dd, liste);
             return ll;
         }
     }
 
-    public static ListePset importPsetText(String text, boolean log) {
+    public static ListePset importPsetText(DDaten dd, String text, boolean log) {
         DatenPset datenPset = null;
         ListePset liste = new ListePset();
         try {
@@ -185,7 +185,7 @@ public class IoXmlLesen {
             }
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung(100298325, Log.FEHLER_ART_PROG,"IoXml.importPset", ex);
+                Log.fehlerMeldung(100298325, Log.FEHLER_ART_PROG, "IoXml.importPset", ex);
             }
             return null;
         }
@@ -193,7 +193,7 @@ public class IoXmlLesen {
             return null;
         } else {
             ListePset ll = new ListePset();
-            ll.addVorlage(liste);
+            ll.addVorlage(dd, liste);
             return ll;
         }
     }
@@ -272,7 +272,7 @@ public class IoXmlLesen {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(392840096,Log.FEHLER_ART_PROG, "IoXml.xmlDatenLesen", ex);
+            Log.fehlerMeldung(392840096, Log.FEHLER_ART_PROG, "IoXml.xmlDatenLesen", ex);
         } finally {
             ddaten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
@@ -313,7 +313,7 @@ public class IoXmlLesen {
         } catch (Exception ex) {
             ret = false;
             if (log) {
-                Log.fehlerMeldung(739530149, Log.FEHLER_ART_PROG,"IoXmlLesen.get", ex);
+                Log.fehlerMeldung(739530149, Log.FEHLER_ART_PROG, "IoXmlLesen.get", ex);
             }
         }
         return ret;
