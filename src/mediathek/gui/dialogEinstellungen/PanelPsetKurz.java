@@ -21,6 +21,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -61,7 +62,6 @@ public class PanelPsetKurz extends PanelVorlage {
         if (listePset.size() > 0) {
             jListPset.setSelectedIndex(0);
             jListPset.addListSelectionListener(new ListSelectionListener() {
-
                 @Override
                 public void valueChanged(ListSelectionEvent e) {
                     if (!stopBeob) {
@@ -81,7 +81,7 @@ public class PanelPsetKurz extends PanelVorlage {
     private void initBeob() {
         jTextFieldName.getDocument().addDocumentListener(new BeobDocName());
         jTextFieldZiel.getDocument().addDocumentListener(new BeobDoc(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
-        jButtonZiel.addActionListener(new ZielBeobachter(false, jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
+        jButtonZiel.addActionListener(new ZielBeobachter(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
     }
 
     private void init() {
@@ -160,7 +160,7 @@ public class PanelPsetKurz extends PanelVorlage {
         c.weightx = 0;
         JButton button = new JButton();
         button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png")));
-        button.addActionListener(new ZielBeobachter(false, textField, arr, idx));
+        button.addActionListener(new ZielBeobachter(textField, arr, idx));
         gridbag.setConstraints(button, c);
         panel.add(button);
     }
@@ -363,44 +363,60 @@ public class PanelPsetKurz extends PanelVorlage {
 
         JTextField textField;
         String[] arr = null;
-        boolean file;
         int idx;
 
-        public ZielBeobachter(boolean ffile, JTextField tt, String[] aarr, int iidx) {
-            file = ffile;
+        public ZielBeobachter(JTextField tt, String[] aarr, int iidx) {
             textField = tt;
             arr = aarr; // Programmarray
             idx = iidx;
         }
 
-        public ZielBeobachter(boolean ffile, JTextField tt, int iidx) {
+        public ZielBeobachter(JTextField tt, int iidx) {
             // für den Zielpfad
-            file = ffile;
             textField = tt;
             idx = iidx;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int returnVal;
-            JFileChooser chooser = new JFileChooser();
-            chooser.setCurrentDirectory(new File(textField.getText()));
-            if (file) {
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            } else {
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            }
-            returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    textField.setText(chooser.getSelectedFile().getAbsolutePath());
-                    if (arr == null) {
-                        pSet.arr[idx] = textField.getText();
-                    } else {
-                        arr[idx] = textField.getText();
+            //we can use native directory chooser on Mac...
+            if (ddaten.mediathekGui.isMac()) {
+                //we want to select a directory only, so temporarily change properties
+                System.setProperty("apple.awt.fileDialogForDirectories", "true");
+                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Film speichern");
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    //A directory was selected, that means Cancel was not pressed
+                    try {
+                        textField.setText(chooser.getDirectory() + chooser.getFile());
+                        if (arr == null) {
+                            pSet.arr[idx] = textField.getText();
+                        } else {
+                            arr[idx] = textField.getText();
+                        }
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(392847589, Log.FEHLER_ART_PROG, "DialogZielPset.ZielBeobachter", ex);
                     }
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(613986500,Log.FEHLER_ART_PROG,"DialogZielPset.ZielBeobachter", ex);
+                }
+                System.setProperty("apple.awt.fileDialogForDirectories", "false");
+            } else {
+                //use the cross-platform swing chooser
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                chooser.setCurrentDirectory(new File(textField.getText()));
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        textField.setText(chooser.getSelectedFile().getAbsolutePath());
+                        if (arr == null) {
+                            pSet.arr[idx] = textField.getText();
+                        } else {
+                            arr[idx] = textField.getText();
+                        }
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(613986500, Log.FEHLER_ART_PROG, "DialogZielPset.ZielBeobachter", ex);
+                    }
                 }
             }
         }

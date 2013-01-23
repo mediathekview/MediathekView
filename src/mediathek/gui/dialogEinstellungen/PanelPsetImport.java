@@ -21,6 +21,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -53,7 +54,6 @@ public class PanelPsetImport extends PanelVorlage {
     private void init() {
         jComboBoxBs.setModel(new DefaultComboBoxModel(ListePsetVorlagen.BS));
         jComboBoxBs.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabelleLaden();
@@ -65,7 +65,6 @@ public class PanelPsetImport extends PanelVorlage {
         jTextFieldDatei.getDocument().addDocumentListener(new BeobPfadDoc());
         jTextAreaImport.getDocument().addDocumentListener(new BeobTextArea());
         jButtonImportVorlage.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!jTextFieldUrl.getText().equals("")) {
@@ -74,21 +73,18 @@ public class PanelPsetImport extends PanelVorlage {
             }
         });
         jButtonImportDatei.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 importDatei(jTextFieldDatei.getText());
             }
         });
         jButtonImportText.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 importText();
             }
         });
         jButtonAktualisieren.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 listeVorlagen.getListe();
@@ -98,7 +94,6 @@ public class PanelPsetImport extends PanelVorlage {
         jTableVorlagen.getSelectionModel().addListSelectionListener(new BeobTableSelect());
         jTableVorlagen.setModel(new TModel(new Object[][]{}, ListePsetVorlagen.PGR_COLUMN_NAMES));
         jButtonImportStandard.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
@@ -107,12 +102,12 @@ public class PanelPsetImport extends PanelVorlage {
     }
 
     private void importDatei(String datei) {
-        ListePset pSet = IoXmlLesen.importPset(datei, true);
+        ListePset pSet = IoXmlLesen.importPset(ddaten, datei, true);
         GuiFunktionenProgramme.addVorlagen(ddaten, pSet, false /* auto */);
     }
 
     private void importText() {
-        ListePset pSet = IoXmlLesen.importPsetText(jTextAreaImport.getText(), true);
+        ListePset pSet = IoXmlLesen.importPsetText(ddaten, jTextAreaImport.getText(), true);
         GuiFunktionenProgramme.addVorlagen(ddaten, pSet, false /* auto */);
     }
 
@@ -518,7 +513,7 @@ public class PanelPsetImport extends PanelVorlage {
             if (jTextFieldDatei.getText().equals("")) {
                 jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
             } else {
-                if (IoXmlLesen.importPset(jTextFieldDatei.getText(), false) != null) {
+                if (IoXmlLesen.importPset(ddaten, jTextFieldDatei.getText(), false) != null) {
                     jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
                 } else {
                     jTextFieldDatei.setBackground(new Color(255, 200, 200));
@@ -549,7 +544,7 @@ public class PanelPsetImport extends PanelVorlage {
             if (jTextAreaImport.getText().equals("")) {
                 jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
             } else {
-                if (IoXmlLesen.importPsetText(jTextAreaImport.getText(), false) != null) {
+                if (IoXmlLesen.importPsetText(ddaten, jTextAreaImport.getText(), false) != null) {
                     jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
                     jButtonImportText.setEnabled(true);
                 } else {
@@ -564,21 +559,35 @@ public class PanelPsetImport extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int returnVal;
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            chooser.setFileHidingEnabled(false);
-            if (jTextFieldDatei.getText().equals("")) {
-                chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+            //we can use native chooser on Mac...
+            if (ddaten.mediathekGui.isMac()) {
+                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Programmset auswählen");
+                chooser.setMode(FileDialog.LOAD);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        jTextFieldDatei.setText(new File(chooser.getFile()).getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(989563047, Log.FEHLER_ART_PROG, "PanelPsetImport.BeobPfad", ex);
+                    }
+                }
             } else {
-                chooser.setCurrentDirectory(new File(jTextFieldDatei.getText()));
-            }
-            returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    jTextFieldDatei.setText(chooser.getSelectedFile().getAbsolutePath());
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(925004992,Log.FEHLER_ART_PROG,"PanelImportPset.BeobPfad", ex);
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setFileHidingEnabled(false);
+                if (jTextFieldDatei.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                } else {
+                    chooser.setCurrentDirectory(new File(jTextFieldDatei.getText()));
+                }
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldDatei.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(925004992, Log.FEHLER_ART_PROG, "PanelPsetImport.BeobPfad", ex);
+                    }
                 }
             }
         }

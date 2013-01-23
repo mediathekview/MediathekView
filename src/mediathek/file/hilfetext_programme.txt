@@ -64,7 +64,7 @@ zum Start braucht. Mögliche Parameter sind:
 Diese Angeben werden durch die URL ersetzt:
 %f ist die URL des Films (Original-URL)
 %F ist die URL des Films für den flvstreamer vorbereitet
-%k ist die URL des Films in \"kleiner\" Auflösung, nur 3sat, ZDF, NDR
+%k ist die URL des Films in "kleiner" Auflösung, nur 3sat, ZDF, NDR
 zwei Sterne ** werden durch den Zieldateinamen mit Pfad ersetzt.
 
 Nur zum Ansehen eines Films reicht meist einer der 3 ersten Parameter.

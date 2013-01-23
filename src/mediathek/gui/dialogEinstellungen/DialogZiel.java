@@ -20,11 +20,13 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Component;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import mediathek.daten.DDaten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
@@ -34,6 +36,8 @@ public class DialogZiel extends javax.swing.JDialog {
     public boolean ok = false;
     public String ziel = "";
     private Component parentComponent = null;
+    private DDaten ddaten = null;
+
     /**
      *
      * @param parent
@@ -42,9 +46,10 @@ public class DialogZiel extends javax.swing.JDialog {
      * @param pfad
      * @param name
      */
-    public DialogZiel(java.awt.Frame parent, boolean modal, String pfad, String name) {
+    public DialogZiel(java.awt.Frame parent, DDaten dd, boolean modal, String pfad, String name) {
         super(parent, modal);
         parentComponent = parent;
+        ddaten = dd;
         initComponents();
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonZiel.addActionListener(new ZielBeobachter());
@@ -53,7 +58,6 @@ public class DialogZiel extends javax.swing.JDialog {
         }
         jTextFieldPfad.setText(GuiFunktionen.addsPfad(pfad.equals("") ? GuiFunktionen.getHomePath() : pfad, name));
         new EscBeenden(this) {
-
             @Override
             public void beenden_() {
                 ok = false;
@@ -182,25 +186,39 @@ public class DialogZiel extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int returnVal;
-            JFileChooser chooser = new JFileChooser();
-            if (!jTextFieldPfad.getText().equals("")) {
-                String pfad = jTextFieldPfad.getText();
-                if (pfad.contains(File.separator)) {
-                    pfad = pfad.substring(0, pfad.lastIndexOf(File.separator));
-                    chooser.setCurrentDirectory(new File(pfad));
-                } else {
-                    chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
+            //we can use native chooser on Mac...
+            if (ddaten.mediathekGui.isMac()) {
+                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Logdatei speichern");
+                chooser.setMode(FileDialog.SAVE);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        jTextFieldPfad.setText(new File(chooser.getFile()).getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(639874637, Log.FEHLER_ART_PROG, "DialogZielDatei.ZielBeobachter", ex);
+                    }
                 }
-            }
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            chooser.setFileHidingEnabled(false);
-            returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(362259105,Log.FEHLER_ART_PROG,"DialogZielDatei.ZielBeobachter", ex);
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jTextFieldPfad.getText().equals("")) {
+                    String pfad = jTextFieldPfad.getText();
+                    if (pfad.contains(File.separator)) {
+                        pfad = pfad.substring(0, pfad.lastIndexOf(File.separator));
+                        chooser.setCurrentDirectory(new File(pfad));
+                    } else {
+                        chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
+                    }
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setFileHidingEnabled(false);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(362259105, Log.FEHLER_ART_PROG, "DialogZielDatei.ZielBeobachter", ex);
+                    }
                 }
             }
         }

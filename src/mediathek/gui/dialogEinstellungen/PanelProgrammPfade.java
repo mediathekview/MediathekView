@@ -20,6 +20,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Color;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -29,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
@@ -42,9 +44,11 @@ public class PanelProgrammPfade extends JPanel {
 
     public JDialog dialog = null;
     private boolean vlc, flvstreamer, mplayer;
+    private DDaten ddaten;
 
-    public PanelProgrammPfade(boolean vvlc, boolean fflvstreamer, boolean mmplayer) {
+    public PanelProgrammPfade(DDaten dd, boolean vvlc, boolean fflvstreamer, boolean mmplayer) {
         initComponents();
+        ddaten = dd;
         vlc = vvlc;
         flvstreamer = fflvstreamer;
         mplayer = mmplayer;
@@ -80,11 +84,10 @@ public class PanelProgrammPfade extends JPanel {
         jTextFieldUrlVlc.addActionListener(new BeobWeb(Konstanten.ADRESSE_WEBSITE_VLC));
         jTextFieldUrlFlv.setText(Konstanten.ADRESSE_WEBSITE_FLVSTREAMER);
         jTextFieldUrlFlv.addActionListener(new BeobWeb(Konstanten.ADRESSE_WEBSITE_FLVSTREAMER));
-        jButtonMplayerPfad.addActionListener(new BeobPfad(jTextFieldMplayer, true));
-        jButtonVlcPfad.addActionListener(new BeobPfad(jTextFieldVlc, true));
-        jButtonFlvPfad.addActionListener(new BeobPfad(jTextFieldFlv, true));
+        jButtonMplayerPfad.addActionListener(new BeobPfad(jTextFieldMplayer));
+        jButtonVlcPfad.addActionListener(new BeobPfad(jTextFieldVlc));
+        jButtonFlvPfad.addActionListener(new BeobPfad(jTextFieldFlv));
         jButtonMplayerSuchen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = "";
@@ -92,7 +95,6 @@ public class PanelProgrammPfade extends JPanel {
             }
         });
         jButtonVlcSuchen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = "";
@@ -100,7 +102,6 @@ public class PanelProgrammPfade extends JPanel {
             }
         });
         jButtonFlvSuchen.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = "";
@@ -108,7 +109,6 @@ public class PanelProgrammPfade extends JPanel {
             }
         });
         jButtonHilfe.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 new DialogHilfe(null, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_STANDARD_PSET)).setVisible(true);
@@ -437,34 +437,42 @@ public class PanelProgrammPfade extends JPanel {
     private class BeobPfad implements ActionListener {
 
         private JTextField textField;
-        private boolean datei;
 
-        public BeobPfad(JTextField ttextField, boolean ddatei) {
+        public BeobPfad(JTextField ttextField) {
             textField = ttextField;
-            datei = ddatei;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int returnVal;
-            JFileChooser chooser = new JFileChooser();
-            if (datei) {
+            //we can use native chooser on Mac...
+            if (ddaten.mediathekGui.isMac()) {
+                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Programmdatei auswählen");
+                chooser.setMode(FileDialog.LOAD);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        textField.setText(new File(chooser.getFile()).getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(306087945, Log.FEHLER_ART_PROG, "PanelImportStandardProgramme.BeobPfad", ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            } else {
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            }
-            chooser.setFileHidingEnabled(false);
-            if (textField.getText().equals("")) {
-                chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
-            } else {
-                chooser.setCurrentDirectory(new File(textField.getText()));
-            }
-            returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    textField.setText(chooser.getSelectedFile().getAbsolutePath());
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(643289561,Log.FEHLER_ART_PROG,"PanelImportStandardProgramme.BeobPfad", ex);
+                chooser.setFileHidingEnabled(false);
+                if (textField.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                } else {
+                    chooser.setCurrentDirectory(new File(textField.getText()));
+                }
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        textField.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(643289561, Log.FEHLER_ART_PROG, "PanelImportStandardProgramme.BeobPfad", ex);
+                    }
                 }
             }
         }

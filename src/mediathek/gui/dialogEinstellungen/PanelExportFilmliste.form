@@ -113,8 +113,8 @@
       <SubComponents>
         <Component class="javax.swing.JTextArea" name="jTextArea1">
           <Properties>
-            <Property name="columns" type="int" value="20"/>
             <Property name="editable" type="boolean" value="false"/>
+            <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="7"/>
             <Property name="text" type="java.lang.String" value="Es kann die programmeigene Liste mit den Filmen exportiert werden.&#xa;&#xa;Dabei werden Dateinamen mit einer Endung&#xa;&quot;.zip&quot; als Zip-Dateien und &#xa;&quot;.bz2&quot; als Bzip2-Dateien&#xa;&#xa;und alle anderen Dateien als unkomprimierte Dateien verwendet."/>
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">

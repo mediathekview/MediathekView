@@ -21,6 +21,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -463,7 +464,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
             String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR] + ".xml";
-            DialogZiel dialogZiel = new DialogZiel(null, true, exportPfad, GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */, false /* leerEntfernen */));
+            DialogZiel dialogZiel = new DialogZiel(null, ddaten, true, exportPfad, GuiFunktionen.replaceLeerDateiname(name, true /* pfadtrennerEntfernen */, false /* leerEntfernen */));
             dialogZiel.setVisible(true);
             if (dialogZiel.ok) {
                 if (dialogZiel.ziel.contains(File.separator)) {
@@ -1217,19 +1218,33 @@ public class PanelPsetLang extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int returnVal;
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            if (!jTextFieldProgPfad.getText().equals("")) {
-                chooser.setCurrentDirectory(new File(jTextFieldProgPfad.getText()));
-            }
-            returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    String str = chooser.getSelectedFile().getPath();
-                    jTextFieldProgPfad.setText(str);
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(825630443, Log.FEHLER_ART_PROG,"PanelPset.BeobDateiDialogProg", ex);
+            //we can use native chooser on Mac...
+            if (ddaten.mediathekGui.isMac()) {
+                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Programm auswählen");
+                chooser.setMode(FileDialog.LOAD);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        jTextFieldProgPfad.setText(new File(chooser.getFile()).getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(369047894, Log.FEHLER_ART_PROG, "PanelPsetLang.BeobDateiDialogProg", ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                if (!jTextFieldProgPfad.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldProgPfad.getText()));
+                }
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        String str = chooser.getSelectedFile().getPath();
+                        jTextFieldProgPfad.setText(str);
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(825630443, Log.FEHLER_ART_PROG, "PanelPsetLang.BeobDateiDialogProg", ex);
+                    }
                 }
             }
         }
@@ -1239,19 +1254,36 @@ public class PanelPsetLang extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int returnVal;
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            if (!jTextFieldGruppeZielPfad.getText().equals("")) {
-                chooser.setCurrentDirectory(new File(jTextFieldGruppeZielPfad.getText()));
-            }
-            returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                try {
-                    String str = chooser.getSelectedFile().getPath();
-                    jTextFieldGruppeZielPfad.setText(str);
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(319860075, Log.FEHLER_ART_PROG,"PanelPset.BeobDateiDialogPfad", ex);
+            //we can use native directory chooser on Mac...
+            if (ddaten.mediathekGui.isMac()) {
+                //we want to select a directory only, so temporarily change properties
+                System.setProperty("apple.awt.fileDialogForDirectories", "true");
+                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Film speichern");
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    //A directory was selected, that means Cancel was not pressed
+                    try {
+                        jTextFieldGruppeZielPfad.setText(chooser.getDirectory() + chooser.getFile());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(392847589, Log.FEHLER_ART_PROG, "DialogZielPset.ZielBeobachter", ex);
+                    }
+                }
+                System.setProperty("apple.awt.fileDialogForDirectories", "false");
+            } else {
+                //use the cross-platform swing chooser
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                if (!jTextFieldGruppeZielPfad.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldGruppeZielPfad.getText()));
+                }
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldGruppeZielPfad.setText(chooser.getSelectedFile().getPath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(319860075, Log.FEHLER_ART_PROG, "PanelPset.BeobDateiDialogPfad", ex);
+                    }
                 }
             }
         }
