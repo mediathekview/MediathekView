@@ -28,7 +28,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="29" max="32767" attributes="0"/>
+              <EmptySpace pref="52" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -67,7 +67,7 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jTextFieldPServer" alignment="0" pref="168" max="32767" attributes="1"/>
+                              <Component id="jTextFieldPServer" alignment="0" pref="162" max="32767" attributes="1"/>
                               <Component id="jTextFieldPPort" alignment="0" max="32767" attributes="1"/>
                               <Component id="jTextFieldPUser" alignment="0" max="32767" attributes="1"/>
                               <Component id="jTextFieldPPwd" alignment="0" max="32767" attributes="1"/>

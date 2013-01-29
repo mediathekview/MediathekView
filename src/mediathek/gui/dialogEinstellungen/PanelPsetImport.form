@@ -305,9 +305,9 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jScrollPane4" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonImportStandard" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="414" max="32767" attributes="0"/>
+                      <EmptySpace pref="435" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -327,11 +327,11 @@
               <SubComponents>
                 <Component class="javax.swing.JTextArea" name="jTextArea1">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="ee" green="ee" id="Panel.background" palette="3" red="ee" type="palette"/>
                     </Property>
                     <Property name="columns" type="int" value="20"/>
-                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="rows" type="int" value="5"/>
                     <Property name="text" type="java.lang.String" value="Das Standardprogrammset, das beim ersten Programmstart&#xa;angelegt wird, nochmals anlegen.&#xa;&#xa;Die bestehenden Programmsets bleiben unver&#xe4;ndert erhalten."/>
                     <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
@@ -461,11 +461,11 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jTextAreaImport" pref="586" max="32767" attributes="0"/>
-                              <Group type="102" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   <Component id="jButtonImportText" min="-2" max="-2" attributes="0"/>
                               </Group>

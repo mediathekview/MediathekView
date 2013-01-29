@@ -55,7 +55,7 @@ public class ImportFilmliste {
     private class FilmeImportierenAutoThread implements Runnable {
 
         @Override
-        public synchronized void run() {
+        public void run() {
             //wenn auto-update-url dann erst mal die Updateserver aktualiseren laden
             boolean ret = false;
             ArrayList<String> versuchteUrls = new ArrayList<String>();
@@ -80,7 +80,7 @@ public class ImportFilmliste {
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {
                 ///
                 JOptionPane.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                Log.fehlerMeldung(951235497, Log.FEHLER_ART_PROG,"Filme laden", "Es konnten keine Filme geladen werden!");
+                Log.fehlerMeldung(951235497, Log.FEHLER_ART_PROG, "Filme laden", "Es konnten keine Filme geladen werden!");
             }
             fertigMelden();
         }
@@ -95,8 +95,8 @@ public class ImportFilmliste {
 
     private class filmeImportierenDateiThread implements Runnable {
 
-        String pfad;
-        boolean istUrl;
+        private String pfad;
+        private boolean istUrl;
 
         public filmeImportierenDateiThread(String ppfad, boolean iistUrl) {
             pfad = ppfad;
@@ -104,7 +104,7 @@ public class ImportFilmliste {
         }
 
         @Override
-        public synchronized void run() {
+        public void run() {
             if (!urlLaden(pfad, istUrl)) {
                 JOptionPane.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
             }
@@ -124,7 +124,7 @@ public class ImportFilmliste {
                 ret = ioXmlFilmlisteLesen.filmlisteLesen(dateiUrl, istUrl, listeFilme);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(965412378, Log.FEHLER_ART_PROG,"ImportListe.urlLaden: ", ex);
+            Log.fehlerMeldung(965412378, Log.FEHLER_ART_PROG, "ImportListe.urlLaden: ", ex);
         }
         return ret;
     }

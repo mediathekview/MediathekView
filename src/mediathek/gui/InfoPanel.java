@@ -7,10 +7,11 @@ package mediathek.gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.SwingUtilities;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.daten.Daten;
-import mediathek.daten.ListeFilme;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
 
 /**
  *
@@ -26,12 +27,6 @@ public final class InfoPanel extends javax.swing.JPanel {
     private String[] idx = new String[IDX_MAX];
     private int aktIdx = 0;
     private boolean stopTimer = false;
-    private String textRechts;
-    private int sekunden;
-    private int minuten;
-    private String sek;
-    private String min;
-    private String stu;
 
     public InfoPanel() {
         initComponents();
@@ -94,16 +89,16 @@ public final class InfoPanel extends javax.swing.JPanel {
 
     private void setInfoRechts() {
         // Text rechts: alter/neuladenIn anzeigen
-        textRechts = "Filmliste erstellt: ";
+        String textRechts = "Filmliste erstellt: ";
         textRechts += Daten.listeFilme.erstellt();
         textRechts += " Uhr  ";
-        sekunden = Daten.listeFilme.alterFilmlisteSek();
+        int sekunden = Daten.listeFilme.alterFilmlisteSek();
         if (sekunden != 0) {
             textRechts += "||  Alter: ";
-            minuten = sekunden / 60;
-            sek = String.valueOf(sekunden % 60);
-            min = String.valueOf(minuten % 60);
-            stu = String.valueOf(minuten / 60);
+            int minuten = sekunden / 60;
+            String sek = String.valueOf(sekunden % 60);
+            String min = String.valueOf(minuten % 60);
+            String stu = String.valueOf(minuten / 60);
             while (sek.length() < 2) {
                 sek = "0" + sek;
             }
@@ -184,9 +179,18 @@ public final class InfoPanel extends javax.swing.JPanel {
         @Override
         public synchronized void run() {
             while (true) {
-                schlafen();
-                if (!stopTimer) {
-                    setInfoRechts();
+                try {
+                    schlafen();
+                    if (!stopTimer) {
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                setInfoRechts();
+                            }
+                        });
+                    }
+                } catch (Exception ex) {
+                    Log.fehlerMeldung(936251087, Log.FEHLER_ART_PROG, InfoPanel.class.getName(), ex);
                 }
             }
         }

@@ -42,7 +42,7 @@ public class DialogZiel extends javax.swing.JDialog {
      *
      * @param parent
      * @param modal
-     * @param d
+     * @param dd
      * @param pfad
      * @param name
      */
@@ -160,9 +160,6 @@ public class DialogZiel extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    /**
-     * @param args the command line arguments
-     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonOk;
     private javax.swing.JButton jButtonZiel;

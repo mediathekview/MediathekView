@@ -28,17 +28,16 @@ public class PanelVorlage extends javax.swing.JPanel {
     public DDaten ddaten;
     public boolean stopBeob = false;
     public Component parentComponent = null;
-    //public Component ichComponent = null;
     JTableMed tabelle = null;
 
     /**
      *
      * @param d
+     * @param pparentComponent
      */
     public PanelVorlage(DDaten d, Component pparentComponent) {
         ddaten = d;
         parentComponent = pparentComponent;
-        //ichComponent = this;
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {

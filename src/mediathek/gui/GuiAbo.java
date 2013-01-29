@@ -157,15 +157,15 @@ public class GuiAbo extends PanelVorlage {
     private void aboEinAus(boolean ein) {
         int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
-            for (int i = 0; i < rows.length; ++i) {
-                int modelRow = tabelle.convertRowIndexToModel(rows[i]);
+            for (int row : rows) {
+                int modelRow = tabelle.convertRowIndexToModel(row);
                 DatenAbo akt = ddaten.listeAbo.getAboNr(modelRow);
                 akt.arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(ein);
             }
             tabelleLaden();
             tabelle.clearSelection();
-            for (int i = 0; i < rows.length; ++i) {
-                tabelle.addRowSelectionInterval(rows[i], rows[i]);
+            for (int row : rows) {
+                tabelle.addRowSelectionInterval(row, row);
             }
             setInfo();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());

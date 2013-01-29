@@ -19,15 +19,17 @@
  */
 package mediathek.controller.io;
 
+import javax.swing.SwingUtilities;
 import mediathek.MediathekGui;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 public class CheckUpdate {
 
-    private int sekunden = 20;
+    private int sekunden = 5;
     private String titelOrg = "";
     private DDaten ddaten;
     private MediathekGui gui;
@@ -51,20 +53,34 @@ public class CheckUpdate {
                     if (!Daten.system[Konstanten.SYSTEM_UPDATE_DATUM_NR].equals(DatumZeit.getHeute_yyyyMMdd())) {
                         ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
                         if (pgrUpdate.checkVersion(ddaten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
-                            gui.setTitle("Neue Version verfügbar");
+                            SwingUtilities.invokeAndWait(new Runnable() {
+                                @Override
+                                public void run() {
+                                    gui.setTitle("Neue Version verfügbar");
+                                }
+                            });
                         } else {
-                            gui.setTitle("Alles aktuell");
+                            SwingUtilities.invokeAndWait(new Runnable() {
+                                @Override
+                                public void run() {
+                                    gui.setTitle("Alles aktuell");
+                                }
+                            });
                         }
                         for (int i = sekunden; i > 0; --i) {
-                            if (i % 3 == 0) {
-                                gui.setTitle(" * " + gui.getTitle() + " * ");
-                            }
+                            SwingUtilities.invokeAndWait(new Runnable() {
+                                @Override
+                                public void run() {
+                                    gui.setTitle(" * " + gui.getTitle() + " * ");
+                                }
+                            });
                             this.wait(1000);
                         }
                         gui.setTitle(titelOrg);
                     }
                 }
-            } catch (InterruptedException ex) {
+            } catch (Exception ex) {
+                Log.fehlerMeldung(794612801, Log.FEHLER_ART_PROG, CheckUpdate.class.getName(), ex);
             }
         }
     }

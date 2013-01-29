@@ -31,9 +31,8 @@ public class DialogOk extends javax.swing.JDialog {
      *
      * @param parent
      * @param modal
-     * @param d
-     * @param gguiFilme
-     */
+     * @param panel
+     * @param titel */
     public DialogOk(java.awt.Frame parent, boolean modal, JPanel panel, String titel) {
         super(parent, modal);
         initComponents();
@@ -115,9 +114,6 @@ public class DialogOk extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    /**
-     * @param args the command line arguments
-     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBeenden;
     private javax.swing.JPanel jPanelExtra;

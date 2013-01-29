@@ -118,9 +118,9 @@ public class PanelSenderLaden extends PanelVorlage {
         int y = 0;
         int halbe = sender.length / 2;
         halbe += sender.length % 2;
-        for (int i = 0; i < sender.length; ++i) {
+        for (String aSender : sender) {
             c.gridy = y;
-            addPanel(gridbag, c, sender[i], nr);
+            addPanel(gridbag, c, aSender, nr);
             ++nr;
             ++y;
             if (y >= halbe) {
@@ -272,8 +272,8 @@ public class PanelSenderLaden extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             jLabelProgress.setText("");
-            for (int i = 0; i < buttonSender.length; ++i) {
-                buttonSender[i].setEnabled(false);
+            for (JButton aButtonSender : buttonSender) {
+               aButtonSender.setEnabled(false);
             }
             Daten.filmeLaden.updateSender(new String[]{sender}, Daten.listeFilme);
         }
