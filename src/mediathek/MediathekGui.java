@@ -35,6 +35,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSpinner;
@@ -89,6 +90,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private boolean _isMac = false;
 
     public MediathekGui(String[] ar) {
+        //we must check if we were started with enough memory, do it as early as possible
+        checkMemoryRequirements();
         String pfad = "";
         boolean max = false;
         initComponents();
@@ -131,9 +134,26 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
     }
 
+    /**
+     * This function will check if we have enough memory.
+     * Experience showed that default memory allocation for java RT is not enough
+     */
+    protected void checkMemoryRequirements() {
+        //all values in bytes
+        final long TO_MBYTES = (1024 * 1024);
+        long totalMemory = Runtime.getRuntime().maxMemory() / TO_MBYTES;
+        //if we have less than 1GB, show warning
+        if (totalMemory < 1000) {
+            final String strMessage = "<html>Sie haben MediathekView wahrscheinlich nicht mit dem Startscript gestartet.<br>"
+                    + "Dadurch kann das Laden der Filmliste wegen zuwenig Arbeitsspeicher fehlschlagen.<br><br>"
+                    + "<b>Bitte nutzen Sie die Startscripte!</b></html>";
+            JOptionPane.showMessageDialog(this, strMessage, "Arbeitsspeicher", JOptionPane.WARNING_MESSAGE);
+        }
+    }
     //===================================
     // public
     //===================================
+
     public void setToolbar(int nr) {
         switch (nr) {
             case ButtonAus:

@@ -30,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.EscBeenden;
 
@@ -86,7 +87,7 @@ public class DialogDatenFilm extends javax.swing.JDialog {
         jPanelExtra.setLayout(gridbag);
         int zeile = 0;
         for (int i = 0; i < DatenFilm.FILME_MAX_ELEM; ++i) {
-            if (!daten.debug) {
+            if (!Daten.debug) {
                 if (i == DatenFilm.FILM_URL_RTMP_NR) {
                     continue;
                 }

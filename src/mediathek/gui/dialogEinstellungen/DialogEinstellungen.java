@@ -107,7 +107,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         if (posX > 0 && posY > 0) {
             this.setLocation(posX, posY);
         } else {
-            int x = ddaten.mediathekGui.getLocation().x;
             setLocationRelativeTo(ddaten.mediathekGui);
         }
     }
@@ -337,9 +336,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    /**
-     * @param args the command line arguments
-     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBeenden;
     private javax.swing.JPanel jPanelExtra;

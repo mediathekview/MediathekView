@@ -108,9 +108,6 @@ public class DialogFarbe extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    /**
-     * @param args the command line arguments
-     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAbbrechen;
     private javax.swing.JButton jButtonOk;
@@ -119,6 +116,7 @@ public class DialogFarbe extends javax.swing.JDialog {
 
     private class BeobachterFarbe implements ChangeListener {
 
+        @Override
         public void stateChanged(ChangeEvent arg0) {
             farbe = jColorChooser1.getColor();
         }
@@ -126,6 +124,7 @@ public class DialogFarbe extends javax.swing.JDialog {
 
     private class BeobachterOk implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             ok();
         }
@@ -133,6 +132,7 @@ public class DialogFarbe extends javax.swing.JDialog {
 
     private class BeobachterAbbrechen implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             abbrechen();
         }

@@ -31,6 +31,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.controller.filmeLaden.importieren.DatenFilmlistenServer;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
@@ -55,7 +56,7 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
             }
         });
         jTable1.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
-        jTextFieldUrl.setText(ddaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR]);
+        jTextFieldUrl.setText(Daten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR]);
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_FILMLISTEN_SERVER, PanelListeFilmlistenServer.class.getSimpleName()) {
             @Override
@@ -258,7 +259,7 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
         }
 
         private void tus() {
-            ddaten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR] = jTextFieldUrl.getText();
+            Daten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR] = jTextFieldUrl.getText();
         }
     }
 }

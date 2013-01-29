@@ -292,8 +292,7 @@ public class GuiFilme extends PanelVorlage {
             if (selRows.length == 0) {
                 new HinweisKeineAuswahl().zeigen(parentComponent);
             } else {
-                for (int i = 0; i < selRows.length; i++) {
-                    int selRow = selRows[i];
+                for (int selRow : selRows) {
                     selRow = tabelle.convertRowIndexToModel(selRow);
                     film = DDaten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
                     DialogAddDownload dialog = new DialogAddDownload(ddaten.mediathekGui, ddaten, film);
@@ -343,7 +342,7 @@ public class GuiFilme extends PanelVorlage {
         gridbag.setConstraints(label, c);
         jPanelExtraInnen.add(label);
         // und jetzt noch anzeigen
-        jPanelExtra.setVisible(Boolean.parseBoolean(ddaten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR]));
+        jPanelExtra.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR]));
     }
 
     private Component addExtraFeld(int i, int spalte, int zeile, GridBagLayout gridbag, GridBagConstraints c, JPanel panel, ListePset liste) {
@@ -553,11 +552,11 @@ public class GuiFilme extends PanelVorlage {
         if (runs == 1) {
             textLinks = ifOpen(open, textLinks);
             open = true;
-            textLinks += ( runs + " laufender Film");
+            textLinks += (runs + " laufender Film");
         } else if (runs > 1) {
             textLinks = ifOpen(open, textLinks);
             open = true;
-            textLinks += ( runs + " laufende Filme");
+            textLinks += (runs + " laufende Filme");
         }
         // auch die Downloads anzeigen
         if (laufen > 0 || warten > 0) {
@@ -963,9 +962,7 @@ public class GuiFilme extends PanelVorlage {
             if (liste.size() > 0) {
                 JPopupMenu jPopupMenu = new JPopupMenu();
                 JMenuItem item;
-                Iterator<Start> it = liste.iterator();
-                while (it.hasNext()) {
-                    Start s = it.next();
+                for (Start s : liste) {
                     // dann läuft er noch
                     item = new JMenuItem("Beenden: [" + s.datenDownload.arr[DatenDownload.DOWNLOAD_SENDER_NR] + "]  " + s.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
                     item.addActionListener(new BeobProgramm(s));
@@ -1143,8 +1140,7 @@ public class GuiFilme extends PanelVorlage {
             JMenu submenue = new JMenu("Film mit Programm starten:");
             jPopupMenu.add(submenue);
             ListePset liste = ddaten.listePset.getListeButton();
-            for (int i = 0; i < liste.size(); ++i) {
-                DatenPset pset = liste.get(i);
+            for (DatenPset pset : liste) {
                 if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME_NR].equals("")) {
                     // ein "leeres" Pset, Platzhalter
                     continue;

@@ -97,9 +97,9 @@ public class GuiDebug extends PanelVorlage {
         int y = 0;
         int halbe = sender.length / 2;
         halbe += sender.length % 2;
-        for (int i = 0; i < sender.length; ++i) {
+        for (String aSender : sender) {
             c.gridy = y;
-            addPanel(gridbag, c, sender[i], nr);
+            addPanel(gridbag, c, aSender, nr);
             ++nr;
             ++y;
             if (y >= halbe) {

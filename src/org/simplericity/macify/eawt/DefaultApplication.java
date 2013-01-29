@@ -14,6 +14,9 @@ package org.simplericity.macify.eawt;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Java 6 code modifications:
+ * Copyright 2013 CrystalPalace 
  */
 import java.awt.Image;
 import java.awt.Point;
@@ -46,12 +49,12 @@ public class DefaultApplication implements Application {
 
     private Object application;
     private Class applicationListenerClass;
-    Map listenerMap = Collections.synchronizedMap(new HashMap());
+    private Map<ApplicationListener,Object> listenerMap = Collections.synchronizedMap(new HashMap<ApplicationListener, Object>());
     private boolean enabledAboutMenu = true;
     private boolean enabledPreferencesMenu;
     private boolean aboutMenuItemPresent = true;
     private boolean preferencesMenuItemPresent;
-    private ClassLoader classLoader;
+   
 
     public DefaultApplication() {
         try {
@@ -62,7 +65,7 @@ public class DefaultApplication implements Application {
                 if (URLClassLoader.class.isAssignableFrom(clc)) {
                     Method addUrl = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
                     addUrl.setAccessible(true);
-                    addUrl.invoke(scl, file.toURL());
+                    addUrl.invoke(scl, file.toURI().toURL());
                 }
             }
 
@@ -148,7 +151,7 @@ public class DefaultApplication implements Application {
         if (isMac()) {
             try {
                 Method method = application.getClass().getMethod("getMouseLocationOnScreen", new Class[0]);
-                return (Point) method.invoke(null, new Object[0]);
+              return (Point) method.invoke(null);
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             } catch (IllegalAccessException e) {
@@ -210,7 +213,7 @@ public class DefaultApplication implements Application {
     @Override
     public void setEnabledAboutMenu(boolean enabled) {
         if (isMac()) {
-            callMethod(application, "setEnabledAboutMenu", new Class[]{Boolean.TYPE}, new Object[]{Boolean.valueOf(enabled)});
+          callMethod(application, "setEnabledAboutMenu", new Class[]{Boolean.TYPE}, new Object[]{enabled});
         } else {
             this.enabledAboutMenu = enabled;
         }
@@ -219,7 +222,7 @@ public class DefaultApplication implements Application {
     @Override
     public void setEnabledPreferencesMenu(boolean enabled) {
         if (isMac()) {
-            callMethod(application, "setEnabledPreferencesMenu", new Class[]{Boolean.TYPE}, new Object[]{Boolean.valueOf(enabled)});
+            callMethod(application, "setEnabledPreferencesMenu", new Class[]{Boolean.TYPE}, new Object[]{enabled});
         } else {
             this.enabledPreferencesMenu = enabled;
         }
@@ -237,7 +240,7 @@ public class DefaultApplication implements Application {
             Field informational = application.getClass().getField("UserAttentionRequestInformational");
             Field actual = type == REQUEST_USER_ATTENTION_TYPE_CRITICAL ? critical : informational;
 
-            return ((Integer) application.getClass().getMethod("requestUserAttention", new Class[]{Integer.TYPE}).invoke(application, new Object[]{actual.get(null)})).intValue();
+          return (Integer) application.getClass().getMethod("requestUserAttention", new Class[]{Integer.TYPE}).invoke(application, new Object[]{actual.get(null)});
 
         } catch (ClassNotFoundException e) {
             return -1;
@@ -289,8 +292,8 @@ public class DefaultApplication implements Application {
 
                 try {
                     setDockIconImage.invoke(application, image);
-                } catch (IllegalAccessException e) {
-                } catch (InvocationTargetException e) {
+                } catch (IllegalAccessException ignored) {
+                } catch (InvocationTargetException ignored) {
                 }
             } catch (NoSuchMethodException mnfe) {
 
@@ -315,7 +318,7 @@ public class DefaultApplication implements Application {
 
                     application.getClass().getMethod("setApplicationIconImage", new Class[]{nsImageClass}).invoke(application, new Object[]{nsImage});
 
-                } catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException ignored) {
                 } catch (NoSuchMethodException e) {
                     throw new RuntimeException(e);
                 } catch (IllegalAccessException e) {
@@ -339,8 +342,8 @@ public class DefaultApplication implements Application {
                 Method getDockIconImage = application.getClass().getMethod("getDockIconImage");
                 try {
                     return (BufferedImage) getDockIconImage.invoke(application);
-                } catch (IllegalAccessException e) {
-                } catch (InvocationTargetException e) {
+                } catch (IllegalAccessException ignored) {
+                } catch (InvocationTargetException ignored) {
                 }
             } catch (NoSuchMethodException nsme) {
 
@@ -421,7 +424,7 @@ public class DefaultApplication implements Application {
                 return method.invoke(applicationListener, new Object[]{event});
             } catch (NoSuchMethodException e) {
                 if (appleMethod.getName().equals("equals") && objects.length == 1) {
-                    return Boolean.valueOf(object == objects[0]);
+                    return object == objects[0];
                 }
                 return null;
             }

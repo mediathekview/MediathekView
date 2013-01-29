@@ -291,19 +291,19 @@ public class GuiDownloads extends PanelVorlage {
             for (int i = 0; i < rows.length; ++i) {
                 urls[i] = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(rows[i]), DatenDownload.DOWNLOAD_URL_NR).toString();
             }
-            for (int i = 0; i < urls.length; ++i) {
-                DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(urls[i]);
+            for (String url : urls) {
+                DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
                 if (dauerhaft) {
                     if (download.istAbo()) {
                         // ein Abo wird zusätzlich ins Logfile geschrieben
-                        ddaten.erledigteAbos.zeileSchreiben(download.arr[DatenDownload.DOWNLOAD_THEMA_NR], download.arr[DatenDownload.DOWNLOAD_TITEL_NR], urls[i]);
+                        ddaten.erledigteAbos.zeileSchreiben(download.arr[DatenDownload.DOWNLOAD_THEMA_NR], download.arr[DatenDownload.DOWNLOAD_TITEL_NR], url);
                     }
-                    ddaten.listeDownloads.delDownloadByUrl(urls[i]);
+                    ddaten.listeDownloads.delDownloadByUrl(url);
                 } else {
                     // wenn nicht dauerhaft
                     download.zurueckstellen();
                 }
-                ddaten.starterClass.filmLoeschen(urls[i]);
+                ddaten.starterClass.filmLoeschen(url);
             }
             tabelleLaden();
         } else {
@@ -317,7 +317,6 @@ public class GuiDownloads extends PanelVorlage {
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // bei !starten wird der Film gestoppt
         String[] urls;
-        String url;
         // ==========================
         // erst mal die URLs sammeln
         if (alle) {
@@ -331,8 +330,7 @@ public class GuiDownloads extends PanelVorlage {
             if (rows.length >= 0) {
                 for (int i = 0; i < rows.length; i++) {
                     int row = tabelle.convertRowIndexToModel(rows[i]);
-                    url = tabelle.getModel().getValueAt(row, DatenDownload.DOWNLOAD_URL_NR).toString();
-                    urls[i] = url;
+                    urls[i] = tabelle.getModel().getValueAt(row, DatenDownload.DOWNLOAD_URL_NR).toString();
                 }
             } else {
                 new HinweisKeineAuswahl().zeigen(parentComponent);
@@ -340,8 +338,7 @@ public class GuiDownloads extends PanelVorlage {
         }
         // ========================
         // und jetzt abarbeiten
-        for (int i = 0; i < urls.length; ++i) {
-            url = urls[i];
+        for (String url : urls) {
             Start s = ddaten.starterClass.getStart(url);
             DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
             if (starten) {
@@ -399,8 +396,8 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         }
-        for (int i = 0; i < urls.size(); ++i) {
-            ddaten.starterClass.filmLoeschen(urls.get(i));
+        for (String url : urls) {
+            ddaten.starterClass.filmLoeschen(url);
         }
     }
 
@@ -651,7 +648,7 @@ public class GuiDownloads extends PanelVorlage {
                     filmStartenWiederholenStoppen(false /* alle */, false /* starten */);
                 }
             });
-            if (ddaten.debug) {
+            if (Daten.debug) {
                 /// geht noch nicht ganz
                 // Zielordner öffnen
                 JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");

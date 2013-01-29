@@ -33,11 +33,11 @@ import mediathek.tool.Konstanten;
 
 public class PanelHilfe extends PanelVorlage {
 
-
     /**
      * Creates new form GuiFeed
      *
-     * @param d
+     * @param dd
+     * @param parentComponent
      */
     public PanelHilfe(DDaten dd, Component parentComponent) {
         super(dd, parentComponent);

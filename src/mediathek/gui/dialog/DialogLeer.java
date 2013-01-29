@@ -91,9 +91,6 @@ public class DialogLeer extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    /**
-     * @param args the command line arguments
-     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanelExtra;
     // End of variables declaration//GEN-END:variables
