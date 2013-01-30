@@ -36,10 +36,6 @@ public class ImportFilmliste {
     private IoXmlFilmlisteLesen ioXmlFilmlisteLesen = null;
     public FilmlistenSuchen filmlistenSuchen = new FilmlistenSuchen();
 
-    /**
-     *
-     * @param ddaten
-     */
     public ImportFilmliste() {
         ioXmlFilmlisteLesen = new IoXmlFilmlisteLesen();
         ioXmlFilmlisteLesen.addAdListener(new BeobLaden());
