@@ -29,6 +29,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
 
 public class ListePset extends LinkedList<DatenPset> {
+    // Liste aller Programmsets
 
     public static final String MUSTER_PFAD_ZIEL = "ZIELPFAD";
     public static final String MUSTER_PFAD_MPLAYER = "PFAD_MPLAYER";
@@ -48,7 +49,7 @@ public class ListePset extends LinkedList<DatenPset> {
     }
 
     public DatenPset getPsetAbspielen() {
-        //Programmgruppe zum Abspielen
+        //liefert die Programmgruppe zum Abspielen
         Iterator<DatenPset> it = this.iterator();
         while (it.hasNext()) {
             DatenPset datenPset = it.next();
@@ -60,8 +61,8 @@ public class ListePset extends LinkedList<DatenPset> {
     }
 
     public DatenPset getPsetAbo(String name) {
-        //liefert mit dem Namen eines Abos die passende Programmgruppe zurück
-        //wird nichts gefunden, wird die erste Programmgruppe (der Abos) genommen
+        // liefert mit dem Namen eines Abos die passende Programmgruppe zurück
+        // wird nichts gefunden, wird die erste Programmgruppe (der Abos) genommen
         DatenPset ret = null;
         if (this.size() == 0) {
             ret = null;
@@ -91,6 +92,7 @@ public class ListePset extends LinkedList<DatenPset> {
     }
 
     public ListePset getListeSpeichern() {
+        // liefert eine Liste Programmsets, die zum Speichern angelegt sind (ist meist nur eins)
         ListePset liste = new ListePset();
         Iterator<DatenPset> it = this.iterator();
         while (it.hasNext()) {
@@ -103,6 +105,7 @@ public class ListePset extends LinkedList<DatenPset> {
     }
 
     public ListePset getListeButton() {
+        // liefert eine Liste Programmsets, die als Button angelegt sind
         ListePset liste = new ListePset();
         Iterator<DatenPset> it = this.iterator();
         while (it.hasNext()) {
@@ -115,6 +118,7 @@ public class ListePset extends LinkedList<DatenPset> {
     }
 
     public ListePset getListeAbo() {
+        // liefert eine Liste Programmsets, die für Abos angelegt sind (ist meist nur eins)
         ListePset liste = new ListePset();
         Iterator<DatenPset> it = this.iterator();
         while (it.hasNext()) {
@@ -127,7 +131,7 @@ public class ListePset extends LinkedList<DatenPset> {
     }
 
     public String[] getObjectDataCombo() {
-        //liefert eine Liste aller Pset
+        //liefert eine Liste aller Psetnamen
         String[] object;
         int i = 0;
         ListIterator<DatenPset> it = this.listIterator(0);
@@ -183,19 +187,19 @@ public class ListePset extends LinkedList<DatenPset> {
         return ret;
     }
 
-    public boolean addVorlage(DDaten dd,ListePset liste) {
+    public boolean addVorlage(DDaten dd, ListePset liste) {
         boolean ret = true;
         Iterator<DatenPset> it = liste.iterator();
         while (it.hasNext()) {
             DatenPset pSet = it.next();
-            if (!addVorlage(dd,pSet)) {
+            if (!addVorlage(dd, pSet)) {
                 ret = false;
             }
         }
         return ret;
     }
 
-    private boolean addVorlage(DDaten dd ,DatenPset pSet) {
+    private boolean addVorlage(DDaten dd, DatenPset pSet) {
         pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
         String mplayer = "";
         String vlc = "";

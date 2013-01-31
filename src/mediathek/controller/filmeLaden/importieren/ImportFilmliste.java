@@ -52,7 +52,7 @@ public class ImportFilmliste {
 
         @Override
         public void run() {
-            //wenn auto-update-url dann erst mal die Updateserver aktualiseren laden
+            //wenn auto-update-url dann erst mal die Updateserver aktualiseren
             boolean ret = false;
             ArrayList<String> versuchteUrls = new ArrayList<String>();
             String updateUrl = filmlistenSuchen.suchen(versuchteUrls);

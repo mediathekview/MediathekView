@@ -27,16 +27,18 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
 public class Daten {
+    // Konstanten, Systemeinstellungen und alles was wichtig ist für
+    // alle Versionen: MediathekGui, MediathekAuto, MediathekNoGui
 
-    // Konstanten
-    // Systemeinstellungen
+    //alle Programmeinstellungen
     public static String[] system = new String[Konstanten.SYSTEM_MAX_ELEM];
     // flags
-    public static boolean debug = false;
-    public static boolean nogui = false;
-    public static boolean auto = false;
+    public static boolean debug = false; // Debugmodus
+    public static boolean nogui = false; // Version ohne Gui
+    public static boolean auto = false; // Version: MediathekAuto
+    // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis = "";
-    // Klassen
+    // zentrale Klassen
     public static FilmeLaden filmeLaden;
     public static IoXmlFilmlisteLesen ioXmlFilmlisteLesen = null;
     public static ListeFilme listeFilme = null;
@@ -66,10 +68,12 @@ public class Daten {
     }
 
     public static void setUserAgentAuto() {
+        // Useragent wird vom Programm verwaltet
         system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.TRUE.toString();
     }
 
     public static void setUserAgentManuel(String ua) {
+        // Useragent den der Benutzer vorgegeben hat
         system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.FALSE.toString();
         system[Konstanten.SYSTEM_USER_AGENT_NR] = ua;
     }
@@ -92,6 +96,7 @@ public class Daten {
     }
 
     public static String getBasisVerzeichnis() {
+        // liefert das Verzeichnis der Programmeinstellungen
         return getBasisVerzeichnis(false);
     }
 
@@ -100,6 +105,9 @@ public class Daten {
     }
 
     private static String getBasisVerzeichnis(String basis, boolean anlegen) {
+        // liefert das Verzeichnis der Programmeinstellungen
+        // basis: Ordner in dem das Verzeichnis mit den Einstellungen angelegt wird
+        // anlegen: anlegen, oder nicht
         String ret;
         if (basis.equals("")) {
             ret = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNISS_EINSTELLUNGEN + File.separator;
@@ -110,7 +118,7 @@ public class Daten {
             File basisF = new File(ret);
             if (!basisF.exists()) {
                 if (!basisF.mkdir()) {
-                    Log.fehlerMeldung(898736548,Log.FEHLER_ART_PROG, "Daten.getBasisVerzeichnis", new String[]{"Kann den Ordner zum Speichern der Daten nicht anlegen!",
+                    Log.fehlerMeldung(898736548, Log.FEHLER_ART_PROG, "Daten.getBasisVerzeichnis", new String[]{"Kann den Ordner zum Speichern der Daten nicht anlegen!",
                                 "Daten.getBasisVerzeichnis"});
                 }
 

@@ -65,6 +65,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         jCheckBoxSuchen.setSelected(true);
         Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
         jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
+        // setzt die Standardpfade für die wichtigsten Programme
         Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = GuiFunktionenProgramme.getMusterPfadMplayer();
         Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = GuiFunktionenProgramme.getMusterPfadVlc();
         Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = GuiFunktionenProgramme.getMusterPfadFlv();
@@ -90,8 +91,10 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private void statusStart() {
         jButtonStandard.setText("Weiter");
         if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("") || Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
+            // ein Programm (VLC, flvstreamer) wurde nicht gefunden, muss der Benutzer eintragen
             status = STAT_PFAD;
         } else if (jCheckBoxAnpassen.isSelected()) {
+            // der Benutzer wills verstellen
             status = STAT_PFAD;
         } else {
             // nur dann automatisch Standardprogramme einrichten, sonst fragen
@@ -116,6 +119,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     }
 
     private void statusPset() {
+        // Einstellungen zum Ansehen und Speichern der Filme anpassen
         jCheckBoxAnpassen.setVisible(false);
         jCheckBoxAlleEinstellungen.setVisible(true);
         if (ddaten.listePset.size() == 0) {

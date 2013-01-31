@@ -40,8 +40,10 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class FilmlistenSuchen {
+    // damit werden die DownloadURLs zum Laden einer Filmliste
+    // gesucht
+    //
     //Tags FilmUpdateServer Filmliste
-
     public static final String FILM_UPDATE_SERVER_PRIO_1 = "1";
     public static final String FILM_UPDATE_SERVER = "film-update-server";
     public static final int FILM_UPDATE_SERVER_MAX_ELEM = 5;
@@ -58,8 +60,10 @@ public class FilmlistenSuchen {
     public static final String[] FILM_UPDATE_SERVER_COLUMN_NAMES = {FILM_UPDATE_SERVER_NR, FILM_UPDATE_SERVER_URL,
         FILM_UPDATE_SERVER_DATUM, FILM_UPDATE_SERVER_ZEIT, FILM_UPDATE_SERVER_PRIO};
     public static final String[] FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE = {"Nr", "Update-Url", "Datum", "Zeit", "Prio"};
-    public ListeDownloadUrlsFilmlisten listeDownloadUrlsFilmlisten = new ListeDownloadUrlsFilmlisten();
+    // Liste mit den Servern die Filmlisten anbieten
     public ListeFilmlistenServer listeFilmlistenServer = new ListeFilmlistenServer();
+    // Liste mit den URLs zum Download der Filmliste
+    public ListeDownloadUrlsFilmlisten listeDownloadUrlsFilmlisten = new ListeDownloadUrlsFilmlisten();
 
     public String suchen(ArrayList<String> bereitsVersucht) {
         // passende URL zum Laden der Filmliste suchen
@@ -84,7 +88,7 @@ public class FilmlistenSuchen {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(347895642,Log.FEHLER_ART_PROG, "FilmUpdateServer.suchen", ex);
+            Log.fehlerMeldung(347895642, Log.FEHLER_ART_PROG, "FilmUpdateServer.suchen", ex);
         }
         if (tmp.size() == 0) {
             Log.systemMeldung(new String[]{"Es ist ein Fehler aufgetreten!",
@@ -144,10 +148,10 @@ public class FilmlistenSuchen {
     }
 
     private void getDownloadUrlsFilmlisten__backuplisten(ListeDownloadUrlsFilmlisten sListe, String userAgent) {
-        getDownloadUrlsFilmlisten(GuiFunktionen.addUrl("http://176.28.14.91/mediathek1", Konstanten.DATEINAME_LISTE_FILMLISTEN), sListe, userAgent);
-        getDownloadUrlsFilmlisten(GuiFunktionen.addUrl("http://176.28.14.91/mediathek2", Konstanten.DATEINAME_LISTE_FILMLISTEN), sListe, userAgent);
-        getDownloadUrlsFilmlisten(GuiFunktionen.addUrl("http://176.28.14.91/mediathek3", Konstanten.DATEINAME_LISTE_FILMLISTEN), sListe, userAgent);
-        getDownloadUrlsFilmlisten(GuiFunktionen.addUrl("http://176.28.14.91/mediathek4", Konstanten.DATEINAME_LISTE_FILMLISTEN), sListe, userAgent);
+        // für den Notfall fest hinterlegte Downloadserver
+        getDownloadUrlsFilmlisten(GuiFunktionen.addUrl("http://176.28.8.161/mediathek1", Konstanten.DATEINAME_LISTE_FILMLISTEN), sListe, userAgent);
+        getDownloadUrlsFilmlisten(GuiFunktionen.addUrl("http://176.28.8.161/mediathek2", Konstanten.DATEINAME_LISTE_FILMLISTEN), sListe, userAgent);
+        getDownloadUrlsFilmlisten(GuiFunktionen.addUrl("http://176.28.8.161/mediathek3", Konstanten.DATEINAME_LISTE_FILMLISTEN), sListe, userAgent);
         Iterator<DatenFilmlistenServer> it = listeFilmlistenServer.iterator();
         while (it.hasNext()) {
             if (sListe.size() > 100) {
@@ -198,7 +202,7 @@ public class FilmlistenSuchen {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(821069874, Log.FEHLER_ART_PROG,FilmlistenSuchen.class.getName(), ex, "Die URL-Filmlisten konnte nicht geladen werden: " + dateiUrl);
+            Log.fehlerMeldung(821069874, Log.FEHLER_ART_PROG, FilmlistenSuchen.class.getName(), ex, "Die URL-Filmlisten konnte nicht geladen werden: " + dateiUrl);
         }
     }
 

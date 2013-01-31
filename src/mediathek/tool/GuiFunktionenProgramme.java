@@ -38,6 +38,8 @@ import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 public class GuiFunktionenProgramme extends GuiFunktionen {
 
     public static String getMusterPfadMplayer() {
+        // liefert den Standardpfad für das entsprechende BS 
+        // Programm muss auf dem Rechner instelliert sein
         final String PFAD_LINUX = "/usr/bin/mplayer";
         final String PFAD_MAC = "/opt/local/bin/mplayer";
         final String PFAD_WIN_DEFAULT = "C:\\Program Files\\SMPlayer\\mplayer\\mplayer.exe";
@@ -69,6 +71,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     }
 
     public static String getMusterPfadVlc() {
+        // liefert den Standardpfad für das entsprechende BS 
+        // Programm muss auf dem Rechner instelliert sein
         final String PFAD_LINUX_VLC = "/usr/bin/vlc";
         final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
         final String PFAD_WIN_DEFAULT = "C:\\Programme\\VideoLAN\\VLC\\vlc.exe";
@@ -100,6 +104,10 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     }
 
     public static String getMusterPfadFlv() {
+        // liefert den Standardpfad für das entsprechende BS 
+        // bei Win+Mac wird das Programm mitgeliefert und liegt 
+        // im Ordner "bin" der mit dem Programm mitgeliefert wird
+        // bei Linux muss das Programm auf dem Rechner instelliert sein
         final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
         final String PFAD_MAC_FLV = "bin/flvstreamer_macosx_intel_32bit_latest";
         final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
@@ -124,28 +132,9 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         }
     }
 
-    public static String getPfadMplayer(DDaten dd) {
-        if (Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(dd, false /* vlc */, false /* flvstreamer */, true /* mplayer */), "Pfade Standardprogramme").setVisible(true);
-        }
-        return Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR];
-    }
-
-    public static String getPfadVlc(DDaten dd) {
-        if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(dd, true /* vlc */, false /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
-        }
-        return Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR];
-    }
-
-    public static String getPfadFlv(DDaten dd) {
-        if (Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(dd, false /* vlc */, true /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
-        }
-        return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
-    }
-
     public static String getPfadScript() {
+        // liefert den Standardpfad zum Script "Ansehen" für das entsprechende BS 
+        // liegt im Ordner "bin" der mit dem Programm mitgeliefert wird
         String pfadScript;
         final String PFAD_LINUX_SCRIPT = "bin/flv.sh";
         final String PFAD_WINDOWS_SCRIPT = "bin\\flv.bat";
@@ -165,7 +154,32 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return pfadScript;
     }
 
+    public static String getPfadMplayer(DDaten dd) {
+        // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
+        if (Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR].equals("")) {
+            new DialogOk(null, true, new PanelProgrammPfade(dd, false /* vlc */, false /* flvstreamer */, true /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+        }
+        return Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR];
+    }
+
+    public static String getPfadVlc(DDaten dd) {
+        // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
+        if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
+            new DialogOk(null, true, new PanelProgrammPfade(dd, true /* vlc */, false /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+        }
+        return Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR];
+    }
+
+    public static String getPfadFlv(DDaten dd) {
+        // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
+        if (Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
+            new DialogOk(null, true, new PanelProgrammPfade(dd, false /* vlc */, true /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+        }
+        return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
+    }
+
     public static ListePset getStandardprogramme(DDaten ddaten) {
+        // liefert das Standard Programmset für das entsprechende BS
         ListePset pSet;
         InputStream datei;
         switch (getOs()) {
@@ -265,6 +279,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     }
 
     public static boolean programmePruefen(DDaten daten) {
+        // prüfen ob die eingestellten Programmsets passen
         final String PIPE = "| ";
         final String LEER = "      ";
         final String PFEIL = " -> ";

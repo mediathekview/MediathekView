@@ -32,9 +32,13 @@ import mediathek.gui.InfoPanel;
 import mediathek.tool.Konstanten;
 
 public final class DDaten extends Daten {
-    // Listen
-
-    public static ListeFilme listeFilmeNachBlackList = null;
+    // Konstanten, Systemeinstellungen und alles was wichtig ist für
+    // MediathekGui, MediathekAuto
+    // erweitert "Daten" um die Klassen für die Version Gui+Auto
+    //
+    // Daten.listeFilme sind alle Filme,
+    // DDaten.listeFilmeNachBlackList sind die Filme mit denen das Programm arbeitet, eben ohne die Blacklist
+    public static ListeFilme listeFilmeNachBlackList = null; 
     public ListeBlacklist listeBlacklist = null;
     public ListePset listePset = null;
     public ListeAbo listeAbo = null;
@@ -44,13 +48,13 @@ public final class DDaten extends Daten {
     // globale Objekte
     public IoXmlLesen ioXmlLesen = null;
     public IoXmlSchreiben ioXmlSchreiben = null;
-    public StarterClass starterClass = null;
-    public InfoPanel infoPanel = null;
+    public StarterClass starterClass = null; // Klasse zum Ausführen der Programme: VLC, flvstreamer, ...
+    public InfoPanel infoPanel = null; // Panel unten in der Gui mit den Infos: Anzahl Filme...
     // Panel
-    public MediathekGui mediathekGui = null;
-    public GuiFilme guiFilme = null;
-    public GuiDownloads guiDownloads = null;
-    public GuiAbo guiAbo = null;
+    public MediathekGui mediathekGui = null; // JFrame der Gui
+    public GuiFilme guiFilme = null; // Tab mit den Filmen
+    public GuiDownloads guiDownloads = null; // Tab mit den Downloads
+    public GuiAbo guiAbo = null; // Tab mit den Abos
     // für die Tabellen
     public String[] tabFilmeBreit = new String[DatenFilm.FILME_MAX_ELEM];
     public boolean nachDownloadShutDown = false;
