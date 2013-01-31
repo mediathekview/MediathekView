@@ -115,16 +115,19 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jPanelInfo.setLayout(new BorderLayout());
         jPanelInfo.add(ddaten.infoPanel, BorderLayout.CENTER);
         if (IoXmlLesen.einstellungenExistieren()) {
+            // gibt schon Programmeinstellungen, dann damit starten
             ddaten.allesLaden();
         } else {
-            // erster Start mit der Version 3.0
+            // erster Start
             new DialogStarteinstellungen(null, true, ddaten).setVisible(true);
         }
         this.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
         GuiFunktionen.setLook(this);
         init();
         setSize(max);
+        // Dialog mit den Programmeinstellungen einrichten
         dialogEinstellungen = new DialogEinstellungen(null, false, ddaten);
+        // Prüfen obs ein Programmupdate gibt
         new CheckUpdate(this, ddaten).suchen();
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.filmlisteZuAlt()) {
@@ -150,10 +153,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             JOptionPane.showMessageDialog(this, strMessage, "Arbeitsspeicher", JOptionPane.WARNING_MESSAGE);
         }
     }
+
     //===================================
     // public
     //===================================
-
     public void setToolbar(int nr) {
         switch (nr) {
             case ButtonAus:
@@ -202,10 +205,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 break;
         }
     }
+
     //===================================
     // private
     //===================================
-
     private void buttonAus() {
         jButtonFilmeLaden.setEnabled(false);
         jButtonFilmAbspielen.setEnabled(false);
@@ -701,11 +704,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     private void beenden() {
+        // Tabelleneinstellungen merken
         ddaten.guiFilme.tabelleSpeichern();
         ddaten.guiDownloads.tabelleSpeichern();
         ddaten.guiAbo.tabelleSpeichern();
         ddaten.listeDownloads.listePutzen();
         if (ddaten.starterClass != null) {
+            // alle laufenden Downloads/Programme stoppen
             ddaten.starterClass.delAllStart();
         }
         if (this.getExtendedState() == JFrame.MAXIMIZED_BOTH) {
@@ -763,10 +768,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
     private void filmeLaden() {
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUS) {
+            // Dialog zum Laden der Filme anzeigen
             DialogLeer dialog = new DialogLeer(this, true);
             dialog.init("Einstellungen zum Laden der Filme", new PanelFilmlisteLaden(ddaten, ddaten.mediathekGui, dialog));
             dialog.setVisible(true);
         } else {
+            // Filme werden automatisch geladen
             jButtonFilmeLaden.setEnabled(false);
             jMenuItemFilmlisteLaden.setEnabled(false);
             Daten.filmeLaden.importFilmliste("");
@@ -1179,12 +1186,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             itemKlein.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ICON_KLEIN_NR]));
         }
 
-//        @Override
-//        public void mouseClicked(MouseEvent arg0) {
-//            if (arg0.getButton() == MouseEvent.BUTTON3) {
-//                showMenu(arg0);
-//            }
-//        }
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
