@@ -49,14 +49,6 @@ public class StarterClass {
         init();
     }
 
-    private void init() {
-        listeStarts = new ListeStarts(ddaten);
-        starten = new Starten();
-        Thread startenThread = new Thread(starten);
-        startenThread.setDaemon(true);
-        startenThread.start();
-    }
-
     public synchronized Start urlStarten(DatenPset pSet, DatenFilm ersterFilm) {
         // url mit dem Programm mit der Nr. starten (Button oder Doppelklick)
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
@@ -122,6 +114,14 @@ public class StarterClass {
     // ===================================
     // Private
     // ===================================
+    private void init() {
+        listeStarts = new ListeStarts(ddaten);
+        starten = new Starten();
+        Thread startenThread = new Thread(starten);
+        startenThread.setDaemon(true);
+        startenThread.start();
+    }
+
     private void notifyStartEvent() {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
     }
@@ -395,10 +395,10 @@ public class StarterClass {
             notifyStartEvent();
         }
     }
-    private void programmBeenden(){
-        if (ddaten.nachDownloadShutDown){
+
+    private void programmBeenden() {
+        if (ddaten.nachDownloadShutDown) {
             // Sicherheitsabfrage, dann beenden
-            
         }
     }
 
