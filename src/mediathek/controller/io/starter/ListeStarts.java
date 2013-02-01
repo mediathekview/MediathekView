@@ -180,18 +180,6 @@ public class ListeStarts extends LinkedList<Start> {
         }
     }
 
-    private int getDown() {
-        int ret = 0;
-        ListIterator<Start> it = this.listIterator(0);
-        while (it.hasNext()) {
-            Start s = it.next();
-            if (s.status == Start.STATUS_RUN) {
-                ++ret;
-            }
-        }
-        return ret;
-    }
-
     void aufraeumen() {
         boolean gefunden = false;
         Iterator<Start> it = this.iterator();
@@ -263,6 +251,18 @@ public class ListeStarts extends LinkedList<Start> {
     // ***********************************
     // private
     // ***********************************
+    private int getDown() {
+        int ret = 0;
+        ListIterator<Start> it = this.listIterator(0);
+        while (it.hasNext()) {
+            Start s = it.next();
+            if (s.status == Start.STATUS_RUN) {
+                ++ret;
+            }
+        }
+        return ret;
+    }
+
     private boolean contain(Start start) {
         boolean ret = false;
         ListIterator<Start> it = this.listIterator(0);

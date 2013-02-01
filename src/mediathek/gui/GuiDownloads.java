@@ -49,6 +49,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogEditDownload;
+import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 import mediathek.tool.BeobMpanel;
 import mediathek.tool.CellRendererDownloads;
 import mediathek.tool.Datum;
@@ -254,6 +255,8 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void zielordnerOeffnen() {
+        boolean gut = false;
+        File sFile = null;
         int row = tabelle.getSelectedRow();
         if (row >= 0) {
             String url = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_URL_NR).toString();
@@ -263,21 +266,43 @@ public class GuiDownloads extends PanelVorlage {
                 s += File.separator;
             }
             try {
+                sFile = new File(s);
+                if (!sFile.exists()) {
+                    sFile = sFile.getParentFile();
+                }
                 if (Desktop.isDesktopSupported()) {
                     Desktop d = Desktop.getDesktop();
                     if (d.isSupported(Desktop.Action.OPEN)) {
-                        File sFile = new File(s);
-                        if (!sFile.exists()) {
-                            sFile = sFile.getParentFile();
-                        }
                         d.open(sFile);
                         //d.browse(new File(s).toURI());
                     }
                 }
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(parentComponent, "Kann den Dateimanager nicht öffnen!",
-                        "Fehler", JOptionPane.ERROR_MESSAGE);
-                Log.fehlerMeldung(976402157, Log.FEHLER_ART_PROG, GuiDownloads.class.getName(), ex, "Ordner öffnen: " + download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
+                try {
+                    String programm = "";
+                    if (Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR].equals("")) {
+                        DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(ddaten.mediathekGui, ddaten, true, "", "Dateimanager suchen");
+                        dialog.setVisible(true);
+                        if (dialog.ok) {
+                            programm = dialog.ziel;
+                        }
+                    } else {
+                        programm = Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR];
+                    }
+                    if (sFile != null) {
+                        Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
+                        Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = programm;
+                        gut = true;
+                    }
+                } catch (Exception eex) {
+                    Log.fehlerMeldung(306590789, Log.FEHLER_ART_PROG, GuiDownloads.class.getName(), ex, "Ordner öffnen: " + download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
+                }
+            } finally {
+                if (!gut) {
+                    Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = "";
+                    JOptionPane.showMessageDialog(parentComponent, "Kann den Dateimanager nicht öffnen!",
+                            "Fehler", JOptionPane.ERROR_MESSAGE);
+                }
             }
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
@@ -648,19 +673,17 @@ public class GuiDownloads extends PanelVorlage {
                     filmStartenWiederholenStoppen(false /* alle */, false /* starten */);
                 }
             });
-            if (Daten.debug) {
-                /// geht noch nicht ganz
-                // Zielordner öffnen
-                JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-                itemOeffnen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png")));
-                jPopupMenu.add(itemOeffnen);
-                itemOeffnen.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent arg0) {
-                        zielordnerOeffnen();
-                    }
-                });
-            }
+
+            // Zielordner öffnen
+            JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
+            itemOeffnen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png")));
+            jPopupMenu.add(itemOeffnen);
+            itemOeffnen.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    zielordnerOeffnen();
+                }
+            });
 
 
             //#######################################
