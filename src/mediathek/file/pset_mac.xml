@@ -11,8 +11,8 @@
     </Programmset>
     <Programm>
         <Programmname>skript</Programmname>
-        <Programmpfad>PFAD_SCRIPT</Programmpfad>
-        <Programmschalter>PFAD_FLVSTREAMER PFAD_VLC %F</Programmschalter>
+        <Programmpfad>bin/flv.sh</Programmpfad>
+        <Programmschalter>bin/flvstreamer_macosx_intel_32bit_latest PFAD_VLC %F</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>false</Restart>
     </Programm>
@@ -37,7 +37,7 @@
     </Programmset>
     <Programm>
         <Programmname>flvstreamer</Programmname>
-        <Programmpfad>PFAD_FLVSTREAMER</Programmpfad>
+        <Programmpfad>bin/flvstreamer_macosx_intel_32bit_latest</Programmpfad>
         <Programmschalter>%F --resume -o **</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>true</Restart>

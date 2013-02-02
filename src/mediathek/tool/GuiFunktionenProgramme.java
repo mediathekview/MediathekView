@@ -89,12 +89,20 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             case OS_WIN_64BIT:
             case OS_UNKNOWN:
             default:
+                pfad = PFAD_WIN_DEFAULT;
+                if (new File(pfad).exists()) {
+                    break;
+                }
                 if (System.getenv("ProgramFiles") != null) {
+                    // für 32/64Bit Win und 32Bit VLC
+                    // oder 64Bit Win und 64Bit VLC
                     pfad = System.getenv("ProgramFiles") + PFAD_WIN;
-                } else if (System.getenv("ProgramFiles(x86)") != null) {
+                }
+                if (new File(pfad).exists()) {
+                    break;
+                }
+                if (System.getenv("ProgramFiles(x86)") != null) {
                     pfad = System.getenv("ProgramFiles(x86)") + PFAD_WIN;
-                } else {
-                    pfad = PFAD_WIN_DEFAULT;
                 }
         }
         if (!new File(pfad).exists()) {
