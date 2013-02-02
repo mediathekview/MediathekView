@@ -25,11 +25,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mediathek.tool.Konstanten;
-import mediathek.daten.Daten;
-import mediathek.tool.GuiFunktionen;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Konstanten;
 
 public class PanelEinstellungenNetz extends PanelVorlage {
 
@@ -84,7 +84,7 @@ public class PanelEinstellungenNetz extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         jCheckBoxProxy = new javax.swing.JCheckBox();
         jLabelServer = new javax.swing.JLabel();
         jLabelPort = new javax.swing.JLabel();
@@ -95,9 +95,9 @@ public class PanelEinstellungenNetz extends PanelVorlage {
         jTextFieldPUser = new javax.swing.JTextField();
         jTextFieldPPwd = new javax.swing.JTextField();
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Proxy Einstellungen"));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("HTTP-Proxy"));
 
-        jCheckBoxProxy.setText("Proxy:");
+        jCheckBoxProxy.setText("Proxy verwenden:");
 
         jLabelServer.setText("Server:");
 
@@ -112,33 +112,33 @@ public class PanelEinstellungenNetz extends PanelVorlage {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(31, 31, 31)
+                                .addGap(19, 19, 19)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabelPort)
                                     .addComponent(jLabelServer)))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabelUser)
-                                    .addComponent(jLabelPass))))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabelUser)
+                                .addComponent(jLabelPass)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldPServer, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                            .addComponent(jTextFieldPServer, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
                             .addComponent(jTextFieldPPort)
                             .addComponent(jTextFieldPUser)
                             .addComponent(jTextFieldPPwd)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jCheckBoxProxy)))
+                        .addComponent(jCheckBoxProxy)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jCheckBoxProxy)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -175,7 +175,7 @@ public class PanelEinstellungenNetz extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -185,7 +185,6 @@ public class PanelEinstellungenNetz extends PanelVorlage {
     private javax.swing.JLabel jLabelPort;
     private javax.swing.JLabel jLabelServer;
     private javax.swing.JLabel jLabelUser;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JTextField jTextFieldPPort;
     private javax.swing.JTextField jTextFieldPPwd;
     private javax.swing.JTextField jTextFieldPServer;

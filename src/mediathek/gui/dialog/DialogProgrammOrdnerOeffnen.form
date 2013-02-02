@@ -50,7 +50,7 @@
                   <Component id="jButtonAbbrechen" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonOk" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="27" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -140,7 +140,7 @@
             <Property name="editable" type="boolean" value="false"/>
             <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="4"/>
-            <Property name="text" type="java.lang.String" value="&#xa; Der Dateimanager wird nicht gefunden.&#xa; Dateimanager selbst ausw&#xe4;hlen.&#xa;"/>
+            <Property name="text" type="java.lang.String" value="&#xa; Der Dateimanager zum Anzeigen des Speicherordners wird nicht gefunden.&#xa; Dateimanager selbst ausw&#xe4;hlen.&#xa;"/>
           </Properties>
         </Component>
       </SubComponents>

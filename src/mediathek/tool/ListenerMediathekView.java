@@ -41,6 +41,7 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_LOG_FEHLER = 15;
     public static final int EREIGNIS_LOG_SYSTEM = 16;
     public static final int EREIGNIS_LOG_PLAYER = 17;
+    public static final int EREIGNIS_PROGRAMM_ORDNER_OEFFNEN = 18;
     public int ereignis = -1;
     public String klasse = "";
     private static EventListenerList listeners = new EventListenerList();
