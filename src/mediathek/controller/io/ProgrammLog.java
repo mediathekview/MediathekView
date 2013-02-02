@@ -55,6 +55,17 @@ public class ProgrammLog {
                     bw.newLine();
                     bw.write("Compiled: " + Funktionen.getCompileDate());
                     bw.newLine();
+                    bw.write("=====================================================");
+                    bw.newLine();
+                    bw.write("Java");
+                    bw.newLine();
+                    String[] java = Funktionen.getJavaVersion();
+                    for (String ja : java) {
+                        bw.write(ja);
+                        bw.newLine();
+                    }
+                    bw.write("=====================================================");
+                    bw.newLine();
                     bw.write("Betriebssystem: " + System.getProperty("os.name"));
                     if (System.getProperty("os.name").toLowerCase().contains("windows")) {
                         if (System.getenv("ProgramFiles(x86)") != null) {
