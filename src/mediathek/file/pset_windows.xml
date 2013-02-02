@@ -12,8 +12,8 @@
     </Programmset>
     <Programm>
         <Programmname>skript</Programmname>
-        <Programmpfad>"PFAD_SCRIPT"</Programmpfad>
-        <Programmschalter>"PFAD_FLVSTREAMER" "PFAD_VLC" %F</Programmschalter>
+        <Programmpfad>bin\flv.bat</Programmpfad>
+        <Programmschalter>bin\flvstreamer_win32_latest.exe "PFAD_VLC" %F</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>false</Restart>
     </Programm>
@@ -39,18 +39,10 @@
     <Programm>
         <Programmname>flvstreamer (rtmp &lt;#&gt; )</Programmname>
         <Zieldateiname>%t-%T-%N.flv</Zieldateiname>
-        <Programmpfad>"PFAD_FLVSTREAMER"</Programmpfad>
+        <Programmpfad>bin\flvstreamer_win32_latest.exe</Programmpfad>
         <Programmschalter>%F --resume -o "**"</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>true</Restart>
-    </Programm>
-    <Programm>
-        <Programmname>vlc (mms://ndr &lt;#&gt; wmv)</Programmname>
-        <Zieldateiname>%t-%T-%N.wmv</Zieldateiname>
-        <Programmpfad>PFAD_VLC</Programmpfad>
-        <Programmschalter>%f :sout=#standard{access=file,mux=asf,dst="**"} -I "dummy" --play-and-exit</Programmschalter>
-        <Praefix>mms://ndr</Praefix>
-        <Suffix>wmv</Suffix>
     </Programm>
     <Programm>
         <Programmname>vlc ( &lt;#&gt; )</Programmname>
