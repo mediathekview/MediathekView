@@ -270,11 +270,12 @@ public class GuiDownloads extends PanelVorlage {
                     Desktop d = Desktop.getDesktop();
                     if (d.isSupported(Desktop.Action.OPEN)) {
                         d.open(sFile);
-                        //d.browse(new File(s).toURI());
+                        gut = true;
                     }
                 }
             } catch (Exception ex) {
                 try {
+                    gut = false;
                     String programm = "";
                     if (Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR].equals("")) {
                         DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(ddaten.mediathekGui, ddaten, true, "", "Dateimanager suchen");
@@ -288,6 +289,7 @@ public class GuiDownloads extends PanelVorlage {
                     if (sFile != null) {
                         Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
                         Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = programm;
+                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_ORDNER_OEFFNEN, GuiDownloads.class.getSimpleName());
                         gut = true;
                     }
                 } catch (Exception eex) {
@@ -296,6 +298,7 @@ public class GuiDownloads extends PanelVorlage {
             } finally {
                 if (!gut) {
                     Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = "";
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_ORDNER_OEFFNEN, GuiDownloads.class.getSimpleName());
                     JOptionPane.showMessageDialog(parentComponent, "Kann den Dateimanager nicht öffnen!",
                             "Fehler", JOptionPane.ERROR_MESSAGE);
                 }

@@ -40,6 +40,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     DDaten ddaten;
     public boolean ok = false;
     private PanelEinstellungen panelEinstellungen;
+    private PanelEinstellungenErweitert panelEinstellungenErweitert;
     private PanelEinstellungenNetz panelEinstellungenNetz;
     private PanelFilmlisteLaden panelImportFilme;
     private PanelExportFilmliste panelExportFilmliste;
@@ -113,6 +114,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
 
     private void init() {
         panelEinstellungen = new PanelEinstellungen(ddaten, parentComponent);
+        panelEinstellungenErweitert = new PanelEinstellungenErweitert(ddaten, parentComponent);
         panelEinstellungenNetz = new PanelEinstellungenNetz(ddaten, parentComponent);
         panelImportFilme = new PanelFilmlisteLaden(ddaten, parentComponent);
         panelExportFilmliste = new PanelExportFilmliste(ddaten, parentComponent);
@@ -134,6 +136,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
 
     private void initTree() {
         final String NAME_allgemeineEinstellungen = "Allgemein";
+        final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
         final String NAME_netzwerk = "Netzwerk";
         final String NAME_filmListeLaden = "Filmliste laden";
         final String NAME_senderLaden = "Sender aktualisieren";
@@ -151,14 +154,20 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         final String NAME_meldungenProgramme = "Programmausgabe";
         //
         DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode("Programm");
+        // ===============================================================================
         // ######## Einstellulngen ############
         DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
         // allgemeine Einstellungen
         DefaultMutableTreeNode treeNodeAllgemeineEinstellungen = new DefaultMutableTreeNode(NAME_allgemeineEinstellungen);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungen);
+        // erweiterte Einstellungen
+        DefaultMutableTreeNode treeNodeAllgemeineEinstellungenEreweitert = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenErweitert);
+        treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
+        // Netzwerk
         DefaultMutableTreeNode treeNodeNetzwerk = new DefaultMutableTreeNode(NAME_netzwerk);
         treeNodeEinstellungen.add(treeNodeNetzwerk);
         treeNodeStart.add(treeNodeEinstellungen);
+        // ===============================================================================
         // ######## Filme ###############
         DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filme");
         DefaultMutableTreeNode treeNodeFilmliste = new DefaultMutableTreeNode(NAME_filmListeLaden);
@@ -170,6 +179,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         DefaultMutableTreeNode treeNodeBlacklist = new DefaultMutableTreeNode(NAME_blacklist);
         treeNodeFilme.add(treeNodeBlacklist);
         treeNodeStart.add(treeNodeFilme);
+        // ===============================================================================
         // ########### Programme ##############
         DefaultMutableTreeNode treeNodeDownloads = new DefaultMutableTreeNode("Videoplayer");
         DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
@@ -177,6 +187,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
         treeNodeDownloads.add(treeNodeImportProgramme);
         treeNodeStart.add(treeNodeDownloads);
+        // ===============================================================================
         // ####### Infos #########
         DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode("Infos");
         DefaultMutableTreeNode treeNodeAllgemeineInfos = new DefaultMutableTreeNode(NAME_allgemeineInfos);
@@ -188,6 +199,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
         treeNodeInfos.add(treeNodeLogfile);
         treeNodeStart.add(treeNodeInfos);
+        // ===============================================================================
         // ############ Systemmeldungen ###############
         DefaultMutableTreeNode treeNodeSystem = new DefaultMutableTreeNode("Meldungen");
         DefaultMutableTreeNode treeNodeSystemmeldungen = new DefaultMutableTreeNode(NAME_systemmeldungen);
@@ -216,6 +228,9 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                     if (name.equals(NAME_allgemeineEinstellungen)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungen);
+                    } else if (name.equals(NAME_allgemeineEinstellungenErweitert)) {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelEinstellungenErweitert);
                     } else if (name.equals(NAME_netzwerk)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungenNetz);
@@ -246,9 +261,6 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                     } else if (name.equals(NAME_allgemeineInfos)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelAbout);
-                        //} else if (name.equals(NAME_infosStarts)) {
-                        //jPanelExtra.removeAll();
-                        //jPanelExtra.add(panelStarts);
                     } else if (name.equals(NAME_systemmeldungen)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelMeldungenSystem);
