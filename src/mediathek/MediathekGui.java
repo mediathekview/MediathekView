@@ -142,15 +142,17 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Experience showed that default memory allocation for java RT is not enough
      */
     protected void checkMemoryRequirements() {
-        //all values in bytes
-        final long TO_MBYTES = (1024 * 1024);
-        long totalMemory = Runtime.getRuntime().maxMemory() / TO_MBYTES;
-        //if we have less than 1GB, show warning
-        if (totalMemory < 1000) {
-            final String strMessage = "<html>Sie haben MediathekView wahrscheinlich nicht mit dem Startscript gestartet.<br>"
-                    + "Dadurch kann das Laden der Filmliste wegen zuwenig Arbeitsspeicher fehlschlagen.<br><br>"
-                    + "<b>Bitte nutzen Sie die Startscripte!</b></html>";
-            JOptionPane.showMessageDialog(this, strMessage, "Arbeitsspeicher", JOptionPane.WARNING_MESSAGE);
+        if (isMac()) {
+            //all values in bytes
+            final long TO_MBYTES = (1024 * 1024);
+            long totalMemory = Runtime.getRuntime().maxMemory() / TO_MBYTES;
+            //if we have less than 1GB, show warning
+            if (totalMemory < 1000) {
+                final String strMessage = "<html>Sie haben MediathekView wahrscheinlich nicht mit dem Startscript gestartet.<br>"
+                        + "Dadurch kann das Laden der Filmliste wegen zuwenig Arbeitsspeicher fehlschlagen.<br><br>"
+                        + "<b>Bitte nutzen Sie die Startscripte!</b></html>";
+                JOptionPane.showMessageDialog(this, strMessage, "Arbeitsspeicher", JOptionPane.WARNING_MESSAGE);
+            }
         }
     }
 

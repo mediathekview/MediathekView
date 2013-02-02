@@ -90,7 +90,13 @@ public class Log {
         //Version
         Log.systemMeldung(Funktionen.getProgVersionString());
         Log.systemMeldung("Compiled: " + Funktionen.getCompileDate());
-        Log.systemMeldung("Klassenname: " + classname);
+        Log.systemMeldung("###########################################################");
+        Log.systemMeldung("Java");
+        Log.systemMeldung("Classname: " + classname);
+        String[] java = Funktionen.getJavaVersion();
+        for (String ja : java) {
+            Log.systemMeldung(ja);
+        }
         Log.systemMeldung("###########################################################");
     }
 

@@ -140,10 +140,6 @@ public class GuiDownloads extends PanelVorlage {
         am.put("aendern", new BeobAbstractActionAendern());
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         im.put(enter, "aendern");
-        //loeschen
-////        am.put("del", new BeobAbstractActionLoeschen());
-////        KeyStroke del = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
-////        im.put(del, "del");
         //
         jRadioButtonAlles.addActionListener(new BeobAnzeige());
         jRadioButtonAbos.addActionListener(new BeobAnzeige());
@@ -855,14 +851,6 @@ public class GuiDownloads extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             downloadAendern();
-        }
-    }
-
-    private class BeobAbstractActionLoeschen extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            downloadLoeschen(true);
         }
     }
 

@@ -23,7 +23,6 @@ import java.io.File;
 import java.security.CodeSource;
 import java.util.ResourceBundle;
 import mediathek.Main;
-import mediathek.controller.io.History;
 
 public class Funktionen {
 
@@ -68,6 +67,16 @@ public class Funktionen {
 
     public static String getProgVersionString() {
         return Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION + "  [Buildnummer: " + getBuildNr() + "]";
+    }
+
+    public static String[] getJavaVersion() {
+        String[] ret = new String[4];
+        int i = 0;
+        ret[i++] = "Vendor: " + System.getProperty("java.vendor");
+        ret[i++] = "VMname: " + System.getProperty("java.vm.name");
+        ret[i++] = "Version: " + System.getProperty("java.version");
+        ret[i++] = "Runtimeversion: " + System.getProperty("java.runtime.version");
+        return ret;
     }
 
     public static String getCompileDate() {
