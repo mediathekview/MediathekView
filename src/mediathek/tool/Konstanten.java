@@ -43,7 +43,7 @@ public class Konstanten {
     public static final String XML_DATEI = "mediathek.xml";
     public static final String XML_DATEI_FILME = "filme.xml";
     // 
-    public static final int MIN_DATEI_GROESSE_KB = 2; //minimale Größe (kb !!!) eines Films um nicht als Fehler zu gelten
+    public static final int MIN_DATEI_GROESSE_KB = 256; //minimale Größe (kb !!!) eines Films um nicht als Fehler zu gelten
     public static final String KODIERUNG_UTF = "UTF-8";
     public static final String KODIERUNG_ISO15 = "ISO-8859-15";
     public static final String XML_START = "Mediathek";
