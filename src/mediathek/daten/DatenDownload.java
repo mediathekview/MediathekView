@@ -300,6 +300,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         befehlsString = befehlsString.replace("%f", arr[DOWNLOAD_URL_NR]);
         befehlsString = befehlsString.replace("%F", getUrlFlvstreamer());
         befehlsString = befehlsString.replace("%k", getUrlLow());
+        befehlsString = befehlsString.replace("%K", getUrlLow(getUrlFlvstreamer()));
         if (befehlsString.contains("%x")) {
             // sonst holt er doch tatsächlich immer erst die asx-datei!
             befehlsString = befehlsString.replace("%x", AsxLesen.lesen(arr[DOWNLOAD_URL_NR]));
@@ -334,48 +335,33 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private String getUrlLow() {
-        String ret = arr[DOWNLOAD_URL_NR];
+        return getUrlLow(arr[DOWNLOAD_URL_NR]);
+    }
+
+    private String getUrlLow(String url) {
+        String ret = url;
         if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
             //swr
-            ret = arr[DOWNLOAD_URL_NR].replace(".l.mp4", ".m.mp4");
+            ret = url.replace(".l.mp4", ".m.mp4");
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER) || arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
             // ZDF und 3sat
             // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_51k_p7v9.mp4" system-bitrate="62000">
             // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_536k_p9v9.mp4" system-bitrate="700000">
             // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_1596k_p13v9.mp4" system-bitrate="1700000">
-            if (arr[DOWNLOAD_URL_NR].endsWith("vh.mp4")) {
-                ret = arr[DOWNLOAD_URL_NR].replace("vh.mp4", "h.mp4");
+            if (url.endsWith("vh.mp4")) {
+                ret = url.replace("vh.mp4", "h.mp4");
             } else {
-                ret = arr[DOWNLOAD_URL_NR].replace("1596k_p13v9.mp4", "536k_p9v9.mp4");
+                ret = url.replace("1596k_p13v9.mp4", "536k_p9v9.mp4");
             }
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekNdr.SENDER)) {
             //NDR
-            ret = arr[DOWNLOAD_URL_NR].replace(".hq.", ".hi.");
-        } else if (ret.startsWith("rtmpt://cp160844.edgefcs.net") && ret.endsWith(".hq.mp4")) {
+            ret = url.replace(".hq.", ".hi.");
+        } else if ((url.startsWith("rtmpt://cp160844.edgefcs.net") || url.startsWith("--host cp160844.edgefcs.net")) && url.endsWith(".hq.mp4")) {
             // für die NDR-Filme beim ARD
-            ret = arr[DOWNLOAD_URL_NR].replace(".hq.", ".hi.");
+            ret = url.replace(".hq.", ".hi.");
         }
         return ret;
     }
-//    private String getUrlLow() {
-//        String ret = arr[DOWNLOAD_URL_NR];
-//        if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
-//            //swr
-//            ret = arr[DOWNLOAD_URL_NR].replace(".m.mp4", ".l.mp4");
-//        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER)) {
-//            //3Sat
-//            //ret = arr[DOWNLOAD_URL_NR].replace("/veryhigh/", "/300/");
-//            ret = arr[DOWNLOAD_URL_NR].replace("vh.mp4", "h.mp4");
-//        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
-//            //ZDF
-//            //ret = arr[DOWNLOAD_URL_NR].replace("/veryhigh/", "/300/");
-//            ret = arr[DOWNLOAD_URL_NR].replace("vh.mp4", "h.mp4");
-//        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekNdr.SENDER)) {
-//            //NDR
-//            ret = arr[DOWNLOAD_URL_NR].replace(".hq.", ".lo.");
-//        }
-//        return ret;
-//    }
 
     @Override
     public int compareTo(DatenDownload arg0) {

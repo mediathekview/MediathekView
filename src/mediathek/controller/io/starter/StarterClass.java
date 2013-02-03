@@ -449,7 +449,6 @@ public class StarterClass {
                 } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_KB * 1024) {
                     Log.systemMeldung(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", file.getAbsolutePath()});
                     file.delete();
-
                 }
             }
         } catch (Exception ex) {
