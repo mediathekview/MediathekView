@@ -49,12 +49,13 @@ public class TModel extends DefaultTableModel {
         return false;
     }
 
-    public int getIdxRow(String idx) {
+    /// tunen!
+    public int getIdxRow(int idxSpalte, String idxWert) {
         //liefert die Zeile in der die erste Spalte idx enthält
         int ret = 0;
         ListIterator<List> it = this.getDataVector().listIterator();
         while (it.hasNext()) {
-            if (it.next().get(0).equals(idx)) {
+            if (it.next().get(idxSpalte).equals(idxWert)) {
                 return ret;
             }
             ++ret;

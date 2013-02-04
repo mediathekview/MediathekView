@@ -132,7 +132,7 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads(ddaten));
         tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.DOWNLOAD_COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
-        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect1());
+        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         //aendern
         ActionMap am = tabelle.getActionMap();
         InputMap im = tabelle.getInputMap();
@@ -584,9 +584,7 @@ public class GuiDownloads extends PanelVorlage {
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
-    private class BeobachterTableSelect1 implements ListSelectionListener {
-
-        public int selectedModelRow = -1;
+    private class BeobachterTableSelect implements ListSelectionListener {
 
         @Override
         public void valueChanged(ListSelectionEvent event) {

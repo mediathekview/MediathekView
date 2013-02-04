@@ -31,7 +31,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -492,7 +491,7 @@ public class GuiFilme extends PanelVorlage {
                 // jede neue URL davorsetzen
                 url = ersterFilm.arr[DatenFilm.FILM_URL_NR] + " " + url;
                 // und in die History eintragen
-                ddaten.history.add(ersterFilm.getUrlOrg());
+                //ddaten.history.add(ersterFilm.getUrlOrg()); wird in StartetClass gemacht
             }
             ersterFilm.arr[DatenFilm.FILM_URL_NR] = url.trim();
             ddaten.starterClass.urlStarten(gruppe, ersterFilm);

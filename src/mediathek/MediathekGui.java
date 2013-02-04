@@ -291,6 +291,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 ddaten.infoPanel.clearProgress();
                 jButtonFilmeLaden.setEnabled(true);
                 jMenuItemFilmlisteLaden.setEnabled(true);
+                ddaten.allesSpeichern(); // damit nichts verlorengeht
             }
         });
         addWindowListener(new java.awt.event.WindowAdapter() {
