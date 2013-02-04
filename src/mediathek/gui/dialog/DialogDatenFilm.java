@@ -65,6 +65,18 @@ public class DialogDatenFilm extends javax.swing.JDialog {
 
     public void setAktFilm(DatenFilm aaktFilm) {
         aktFilm = aaktFilm;
+        if (this.isVisible()) {
+            setFilm();
+        }
+    }
+
+    public void setVis() {
+        setFilm();
+        this.setVisible(true);
+        this.toFront();
+    }
+
+    private void setFilm() {
         jPanelExtra.removeAll();
         if (aktFilm != null) {
             setExtra();
@@ -72,11 +84,6 @@ public class DialogDatenFilm extends javax.swing.JDialog {
             jButtonBrowser.setToolTipText(textarray[DatenFilm.FILM_URL_THEMA_NR].getText());
             jButtonBrowser.setEnabled(!textarray[DatenFilm.FILM_URL_THEMA_NR].getText().equals(""));
         }
-    }
-
-    public void setVis() {
-        this.setVisible(true);
-        this.toFront();
     }
 
     private void setExtra() {

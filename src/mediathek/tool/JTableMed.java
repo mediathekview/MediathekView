@@ -6,8 +6,6 @@ package mediathek.tool;
 
 import java.util.List;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
@@ -30,9 +28,11 @@ public final class JTableMed extends JTable {
     private List<? extends javax.swing.RowSorter.SortKey> listeSortKeys = null;
     int[] breite;
     int[] reihe;
+    private int indexSpalte = 0;
     private int sel = -1;
     private int[] selection;
-    private String idx = "";
+    private String[] indexWertSelection = null;
+    private String indexWertSel = null;
     private boolean stopBeob = false;
     //
     String[] spaltenTabelle;
@@ -43,16 +43,19 @@ public final class JTableMed extends JTable {
         tabelle = ttabelle;
         switch (tabelle) {
             case TABELLE_TAB_FILME:
+                indexSpalte = 0; // Filmnummer
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR;
                 spaltenTabelle = DatenFilm.FILME_COLUMN_NAMES;
                 this.setModel(new TModelFilm(new Object[][]{}, spaltenTabelle));
                 break;
             case TABELLE_TAB_DOWNLOADS:
+                indexSpalte = 1; // Filmnummer
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR;
                 spaltenTabelle = DatenDownload.DOWNLOAD_COLUMN_NAMES;
                 this.setModel(new TModelDownload(new Object[][]{}, spaltenTabelle));
                 break;
             case TABELLE_TAB_ABOS:
+                indexSpalte = 0; // Abonummer
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR;
                 spaltenTabelle = DatenAbo.ABO_COLUMN_NAMES;
                 this.setModel(new TModelAbo(new Object[][]{}, spaltenTabelle));
@@ -89,9 +92,17 @@ public final class JTableMed extends JTable {
         sel = this.getSelectedRow();
         selection = this.getSelectedRows();
         if (sel >= 0) {
-            idx = this.getModel().getValueAt(this.convertRowIndexToModel(sel), 0).toString();
+            indexWertSel = this.getModel().getValueAt(this.convertRowIndexToModel(sel), indexSpalte).toString();
         } else {
-            idx = "";
+            indexWertSel = "";
+        }
+        if (selection != null) {
+            if (selection.length > 0) {
+                indexWertSelection = new String[selection.length];
+                for (int i = 0; i < selection.length; ++i) {
+                    indexWertSelection[i] = this.getModel().getValueAt(this.convertRowIndexToModel(selection[i]), indexSpalte).toString();
+                }
+            }
         }
     }
 
@@ -100,24 +111,32 @@ public final class JTableMed extends JTable {
         stopBeob = true;
         switch (tabelle) {
             case TABELLE_TAB_FILME:
-                if (!idx.equals("")) {
-                    int r = ((TModel) this.getModel()).getIdxRow(idx);
-                    if (r >= 0) {
-                        // ansonsten gibts die Zeile nicht mehr
-                        r = this.convertRowIndexToView(r);
-                        this.setRowSelectionInterval(r, r);
-                        this.scrollRectToVisible(getCellRect(r, 0, false));
-                    }
-                }
-                idx = "";
-                break;
             case TABELLE_TAB_DOWNLOADS:
             case TABELLE_TAB_ABOS:
-            case TABELLE_STANDARD:
-                if (sel >= 0 && sel < this.getRowCount()) {
-                    this.setRowSelectionInterval(sel, sel);
-                    this.scrollRectToVisible(getCellRect(sel, 0, false));
+//                if (!indexWertSel.equals("")) {
+//                    int r = ((TModel) this.getModel()).getIdxRow(indexSpalte, indexWertSel);
+//                    if (r >= 0) {
+//                        // ansonsten gibts die Zeile nicht mehr
+//                        r = this.convertRowIndexToView(r);
+//                        this.setRowSelectionInterval(r, r);
+//                    }
+//                }
+                if (indexWertSelection != null) {
+                    for (String idx : indexWertSelection) {
+                        int r = ((TModel) this.getModel()).getIdxRow(indexSpalte, idx);
+                        if (r >= 0) {
+                            // ansonsten gibts die Zeile nicht mehr
+                            r = this.convertRowIndexToView(r);
+                            this.addRowSelectionInterval(r, r);
+                        }
+                    }
                 }
+                indexWertSelection = null;
+                break;
+            case TABELLE_STANDARD:
+//                if (sel >= 0 && sel < this.getRowCount()) {
+//                    this.setRowSelectionInterval(sel, sel);
+//                }
                 if (selection != null) {
                     if (selection.length > 0) {
                         for (int i = 0; i < selection.length; ++i) {
@@ -187,7 +206,7 @@ public final class JTableMed extends JTable {
         // mit den Standardwerten
         // erst die Breite, dann die Reihenfolge
         if (tabelle == TABELLE_STANDARD) {
-            // wird nur für eingerichtet Tabellen gemacht
+            // wird nur für eingerichtete Tabellen gemacht
             return;
         }
         String b, r;
