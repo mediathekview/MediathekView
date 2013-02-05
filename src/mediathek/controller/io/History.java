@@ -47,6 +47,13 @@ public class History extends HashSet<String> {
         return ret;
     }
 
+    public void adds(String[] url) {
+        for (String s : url) {
+            super.add(s);
+        }
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
+    }
+
     @Override
     public boolean remove(Object url) {
         boolean ret = super.remove(url);

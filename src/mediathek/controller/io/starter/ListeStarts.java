@@ -20,6 +20,7 @@
 package mediathek.controller.io.starter;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -39,7 +40,7 @@ public class ListeStarts extends LinkedList<Start> {
         ddaten = d;
     }
 
-    synchronized void addStarts(Start start) {
+    synchronized void addStart(Start start) {
         //add: Neues Element an die Liste anhängen
         if (start != null) {
             if (!contain(start)) {
@@ -47,6 +48,22 @@ public class ListeStarts extends LinkedList<Start> {
                 // gestartete Filme auch in die History eintragen
                 ddaten.history.add(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
             }
+        }
+        notifyStartEvent();
+    }
+
+    synchronized void addStart(ArrayList<Start> start) {
+        //add: Neues Element an die Liste anhängen
+        if (start != null) {
+            ArrayList<String> al = new ArrayList<String>();
+            for (Start s : start) {
+                if (!contain(s)) {
+                    add(s);
+                    // gestartete Filme auch in die History eintragen
+                    al.add(s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                }
+            }
+            ddaten.history.adds(al.toArray(new String[]{}));
         }
         notifyStartEvent();
     }
@@ -207,6 +224,7 @@ public class ListeStarts extends LinkedList<Start> {
         return 0;
     }
 
+    /// tunen!
     TModel getModelStarts(TModel model) {
         model.setRowCount(0);
         Object[] object;
