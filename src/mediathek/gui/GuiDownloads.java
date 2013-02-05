@@ -341,6 +341,7 @@ public class GuiDownloads extends PanelVorlage {
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // bei !starten wird der Film gestoppt
         String[] urls;
+        ArrayList<DatenDownload> arrayDownload = new ArrayList<DatenDownload>();
         // ==========================
         // erst mal die URLs sammeln
         if (alle) {
@@ -381,13 +382,10 @@ public class GuiDownloads extends PanelVorlage {
                         if (s.datenDownload.istAbo()) {
                             // bei Abos Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                             ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
-
                         }
                     }
                 }
-                // jetzt noch starten/wiederstarten
-                // Start erstellen und zur Liste hinzufügen
-                download.starten(ddaten);
+                arrayDownload.add(download);
             } else {
                 // ---------------
                 // stoppen
@@ -401,9 +399,16 @@ public class GuiDownloads extends PanelVorlage {
                             ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
                         }
                     }
-                    download.startMelden(DatenDownload.PROGRESS_NICHT_GESTARTET);
+                    arrayDownload.add(download);
                 }
             }
+        }
+        if (starten) {
+            //alle Downloads starten/wiederstarten
+            DatenDownload.starten(ddaten, arrayDownload);
+        } else {
+            //oder alle Downloads stoppen
+            DatenDownload.statusMelden(arrayDownload, DatenDownload.PROGRESS_NICHT_GESTARTET);
         }
     }
 

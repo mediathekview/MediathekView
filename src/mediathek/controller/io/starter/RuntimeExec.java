@@ -141,7 +141,7 @@ class RuntimeExec {
                     double d = Double.parseDouble(prozent);
                     meldenDouble(d);
                 } catch (Exception ex) {
-                    s.datenDownload.startMelden(DatenDownload.PROGRESS_GESTARTET);
+                    s.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
                     Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG,"RuntimeExec.GetPercentageFromErrorStream-1", input);
                 }
             } else {
@@ -166,7 +166,7 @@ class RuntimeExec {
                         //Log.systemMeldung("Filmlänge: " + (int) d + " von " + totalSecs + " s");
                     }
                 } catch (Exception ex) {
-                    s.datenDownload.startMelden(DatenDownload.PROGRESS_GESTARTET);
+                    s.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
                     Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG,"RuntimeExec.GetPercentageFromErrorStream-2", input);
                 }
             }
@@ -178,7 +178,7 @@ class RuntimeExec {
             int pNeu = (int) d;
             if (pNeu != percent) {
                 percent = pNeu;
-                s.datenDownload.startMelden(percent);
+                s.datenDownload.statusMelden(percent);
             }
         }
     }

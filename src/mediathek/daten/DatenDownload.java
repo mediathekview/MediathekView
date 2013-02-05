@@ -20,6 +20,7 @@
 package mediathek.daten;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
@@ -123,15 +124,33 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.TRUE.toString();
     }
 
-    public void startMelden(int status) {
+    public void statusMelden(int status) {
         arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(status);
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
+    }
+
+    public static void statusMelden(ArrayList<DatenDownload> ad, int status) {
+        for (DatenDownload d : ad) {
+            d.arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(status);
+        }
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
     }
 
     public void starten(DDaten ddaten) {
         // Start erstellen und zur Liste hinzufügen
-        ddaten.starterClass.addStarts(new Start(this));
-        startMelden(DatenDownload.PROGRESS_WARTEN);
+        ddaten.starterClass.addStart(new Start(this));
+        statusMelden(DatenDownload.PROGRESS_WARTEN);
+    }
+
+    public static void starten(DDaten ddaten, ArrayList<DatenDownload> ad) {
+        // Start erstellen und zur Liste hinzufügen
+        ArrayList<Start> al = new ArrayList<Start>();
+        for (DatenDownload d : ad) {
+            al.add(new Start(d));
+        }
+        //die Starts jetzt starten
+        ddaten.starterClass.addStart(al);
+        statusMelden(ad, DatenDownload.PROGRESS_WARTEN);
     }
 
     public DatenDownload getCopy() {
@@ -161,6 +180,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
+    /// tunen!
     public int getQuelle() {
         try {
             return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);

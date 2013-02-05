@@ -57,7 +57,7 @@ public class StarterClass {
         if (!url.equals("")) {
             s = new Start(new DatenDownload(pSet, ersterFilm, Start.QUELLE_BUTTON, null, "", ""));
             starten.startStarten(s);
-            addStarts(s);
+            addStart(s);
         }
         return s;
     }
@@ -89,9 +89,14 @@ public class StarterClass {
 
     }
 
-    public synchronized void addStarts(Start start) {
+    public synchronized void addStart(Start start) {
         //add: Neues Element an die Liste anhängen
-        listeStarts.addStarts(start);
+        listeStarts.addStart(start);
+    }
+
+    public synchronized void addStart(ArrayList<Start> start) {
+        //add: Neues Element an die Liste anhängen
+        listeStarts.addStart(start);
     }
 
     public synchronized Start getStart(String url) {
@@ -163,7 +168,7 @@ public class StarterClass {
         }
 
         private void startStarten(Start start) {
-            start.datenDownload.startMelden(DatenDownload.PROGRESS_GESTARTET);
+            start.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
             switch (start.datenDownload.getArt()) {
                 case Start.ART_PROGRAMM:
                     StartenProgramm startenProgrammn = new StartenProgramm(start);
@@ -311,7 +316,7 @@ public class StarterClass {
             }
             leeresFileLoeschen(file);
             fertigmeldung(start);
-            start.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
+            start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
 
@@ -366,7 +371,7 @@ public class StarterClass {
                             p = 999;
                         }
                         if (p != pp) {
-                            start.datenDownload.startMelden((int) p);
+                            start.datenDownload.statusMelden((int) p);
                             pp = p;
                         }
                     }
@@ -391,7 +396,7 @@ public class StarterClass {
             }
             leeresFileLoeschen(new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
             fertigmeldung(start);
-            start.datenDownload.startMelden(DatenDownload.PROGRESS_FERTIG);
+            start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
     }
