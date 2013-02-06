@@ -28,7 +28,6 @@ import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
 import mediathek.tool.TModel;
 
 public class ListeStarts extends LinkedList<Start> {
@@ -173,6 +172,24 @@ public class ListeStarts extends LinkedList<Start> {
         return ret;
     }
 
+    void delStart(ArrayList<String> url) {
+        ListIterator<Start> it;
+        if (url != null) {
+            for (String u : url) {
+                it = this.listIterator(0);
+                while (it.hasNext()) {
+                    Start s = it.next();
+                    if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(u)) {
+                        s.stoppen = true;
+                        it.remove();
+                        break;
+                    }
+                }
+            }
+        }
+        notifyStartEvent();
+    }
+
     void delStart(String url) {
         ListIterator<Start> it = this.listIterator(0);
         while (it.hasNext()) {
@@ -192,9 +209,8 @@ public class ListeStarts extends LinkedList<Start> {
             Start s = it.next();
             s.stoppen = true;
             it.remove();
-            notifyStartEvent();
-            break;
         }
+        notifyStartEvent();
     }
 
     void aufraeumen() {
@@ -285,8 +301,7 @@ public class ListeStarts extends LinkedList<Start> {
         boolean ret = false;
         ListIterator<Start> it = this.listIterator(0);
         while (it.hasNext()) {
-            Start s = it.next();
-            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR])) {
+            if (it.next().datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR])) {
                 ret = true;
                 break;
             }
