@@ -40,6 +40,7 @@ public class StarterClass {
     private DDaten ddaten;
     private ListeStarts listeStarts;
     private Starten starten = null;
+    private boolean pause = false;
 
     //===================================
     // Public
@@ -112,13 +113,20 @@ public class StarterClass {
         listeStarts.delAllStart();
     }
 
+    public synchronized void filmLoeschen(ArrayList<String> url) {
+        listeStarts.delStart(url);
+    }
     public synchronized void filmLoeschen(String url) {
         listeStarts.delStart(url);
     }
 
+    public void pause() {
+        pause = true;
+    }
     // ===================================
     // Private
     // ===================================
+
     private void init() {
         listeStarts = new ListeStarts(ddaten);
         starten = new Starten();
@@ -136,9 +144,15 @@ public class StarterClass {
         listeStarts.buttonStartsPutzen();
     }
 
-    private Start getListe() {
+    private synchronized Start getListe() throws InterruptedException {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
+        if (pause) {
+            // beim Löschen der Downloads, kann das Starten etwas "pausiert" werden
+            // damit ein zu Löschender Download nicht noch schnell gestartet wird
+            this.wait(5 * 1000);
+            pause = false;
+        }
         return listeStarts.getListe();
     }
 
@@ -157,10 +171,10 @@ public class StarterClass {
                     while ((start = getListe()) != null) {
                         startStarten(start);
                         //alle 5 Sekunden einen Download starten
-                        this.wait(5000);
+                        this.wait(5 * 1000);
                     }
                     buttonStartsPutzen(); // Button Starts aus der Liste löschen
-                    this.wait(3000);
+                    this.wait(3 * 1000);
                 } catch (Exception ex) {
                     Log.fehlerMeldung(613822015, Log.FEHLER_ART_PROG, "StarterClass.Starten.run", ex);
                 }
