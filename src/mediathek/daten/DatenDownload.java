@@ -58,40 +58,43 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_TITEL_NR = 5;
     public static final String DOWNLOAD_PROGRESS = "Fortschritt";
     public static final int DOWNLOAD_PROGRESS_NR = 6;
+    public static final String DOWNLOAD_RESTZEIT = "Restminuten";
+    public static final int DOWNLOAD_RESTZEIT_NR = 7;
     public static final String DOWNLOAD_DATUM = "Datum";
-    public static final int DOWNLOAD_DATUM_NR = 7;
+    public static final int DOWNLOAD_DATUM_NR = 8;
     public static final String DOWNLOAD_ZEIT = "Zeit";
-    public static final int DOWNLOAD_ZEIT_NR = 8;
+    public static final int DOWNLOAD_ZEIT_NR = 9;
     public static final String DOWNLOAD_URL = "URL";
-    public static final int DOWNLOAD_URL_NR = 9;
+    public static final int DOWNLOAD_URL_NR = 10;
     public static final String DOWNLOAD_URL_AUTH = "URL-Auth";
-    public static final int DOWNLOAD_URL_AUTH_NR = 10;
+    public static final int DOWNLOAD_URL_AUTH_NR = 11;
     public static final String DOWNLOAD_URL_RTMP = "URL-rtmp";
-    public static final int DOWNLOAD_URL_RTMP_NR = 11;
+    public static final int DOWNLOAD_URL_RTMP_NR = 12;
     public static final String DOWNLOAD_PROGRAMMSET = "Programmset";
-    public static final int DOWNLOAD_PROGRAMMSET_NR = 12;
+    public static final int DOWNLOAD_PROGRAMMSET_NR = 13;
     public static final String DOWNLOAD_PROGRAMM = "Programm";
-    public static final int DOWNLOAD_PROGRAMM_NR = 13;
+    public static final int DOWNLOAD_PROGRAMM_NR = 14;
     public static final String DOWNLOAD_PROGRAMM_AUFRUF = "Programmaufruf";
-    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 14;
+    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 15;
     public static final String DOWNLOAD_PROGRAMM_RESTART = "Restart";
-    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 15;
+    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 16;
     public static final String DOWNLOAD_ZIEL_DATEINAME = "Dateiname";
-    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 16;
+    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 17;
     public static final String DOWNLOAD_ZIEL_PFAD = "Pfad";
-    public static final int DOWNLOAD_ZIEL_PFAD_NR = 17;
+    public static final int DOWNLOAD_ZIEL_PFAD_NR = 18;
     public static final String DOWNLOAD_ZIEL_PFAD_DATEINAME = "Pfad-Dateiname";
-    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 18;
+    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 19;
     public static final String DOWNLOAD_ART = "Art"; //Art des Downloads: direkter Dateidownload oder über ein Programm
-    public static final int DOWNLOAD_ART_NR = 19;
+    public static final int DOWNLOAD_ART_NR = 20;
     public static final String DOWNLOAD_QUELLE = "Quelle"; //Quelle: gestartet über einen Button, Download, Abo
-    public static final int DOWNLOAD_QUELLE_NR = 20;
+    public static final int DOWNLOAD_QUELLE_NR = 21;
     public static final String DOWNLOAD_ZURUECKGESTELLT = "Zurueckgestellt";
-    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 21;
+    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 22;
     //
     public static final String DOWNLOAD = "Downlad";
-    public static final int DOWNLOAD_MAX_ELEM = 22;
-    public static final String[] DOWNLOAD_COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL, DOWNLOAD_PROGRESS,
+    public static final int DOWNLOAD_MAX_ELEM = 23;
+    public static final String[] DOWNLOAD_COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
+        DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_URL, DOWNLOAD_URL_AUTH, DOWNLOAD_URL_RTMP,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT};
