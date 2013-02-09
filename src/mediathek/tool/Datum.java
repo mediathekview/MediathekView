@@ -48,4 +48,15 @@ public class Datum extends Date {
             return new SimpleDateFormat("yyyy.MM.dd").format(this);
         }
     }
+
+    public long diffInSekunden() {
+        // liefert den BETRAG! der Zeitdifferenz zu jetzt
+        long ret = 0;
+        ret = this.getTime() - new Datum().getTime();
+        ret = ret / (1000); // Sekunden
+        if (ret < 0) {
+            ret = -1 * ret;
+        }
+        return ret;
+    }
 }

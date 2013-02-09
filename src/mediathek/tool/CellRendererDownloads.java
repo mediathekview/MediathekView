@@ -68,7 +68,17 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             Start s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 setColor(this, s, isSelected);
-                if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                    if (s.restSekunden > 0) {
+                        if (s.restSekunden < 60) {
+                            this.setText("< 1");
+                        } else {
+                            this.setText(Long.toString(s.restSekunden / 60));
+                        }
+                    } else {
+                        this.setText("");
+                    }
+                } else if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                     int i = Integer.parseInt(s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (i == -1) {
@@ -177,7 +187,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 break;
         }
     }
-
 //    private class ProgressPanel extends JPanel {
 //
 //        private JPanel panel = new JPanel(new BorderLayout());

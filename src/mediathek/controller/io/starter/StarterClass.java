@@ -30,6 +30,7 @@ import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
+import mediathek.tool.Datum;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
@@ -116,6 +117,7 @@ public class StarterClass {
     public synchronized void filmLoeschen(ArrayList<String> url) {
         listeStarts.delStart(url);
     }
+
     public synchronized void filmLoeschen(String url) {
         listeStarts.delStart(url);
     }
@@ -182,6 +184,7 @@ public class StarterClass {
         }
 
         private void startStarten(Start start) {
+            start.startZeit = new Datum();
             start.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
             switch (start.datenDownload.getArt()) {
                 case Start.ART_PROGRAMM:

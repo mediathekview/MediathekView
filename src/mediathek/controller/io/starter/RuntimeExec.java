@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.Datum;
 import mediathek.tool.Log;
 
 class RuntimeExec {
@@ -76,7 +77,7 @@ class RuntimeExec {
             //bescheid geben
             if (process == null) {
             }
-            Log.fehlerMeldung(450028932,Log.FEHLER_ART_PROG, "RuntimeExec.exec", ex, "Fehler beim Starten");
+            Log.fehlerMeldung(450028932, Log.FEHLER_ART_PROG, "RuntimeExec.exec", ex, "Fehler beim Starten");
         }
         return process;
     }
@@ -142,7 +143,7 @@ class RuntimeExec {
                     meldenDouble(d);
                 } catch (Exception ex) {
                     s.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
-                    Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG,"RuntimeExec.GetPercentageFromErrorStream-1", input);
+                    Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG, "RuntimeExec.GetPercentageFromErrorStream-1", input);
                 }
             } else {
                 // für ffmpeg
@@ -167,7 +168,7 @@ class RuntimeExec {
                     }
                 } catch (Exception ex) {
                     s.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
-                    Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG,"RuntimeExec.GetPercentageFromErrorStream-2", input);
+                    Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG, "RuntimeExec.GetPercentageFromErrorStream-2", input);
                 }
             }
         }
@@ -178,6 +179,8 @@ class RuntimeExec {
             int pNeu = (int) d;
             if (pNeu != percent) {
                 percent = pNeu;
+                s.restSekunden = s.startZeit.diffInSekunden();
+                s.restSekunden = (s.restSekunden * (1000 - percent) / percent);
                 s.datenDownload.statusMelden(percent);
             }
         }

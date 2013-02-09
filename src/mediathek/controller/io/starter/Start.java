@@ -20,6 +20,7 @@
 package mediathek.controller.io.starter;
 
 import mediathek.daten.DatenDownload;
+import mediathek.tool.Datum;
 
 public class Start {
 
@@ -28,6 +29,8 @@ public class Start {
     public DatenDownload datenDownload = null;
     public Process process = null; //Prozess des Download
     public boolean stoppen = false;
+    public Datum startZeit = null;
+    public long restSekunden = -1;
     // Quelle - start über einen Button - Download - Abo
     public static final int QUELLE_ALLE = -1;
     public static final int QUELLE_BUTTON = 1;
