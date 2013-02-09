@@ -19,8 +19,11 @@
  */
 package mediathek.controller.filmeLaden.importieren;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
@@ -28,9 +31,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.tool.DatumZeit;
@@ -44,6 +49,7 @@ public class FilmlistenSuchen {
     // gesucht
     //
     //Tags FilmUpdateServer Filmliste
+
     public static final String FILM_UPDATE_SERVER_PRIO_1 = "1";
     public static final String FILM_UPDATE_SERVER = "film-update-server";
     public static final int FILM_UPDATE_SERVER_MAX_ELEM = 5;
@@ -76,16 +82,16 @@ public class FilmlistenSuchen {
             } else {
                 // Ausweichen auf andere Listenserver bei Bedarf
                 getDownloadUrlsFilmlisten(Konstanten.ADRESSE_FILMLISTEN_SERVER, tmp, Daten.getUserAgent());
-                //getDownloadUrlsFilmlisten("asdf", tmp, Daten.getUserAgent());
-                if (tmp.size() > 0) {
-                    // dann die Liste Filmlistenserver aktualisieren
-                    updateListeFilmlistenServer(tmp);
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_FILMLISTEN_SERVER, this.getClass().getSimpleName());
-                }
-                if (tmp.size() == 0) {
-                    // mit den Backuplisten versuchen
-                    getDownloadUrlsFilmlisten__backuplisten(tmp, Daten.getUserAgent());
-                }
+            }
+            //getDownloadUrlsFilmlisten("asdf", tmp, Daten.getUserAgent());
+            if (tmp.size() > 0) {
+                // dann die Liste Filmlistenserver aktualisieren
+                updateListeFilmlistenServer(tmp);
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_FILMLISTEN_SERVER, this.getClass().getSimpleName());
+            }
+            if (tmp.size() == 0) {
+                // mit den Backuplisten versuchen
+                getDownloadUrlsFilmlisten__backuplisten(tmp, Daten.getUserAgent());
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(347895642, Log.FEHLER_ART_PROG, "FilmUpdateServer.suchen", ex);
@@ -244,5 +250,65 @@ public class FilmlistenSuchen {
         } catch (XMLStreamException ex) {
         }
 
+    }
+
+    public static File ListeFilmlistenSchreiben(ListeDownloadUrlsFilmlisten listeFilmUpdateServer) {
+        File tmpFile = null;
+        XMLOutputFactory outFactory;
+        XMLStreamWriter writer;
+        OutputStreamWriter out = null;
+        final String TAG_LISTE = "Mediathek";
+        final String TAG_SERVER = "Server";
+        final String TAG_SERVER_URL = "URL";
+        final String TAG_SERVER_DATUM = "Datum";
+        final String TAG_SERVER_ZEIT = "Zeit";
+        try {
+            tmpFile = File.createTempFile("mediathek", null);
+            tmpFile.deleteOnExit();
+            outFactory = XMLOutputFactory.newInstance();
+            out = new OutputStreamWriter(new FileOutputStream(tmpFile), Konstanten.KODIERUNG_UTF);
+            writer = outFactory.createXMLStreamWriter(out);
+            writer.writeStartDocument("UTF-8", "1.0");
+            writer.writeCharacters("\n");//neue Zeile
+            writer.writeStartElement(TAG_LISTE);
+            writer.writeCharacters("\n");//neue Zeile
+            Iterator<DatenUrlFilmliste> it = listeFilmUpdateServer.iterator();
+            while (it.hasNext()) {
+                DatenUrlFilmliste d = it.next();
+                writer.writeStartElement(TAG_SERVER);
+                writer.writeCharacters("\n");
+                // Tags schreiben: URL
+                writer.writeCharacters("\t");// Tab
+                writer.writeStartElement(TAG_SERVER_URL);
+                writer.writeCharacters(d.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR]);
+                writer.writeEndElement();
+                writer.writeCharacters("\n");
+                // fertig
+                // Tags schreiben: Datum
+                writer.writeCharacters("\t");// Tab
+                writer.writeStartElement(TAG_SERVER_DATUM);
+                writer.writeCharacters(d.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR]);
+                writer.writeEndElement();
+                writer.writeCharacters("\n");
+                // fertig
+                // Tags schreiben: Zeit
+                writer.writeCharacters("\t");// Tab
+                writer.writeStartElement(TAG_SERVER_ZEIT);
+                writer.writeCharacters(d.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR]);
+                writer.writeEndElement();
+                writer.writeCharacters("\n");
+                // fertig
+                writer.writeEndElement();
+                writer.writeCharacters("\n");
+            }
+            // Schließen
+            writer.writeEndElement();
+            writer.writeEndDocument();
+            writer.flush();
+            writer.close();
+        } catch (Exception ex) {
+            Log.fehlerMeldung(821069874, Log.FEHLER_ART_PROG, FilmlistenSuchen.class.getName(), ex, "Die URL-Filmlisten konnten nicht geschrieben werden");
+        }
+        return tmpFile;
     }
 }

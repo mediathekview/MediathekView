@@ -18,6 +18,7 @@
  */
 package mediathek.gui.dialog;
 
+import com.jidesoft.swing.MarqueePane;
 import java.awt.*;
 import java.awt.Desktop.Action;
 import java.awt.event.ActionEvent;
@@ -37,12 +38,14 @@ import org.jdesktop.swingx.hyperlink.HyperlinkAction;
 @SuppressWarnings("serial")
 public class MVAboutDialog extends JDialog {
 
-    private final JPanel contentPanel = new JPanel();
     private final JLabel lblVersion = new JLabel();
     private final JPanel buttonPane = new JPanel();
     private final JLabel lblFilmlistPath = new JLabel();
     private final JLabel lblSettingsFilePath = new JLabel();
     private final Boolean isRunningOnMac;
+    private final JLabel lblJavaVersion = new JLabel();
+    private final JLabel lblVmType = new JLabel();
+    private MarqueePane marqueePane;
 
     private void setupVersionString() {
         String strVersion = "Version ";
@@ -54,9 +57,46 @@ public class MVAboutDialog extends JDialog {
         lblVersion.setText(strVersion);
     }
 
+    private void initMarqueePane() {
+        final JEditorPane messagePane = new JEditorPane();
+        messagePane.setEditable(false);
+        messagePane.setFocusable(false);
+        messagePane.setContentType("text/html");
+        //TODO Message austauschen!
+        //Hier kann eine HTML-Datei geladen werden
+        messagePane.setText("<html><b>Lorem ipsum</b> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   \n"
+                + "\n"
+                + "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   \n"
+                + "\n"
+                + "Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   \n"
+                + "\n"
+                + "Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.   \n"
+                + "\n"
+                + "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis.   \n"
+                + "\n"
+                + "At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, At accusam aliquyam diam diam dolore dolores duo eirmod eos erat, et nonumy sed tempor et et invidunt justo labore Stet clita ea et gubergren, kasd magna no rebum. sanctus sea sed takimata ut vero voluptua. est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur</html>");
+
+        marqueePane = new MarqueePane(messagePane);
+        marqueePane.setStayDelay(3000);
+        marqueePane.setScrollDirection(MarqueePane.SCROLL_DIRECTION_UP);
+        marqueePane.setScrollAmount(1);
+
+    }
+
+    private void setupJavaInformation() {
+        lblJavaVersion.setText(System.getProperty("java.version"));
+
+        String strVmType = System.getProperty("java.vm.name");
+        strVmType += " (";
+        strVmType += System.getProperty("java.vendor");
+        strVmType += ")";
+        lblVmType.setText(strVmType);
+    }
+
     private void initialize() {
         try {
             setupVersionString();
+            setupJavaInformation();
             //Programmpfade
             lblSettingsFilePath.setText(Daten.getBasisVerzeichnis(false) + Konstanten.XML_DATEI);
             lblFilmlistPath.setText(Daten.getBasisVerzeichnis(false) + Konstanten.XML_DATEI_FILME);
@@ -75,10 +115,13 @@ public class MVAboutDialog extends JDialog {
         super(parent);
         this.isRunningOnMac = isRunningOnMac;
 
+        initMarqueePane();
+
         setResizable(false);
         setModalityType(ModalityType.APPLICATION_MODAL);
-        setBounds(100, 100, 748, 342);
+        setBounds(100, 100, 748, 476);
         getContentPane().setLayout(new BorderLayout());
+        JPanel contentPanel = new JPanel();
         contentPanel.setBackground(Color.WHITE);
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -90,11 +133,12 @@ public class MVAboutDialog extends JDialog {
         JLabel lblProgramName = new JLabel("Mediathek View");
         lblProgramName.setFont(new Font("Lucida Grande", Font.BOLD, 24));
 
-        lblVersion.setForeground(new Color(159, 159, 159));
+        Color greyColor = new Color(159, 159, 159);
+        lblVersion.setForeground(greyColor);
         lblVersion.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 
         JXHyperlink hprlnkWebsite = new JXHyperlink();
-        hprlnkWebsite.setHorizontalAlignment(SwingConstants.CENTER);
+        hprlnkWebsite.setHorizontalAlignment(SwingConstants.LEFT);
         try {
             hprlnkWebsite.setAction(new WebsiteHyperlinkAction());
         } catch (URISyntaxException e) {
@@ -103,7 +147,7 @@ public class MVAboutDialog extends JDialog {
         hprlnkWebsite.setText("Website");
 
         JXHyperlink hprlnkAnleitung = new JXHyperlink();
-        hprlnkAnleitung.setHorizontalAlignment(SwingConstants.CENTER);
+        hprlnkAnleitung.setHorizontalAlignment(SwingConstants.LEFT);
         try {
             hprlnkAnleitung.setAction(new AnleitungHyperlinkAction());
         } catch (URISyntaxException e1) {
@@ -112,7 +156,7 @@ public class MVAboutDialog extends JDialog {
         hprlnkAnleitung.setText("Anleitung");
 
         JXHyperlink hprlnkForum = new JXHyperlink();
-        hprlnkForum.setHorizontalAlignment(SwingConstants.CENTER);
+        hprlnkForum.setHorizontalAlignment(SwingConstants.LEFT);
         try {
             hprlnkForum.setAction(new ForumHyperlinkAction());
         } catch (URISyntaxException e) {
@@ -125,98 +169,106 @@ public class MVAboutDialog extends JDialog {
         pnlProgramPaths.setBorder(border);
         pnlProgramPaths.setBackground(Color.WHITE);
 
+        JPanel pnlJavaInformation = new JPanel();
+        border = new TitledBorder("Java Information");
+        pnlJavaInformation.setBorder(border);
+        pnlJavaInformation.setBackground(Color.WHITE);
+
         GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
-        gl_contentPanel.setHorizontalGroup(gl_contentPanel.createParallelGroup(
-                Alignment.LEADING).addGroup(
-                gl_contentPanel
-                .createSequentialGroup()
+
+
+        gl_contentPanel.setHorizontalGroup(
+                gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_contentPanel.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                .addComponent(lblProgramIcon)
+                .addComponent(hprlnkWebsite, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(hprlnkForum, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(hprlnkAnleitung, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(ComponentPlacement.RELATED)
+                .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                .addComponent(marqueePane, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                .addComponent(pnlJavaInformation, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                .addComponent(pnlProgramPaths, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                .addComponent(lblProgramName)
+                .addComponent(lblVersion, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE))
+                .addContainerGap()));
+        gl_contentPanel.setVerticalGroup(
+                gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_contentPanel.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_contentPanel.createSequentialGroup()
+                .addComponent(lblProgramName)
+                .addPreferredGap(ComponentPlacement.RELATED)
+                .addComponent(lblVersion)
+                .addPreferredGap(ComponentPlacement.UNRELATED)
+                .addComponent(marqueePane, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(ComponentPlacement.UNRELATED)
+                .addComponent(pnlProgramPaths, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(ComponentPlacement.RELATED)
+                .addComponent(pnlJavaInformation, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE))
+                .addGroup(gl_contentPanel.createSequentialGroup()
                 .addComponent(lblProgramIcon)
                 .addPreferredGap(ComponentPlacement.RELATED)
-                .addGroup(
-                gl_contentPanel
-                .createParallelGroup(Alignment.LEADING)
-                .addComponent(pnlProgramPaths,
-                GroupLayout.DEFAULT_SIZE, 464,
-                Short.MAX_VALUE)
-                .addComponent(lblProgramName)
-                .addComponent(lblVersion,
-                Alignment.TRAILING,
-                GroupLayout.DEFAULT_SIZE, 464,
-                Short.MAX_VALUE)
-                .addComponent(hprlnkAnleitung,
-                GroupLayout.DEFAULT_SIZE, 464,
-                Short.MAX_VALUE)
-                .addComponent(hprlnkWebsite,
-                GroupLayout.DEFAULT_SIZE, 464,
-                Short.MAX_VALUE)
-                .addComponent(hprlnkForum,
-                GroupLayout.DEFAULT_SIZE, 464,
-                Short.MAX_VALUE))
-                .addContainerGap()));
-        gl_contentPanel
-                .setVerticalGroup(gl_contentPanel
-                .createParallelGroup(Alignment.TRAILING)
-                .addGroup(
-                gl_contentPanel
-                .createSequentialGroup()
+                .addComponent(hprlnkWebsite, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(ComponentPlacement.RELATED)
+                .addComponent(hprlnkForum, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(ComponentPlacement.RELATED)
+                .addComponent(hprlnkAnleitung, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(28, Short.MAX_VALUE)));
+
+
+        JLabel lblVersion_1 = new JLabel("Version:");
+        lblVersion_1.setForeground(greyColor);
+
+        JLabel lblJavaType = new JLabel("Type:");
+        lblJavaType.setForeground(greyColor);
+
+        lblJavaVersion.setForeground(greyColor);
+
+        lblVmType.setForeground(greyColor);
+        GroupLayout gl_panel;
+        GroupLayout gl_pnlJavaInformation = new GroupLayout(pnlJavaInformation);
+        gl_pnlJavaInformation.setHorizontalGroup(
+                gl_pnlJavaInformation.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_pnlJavaInformation.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(
-                gl_contentPanel
-                .createParallelGroup(
-                Alignment.LEADING)
-                .addGroup(
-                gl_contentPanel
-                .createSequentialGroup()
-                .addComponent(
-                lblProgramName)
-                .addPreferredGap(
-                ComponentPlacement.RELATED)
-                .addComponent(
-                lblVersion)
-                .addGap(18)
-                .addComponent(
-                hprlnkWebsite,
-                GroupLayout.PREFERRED_SIZE,
-                GroupLayout.DEFAULT_SIZE,
-                GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(
-                ComponentPlacement.RELATED)
-                .addComponent(
-                hprlnkAnleitung,
-                GroupLayout.PREFERRED_SIZE,
-                GroupLayout.DEFAULT_SIZE,
-                GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(
-                ComponentPlacement.RELATED)
-                .addComponent(
-                hprlnkForum,
-                GroupLayout.PREFERRED_SIZE,
-                GroupLayout.DEFAULT_SIZE,
-                GroupLayout.PREFERRED_SIZE)
-                .addGap(18)
-                .addComponent(
-                pnlProgramPaths,
-                GroupLayout.PREFERRED_SIZE,
-                78,
-                GroupLayout.PREFERRED_SIZE))
-                .addComponent(
-                lblProgramIcon))
-                .addContainerGap(124, Short.MAX_VALUE)));
+                .addGroup(gl_pnlJavaInformation.createParallelGroup(Alignment.TRAILING)
+                .addComponent(lblJavaType)
+                .addComponent(lblVersion_1))
+                .addPreferredGap(ComponentPlacement.RELATED)
+                .addGroup(gl_pnlJavaInformation.createParallelGroup(Alignment.LEADING)
+                .addComponent(lblVmType, GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
+                .addComponent(lblJavaVersion, GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE))
+                .addContainerGap()));
+        gl_pnlJavaInformation.setVerticalGroup(
+                gl_pnlJavaInformation.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_pnlJavaInformation.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(gl_pnlJavaInformation.createParallelGroup(Alignment.BASELINE)
+                .addComponent(lblVersion_1)
+                .addComponent(lblJavaVersion))
+                .addPreferredGap(ComponentPlacement.RELATED)
+                .addGroup(gl_pnlJavaInformation.createParallelGroup(Alignment.BASELINE)
+                .addComponent(lblJavaType)
+                .addComponent(lblVmType))
+                .addContainerGap(52, Short.MAX_VALUE)));
+        pnlJavaInformation.setLayout(gl_pnlJavaInformation);
+
 
         JLabel lblFilmliste = new JLabel("Filmliste:");
         lblFilmliste.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblFilmliste.setForeground(new Color(159, 159, 159));
+        lblFilmliste.setForeground(greyColor);
 
-        //JLabel lblFilmlistPath = new JLabel("f");
-        lblFilmlistPath.setForeground(new Color(159, 159, 159));
+        lblFilmlistPath.setForeground(greyColor);
 
         JLabel lblEinstellungen = new JLabel("Einstellungen:");
-        lblEinstellungen.setForeground(new Color(159, 159, 159));
+        lblEinstellungen.setForeground(greyColor);
 
-        //JLabel lblSettingsFilePath = new JLabel("s");
-        lblSettingsFilePath.setForeground(new Color(159, 159, 159));
-        GroupLayout gl_panel = new GroupLayout(pnlProgramPaths);
+        lblSettingsFilePath.setForeground(greyColor);
+        gl_panel = new GroupLayout(pnlProgramPaths);
         gl_panel.setHorizontalGroup(gl_panel
                 .createParallelGroup(Alignment.LEADING)
                 .addGroup(
@@ -320,7 +372,7 @@ public class MVAboutDialog extends JDialog {
 
         public CloseDialogAction(MVAboutDialog dlg) {
             super();
-            putValue(NAME, "Schlie\u00DFen");
+            putValue(NAME, "Schließen");
             putValue(SHORT_DESCRIPTION, "Dialog schließen");
             this.dlg = dlg;
         }

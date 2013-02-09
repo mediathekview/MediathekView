@@ -49,18 +49,17 @@ public class GuiKonstanten {
     // Standardwert für die Länge des Zieldateinamens
     public static final int LAENGE_DATEINAME = 25;
     //
-    public static final int UPDATE_FILME_AUS = 0; // nix
-    public static final int UPDATE_FILME_URL = 1; // manuell laden, Url automatisch wählen
-    public static final int UPDATE_FILME_AUTO = 2; // beim Start, immer mal wieder, + Url auto
+    public static final int UPDATE_FILME_AUS = 0; // nur manuell + URL manuell wählen
+    public static final int UPDATE_FILME_AUTO = 2; // beim Start automatisch + manuell, Url automatisch wählen
     //
     // Farben
     public static Color FARBE_GRAU = new Color(225, 225, 225);
     public static Color FARBE_GRAU_SEL = new Color(190, 190, 190);
     // Tabelle Abos
-    public static Color ABO_FOREGROUND = new Color(138,67,0);
+    public static Color ABO_FOREGROUND = new Color(138, 67, 0);
     public static Color ABO = new Color(255, 245, 229);
     public static Color ABO_SEL = new Color(255, 204, 127);
-    public static Color DOWNLOAD_FOREGROUND = new Color(0,72,138);
+    public static Color DOWNLOAD_FOREGROUND = new Color(0, 72, 138);
     public static Color DOWNLOAD = new Color(229, 239, 255);
     public static Color DOWNLOAD_SEL = new Color(127, 178, 255);
     // Tabelle Downloads
@@ -76,8 +75,7 @@ public class GuiKonstanten {
     public static Color DOWNLOAD_FARBE_DOWNLOAD = new Color(0, 90, 0);
     public static Color DOWNLOAD_FARBE_LIVE = new Color(130, 0, 0);
     // Filter wenn RegEx
-    public static Color FILTER_REGEX = new Color(153,214,255);
+    public static Color FILTER_REGEX = new Color(153, 214, 255);
     // Filter wenn RegEx, bei einem Fehler
     public static Color FILTER_REGEX_FEHLER = Color.RED;
-
 }
