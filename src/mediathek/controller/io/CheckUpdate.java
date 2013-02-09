@@ -28,55 +28,52 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
 public class CheckUpdate {
-
+    
     private int sekunden = 5;
     private String titelOrg = "";
     private DDaten ddaten;
     private MediathekGui gui;
-
+    
     public CheckUpdate(MediathekGui gg, DDaten dd) {
         gui = gg;
         ddaten = dd;
         titelOrg = ddaten.mediathekGui.getTitle();
     }
-
+    
     public void suchen() {
+        gui.setTitle("");
         new Thread(new Pruefen()).start();
+        
     }
-
+    
     private class Pruefen implements Runnable {
-
+        
         @Override
         public synchronized void run() {
             try {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR])) {
                     if (!Daten.system[Konstanten.SYSTEM_UPDATE_DATUM_NR].equals(DatumZeit.getHeute_yyyyMMdd())) {
-                        ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
-                        if (pgrUpdate.checkVersion(ddaten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                                @Override
-                                public void run() {
+                        final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
+
+                        //wir sind nicht auf dem EDT, erzeuegen aber Swing Dialoge...ergo aufpassen!
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (pgrUpdate.checkVersion(ddaten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
                                     gui.setTitle("Neue Version verfügbar");
-                                }
-                            });
-                        } else {
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                                @Override
-                                public void run() {
+                                } else {
                                     gui.setTitle("Alles aktuell");
                                 }
-                            });
-                        }
-                        for (int i = sekunden; i > 0; --i) {
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                                @Override
-                                public void run() {
+                                for (int i = sekunden; i > 0; --i) {
                                     gui.setTitle(" * " + gui.getTitle() + " * ");
+                                    try {
+                                        this.wait(1000);
+                                    } catch (InterruptedException ignored) {
+                                        gui.setTitle(titelOrg);
+                                    }
                                 }
-                            });
-                            this.wait(1000);
-                        }
-                        gui.setTitle(titelOrg);
+                            }
+                        });
                     }
                 }
             } catch (Exception ex) {

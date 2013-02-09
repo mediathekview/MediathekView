@@ -23,6 +23,7 @@ import java.io.File;
 import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
+import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
@@ -62,6 +63,9 @@ public class Daten {
         system[Konstanten.SYSTEM_VERSION_NR] = Konstanten.VERSION;
         system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR] = Boolean.TRUE.toString();
+        if (Daten.debug) {
+            Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUS);
+        }
         listeFilme = new ListeFilme();
         ioXmlFilmlisteLesen = new IoXmlFilmlisteLesen();
         filmeLaden = new FilmeLaden();

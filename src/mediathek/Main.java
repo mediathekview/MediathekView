@@ -19,6 +19,8 @@
  */
 package mediathek;
 
+import com.jidesoft.utils.ThreadCheckingRepaintManager;
+import javax.swing.RepaintManager;
 import mediathek.daten.Daten;
 import mediathek.tool.Log;
 
@@ -70,6 +72,8 @@ public class Main {
                         }
                         if (s.equalsIgnoreCase("-d")) {
                             Daten.debug = true;
+                            //use for debugging EDT violations
+                            RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
                         }
                         if (s.equalsIgnoreCase("-v")) {
                             Log.versionsMeldungen(this.getClass().getName());

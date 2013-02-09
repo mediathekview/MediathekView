@@ -48,6 +48,12 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
 
     private void init() {
         tabelleLaden();
+        jButtonUpdate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabelleLaden();
+            }
+        });
         jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
         jButtonLoeschen.addActionListener(new ActionListener() {
             @Override
@@ -97,14 +103,15 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jTextFieldUrl = new javax.swing.JTextField();
         jButtonDateiAuswaehlen = new javax.swing.JButton();
         jButtonLoeschen = new javax.swing.JButton();
+        jButtonUpdate = new javax.swing.JButton();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -130,6 +137,8 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
 
         jButtonLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
 
+        jButtonUpdate.setText("Update");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -145,7 +154,10 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonDateiAuswaehlen)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonLoeschen)))
+                        .addComponent(jButtonLoeschen))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jButtonUpdate)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -154,8 +166,10 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jButtonUpdate)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -185,12 +199,9 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonDateiAuswaehlen;
     private javax.swing.JButton jButtonLoeschen;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton jButtonUpdate;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextFieldUrl;
     // End of variables declaration//GEN-END:variables
