@@ -37,106 +37,106 @@ public class ProgrammLog {
     public static void LogDateiSchreiben(DDaten ddaten) {
         DialogZiel dialog = new DialogZiel(ddaten.mediathekGui, ddaten, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
         dialog.setVisible(true);
-        if (dialog.ok) {
-            File f = new File(dialog.ziel);
-            if (f != null) {
-                BufferedWriter bw = null;
-                try {
-                    bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
-                    // Programminfos
-                    bw.write("#####################################################");
+        if (!dialog.ok) {
+            return;
+        }
+        File f = new File(dialog.ziel);
+        if (f == null) {
+            JOptionPane.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
+                    "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
+        } else {
+            BufferedWriter bw = null;
+            try {
+                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
+                // Programminfos
+                bw.write("#####################################################");
+                bw.newLine();
+                bw.write("Erstellt: " + DatumZeit.getJetzt_ddMMyyyy_HHmm());
+                bw.newLine();
+                bw.write("#####################################################");
+                bw.newLine();
+                bw.newLine();
+                bw.write(Funktionen.getProgVersionString());
+                bw.newLine();
+                bw.write("Compiled: " + Funktionen.getCompileDate());
+                bw.newLine();
+                bw.write("=====================================================");
+                bw.newLine();
+                bw.write("Java");
+                bw.newLine();
+                String[] java = Funktionen.getJavaVersion();
+                for (String ja : java) {
+                    bw.write(ja);
                     bw.newLine();
-                    bw.write("Erstellt: " + DatumZeit.getJetzt_ddMMyyyy_HHmm());
-                    bw.newLine();
-                    bw.write("#####################################################");
-                    bw.newLine();
-                    bw.newLine();
-                    bw.write(Funktionen.getProgVersionString());
-                    bw.newLine();
-                    bw.write("Compiled: " + Funktionen.getCompileDate());
-                    bw.newLine();
-                    bw.write("=====================================================");
-                    bw.newLine();
-                    bw.write("Java");
-                    bw.newLine();
-                    String[] java = Funktionen.getJavaVersion();
-                    for (String ja : java) {
-                        bw.write(ja);
-                        bw.newLine();
-                    }
-                    bw.write("=====================================================");
-                    bw.newLine();
-                    bw.write("Betriebssystem: " + System.getProperty("os.name"));
-                    if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-                        if (System.getenv("ProgramFiles(x86)") != null) {
-                            // dann 64Bit
-                            bw.write("[64Bit]");
-                        } else {
-                            bw.write("[32Bit]");
-                        }
-                    }
-                    bw.newLine();
-                    bw.write("Programmpfad: " + Funktionen.getPathJar());
-                    bw.newLine();
-                    bw.write("Verzeichnis Einstellungen: " + Daten.getBasisVerzeichnis());
-                    bw.newLine();
-                    bw.newLine();
-                    bw.newLine();
-                    //
-                    bw.write("#####################################################");
-                    bw.newLine();
-                    bw.write("## Programmsets ##################################");
-                    bw.newLine();
-                    bw.write("#####################################################");
-                    bw.newLine();
-                    bw.newLine();
-                    for (int i = 0; i < ddaten.listePset.size(); ++i) {
-                        bw.write(ddaten.listePset.get(i).toString());
-                        bw.newLine();
-                    }
-                    bw.newLine();
-                    bw.newLine();
-                    bw.newLine();
-                    bw.newLine();
-                    //
-                    bw.write("#####################################################");
-                    bw.newLine();
-                    bw.write("## Systemmeldungen ##################################");
-                    bw.newLine();
-                    bw.write("#####################################################");
-                    bw.newLine();
-                    bw.newLine();
-                    bw.write(Log.textSystem.toString());
-                    bw.newLine();
-                    bw.newLine();
-                    bw.newLine();
-                    bw.newLine();
-                    //
-                    bw.write("#####################################################");
-                    bw.newLine();
-                    bw.write("## Programmausgabe ##################################");
-                    bw.newLine();
-                    bw.write("#####################################################");
-                    bw.newLine();
-                    bw.newLine();
-                    bw.write(Log.textProgramm.toString());
-                    bw.newLine();
-                    bw.flush();
-                    bw.close();
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(319865493, Log.FEHLER_ART_PROG, "ProgrammLog.zeileSchreiben-1", ex);
-                    JOptionPane.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
-                            "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
-                } finally {
-                    try {
-                        bw.close();
-                    } catch (Exception ex) {
+                }
+                bw.write("=====================================================");
+                bw.newLine();
+                bw.write("Betriebssystem: " + System.getProperty("os.name"));
+                if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                    if (System.getenv("ProgramFiles(x86)") != null) {
+                        // dann 64Bit
+                        bw.write("[64Bit]");
+                    } else {
+                        bw.write("[32Bit]");
                     }
                 }
-            } else {
+                bw.newLine();
+                bw.write("Programmpfad: " + Funktionen.getPathJar());
+                bw.newLine();
+                bw.write("Verzeichnis Einstellungen: " + Daten.getBasisVerzeichnis());
+                bw.newLine();
+                bw.newLine();
+                bw.newLine();
+                //
+                bw.write("#####################################################");
+                bw.newLine();
+                bw.write("## Programmsets ##################################");
+                bw.newLine();
+                bw.write("#####################################################");
+                bw.newLine();
+                bw.newLine();
+                for (int i = 0; i < ddaten.listePset.size(); ++i) {
+                    bw.write(ddaten.listePset.get(i).toString());
+                    bw.newLine();
+                }
+                bw.newLine();
+                bw.newLine();
+                bw.newLine();
+                bw.newLine();
+                //
+                bw.write("#####################################################");
+                bw.newLine();
+                bw.write("## Systemmeldungen ##################################");
+                bw.newLine();
+                bw.write("#####################################################");
+                bw.newLine();
+                bw.newLine();
+                bw.write(Log.textSystem.toString());
+                bw.newLine();
+                bw.newLine();
+                bw.newLine();
+                bw.newLine();
+                //
+                bw.write("#####################################################");
+                bw.newLine();
+                bw.write("## Programmausgabe ##################################");
+                bw.newLine();
+                bw.write("#####################################################");
+                bw.newLine();
+                bw.newLine();
+                bw.write(Log.textProgramm.toString());
+                bw.newLine();
+                bw.flush();
+                bw.close();
+            } catch (Exception ex) {
+                Log.fehlerMeldung(319865493, Log.FEHLER_ART_PROG, "ProgrammLog.zeileSchreiben-1", ex);
                 JOptionPane.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                         "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
-
+            } finally {
+                try {
+                    bw.close();
+                } catch (Exception ex) {
+                }
             }
         }
     }

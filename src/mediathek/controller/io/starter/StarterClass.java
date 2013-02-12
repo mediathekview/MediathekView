@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import mediathek.daten.DDaten;
@@ -212,6 +213,7 @@ public class StarterClass {
             start = s;
             start.status = Start.STATUS_RUN;
             file = new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            int maxLen = laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
             notifyStartEvent();
             try {
                 new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
@@ -333,6 +335,7 @@ public class StarterClass {
             }
             leeresFileLoeschen(file);
             fertigmeldung(start);
+            start.restSekunden = -1;
             start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
@@ -413,6 +416,7 @@ public class StarterClass {
             }
             leeresFileLoeschen(new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
             fertigmeldung(start);
+            start.restSekunden = -1;
             start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
@@ -493,6 +497,7 @@ public class StarterClass {
             text.add("Ziel: " + start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
         text.add("URL: " + start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+        text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
         if (start.datenDownload.getArt() == Start.ART_DOWNLOAD) {
             text.add(Start.ART_DOWNLOAD_TXT);
         } else {
@@ -517,6 +522,13 @@ public class StarterClass {
             }
             text.add("Programmset: " + start.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
             text.add("Ziel: " + start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        }
+        text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
+        long dauer = start.startZeit.diffInMinuten();
+        if (dauer == 0) {
+            text.add("Dauer: <1 Min.");
+        } else {
+            text.add("Dauer: " + start.startZeit.diffInMinuten() + " Min");
         }
         text.add("URL: " + start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
         if (start.datenDownload.getArt() == Start.ART_DOWNLOAD) {

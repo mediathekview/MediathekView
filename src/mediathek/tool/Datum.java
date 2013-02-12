@@ -59,4 +59,11 @@ public class Datum extends Date {
         }
         return ret;
     }
+
+    public long diffInMinuten() {
+        // liefert den BETRAG! der Zeitdifferenz zu jetzt
+        long ret = this.diffInSekunden();
+        ret = ret / 60; // Minuten
+        return ret;
+    }
 }

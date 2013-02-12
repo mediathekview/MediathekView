@@ -53,6 +53,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     // Infos
     private PanelAbout panelAbout;
     //private PanelInfoStarts panelStarts;
+    private PanelMeldungenUbersicht panelMeldungenUbersicht;
     private PanelMeldungen panelMeldungenFehler;
     private PanelMeldungen panelMeldungenSystem;
     private PanelMeldungen panelMeldungenPlayer;
@@ -129,6 +130,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         // Infos
         panelAbout = new PanelAbout(ddaten, parentComponent);
         //panelStarts = new PanelInfoStarts(ddaten);
+        panelMeldungenUbersicht = new PanelMeldungenUbersicht(ddaten, parentComponent);
         panelMeldungenFehler = new PanelMeldungen(ddaten, parentComponent, Log.textFehler, Log.LOG_FEHLER, "Fehlermeldungen");
         panelMeldungenSystem = new PanelMeldungen(ddaten, parentComponent, Log.textSystem, Log.LOG_SYSTEM, "Systemmeldungen");
         panelMeldungenPlayer = new PanelMeldungen(ddaten, parentComponent, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer");
@@ -149,6 +151,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         //final String NAME_infosStarts = "laufende Programme";
         final String NAME_history = "History";
         final String NAME_logfile = "erledigte Abos";
+        final String NAME_meldungen = "Meldungen";
         final String NAME_systemmeldungen = "Systemmeldungen";
         final String NAME_fehlermeldungen = "Fehlermeldungen";
         final String NAME_meldungenProgramme = "Programmausgabe";
@@ -261,6 +264,9 @@ public class DialogEinstellungen extends javax.swing.JDialog {
                     } else if (name.equals(NAME_allgemeineInfos)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelAbout);
+                    } else if (name.equals(NAME_meldungen)) {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelMeldungenUbersicht);
                     } else if (name.equals(NAME_systemmeldungen)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelMeldungenSystem);

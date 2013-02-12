@@ -179,8 +179,11 @@ class RuntimeExec {
             int pNeu = (int) d;
             if (pNeu != percent) {
                 percent = pNeu;
-                s.restSekunden = s.startZeit.diffInSekunden();
-                s.restSekunden = (s.restSekunden * (1000 - percent) / percent);
+                if (percent > 5) {
+                    // sonst macht es noch keinen Sinn
+                    s.restSekunden = s.startZeit.diffInSekunden();
+                    s.restSekunden = (s.restSekunden * (1000 - percent) / percent);
+                }
                 s.datenDownload.statusMelden(percent);
             }
         }
