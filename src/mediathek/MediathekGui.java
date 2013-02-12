@@ -121,7 +121,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             // erster Start
             new DialogStarteinstellungen(null, true, ddaten).setVisible(true);
         }
-        this.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
+        setOrgTitel();
         GuiFunktionen.setLook(this);
         init();
         setSize(max);
@@ -135,6 +135,24 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 DDaten.filmeLaden.importFilmliste("");
             }
         }
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_ORG_TITEL, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setOrgTitel();
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_PROGRAMM_AKTUELL, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setTitelAllesAktuell();
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_UPDATE_VERFUEGBAR, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setTitelUpdate();
+            }
+        });
     }
 
     /**
@@ -211,6 +229,18 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     //===================================
     // private
     //===================================
+    private void setOrgTitel() {
+        this.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
+    }
+
+    private void setTitelUpdate() {
+        ddaten.mediathekGui.setTitle("Ein Programmupdate ist verfügbar");
+    }
+
+    private void setTitelAllesAktuell() {
+        ddaten.mediathekGui.setTitle("Programmversion ist aktuell");
+    }
+
     private void buttonAus() {
         jButtonFilmeLaden.setEnabled(false);
         jButtonFilmAbspielen.setEnabled(false);
@@ -796,21 +826,21 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jPanelInfo = new javax.swing.JPanel();
         jToolBar = new javax.swing.JToolBar();
         jButtonFilmeLaden = new javax.swing.JButton();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
+        javax.swing.Box.Filler filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
         jButtonFilmAbspielen = new javax.swing.JButton();
         jButtonFilmSpeichern = new javax.swing.JButton();
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
+        javax.swing.Box.Filler filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
         jButtonDownloadAktualisieren = new javax.swing.JButton();
         jButtonDownloadAlleStarten = new javax.swing.JButton();
         jButtonDownloadZurueckstellen = new javax.swing.JButton();
         jButtonDownloadLoeschen = new javax.swing.JButton();
         jButtonDownloadAufraeumen = new javax.swing.JButton();
-        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
+        javax.swing.Box.Filler filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
         jButtonAbosEinschalten = new javax.swing.JButton();
         jButtonAbosAusschalten = new javax.swing.JButton();
         jButtonAbosLoeschen = new javax.swing.JButton();
         jTabbedPane = new javax.swing.JTabbedPane();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        javax.swing.JMenuBar jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItemFilmlisteLaden = new javax.swing.JMenuItem();
         jMenuItemEinstellungen = new javax.swing.JMenuItem();
@@ -1120,9 +1150,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler2;
-    private javax.swing.Box.Filler filler4;
     private javax.swing.JButton jButtonAbosAusschalten;
     private javax.swing.JButton jButtonAbosEinschalten;
     private javax.swing.JButton jButtonAbosLoeschen;
@@ -1144,7 +1171,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenu jMenu9;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuDownload;
     private javax.swing.JMenuItem jMenuItemAbosAendern;
     private javax.swing.JMenuItem jMenuItemAbosAusschalten;

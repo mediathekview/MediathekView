@@ -85,7 +85,7 @@ public class ProgrammUpdateSuchen {
                 new DialogHinweisUpdate(null, true, "Fehler bei der Versionsprüfung!", "Es ist ein Fehler aufgetreten!" + "\n\n" + "").setVisible(true);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(159002583, Log.FEHLER_ART_PROG,"ProgrammUpdateSuchen.checkVersion", ex);
+            Log.fehlerMeldung(159002583, Log.FEHLER_ART_PROG, "ProgrammUpdateSuchen.checkVersion", ex);
         }
         return neueVersion;
     }
@@ -113,7 +113,7 @@ public class ProgrammUpdateSuchen {
                     DDaten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR] = Integer.toString(listInfos.size());
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(693298731, Log.FEHLER_ART_PROG,"ProgrammUpdateSuchen.checkVersion", ex);
+                Log.fehlerMeldung(693298731, Log.FEHLER_ART_PROG, "ProgrammUpdateSuchen.checkVersion", ex);
             }
         } else if (alleAnzeigen) {
             // dann wenigstens einen Hinweis, dass es keine gibt
@@ -131,7 +131,7 @@ public class ProgrammUpdateSuchen {
                 return true;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(683021193,Log.FEHLER_ART_PROG, "ProgrammUpdateSuchen.checkObNeueVersion", ex);
+            Log.fehlerMeldung(683021193, Log.FEHLER_ART_PROG, "ProgrammUpdateSuchen.checkObNeueVersion", ex);
         }
         return false;
     }
