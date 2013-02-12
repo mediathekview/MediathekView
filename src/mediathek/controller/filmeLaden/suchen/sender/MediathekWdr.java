@@ -28,10 +28,6 @@ import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
-/**
- *
- * @author
- */
 public class MediathekWdr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "WDR";

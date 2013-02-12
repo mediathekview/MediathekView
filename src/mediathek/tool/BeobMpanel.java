@@ -25,10 +25,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-/**
- *
- * @author emil
- */
 public class BeobMpanel implements ActionListener {
 
     private int hoehe = -1;

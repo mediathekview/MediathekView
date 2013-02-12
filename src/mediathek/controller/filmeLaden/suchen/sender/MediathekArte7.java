@@ -28,10 +28,6 @@ import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
-/**
- *
- * @author
- */
 public class MediathekArte7 extends MediathekReader implements Runnable {
 
     public static final String SENDER_ARTE_DE = "ARTE.DE";

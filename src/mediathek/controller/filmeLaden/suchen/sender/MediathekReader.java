@@ -27,10 +27,6 @@ import mediathek.daten.DatenFilm;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.Log;
 
-/**
- *
- *  @author
- */
 public class MediathekReader implements Runnable {
 
     String nameSenderFilmliste = ""; // ist der Sendername in der Filmliste, bei ARTE gibt es da 2 Namen,
@@ -113,9 +109,6 @@ public class MediathekReader implements Runnable {
         //wird überschrieben, hier werden die Filme gesucht
     }
 
-//    void setInfo(int feld, String wert) {
-//        suchen.listeFilmeNeu.setInfo(feld, wert);
-//    }
     boolean addFilm(DatenFilm film) {
         return suchen.listeFilmeNeu.addFilmVomSender(film);
     }
@@ -144,10 +137,6 @@ public class MediathekReader implements Runnable {
         return ret;
     }
 
-//    boolean themaLaden(String sender, String thema) {
-//        boolean ret = true;
-//        return ret;
-//    }
     // Meldungen
     synchronized void meldungStart() {
         max = 0;

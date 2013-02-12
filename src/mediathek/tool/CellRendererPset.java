@@ -24,7 +24,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenPset;
-import mediathek.tool.GuiKonstanten;
 
 public class CellRendererPset extends DefaultTableCellRenderer {
 

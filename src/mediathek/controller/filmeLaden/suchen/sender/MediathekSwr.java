@@ -27,10 +27,6 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-/**
- *
- * @author
- */
 public class MediathekSwr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "SWR";

@@ -26,10 +26,6 @@ import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
-/**
- *
- * @author
- */
 public class MediathekSf extends MediathekReader implements Runnable {
 
     //public static final String SENDER = "SF";
@@ -37,17 +33,10 @@ public class MediathekSf extends MediathekReader implements Runnable {
     private final int MAX_FILME_THEMA = 5;
     private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
-    /**
-     *
-     * @param ddaten
-     */
     public MediathekSf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
     }
 
-    /**
-     *
-     */
     @Override
     public void addToList() {
         //Liste von http://www.videoportal.sf.tv/sendungen holen

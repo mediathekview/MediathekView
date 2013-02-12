@@ -30,27 +30,16 @@ import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
-/**
- *
- * @author
- */
 public class MediathekSfPod extends MediathekReader implements Runnable {
 
     //public static final String SENDER = "SF.Podcast";
     public static final String SENDER = "SRF.Podcast";
     private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
-    /**
-     *
-     * @param ddaten
-     */
     public MediathekSfPod(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
     }
 
-    /**
-     *
-     */
     @Override
     public void addToList() {
         //Liste von http://www.sf.tv/podcasts/index.php holen

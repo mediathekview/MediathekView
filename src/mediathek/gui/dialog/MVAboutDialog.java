@@ -19,14 +19,27 @@
 package mediathek.gui.dialog;
 
 import com.jidesoft.swing.MarqueePane;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Desktop.Action;
+import java.awt.Dialog.ModalityType;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import mediathek.daten.Daten;
@@ -61,20 +74,55 @@ public class MVAboutDialog extends JDialog {
         final JEditorPane messagePane = new JEditorPane();
         messagePane.setEditable(false);
         messagePane.setFocusable(false);
-        messagePane.setContentType("text/html");
+        messagePane.setContentType("text/plain");
         //TODO Message austauschen!
         //Hier kann eine HTML-Datei geladen werden
-        messagePane.setText("<html><b>Lorem ipsum</b> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   \n"
+        messagePane.setText("http://zdfmediathk.sourceforge.net"
                 + "\n"
-                + "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   \n"
                 + "\n"
-                + "Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   \n"
+                + "Autoren:"
                 + "\n"
-                + "Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.   \n"
+                + "Xaver W. (W.Xaver[at]googlemail.com)"
                 + "\n"
-                + "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis.   \n"
+                + "CrystalPalace (crystalpalace1977[at]googlemail.com)"
                 + "\n"
-                + "At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, At accusam aliquyam diam diam dolore dolores duo eirmod eos erat, et nonumy sed tempor et et invidunt justo labore Stet clita ea et gubergren, kasd magna no rebum. sanctus sea sed takimata ut vero voluptua. est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur</html>");
+                + "Patrick"
+                + "\n"
+                + "thausherr"
+                + "\n"
+                + "Andreas M."
+                + "\n"
+                + "siedlerchr"
+                + "\n"
+                + "\n"
+                + "Dokumentation / Test:"
+                + "\n"
+                + "styrol"
+                + "\n"
+                + "hostis"
+                + "\n"
+                + "pmshell"
+                + "\n"
+                + "thausherr"
+                + "\n"
+                + "apoleon"
+                + "\n"
+                + "siedlerchr"
+                + "\n"
+                + "werner252"
+                + "\n"
+                + "derreisende77"
+                + "\n"
+                + "thomas5"
+                + "\n"
+                + "frankypsilon"
+                + "\n"
+                + "\n"
+                + "Ein Dankeschön an alle die zu dieser Software beigetragen haben."
+                + "\n"
+                + "\n"
+                + "\n"
+                + "\n");
 
         marqueePane = new MarqueePane(messagePane);
         marqueePane.setStayDelay(3000);
