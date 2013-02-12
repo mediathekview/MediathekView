@@ -163,8 +163,6 @@ public class FilmeLaden {
         @Override
         public synchronized void fertig(ListenerFilmeLadenEvent event) {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
-//            listeFilmeNeu = filmeSuchen.listeFilmeNeu;
-//            filmeSuchen.listeFilmeNeu = null;
             undEnde(event, filmeSuchen.listeFilmeNeu);
         }
     }
@@ -184,8 +182,6 @@ public class FilmeLaden {
         @Override
         public synchronized void fertig(ListenerFilmeLadenEvent event) {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
-//            listeFilmeNeu = filmeImportieren.listeFilme;
-//            filmeImportieren.listeFilme = null;
             undEnde(event, filmeImportieren.listeFilme);
         }
     }

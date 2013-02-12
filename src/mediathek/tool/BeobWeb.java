@@ -21,7 +21,6 @@ package mediathek.tool;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.tool.UrlOeffnen;
 
 public class BeobWeb implements ActionListener {
 

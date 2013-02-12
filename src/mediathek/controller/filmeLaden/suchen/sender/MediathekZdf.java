@@ -26,10 +26,6 @@ import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
-/**
- *
- * @author
- */
 public class MediathekZdf extends MediathekReader implements Runnable {
 
     public static final String SENDER = "ZDF";
@@ -38,17 +34,10 @@ public class MediathekZdf extends MediathekReader implements Runnable {
     private final int ANZAHL_ZDF_UPDATE = 20;
     private final int ANZAHL_ZDF_KURZ = 10;
 
-    /**
-     *
-     * @param ddaten
-     */
     public MediathekZdf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, 8 /* threads */, 500 /* urlWarten */, startPrio);
     }
 
-    /**
-     *
-     */
     @Override
     public void addToList() {
         listeThemen.clear();

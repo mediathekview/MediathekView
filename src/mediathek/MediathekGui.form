@@ -281,11 +281,6 @@
                 <Property name="text" type="java.lang.String" value="Hilfe und Fragen zum Programm"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemProgrammlog">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Programmlog in Datei schreiben"/>
-              </Properties>
-            </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator4">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAbout">

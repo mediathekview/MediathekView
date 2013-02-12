@@ -26,7 +26,6 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.Datum;
 import mediathek.tool.Log;
 
 class RuntimeExec {
@@ -45,17 +44,11 @@ class RuntimeExec {
     private double totalSecs = 0;
     private String zeit, prozent;
 
-    /**
-     * Neue Klasse instanzieren
-     */
     public RuntimeExec(Start st) {
         s = st;
         prog = s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
     }
 
-    /**
-     * Neue Klasse instanzieren
-     */
     public RuntimeExec(String p) {
         prog = p;
     }
@@ -164,7 +157,6 @@ class RuntimeExec {
                         zeit = matcher.group();
                         double d = Double.parseDouble(zeit) / totalSecs * 100;
                         meldenDouble(d);
-                        //Log.systemMeldung("Filmlänge: " + (int) d + " von " + totalSecs + " s");
                     }
                 } catch (Exception ex) {
                     s.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);

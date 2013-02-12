@@ -685,12 +685,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 showAboutDialog();
             }
         });
-        jMenuItemProgrammlog.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ProgrammLog.LogDateiSchreiben(ddaten);
-            }
-        });
+//        jMenuItemProgrammlog.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                ProgrammLog.LogDateiSchreiben(ddaten);
+//            }
+//        });
         setupUserInterfaceForOsx();
     }
 
@@ -876,7 +876,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemMeldungen = new javax.swing.JCheckBoxMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
-        jMenuItemProgrammlog = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jMenuItemAbout = new javax.swing.JMenuItem();
 
@@ -1124,9 +1123,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAnleitung.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/agt_support.png"))); // NOI18N
         jMenuItemAnleitung.setText("Hilfe und Fragen zum Programm");
         jMenu3.add(jMenuItemAnleitung);
-
-        jMenuItemProgrammlog.setText("Programmlog in Datei schreiben");
-        jMenu3.add(jMenuItemProgrammlog);
         jMenu3.add(jSeparator4);
 
         jMenuItemAbout.setText("Über MediathekView");
@@ -1193,7 +1189,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JMenuItem jMenuItemFilmAbspielen;
     private javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
     private javax.swing.JMenuItem jMenuItemFilmlisteLaden;
-    private javax.swing.JMenuItem jMenuItemProgrammlog;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelInfo;
