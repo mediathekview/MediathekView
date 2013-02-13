@@ -49,20 +49,19 @@ public class Datum extends Date {
         }
     }
 
-    public long diffInSekunden() {
+    public int diffInSekunden() {
         // liefert den BETRAG! der Zeitdifferenz zu jetzt
-        long ret = 0;
-        ret = this.getTime() - new Datum().getTime();
-        ret = ret / (1000); // Sekunden
+        int ret = 0;
+        ret = new Long((this.getTime() - new Datum().getTime()) / (1000)).intValue(); // Zeitdifferenz in Sekunden
         if (ret < 0) {
             ret = -1 * ret;
         }
         return ret;
     }
 
-    public long diffInMinuten() {
+    public int diffInMinuten() {
         // liefert den BETRAG! der Zeitdifferenz zu jetzt
-        long ret = this.diffInSekunden();
+        int ret = this.diffInSekunden();
         ret = ret / 60; // Minuten
         return ret;
     }

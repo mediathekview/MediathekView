@@ -71,9 +71,9 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
                     if (s.restSekunden > 0) {
                         if (s.restSekunden < 60) {
-                            this.setText("< 1");
+                            this.setText("< 1 Min.");
                         } else {
-                            this.setText(Long.toString(s.restSekunden / 60));
+                            this.setText(Long.toString(s.restSekunden / 60) + " Min.");
                         }
                     } else {
                         this.setText("");

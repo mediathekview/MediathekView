@@ -386,13 +386,19 @@ public class StarterClass {
                         // p muss zwischen 1 und 999 liegen
                         if (p == 0) {
                             p = DatenDownload.PROGRESS_GESTARTET;
-                        }
-                        if (p >= 1000) {
+                        } else if (p >= 1000) {
                             p = 999;
                         }
                         if (p != pp) {
-                            start.datenDownload.statusMelden((int) p);
                             pp = p;
+                            // Restzeit ermitteln
+                            if (p > 5) {
+                                // sonst macht es noch keinen Sinn
+                                int diffZeit = start.startZeit.diffInSekunden();
+                                int restProzent = 1000 - (int) p;
+                                start.restSekunden = (diffZeit * restProzent / p);
+                            }
+                            start.datenDownload.statusMelden((int) p);
                         }
                     }
                     destStream.write(buffer, 0, len);

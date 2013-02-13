@@ -58,7 +58,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_TITEL_NR = 5;
     public static final String DOWNLOAD_PROGRESS = "Fortschritt";
     public static final int DOWNLOAD_PROGRESS_NR = 6;
-    public static final String DOWNLOAD_RESTZEIT = "Restminuten";
+    public static final String DOWNLOAD_RESTZEIT = "Restzeit";
     public static final int DOWNLOAD_RESTZEIT_NR = 7;
     public static final String DOWNLOAD_DATUM = "Datum";
     public static final int DOWNLOAD_DATUM_NR = 8;
