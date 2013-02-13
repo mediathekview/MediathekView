@@ -602,7 +602,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         });
         ///
         jCheckBoxMenuItemShutDown.setVisible(DDaten.debug);
-        jSeparatorShutDown.setVisible((ddaten.debug));
+        jSeparatorShutDown.setVisible((DDaten.debug));
         jCheckBoxMenuItemShutDown.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
