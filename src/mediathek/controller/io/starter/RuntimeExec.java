@@ -84,7 +84,8 @@ class RuntimeExec {
         private BufferedReader buff;
         private InputStream in;
         private Process process;
-        int percent = 0;
+        private int percent = 0;
+        private int percent_start = -1;
 
         public ClearInOut(int a, Process p) {
             art = a;
@@ -131,7 +132,6 @@ class RuntimeExec {
                 try {
                     prozent = matcher.group();
                     prozent = prozent.substring(0, prozent.length() - 1);
-                    // nur ganze Int speichern, damit nur 100 Schritte
                     double d = Double.parseDouble(prozent);
                     meldenDouble(d);
                 } catch (Exception ex) {
@@ -171,10 +171,16 @@ class RuntimeExec {
             int pNeu = (int) d;
             if (pNeu != percent) {
                 percent = pNeu;
-                if (percent > 5) {
+                if (percent_start == -1) {
+                    // für wiedergestartete Downloads
+                    percent_start = percent;
+                }
+                if (percent > (percent_start + 5)) {
                     // sonst macht es noch keinen Sinn
-                    s.restSekunden = s.startZeit.diffInSekunden();
-                    s.restSekunden = (s.restSekunden * (1000 - percent) / percent);
+                    int diffZeit = s.startZeit.diffInSekunden();
+                    int diffProzent = percent - percent_start;
+                    int restProzent = 1000 - percent;
+                    s.restSekunden = (diffZeit * restProzent / diffProzent);
                 }
                 s.datenDownload.statusMelden(percent);
             }
