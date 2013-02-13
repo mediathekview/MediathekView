@@ -209,6 +209,55 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART_NR]);
     }
 
+    public String getTextProgress(DDaten ddaten) {
+        Start s = ddaten.starterClass.getStart(arr[DatenDownload.DOWNLOAD_URL_NR]);
+        return getTextProgress(ddaten, s);
+    }
+
+    public String getTextProgress(DDaten ddaten, Start s) {
+        String ret = "";
+        if (s == null) {
+            return "";
+        }
+        int ii = Integer.parseInt(arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
+        if (ii == DatenDownload.PROGRESS_NICHT_GESTARTET) {
+            // noch nicht gestartet
+        } else if (ii == DatenDownload.PROGRESS_WARTEN) {
+            ret = "warten";
+        } else if (ii == DatenDownload.PROGRESS_GESTARTET) {
+            ret = "gestartet";
+        } else if (1 < ii && ii < DatenDownload.PROGRESS_FERTIG) {
+            double d = ii / 10.0;
+            ret = Double.toString(d) + "%";
+        } else if (ii == DatenDownload.PROGRESS_FERTIG) {
+            if (s.status == Start.STATUS_ERR) {
+                ret = "fehlerhaft";
+            } else {
+                ret = "fertig";
+            }
+        }
+        return ret;
+    }
+
+    public String getTextRestzeit(DDaten ddaten) {
+        Start s = ddaten.starterClass.getStart(arr[DatenDownload.DOWNLOAD_URL_NR]);
+        return getTextRestzeit(ddaten, s);
+    }
+
+    public String getTextRestzeit(DDaten ddaten, Start s) {
+        String ret = "";
+        if (s != null) {
+            if (s.restSekunden > 0) {
+                if (s.restSekunden < 60) {
+                    ret = "< 1 Min.";
+                } else {
+                    ret = Long.toString(s.restSekunden / 60) + " Min.";
+                }
+            }
+        }
+        return ret;
+    }
+
     private void aufrufBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
         //zieldatei und pfad bauen und eintragen
         try {

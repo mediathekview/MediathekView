@@ -62,75 +62,49 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
             String url = table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_URL_NR).toString();
+            DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
             // Abos
             boolean abo = !table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_ABO_NR).equals("");
             // Starts
             Start s = ddaten.starterClass.getStart(url);
             if (s != null) {
                 setColor(this, s, isSelected);
-                if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
-                    if (s.restSekunden > 0) {
-                        if (s.restSekunden < 60) {
-                            this.setText("< 1 Min.");
-                        } else {
-                            this.setText(Long.toString(s.restSekunden / 60) + " Min.");
-                        }
-                    } else {
-                        this.setText("");
-                    }
-                } else if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                    int i = Integer.parseInt(s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    if (i == -1) {
-                        // noch nicht gestartet
-                        this.setText("");
-                    } else if (i == DatenDownload.PROGRESS_WARTEN) {
-                        this.setText("warten");
-                    } else if (i == DatenDownload.PROGRESS_GESTARTET) {
-                        this.setText("gestartet");
-                    } else if (1 < i && i < DatenDownload.PROGRESS_FERTIG) {
-//////                        return new ProgressPanel(s).progressPanel();
-                        JProgressBar progressBar = new JProgressBar(0, 1000);
-                        JPanel panel = new JPanel(new BorderLayout());
+            }
+            if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                this.setText(download.getTextRestzeit(ddaten, s));
+            } else if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                int i = Integer.parseInt(download.arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
+                setHorizontalAlignment(SwingConstants.CENTER);
+                if (s != null && 1 < i && i < DatenDownload.PROGRESS_FERTIG) {
+                    JProgressBar progressBar = new JProgressBar(0, 1000);
+                    JPanel panel = new JPanel(new BorderLayout());
+                    if (s != null) {
                         setColor(panel, s, isSelected);
                         setColor(progressBar, s, isSelected);
-                        progressBar.setBorder(BorderFactory.createEmptyBorder());
-                        progressBar.setStringPainted(true);
-                        progressBar.setUI(new BasicProgressBarUI() {
-                            @Override
-                            protected Color getSelectionBackground() {
-                                return UIManager.getDefaults().getColor("Table.foreground");
-                            }
-
-                            @Override
-                            protected Color getSelectionForeground() {
-                                return Color.white;
-                            }
-                        });
-                        panel.add(progressBar);
-                        panel.setBorder(BorderFactory.createEmptyBorder());
-                        progressBar.setValue(i);
-                        double d = i / 10.0;
-                        progressBar.setString(Double.toString(d) + "%");
-                        return panel;
-                    } else if (i == DatenDownload.PROGRESS_FERTIG) {
-                        if (s != null) {
-                            if (s.status == Start.STATUS_ERR) {
-                                this.setText("fehlerhaft");
-                            } else {
-                                this.setText("fertig");
-                            }
-                        } else {
-                            this.setText("fertig");
-                        }
                     }
+                    progressBar.setBorder(BorderFactory.createEmptyBorder());
+                    progressBar.setStringPainted(true);
+                    progressBar.setUI(new BasicProgressBarUI() {
+                        @Override
+                        protected Color getSelectionBackground() {
+                            return UIManager.getDefaults().getColor("Table.foreground");
+                        }
+
+                        @Override
+                        protected Color getSelectionForeground() {
+                            return Color.white;
+                        }
+                    });
+                    panel.add(progressBar);
+                    panel.setBorder(BorderFactory.createEmptyBorder());
+                    progressBar.setValue(i);
+                    double d = i / 10.0;
+                    progressBar.setString(Double.toString(d) + "%");
+                    return panel;
+                } else {
+                    this.setText(download.getTextProgress(ddaten, s));
                 }
-            } else {
-                if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                    this.setText("");
-                }
-            }
-            if (c == DatenDownload.DOWNLOAD_ABO_NR) {
+            } else if (c == DatenDownload.DOWNLOAD_ABO_NR) {
                 setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
                 if (abo) {
                     setForeground(GuiKonstanten.ABO_FOREGROUND);
@@ -139,9 +113,8 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
                     setHorizontalAlignment(SwingConstants.CENTER);
                 }
-            }
-            if (c == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
-                boolean restart = ddaten.listeDownloads.getDownloadByUrl(url).isRestart();
+            } else if (c == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+                boolean restart = download.isRestart();
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (restart) {
                     setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
