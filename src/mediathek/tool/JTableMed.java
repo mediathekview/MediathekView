@@ -279,7 +279,8 @@ public final class JTableMed extends JTable {
                     } else if (i == DatenDownload.DOWNLOAD_DATUM_NR
                             || i == DatenDownload.DOWNLOAD_ZEIT_NR
                             || i == DatenDownload.DOWNLOAD_SENDER_NR
-                            || i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                            || i == DatenDownload.DOWNLOAD_PROGRESS_NR
+                            || i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
                         breite[i] = 100;
                     }
                     break;
@@ -318,8 +319,7 @@ public final class JTableMed extends JTable {
                             || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
                             || i == DatenDownload.DOWNLOAD_ART_NR
                             || i == DatenDownload.DOWNLOAD_QUELLE_NR
-                            || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR
-                            || i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                            || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR) {
                         breite[i] = 0;
                     }
                     break;
@@ -402,7 +402,7 @@ public final class JTableMed extends JTable {
 
     private boolean arrLesen(String s, int[] arr) {
         String sub;
-        if (spaltenTabelle.length != countString(s) + 1) {
+        if (spaltenTabelle.length != countString(s)) {
             // dann hat sich die Anzahl der Spalten der Tabelle geändert: Versionswechsel
             return false;
         } else {
@@ -433,6 +433,6 @@ public final class JTableMed extends JTable {
                 ++ret;
             }
         }
-        return ret;
+        return ++ret;
     }
 }

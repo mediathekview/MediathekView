@@ -225,7 +225,7 @@ public class GuiDownloads extends PanelVorlage {
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
             DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
             DatenDownload d = download.getCopy();
-            DialogEditDownload dialog = new DialogEditDownload(null, true, d);
+            DialogEditDownload dialog = new DialogEditDownload(null, true, ddaten, d);
             dialog.setVisible(true);
             if (dialog.ok) {
                 download.aufMichKopieren(d);

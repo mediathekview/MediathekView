@@ -31,22 +31,29 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.controller.io.starter.Start;
+import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.ListenerMediathekView;
 
 public class DialogEditDownload extends javax.swing.JDialog {
-    
+
     private DatenDownload download;
     private JTextField[] textfeldListe;
-    JCheckBox jCheckBox = new JCheckBox(DatenDownload.DOWNLOAD_PROGRAMM_RESTART);
+    private JLabel[] labelListe;
+    private JCheckBox jCheckBox = new JCheckBox(DatenDownload.DOWNLOAD_PROGRAMM_RESTART);
+    private DDaten ddaten;
+    private Start start = null;
     public boolean ok = false;
-    
-    public DialogEditDownload(java.awt.Frame parent, boolean modal, DatenDownload ddownload) {
+
+    public DialogEditDownload(java.awt.Frame parent, boolean modal, DDaten dd, DatenDownload ddownload) {
         super(parent, modal);
         initComponents();
         download = ddownload;
+        ddaten = dd;
+        String url = download.arr[DatenDownload.DOWNLOAD_URL_NR];
+        start = ddaten.starterClass.getStart(url);
         jButtonBeenden.addActionListener(new ActionListener() {
-            
             @Override
             public void actionPerformed(ActionEvent e) {
                 check();
@@ -54,7 +61,6 @@ public class DialogEditDownload extends javax.swing.JDialog {
             }
         });
         jButtonAbbrechen.addActionListener(new ActionListener() {
-            
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden();
@@ -62,7 +68,6 @@ public class DialogEditDownload extends javax.swing.JDialog {
         });
         getRootPane().setDefaultButton(jButtonBeenden);
         new EscBeenden(this) {
-            
             @Override
             public void beenden_() {
                 beenden();
@@ -70,9 +75,10 @@ public class DialogEditDownload extends javax.swing.JDialog {
         };
         setExtra();
     }
-    
+
     private void setExtra() {
         textfeldListe = new JTextField[DatenDownload.DOWNLOAD_MAX_ELEM];
+        labelListe = new JLabel[DatenDownload.DOWNLOAD_MAX_ELEM];
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -80,81 +86,86 @@ public class DialogEditDownload extends javax.swing.JDialog {
         jPanelExtra.setLayout(gridbag);
         int zeile = 0;
         for (int i = 0; i < DatenDownload.DOWNLOAD_MAX_ELEM; ++i) {
+            JLabel label = new JLabel("  " + DatenDownload.DOWNLOAD_COLUMN_NAMES[i] + ": ");
+            labelListe[i] = label;
+            JTextField textfeld = new JTextField();
+            textfeld.setEditable(false);
+            textfeld.setText(download.arr[i]);
+            textfeldListe[i] = textfeld;
             addExtraFeld(i, gridbag, c);
             ++zeile;
             c.gridy = zeile;
         }
     }
-    
+
     private void addExtraFeld(int i, GridBagLayout gridbag, GridBagConstraints c) {
         //Label
         c.gridx = 0;
         c.weightx = 0;
-        JLabel label;
-        label = new JLabel("  " + DatenDownload.DOWNLOAD_COLUMN_NAMES[i] + ": ");
-        JTextField textfeld = new JTextField();
-        textfeldListe[i] = textfeld;
+        if (i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR || i == DatenDownload.DOWNLOAD_URL_AUTH_NR || i == DatenDownload.DOWNLOAD_URL_RTMP_NR) {
+            // ist eigentlich Unsinn, es anzuzeigen
+            return;
+        }
         if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+            labelListe[i].setForeground(Color.BLUE);
             jCheckBox.setSelected(download.isRestart());
             jCheckBox.addActionListener(new BeobCheckbox());
-            gridbag.setConstraints(label, c);
-            jPanelExtra.add(label);
+            gridbag.setConstraints(labelListe[i], c);
+            jPanelExtra.add(labelListe[i]);
             c.gridx = 1;
             c.weightx = 10;
             gridbag.setConstraints(jCheckBox, c);
             jPanelExtra.add(jCheckBox);
         } else {
             if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
-                if (download.getArt() == Start.ART_DOWNLOAD) {
-                    textfeld.setEditable(false);
-                } else {
-                    textfeld.getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
+                labelListe[i].setForeground(Color.BLUE);
+                if (download.getArt() != Start.ART_DOWNLOAD) {
+                    textfeldListe[i].setEditable(true);
+                    textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                 }
-            } else {
-                label.setForeground(Color.BLUE);
-                textfeld.setEditable(false);
-            }
-            if (i == DatenDownload.DOWNLOAD_ART_NR) {
+            } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                textfeldListe[i].setText(download.getTextProgress(ddaten, start));
+            } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                textfeldListe[i].setText(download.getTextRestzeit(ddaten, start));
+            } else if (i == DatenDownload.DOWNLOAD_ART_NR) {
                 switch (download.getArt()) {
                     case Start.ART_DOWNLOAD:
-                        textfeld.setText(Start.ART_DOWNLOAD_TXT);
+                        textfeldListe[i].setText(Start.ART_DOWNLOAD_TXT);
                         break;
                     case Start.ART_PROGRAMM:
-                        textfeld.setText(Start.ART_PROGRAMM_TXT);
+                        textfeldListe[i].setText(Start.ART_PROGRAMM_TXT);
                         break;
                 }
             } else if (i == DatenDownload.DOWNLOAD_QUELLE_NR) {
                 switch (download.getQuelle()) {
                     case Start.QUELLE_ALLE:
-                        textfeld.setText(Start.QUELLE_ALLE_TXT);
+                        textfeldListe[i].setText(Start.QUELLE_ALLE_TXT);
                         break;
                     case Start.QUELLE_ABO:
-                        textfeld.setText(Start.QUELLE_ABO_TXT);
+                        textfeldListe[i].setText(Start.QUELLE_ABO_TXT);
                         break;
                     case Start.QUELLE_BUTTON:
-                        textfeld.setText(Start.QUELLE_BUTTON_TXT);
+                        textfeldListe[i].setText(Start.QUELLE_BUTTON_TXT);
                         break;
                     case Start.QUELLE_DOWNLOAD:
-                        textfeld.setText(Start.QUELLE_DOWNLOAD_TXT);
+                        textfeldListe[i].setText(Start.QUELLE_DOWNLOAD_TXT);
                         break;
                 }
-            } else {
-                textfeld.setText(download.arr[i]);
             }
-            gridbag.setConstraints(label, c);
-            jPanelExtra.add(label);
+            gridbag.setConstraints(labelListe[i], c);
+            jPanelExtra.add(labelListe[i]);
             //Textfeld
             c.gridx = 1;
             c.weightx = 10;
-            gridbag.setConstraints(textfeld, c);
-            jPanelExtra.add(textfeld);
+            gridbag.setConstraints(textfeldListe[i], c);
+            jPanelExtra.add(textfeldListe[i]);
         }
     }
-    
+
     private void check() {
         ok = true;
     }
-    
+
     private void beenden() {
         this.dispose();
     }
@@ -232,35 +243,35 @@ public class DialogEditDownload extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private class BeobachterDocumentTextfeld implements DocumentListener {
-        
+
         int nr;
-        
+
         public BeobachterDocumentTextfeld(int n) {
             nr = n;
         }
-        
+
         @Override
         public void insertUpdate(DocumentEvent arg0) {
             eingabe();
         }
-        
+
         @Override
         public void removeUpdate(DocumentEvent arg0) {
             eingabe();
         }
-        
+
         @Override
         public void changedUpdate(DocumentEvent arg0) {
             eingabe();
         }
-        
+
         private void eingabe() {
             download.arr[nr] = textfeldListe[nr].getText().trim();
         }
     }
-    
+
     private class BeobCheckbox implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             download.arr[DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBox.isSelected());
