@@ -78,10 +78,8 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 if (s != null && 1 < i && i < DatenDownload.PROGRESS_FERTIG) {
                     JProgressBar progressBar = new JProgressBar(0, 1000);
                     JPanel panel = new JPanel(new BorderLayout());
-                    if (s != null) {
-                        setColor(panel, s, isSelected);
-                        setColor(progressBar, s, isSelected);
-                    }
+                    setColor(panel, s, isSelected);
+                    setColor(progressBar, s, isSelected);
                     progressBar.setBorder(BorderFactory.createEmptyBorder());
                     progressBar.setStringPainted(true);
                     progressBar.setUI(new BasicProgressBarUI() {
