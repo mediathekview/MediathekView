@@ -1110,7 +1110,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxIconKlein.setText("kleine Icons");
         jMenu7.add(jCheckBoxIconKlein);
 
-        jCheckBoxMenuItemVideoplayer.setText("weitere Videoplayer");
+        jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
         jMenu7.add(jCheckBoxMenuItemVideoplayer);
 
         jCheckBoxMenuItemMeldungen.setText("Meldungen anzeigen");

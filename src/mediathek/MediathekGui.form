@@ -258,7 +258,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItemVideoplayer">
               <Properties>
-                <Property name="text" type="java.lang.String" value="weitere Videoplayer"/>
+                <Property name="text" type="java.lang.String" value="Buttons anzeigen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItemMeldungen">

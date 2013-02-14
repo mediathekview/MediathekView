@@ -18,7 +18,7 @@ cp /mnt/daten/software/java/Mediathek_3/src/mediathek/file/*.xml /mnt/daten/www/
 # zip erstellen
 cd /mnt/daten/software/java/Mediathek_3/dist/
 datum=$(date +%Y.%m.%d )
-zip -r MediathekView_3.0.0_$datum.zip .
+zip -r MediathekView_3.1.0_$datum.zip .
  
 
 # Dateien ins share-Verzeichnis von VmWare kopieren
