@@ -1,5 +1,9 @@
 #!/bin/sh
 
+if [ $(hostname) = "beta" ]
+then
+# nur für den Entwicklungsrechner sinnvoll
+
 # Dateien ins dist-Verzeichnis kopieren
 cp -r /mnt/daten/software/java/Mediathek_3/bin/* /mnt/daten/software/java/Mediathek_3/dist
 #cp /mnt/daten/software/java/Mediathek_3/bin/Anleitung/Anleitung.pdf /mnt/daten/software/java/Mediathek_3/dist
@@ -20,6 +24,7 @@ cd /mnt/daten/software/java/Mediathek_3/dist/
 datum=$(date +%Y.%m.%d )
 zip -r MediathekView_3.1.0_$datum.zip .
  
-
 # Dateien ins share-Verzeichnis von VmWare kopieren
 cp -r /mnt/daten/software/java/Mediathek_3/dist/* /mnt/daten/virtualbox/share/aktMed
+
+fi
