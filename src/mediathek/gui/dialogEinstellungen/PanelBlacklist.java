@@ -73,6 +73,14 @@ public class PanelBlacklist extends PanelVorlage {
                 tabelleLaden();
             }
         });
+        jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]));
+        jCheckBoxZukunftNichtAnzeigen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR] = Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, PanelBlacklist.class.getSimpleName());
+            }
+        });
         tabelleLaden();
         listeLaden();
     }
@@ -116,6 +124,9 @@ public class PanelBlacklist extends PanelVorlage {
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jButtonListeLoeschen = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
+        jCheckBoxZukunftNichtAnzeigen = new javax.swing.JCheckBox();
+        jLabel3 = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -173,6 +184,10 @@ public class PanelBlacklist extends PanelVorlage {
 
         jButtonListeLoeschen.setText("Liste löschen");
 
+        jCheckBoxZukunftNichtAnzeigen.setText("Filme mit Datum in der Zukunft nicht anzeigen");
+
+        jLabel3.setText("Filme deren Datum in der Zukunft liegt, sind meist nur Trailer");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -185,12 +200,16 @@ public class PanelBlacklist extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonPlus))
                     .addComponent(jScrollPane2)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(0, 185, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonListeLoeschen)))
+                        .addComponent(jButtonListeLoeschen))
+                    .addComponent(jSeparator1)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jCheckBoxZukunftNichtAnzeigen))
+                        .addGap(0, 131, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -206,7 +225,13 @@ public class PanelBlacklist extends PanelVorlage {
                     .addComponent(jButtonPlus))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonListeLoeschen)
-                .addContainerGap(187, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxZukunftNichtAnzeigen)
+                .addContainerGap(113, Short.MAX_VALUE))
         );
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonPlus, jTextFieldTitel});
@@ -234,13 +259,16 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JButton jButtonListeLoeschen;
     private javax.swing.JButton jButtonLoeschen;
     private javax.swing.JButton jButtonPlus;
+    private javax.swing.JCheckBox jCheckBoxZukunftNichtAnzeigen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTableSender;
     private javax.swing.JTextField jTextFieldTitel;

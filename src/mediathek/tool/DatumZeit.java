@@ -23,6 +23,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 
@@ -91,6 +93,16 @@ public class DatumZeit {
         return output;
     }
 
+    public static long getMorgen_0_Uhr() {
+        try {
+            SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.yyyy");
+            Date filmDate = sdfIn.parse(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+            return filmDate.getTime() + (1000 * 60 * 60 * 24);
+        } catch (ParseException ex) {
+            return new Date().getTime();
+        }
+    }
+
     public static String convertDatum(String datum) {
         //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
         try {
@@ -100,7 +112,7 @@ public class DatumZeit {
             sdfOut = new SimpleDateFormat("dd.MM.yyyy");
             datum = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung(649600299,Log.FEHLER_ART_PROG, "DatumDatum.convertDatum", ex);
+            Log.fehlerMeldung(649600299, Log.FEHLER_ART_PROG, "DatumDatum.convertDatum", ex);
         }
         return datum;
     }
@@ -114,7 +126,7 @@ public class DatumZeit {
             sdfOut = new SimpleDateFormat("HH:mm:ss");
             zeit = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung(663259004,Log.FEHLER_ART_PROG, "DatumZeit.convertTime", ex);
+            Log.fehlerMeldung(663259004, Log.FEHLER_ART_PROG, "DatumZeit.convertTime", ex);
         }
         return zeit;
     }
