@@ -11,8 +11,8 @@
     </Programmset>
     <Programm>
         <Programmname>skript</Programmname>
-        <Programmpfad>bin/flv.sh</Programmpfad>
-        <Programmschalter>bin/flvstreamer_macosx_intel_32bit_latest PFAD_VLC %F</Programmschalter>
+        <Programmpfad>/Applications/MediathekView.app/Contents/Resources/flv.sh</Programmpfad>
+        <Programmschalter>/Applications/MediathekView.app/Contents/Resources/flvstreamer_macosx_intel_32bit_latest /Applications/VLC.app/Contents/MacOS/VLC %F</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>false</Restart>
     </Programm>
@@ -37,8 +37,8 @@
     </Programmset>
     <Programm>
         <Programmname>flvstreamer</Programmname>
-        <Programmpfad>bin/flvstreamer_macosx_intel_32bit_latest</Programmpfad>
-        <Programmschalter>%F --resume -o **</Programmschalter>
+        <Programmpfad>/Applications/MediathekView.app/Contents/Resources/flvstreamer_macosx_intel_32bit_latest</Programmpfad>
+		<Programmschalter>%F --resume -o **</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>true</Restart>
     </Programm>
