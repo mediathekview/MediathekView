@@ -275,7 +275,10 @@ public final class JTableMed extends JTable {
                             || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                         breite[i] = 75;
                     } else if (i == DatenDownload.DOWNLOAD_TITEL_NR) {
-                        breite[i] = 300;
+                        breite[i] = 250;
+                    } else if (i == DatenDownload.DOWNLOAD_ABO_NR
+                            || i == DatenDownload.DOWNLOAD_THEMA_NR) {
+                        breite[i] = 150;
                     } else if (i == DatenDownload.DOWNLOAD_DATUM_NR
                             || i == DatenDownload.DOWNLOAD_ZEIT_NR
                             || i == DatenDownload.DOWNLOAD_SENDER_NR
