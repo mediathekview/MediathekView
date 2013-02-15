@@ -109,9 +109,7 @@ public class MVAboutDialog extends JDialog {
                 + "frankypsilon</span>\n"
                 + "<p>\n"
                 + "  <span class=\"sans\"><b>Ein Dankeschön an alle, die zu dieser Software beigetragen haben.</b></span>\n"
-                + "<p><p><p><p><p><p>\n"
-                + "</body>\n"
-                + "</html>\n");
+                + "<p><p><p><p><p><p>\n" + "</body>\n" + "</html>\n");
         marqueePane = new MarqueePane(messagePane);
         marqueePane.setStayDelay(3000);
         marqueePane.setScrollDirection(MarqueePane.SCROLL_DIRECTION_UP);
@@ -133,11 +131,13 @@ public class MVAboutDialog extends JDialog {
         try {
             setupVersionString();
             setupJavaInformation();
-            //Programmpfade
-            lblSettingsFilePath.setText(Daten.getBasisVerzeichnis(false) + Konstanten.XML_DATEI);
-            lblFilmlistPath.setText(Daten.getBasisVerzeichnis(false) + Konstanten.XML_DATEI_FILME);
+            // Programmpfade
+            lblSettingsFilePath.setText(Daten.getBasisVerzeichnis(false)
+                    + Konstanten.XML_DATEI);
+            lblFilmlistPath.setText(Daten.getBasisVerzeichnis(false)
+                    + Konstanten.XML_DATEI_FILME);
 
-            //auf dem Mac brauchen wir den Schließen Button nicht..
+            // auf dem Mac brauchen wir den Schließen Button nicht..
             if (isRunningOnMac) {
                 this.remove(buttonPane);
             }
@@ -149,13 +149,15 @@ public class MVAboutDialog extends JDialog {
 
     public MVAboutDialog(JFrame parent, final Boolean isRunningOnMac) {
         super(parent);
+        setModal(true);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.isRunningOnMac = isRunningOnMac;
 
         initMarqueePane();
 
         setResizable(false);
         setModalityType(ModalityType.APPLICATION_MODAL);
-        setBounds(100, 100, 748, 476);
+        setBounds(100, 100, 790, 491);
         getContentPane().setLayout(new BorderLayout());
         JPanel contentPanel = new JPanel();
         contentPanel.setBackground(Color.WHITE);
@@ -212,16 +214,25 @@ public class MVAboutDialog extends JDialog {
 
         GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 
-
-        gl_contentPanel.setHorizontalGroup(
-                gl_contentPanel.createParallelGroup(Alignment.LEADING)
-                .addGroup(gl_contentPanel.createSequentialGroup()
+        gl_contentPanel.setHorizontalGroup(gl_contentPanel.createParallelGroup(
+                Alignment.LEADING).addGroup(
+                gl_contentPanel
+                .createSequentialGroup()
                 .addContainerGap()
-                .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-                .addComponent(lblProgramIcon)
-                .addComponent(hprlnkWebsite, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(hprlnkForum, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(hprlnkAnleitung, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addGroup(gl_contentPanel
+                .createParallelGroup(Alignment.LEADING).addComponent(lblProgramIcon)
+                .addComponent(hprlnkWebsite,
+                GroupLayout.PREFERRED_SIZE,
+                GroupLayout.DEFAULT_SIZE,
+                GroupLayout.PREFERRED_SIZE)
+                .addComponent(hprlnkForum,
+                GroupLayout.PREFERRED_SIZE,
+                GroupLayout.DEFAULT_SIZE,
+                GroupLayout.PREFERRED_SIZE)
+                .addComponent(hprlnkAnleitung,
+                GroupLayout.PREFERRED_SIZE,
+                GroupLayout.DEFAULT_SIZE,
+                GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(ComponentPlacement.RELATED)
                 .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
                 .addComponent(marqueePane, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
@@ -367,6 +378,8 @@ public class MVAboutDialog extends JDialog {
             }
         }
         initialize();
+
+        pack();
     }
 
     private class WebsiteHyperlinkAction extends HyperlinkAction {

@@ -41,9 +41,10 @@ public class DialogZiel extends javax.swing.JDialog {
     /**
      *
      * @param parent
+     * @param dd
      * @param modal
-     * @param d
      * @param zziel
+     * @param titel
      */
     public DialogZiel(java.awt.Frame parent, DDaten dd, boolean modal, String zziel, String titel) {
         super(parent, modal);
