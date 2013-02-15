@@ -41,9 +41,10 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
     /**
      *
      * @param parent
+     * @param dd
      * @param modal
-     * @param d
      * @param zziel
+     * * @param titel
      */
     public DialogProgrammOrdnerOeffnen(java.awt.Frame parent, DDaten dd, boolean modal, String zziel, String titel) {
         super(parent, modal);

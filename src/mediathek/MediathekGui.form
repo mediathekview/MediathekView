@@ -23,7 +23,7 @@
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
       </AuxValues>
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
+        <Menu class="javax.swing.JMenu" name="jMenuDatei">
           <Properties>
             <Property name="text" type="java.lang.String" value="Datei"/>
           </Properties>
@@ -63,7 +63,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu4">
+        <Menu class="javax.swing.JMenu" name="jMenuFilme">
           <Properties>
             <Property name="text" type="java.lang.String" value="Filme"/>
           </Properties>
@@ -200,7 +200,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu9">
+        <Menu class="javax.swing.JMenu" name="jMenuAbos">
           <Properties>
             <Property name="text" type="java.lang.String" value="Abos"/>
           </Properties>
@@ -239,7 +239,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu7">
+        <Menu class="javax.swing.JMenu" name="jMenuAnsicht">
           <Properties>
             <Property name="text" type="java.lang.String" value="Ansicht"/>
           </Properties>
@@ -268,7 +268,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu3">
+        <Menu class="javax.swing.JMenu" name="jMenuHilfe">
           <Properties>
             <Property name="text" type="java.lang.String" value="Hilfe"/>
           </Properties>

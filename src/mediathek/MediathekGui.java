@@ -46,7 +46,6 @@ import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.CheckUpdate;
 import mediathek.controller.io.IoXmlLesen;
-import mediathek.controller.io.ProgrammLog;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
@@ -286,7 +285,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 hoehe = Integer.parseInt(Daten.system[Konstanten.SYSTEM_GROESSE_Y_NR]);
                 posX = Integer.parseInt(Daten.system[Konstanten.SYSTEM_POS_X_NR]);
                 posY = Integer.parseInt(Daten.system[Konstanten.SYSTEM_POS_Y_NR]);
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 breite = 0;
                 hoehe = 0;
                 posX = 0;
@@ -474,13 +473,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         if (application.isMac()) {
             _isMac = true;
             //Datei->Beenden
-            jMenu1.remove(jSeparator2);
-            jMenu1.remove(jMenuItemBeenden);
+            jMenuDatei.remove(jSeparator2);
+            jMenuDatei.remove(jMenuItemBeenden);
             //Datei->Einstellungen
-            jMenu1.remove(jMenuItemEinstellungen);
+            jMenuDatei.remove(jMenuItemEinstellungen);
             //Hilfe->Über
-            jMenu3.remove(jSeparator4);
-            jMenu3.remove(jMenuItemAbout);
+            jMenuHilfe.remove(jSeparator4);
+            jMenuHilfe.remove(jMenuItemAbout);
         }
 
     }
@@ -841,12 +840,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonAbosLoeschen = new javax.swing.JButton();
         jTabbedPane = new javax.swing.JTabbedPane();
         javax.swing.JMenuBar jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        jMenuDatei = new javax.swing.JMenu();
         jMenuItemFilmlisteLaden = new javax.swing.JMenuItem();
         jMenuItemEinstellungen = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItemBeenden = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
+        jMenuFilme = new javax.swing.JMenu();
         jMenuItemFilmAbspielen = new javax.swing.JMenuItem();
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
         jMenuDownload = new javax.swing.JMenu();
@@ -864,17 +863,17 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemDownloadsAufraeumen = new javax.swing.JMenuItem();
         jSeparatorShutDown = new javax.swing.JPopupMenu.Separator();
         jCheckBoxMenuItemShutDown = new javax.swing.JCheckBoxMenuItem();
-        jMenu9 = new javax.swing.JMenu();
+        jMenuAbos = new javax.swing.JMenu();
         jMenuItemAbosEinschalten = new javax.swing.JMenuItem();
         jMenuItemAbosAusschalten = new javax.swing.JMenuItem();
         jMenuItemAbosLoeschen = new javax.swing.JMenuItem();
         jMenuItemAbosAendern = new javax.swing.JMenuItem();
-        jMenu7 = new javax.swing.JMenu();
+        jMenuAnsicht = new javax.swing.JMenu();
         jCheckBoxMenuItemToolBar = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxIconKlein = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemVideoplayer = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemMeldungen = new javax.swing.JCheckBoxMenuItem();
-        jMenu3 = new javax.swing.JMenu();
+        jMenuHilfe = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jMenuItemAbout = new javax.swing.JMenuItem();
@@ -992,39 +991,39 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jPanel1.add(jToolBar, java.awt.BorderLayout.PAGE_START);
         jPanel1.add(jTabbedPane, java.awt.BorderLayout.CENTER);
 
-        jMenu1.setText("Datei");
+        jMenuDatei.setText("Datei");
 
         jMenuItemFilmlisteLaden.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         jMenuItemFilmlisteLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_16.png"))); // NOI18N
         jMenuItemFilmlisteLaden.setText("neue Filmliste laden");
-        jMenu1.add(jMenuItemFilmlisteLaden);
+        jMenuDatei.add(jMenuItemFilmlisteLaden);
 
         jMenuItemEinstellungen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
         jMenuItemEinstellungen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png"))); // NOI18N
         jMenuItemEinstellungen.setText("Einstellungen");
         jMenuItemEinstellungen.setToolTipText("allgemeine Programmeinstellungen");
-        jMenu1.add(jMenuItemEinstellungen);
-        jMenu1.add(jSeparator2);
+        jMenuDatei.add(jMenuItemEinstellungen);
+        jMenuDatei.add(jSeparator2);
 
         jMenuItemBeenden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/exit_16.png"))); // NOI18N
         jMenuItemBeenden.setText("Beenden");
-        jMenu1.add(jMenuItemBeenden);
+        jMenuDatei.add(jMenuItemBeenden);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(jMenuDatei);
 
-        jMenu4.setText("Filme");
+        jMenuFilme.setText("Filme");
 
         jMenuItemFilmAbspielen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
         jMenuItemFilmAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_16.png"))); // NOI18N
         jMenuItemFilmAbspielen.setText("Film abspielen");
-        jMenu4.add(jMenuItemFilmAbspielen);
+        jMenuFilme.add(jMenuItemFilmAbspielen);
 
         jMenuItemFilmAufzeichnen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, 0));
         jMenuItemFilmAufzeichnen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_rec_16.png"))); // NOI18N
         jMenuItemFilmAufzeichnen.setText("Film aufzeichnen");
-        jMenu4.add(jMenuItemFilmAufzeichnen);
+        jMenuFilme.add(jMenuItemFilmAufzeichnen);
 
-        jMenuBar1.add(jMenu4);
+        jMenuBar1.add(jMenuFilme);
 
         jMenuDownload.setText("Downloads");
 
@@ -1080,55 +1079,55 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jMenuBar1.add(jMenuDownload);
 
-        jMenu9.setText("Abos");
+        jMenuAbos.setText("Abos");
 
         jMenuItemAbosEinschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png"))); // NOI18N
         jMenuItemAbosEinschalten.setText("einschalten");
-        jMenu9.add(jMenuItemAbosEinschalten);
+        jMenuAbos.add(jMenuItemAbosEinschalten);
 
         jMenuItemAbosAusschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_16.png"))); // NOI18N
         jMenuItemAbosAusschalten.setText("ausschalten");
-        jMenu9.add(jMenuItemAbosAusschalten);
+        jMenuAbos.add(jMenuItemAbosAusschalten);
 
         jMenuItemAbosLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
         jMenuItemAbosLoeschen.setText("löschen");
-        jMenu9.add(jMenuItemAbosLoeschen);
+        jMenuAbos.add(jMenuItemAbosLoeschen);
 
         jMenuItemAbosAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png"))); // NOI18N
         jMenuItemAbosAendern.setText("ändern");
-        jMenu9.add(jMenuItemAbosAendern);
+        jMenuAbos.add(jMenuItemAbosAendern);
 
-        jMenuBar1.add(jMenu9);
+        jMenuBar1.add(jMenuAbos);
 
-        jMenu7.setText("Ansicht");
+        jMenuAnsicht.setText("Ansicht");
 
         jCheckBoxMenuItemToolBar.setSelected(true);
         jCheckBoxMenuItemToolBar.setText("Toolbar");
-        jMenu7.add(jCheckBoxMenuItemToolBar);
+        jMenuAnsicht.add(jCheckBoxMenuItemToolBar);
 
         jCheckBoxIconKlein.setSelected(true);
         jCheckBoxIconKlein.setText("kleine Icons");
-        jMenu7.add(jCheckBoxIconKlein);
+        jMenuAnsicht.add(jCheckBoxIconKlein);
 
         jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
-        jMenu7.add(jCheckBoxMenuItemVideoplayer);
+        jMenuAnsicht.add(jCheckBoxMenuItemVideoplayer);
 
         jCheckBoxMenuItemMeldungen.setText("Meldungen anzeigen");
-        jMenu7.add(jCheckBoxMenuItemMeldungen);
+        jMenuAnsicht.add(jCheckBoxMenuItemMeldungen);
 
-        jMenuBar1.add(jMenu7);
+        jMenuBar1.add(jMenuAnsicht);
 
-        jMenu3.setText("Hilfe");
+        jMenuHilfe.setText("Hilfe");
 
         jMenuItemAnleitung.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/agt_support.png"))); // NOI18N
         jMenuItemAnleitung.setText("Hilfe und Fragen zum Programm");
-        jMenu3.add(jMenuItemAnleitung);
-        jMenu3.add(jSeparator4);
+        jMenuHilfe.add(jMenuItemAnleitung);
+        jMenuHilfe.add(jSeparator4);
 
         jMenuItemAbout.setText("Über MediathekView");
-        jMenu3.add(jMenuItemAbout);
+        jMenuHilfe.add(jMenuItemAbout);
 
-        jMenuBar1.add(jMenu3);
+        jMenuBar1.add(jMenuHilfe);
 
         setJMenuBar(jMenuBar1);
 
@@ -1162,12 +1161,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemShutDown;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu7;
-    private javax.swing.JMenu jMenu9;
+    private javax.swing.JMenu jMenuAbos;
+    private javax.swing.JMenu jMenuAnsicht;
+    private javax.swing.JMenu jMenuDatei;
     private javax.swing.JMenu jMenuDownload;
+    private javax.swing.JMenu jMenuFilme;
+    private javax.swing.JMenu jMenuHilfe;
     private javax.swing.JMenuItem jMenuItemAbosAendern;
     private javax.swing.JMenuItem jMenuItemAbosAusschalten;
     private javax.swing.JMenuItem jMenuItemAbosEinschalten;

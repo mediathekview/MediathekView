@@ -22,8 +22,6 @@ package mediathek.gui.dialog;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
-import mediathek.Main;
 import mediathek.controller.io.ProgrammLog;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
@@ -44,7 +42,6 @@ public class PanelHilfe extends PanelVorlage {
         initComponents();
         //init
         try {
-            Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
             jTextFieldVersion.setText(Funktionen.getProgVersionString() + " vom: " + Funktionen.getCompileDate());
         } catch (Exception e) {
             jTextFieldVersion.setText(Konstanten.VERSION);
