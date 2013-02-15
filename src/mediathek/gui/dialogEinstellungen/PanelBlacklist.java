@@ -25,11 +25,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenBlacklist;
+import mediathek.daten.ListeBlacklist;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
 
@@ -45,13 +49,24 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private void init() {
-        jTable1.addMouseListener(new BeobMausTabelle());
+        jTableSender.addMouseListener(new BeobMausTabelle());
+        jList1.addMouseListener(new BeobMausListe());
         jButtonLoeschen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.listeBlacklist.clear();
             }
         });
+        jButtonListeLoeschen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_BLACKLIST_TITEL_NR] = "";
+                listeLaden();
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, PanelBlacklist.class.getSimpleName());
+            }
+        });
+        jButtonPlus.addActionListener(new BeobAddListe());
+        jTextFieldTitel.addActionListener(new BeobAddListe());
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, PanelBlacklist.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -59,10 +74,24 @@ public class PanelBlacklist extends PanelVorlage {
             }
         });
         tabelleLaden();
+        listeLaden();
     }
 
     private void tabelleLaden() {
-        jTable1.setModel(new TModel(ddaten.listeBlacklist.getObjectData(), DatenBlacklist.BLACKLIST_COLUMN_NAMES));
+        jTableSender.setModel(new TModel(ddaten.listeBlacklist.getObjectData(), DatenBlacklist.BLACKLIST_COLUMN_NAMES_ANZEIGE));
+    }
+
+    private void listeLaden() {
+        jList1.setModel(new DefaultComboBoxModel(ListeBlacklist.getBlacklistTitel()));
+    }
+
+    private boolean bereitsInListe(String s) {
+        for (String st : ListeBlacklist.getBlacklistTitel()) {
+            if (st.equalsIgnoreCase(s)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** This method is called from within the constructor to
@@ -73,14 +102,116 @@ public class PanelBlacklist extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
+        jTableSender = new javax.swing.JTable();
         jButtonLoeschen = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jTextFieldTitel = new javax.swing.JTextField();
+        jButtonPlus = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList();
+        jButtonListeLoeschen = new javax.swing.JButton();
 
-        jTable1.setAutoCreateRowSorter(true);
-        jScrollPane1.setViewportView(jTable1);
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        jTableSender.setAutoCreateRowSorter(true);
+        jScrollPane1.setViewportView(jTableSender);
 
         jButtonLoeschen.setText("Liste löschen");
+
+        jLabel1.setText("Sender / Sender-Thema in der Filmliste löschen");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonLoeschen))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonLoeschen)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Sender-Thema", jPanel1);
+
+        jLabel2.setText("Titel die den Begriff enthalten in der Filmliste löschen");
+
+        jButtonPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/edit_add_16.png"))); // NOI18N
+
+        jScrollPane2.setViewportView(jList1);
+
+        jButtonListeLoeschen.setText("Liste löschen");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jTextFieldTitel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonPlus))
+                    .addComponent(jScrollPane2)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(0, 185, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonListeLoeschen)))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextFieldTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonPlus))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonListeLoeschen)
+                .addContainerGap(187, Short.MAX_VALUE))
+        );
+
+        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonPlus, jTextFieldTitel});
+
+        jTabbedPane1.addTab("Titel-Zeit", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -88,41 +219,55 @@ public class PanelBlacklist extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonLoeschen)))
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonLoeschen)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonListeLoeschen;
     private javax.swing.JButton jButtonLoeschen;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JButton jButtonPlus;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JList jList1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTableSender;
+    private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
 
-    public class BeobMausTabelle extends MouseAdapter {
-        //rechhte Maustaste in der Tabelle
+    private class BeobAddListe implements ActionListener {
 
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!jTextFieldTitel.getText().equals("") && !bereitsInListe(jTextFieldTitel.getText())) {
+                if (Daten.system[Konstanten.SYSTEM_BLACKLIST_TITEL_NR].equals("")) {
+                    Daten.system[Konstanten.SYSTEM_BLACKLIST_TITEL_NR] = jTextFieldTitel.getText();
+                } else {
+                    Daten.system[Konstanten.SYSTEM_BLACKLIST_TITEL_NR] += ";" + jTextFieldTitel.getText();
+                }
+                listeLaden();
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, PanelBlacklist.class.getSimpleName());
+            }
+        }
+    }
+
+    private class BeobMausTabelle extends MouseAdapter {
+
+        //rechhte Maustaste in der Tabelle
         BeobLoeschen beobLoeschen = new BeobLoeschen();
         private Point p;
 
-//        @Override
-//        public void mouseClicked(MouseEvent arg0) {
-//            if (arg0.getButton() == MouseEvent.BUTTON3) {
-//                showMenu(arg0);
-//            }
-//        }
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
@@ -138,14 +283,15 @@ public class PanelBlacklist extends PanelVorlage {
         }
 
         private void showMenu(MouseEvent evt) {
+            int nr;
             p = evt.getPoint();
-            int nr = jTable1.rowAtPoint(p);
+            nr = jTableSender.rowAtPoint(p);
             if (nr >= 0) {
-                jTable1.setRowSelectionInterval(nr, nr);
+                jTableSender.setRowSelectionInterval(nr, nr);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();
             //löschen
-            JMenuItem item = new JMenuItem("Filter aus der Liste löschen");
+            JMenuItem item = new JMenuItem("Zeile löschen");
             item.addActionListener(beobLoeschen);
             jPopupMenu.add(item);
             //anzeigen
@@ -156,10 +302,61 @@ public class PanelBlacklist extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedTableRow = jTable1.getSelectedRow();
+                int selectedTableRow = jTableSender.getSelectedRow();
                 if (selectedTableRow >= 0) {
-                    int del = jTable1.convertRowIndexToModel(selectedTableRow);
+                    int del = jTableSender.convertRowIndexToModel(selectedTableRow);
                     ddaten.listeBlacklist.remove(del);
+                }
+            }
+        }
+    }
+
+    private class BeobMausListe extends MouseAdapter {
+
+        //rechhte Maustaste in der Tabelle
+        BeobLoeschen beobLoeschen = new BeobLoeschen();
+        private Point p;
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        private void showMenu(MouseEvent evt) {
+            jList1.setSelectedIndex(jList1.locationToIndex(evt.getPoint()));
+            JPopupMenu jPopupMenu = new JPopupMenu();
+            //löschen
+            JMenuItem item = new JMenuItem("Zeile löschen");
+            item.addActionListener(beobLoeschen);
+            jPopupMenu.add(item);
+            //anzeigen
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
+        private class BeobLoeschen implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = jList1.getSelectedIndex();
+                if (selectedRow >= 0) {
+                    ((DefaultComboBoxModel) jList1.getModel()).removeElementAt(selectedRow);
+                    Daten.system[Konstanten.SYSTEM_BLACKLIST_TITEL_NR] = "";
+                    if (((DefaultComboBoxModel) jList1.getModel()).getSize() > 0) {
+                        Daten.system[Konstanten.SYSTEM_BLACKLIST_TITEL_NR] = ((DefaultComboBoxModel) jList1.getModel()).getElementAt(0).toString();
+                        for (int i = 1; i < ((DefaultComboBoxModel) jList1.getModel()).getSize(); ++i) {
+                            Daten.system[Konstanten.SYSTEM_BLACKLIST_TITEL_NR] += ";" + ((DefaultComboBoxModel) jList1.getModel()).getElementAt(i).toString();
+                        }
+                    }
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, PanelBlacklist.class.getSimpleName());
                 }
             }
         }

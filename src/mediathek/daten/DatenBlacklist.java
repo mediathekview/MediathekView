@@ -28,6 +28,7 @@ public class DatenBlacklist {
     public static final String BLACKLIST_THEMA = "black-thema";
     public static final int BLACKLIST_THEMA_NR = 1;
     public static final String[] BLACKLIST_COLUMN_NAMES = {BLACKLIST_SENDER, BLACKLIST_THEMA};
+    public static final String[] BLACKLIST_COLUMN_NAMES_ANZEIGE = {"Sender", "Thema"};
     public String[] arr;
 
     public DatenBlacklist() {
