@@ -157,8 +157,8 @@ public class Konstanten {
     public static final int SYSTEM_HINWEIS_NR_ANGEZEIGT_NR = 45;
     public static final String SYSTEM_ORDNER_OEFFNEN = "Download-Ordner-oeffnen";
     public static final int SYSTEM_ORDNER_OEFFNEN_NR = 46;
-    public static final String SYSTEM_BLACKLIST_DATUM = "Blacklist-Datum";
-    public static final int SYSTEM_BLACKLIST_DATUM_NR = 47;
+    public static final String SYSTEM_BLACKLIST_ZUKUNFT__NICHT_ANZEIGEN = "Blacklist-Zukunft-nicht-anzeigen";
+    public static final int SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR = 47;
     public static final String SYSTEM_BLACKLIST_TITEL = "Blacklist-Titel"; // durch ";" getrennt
     public static final int SYSTEM_BLACKLIST_TITEL_NR = 48;
     public static final String SYSTEM = "system";
@@ -175,7 +175,7 @@ public class Konstanten {
         SYSTEM_PFAD_VLC, SYSTEM_PFAD_FLVSTREAMER, SYSTEM_PFAD_MPLAYER,
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME, SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS, SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS,
         SYSTEM_ABOS_SOFORT_SUCHEN, SYSTEM_NUR_ASCII, SYSTEM_HINWEIS_NR_ANGEZEIGT, SYSTEM_ORDNER_OEFFNEN,
-        SYSTEM_BLACKLIST_DATUM, SYSTEM_BLACKLIST_TITEL
+        SYSTEM_BLACKLIST_ZUKUNFT__NICHT_ANZEIGEN, SYSTEM_BLACKLIST_TITEL
     };
     //
 }

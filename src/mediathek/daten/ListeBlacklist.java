@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.gui.GuiFilme;
+import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
@@ -32,7 +33,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     //Tags Blacklist
 
     private long tage = 0;
+    private long jetzt;
     private String[] filterTage = {};
+    private boolean zukunftNichtAnzeigen;
 
     public static String[] getBlacklistTitel() {
         String[] ret = {};
@@ -99,6 +102,8 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         for (int i = 0; i < filterTage.length; ++i) {
             filterTage[i] = filterTage[i].toLowerCase(); // erspart anschließend einen Schritt
         }
+        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]);
+        jetzt = DatumZeit.getMorgen_0_Uhr();
         ListeFilme listeRet = new ListeFilme();
         if (listeFilme != null) {
             DatenFilm film;
@@ -125,7 +130,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 return false;
             }
         }
-        if (tage != 0) {
+        if (tage != 0 || zukunftNichtAnzeigen) {
             if (!checkDate(film)) {
                 return false;
             }
@@ -161,11 +166,17 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         long d;
         try {
             d = film.datumFilm.getTime();
-            //d = DatumZeit.getDatumForObject(film).getTime();
-            if (d == 0 || d > tage) {
-                return true;
-            } else {
-                return false;
+            // erst Filter Tage
+            if (tage != 0) {
+                if (d != 0 && d < tage) {
+                    return false;
+                }
+            }
+            // Blacklist Zukunft
+            if (zukunftNichtAnzeigen) {
+                if (d > jetzt) {
+                    return false;
+                }
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(462558700, Log.FEHLER_ART_PROG, "ListeBlacklist.checkDate: ", ex);
