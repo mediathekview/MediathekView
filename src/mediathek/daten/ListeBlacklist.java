@@ -32,6 +32,16 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     //Tags Blacklist
 
     private long tage = 0;
+    private String[] filterTage = {};
+
+    public static String[] getBlacklistTitel() {
+        String[] ret = {};
+        if (!Daten.system[Konstanten.SYSTEM_BLACKLIST_TITEL_NR].equals("")) {
+            String s = Daten.system[Konstanten.SYSTEM_BLACKLIST_TITEL_NR];
+            ret = s.split(";");
+        }
+        return ret;
+    }
 
     @Override
     public boolean add(DatenBlacklist b) {
@@ -85,6 +95,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         } catch (Exception ex) {
             tage = 0;
         }
+        filterTage = getBlacklistTitel();
+        for (int i = 0; i < filterTage.length; ++i) {
+            filterTage[i] = filterTage[i].toLowerCase(); // erspart anschließend einen Schritt
+        }
         ListeFilme listeRet = new ListeFilme();
         if (listeFilme != null) {
             DatenFilm film;
@@ -106,6 +120,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         // Alte Filme werden auch ausgewertet
         DatenBlacklist blacklist;
         Iterator<DatenBlacklist> it = this.iterator();
+        if (filterTage.length > 0) {
+            if (!checkTitel(film)) {
+                return false;
+            }
+        }
         if (tage != 0) {
             if (!checkDate(film)) {
                 return false;
@@ -149,7 +168,17 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 return false;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(462558700, Log.FEHLER_ART_PROG,"ListeBlacklist.checkDate: ", ex);
+            Log.fehlerMeldung(462558700, Log.FEHLER_ART_PROG, "ListeBlacklist.checkDate: ", ex);
+        }
+        return true;
+    }
+
+    private boolean checkTitel(DatenFilm film) {
+        // true wenn der Film angezeigt werden kann!
+        for (String s : filterTage) {
+            if (film.arr[DatenFilm.FILM_TITEL_NR].toLowerCase().contains(s)) {
+                return false;
+            }
         }
         return true;
     }
