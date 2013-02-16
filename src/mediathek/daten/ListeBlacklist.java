@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.gui.GuiFilme;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.Filter;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
@@ -34,17 +35,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     private long tage = 0;
     private long jetzt;
-    private String[] filterTage = {};
     private boolean zukunftNichtAnzeigen;
-
-    public static String[] getBlacklistTitel() {
-        String[] ret = {};
-        if (!Daten.system[Konstanten.SYSTEM_BLACKLIST_TITEL_NR].equals("")) {
-            String s = Daten.system[Konstanten.SYSTEM_BLACKLIST_TITEL_NR];
-            ret = s.split(";");
-        }
-        return ret;
-    }
 
     @Override
     public boolean add(DatenBlacklist b) {
@@ -98,17 +89,12 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         } catch (Exception ex) {
             tage = 0;
         }
-        filterTage = getBlacklistTitel();
-        for (int i = 0; i < filterTage.length; ++i) {
-            filterTage[i] = filterTage[i].toLowerCase(); // erspart anschließend einen Schritt
-        }
         zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]);
         jetzt = DatumZeit.getMorgen_0_Uhr();
         ListeFilme listeRet = new ListeFilme();
         if (listeFilme != null) {
             DatenFilm film;
             listeRet.setMeta(listeFilme.metaDaten);
-//            listeRet.setInfo(listeFilme.infos);
             Iterator<DatenFilm> it = listeFilme.iterator();
             while (it.hasNext()) {
                 film = it.next();
@@ -121,41 +107,28 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     }
 
     private boolean checkBlackOk(DatenFilm film) {
-        // Eintrag suchen, true wenn Film NICHT in der Blacklist ist, also angezeigt wird!!
-        // Alte Filme werden auch ausgewertet
+        // true wenn Film angezeigt wird!!
+        //
+        // Alte Filme ausgewerten
         DatenBlacklist blacklist;
-        Iterator<DatenBlacklist> it = this.iterator();
-        if (filterTage.length > 0) {
-            if (!checkTitel(film)) {
-                return false;
-            }
-        }
         if (tage != 0 || zukunftNichtAnzeigen) {
             if (!checkDate(film)) {
                 return false;
             }
         }
+        if (this.size() == 0) {
+            return true;
+        }
+        // Blacklist-Regeln prüfen
+        Iterator<DatenBlacklist> it = this.iterator();
         while (it.hasNext()) {
             blacklist = it.next();
-            if (!blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR].equals("") && !blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR].equals("")) {
-                // Sender und Thema müssen passen
-                if (blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR].equalsIgnoreCase(film.arr[DatenFilm.FILM_SENDER_NR])
-                        && blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR].equalsIgnoreCase(film.arr[DatenFilm.FILM_THEMA_NR])) {
-                    // es gibt einen Eintrag in der Blacklist
-                    return false;
-                }
-            } else if (!blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR].equals("")) {
-                // nur der Sender muss passen
-                if (blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR].equalsIgnoreCase(film.arr[DatenFilm.FILM_SENDER_NR])) {
-                    // es gibt einen Eintrag in der Blacklist
-                    return false;
-                }
-            } else {
-                // nur das Thema muss passen
-                if (blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR].equalsIgnoreCase(film.arr[DatenFilm.FILM_THEMA_NR])) {
-                    // es gibt einen Eintrag in der Blacklist
-                    return false;
-                }
+            // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
+            //                     String imSender, String imThema, String imText) {
+            if (Filter.filterAufAboPruefen(blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
+                    blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR],
+                    film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
+                return false;
             }
         }
         return true;
@@ -180,16 +153,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(462558700, Log.FEHLER_ART_PROG, "ListeBlacklist.checkDate: ", ex);
-        }
-        return true;
-    }
-
-    private boolean checkTitel(DatenFilm film) {
-        // true wenn der Film angezeigt werden kann!
-        for (String s : filterTage) {
-            if (film.arr[DatenFilm.FILM_TITEL_NR].toLowerCase().contains(s)) {
-                return false;
-            }
         }
         return true;
     }

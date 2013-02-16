@@ -22,11 +22,11 @@ package mediathek.daten;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.Filter;
 import mediathek.tool.TModelAbo;
 
 public class ListeAbo extends LinkedList<DatenAbo> {
@@ -113,7 +113,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         ListIterator<DatenAbo> it = this.listIterator();
         while (it.hasNext()) {
             datenAbo = it.next();
-            if (filterAufAboPruefen(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR], datenAbo.arr[DatenAbo.ABO_TITEL_NR],
+            if (Filter.filterAufAboPruefen(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR], datenAbo.arr[DatenAbo.ABO_TITEL_NR],
                     datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR], filmSender, filmThema, FilmTitel)) {
                 return datenAbo;
             }
@@ -121,86 +121,4 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         return null;
     }
 
-    public static boolean filterAufAboPruefen(String aboFilter_SenderSuchen, String aboFilter_themaSuchen, String aboFilter_titelSuchen, String aboFilter_themaTitelSuchen,
-            String imFilm_Sender, String imFilm_Thema, String imFilm_Titel) {
-        // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
-        // themaSuchen exakt mit thema
-        // titelSuchen muss im Titel nur enthalten sein
-        if (aboFilter_SenderSuchen.equals("") || imFilm_Sender.equalsIgnoreCase(aboFilter_SenderSuchen)) {
-            if (aboFilter_themaSuchen.equals("") || imFilm_Thema.equalsIgnoreCase(aboFilter_themaSuchen)) {
-
-                if (pruefenTitel(aboFilter_titelSuchen, imFilm_Titel)) {
-
-                    if (aboFilter_themaTitelSuchen.equals("")) {
-                        return true;
-                    } else if (pruefenThemaTitel(aboFilter_themaTitelSuchen, imFilm_Thema)) {
-                        return true;
-                    } else if (pruefenThemaTitel(aboFilter_themaTitelSuchen, imFilm_Titel)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private static boolean pruefenTitel(String aboFilter, String im) {
-        Pattern p = makePattern(aboFilter);
-        if (p != null) {
-            return (p.matcher(im).matches());
-        }
-        return (textPruefen(aboFilter, im));
-    }
-
-    private static boolean pruefenThemaTitel(String aboFilter, String im) {
-        Pattern p = makePattern(aboFilter);
-        if (p != null) {
-            return (p.matcher(im).matches());
-        } else if (!aboFilter.contains(" ")) {
-            return (textPruefen(aboFilter, im));
-        }
-        String[] arr = getArr(aboFilter);
-        for (int i = 0; i < arr.length; ++i) {
-            if (textPruefen(arr[i], im)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static String[] getArr(String str) {
-        LinkedList<String> liste = new LinkedList<String>();
-        String[] s;
-        s = str.split(" ");
-        for (int i = 0; i < s.length; ++i) {
-            if (!s[i].equals("")) {
-                liste.add(s[i]);
-            }
-        }
-        return liste.toArray(new String[0]);
-    }
-
-    private static boolean textPruefen(String filter, String imFilm) {
-        if (filter.equals("") || imFilm.toLowerCase().contains(filter.toLowerCase())) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static boolean isPattern(String textSuchen) {
-        return textSuchen.startsWith("#:");
-    }
-
-    public static Pattern makePattern(String textSuchen) {
-        Pattern p = null;
-        try {
-            if (isPattern(textSuchen)) {
-                p = Pattern.compile(textSuchen.substring(2));
-            }
-        } catch (Exception ex) {
-            p = null;
-        }
-        return p;
-    }
 }
