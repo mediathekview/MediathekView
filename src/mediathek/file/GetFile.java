@@ -21,6 +21,7 @@ public class GetFile {
     String PFAD_PSET_WINDOWS = "/mediathek/file/pset_windows.xml";
     String PFAD_PSET_MAC = "/mediathek/file/pset_mac.xml";
     public static String PFAD_HILFETEXT_SUCHEN = "/mediathek/file/hilfetext_suchen.txt";
+    public static String PFAD_HILFETEXT_BLACKLIST = "/mediathek/file/hilfetext_blacklist.txt";
     public static String PFAD_HILFETEXT_PRGRAMME = "/mediathek/file/hilfetext_programme.txt";
     public static String PFAD_HILFETEXT_STANDARD_PSET = "hilfetext_standardPset.txt";
 
@@ -45,7 +46,7 @@ public class GetFile {
         try {
             return getClass().getResource(PFAD_PSET_LINUX).openStream();
         } catch (IOException ex) {
-            Log.fehlerMeldung(469691002,Log.FEHLER_ART_PROG, this.getClass().getSimpleName() + ".getLinux", ex);
+            Log.fehlerMeldung(469691002, Log.FEHLER_ART_PROG, this.getClass().getSimpleName() + ".getLinux", ex);
         }
         return null;
     }
@@ -54,7 +55,7 @@ public class GetFile {
         try {
             return getClass().getResource(PFAD_PSET_WINDOWS).openStream();
         } catch (IOException ex) {
-            Log.fehlerMeldung(842306087,Log.FEHLER_ART_PROG, this.getClass().getSimpleName() + ".getWindows", ex);
+            Log.fehlerMeldung(842306087, Log.FEHLER_ART_PROG, this.getClass().getSimpleName() + ".getWindows", ex);
         }
         return null;
     }
@@ -63,7 +64,7 @@ public class GetFile {
         try {
             return getClass().getResource(PFAD_PSET_MAC).openStream();
         } catch (IOException ex) {
-            Log.fehlerMeldung(496532180,Log.FEHLER_ART_PROG, this.getClass().getSimpleName() + ".getMac", ex);
+            Log.fehlerMeldung(496532180, Log.FEHLER_ART_PROG, this.getClass().getSimpleName() + ".getMac", ex);
         }
         return null;
     }
