@@ -141,8 +141,10 @@
                           <Component id="jCheckBoxKeineGesehenen" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jCheckBoxKeineAbos" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="109" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="jToggleButtonLivestram" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButtonBlacklist" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -157,6 +159,7 @@
                               <Component id="jCheckBoxKeineGesehenen" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBoxKeineAbos" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jToggleButtonLivestram" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtonBlacklist" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -201,7 +204,15 @@
                 </Component>
                 <Component class="javax.swing.JToggleButton" name="jToggleButtonLivestram">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="nur Livestreams"/>
+                    <Property name="text" type="java.lang.String" value="Livestreams"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="jButtonBlacklist">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/blacklist_16.png"/>
+                    </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Blacklist &#xf6;ffnen"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -238,7 +249,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jTextFieldFilterTitel" pref="207" max="32767" attributes="0"/>
+                                  <Component id="jTextFieldFilterTitel" pref="311" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel6" min="-2" max="-2" attributes="0"/>

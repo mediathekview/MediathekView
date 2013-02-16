@@ -66,6 +66,9 @@ import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialogEinstellungen.PanelBlacklist;
+import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.BeobMpanel;
 import mediathek.tool.CellRendererFilme;
 import mediathek.tool.Datum;
@@ -161,6 +164,14 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new DialogHilfe(null, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_SUCHEN)).setVisible(true);
+            }
+        });
+        jButtonBlacklist.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DialogLeer dialog = new DialogLeer(ddaten.mediathekGui, true);
+                dialog.init("Blacklist", new PanelBlacklist(ddaten, ddaten.mediathekGui));
+                dialog.setVisible(true);
             }
         });
         //Tabelle einrichten
@@ -606,26 +617,27 @@ public class GuiFilme extends PanelVorlage {
 
         jPanelFilter = new javax.swing.JPanel();
         jCheckBoxFilter = new javax.swing.JCheckBox();
-        jPanelFilterInnen = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanelFilterInnen = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jComboBoxZeitraum = new javax.swing.JComboBox();
         jCheckBoxKeineGesehenen = new javax.swing.JCheckBox();
         jCheckBoxKeineAbos = new javax.swing.JCheckBox();
         jToggleButtonLivestram = new javax.swing.JToggleButton();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        jButtonBlacklist = new javax.swing.JButton();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox();
-        jLabel3 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jComboBoxFilterThema = new javax.swing.JComboBox();
-        jLabel5 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
         jTextFieldFilterTitel = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jTextFieldFilterThemaTitel = new javax.swing.JTextField();
         jButtonFilterLoeschen = new javax.swing.JButton();
         jButtonHilfe = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        javax.swing.JTable jTable1 = new javax.swing.JTable();
         jPanelExtra = new javax.swing.JPanel();
         jCheckBoxProgamme = new javax.swing.JCheckBox();
         jPanelExtraInnen = new javax.swing.JPanel();
@@ -647,7 +659,10 @@ public class GuiFilme extends PanelVorlage {
 
         jCheckBoxKeineAbos.setText("keine Abos");
 
-        jToggleButtonLivestram.setText("nur Livestreams");
+        jToggleButtonLivestram.setText("Livestreams");
+
+        jButtonBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/blacklist_16.png"))); // NOI18N
+        jButtonBlacklist.setToolTipText("Blacklist öffnen");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -662,8 +677,10 @@ public class GuiFilme extends PanelVorlage {
                 .addComponent(jCheckBoxKeineGesehenen)
                 .addGap(18, 18, 18)
                 .addComponent(jCheckBoxKeineAbos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jToggleButtonLivestram)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonBlacklist)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -675,7 +692,8 @@ public class GuiFilme extends PanelVorlage {
                     .addComponent(jLabel1)
                     .addComponent(jCheckBoxKeineGesehenen)
                     .addComponent(jCheckBoxKeineAbos)
-                    .addComponent(jToggleButtonLivestram))
+                    .addComponent(jToggleButtonLivestram)
+                    .addComponent(jButtonBlacklist))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -716,7 +734,7 @@ public class GuiFilme extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))
+                        .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -849,6 +867,7 @@ public class GuiFilme extends PanelVorlage {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonBlacklist;
     private javax.swing.JButton jButtonFilterLoeschen;
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JCheckBox jCheckBoxFilter;
@@ -858,19 +877,10 @@ public class GuiFilme extends PanelVorlage {
     private javax.swing.JComboBox jComboBoxFilterSender;
     private javax.swing.JComboBox jComboBoxFilterThema;
     private javax.swing.JComboBox jComboBoxZeitraum;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JPanel jPanelExtraInnen;
     private javax.swing.JPanel jPanelFilter;
-    private javax.swing.JPanel jPanelFilterInnen;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextFieldFilterThemaTitel;
     private javax.swing.JTextField jTextFieldFilterTitel;
     private javax.swing.JToggleButton jToggleButtonLivestram;

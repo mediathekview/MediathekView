@@ -34,7 +34,6 @@ import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.ListenerMediathekView;
 
 public class DialogEditDownload extends javax.swing.JDialog {
 
