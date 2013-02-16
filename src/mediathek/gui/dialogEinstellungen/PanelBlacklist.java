@@ -32,7 +32,9 @@ import javax.swing.event.DocumentListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenBlacklist;
+import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
+import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
@@ -73,6 +75,12 @@ public class PanelBlacklist extends PanelVorlage {
                     ddaten.listeBlacklist.add(new DatenBlacklist(se, th, ti, thti));
                     tabelleLaden();
                 }
+            }
+        });
+        jButtonHilfe.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(null, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BLACKLIST)).setVisible(true);
             }
         });
         jButtonTabelleLoeschen.addActionListener(new ActionListener() {
@@ -157,6 +165,7 @@ public class PanelBlacklist extends PanelVorlage {
         jTextFieldTitel = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jTextFieldThemaTitel = new javax.swing.JTextField();
+        jButtonHilfe = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -194,11 +203,13 @@ public class PanelBlacklist extends PanelVorlage {
 
         jButtonHinzufuegen.setText("hinzufügen");
 
-        jLabel7.setText("Sender oder Thema oder Sender/Thema:");
+        jLabel7.setText("Sender, Thema, Titel oder Thema/Titel:");
 
         jLabel8.setText("Titel:");
 
         jLabel2.setText("Thema/Titel:");
+
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -220,7 +231,8 @@ public class PanelBlacklist extends PanelVorlage {
                             .addComponent(jComboBoxSender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel7)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonHilfe))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
@@ -235,7 +247,9 @@ public class PanelBlacklist extends PanelVorlage {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel7)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel7)
+                    .addComponent(jButtonHilfe))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -284,7 +298,7 @@ public class PanelBlacklist extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonTabelleLoeschen)
                 .addContainerGap(99, Short.MAX_VALUE))
@@ -356,6 +370,7 @@ public class PanelBlacklist extends PanelVorlage {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonHinzufuegen;
     private javax.swing.JButton jButtonTabelleLoeschen;
     private javax.swing.JCheckBox jCheckBoxZukunftNichtAnzeigen;
