@@ -36,6 +36,7 @@ import mediathek.controller.filmeLaden.suchen.sender.MediathekMdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekWdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
+import mediathek.tool.Filter;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
@@ -230,7 +231,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                     film = it.next();
                     // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
                     //                     String imSender, String imThema, String imText) {
-                    if (ListeAbo.filterAufAboPruefen(filterSender, filterThema, filterTitel, filterThemaTitel,
+                    if (Filter.filterAufAboPruefen(filterSender, filterThema, filterTitel, filterThemaTitel,
                             film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
                         liste.add(film);
                     }
@@ -254,7 +255,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                     film = it.next();
                     // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
                     //                     String imSender, String imThema, String imText) {
-                    if (ListeAbo.filterAufAboPruefen(filterSender, filterThema, filterTitel, filterThemaTitel,
+                    if (Filter.filterAufAboPruefen(filterSender, filterThema, filterTitel, filterThemaTitel,
                             film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
                         liste.add(film);
                     }

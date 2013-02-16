@@ -60,7 +60,6 @@ import mediathek.daten.DatenBlacklist;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
-import mediathek.daten.ListeAbo;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -68,10 +67,10 @@ import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
-import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.BeobMpanel;
 import mediathek.tool.CellRendererFilme;
 import mediathek.tool.Datum;
+import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
@@ -518,20 +517,6 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    private void checkPattern(JTextField tf) {
-        String text = tf.getText();
-        if (ListeAbo.isPattern(text)) {
-            if (ListeAbo.makePattern(text) == null) {
-                //soll Pattern sein, ist aber falsch
-                tf.setBackground(GuiKonstanten.FILTER_REGEX_FEHLER);
-            } else {
-                tf.setBackground(GuiKonstanten.FILTER_REGEX);
-            }
-        } else {
-            tf.setBackground(Color.WHITE);
-        }
-    }
-
     private void setInfo() {
         String textLinks;
         // Text links: Zeilen Tabelle
@@ -687,13 +672,14 @@ public class GuiFilme extends PanelVorlage {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(jCheckBoxKeineGesehenen)
-                    .addComponent(jCheckBoxKeineAbos)
-                    .addComponent(jToggleButtonLivestram)
-                    .addComponent(jButtonBlacklist))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonBlacklist)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)
+                        .addComponent(jCheckBoxKeineGesehenen)
+                        .addComponent(jCheckBoxKeineAbos)
+                        .addComponent(jToggleButtonLivestram)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1416,11 +1402,11 @@ public class GuiFilme extends PanelVorlage {
                     String th = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
                     String se = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_SENDER_NR).toString();
                     if (!sender) {
-                        ddaten.listeBlacklist.add(new DatenBlacklist("", th));
+                        ddaten.listeBlacklist.add(new DatenBlacklist("", th, "" /*Titel*/, "" /*Thema-Titel*/));
                     } else if (!thema) {
-                        ddaten.listeBlacklist.add(new DatenBlacklist(se, ""));
+                        ddaten.listeBlacklist.add(new DatenBlacklist(se, "", "" /*Titel*/, "" /*Thema-Titel*/));
                     } else {
-                        ddaten.listeBlacklist.add(new DatenBlacklist(se, th));
+                        ddaten.listeBlacklist.add(new DatenBlacklist(se, th, "" /*Titel*/, "" /*Thema-Titel*/));
                     }
                 }
             }
@@ -1453,8 +1439,8 @@ public class GuiFilme extends PanelVorlage {
         }
 
         private void tus() {
-            checkPattern(jTextFieldFilterThemaTitel);
-            checkPattern(jTextFieldFilterTitel);
+            Filter.checkPattern(jTextFieldFilterThemaTitel);
+            Filter.checkPattern(jTextFieldFilterTitel);
             if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
                 tabelleLaden();
             }
