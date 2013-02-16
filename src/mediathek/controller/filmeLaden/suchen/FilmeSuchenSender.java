@@ -47,6 +47,7 @@ import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
 
 public class FilmeSuchenSender {
@@ -164,6 +165,7 @@ public class FilmeSuchenSender {
                 liste.add(s[i]);
             }
         }
+        GuiFunktionen.listeSort(liste);
         String[] ret = new String[liste.size()];
         for (int i = 0; i < liste.size(); ++i) {
             ret[i] = liste.get(i);
