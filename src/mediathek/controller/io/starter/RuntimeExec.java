@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.Log;
 
-class RuntimeExec {
+public class RuntimeExec {
 
     private static final int INPUT = 1;
     private static final int ERROR = 2;

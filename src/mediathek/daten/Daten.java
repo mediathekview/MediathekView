@@ -99,19 +99,34 @@ public class Daten {
         }
     }
 
+    /**
+     * Liefert das Verzeichnis der Programmeinstellungen
+     *
+     * @return Den Verzeichnispfad als String.
+     */
     public static String getBasisVerzeichnis() {
         // liefert das Verzeichnis der Programmeinstellungen
         return getBasisVerzeichnis(false);
     }
 
+    /**
+     * Liefert das Verzeichnis der Programmeinstellungen
+     *
+     * @param anlegen Anlegen, oder nicht.
+     * @return Den Verzeichnispfad als String.
+     */
     public static String getBasisVerzeichnis(boolean anlegen) {
         return getBasisVerzeichnis(basisverzeichnis, anlegen);
     }
 
+    /**
+     * Liefert das Verzeichnis der Programme
+     *
+     * @param basis Der Ordner, indem das Ve
+     * @param anlegen Anlegen, oder nicht.
+     * @return Den Verzeichnispfad als Strin
+     */
     private static String getBasisVerzeichnis(String basis, boolean anlegen) {
-        // liefert das Verzeichnis der Programmeinstellungen
-        // basis: Ordner in dem das Verzeichnis mit den Einstellungen angelegt wird
-        // anlegen: anlegen, oder nicht
         String ret;
         if (basis.equals("")) {
             ret = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNISS_EINSTELLUNGEN + File.separator;

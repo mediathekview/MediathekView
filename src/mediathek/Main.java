@@ -19,10 +19,13 @@
  */
 package mediathek;
 
+import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
+import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
 import mediathek.daten.Daten;
 import mediathek.tool.Log;
+import mediathek.tool.MVSingleInstance;
 
 public class Main {
 
@@ -72,6 +75,14 @@ public class Main {
                         }
                         if (s.equalsIgnoreCase("-d")) {
                             Daten.debug = true;
+                            if (SystemInfo.isMacOSX()) {
+                                //prevent startup of multiple instances...useful during debugging :(
+                                MVSingleInstance singleInstanceWatcher = new MVSingleInstance();
+                                if (singleInstanceWatcher.isAppAlreadyActive()) {
+                                    JOptionPane.showMessageDialog(null, "MediathekView is already running!");
+                                    System.exit(1);
+                                }
+                            }
                             //use for debugging EDT violations
                             RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
                         }
