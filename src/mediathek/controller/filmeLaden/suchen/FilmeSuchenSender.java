@@ -126,6 +126,10 @@ public class FilmeSuchenSender {
         // nur für den Mauskontext "Sender aktualisieren"
         boolean starten = false;
         initStart(alteListe);
+        if (Daten.debug) {
+            // nur zum Testen
+            // listeFilmeNeu.liveStreamEintragen();
+        }
         Iterator<MediathekReader> it = mediathekListe.iterator();
         while (it.hasNext()) {
             MediathekReader reader = it.next();
