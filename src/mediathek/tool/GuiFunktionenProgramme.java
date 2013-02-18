@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
 import mediathek.controller.io.IoXmlLesen;
+import mediathek.controller.io.starter.RuntimeExec;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
@@ -346,4 +347,16 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         new DialogHilfe(null, true, text).setVisible(true);
         return ret;
     }
+
+//    public static void vlcPfadSchreiben(DDaten dd) {
+//        String befehl = GuiFunktionenProgramme.getPfadVlc(dd);
+//        if (!befehl.equals("")) {
+//            befehl = befehl + " --version";
+//            Log.playerMeldung("");
+//            Log.playerMeldung("====================================");
+//            Log.playerMeldung("VLC-Version");
+//            Log.playerMeldung("Befehl: " + befehl);
+//            new RuntimeExec(befehl).exec();
+//        }
+//    }
 }

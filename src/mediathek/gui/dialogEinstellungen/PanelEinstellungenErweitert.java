@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -102,7 +103,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //we can use native chooser on Mac...
-                if (ddaten.mediathekGui.isMac()) {
+                if (SystemInfo.isMacOSX()) {
                     FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Dateimanager suchen");
                     chooser.setMode(FileDialog.LOAD);
                     chooser.setVisible(true);

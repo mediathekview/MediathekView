@@ -19,6 +19,7 @@
  */
 package mediathek;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -31,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -86,7 +88,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
     JPanel jPanelAnzahl = new JPanel();
     JSplitPane splitPane = null;
-    private boolean _isMac = false;
 
     public MediathekGui(String[] ar) {
         //we must check if we were started with enough memory, do it as early as possible
@@ -159,12 +160,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Experience showed that default memory allocation for java RT is not enough
      */
     protected void checkMemoryRequirements() {
-        if (isMac()) {
+        if (SystemInfo.isMacOSX()) {
             //all values in bytes
             final long TO_MBYTES = (1024 * 1024);
             long totalMemory = Runtime.getRuntime().maxMemory() / TO_MBYTES;
             //if we have less than 1GB, show warning
-            if (totalMemory < 1000) {
+            //JDK7 reports less than 1000MBytes free memory...
+            if (totalMemory < 900) {
                 final String strMessage = "<html>Sie haben MediathekView wahrscheinlich nicht mit dem Startscript gestartet.<br>"
                         + "Dadurch kann das Laden der Filmliste wegen zuwenig Arbeitsspeicher fehlschlagen.<br><br>"
                         + "<b>Bitte nutzen Sie die Startscripte!</b></html>";
@@ -217,6 +219,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jButtonAbosLoeschen.setEnabled(true);
                 jButtonAbosEinschalten.setEnabled(true);
                 jButtonAbosAusschalten.setEnabled(true);
+                jButtonAboAendern.setEnabled(true);
                 jMenuItemAbosEinschalten.setEnabled(true);
                 jMenuItemAbosAusschalten.setEnabled(true);
                 jMenuItemAbosLoeschen.setEnabled(true);
@@ -250,6 +253,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonDownloadLoeschen.setEnabled(false);
         jButtonDownloadAufraeumen.setEnabled(false);
         jButtonAbosLoeschen.setEnabled(false);
+        jButtonAboAendern.setEnabled(false);
         jButtonAbosEinschalten.setEnabled(false);
         jButtonAbosAusschalten.setEnabled(false);
         // Menü
@@ -436,6 +440,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 ddaten.guiAbo.loeschen();
             }
         });
+        jButtonAboAendern.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                ddaten.guiAbo.aendern();
+            }
+        });
     }
 
     private void initSpinner() {
@@ -445,10 +455,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         } else {
             jSpinnerAnzahl.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR]));
         }
-    }
-
-    public boolean isMac() {
-        return _isMac;
     }
 
     private void setupUserInterfaceForOsx() {
@@ -471,7 +477,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
         if (application.isMac()) {
-            _isMac = true;
             //Datei->Beenden
             jMenuDatei.remove(jSeparator2);
             jMenuDatei.remove(jMenuItemBeenden);
@@ -693,8 +698,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         setupUserInterfaceForOsx();
     }
 
+    /**
+     * Display the About Box
+     */
     private void showAboutDialog() {
-        MVAboutDialog aboutDialog = new MVAboutDialog(this, isMac());
+        MVAboutDialog aboutDialog = new MVAboutDialog(this, SystemInfo.isMacOSX());
         aboutDialog.setVisible(true);
         aboutDialog.dispose();
     }
@@ -771,29 +779,31 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxIconKlein.setSelected(klein);
         beobMausToolBar.itemKlein.setSelected(klein);
         if (klein) {
-            jButtonFilmeLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_16.png")));
-            jButtonFilmAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_16.png")));
-            jButtonFilmSpeichern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_rec_16.png")));
-            jButtonDownloadAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png")));
-            jButtonDownloadAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_16.png")));
-            jButtonDownloadZurueckstellen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_16.png")));
-            jButtonDownloadLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
-            jButtonDownloadAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/edit-clear_16.png")));
-            jButtonAbosLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
-            jButtonAbosEinschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
-            jButtonAbosAusschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_16.png")));
+            jButtonFilmeLaden.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/download_16.png")));
+            jButtonFilmAbspielen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/player_play_16.png")));
+            jButtonFilmSpeichern.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/player_rec_16.png")));
+            jButtonDownloadAktualisieren.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png")));
+            jButtonDownloadAlleStarten.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/next_16.png")));
+            jButtonDownloadZurueckstellen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/undo_16.png")));
+            jButtonDownloadLoeschen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
+            jButtonDownloadAufraeumen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/edit-clear_16.png")));
+            jButtonAbosLoeschen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
+            jButtonAbosEinschalten.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
+            jButtonAbosAusschalten.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/nein_16.png")));
+            jButtonAboAendern.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/configure_16.png")));
         } else {
-            jButtonFilmeLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_32.png")));
-            jButtonFilmAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_32.png")));
-            jButtonFilmSpeichern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_rec_32.png")));
-            jButtonDownloadAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_32.png")));
-            jButtonDownloadAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_32.png")));
-            jButtonDownloadZurueckstellen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_32.png")));
-            jButtonDownloadLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_32.png")));
-            jButtonDownloadAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/edit-clear_32.png")));
-            jButtonAbosLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_32.png")));
-            jButtonAbosEinschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_32.png")));
-            jButtonAbosAusschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_32.png")));
+            jButtonFilmeLaden.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/download_32.png")));
+            jButtonFilmAbspielen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/player_play_32.png")));
+            jButtonFilmSpeichern.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/player_rec_32.png")));
+            jButtonDownloadAktualisieren.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/view-refresh_32.png")));
+            jButtonDownloadAlleStarten.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/next_32.png")));
+            jButtonDownloadZurueckstellen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/undo_32.png")));
+            jButtonDownloadLoeschen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/del_32.png")));
+            jButtonDownloadAufraeumen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/edit-clear_32.png")));
+            jButtonAbosLoeschen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/del_32.png")));
+            jButtonAbosEinschalten.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/ja_32.png")));
+            jButtonAbosAusschalten.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/nein_32.png")));
+            jButtonAboAendern.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/configure_32.png")));
         }
         this.repaint();
     }
@@ -838,8 +848,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonAbosEinschalten = new javax.swing.JButton();
         jButtonAbosAusschalten = new javax.swing.JButton();
         jButtonAbosLoeschen = new javax.swing.JButton();
+        jButtonAboAendern = new javax.swing.JButton();
         jTabbedPane = new javax.swing.JTabbedPane();
-        javax.swing.JMenuBar jMenuBar1 = new javax.swing.JMenuBar();
+        javax.swing.JMenuBar jMenuBar = new javax.swing.JMenuBar();
         jMenuDatei = new javax.swing.JMenu();
         jMenuItemFilmlisteLaden = new javax.swing.JMenuItem();
         jMenuItemEinstellungen = new javax.swing.JMenuItem();
@@ -988,6 +999,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonAbosLoeschen.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonAbosLoeschen);
 
+        jButtonAboAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_32.png"))); // NOI18N
+        jButtonAboAendern.setToolTipText("Abo ändern");
+        jButtonAboAendern.setFocusable(false);
+        jButtonAboAendern.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonAboAendern.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar.add(jButtonAboAendern);
+
         jPanel1.add(jToolBar, java.awt.BorderLayout.PAGE_START);
         jPanel1.add(jTabbedPane, java.awt.BorderLayout.CENTER);
 
@@ -1009,7 +1027,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemBeenden.setText("Beenden");
         jMenuDatei.add(jMenuItemBeenden);
 
-        jMenuBar1.add(jMenuDatei);
+        jMenuBar.add(jMenuDatei);
 
         jMenuFilme.setText("Filme");
 
@@ -1023,7 +1041,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemFilmAufzeichnen.setText("Film aufzeichnen");
         jMenuFilme.add(jMenuItemFilmAufzeichnen);
 
-        jMenuBar1.add(jMenuFilme);
+        jMenuBar.add(jMenuFilme);
 
         jMenuDownload.setText("Downloads");
 
@@ -1077,7 +1095,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemShutDown.setText("anschließend PC herunterfahren");
         jMenuDownload.add(jCheckBoxMenuItemShutDown);
 
-        jMenuBar1.add(jMenuDownload);
+        jMenuBar.add(jMenuDownload);
 
         jMenuAbos.setText("Abos");
 
@@ -1097,7 +1115,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAbosAendern.setText("ändern");
         jMenuAbos.add(jMenuItemAbosAendern);
 
-        jMenuBar1.add(jMenuAbos);
+        jMenuBar.add(jMenuAbos);
 
         jMenuAnsicht.setText("Ansicht");
 
@@ -1115,7 +1133,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemMeldungen.setText("Meldungen anzeigen");
         jMenuAnsicht.add(jCheckBoxMenuItemMeldungen);
 
-        jMenuBar1.add(jMenuAnsicht);
+        jMenuBar.add(jMenuAnsicht);
 
         jMenuHilfe.setText("Hilfe");
 
@@ -1127,9 +1145,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAbout.setText("Über MediathekView");
         jMenuHilfe.add(jMenuItemAbout);
 
-        jMenuBar1.add(jMenuHilfe);
+        jMenuBar.add(jMenuHilfe);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(jMenuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1145,6 +1163,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAboAendern;
     private javax.swing.JButton jButtonAbosAusschalten;
     private javax.swing.JButton jButtonAbosEinschalten;
     private javax.swing.JButton jButtonAbosLoeschen;

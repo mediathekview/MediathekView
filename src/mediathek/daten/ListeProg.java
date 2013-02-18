@@ -17,7 +17,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mediathek.daten;
 
 import mediathek.tool.TModel;
@@ -31,10 +30,6 @@ public class ListeProg extends LinkedList<DatenProg> {
     public void addProg(String name, String pfad, String schalter) {
         add(new DatenProg(name, pfad, schalter, Boolean.FALSE.toString()));
     }
-
-//    public void addProg(String name, String pfad, String schalter, boolean standard) {
-//        add(new DatenProg(name, pfad, schalter, standard));
-//    }
 
     public DatenProg remove(String name) {
         DatenProg ret = null;
@@ -92,7 +87,6 @@ public class ListeProg extends LinkedList<DatenProg> {
 //        }
 //        return ret;
 //    }
-
     public int auf(int idx, boolean auf) {
         DatenProg prog = this.remove(idx);
         int neu = idx;
@@ -142,5 +136,4 @@ public class ListeProg extends LinkedList<DatenProg> {
         }
         return object;
     }
-
 }
