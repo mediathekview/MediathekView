@@ -23,10 +23,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Filter;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModelAbo;
 
 public class ListeAbo extends LinkedList<DatenAbo> {
@@ -52,20 +52,12 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         if (dialogEditAbo.ok) {
             if (getAbo(filmSender, filmThema, filmTitel) == null) {
                 addAbo(datenAbo);
-                sort();
                 ret = true;
             } else {
                 JOptionPane.showMessageDialog(null, "Abo existiert bereits", "Abo anlegen", JOptionPane.INFORMATION_MESSAGE);
             }
         }
         return ret;
-    }
-
-    public void aboLoeschen(DatenAbo abo) {
-        if (abo != null) {
-            this.remove(abo);
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
-        }
     }
 
     public void addAbo(DatenAbo datenAbo) {
@@ -75,7 +67,15 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
         datenAbo.arr[DatenAbo.ABO_NR_NR] = str;
         super.add(datenAbo);
+        sort();
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
+    }
+
+    public void aboLoeschen(DatenAbo abo) {
+        if (abo != null) {
+            this.remove(abo);
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
+        }
     }
 
     public DatenAbo getAboNr(int i) {
@@ -120,5 +120,4 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
         return null;
     }
-
 }

@@ -30,9 +30,7 @@ import java.util.ListIterator;
 import java.util.SimpleTimeZone;
 import java.util.TreeSet;
 import mediathek.controller.filmeLaden.FilmeLaden;
-import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekArd;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekMdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekWdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
@@ -199,23 +197,25 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         // Live-Stream eintragen
         //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
         addFilmVomSender(
-                new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + " " + THEMA_LIVE, "http://wstreaming.zdf.de/encoder/livestream2_vh.asx", ""/* datum */, ""/* zeit */));
-        addFilmVomSender(
-                new DatenFilm(Mediathek3Sat.SENDER, THEMA_LIVE, ""/* urlThema */, Mediathek3Sat.SENDER + " " + THEMA_LIVE, "http://wstreaming.zdf.de/encoder/3sat_vh.asx", ""/* datum */, ""/* zeit */));
-        addFilmVomSender(
-                new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Tagesschau" + " " + THEMA_LIVE, "mmsh://tagesschau-live1-webm-wmv.wm.llnwd.net/tagesschau_live1_webm_wmv?MSWMExt=.asf", ""/* datum */, ""/* zeit */));
-        addFilmVomSender(
                 new DatenFilm(MediathekNdr.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekNdr.SENDER + " " + THEMA_LIVE, "http://www.ndr.de/resources/metadaten/ndr_fs_nds_hi_wmv.asx", ""/* datum */, ""/* zeit */));
         addFilmVomSender(
                 new DatenFilm(MediathekWdr.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekWdr.SENDER + " " + THEMA_LIVE, "http://www.wdr.de/wdrlive/media/wdr-fernsehen_web-l.asx", ""/* datum */, ""/* zeit */));
+        // die neuen Livestreams ARD
         addFilmVomSender(
-                new DatenFilm(MediathekMdr.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekMdr.SENDER + " SACHSEN" + " " + THEMA_LIVE, "http://avw.mdr.de/livestreams/mdr_tv_sachsen.asx", ""/* datum */, ""/* zeit */));
+                new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Small " + THEMA_LIVE, "rtsp://daserste.edges.wowza.gl-systemhaus.de/live/mp4:daserste_int_320", ""/* datum */, ""/* zeit */));
         addFilmVomSender(
-                new DatenFilm(MediathekMdr.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekMdr.SENDER + " SACHSEN-ANHALT" + " " + THEMA_LIVE, "http://avw.mdr.de/livestreams/mdr_tv_sachsen-anhalt.asx", ""/* datum */, ""/* zeit */));
+                new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Medium " + THEMA_LIVE, "rtsp://daserste.edges.wowza.gl-systemhaus.de/live/mp4:daserste_int_576", ""/* datum */, ""/* zeit */));
         addFilmVomSender(
-                new DatenFilm(MediathekMdr.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekMdr.SENDER + " THÜRINGEN" + " " + THEMA_LIVE, "http://avw.mdr.de/livestreams/mdr_tv_thueringen.asx", ""/* datum */, ""/* zeit */));
+                new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Big " + THEMA_LIVE, "rtsp://daserste.edges.wowza.gl-systemhaus.de/live/mp4:daserste_int_1600", ""/* datum */, ""/* zeit */));
+        // ZDF
         addFilmVomSender(
-                new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Phoenix" + " " + THEMA_LIVE, "http://hstreaming.zdf.de/encoder/phoenix_vh.mov", ""/* datum */, ""/* zeit */));
+                new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + " " + THEMA_LIVE, "rtsp://3gp-livestreaming1.zdf.de/liveedge2/de10_v1_710.sdp", ""/* datum */, ""/* zeit */));
+        addFilmVomSender(
+                new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + ".info " + THEMA_LIVE, "rtsp://3gp-livestreaming1.zdf.de/liveedge2/de08_v1_710.sdp", ""/* datum */, ""/* zeit */));
+        addFilmVomSender(
+                new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + ".kultur " + THEMA_LIVE, "rtsp://3gp-livestreaming1.zdf.de/liveedge2/de07_v1_710.sdp", ""/* datum */, ""/* zeit */));
+        addFilmVomSender(
+                new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + ".neo " + THEMA_LIVE, "rtsp://3gp-livestreaming1.zdf.de/liveedge2/de09_v1_710.sdp", ""/* datum */, ""/* zeit */));
     }
 
     public synchronized void getModelTabFilme___(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {

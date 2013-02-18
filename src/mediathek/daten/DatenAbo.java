@@ -54,7 +54,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         makeArr();
     }
 
-    public DatenAbo(String name, String sender, String thema,  String titel, String themaTitel, String ziel, String pset) {
+    public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String ziel, String pset) {
         makeArr();
         arr[ABO_NAME_NR] = name;
         arr[ABO_SENDER_NR] = sender;
@@ -73,14 +73,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return ret;
     }
 
-//    public boolean binEinmal() {
-//        // true wenn EinmalAbo
-//        if (arr[ABO_EINMAL_URL_NR].equals("")) {
-//            return false;
-//        } else {
-//            return true;
-//        }
-//    }
     public boolean aboIstEingeschaltet() {
         if (arr[DatenAbo.ABO_EINGESCHALTET_NR].equals("")) {
             aboEin();
@@ -92,13 +84,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return false;
     }
 
-//    public boolean aboIstExakt() {
-//        if (arr[DatenAbo.ABO_THEMA_EXAKT_NR].equals("")) {
-//            arr[DatenAbo.ABO_THEMA_EXAKT_NR] = String.valueOf(true);
-//            return true;
-//        }
-//        return Boolean.parseBoolean(arr[DatenAbo.ABO_THEMA_EXAKT_NR]);
-//    }
     public boolean toggleAboEinAus() {
         // Abo EinAus wird geändert und der Zustand NACH der Änderung
         // wird zurückgegeben
@@ -134,7 +119,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     private void makeArr() {
         arr = new String[ABO_MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
-            arr[i] = new String("");
+            arr[i] = "";
         }
         // neue Abos sind immer ein
         aboEin();
@@ -142,6 +127,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     @Override
     public int compareTo(DatenAbo arg0) {
-        return (arr[ABO_THEMA_NR].compareToIgnoreCase(((DatenAbo) arg0).arr[ABO_THEMA_NR]));
+        return (arr[ABO_NAME_NR].compareToIgnoreCase((arg0).arr[ABO_NAME_NR]));
     }
 }
