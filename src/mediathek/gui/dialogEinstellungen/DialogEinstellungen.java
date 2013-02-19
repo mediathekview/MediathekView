@@ -120,7 +120,7 @@ public class DialogEinstellungen extends javax.swing.JDialog {
         panelImportFilme = new PanelFilmlisteLaden(ddaten, parentComponent);
         panelExportFilmliste = new PanelExportFilmliste(ddaten, parentComponent);
         panelSenderLaden = new PanelSenderLaden(ddaten, parentComponent);
-        panelBlacklist = new PanelBlacklist(ddaten, parentComponent);
+        panelBlacklist = new PanelBlacklist(ddaten, parentComponent, PanelBlacklist.class.getName());
         panelHistory = new PanelErledigteUrls(ddaten, parentComponent);
         panelHistory.initHistory();
         panelErledigteAbos = new PanelErledigteUrls(ddaten, parentComponent);

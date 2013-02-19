@@ -36,6 +36,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     private long tage = 0;
     private long jetzt;
     private boolean zukunftNichtAnzeigen;
+    private boolean blacklistAusgeschaltet;
 
     @Override
     public boolean add(DatenBlacklist b) {
@@ -89,7 +90,8 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         } catch (Exception ex) {
             tage = 0;
         }
-        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]);
+        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR]);
+        zukunftNichtAnzeigen = !blacklistAusgeschaltet && Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]);
         jetzt = DatumZeit.getMorgen_0_Uhr();
         ListeFilme listeRet = new ListeFilme();
         if (listeFilme != null) {
@@ -106,29 +108,37 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         return listeRet;
     }
 
+    public boolean checkBlackOkFilm(DatenFilm film) {
+        tage = 0;
+        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR]);
+        zukunftNichtAnzeigen = !blacklistAusgeschaltet && Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]);
+        jetzt = DatumZeit.getMorgen_0_Uhr();
+        return checkBlackOk(film);
+    }
+
     private boolean checkBlackOk(DatenFilm film) {
         // true wenn Film angezeigt wird!!
         //
         // Alte Filme ausgewerten
         DatenBlacklist blacklist;
-        if (tage != 0 || zukunftNichtAnzeigen) {
-            if (!checkDate(film)) {
-                return false;
-            }
+        if (!checkDate(film)) {
+            return false;
         }
         if (this.size() == 0) {
             return true;
         }
-        // Blacklist-Regeln prüfen
-        Iterator<DatenBlacklist> it = this.iterator();
-        while (it.hasNext()) {
-            blacklist = it.next();
-            // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
-            //                     String imSender, String imThema, String imText) {
-            if (Filter.filterAufAboPruefen(blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
-                    blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR],
-                    film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
-                return false;
+        if (!blacklistAusgeschaltet) {
+            // nur wenn Blacklist nicht ausgeschaltet: Blacklist-Regeln prüfen
+            Iterator<DatenBlacklist> it = this.iterator();
+            while (it.hasNext()) {
+                blacklist = it.next();
+                // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
+                //                     String imSender, String imThema, String imText) {
+                if (Filter.filterAufAboPruefen(blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
+                        blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR],
+                        film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
+                    return false;
+                }
             }
         }
         return true;
@@ -138,17 +148,20 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         // true wenn der Film angezeigt werden kann!
         long d;
         try {
-            d = film.datumFilm.getTime();
-            // erst Filter Tage
-            if (tage != 0) {
-                if (d != 0 && d < tage) {
-                    return false;
+            if (tage != 0 || zukunftNichtAnzeigen) {
+                // "Zukunft" nur wenn Blacklist nicht ausgeschaltet
+                d = film.datumFilm.getTime();
+                // erst Filter Tage
+                if (tage != 0) {
+                    if (d != 0 && d < tage) {
+                        return false;
+                    }
                 }
-            }
-            // Blacklist Zukunft
-            if (zukunftNichtAnzeigen) {
-                if (d > jetzt) {
-                    return false;
+                // Blacklist Zukunft
+                if (zukunftNichtAnzeigen) {
+                    if (d > jetzt) {
+                        return false;
+                    }
                 }
             }
         } catch (Exception ex) {

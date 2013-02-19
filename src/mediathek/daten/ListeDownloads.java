@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.controller.io.starter.Start;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModelDownload;
 
@@ -162,6 +163,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         boolean gefunden = false;
         DatenFilm film;
         DatenAbo abo;
+        boolean checkBlack = !Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR])
+                && Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUCH_ABO_NR]);
         ListIterator<DatenFilm> itFilm = Daten.listeFilme.listIterator();
         while (itFilm.hasNext()) {
             film = itFilm.next();
@@ -177,6 +180,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 continue;
             } else if (checkListe(film.arr[DatenFilm.FILM_URL_NR])) {
                 // haben wir schon in der Downloadliste
+                continue;
+            } else if (checkBlack && !ddaten.listeBlacklist.checkBlackOkFilm(film)) {
+                // wenn Blacklist auch für Abos, dann ers mal da schauen
                 continue;
             } else {
                 //diesen Film in die Downloadliste eintragen
