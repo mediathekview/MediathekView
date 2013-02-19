@@ -167,6 +167,16 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])
+                        && Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUCH_ABO_NR])) {
+                    // nur auf Blacklist reagieren, wenn auch für Abos eingeschaltet
+                    downloadsAktualisieren();
+                }
+            }
+        });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
