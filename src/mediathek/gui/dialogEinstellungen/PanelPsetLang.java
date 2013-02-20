@@ -707,7 +707,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jLabel10.setText("direkter Download, Präfix ( zB. http ):");
 
-        jLabel6.setText("Setname:");
+        jLabel6.setText("Set Name:");
 
         jTextAreaBeschreibung.setColumns(20);
         jTextAreaBeschreibung.setRows(5);

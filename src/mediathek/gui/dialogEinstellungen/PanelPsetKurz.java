@@ -254,7 +254,7 @@ public class PanelPsetKurz extends PanelVorlage {
         jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField2.setText("Set");
 
-        jLabel1.setText("Setname:");
+        jLabel1.setText("Set Name:");
 
         jLabel2.setText("Zielpfad:");
 
