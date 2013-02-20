@@ -142,36 +142,36 @@ public class PanelPsetImport extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        javax.swing.JTabbedPane jTabbedPane1 = new javax.swing.JTabbedPane();
+        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
+        javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTableVorlagen = new javax.swing.JTable();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jTextFieldName = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jTextFieldUrl = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
+        javax.swing.JScrollPane jScrollPane3 = new javax.swing.JScrollPane();
         jTextAreaBeschreibung = new javax.swing.JTextArea();
         jButtonImportVorlage = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jTextFieldBs = new javax.swing.JTextField();
         jButtonAktualisieren = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
         jComboBoxBs = new javax.swing.JComboBox();
-        jPanel5 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
         jButtonImportStandard = new javax.swing.JButton();
-        jScrollPane4 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane4 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         jTextFieldDatei = new javax.swing.JTextField();
         jButtonPfad = new javax.swing.JButton();
         jButtonImportDatei = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
-        jPanel7 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
         jTextAreaImport = new javax.swing.JTextArea();
         jButtonImportText = new javax.swing.JButton();
 
@@ -256,7 +256,7 @@ public class PanelPsetImport extends PanelVorlage {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonImportVorlage)
                 .addContainerGap())
@@ -316,7 +316,7 @@ public class PanelPsetImport extends PanelVorlage {
         jTextArea1.setBackground(javax.swing.UIManager.getDefaults().getColor("Panel.background"));
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
-        jTextArea1.setText("Das Standardprogrammset, das beim ersten Programmstart\nangelegt wird, nochmals anlegen.\n\nDie bestehenden Programmsets bleiben unverändert erhalten.");
+        jTextArea1.setText("Das Standardset, das beim ersten Programmstart\nangelegt wird, nochmals anlegen.\n\nDie bestehenden Sets bleiben unverändert erhalten.");
         jTextArea1.setMargin(new java.awt.Insets(5, 5, 5, 5));
         jScrollPane4.setViewportView(jTextArea1);
 
@@ -340,12 +340,12 @@ public class PanelPsetImport extends PanelVorlage {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonImportStandard)
-                .addContainerGap(435, Short.MAX_VALUE))
+                .addContainerGap(461, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Standardset", jPanel5);
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Programmset aus Datei importieren"));
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Set aus Datei importieren"));
 
         jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
 
@@ -387,7 +387,7 @@ public class PanelPsetImport extends PanelVorlage {
 
         jPanel6Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonPfad, jTextFieldDatei});
 
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Programmset als Text importieren"));
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Set als Text importieren"));
 
         jTextAreaImport.setColumns(20);
         jTextAreaImport.setRows(5);
@@ -435,7 +435,7 @@ public class PanelPsetImport extends PanelVorlage {
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addContainerGap(83, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Set imporieren", jPanel1);
@@ -465,23 +465,7 @@ public class PanelPsetImport extends PanelVorlage {
     private javax.swing.JButton jButtonImportVorlage;
     private javax.swing.JButton jButtonPfad;
     private javax.swing.JComboBox jComboBoxBs;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTableVorlagen;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextAreaBeschreibung;
