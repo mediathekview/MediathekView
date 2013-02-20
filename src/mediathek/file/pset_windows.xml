@@ -13,6 +13,13 @@
     <Programm>
         <Programmname>skript</Programmname>
         <Programmpfad>bin\flv.bat</Programmpfad>
+        <Programmschalter>bin\flvstreamer_win32_latest.exe "PFAD_VLC" -r "%f"</Programmschalter>
+        <Praefix>rtmp://arte</Praefix>
+        <Restart>false</Restart>
+    </Programm>
+    <Programm>
+        <Programmname>skript</Programmname>
+        <Programmpfad>bin\flv.bat</Programmpfad>
         <Programmschalter>bin\flvstreamer_win32_latest.exe "PFAD_VLC" %F</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>false</Restart>

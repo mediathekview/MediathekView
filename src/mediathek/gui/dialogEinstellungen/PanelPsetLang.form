@@ -79,8 +79,8 @@
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Programmset">
-                <Property name="tabTitle" type="java.lang.String" value="Programmset"/>
+              <JTabbedPaneConstraints tabName="Set">
+                <Property name="tabTitle" type="java.lang.String" value="Set"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -291,8 +291,8 @@
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Programmset Details">
-                <Property name="tabTitle" type="java.lang.String" value="Programmset Details"/>
+              <JTabbedPaneConstraints tabName="Set Details">
+                <Property name="tabTitle" type="java.lang.String" value="Set Details"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -440,7 +440,7 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel6">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Programmsetname:"/>
+                    <Property name="text" type="java.lang.String" value="Setname:"/>
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -631,8 +631,8 @@
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Programmset Programme">
-                <Property name="tabTitle" type="java.lang.String" value="Programmset Programme"/>
+              <JTabbedPaneConstraints tabName="Programme des Sets">
+                <Property name="tabTitle" type="java.lang.String" value="Programme des Sets"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>

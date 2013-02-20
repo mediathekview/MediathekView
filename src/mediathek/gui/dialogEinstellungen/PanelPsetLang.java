@@ -275,8 +275,8 @@ public class PanelPsetLang extends PanelVorlage {
             }
             jCheckBoxLaenge.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR]));
             jCheckBoxThema.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR]));
-            jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Programmset: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
-            jTabbedPane.setTitleAt(0, "Programmset: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
+            jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
+            jTabbedPane.setTitleAt(0, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
             jTextFieldGruppeName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
             jTextFieldGruppeDirektSuffix.setText(pSet.arr[DatenPset.PROGRAMMSET_SUFFIX_DIREKT_NR]);
             jTextFieldGruppeDirektPraefix.setText(pSet.arr[DatenPset.PROGRAMMSET_PRAEFIX_DIREKT_NR]);
@@ -288,7 +288,7 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxAbo.setSelected(pSet.istAbo());
         } else {
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
-            jTabbedPane.setTitleAt(0, "Programmsets");
+            jTabbedPane.setTitleAt(0, "Sets");
             //jSpinnerLaenge.setValue(GuiKonstanten.MAX_LAENGE_DATEINAME); Exception!
             jCheckBoxLaenge.setSelected(false);
             jCheckBoxThema.setSelected(false);
@@ -508,10 +508,10 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonHilfe = new javax.swing.JButton();
         jButtonPruefen = new javax.swing.JButton();
         jTabbedPane = new javax.swing.JTabbedPane();
-        jPanelPset = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelPset = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTablePset = new javax.swing.JTable();
-        jPanel6 = new javax.swing.JPanel();
+        javax.swing.JTable jTablePset = new javax.swing.JTable();
+        javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         jButtonGruppeNeu = new javax.swing.JButton();
         jButtonGruppeLoeschen = new javax.swing.JButton();
         jButtonGruppeAuf = new javax.swing.JButton();
@@ -522,53 +522,53 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxButton = new javax.swing.JCheckBox();
         jCheckBoxAbo = new javax.swing.JCheckBox();
         jButtonAbspielen = new javax.swing.JButton();
-        jPanelDetails = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelDetails = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
         jTextFieldGruppeDirektSuffix = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
         jButtonGruppeFarbe = new javax.swing.JButton();
         jButtonGruppeStandardfarbe = new javax.swing.JButton();
         jTextFieldGruppeDirektPraefix = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel10 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jTextFieldGruppeName = new javax.swing.JTextField();
-        jSeparator1 = new javax.swing.JSeparator();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        javax.swing.JSeparator jSeparator1 = new javax.swing.JSeparator();
+        javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTextAreaBeschreibung = new javax.swing.JTextArea();
-        jLabel11 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel11 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
         jTextFieldGruppeZielPfad = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel8 = new javax.swing.JLabel();
         jTextFieldGruppeZielName = new javax.swing.JTextField();
         jCheckBoxLaenge = new javax.swing.JCheckBox();
         jSpinnerLaenge = new javax.swing.JSpinner();
         jButtonGruppePfad = new javax.swing.JButton();
-        jLabel12 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel12 = new javax.swing.JLabel();
         jCheckBoxThema = new javax.swing.JCheckBox();
-        jPanelProgramme = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelProgramme = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTableProgramme = new javax.swing.JTable();
-        jPanel2 = new javax.swing.JPanel();
+        javax.swing.JTable jTableProgramme = new javax.swing.JTable();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         jButtonProgPlus = new javax.swing.JButton();
         jButtonProgMinus = new javax.swing.JButton();
         jButtonProgDuplizieren = new javax.swing.JButton();
         jButtonProgAuf = new javax.swing.JButton();
         jButtonProgAb = new javax.swing.JButton();
-        jPanelProgrammDetails = new javax.swing.JPanel();
-        jLabel = new javax.swing.JLabel();
+        javax.swing.JPanel jPanelProgrammDetails = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel = new javax.swing.JLabel();
         jTextFieldProgPfad = new javax.swing.JTextField();
         jButtonProgPfad = new javax.swing.JButton();
         jTextFieldProgSchalter = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jTextFieldProgName = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jTextFieldProgPraefix = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
         jTextFieldProgSuffix = new javax.swing.JTextField();
         jCheckBoxRestart = new javax.swing.JCheckBox();
-        jLabel9 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel9 = new javax.swing.JLabel();
         jTextFieldProgZielDateiName = new javax.swing.JTextField();
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
@@ -691,7 +691,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap())
         );
 
-        jTabbedPane.addTab("Programmset", jPanelPset);
+        jTabbedPane.addTab("Set", jPanelPset);
 
         jPanelDetails.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -707,7 +707,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jLabel10.setText("direkter Download, Präfix ( zB. http ):");
 
-        jLabel6.setText("Programmsetname:");
+        jLabel6.setText("Setname:");
 
         jTextAreaBeschreibung.setColumns(20);
         jTextAreaBeschreibung.setRows(5);
@@ -870,7 +870,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        jTabbedPane.addTab("Programmset Details", jPanelDetails);
+        jTabbedPane.addTab("Set Details", jPanelDetails);
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Titel", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
 
@@ -1029,7 +1029,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(jPanelProgrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanelProgrammDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 801, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -1045,7 +1045,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap())
         );
 
-        jTabbedPane.addTab("Programmset Programme", jPanelProgramme);
+        jTabbedPane.addTab("Programme des Sets", jPanelProgramme);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -1066,7 +1066,7 @@ public class PanelPsetLang extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+                .addComponent(jTabbedPane)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonHilfe)
@@ -1099,35 +1099,10 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxRestart;
     private javax.swing.JCheckBox jCheckBoxSpeichern;
     private javax.swing.JCheckBox jCheckBoxThema;
-    private javax.swing.JLabel jLabel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanelDetails;
-    private javax.swing.JPanel jPanelProgrammDetails;
-    private javax.swing.JPanel jPanelProgramme;
-    private javax.swing.JPanel jPanelPset;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSpinner jSpinnerLaenge;
     private javax.swing.JTabbedPane jTabbedPane;
-    private javax.swing.JTable jTableProgramme;
-    private javax.swing.JTable jTablePset;
     private javax.swing.JTextArea jTextAreaBeschreibung;
     private javax.swing.JTextField jTextFieldGruppeDirektPraefix;
     private javax.swing.JTextField jTextFieldGruppeDirektSuffix;
