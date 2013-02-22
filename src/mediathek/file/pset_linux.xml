@@ -27,7 +27,7 @@
         <Praefix>http</Praefix>
         <Suffix>mp4,mp3,m4v,flv</Suffix>
         <Zielpfad>ZIELPFAD</Zielpfad>
-        <Zieldateiname>%t-%T-%N.flv</Zieldateiname>
+        <Zieldateiname>%t-%T-%N</Zieldateiname>
         <Abspielen>false</Abspielen>
         <Speichern>true</Speichern>
         <Button>true</Button>
@@ -37,6 +37,7 @@
     </Programmset>
     <Programm>
         <Programmname>flvstreamer</Programmname>
+        <Zieldateiname>%t-%T-%N.flv</Zieldateiname>
         <Programmpfad>PFAD_FLVSTREAMER</Programmpfad>
         <Programmschalter>%F --resume -o **</Programmschalter>
         <Praefix>rtmp</Praefix>
@@ -44,6 +45,7 @@
     </Programm>
     <Programm>
         <Programmname>Vlc</Programmname>
+        <Zieldateiname>%t-%T-%N.asf</Zieldateiname>
         <Programmpfad>PFAD_VLC</Programmpfad>
         <Programmschalter>%f :sout=#standard{access=file,mux=asf,dst=**} -I dummy --play-and-exit</Programmschalter>
     </Programm>
