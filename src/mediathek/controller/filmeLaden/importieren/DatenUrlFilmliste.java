@@ -32,13 +32,13 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
     private SimpleDateFormat sdf;
 
     public DatenUrlFilmliste() {
-        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss");
+        sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
         makeArr();
     }
 
     public DatenUrlFilmliste(String url, String prio) {
-        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss");
+        sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
         makeArr();
         arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR] = url;
@@ -46,7 +46,7 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
     }
 
     public DatenUrlFilmliste(String url, String prio, String zeit, String datum) {
-        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss");
+        sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
         makeArr();
         arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR] = url;
@@ -71,8 +71,8 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
         int ret = 0;
         try {
             //31.10.2010	16:54:17
-            String ich = arr[FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR] + ", " + arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR];
-            String du = arg0.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR] + ", " + arg0.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR];
+            String ich = arr[FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR] + " " + arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR];
+            String du = arg0.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR] + " " + arg0.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR];
             if (ich.equals(du)) {
                 return 0;
             }
@@ -90,7 +90,7 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
         boolean ret = false;
         try {
             //31.10.2010	16:54:17
-            String ich = arr[FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR] + ", " + arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR];
+            String ich = arr[FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR] + " " + arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR];
             Date d_ich = sdf.parse(ich);
             Calendar cal = Calendar.getInstance();
             // tage vom calendar abziehen

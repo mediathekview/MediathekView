@@ -123,6 +123,9 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
                 }
                 try {
                     d = datenUrlFilmliste.getDate();
+                    // debug
+                    SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyy  HH:mm:ss");
+                    String s = sdf_datum_zeit.format(d);
                     long m = today.getTime() - d.getTime();
                     if (m < 0) {
                         m = 0;
