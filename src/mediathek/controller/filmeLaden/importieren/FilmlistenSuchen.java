@@ -57,9 +57,9 @@ public class FilmlistenSuchen {
     public static final int FILM_UPDATE_SERVER_NR_NR = 0;
     public static final String FILM_UPDATE_SERVER_URL = "film-update-server-url";
     public static final int FILM_UPDATE_SERVER_URL_NR = 1;
-    public static final String FILM_UPDATE_SERVER_DATUM = "film-update-server-datum";
+    public static final String FILM_UPDATE_SERVER_DATUM = "film-update-server-datum"; // Datum in UTC
     public static final int FILM_UPDATE_SERVER_DATUM_NR = 2;
-    public static final String FILM_UPDATE_SERVER_ZEIT = "film-update-server-zeit";
+    public static final String FILM_UPDATE_SERVER_ZEIT = "film-update-server-zeit"; // Zeit in UTC
     public static final int FILM_UPDATE_SERVER_ZEIT_NR = 3;
     public static final String FILM_UPDATE_SERVER_PRIO = "film-update-server-prio";
     public static final int FILM_UPDATE_SERVER_PRIO_NR = 4;
@@ -83,7 +83,6 @@ public class FilmlistenSuchen {
                 // Ausweichen auf andere Listenserver bei Bedarf
                 getDownloadUrlsFilmlisten(Konstanten.ADRESSE_FILMLISTEN_SERVER, tmp, Daten.getUserAgent());
             }
-            //getDownloadUrlsFilmlisten("asdf", tmp, Daten.getUserAgent());
             if (tmp.size() > 0) {
                 // dann die Liste Filmlistenserver aktualisieren
                 updateListeFilmlistenServer(tmp);
@@ -105,16 +104,12 @@ public class FilmlistenSuchen {
         }
         if (listeDownloadUrlsFilmlisten.size() < 5) {
             // dann gibts ein paar fest hinterlegt URLs
-            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_02.bz2", "1", "03:40:00", getTag("03:40:00")));
-            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_08.bz2", "1", "09:10:00", getTag("09:10:00")));
-            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_10.bz2", "1", "11:10:00", getTag("11:10:00")));
-            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek2/Mediathek_12.bz2", "1", "13:10:00", getTag("13:10:00")));
-            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek3/Mediathek_14.bz2", "1", "15:10:00", getTag("15:10:00")));
-            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek4/Mediathek_16.bz2", "1", "17:10:00", getTag("17:10:00")));
-            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_18.bz2", "1", "19:10:00", getTag("19:10:00")));
-            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_20.bz2", "1", "21:10:00", getTag("21:10:00")));
-            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_22.bz2", "1", "23:10:00", getTag("23:10:00")));
-            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.14.91/mediathek1/Mediathek_00.bz2", "1", "01:10:00", getTag("01:10:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek1/Filmliste_10_00.bz2", "1", "10:20:00", getTag("10:20:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek2/Filmliste_13_00.bz2", "1", "13:20:00", getTag("13:20:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek1/Filmliste_16_00.bz2", "1", "16:20:00", getTag("16:20:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek2/Filmliste_19_00.bz2", "1", "19:20:00", getTag("19:20:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek1/Filmliste_20_00.bz2", "1", "20:20:00", getTag("20:20:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek2/Filmliste_22_00.bz2", "1", "22:20:00", getTag("22:20:00")));
         }
         listeDownloadUrlsFilmlisten.sort();
         retUrl = listeDownloadUrlsFilmlisten.getRand(bereitsVersucht, 0); //eine Zufällige Adresse wählen
@@ -307,7 +302,7 @@ public class FilmlistenSuchen {
             writer.flush();
             writer.close();
         } catch (Exception ex) {
-            Log.fehlerMeldung(821069874, Log.FEHLER_ART_PROG, FilmlistenSuchen.class.getName(), ex, "Die URL-Filmlisten konnten nicht geschrieben werden");
+            Log.fehlerMeldung(634978521, Log.FEHLER_ART_PROG, FilmlistenSuchen.class.getName(), ex, "Die URL-Filmlisten konnten nicht geschrieben werden");
         }
         return tmpFile;
     }

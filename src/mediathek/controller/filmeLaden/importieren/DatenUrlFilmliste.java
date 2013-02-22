@@ -23,29 +23,47 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.SimpleTimeZone;
 import mediathek.tool.Log;
 
 public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
 
     public String[] arr;
-    public static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss");
+    private SimpleDateFormat sdf;
 
     public DatenUrlFilmliste() {
+        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss");
+        sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
         makeArr();
     }
 
     public DatenUrlFilmliste(String url, String prio) {
+        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss");
+        sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
         makeArr();
         arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR] = url;
         arr[FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR] = prio;
     }
 
     public DatenUrlFilmliste(String url, String prio, String zeit, String datum) {
+        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss");
+        sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
         makeArr();
         arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR] = url;
         arr[FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR] = prio;
         arr[FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR] = datum;
         arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR] = zeit;
+    }
+
+    public Date getDate() {
+        String date = arr[FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR] + " " + arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR];
+        Date d;
+        try {
+            d = sdf.parse(date);
+        } catch (Exception ex) {
+            d = new Date();
+        }
+        return d;
     }
 
     @Override
@@ -58,11 +76,12 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
             if (ich.equals(du)) {
                 return 0;
             }
+            // sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC")); 
             Date d_ich = sdf.parse(ich);
             Date d_du = sdf.parse(du);
             ret = d_du.compareTo(d_ich);
         } catch (ParseException ex) {
-            Log.fehlerMeldung(936542876,Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
+            Log.fehlerMeldung(936542876, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
         }
         return ret;
     }
@@ -78,7 +97,7 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
             cal.add(Calendar.DATE, -tage);
             ret = d_ich.before(cal.getTime());
         } catch (ParseException ex) {
-            Log.fehlerMeldung(915468973, Log.FEHLER_ART_PROG,this.getClass().getName(), ex);
+            Log.fehlerMeldung(915468973, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
         }
         return ret;
     }

@@ -169,7 +169,7 @@ public class IoXmlFilmlisteLesen {
                             filmTag = DatenFilm.FILME;
                             namen = DatenFilm.FILME_COLUMN_NAMES;
                         }
-                        int anz = 1;
+//                        int anz = 1;
                         try {
 //                            anz = Integer.parseInt(listeFilme.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR]);
                         } catch (Exception ex) {

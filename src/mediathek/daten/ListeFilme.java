@@ -31,6 +31,7 @@ import java.util.SimpleTimeZone;
 import java.util.TreeSet;
 import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekArd;
+import mediathek.controller.filmeLaden.suchen.sender.MediathekKika;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekWdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
@@ -196,26 +197,19 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public void liveStreamEintragen() {
         // Live-Stream eintragen
         //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
-        addFilmVomSender(
-                new DatenFilm(MediathekNdr.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekNdr.SENDER + " " + THEMA_LIVE, "http://www.ndr.de/resources/metadaten/ndr_fs_nds_hi_wmv.asx", ""/* datum */, ""/* zeit */));
-        addFilmVomSender(
-                new DatenFilm(MediathekWdr.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekWdr.SENDER + " " + THEMA_LIVE, "http://www.wdr.de/wdrlive/media/wdr-fernsehen_web-l.asx", ""/* datum */, ""/* zeit */));
+        addFilmVomSender(new DatenFilm(MediathekNdr.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekNdr.SENDER + " " + THEMA_LIVE, "http://www.ndr.de/resources/metadaten/ndr_fs_nds_hi_wmv.asx", ""/* datum */, ""/* zeit */));
+        addFilmVomSender(new DatenFilm(MediathekWdr.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekWdr.SENDER + " " + THEMA_LIVE, "http://www.wdr.de/wdrlive/media/wdr-fernsehen_web-l.asx", ""/* datum */, ""/* zeit */));
         // die neuen Livestreams ARD
-        addFilmVomSender(
-                new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Small " + THEMA_LIVE, "rtsp://daserste.edges.wowza.gl-systemhaus.de/live/mp4:daserste_int_320", ""/* datum */, ""/* zeit */));
-        addFilmVomSender(
-                new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Medium " + THEMA_LIVE, "rtsp://daserste.edges.wowza.gl-systemhaus.de/live/mp4:daserste_int_576", ""/* datum */, ""/* zeit */));
-        addFilmVomSender(
-                new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Big " + THEMA_LIVE, "rtsp://daserste.edges.wowza.gl-systemhaus.de/live/mp4:daserste_int_1600", ""/* datum */, ""/* zeit */));
+        addFilmVomSender(new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Small " + THEMA_LIVE, "rtsp://daserste.edges.wowza.gl-systemhaus.de/live/mp4:daserste_int_320", ""/* datum */, ""/* zeit */));
+        addFilmVomSender(new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Medium " + THEMA_LIVE, "rtsp://daserste.edges.wowza.gl-systemhaus.de/live/mp4:daserste_int_576", ""/* datum */, ""/* zeit */));
+        addFilmVomSender(new DatenFilm(MediathekArd.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekArd.SENDER + " Big " + THEMA_LIVE, "rtsp://daserste.edges.wowza.gl-systemhaus.de/live/mp4:daserste_int_1600", ""/* datum */, ""/* zeit */));
         // ZDF
-        addFilmVomSender(
-                new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + " " + THEMA_LIVE, "rtsp://3gp-livestreaming1.zdf.de/liveedge2/de10_v1_710.sdp", ""/* datum */, ""/* zeit */));
-        addFilmVomSender(
-                new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + ".info " + THEMA_LIVE, "rtsp://3gp-livestreaming1.zdf.de/liveedge2/de08_v1_710.sdp", ""/* datum */, ""/* zeit */));
-        addFilmVomSender(
-                new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + ".kultur " + THEMA_LIVE, "rtsp://3gp-livestreaming1.zdf.de/liveedge2/de07_v1_710.sdp", ""/* datum */, ""/* zeit */));
-        addFilmVomSender(
-                new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + ".neo " + THEMA_LIVE, "rtsp://3gp-livestreaming1.zdf.de/liveedge2/de09_v1_710.sdp", ""/* datum */, ""/* zeit */));
+        addFilmVomSender(new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + " " + THEMA_LIVE, "rtsp://3gp-livestreaming1.zdf.de/liveedge2/de10_v1_710.sdp", ""/* datum */, ""/* zeit */));
+        addFilmVomSender(new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + ".info " + THEMA_LIVE, "rtsp://3gp-livestreaming1.zdf.de/liveedge2/de08_v1_710.sdp", ""/* datum */, ""/* zeit */));
+        addFilmVomSender(new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + ".kultur " + THEMA_LIVE, "rtsp://3gp-livestreaming1.zdf.de/liveedge2/de07_v1_710.sdp", ""/* datum */, ""/* zeit */));
+        addFilmVomSender(new DatenFilm(MediathekZdf.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekZdf.SENDER + ".neo " + THEMA_LIVE, "rtsp://3gp-livestreaming1.zdf.de/liveedge2/de09_v1_710.sdp", ""/* datum */, ""/* zeit */));
+        // KIKA
+        addFilmVomSender(new DatenFilm(MediathekKika.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekKika.SENDER + " " + THEMA_LIVE, "http://kikaplus.net/clients/kika/player/myplaylist.php?channel=1&programm=1&videoid=1", ""/* datum */, ""/* zeit */));
     }
 
     public synchronized void getModelTabFilme___(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {
@@ -496,18 +490,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
 
     public boolean filmlisteIstAelter(int sekunden) {
         int ret = alterFilmlisteSek();
-//        Date jetzt = new Date(System.currentTimeMillis());
-//        SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
-//        String date = metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
-//        Date filmDate = null;
-//        try {
-//            filmDate = sdf.parse(date);
-//        } catch (ParseException ex) {
-//        }
-//        if (jetzt != null && filmDate != null) {
-//            ret = Math.round((jetzt.getTime() - filmDate.getTime()) / (1000));
-//            ret = Math.abs(ret);
-//        }
         if (ret != 0) {
             Log.systemMeldung("Die Filmliste ist " + ret / 60 + " Minuten alt");
         }
@@ -524,7 +506,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             metaDaten[ListeFilme.FILMLISTE_DATUM_NR] = "";
             metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR] = "";
         }
-        //listeFilmeNeu.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR] = String.valueOf(listeFilmeNeu.size());
         metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
         metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = Funktionen.getProgVersionString() + " - Compiled: " + Funktionen.getCompileDate();
     }
