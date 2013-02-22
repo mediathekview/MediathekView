@@ -19,6 +19,7 @@
  */
 package mediathek.controller.filmeLaden.importieren;
 
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -103,57 +104,59 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
         }
         String ret = "";
         if (!this.isEmpty()) {
-            DatenUrlFilmliste filmUpdate;
+            DatenUrlFilmliste datenUrlFilmliste;
             LinkedList<DatenUrlFilmliste> listeZeit = new LinkedList<DatenUrlFilmliste>();
             LinkedList<DatenUrlFilmliste> listePrio = new LinkedList<DatenUrlFilmliste>();
             //aktuellsten auswählen
             Iterator<DatenUrlFilmliste> it = this.iterator();
             Date today = new Date(System.currentTimeMillis());
-            String date;
             Date d;
             int minuten = 200;
             int count = 0;
             while (it.hasNext()) {
-                filmUpdate = it.next();
+                datenUrlFilmliste = it.next();
                 if (bereitsGebraucht != null) {
-                    if (bereitsGebraucht.contains(filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR])) {
+                    if (bereitsGebraucht.contains(datenUrlFilmliste.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR])) {
                         // wurde schon versucht
                         continue;
                     }
                 }
-                date = filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR] + " " + filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR];
                 try {
-                    d = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse(date);
-                    minuten = Math.round((today.getTime() - d.getTime()) / (1000 * 60));
-                } catch (ParseException ex) {
+                    d = datenUrlFilmliste.getDate();
+                    long m = today.getTime() - d.getTime();
+                    if (m < 0) {
+                        m = 0;
+                    }
+                    minuten = Math.round(m / (1000 * 60));
+                } catch (Exception ex) {
                 }
                 if (minuten < MAXMINUTEN) {
-                    listeZeit.add(filmUpdate);
+                    listeZeit.add(datenUrlFilmliste);
                     ++count;
                 } else if (count < minCount) {
-                    listeZeit.add(filmUpdate);
+                    listeZeit.add(datenUrlFilmliste);
                     ++count;
                 }
             }
             //nach prio gewichten
             it = listeZeit.iterator();
             while (it.hasNext()) {
-                filmUpdate = it.next();
-                if (filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR].equals(FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_1)) {
-                    listePrio.add(filmUpdate);
+                datenUrlFilmliste = it.next();
+                if (datenUrlFilmliste.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR].equals(FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_1)) {
+                    listePrio.add(datenUrlFilmliste);
                 } else {
-                    listePrio.add(filmUpdate);
-                    listePrio.add(filmUpdate);
+                    listePrio.add(datenUrlFilmliste);
+                    listePrio.add(datenUrlFilmliste);
                 }
             }
             if (listePrio.size() > 0) {
                 int nr = new Random().nextInt(listePrio.size());
-                filmUpdate = listePrio.get(nr);
+                datenUrlFilmliste = listePrio.get(nr);
             } else {
                 int nr = new Random().nextInt(this.size());
-                filmUpdate = this.get(nr);
+                datenUrlFilmliste = this.get(nr);
             }
-            ret = filmUpdate.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR];
+            ret = datenUrlFilmliste.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR];
         }
         return ret;
     }

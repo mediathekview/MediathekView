@@ -24,13 +24,13 @@ import mediathek.tool.Log;
 public class DatenFilmlistenServer implements Comparable<DatenFilmlistenServer> {
 
     public static final String FILM_LISTEN_SERVER = "film-listen-server";
-    public static final int FILM_LISTEN_SERVER_MAX_ELEM = 3;
     public static final String FILM_LISTEN_SERVER_NR = "film-listen-server-nr";
     public static final int FILM_LISTEN_SERVER_NR_NR = 0;
     public static final String FILM_LISTEN_SERVER_URL = "film-listen-server-url";
     public static final int FILM_LISTEN_SERVER_URL_NR = 1;
     public static final String FILM_LISTEN_SERVER_ALTER = "film-listen-server-alter";
     public static final int FILM_LISTEN_SERVER_ALTER_NR = 2;
+    public static final int FILM_LISTEN_SERVER_MAX_ELEM = 3;
     public static final String[] FILM_LISTEN_SERVER_COLUMN_NAMES = {FILM_LISTEN_SERVER_NR, FILM_LISTEN_SERVER_URL, FILM_LISTEN_SERVER_ALTER};
     public static final String[] FILM_LISTEN_SERVER_COLUMN_NAMES_ANZEIGE = {"Nr", "Url", "Alter"};
     public String[] arr;
@@ -54,17 +54,17 @@ public class DatenFilmlistenServer implements Comparable<DatenFilmlistenServer> 
             int alter = Integer.parseInt(arr[FILM_LISTEN_SERVER_ALTER_NR]);
             arr[FILM_LISTEN_SERVER_ALTER_NR] = String.valueOf(++alter);
         } catch (Exception ex) {
-            Log.fehlerMeldung(689412357, Log.FEHLER_ART_PROG,this.getClass().getName(), ex, arr[FILM_LISTEN_SERVER_ALTER_NR]);
+            Log.fehlerMeldung(689412357, Log.FEHLER_ART_PROG, this.getClass().getName(), ex, arr[FILM_LISTEN_SERVER_ALTER_NR]);
             arr[FILM_LISTEN_SERVER_ALTER_NR] = "0";
         }
     }
 
     public int getAlter() {
-        int alter = 0;
+        int alter;
         try {
             alter = Integer.parseInt(arr[FILM_LISTEN_SERVER_ALTER_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(689412357,Log.FEHLER_ART_PROG, this.getClass().getName(), ex, arr[FILM_LISTEN_SERVER_ALTER_NR]);
+            Log.fehlerMeldung(689412357, Log.FEHLER_ART_PROG, this.getClass().getName(), ex, arr[FILM_LISTEN_SERVER_ALTER_NR]);
             alter = 0;
             arr[FILM_LISTEN_SERVER_ALTER_NR] = "0";
         }

@@ -129,7 +129,8 @@ public class GuiFunktionen extends Funktionen {
     }
 
     public static String replaceLeerDateiname(String pfad, boolean pfadtrennerEntfernen, boolean leerEntfernen) {
-        //verbotene Zeichen entfernen
+        // verbotene Zeichen entfernen
+        // < > ? " : | \ / *
         String ret = pfad;
         boolean winPfad = false;
         if (pfad.length() >= 2) {
