@@ -44,6 +44,8 @@ import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.CheckUpdate;
@@ -65,6 +67,7 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
+import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
@@ -190,6 +193,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jButtonFilmSpeichern.setEnabled(true);
                 jMenuItemFilmAbspielen.setEnabled(true);
                 jMenuItemFilmAufzeichnen.setEnabled(true);
+                filterAnzeigen(!Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
                 break;
             case ButtonDonwload:
                 buttonAus();
@@ -212,6 +216,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jCheckBoxMenuItemShutDown.setEnabled(true);
                 jSpinnerAnzahl.setEnabled(true);
                 jLabelAnzahl.setEnabled(true);
+                filterAnzeigen(false);
                 break;
             case ButtonAbo:
                 buttonAus();
@@ -224,6 +229,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jMenuItemAbosAusschalten.setEnabled(true);
                 jMenuItemAbosLoeschen.setEnabled(true);
                 jMenuItemAbosAendern.setEnabled(true);
+                filterAnzeigen(false);
                 break;
         }
     }
@@ -674,6 +680,42 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 setPanelMeldungen();
             }
         });
+        jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+        jCheckBoxMenuItemFilterAnzeigen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemFilterAnzeigen.isSelected());
+                filterAnzeigen(!Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getName());
+            }
+        });
+        jButtonDelFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jTextFieldFilter.setText("");
+            }
+        });
+        jTextFieldFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            private void tus() {
+                Filter.checkPattern2(jTextFieldFilter);
+                ddaten.guiFilme.filtern(jTextFieldFilter.getText());
+            }
+        });
         // Hilfe
         jMenuItemAnleitung.addActionListener(new ActionListener() {
             @Override
@@ -696,6 +738,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 //            }
 //        });
         setupUserInterfaceForOsx();
+    }
+
+    private void filterAnzeigen(boolean anz) {
+        jLabelFilter.setVisible(anz);
+        jTextFieldFilter.setVisible(anz);
+        jButtonDelFilter.setVisible(anz);
     }
 
     /**
@@ -834,6 +882,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jPanel1 = new javax.swing.JPanel();
         jPanelInfo = new javax.swing.JPanel();
         jToolBar = new javax.swing.JToolBar();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
         jButtonFilmeLaden = new javax.swing.JButton();
         javax.swing.Box.Filler filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
         jButtonFilmAbspielen = new javax.swing.JButton();
@@ -849,6 +898,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonAbosAusschalten = new javax.swing.JButton();
         jButtonAbosLoeschen = new javax.swing.JButton();
         jButtonAboAendern = new javax.swing.JButton();
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(50, 0), new java.awt.Dimension(50, 0), new java.awt.Dimension(20, 32767));
+        jLabelFilter = new javax.swing.JLabel();
+        jTextFieldFilter = new javax.swing.JTextField();
+        jButtonDelFilter = new javax.swing.JButton();
+        javax.swing.Box.Filler filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
         jTabbedPane = new javax.swing.JTabbedPane();
         javax.swing.JMenuBar jMenuBar = new javax.swing.JMenuBar();
         jMenuDatei = new javax.swing.JMenu();
@@ -884,6 +938,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxIconKlein = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemVideoplayer = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemMeldungen = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItemFilterAnzeigen = new javax.swing.JCheckBoxMenuItem();
         jMenuHilfe = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -917,94 +972,143 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jPanel1.add(jPanelInfo, java.awt.BorderLayout.PAGE_END);
 
+        jToolBar.setBackground(new java.awt.Color(204, 204, 204));
+        jToolBar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        jToolBar.setFloatable(false);
         jToolBar.setRollover(true);
+        jToolBar.add(filler3);
 
         jButtonFilmeLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_32.png"))); // NOI18N
         jButtonFilmeLaden.setToolTipText("neue Filmliste laden");
+        jButtonFilmeLaden.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonFilmeLaden.setFocusable(false);
         jButtonFilmeLaden.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonFilmeLaden.setOpaque(false);
         jButtonFilmeLaden.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonFilmeLaden);
         jToolBar.add(filler1);
 
         jButtonFilmAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_32.png"))); // NOI18N
         jButtonFilmAbspielen.setToolTipText("Film abspielen");
+        jButtonFilmAbspielen.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonFilmAbspielen.setFocusable(false);
         jButtonFilmAbspielen.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonFilmAbspielen.setOpaque(false);
         jButtonFilmAbspielen.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonFilmAbspielen);
 
         jButtonFilmSpeichern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_rec_32.png"))); // NOI18N
         jButtonFilmSpeichern.setToolTipText("Film aufzeichnen");
+        jButtonFilmSpeichern.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonFilmSpeichern.setFocusable(false);
         jButtonFilmSpeichern.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonFilmSpeichern.setOpaque(false);
         jButtonFilmSpeichern.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonFilmSpeichern);
         jToolBar.add(filler2);
 
         jButtonDownloadAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_32.png"))); // NOI18N
         jButtonDownloadAktualisieren.setToolTipText("Downloads aktualisieren");
+        jButtonDownloadAktualisieren.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonDownloadAktualisieren.setFocusable(false);
         jButtonDownloadAktualisieren.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonDownloadAktualisieren.setOpaque(false);
         jButtonDownloadAktualisieren.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonDownloadAktualisieren);
 
         jButtonDownloadAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_32.png"))); // NOI18N
         jButtonDownloadAlleStarten.setToolTipText("alle Downloads starten");
+        jButtonDownloadAlleStarten.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonDownloadAlleStarten.setFocusable(false);
         jButtonDownloadAlleStarten.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonDownloadAlleStarten.setOpaque(false);
         jButtonDownloadAlleStarten.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonDownloadAlleStarten);
 
         jButtonDownloadZurueckstellen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_32.png"))); // NOI18N
         jButtonDownloadZurueckstellen.setToolTipText("Download zurückstellen");
+        jButtonDownloadZurueckstellen.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonDownloadZurueckstellen.setFocusable(false);
         jButtonDownloadZurueckstellen.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonDownloadZurueckstellen.setOpaque(false);
         jButtonDownloadZurueckstellen.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonDownloadZurueckstellen);
 
         jButtonDownloadLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_32.png"))); // NOI18N
         jButtonDownloadLoeschen.setToolTipText("Download dauerhaft löschen");
+        jButtonDownloadLoeschen.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonDownloadLoeschen.setFocusable(false);
         jButtonDownloadLoeschen.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonDownloadLoeschen.setOpaque(false);
         jButtonDownloadLoeschen.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonDownloadLoeschen);
 
         jButtonDownloadAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/edit-clear_32.png"))); // NOI18N
         jButtonDownloadAufraeumen.setToolTipText("Liste der Downloads aufräumen");
+        jButtonDownloadAufraeumen.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonDownloadAufraeumen.setFocusable(false);
         jButtonDownloadAufraeumen.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonDownloadAufraeumen.setOpaque(false);
         jButtonDownloadAufraeumen.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonDownloadAufraeumen);
         jToolBar.add(filler4);
 
         jButtonAbosEinschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_32.png"))); // NOI18N
         jButtonAbosEinschalten.setToolTipText("Abos einschalten");
+        jButtonAbosEinschalten.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonAbosEinschalten.setFocusable(false);
         jButtonAbosEinschalten.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonAbosEinschalten.setOpaque(false);
         jButtonAbosEinschalten.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonAbosEinschalten);
 
         jButtonAbosAusschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_32.png"))); // NOI18N
         jButtonAbosAusschalten.setToolTipText("Abos deaktivieren");
+        jButtonAbosAusschalten.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonAbosAusschalten.setFocusable(false);
         jButtonAbosAusschalten.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonAbosAusschalten.setOpaque(false);
         jButtonAbosAusschalten.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonAbosAusschalten);
 
         jButtonAbosLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_32.png"))); // NOI18N
         jButtonAbosLoeschen.setToolTipText("Abos löschen");
+        jButtonAbosLoeschen.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonAbosLoeschen.setFocusable(false);
         jButtonAbosLoeschen.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonAbosLoeschen.setOpaque(false);
         jButtonAbosLoeschen.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonAbosLoeschen);
 
         jButtonAboAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_32.png"))); // NOI18N
         jButtonAboAendern.setToolTipText("Abo ändern");
+        jButtonAboAendern.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonAboAendern.setFocusable(false);
         jButtonAboAendern.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonAboAendern.setOpaque(false);
         jButtonAboAendern.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonAboAendern);
+        jToolBar.add(filler5);
+
+        jLabelFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/viewmag_22.png"))); // NOI18N
+        jLabelFilter.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
+        jToolBar.add(jLabelFilter);
+
+        jTextFieldFilter.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 2, true), "Thema / Titel", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BOTTOM));
+        jTextFieldFilter.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        jTextFieldFilter.setMinimumSize(new java.awt.Dimension(4, 10));
+        jTextFieldFilter.setOpaque(false);
+        jTextFieldFilter.setPreferredSize(new java.awt.Dimension(10, 10));
+        jToolBar.add(jTextFieldFilter);
+
+        jButtonDelFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
+        jButtonDelFilter.setBorder(javax.swing.BorderFactory.createEmptyBorder(6, 6, 6, 6));
+        jButtonDelFilter.setFocusable(false);
+        jButtonDelFilter.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonDelFilter.setOpaque(false);
+        jButtonDelFilter.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar.add(jButtonDelFilter);
+        jToolBar.add(filler6);
 
         jPanel1.add(jToolBar, java.awt.BorderLayout.PAGE_START);
         jPanel1.add(jTabbedPane, java.awt.BorderLayout.CENTER);
@@ -1133,6 +1237,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemMeldungen.setText("Meldungen anzeigen");
         jMenuAnsicht.add(jCheckBoxMenuItemMeldungen);
 
+        jCheckBoxMenuItemFilterAnzeigen.setText("Filter anzeigen");
+        jMenuAnsicht.add(jCheckBoxMenuItemFilterAnzeigen);
+
         jMenuBar.add(jMenuAnsicht);
 
         jMenuHilfe.setText("Hilfe");
@@ -1163,10 +1270,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler5;
     private javax.swing.JButton jButtonAboAendern;
     private javax.swing.JButton jButtonAbosAusschalten;
     private javax.swing.JButton jButtonAbosEinschalten;
     private javax.swing.JButton jButtonAbosLoeschen;
+    private javax.swing.JButton jButtonDelFilter;
     private javax.swing.JButton jButtonDownloadAktualisieren;
     private javax.swing.JButton jButtonDownloadAlleStarten;
     private javax.swing.JButton jButtonDownloadAufraeumen;
@@ -1176,10 +1286,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JButton jButtonFilmSpeichern;
     private javax.swing.JButton jButtonFilmeLaden;
     private javax.swing.JCheckBoxMenuItem jCheckBoxIconKlein;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemFilterAnzeigen;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemMeldungen;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemShutDown;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
+    private javax.swing.JLabel jLabelFilter;
     private javax.swing.JMenu jMenuAbos;
     private javax.swing.JMenu jMenuAnsicht;
     private javax.swing.JMenu jMenuDatei;
@@ -1216,6 +1328,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparatorShutDown;
     private javax.swing.JTabbedPane jTabbedPane;
+    private javax.swing.JTextField jTextFieldFilter;
     private javax.swing.JToolBar jToolBar;
     // End of variables declaration//GEN-END:variables
 

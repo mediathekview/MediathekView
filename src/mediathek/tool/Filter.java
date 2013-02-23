@@ -109,7 +109,8 @@ public class Filter {
         return p;
     }
 
-    public static void checkPattern(JTextField tf) {
+    public static void checkPattern1(JTextField tf) {
+        // Hintergrund ändern wenn eine RegEx
         String text = tf.getText();
         if (Filter.isPattern(text)) {
             if (Filter.makePattern(text) == null) {
@@ -120,6 +121,20 @@ public class Filter {
             }
         } else {
             tf.setBackground(Color.WHITE);
+        }
+    }
+    public static void checkPattern2(JTextField tf) {
+        // Schriftfarbe ändern wenn eine RegEx
+        String text = tf.getText();
+        if (Filter.isPattern(text)) {
+            if (Filter.makePattern(text) == null) {
+                //soll Pattern sein, ist aber falsch
+                tf.setForeground(Color.RED);
+            } else {
+                tf.setForeground(Color.BLUE);
+            }
+        } else {
+            tf.setForeground(Color.BLACK);
         }
     }
 }
