@@ -35,7 +35,7 @@ import mediathek.tool.EscBeenden;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
-public class DialogEinstellungen extends javax.swing.JDialog {
+public class DialogEinstellungen extends javax.swing.JFrame {
 
     DDaten ddaten;
     public boolean ok = false;
@@ -58,20 +58,17 @@ public class DialogEinstellungen extends javax.swing.JDialog {
     private PanelMeldungen panelMeldungenSystem;
     private PanelMeldungen panelMeldungenPlayer;
     private JPanel panelLeer = new JPanel();
-    private Component parentComponent = null;
+    private Component parentComponent = this;
 
     /**
-     *
      * @param parent
      * @param modal
      * @param d
      * @param gguiFilme
      */
-    public DialogEinstellungen(java.awt.Frame parent, boolean modal, DDaten d) {
-        super(parent, modal);
-        parentComponent = parent;
+    public DialogEinstellungen(java.awt.Frame parent, DDaten d) {
         initComponents();
-        setTitle("Programmeinstellungen");
+        setTitle("Einstellungen");
         ddaten = d;
         init();
         initTree();

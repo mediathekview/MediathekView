@@ -126,7 +126,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         init();
         setSize(max);
         // Dialog mit den Programmeinstellungen einrichten
-        dialogEinstellungen = new DialogEinstellungen(null, false, ddaten);
+        dialogEinstellungen = new DialogEinstellungen(this, ddaten);
         // Prüfen obs ein Programmupdate gibt
         new CheckUpdate(this, ddaten).suchen();
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {

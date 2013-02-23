@@ -25,11 +25,30 @@ import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
 public class EscBeenden {
 
-    public EscBeenden(JDialog dialog) {
+    public EscBeenden(JFrame frame) {
+        // ESC zum Beenden
+        frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "x");
+        frame.getRootPane().getActionMap().put("x", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                beenden_();
+            }
+        });
+        // für den Mac
+        frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-cancel");
+        frame.getRootPane().getActionMap().put("mac-cancel", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                beenden_();
+            }
+        });
+    }
+   public EscBeenden(JDialog dialog) {
         // ESC zum Beenden
         dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "x");
         dialog.getRootPane().getActionMap().put("x", new AbstractAction() {
