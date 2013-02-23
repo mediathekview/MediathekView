@@ -565,8 +565,8 @@ public class PanelBlacklist extends PanelVorlage {
         }
 
         private void tus() {
-            Filter.checkPattern(jTextFieldThemaTitel);
-            Filter.checkPattern(jTextFieldTitel);
+            Filter.checkPattern1(jTextFieldThemaTitel);
+            Filter.checkPattern1(jTextFieldTitel);
             if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
                 tabelleLaden();
             }

@@ -34,6 +34,8 @@ public final class InfoPanel extends javax.swing.JPanel {
     }
 
     private void init() {
+        setBackground(new java.awt.Color(204, 204, 204));
+        setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         clearProgress();
         for (int i = 0; i < IDX_MAX; ++i) {
             idx[i] = "";

@@ -122,11 +122,26 @@ public class GuiFilme extends PanelVorlage {
         filmSpeichern_();
     }
 
+    public void filtern(String themaTitel) {
+        // erst mal alles Anzeigen
+        stopBeob = true;
+        jCheckBoxKeineAbos.setSelected(false);
+        jCheckBoxKeineGesehenen.setSelected(false);
+        Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = Boolean.FALSE.toString();
+        Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = Boolean.FALSE.toString();
+        jComboBoxZeitraum.setSelectedIndex(0);
+        Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = "0";
+        stopBeob = false;
+        checkBlacklist();
+        tabelleLaden(themaTitel);
+    }
     //===================================
     // Private
     //===================================
+
     private void init() {
         checkBlacklist();
+        panelFilterAnzeigen();
         jComboBoxZeitraum.setModel(new DefaultComboBoxModel(COMBO_ZEIT));
         try {
             jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
@@ -139,9 +154,11 @@ public class GuiFilme extends PanelVorlage {
         jComboBoxZeitraum.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(jComboBoxZeitraum.getSelectedIndex());
-                checkBlacklist();
-                tabelleLaden();
+                if (!stopBeob) {
+                    Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(jComboBoxZeitraum.getSelectedIndex());
+                    checkBlacklist();
+                    tabelleLaden();
+                }
             }
         });
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
@@ -248,13 +265,23 @@ public class GuiFilme extends PanelVorlage {
                 setInfo();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDownloads.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 checkBlacklist();
                 tabelleLaden();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_PANEL_FILTER_ANZEIGEN, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                panelFilterAnzeigen();
+            }
+        });
+    }
+
+    private void panelFilterAnzeigen() {
+        jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
     }
 
     private void themenLaden() {
@@ -381,7 +408,11 @@ public class GuiFilme extends PanelVorlage {
         return ret;
     }
 
-    private synchronized void tabelleLaden() {
+    private void tabelleLaden() {
+        tabelleLaden("");
+    }
+
+    private synchronized void tabelleLaden(String themaTitel) {
         try {
             boolean themaNichtDa = false;
             stopBeob = true;
@@ -397,10 +428,10 @@ public class GuiFilme extends PanelVorlage {
                 jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen("")));
                 jComboBoxFilterSender.setSelectedIndex(0);
                 jComboBoxFilterThema.setSelectedIndex(0);
-                listeInModellLaden(); // zum löschen der Tabelle
+                listeInModellLaden(themaTitel); // zum löschen der Tabelle
             } else {
                 //Filme neu laden
-                listeInModellLaden();
+                listeInModellLaden(themaTitel);
                 //Filter Sender
                 jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(sender));
                 jComboBoxFilterSender.setSelectedIndex(0);
@@ -412,7 +443,7 @@ public class GuiFilme extends PanelVorlage {
                     if (jComboBoxFilterSender.getSelectedIndex() == 0) {
                         // war wohl nix, der gewählte Sender wurde in die Blacklist eingetragen
                         filterSender = "";
-                        listeInModellLaden();
+                        listeInModellLaden(themaTitel);
                     }
                 }
                 jComboBoxFilterSender.setPopupVisible(senderOpen);
@@ -446,9 +477,17 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    private synchronized void listeInModellLaden() {
-        TModelFilm m = DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), jComboBoxFilterSender.getSelectedItem().toString(),
-                jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText());
+    private synchronized void listeInModellLaden(String filterThemaTitel) {
+        TModelFilm m;
+        if (filterThemaTitel.equals("")) {
+            // normal mit den Filtern aus dem Filterpanel
+            m = DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), jComboBoxFilterSender.getSelectedItem().toString(),
+                    jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText());
+        } else {
+            // jetzt nur den Filter aus der Toolbar
+            m = DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), "",
+                    "", "", filterThemaTitel);
+        }
         if (m.getRowCount() > 0) {
             if (jCheckBoxKeineGesehenen.isSelected() || jCheckBoxKeineAbos.isSelected() || jToggleButtonLivestram.isSelected()) {
                 m.filter(ddaten, jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jToggleButtonLivestram.isSelected());
@@ -469,7 +508,6 @@ public class GuiFilme extends PanelVorlage {
         jTextFieldFilterThemaTitel.setText("");
         //neu laden
         tabelleLaden();
-        stopBeob = false;
     }
 
     private void table1Select() {
@@ -1437,8 +1475,8 @@ public class GuiFilme extends PanelVorlage {
         }
 
         private void tus() {
-            Filter.checkPattern(jTextFieldFilterThemaTitel);
-            Filter.checkPattern(jTextFieldFilterTitel);
+            Filter.checkPattern1(jTextFieldFilterThemaTitel);
+            Filter.checkPattern1(jTextFieldFilterTitel);
             if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
                 tabelleLaden();
             }
