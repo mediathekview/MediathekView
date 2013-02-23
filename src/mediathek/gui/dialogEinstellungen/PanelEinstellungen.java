@@ -54,7 +54,7 @@ public class PanelEinstellungen extends PanelVorlage {
         }
         jComboBoxLook.setSelectedIndex(Integer.parseInt(Daten.system[Konstanten.SYSTEM_LOOK_NR]));
         jComboBoxLook.addActionListener(new BeobLook());
-        jButtonAnzahl.addActionListener(new ActionListener() {
+        jButtonHilfeAnzahl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new DialogHilfe(null, true, "\n"
@@ -102,7 +102,7 @@ public class PanelEinstellungen extends PanelVorlage {
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jSpinnerDownload = new javax.swing.JSpinner();
         jCheckBoxEchtzeit = new javax.swing.JCheckBox();
-        jButtonAnzahl = new javax.swing.JButton();
+        jButtonHilfeAnzahl = new javax.swing.JButton();
         javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
         jCheckBoxSuchen = new javax.swing.JCheckBox();
         jButtonSuchen = new javax.swing.JButton();
@@ -118,7 +118,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jCheckBoxEchtzeit.setText("Echtzeitsuche im Suchfeld \"Titel/Thema\"");
 
-        jButtonAnzahl.setText("Hilfe");
+        jButtonHilfeAnzahl.setText("Hilfe");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -132,7 +132,7 @@ public class PanelEinstellungen extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonAnzahl))
+                        .addComponent(jButtonHilfeAnzahl))
                     .addComponent(jCheckBoxEchtzeit))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -145,7 +145,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonAnzahl))
+                    .addComponent(jButtonHilfeAnzahl))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -232,7 +232,7 @@ public class PanelEinstellungen extends PanelVorlage {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAnzahl;
+    private javax.swing.JButton jButtonHilfeAnzahl;
     private javax.swing.JButton jButtonInfos;
     private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
