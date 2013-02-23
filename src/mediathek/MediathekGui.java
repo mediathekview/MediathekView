@@ -1100,9 +1100,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jTextFieldFilter.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 2, true), "Thema / Titel", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.BOTTOM));
         jTextFieldFilter.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        jTextFieldFilter.setMinimumSize(new java.awt.Dimension(4, 10));
         jTextFieldFilter.setOpaque(false);
-        jTextFieldFilter.setPreferredSize(new java.awt.Dimension(10, 10));
         jToolBar.add(jTextFieldFilter);
 
         jButtonDelFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
