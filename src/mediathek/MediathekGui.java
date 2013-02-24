@@ -903,10 +903,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonAbosLoeschen = new javax.swing.JButton();
         jButtonAboAendern = new javax.swing.JButton();
         filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        jLabelFilter = new javax.swing.JLabel();
         jPanelFilter = new javax.swing.JPanel();
         jTextFieldFilter = new javax.swing.JTextField();
         jButtonDelFilter = new javax.swing.JButton();
+        jLabelFilter = new javax.swing.JLabel();
         jTabbedPane = new javax.swing.JTabbedPane();
         javax.swing.JMenuBar jMenuBar = new javax.swing.JMenuBar();
         jMenuDatei = new javax.swing.JMenu();
@@ -1095,11 +1095,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jToolBar.add(jButtonAboAendern);
         jToolBar.add(filler6);
 
-        jLabelFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/viewmag_22.png"))); // NOI18N
-        jLabelFilter.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
-        jToolBar.add(jLabelFilter);
-
-        jPanelFilter.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true), "Thema / Titel", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.BOTTOM));
+        jPanelFilter.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true), "Thema / Titel", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM));
         jPanelFilter.setMaximumSize(new java.awt.Dimension(250, 50));
         jPanelFilter.setOpaque(false);
         jPanelFilter.setPreferredSize(new java.awt.Dimension(250, 48));
@@ -1111,13 +1107,17 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonDelFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
         jButtonDelFilter.setBorder(javax.swing.BorderFactory.createEmptyBorder(6, 6, 6, 6));
 
+        jLabelFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/viewmag_22.png"))); // NOI18N
+        jLabelFilter.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
+
         javax.swing.GroupLayout jPanelFilterLayout = new javax.swing.GroupLayout(jPanelFilter);
         jPanelFilter.setLayout(jPanelFilterLayout);
         jPanelFilterLayout.setHorizontalGroup(
             jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelFilterLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTextFieldFilter, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
+                .addComponent(jLabelFilter)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextFieldFilter, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonDelFilter))
         );
@@ -1126,7 +1126,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             .addGroup(jPanelFilterLayout.createSequentialGroup()
                 .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jTextFieldFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonDelFilter))
+                    .addComponent(jButtonDelFilter)
+                    .addComponent(jLabelFilter))
                 .addGap(0, 0, 0))
         );
 
