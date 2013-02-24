@@ -73,6 +73,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import org.jdesktop.swingx.JXSearchField;
 import org.simplericity.macify.eawt.Application;
 import org.simplericity.macify.eawt.ApplicationEvent;
 import org.simplericity.macify.eawt.ApplicationListener;
@@ -310,10 +311,29 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
     }
 
+    /**
+     * Initialisiert das SearchField
+     */
+    private void initSearchField() {
+        jTextFieldFilter.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
+        jTextFieldFilter.setSearchMode(JXSearchField.SearchMode.INSTANT);
+        jTextFieldFilter.setUseNativeSearchFieldIfPossible(true);
+        jTextFieldFilter.getFindButton().setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/viewmag_22.png")));
+        jTextFieldFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                Filter.checkPattern2(jTextFieldFilter);
+                ddaten.guiFilme.filtern(jTextFieldFilter.getText());
+            }
+        });
+
+    }
+
     private void init() {
         initTabs();
         initMenue();
         initToolBar();
+        initSearchField();
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start_(ListenerFilmeLadenEvent event) {
@@ -560,12 +580,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getName());
             }
         });
-        jButtonDelFilter.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jTextFieldFilter.setText("");
-            }
-        });
         jTextFieldFilter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -744,10 +758,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     private void filterAnzeigen(boolean anz) {
-        jLabelFilter.setVisible(anz);
         jTextFieldFilter.setVisible(anz);
-        jButtonDelFilter.setVisible(anz);
-        jPanelFilter.setVisible(anz);
     }
 
     /**
@@ -902,11 +913,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonAbosAusschalten = new javax.swing.JButton();
         jButtonAbosLoeschen = new javax.swing.JButton();
         jButtonAboAendern = new javax.swing.JButton();
+        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        jPanelFilter = new javax.swing.JPanel();
-        jTextFieldFilter = new javax.swing.JTextField();
-        jButtonDelFilter = new javax.swing.JButton();
-        jLabelFilter = new javax.swing.JLabel();
+        jTextFieldFilter = new org.jdesktop.swingx.JXSearchField();
+        filler8 = new javax.swing.Box.Filler(new java.awt.Dimension(2, 0), new java.awt.Dimension(2, 0), new java.awt.Dimension(2, 32767));
         jTabbedPane = new javax.swing.JTabbedPane();
         javax.swing.JMenuBar jMenuBar = new javax.swing.JMenuBar();
         jMenuDatei = new javax.swing.JMenu();
@@ -985,7 +996,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonFilmeLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_32.png"))); // NOI18N
         jButtonFilmeLaden.setToolTipText("neue Filmliste laden");
         jButtonFilmeLaden.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
-        jButtonFilmeLaden.setFocusable(false);
         jButtonFilmeLaden.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButtonFilmeLaden.setMinimumSize(new java.awt.Dimension(50, 60));
         jButtonFilmeLaden.setOpaque(false);
@@ -1093,45 +1103,21 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonAboAendern.setOpaque(false);
         jButtonAboAendern.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonAboAendern);
+        jToolBar.add(filler7);
+        jToolBar.add(filler5);
         jToolBar.add(filler6);
 
-        jPanelFilter.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 2, true), "Thema / Titel", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM));
-        jPanelFilter.setMaximumSize(new java.awt.Dimension(250, 50));
-        jPanelFilter.setOpaque(false);
-        jPanelFilter.setPreferredSize(new java.awt.Dimension(250, 48));
-
         jTextFieldFilter.setBackground(new java.awt.Color(230, 230, 230));
-        jTextFieldFilter.setBorder(null);
-
-        jButtonDelFilter.setBackground(new java.awt.Color(204, 204, 204));
-        jButtonDelFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
-        jButtonDelFilter.setBorder(javax.swing.BorderFactory.createEmptyBorder(6, 6, 6, 6));
-
-        jLabelFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/viewmag_22.png"))); // NOI18N
-        jLabelFilter.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
-
-        javax.swing.GroupLayout jPanelFilterLayout = new javax.swing.GroupLayout(jPanelFilter);
-        jPanelFilter.setLayout(jPanelFilterLayout);
-        jPanelFilterLayout.setHorizontalGroup(
-            jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelFilterLayout.createSequentialGroup()
-                .addComponent(jLabelFilter)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldFilter, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonDelFilter))
-        );
-        jPanelFilterLayout.setVerticalGroup(
-            jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelFilterLayout.createSequentialGroup()
-                .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jTextFieldFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonDelFilter)
-                    .addComponent(jLabelFilter))
-                .addGap(0, 0, 0))
-        );
-
-        jToolBar.add(jPanelFilter);
+        jTextFieldFilter.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jTextFieldFilter.setToolTipText("Thema/Titel suchen");
+        jTextFieldFilter.setDisabledTextColor(new java.awt.Color(102, 102, 102));
+        jTextFieldFilter.setMaximumSize(new java.awt.Dimension(300, 35));
+        jTextFieldFilter.setName("Thema/Titel"); // NOI18N
+        jTextFieldFilter.setOuterMargin(new java.awt.Insets(0, 0, 0, 0));
+        jTextFieldFilter.setPreferredSize(new java.awt.Dimension(300, 25));
+        jTextFieldFilter.setPrompt("Thema/Titel");
+        jToolBar.add(jTextFieldFilter);
+        jToolBar.add(filler8);
 
         jPanel1.add(jToolBar, java.awt.BorderLayout.PAGE_START);
 
@@ -1298,12 +1284,14 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler5;
     private javax.swing.Box.Filler filler6;
+    private javax.swing.Box.Filler filler7;
+    private javax.swing.Box.Filler filler8;
     private javax.swing.JButton jButtonAboAendern;
     private javax.swing.JButton jButtonAbosAusschalten;
     private javax.swing.JButton jButtonAbosEinschalten;
     private javax.swing.JButton jButtonAbosLoeschen;
-    private javax.swing.JButton jButtonDelFilter;
     private javax.swing.JButton jButtonDownloadAktualisieren;
     private javax.swing.JButton jButtonDownloadAlleStarten;
     private javax.swing.JButton jButtonDownloadAufraeumen;
@@ -1318,7 +1306,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemShutDown;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
-    private javax.swing.JLabel jLabelFilter;
     private javax.swing.JMenu jMenuAbos;
     private javax.swing.JMenu jMenuAnsicht;
     private javax.swing.JMenu jMenuDatei;
@@ -1348,7 +1335,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JMenuItem jMenuItemFilmlisteLaden;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanelFilter;
     private javax.swing.JPanel jPanelInfo;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
@@ -1357,7 +1343,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparatorShutDown;
     private javax.swing.JTabbedPane jTabbedPane;
-    private javax.swing.JTextField jTextFieldFilter;
+    private org.jdesktop.swingx.JXSearchField jTextFieldFilter;
     private javax.swing.JToolBar jToolBar;
     // End of variables declaration//GEN-END:variables
 
