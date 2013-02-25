@@ -425,10 +425,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
             //swr
             ret = url.replace(".l.mp4", ".m.mp4");
-        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekWdr.SENDER) && !arr[DOWNLOAD_THEMA_NR].equals("Rockpalast")) {
-            //WDR
-            ret = url.replace("-l.mp4", "-m.mp4");
-            // funktioniert nur bei einem Teil (Thema: Rockpalast geht nie)
+//        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekWdr.SENDER) && !arr[DOWNLOAD_THEMA_NR].equals("Rockpalast")) {
+//            //WDR
+//            ret = url.replace("-l.mp4", "-m.mp4");
+//            // funktioniert nur bei einem Teil (Thema: Rockpalast geht nie)
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER) || arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
             // ZDF und 3sat
             // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_51k_p7v9.mp4" system-bitrate="62000">

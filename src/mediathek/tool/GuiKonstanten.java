@@ -24,14 +24,6 @@ import java.awt.Color;
 public class GuiKonstanten {
 
     public static final String TextUpdateSuchen = "Eimal am Tag nach einer neuen Programmversion suchen";
-    //Sender
-//    public static final String SENDER_PREFX = "xml"; //für den XML-Standard
-    public static final String[][] THEME = {{"", ""},//das muss da sein
-        {"System", ""}, // und das auch!!
-        {"Metal", "javax.swing.plaf.metal.MetalLookAndFeel"},
-        {"Nimbus", "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"},
-        {"GTK-Linux", "com.sun.java.swing.plaf.gtk.GTKLookAndFeel"}
-    };
     public static final String IMPORT_WEBSITE = "import-website";
     public static final String IMPORT_URL = "import-url";
     public static final String IMPORT_DATEI = "import-datei";
