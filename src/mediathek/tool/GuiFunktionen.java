@@ -34,6 +34,14 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 
 public class GuiFunktionen extends Funktionen {
+    //Sender
+    //    public static final String SENDER_PREFX = "xml"; //für den XML-Standard
+
+    public static final String[][] THEME = {{"", ""},
+        {"System", ""},
+        {"Metal", "javax.swing.plaf.metal.MetalLookAndFeel"},
+        {"Nimbus", "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"},
+        {"GTK-Linux", "com.sun.java.swing.plaf.gtk.GTKLookAndFeel"}};
 
     public static boolean setLook(JFrame frame) {
         int look;
@@ -57,7 +65,7 @@ public class GuiFunktionen extends Funktionen {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                     break;
                 default:
-                    UIManager.setLookAndFeel(GuiKonstanten.THEME[look][1]);
+                    UIManager.setLookAndFeel(THEME[look][1]);
                     break;
             }
             SwingUtilities.updateComponentTreeUI(frame);

@@ -324,16 +324,23 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 while (itProg.hasNext()) {
                     datenProg = itProg.next();
                     // Programmpfad prüfen
-                    //if (!new File(datenProg.arr[Konstanten.PROGRAMM_PROGRAMMPFAD_NR]).exists()) {
                     if (!new File(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]).canExecute()) {
-                        // Programme prüfen
-                        ret = false;
-                        text += PIPE + LEER + "Falscher Programmpfad!\n";
-                        text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME_NR] + "\n";
-                        text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] + "\n";
-                        if (!datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(File.separator)) {
-                            text += PIPE + LEER + PFEIL + "Wenn das Programm nicht im Systempfad liegt, " + "\n";
-                            text += PIPE + LEER + LEER + "wird der Start nicht klappen!" + "\n";
+                        // dann noch mit RuntimeExec versuchen
+                        RuntimeExec r = new RuntimeExec(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]);
+                        Process pr = r.exec();
+                        if (pr != null) {
+                            // dann passts ja
+                            pr.destroy();
+                        } else {
+                            // läßt sich nicht starten
+                            ret = false;
+                            text += PIPE + LEER + "Falscher Programmpfad!\n";
+                            text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME_NR] + "\n";
+                            text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] + "\n";
+                            if (!datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(File.separator)) {
+                                text += PIPE + LEER + PFEIL + "Wenn das Programm nicht im Systempfad liegt, " + "\n";
+                                text += PIPE + LEER + LEER + "wird der Start nicht klappen!" + "\n";
+                            }
                         }
                     }
                 }
@@ -347,7 +354,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         new DialogHilfe(null, true, text).setVisible(true);
         return ret;
     }
-
 //    public static void vlcPfadSchreiben(DDaten dd) {
 //        String befehl = GuiFunktionenProgramme.getPfadVlc(dd);
 //        if (!befehl.equals("")) {

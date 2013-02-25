@@ -44,9 +44,9 @@ public class PanelEinstellungen extends PanelVorlage {
         init();
         jCheckBoxEchtzeit.addActionListener(new BeobCheckBox());
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
-        String[] theme = new String[GuiKonstanten.THEME.length];
-        for (int i = 0; i < GuiKonstanten.THEME.length; ++i) {
-            theme[i] = GuiKonstanten.THEME[i][0];
+        String[] theme = new String[GuiFunktionen.THEME.length];
+        for (int i = 0; i < GuiFunktionen.THEME.length; ++i) {
+            theme[i] = GuiFunktionen.THEME[i][0];
         }
         jComboBoxLook.setModel(new DefaultComboBoxModel(theme));
         if (Daten.system[Konstanten.SYSTEM_LOOK_NR].equals("")) {

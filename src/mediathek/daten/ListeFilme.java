@@ -212,28 +212,28 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         addFilmVomSender(new DatenFilm(MediathekKika.SENDER, THEMA_LIVE, ""/* urlThema */, MediathekKika.SENDER + " " + THEMA_LIVE, "http://kikaplus.net/clients/kika/player/myplaylist.php?channel=1&programm=1&videoid=1", ""/* datum */, ""/* zeit */));
     }
 
-    public synchronized void getModelTabFilme___(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {
-        modelFilm.setRowCount(0);
-        if (this.size() != 0) {
-            if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("")) {
-                addObjectDataTabFilme(ddaten, modelFilm);
-            } else {
-                ListeFilme liste = new ListeFilme();
-                DatenFilm film;
-                Iterator<DatenFilm> it = this.iterator();
-                while (it.hasNext()) {
-                    film = it.next();
-                    // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
-                    //                     String imSender, String imThema, String imText) {
-                    if (Filter.filterAufAboPruefen(filterSender, filterThema, filterTitel, filterThemaTitel,
-                            film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
-                        liste.add(film);
-                    }
-                }
-                liste.addObjectDataTabFilme(ddaten, modelFilm);
-            }
-        }
-    }
+//    public synchronized void getModelTabFilme___(DDaten ddaten, TModelFilm modelFilm, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {
+//        modelFilm.setRowCount(0);
+//        if (this.size() != 0) {
+//            if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("")) {
+//                addObjectDataTabFilme(ddaten, modelFilm);
+//            } else {
+//                ListeFilme liste = new ListeFilme();
+//                DatenFilm film;
+//                Iterator<DatenFilm> it = this.iterator();
+//                while (it.hasNext()) {
+//                    film = it.next();
+//                    // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
+//                    //                     String imSender, String imThema, String imText) {
+//                    if (Filter.filterAufAboPruefen(filterSender, filterThema, filterTitel, filterThemaTitel,
+//                            film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
+//                        liste.add(film);
+//                    }
+//                }
+//                liste.addObjectDataTabFilme(ddaten, modelFilm);
+//            }
+//        }
+//    }
 
     public synchronized TModelFilm getModelTabFilme(DDaten ddaten, TModelFilm modelFilm__, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {
         TModelFilm modelFilm = new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES);
