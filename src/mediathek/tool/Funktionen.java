@@ -31,6 +31,11 @@ public class Funktionen {
     public static final int OS_WIN_64BIT = 2;
     public static final int OS_LINUX = 3;
     public static final int OS_MAC = 4;
+    public static final String OS_UNKNOWN_STRING = "";
+    public static final String OS_WIN_32BIT_STRING = "Windows";
+    public static final String OS_WIN_64BIT_STRING = "Windows";
+    public static final String OS_LINUX_STRING = "Linux";
+    public static final String OS_MAC_STRING = "Mac";
 
     public static int getOs() {
         int os = OS_UNKNOWN;
@@ -46,6 +51,24 @@ public class Funktionen {
             os = OS_LINUX;
         } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             os = OS_MAC;
+        }
+        return os;
+    }
+
+    public static String getOsString() {
+        String os = OS_UNKNOWN_STRING;
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            if (System.getenv("ProgramFiles") != null) {
+                // win 32Bit
+                os = OS_WIN_32BIT_STRING;
+            } else if (System.getenv("ProgramFiles(x86)") != null) {
+                // win 64Bit
+                os = OS_WIN_64BIT_STRING;
+            }
+        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            os = OS_LINUX_STRING;
+        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            os = OS_MAC_STRING;
         }
         return os;
     }

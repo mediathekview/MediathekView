@@ -37,6 +37,7 @@ import mediathek.controller.io.ListePsetVorlagen;
 import mediathek.daten.DDaten;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Log;
@@ -97,7 +98,8 @@ public class PanelPsetImport extends PanelVorlage {
         jButtonImportStandard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
+                //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
+                GuiFunktionenProgramme.addVorlagen(ddaten, new ListePsetVorlagen().getStandarset(ddaten, Funktionen.getOsString()), false /* auto */);
             }
         });
     }

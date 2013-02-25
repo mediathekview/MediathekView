@@ -22,12 +22,14 @@ package mediathek.gui.dialog;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import mediathek.controller.io.ListePsetVorlagen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.PanelPsetLang;
+import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
 
@@ -98,7 +100,8 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             status = STAT_PFAD;
         } else {
             // nur dann automatisch Standardprogramme einrichten, sonst fragen
-            ListePset pSet = GuiFunktionenProgramme.getStandardprogramme(ddaten);
+            //ListePset pSet = GuiFunktionenProgramme.getStandardprogramme(ddaten);
+            ListePset pSet = ListePsetVorlagen.getStandarset(ddaten, Funktionen.getOsString());
             if (pSet != null) {
                 ddaten.listePset.addPset(pSet);
                 status = STAT_FERTIG;
@@ -124,7 +127,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         jCheckBoxAlleEinstellungen.setVisible(true);
         if (ddaten.listePset.size() == 0) {
             // Standardset hinzufügen
-            ddaten.listePset.addPset(GuiFunktionenProgramme.getStandardprogramme(ddaten));
+            ddaten.listePset.addPset(ListePsetVorlagen.getStandarset(ddaten, Funktionen.getOsString()));
         }
         if (jCheckBoxAlleEinstellungen.isSelected()) {
             jScrollPane1.setViewportView(new PanelPsetLang(ddaten, parentComponent, ddaten.listePset));

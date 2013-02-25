@@ -19,6 +19,7 @@
  */
 package mediathek.controller.io;
 
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -26,7 +27,11 @@ import java.util.LinkedList;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
+import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
+import mediathek.daten.ListePset;
+import mediathek.file.GetFile;
+import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.tool.TModel;
@@ -52,7 +57,6 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     public static final String[] PGR_COLUMN_NAMES = {PGR_NAME, PGR_BESCHREIBUNG, PGR_BS, PGR_URL};
     // private
     private final int timeout = 10000;
-    private final String url = Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN;
 
     public TModel getTModel(String bs) {
         LinkedList<String[]> tmp = new LinkedList<String[]>();
@@ -90,7 +94,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             XMLStreamReader parser;
             InputStreamReader inReader;
             URLConnection conn;
-            conn = new URL(url).openConnection();
+            conn = new URL(Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN).openConnection();
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
             conn.setReadTimeout(timeout);
             conn.setConnectTimeout(timeout);
@@ -110,10 +114,56 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(398001963,Log.FEHLER_ART_PROG,"VorlageProgrammgruppen.getListe", ex);
+            Log.fehlerMeldung(398001963, Log.FEHLER_ART_PROG, "VorlageProgrammgruppen.getListe", ex);
             return false;
         }
         return true;
+    }
+
+    public static ListePset getStandarset(DDaten ddaten, String bs) {
+        ListePset pSet = null;
+        String[] vorlage = null;
+        ListePsetVorlagen lv = new ListePsetVorlagen();
+        if (lv.getListe()) {
+            for (String[] ar : lv) {
+                if (ar[PGR_NAME_NR].equalsIgnoreCase("Standardset " + bs)) {
+                    vorlage = ar;
+                    break;
+                }
+            }
+            if (vorlage != null) {
+                if (!vorlage[PGR_URL_NR].equals("")) {
+                    pSet = IoXmlLesen.importPset(ddaten, vorlage[ListePsetVorlagen.PGR_URL_NR], true);
+                }
+            }
+        }
+        if (pSet == null) {
+            // dann nehmen wir halt die im jar-File
+            pSet = getStandardprogramme(ddaten);
+        }
+        return pSet;
+    }
+
+    public static ListePset getStandardprogramme(DDaten ddaten) {
+        // liefert das Standard Programmset für das entsprechende BS
+        ListePset pSet;
+        InputStream datei;
+        switch (Funktionen.getOs()) {
+            case Funktionen.OS_LINUX:
+                datei = new GetFile().getPsetVorlageLinux();
+                break;
+            case Funktionen.OS_MAC:
+                datei = new GetFile().getPsetVorlageMac();
+                break;
+            case Funktionen.OS_WIN_32BIT:
+            case Funktionen.OS_WIN_64BIT:
+            case Funktionen.OS_UNKNOWN:
+            default:
+                datei = new GetFile().getPsetVorlageWindows();
+        }
+        // Standardgruppen laden
+        pSet = IoXmlLesen.importPset(ddaten, datei, true);
+        return pSet;
     }
 
     private boolean get(XMLStreamReader parser, int event, String xmlElem, String[] xmlNames, String[] strRet) {
@@ -141,7 +191,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
         } catch (Exception ex) {
             ret = false;
-            Log.fehlerMeldung(467256394,Log.FEHLER_ART_PROG,"VorlageProgrammgruppen.get", ex);
+            Log.fehlerMeldung(467256394, Log.FEHLER_ART_PROG, "VorlageProgrammgruppen.get", ex);
         }
         return ret;
     }
