@@ -104,6 +104,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             ListePset pSet = ListePsetVorlagen.getStandarset(ddaten, Funktionen.getOsString());
             if (pSet != null) {
                 ddaten.listePset.addPset(pSet);
+                Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = pSet.version;
                 status = STAT_FERTIG;
             } else {
                 status = STAT_PSET;
@@ -127,7 +128,11 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         jCheckBoxAlleEinstellungen.setVisible(true);
         if (ddaten.listePset.size() == 0) {
             // Standardset hinzufügen
-            ddaten.listePset.addPset(ListePsetVorlagen.getStandarset(ddaten, Funktionen.getOsString()));
+            ListePset pSet = ListePsetVorlagen.getStandarset(ddaten, Funktionen.getOsString());
+            if (pSet != null) {
+                ddaten.listePset.addPset(pSet);
+                Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = pSet.version;
+            }
         }
         if (jCheckBoxAlleEinstellungen.isSelected()) {
             jScrollPane1.setViewportView(new PanelPsetLang(ddaten, parentComponent, ddaten.listePset));

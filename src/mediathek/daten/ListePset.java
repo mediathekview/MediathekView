@@ -36,6 +36,7 @@ public class ListePset extends LinkedList<DatenPset> {
     public static final String MUSTER_PFAD_VLC = "PFAD_VLC";
     public static final String MUSTER_PFAD_FLV = "PFAD_FLVSTREAMER";
     public static final String MUSTER_PFAD_SCRIPT = "PFAD_SCRIPT";
+    public String version = "";
 
     public boolean nameExists(String name) {
         boolean ret = false;
