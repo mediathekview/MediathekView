@@ -35,6 +35,7 @@ import javax.swing.event.ListSelectionListener;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.ListePsetVorlagen;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.Funktionen;
@@ -95,6 +96,11 @@ public class PanelPsetImport extends PanelVorlage {
         });
         jTableVorlagen.getSelectionModel().addListSelectionListener(new BeobTableSelect());
         jTableVorlagen.setModel(new TModel(new Object[][]{}, ListePsetVorlagen.PGR_COLUMN_NAMES));
+        if (!Daten.debug) {
+            jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMinWidth(0);
+            jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setPreferredWidth(0);
+            jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMaxWidth(0);
+        }
         jButtonImportStandard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -116,6 +122,11 @@ public class PanelPsetImport extends PanelVorlage {
 
     private void tabelleLaden() {
         jTableVorlagen.setModel(listeVorlagen.getTModel(jComboBoxBs.getSelectedItem().toString()));
+        if (!Daten.debug) {
+            jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMinWidth(0);
+            jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setPreferredWidth(0);
+            jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMaxWidth(0);
+        }
     }
 
     private void table1Select() {
