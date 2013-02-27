@@ -223,27 +223,26 @@ public class PanelPsetLang extends PanelVorlage {
         tabellePset.setModel(listePset.getModel());
         spaltenSetzen();
         tabellePset.setSpalten();
-//        tabellePset.updateUI();
         stopBeob = false;
     }
 
     private void spaltenSetzen() {
         for (int i = 0; i < tabellePset.getColumnCount(); ++i) {
             if (i == DatenPset.PROGRAMMSET_NAME_NR) {
-                tabellePset.getColumnModel().getColumn(i).setMinWidth(10);
-                tabellePset.getColumnModel().getColumn(i).setMaxWidth(3000);
-                tabellePset.getColumnModel().getColumn(i).setPreferredWidth(200);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(10);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(200);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(3000);
             } else if (i == DatenPset.PROGRAMMSET_IST_SPEICHERN_NR
                     || i == DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR
                     || i == DatenPset.PROGRAMMSET_IST_BUTTON_NR
                     || i == DatenPset.PROGRAMMSET_IST_ABO_NR) {
-                tabellePset.getColumnModel().getColumn(i).setMinWidth(10);
-                tabellePset.getColumnModel().getColumn(i).setMaxWidth(3000);
-                tabellePset.getColumnModel().getColumn(i).setPreferredWidth(100);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(10);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(100);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(3000);
             } else {
-                tabellePset.getColumnModel().getColumn(i).setMinWidth(0);
-                tabellePset.getColumnModel().getColumn(i).setMaxWidth(0);
-                tabellePset.getColumnModel().getColumn(i).setPreferredWidth(0);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(0);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(0);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(0);
             }
         }
     }
@@ -318,13 +317,13 @@ public class PanelPsetLang extends PanelVorlage {
             if (i == DatenProg.PROGRAMM_PRAEFIX_NR
                     || i == DatenProg.PROGRAMM_RESTART_NR
                     || i == DatenProg.PROGRAMM_SUFFIX_NR) {
-                tabelleProgramme.getColumnModel().getColumn(i).setMinWidth(10);
-                tabelleProgramme.getColumnModel().getColumn(i).setMaxWidth(3000);
-                tabelleProgramme.getColumnModel().getColumn(i).setPreferredWidth(100);
+                tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMinWidth(10);
+                tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMaxWidth(3000);
+                tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setPreferredWidth(75);
             } else {
-                tabelleProgramme.getColumnModel().getColumn(i).setMinWidth(10);
-                tabelleProgramme.getColumnModel().getColumn(i).setMaxWidth(3000);
-                tabelleProgramme.getColumnModel().getColumn(i).setPreferredWidth(200);
+                tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMinWidth(10);
+                tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMaxWidth(3000);
+                tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setPreferredWidth(150);
             }
         }
     }

@@ -148,6 +148,14 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 dialogOkCancel.setVisible(true);
                 if (dialogOkCancel.ok) {
                     Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = lp.version;
+                    // die Zielpafade anpassen
+                    ListePset org = ddaten.listePset.getListeSpeichern();
+                    for (DatenPset ps : lp.getListeSpeichern()) {
+                        ps.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR];
+                        ps.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR];
+                        ps.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR];
+                        ps.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR];
+                    }
                     for (DatenPset ps : lp) {
                         // die bestehenden Sets sollen nicht gestört werden
                         ps.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();

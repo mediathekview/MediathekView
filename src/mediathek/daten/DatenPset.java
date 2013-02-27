@@ -43,31 +43,29 @@ public class DatenPset {
     public static final int PROGRAMMSET_ZIEL_PFAD_NR = 4;
     public static final String PROGRAMMSET_ZIEL_DATEINAME = "Zieldateiname";
     public static final int PROGRAMMSET_ZIEL_DATEINAME_NR = 5;
-    public static final String PROGRAMMSET_ZIEL_FRAGEN = "Ziel-abfragen";
-    //public static final int PROGRAMMSET_ZIEL_FRAGEN_NR = 6;
     public static final String PROGRAMMSET_THEMA_ANLEGEN = "Thema-anlegen";
-    public static final int PROGRAMMSET_THEMA_ANLEGEN_NR = 7;
+    public static final int PROGRAMMSET_THEMA_ANLEGEN_NR = 6;
     public static final String PROGRAMMSET_IST_ABSPIELEN = "Abspielen";
-    public static final int PROGRAMMSET_IST_ABSPIELEN_NR = 8;
+    public static final int PROGRAMMSET_IST_ABSPIELEN_NR = 7;
     public static final String PROGRAMMSET_IST_SPEICHERN = "Speichern";
-    public static final int PROGRAMMSET_IST_SPEICHERN_NR = 9;
+    public static final int PROGRAMMSET_IST_SPEICHERN_NR = 8;
     public static final String PROGRAMMSET_IST_BUTTON = "Button";
-    public static final int PROGRAMMSET_IST_BUTTON_NR = 10;
+    public static final int PROGRAMMSET_IST_BUTTON_NR = 9;
     public static final String PROGRAMMSET_IST_ABO = "Abo";
-    public static final int PROGRAMMSET_IST_ABO_NR = 11;
+    public static final int PROGRAMMSET_IST_ABO_NR = 10;
     public static final String PROGRAMMSET_LAENGE_BESCHRAENKEN = "Laenge";
-    public static final int PROGRAMMSET_LAENGE_BESCHRAENKEN_NR = 12;
+    public static final int PROGRAMMSET_LAENGE_BESCHRAENKEN_NR = 11;
     public static final String PROGRAMMSET_MAX_LAENGE = "max-Laenge";
-    public static final int PROGRAMMSET_MAX_LAENGE_NR = 13;
+    public static final int PROGRAMMSET_MAX_LAENGE_NR = 12;
     public static final String PROGRAMMSET_BESCHREIBUNG = "Beschreibung";
-    public static final int PROGRAMMSET_BESCHREIBUNG_NR = 14;
-    public static final int PROGRAMMSET_MAX_ELEM = 15;
+    public static final int PROGRAMMSET_BESCHREIBUNG_NR = 13;
+    public static final int PROGRAMMSET_MAX_ELEM = 14;
     public static final String[] PROGRAMMSET_COLUMN_NAMES = {PROGRAMMSET_NAME, PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
-        PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_ZIEL_FRAGEN, PROGRAMMSET_THEMA_ANLEGEN,
+        PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
         PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
         PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_BESCHREIBUNG};
     public static final String[] PROGRAMMSET_COLUMN_NAMES_ = {"Setname", PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
-        PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_ZIEL_FRAGEN, PROGRAMMSET_THEMA_ANLEGEN,
+        PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
         PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
         PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_BESCHREIBUNG};
     public String[] arr;
