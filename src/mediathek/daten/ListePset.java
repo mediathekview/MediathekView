@@ -161,7 +161,7 @@ public class ListePset extends LinkedList<DatenPset> {
         return neu;
     }
 
-    public boolean addPset(DatenPset gruppe) {
+    public boolean addPset(DatenPset datenPset) {
         boolean abspielen = false;
         Iterator<DatenPset> it = this.iterator();
         while (it.hasNext()) {
@@ -171,9 +171,10 @@ public class ListePset extends LinkedList<DatenPset> {
             }
         }
         if (abspielen) {
-            gruppe.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
+            datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
         }
-        boolean ret = add(gruppe);
+        boolean ret = add(datenPset);
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
         return ret;
     }
 
@@ -185,6 +186,7 @@ public class ListePset extends LinkedList<DatenPset> {
                 ret = false;
             }
         }
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
         return ret;
     }
 
@@ -197,6 +199,7 @@ public class ListePset extends LinkedList<DatenPset> {
                 ret = false;
             }
         }
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
         return ret;
     }
 

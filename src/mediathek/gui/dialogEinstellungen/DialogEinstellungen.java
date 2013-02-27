@@ -144,8 +144,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         final String NAME_programmset = "Set bearbeiten";
         final String NAME_programmsetImportieren = "Set importieren";
         // Infos
-        final String NAME_allgemeineInfos = "Pfade";
-        //final String NAME_infosStarts = "laufende Programme";
+        final String NAME_allgemeineInfos = "Infos";
         final String NAME_history = "History";
         final String NAME_logfile = "erledigte Abos";
         final String NAME_meldungen = "Meldungen";
@@ -189,11 +188,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         treeNodeStart.add(treeNodeDownloads);
         // ===============================================================================
         // ####### Infos #########
-        DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode("Infos");
-        DefaultMutableTreeNode treeNodeAllgemeineInfos = new DefaultMutableTreeNode(NAME_allgemeineInfos);
-        treeNodeInfos.add(treeNodeAllgemeineInfos);
-        //DefaultMutableTreeNode treeNodeInfosStarts = new DefaultMutableTreeNode(NAME_infosStarts);
-        //treeNodeInfos.add(treeNodeInfosStarts);
+        DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode(NAME_allgemeineInfos);
         DefaultMutableTreeNode treeNodeHistory = new DefaultMutableTreeNode(NAME_history);
         treeNodeInfos.add(treeNodeHistory);
         DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);

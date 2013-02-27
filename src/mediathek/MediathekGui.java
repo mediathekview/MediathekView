@@ -132,7 +132,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         // Dialog mit den Programmeinstellungen einrichten
         dialogEinstellungen = new DialogEinstellungen(this, ddaten);
         // Prüfen obs ein Programmupdate gibt
-        new CheckUpdate(this, ddaten).suchen();
+        new CheckUpdate(ddaten).suchen();
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.filmlisteZuAlt()) {
                 Log.systemMeldung("Neue Fillmliste laden");
@@ -718,7 +718,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemVideoplayer.isSelected());
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
             }
         });
         jCheckBoxMenuItemMeldungen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR]));

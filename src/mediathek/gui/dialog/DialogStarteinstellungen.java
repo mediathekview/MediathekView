@@ -22,7 +22,7 @@ package mediathek.gui.dialog;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.controller.io.ListePsetVorlagen;
+import mediathek.daten.ListePsetVorlagen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
