@@ -33,7 +33,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.controller.io.IoXmlLesen;
-import mediathek.controller.io.ListePsetVorlagen;
+import mediathek.daten.ListePsetVorlagen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
@@ -105,7 +105,7 @@ public class PanelPsetImport extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
-                GuiFunktionenProgramme.addVorlagen(ddaten, new ListePsetVorlagen().getStandarset(ddaten, Funktionen.getOsString()), false /* auto */);
+                GuiFunktionenProgramme.addVorlagen(ddaten, ListePsetVorlagen.getStandarset(ddaten, Funktionen.getOsString()), false /* auto */);
             }
         });
     }

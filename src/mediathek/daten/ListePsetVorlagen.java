@@ -17,7 +17,7 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.controller.io;
+package mediathek.daten;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,10 +27,9 @@ import java.util.LinkedList;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.daten.DDaten;
-import mediathek.daten.Daten;
-import mediathek.daten.ListePset;
+import mediathek.controller.io.IoXmlLesen;
 import mediathek.file.GetFile;
+import mediathek.gui.dialog.DialogOkCancel;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
@@ -125,12 +124,47 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     public static ListePset getNeuVersionStandarset(DDaten ddaten, String bs) {
         ListePset lp = getStandarset(ddaten, bs);
         String version = Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR];
-        if (!version.equals(lp.version)) {
-            return lp;
-        } else {
-            // dann ist alles aktuell
-            return null;
+        if (lp != null) {
+            if (!version.equals(lp.version)) {
+                String titel = "Das Standardset wurde aktualisert";
+                String text = "   ==================================================\n\n"
+                        + "   Es gibt ein neues Standardset der Videoplayer\n"
+                        + "   für den Download und das Abspielen der Filme\n"
+                        + "   \n"
+                        + "   ==================================================\n"
+                        + "   \n"
+                        + "   Soll das neue Set installiert werden?\n"
+                        + "   \n"
+                        + "   ==================================================\n"
+                        + "   \n"
+                        + "   Die bestehenden Einstellungen werden nicht verändert.\n"
+                        + "   Das neue Set muss dann erst noch in den\n"
+                        + "   \"Einstellungen->Videoplayer\"\n"
+                        + "   aktiviert werden\n"
+                        + "   \n"
+                        + "   \n"
+                        + "   \n";
+                DialogOkCancel dialogOkCancel = new DialogOkCancel(null, ddaten, true, titel, text);
+                dialogOkCancel.setVisible(true);
+                if (dialogOkCancel.ok) {
+                    Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = lp.version;
+                    for (DatenPset ps : lp) {
+                        // die bestehenden Sets sollen nicht gestört werden
+                        ps.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
+                        ps.arr[DatenPset.PROGRAMMSET_IST_ABO_NR] = Boolean.FALSE.toString();
+                        ps.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR] = Boolean.FALSE.toString();
+                        ps.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.FALSE.toString();
+                    }
+                    ddaten.listePset.addPset(lp);
+                } else if (!dialogOkCancel.morgen) {
+                    // dann auch die Versionsnummer aktualisieren
+                    Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = lp.version;
+                }
+                return lp;
+            }
         }
+        // dann ist alles aktuell oder nichts gefunden
+        return null;
     }
 
     public static ListePset getStandarset(DDaten ddaten, String bs) {

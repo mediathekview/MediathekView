@@ -20,25 +20,21 @@
 package mediathek.controller.io;
 
 import javax.swing.SwingUtilities;
-import mediathek.MediathekGui;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
+import mediathek.daten.ListePsetVorlagen;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class CheckUpdate {
 
-    private int sekunden = 5;
-    private String titelOrg = "";
     private DDaten ddaten;
-    private MediathekGui gui;
 
-    public CheckUpdate(MediathekGui gg, DDaten dd) {
-        gui = gg;
+    public CheckUpdate(DDaten dd) {
         ddaten = dd;
-        titelOrg = ddaten.mediathekGui.getTitle();
     }
 
     public void suchen() {
@@ -62,6 +58,7 @@ public class CheckUpdate {
                                 } else {
                                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
                                 }
+                                ListePsetVorlagen.getNeuVersionStandarset(ddaten, Funktionen.getOsString());
                             }
                         });
                         try {
