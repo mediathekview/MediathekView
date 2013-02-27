@@ -12,11 +12,13 @@
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon>/mnt/daten/software/java/Mediathek_3/bin/icon.ico</icon>
+  <icon>/mnt/daten/software/java/Mediathek_3/bin/info/MediathekView.ico</icon>
   <jre>
     <path></path>
     <minVersion>1.6.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
+    <initialHeapSize>128</initialHeapSize>
+    <maxHeapSize>1024</maxHeapSize>
   </jre>
 </launch4jConfig>
