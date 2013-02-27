@@ -130,6 +130,7 @@ public class IoXmlLesen {
         if (liste.size() == 0) {
             return null;
         } else {
+            // damit die Variablen ersetzt werden
             ListePset ll = new ListePset();
             ll.addVorlage(dd, liste);
             return ll;

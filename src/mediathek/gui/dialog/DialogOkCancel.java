@@ -22,6 +22,7 @@ package mediathek.gui.dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.daten.DDaten;
+import mediathek.tool.BeobWeb;
 import mediathek.tool.EscBeenden;
 
 public class DialogOkCancel extends javax.swing.JDialog {
@@ -48,6 +49,7 @@ public class DialogOkCancel extends javax.swing.JDialog {
                 morgen = jCheckBoxMorgen.isSelected();
             }
         });
+        jButtonAnleitung.addActionListener(new BeobWeb(jTextFieldAnleitung.getText()));
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
         if (parent != null) {
