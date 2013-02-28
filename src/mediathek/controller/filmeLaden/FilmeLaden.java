@@ -79,7 +79,11 @@ public class FilmeLaden {
 
     public void setAllesLaden(boolean alles) {
         // beim Sender laden: alles nicht nur ein Update
-        filmeSuchen.allesLaden = alles;
+        filmeSuchen.senderAllesLaden = alles;
+    }
+
+    public boolean getAllesLaden() {
+        return filmeSuchen.senderAllesLaden;
     }
 
     public synchronized void setStop() {
@@ -126,25 +130,25 @@ public class FilmeLaden {
     // #######################################
     // Filme bei den Sendern laden
     // #######################################
-    public void filmeBeimSenderSuchen(ListeFilme llisteFilme, boolean allesLaden) {
+    public void filmeBeimSenderSuchen(ListeFilme llisteFilme, boolean senderAllesLaden, boolean filmlisteUpdate) {
         // Filme bei allen Sender suchen
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
             stop = false;
             listeFilmeAlt = llisteFilme;
-            filmeSuchen.filmeBeimSenderLaden(allesLaden, listeFilmeAlt);
+            filmeSuchen.filmeBeimSenderLaden(senderAllesLaden, filmlisteUpdate, listeFilmeAlt);
         }
     }
 
-    public void updateSender(String[] sender, ListeFilme llisteFilme) {
+    public void updateSender(String[] sender, ListeFilme llisteFilme, boolean senderAllesLaden) {
         // Filme nur bei EINEM Sender suchen (nur update)
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
             stop = false;
             listeFilmeAlt = llisteFilme;
-            filmeSuchen.updateSender(sender, llisteFilme);
+            filmeSuchen.updateSender(sender, senderAllesLaden, llisteFilme);
         }
     }
 

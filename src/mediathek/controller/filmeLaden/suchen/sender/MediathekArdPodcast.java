@@ -207,7 +207,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                                 filmLaden(strUrlFeed, url, thema);
                             }
                         }
-                        if (suchen.allesLaden && listeWeiter.size() > 0) {
+                        if (suchen.senderAllesLaden && listeWeiter.size() > 0) {
                             url = listeWeiter.pollFirst();
                             seite = getUrl.getUri_Utf(nameSenderMReader, url, seite, "Thema: " + thema);
                             weiter = true;

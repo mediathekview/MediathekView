@@ -29,6 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.daten.DDaten;
@@ -273,9 +274,9 @@ public class PanelSenderLaden extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             jLabelProgress.setText("");
             for (JButton aButtonSender : buttonSender) {
-               aButtonSender.setEnabled(false);
+                aButtonSender.setEnabled(false);
             }
-            Daten.filmeLaden.updateSender(new String[]{sender}, Daten.listeFilme);
+            Daten.filmeLaden.updateSender(new String[]{sender}, Daten.listeFilme, Daten.debug ? DDaten.filmeLaden.getAllesLaden() : false /* senderAllesLaden */);
         }
     }
 

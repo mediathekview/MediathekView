@@ -549,7 +549,7 @@ public class GuiFilme extends PanelVorlage {
         int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
             int sel = tabelle.convertRowIndexToModel(selectedTableRow);
-            Daten.filmeLaden.updateSender(new String[]{tabelle.getModel().getValueAt(sel, DatenFilm.FILM_SENDER_NR).toString()}, Daten.listeFilme);
+            Daten.filmeLaden.updateSender(new String[]{tabelle.getModel().getValueAt(sel, DatenFilm.FILM_SENDER_NR).toString()}, Daten.listeFilme, false /* senderAllesLaden */);
         }
     }
 

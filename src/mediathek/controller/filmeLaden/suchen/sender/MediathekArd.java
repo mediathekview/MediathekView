@@ -165,7 +165,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 feedEinerSeiteSuchen(seiteFehler, tmp, thema);
             }
             //nach weitern Seiten schauen
-            if (suchen.allesLaden) {
+            if (suchen.senderAllesLaden) {
                 pos = 0;
                 while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER, pos)) != -1) {
                     try {
