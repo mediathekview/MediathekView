@@ -74,7 +74,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                     continue;
                 }
                 String[] add;
-                if (suchen.allesLaden) {
+                if (suchen.senderAllesLaden) {
                     add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-300.xml", thema};
                 } else {
                     add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_broadcast-" + url + "_pageSize-24.xml", thema};
@@ -103,7 +103,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         // http://www.ndr.de/mediathek/mediathek100-mediathek_page-1_medium-tv_pageSize-24.xml
         String[] add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_pageSize-24.xml", ""};
         listeThemen.addUrl(add);
-        int m = (suchen.allesLaden ? 20 : 10);
+        int m = (suchen.senderAllesLaden ? 20 : 10);
         for (int i = 0; i <= m; ++i) {
             add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_page-" + Integer.toString(i) + "_medium-tv_pageSize-24.xml", ""};
             listeThemen.addUrl(add);

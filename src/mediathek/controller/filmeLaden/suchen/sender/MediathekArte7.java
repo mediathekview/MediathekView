@@ -144,7 +144,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             boolean gefunden;
             boolean ersteSeite = true;
             seite = strUrlFeed;
-            if (suchen.allesLaden || thema.startsWith(THEMA_ARTE_7)) {
+            if (suchen.senderAllesLaden || thema.startsWith(THEMA_ARTE_7)) {
                 //auch nach älteren Beiträgen suchen
                 do {
                     gefunden = false;

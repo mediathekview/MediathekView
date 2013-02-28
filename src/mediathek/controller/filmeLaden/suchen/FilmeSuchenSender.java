@@ -53,7 +53,8 @@ import mediathek.tool.Log;
 public class FilmeSuchenSender {
 
     public LinkedList<MediathekReader> mediathekListe = new LinkedList<MediathekReader>();
-    public boolean allesLaden = false;
+    public boolean senderAllesLaden = false; // die Sender werden komplett geladen / nur die neuesten Filme geladen
+    public boolean updateFilmliste = false; // die bestehende Filmliste wird upgedatet / es wird eine neue Filmlise gestartet
     public ListeFilme listeFilmeNeu; // neu angelegte Liste und da kommen die neu gesuchten Filme rein
     private ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
     private EventListenerList listeners = new EventListenerList();
@@ -96,8 +97,9 @@ public class FilmeSuchenSender {
         listeners.add(ListenerFilmeLaden.class, listener);
     }
 
-    public synchronized void filmeBeimSenderLaden(boolean aallesLaden, ListeFilme alteListe) {
-        allesLaden = aallesLaden;
+    public synchronized void filmeBeimSenderLaden(boolean aallesLaden, boolean uupdateFilmliste, ListeFilme alteListe) {
+        senderAllesLaden = aallesLaden;
+        updateFilmliste = uupdateFilmliste;
         initStart(alteListe);
         listeFilmeNeu.liveStreamEintragen();
         // die mReader nach Prio starten
@@ -122,9 +124,11 @@ public class FilmeSuchenSender {
         }
     }
 
-    public void updateSender(String[] nameSenderFilmliste, ListeFilme alteListe) {
+    public void updateSender(String[] nameSenderFilmliste, boolean aallesLaden, ListeFilme alteListe) {
         // nur für den Mauskontext "Sender aktualisieren"
         boolean starten = false;
+        senderAllesLaden = aallesLaden; // alles oder nur ein Update laden
+        updateFilmliste = true; // die alte Filmliste wird aktualisiert, hier immer
         initStart(alteListe);
         listeFilmeNeu.liveStreamEintragen();
         Iterator<MediathekReader> it = mediathekListe.iterator();
@@ -181,7 +185,7 @@ public class FilmeSuchenSender {
             runSender.progress = progress;
         } else {
             // Sender startet
-            Log.systemMeldung("Starten[" + ((allesLaden) ? "alles" : "update") + "] " + sender + ": " + DatumZeit.getJetzt_HH_MM_SS());
+            Log.systemMeldung("Starten[" + ((senderAllesLaden) ? "alles" : "update") + "] " + sender + ": " + DatumZeit.getJetzt_HH_MM_SS());
             listeSenderLaufen.add(new RunSender(sender, max, progress));
             //wird beim Start des Senders aufgerufen, 1x
             if (listeSenderLaufen.size() <= 1 /* erster Aufruf */) {
@@ -227,8 +231,8 @@ public class FilmeSuchenSender {
         if (listeSenderLaufen.listeFertig()) {
             Log.progressEnde();
             int anzFilme = listeFilmeNeu.size();
-            if (!allesLaden) {
-                // alte Filme eintragen
+            if (!senderAllesLaden || updateFilmliste) {
+                // alte Filme eintragen wenn angefordert oder nur ein update gesucht wurde
                 listeFilmeNeu.updateListe(listeFilmeAlt, true /* über den Index vergleichen */);
             }
             listeFilmeNeu.sort();
@@ -286,8 +290,22 @@ public class FilmeSuchenSender {
         fertigMeldung.clear();
         listeFilmeAlt = alteListe;
         listeFilmeNeu = new ListeFilme();
-//        listeFilmeNeu.setInfo(alteListe.infos);
         GetUrl.resetZaehler();
+        Log.systemMeldung("");
+        Log.systemMeldung("=======================================");
+        Log.systemMeldung("Start Filme laden:");
+        if (senderAllesLaden) {
+            Log.systemMeldung("Filme laden: alle laden");
+        } else {
+            Log.systemMeldung("Filme laden: nur update laden");
+        }
+        if (updateFilmliste) {
+            Log.systemMeldung("Filmliste: aktualisieren");
+        } else {
+            Log.systemMeldung("Filmliste: neue erstellen");
+        }
+        Log.systemMeldung("=======================================");
+        Log.systemMeldung("");
     }
 
     private void progressBar() {

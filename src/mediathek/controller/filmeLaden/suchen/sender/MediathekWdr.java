@@ -54,7 +54,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         listeFilme.clear();
         meldungStart();
         addToList__("http://www.wdr.de/mediathek/html/regional/index.xml");
-        if (suchen.allesLaden) {
+        if (suchen.senderAllesLaden) {
             //TH Rockpalast hinzu
             String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
             listeThemen.addUrl(add);
@@ -112,7 +112,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     } else {
                         url = url.replace("&amp;", "&");
                         String[] add;
-                        if (suchen.allesLaden) {
+                        if (suchen.senderAllesLaden) {
                             add = new String[]{"http://www.wdr.de" + url + "&rankingcount=20", thema};
                         } else {
                             add = new String[]{"http://www.wdr.de" + url + "&rankingcount=10", thema};
@@ -138,7 +138,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     url = url.replace("&amp;", "&");
                     String[] add;
                     final String a = "http://www.wdr.de/mediathek/html/regional/ergebnisse/datum.xml?";
-                    if (suchen.allesLaden) {
+                    if (suchen.senderAllesLaden) {
                         add = new String[]{a + url + "&rankingcount=20", thema};
                     } else {
                         add = new String[]{a + url + "&rankingcount=10", thema};
@@ -265,7 +265,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                         Log.fehlerMeldung(-752589666, Log.FEHLER_ART_MREADER, "MediathekWdr.themenSeiteSuchen-2", "keine Url" + thema);
                     }
                 }
-                if (suchen.allesLaden) {
+                if (suchen.senderAllesLaden) {
                     if ((pos = strSeite1.indexOf(NEUESEITE_1)) != -1) {
                         if ((pos = strSeite1.indexOf(NEUESEITE_2, pos)) != -1) {
                             pos += NEUESEITE_2.length();

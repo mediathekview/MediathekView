@@ -129,7 +129,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             String url;
             int max = 0;
             while (!Daten.filmeLaden.getStop() && (pos1 = strSeite1.indexOf(MUSTER_URL, pos1)) != -1) {
-                if (!suchen.allesLaden) {
+                if (!suchen.senderAllesLaden) {
                     ++max;
                     if (max > 5) {
                         break;

@@ -36,16 +36,18 @@ public class MediathekNoGui implements Runnable {
     private String output = "";
     private String importUrl = "";
     private String userAgent = "";
-    private boolean allesLaden = false;
+    private boolean senderAllesLaden = false;
+    private boolean updateFilmliste = true;
     private String pfad = "";
     private Daten daten;
     private boolean serverLaufen = false;
     private File logfile = null;
 
-    public MediathekNoGui(String ppfad, boolean aallesLaden, String ooutput, String iimprtUrl, String uuserAgent, File log, boolean ddebug) {
+    public MediathekNoGui(String ppfad, boolean ssenderAllesLaden, boolean uupdateFilmliste, String ooutput, String iimprtUrl, String uuserAgent, File log, boolean ddebug) {
         // NUR für den Start vom MediathekServer
         pfad = ppfad;
-        allesLaden = aallesLaden;
+        senderAllesLaden = ssenderAllesLaden;
+        updateFilmliste = uupdateFilmliste;
         output = ooutput;
         importUrl = iimprtUrl;
         userAgent = uuserAgent;
@@ -68,7 +70,8 @@ public class MediathekNoGui implements Runnable {
             }
             for (int i = 0; i < ar.length; ++i) {
                 if (ar[i].equals(Main.STARTP_ALLES)) {
-                    allesLaden = true;
+                    senderAllesLaden = true;
+                    updateFilmliste = false;
                 }
                 if (ar[i].equalsIgnoreCase(Main.STARTP_EXPORT_DATEI)) {
                     if (ar.length > i) {
@@ -99,10 +102,15 @@ public class MediathekNoGui implements Runnable {
         if (!userAgent.equals("")) {
             Daten.setUserAgentManuel(userAgent);
         }
-        if (allesLaden) {
+        if (senderAllesLaden) {
             Log.systemMeldung("Filme laden: alles laden");
         } else {
             Log.systemMeldung("Filme laden: nur update laden");
+        }
+        if (updateFilmliste) {
+            Log.systemMeldung("Filmliste: aktualisieren");
+        } else {
+            Log.systemMeldung("Filmliste: neue erstellen");
         }
         if (logfile != null) {
             Log.setLogFile(logfile);
@@ -120,9 +128,9 @@ public class MediathekNoGui implements Runnable {
         Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
         // das eigentliche Suchen der Filme bei den Sendern starten
         if (sender == null) {
-            Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, allesLaden);
+            Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, senderAllesLaden, updateFilmliste);
         } else {
-            Daten.filmeLaden.updateSender(sender, Daten.listeFilme);
+            Daten.filmeLaden.updateSender(sender, Daten.listeFilme, senderAllesLaden);
         }
     }
 
@@ -152,7 +160,7 @@ public class MediathekNoGui implements Runnable {
         }
         // Infos schreiben
         Log.startMeldungen(this.getClass().getName());
-        if (allesLaden) {
+        if (senderAllesLaden) {
             Log.systemMeldung("Programmstart: alles laden");
         } else {
             Log.systemMeldung("Programmstart: nur update laden");
@@ -170,7 +178,7 @@ public class MediathekNoGui implements Runnable {
         // laden was es schon gibt
         Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
         // das eigentliche Suchen der Filme bei den Sendern starten
-        Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, allesLaden);
+        Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, senderAllesLaden, updateFilmliste);
     }
 
     private void addImportListe(String url) {
