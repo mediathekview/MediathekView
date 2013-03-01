@@ -60,6 +60,21 @@ public class DialogAddDownload extends javax.swing.JDialog {
         }
     }
 
+    public DialogAddDownload(java.awt.Frame parent, DDaten dd, DatenFilm film, DatenPset ppSet) {
+        super(parent, true);
+        parentComponent = parent;
+        initComponents();
+        ddaten = dd;
+        datenFilm = film;
+        pSet = ppSet;
+        this.setTitle("Film Speichern");
+        // Felder init
+        init();
+        if (parent != null) {
+            setLocationRelativeTo(parent);
+        }
+    }
+
     private void init() {
         if (ddaten.listePset.getListeSpeichern().size() == 0) {
             JOptionPane.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
@@ -93,6 +108,9 @@ public class DialogAddDownload extends javax.swing.JDialog {
             }
         });
         jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel(ddaten.listePset.getListeSpeichern().getObjectDataCombo()));
+        if (pSet != null) {
+            jComboBoxPgr.setSelectedItem(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
+        }
         setGruppe();
         if (ddaten.listePset.getListeSpeichern().size() == 1) {
             // macht dann keinen Sinn
