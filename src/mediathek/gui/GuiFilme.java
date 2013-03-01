@@ -37,6 +37,7 @@ import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -189,9 +190,13 @@ public class GuiFilme extends PanelVorlage {
             }
         });
         //Tabelle einrichten
-        ActionMap am = tabelle.getActionMap();
+        // ActionMap am = tabelle.getActionMap();
+        ActionMap am = new ActionMap();
+        tabelle.setActionMap(am);
         am.put("film_starten", new BeobAbstractAction());
-        InputMap im = tabelle.getInputMap();
+        // InputMap im = tabelle.getInputMap();
+        InputMap im = new InputMap();
+        tabelle.setInputMap(JComponent.WHEN_FOCUSED, im);
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         im.put(enter, "film_starten");
         tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES));
