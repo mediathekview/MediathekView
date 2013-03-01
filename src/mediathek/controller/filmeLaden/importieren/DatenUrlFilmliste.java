@@ -37,14 +37,6 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
         makeArr();
     }
 
-    public DatenUrlFilmliste(String url, String prio) {
-        sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
-        makeArr();
-        arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR] = url;
-        arr[FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR] = prio;
-    }
-
     public DatenUrlFilmliste(String url, String prio, String zeit, String datum) {
         sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
@@ -66,6 +58,30 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
         return d;
     }
 
+    public String getDateStr() {
+        SimpleDateFormat sdf_ = new SimpleDateFormat("dd.MM.yyyy");
+        sdf_.setTimeZone(SimpleTimeZone.getDefault());
+        String d;
+        try {
+            d = sdf_.format(getDate());
+        } catch (Exception ex) {
+            d = sdf_.format(new Date());
+        }
+        return d;
+    }
+
+    public String getTimeStr() {
+        SimpleDateFormat sdf_ = new SimpleDateFormat("HH:mm:ss");
+        sdf_.setTimeZone(SimpleTimeZone.getDefault());
+        String d;
+        try {
+            d = sdf_.format(getDate());
+        } catch (Exception ex) {
+            d = sdf_.format(new Date());
+        }
+        return d;
+    }
+
     @Override
     public int compareTo(DatenUrlFilmliste arg0) {
         int ret = 0;
@@ -76,7 +92,6 @@ public class DatenUrlFilmliste implements Comparable<DatenUrlFilmliste> {
             if (ich.equals(du)) {
                 return 0;
             }
-            // sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC")); 
             Date d_ich = sdf.parse(ich);
             Date d_du = sdf.parse(du);
             ret = d_du.compareTo(d_ich);

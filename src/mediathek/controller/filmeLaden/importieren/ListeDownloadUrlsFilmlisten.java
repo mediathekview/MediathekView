@@ -19,8 +19,6 @@
  */
 package mediathek.controller.filmeLaden.importieren;
 
-import java.lang.reflect.Method;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,7 +61,12 @@ public class ListeDownloadUrlsFilmlisten extends LinkedList<DatenUrlFilmliste> {
         int i = 0;
         while (iterator.hasNext()) {
             filmUpdate = iterator.next();
-            object[i] = filmUpdate.arr;
+            for (int k = 0; k < FilmlistenSuchen.FILM_UPDATE_SERVER_MAX_ELEM; ++k) {
+                // sonst wird anschließend "filmUpdate" überschrieben
+                object[i][k] = filmUpdate.arr[k];
+            }
+            object[i][FilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR] = filmUpdate.getDateStr(); // lokale Zeit anzeigen
+            object[i][FilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR] = filmUpdate.getTimeStr(); // lokale Zeit anzeigen
             ++i;
         }
         return object;
