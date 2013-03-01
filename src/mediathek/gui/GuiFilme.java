@@ -311,9 +311,9 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void filmAbspielen_() {
-        DatenPset gruppe = ddaten.listePset.getPsetAbspielen();
-        if (gruppe != null) {
-            open(gruppe);
+        DatenPset pset = ddaten.listePset.getPsetAbspielen();
+        if (pset != null) {
+            playerStarten(pset);
         } else {
             JOptionPane.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
@@ -321,6 +321,10 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void filmSpeichern_() {
+        filmSpeichern_(null);
+    }
+
+    private synchronized void filmSpeichern_(DatenPset pSet) {
         if (ddaten.listePset.getListeSpeichern().size() == 0) {
             JOptionPane.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
@@ -334,7 +338,7 @@ public class GuiFilme extends PanelVorlage {
                 for (int selRow : selRows) {
                     selRow = tabelle.convertRowIndexToModel(selRow);
                     film = DDaten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
-                    DialogAddDownload dialog = new DialogAddDownload(ddaten.mediathekGui, ddaten, film);
+                    DialogAddDownload dialog = new DialogAddDownload(ddaten.mediathekGui, ddaten, film, pSet);
                     dialog.setVisible(true);
                 }
             }
@@ -528,10 +532,14 @@ public class GuiFilme extends PanelVorlage {
         dialogDatenFilm.setAktFilm(aktFilm);
     }
 
-    private void open(DatenPset gruppe) {
+    private void playerStarten(DatenPset pSet) {
         // Url mit Prognr. starten
         if (tabelle.getSelectedRow() == -1) {
             new HinweisKeineAuswahl().zeigen(parentComponent);
+        } else if (pSet.istSpeichern()) {
+            // wenn das pSet zum Speichern (über die Button) gewählt wurde,
+            // weiter mit dem Dialog "Speichern"
+            filmSpeichern_(pSet);
         } else {
             String url = "";
             DatenFilm ersterFilm = new DatenFilm();
@@ -545,7 +553,7 @@ public class GuiFilme extends PanelVorlage {
                 //ddaten.history.add(ersterFilm.getUrlOrg()); wird in StartetClass gemacht
             }
             ersterFilm.arr[DatenFilm.FILM_URL_NR] = url.trim();
-            ddaten.starterClass.urlStarten(gruppe, ersterFilm);
+            ddaten.starterClass.urlStarten(pSet, ersterFilm);
         }
     }
 
@@ -916,15 +924,15 @@ public class GuiFilme extends PanelVorlage {
     private class BeobOpen implements ActionListener {
         //ext. Programme starten
 
-        DatenPset gruppe;
+        DatenPset pset;
 
         public BeobOpen(DatenPset p) {
-            gruppe = p;
+            pset = p;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            open(gruppe);
+            playerStarten(pset);
         }
     }
 
