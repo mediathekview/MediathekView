@@ -45,7 +45,7 @@
                       <Component id="jCheckBoxBlacklistAusschalten" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="jTabbedPaneBlacklist" pref="528" max="32767" attributes="0"/>
+                  <Component id="jTabbedPaneBlacklist" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -121,7 +121,7 @@
                               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBoxZukunftNichtAnzeigen" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="49" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -306,8 +306,8 @@
                                   </Group>
                                   <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jComboBoxThema" pref="372" max="32767" attributes="0"/>
-                                      <Component id="jComboBoxSender" pref="372" max="32767" attributes="0"/>
+                                      <Component id="jComboBoxThema" pref="335" max="32767" attributes="0"/>
+                                      <Component id="jComboBoxSender" pref="335" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" attributes="0">
@@ -322,8 +322,8 @@
                                   </Group>
                                   <EmptySpace min="-2" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jTextFieldTitel" pref="372" max="32767" attributes="0"/>
-                                      <Component id="jTextFieldThemaTitel" pref="372" max="32767" attributes="0"/>
+                                      <Component id="jTextFieldTitel" pref="335" max="32767" attributes="0"/>
+                                      <Component id="jTextFieldThemaTitel" pref="335" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
