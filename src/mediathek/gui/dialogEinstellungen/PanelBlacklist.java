@@ -252,7 +252,7 @@ public class PanelBlacklist extends PanelVorlage {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
                     .addComponent(jCheckBoxZukunftNichtAnzeigen))
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -362,8 +362,8 @@ public class PanelBlacklist extends PanelVorlage {
                             .addComponent(jLabel6))
                         .addGap(43, 43, 43)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBoxThema, 0, 372, Short.MAX_VALUE)
-                            .addComponent(jComboBoxSender, 0, 372, Short.MAX_VALUE)))
+                            .addComponent(jComboBoxThema, 0, 335, Short.MAX_VALUE)
+                            .addComponent(jComboBoxSender, 0, 335, Short.MAX_VALUE)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -374,8 +374,8 @@ public class PanelBlacklist extends PanelVorlage {
                             .addComponent(jLabel8))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
-                            .addComponent(jTextFieldThemaTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE))))
+                            .addComponent(jTextFieldTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
+                            .addComponent(jTextFieldThemaTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -453,7 +453,7 @@ public class PanelBlacklist extends PanelVorlage {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jCheckBoxBlacklistAusschalten)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jTabbedPaneBlacklist, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE))
+                    .addComponent(jTabbedPaneBlacklist))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
