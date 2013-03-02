@@ -184,8 +184,7 @@ public class GuiFilme extends PanelVorlage {
         jButtonBlacklist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                /// -> flase
-                DialogLeer dialog = new DialogLeer(ddaten.mediathekGui, false);
+                DialogLeer dialog = new DialogLeer(ddaten.mediathekGui, true);
                 dialog.init("Blacklist", new PanelBlacklist(ddaten, ddaten.mediathekGui, PanelBlacklist.class.getName() + "_2"));
                 dialog.setVisible(true);
             }
