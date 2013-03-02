@@ -77,6 +77,12 @@ public class GuiDebug extends PanelVorlage {
                 Log.printEndeMeldung();
             }
         });
+        jButtonCheck.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.listeFilme.check();
+            }
+        });
         jPanelSenderLaden.setLayout(new BorderLayout());
         jPanelSenderLaden.add(new PanelSenderLaden(ddaten, ddaten.mediathekGui));
         jPanelListen.setLayout(new BorderLayout());
@@ -123,18 +129,19 @@ public class GuiDebug extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel2 = new javax.swing.JPanel();
+        javax.swing.JTabbedPane jTabbedPane1 = new javax.swing.JTabbedPane();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         jPanelSenderLaden = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jPanelSender = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         jPanelListen = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
         jToggleButtonAllesLaden = new javax.swing.JToggleButton();
         jButtonFilmlisteLoeschen = new javax.swing.JButton();
         jButtonAllesSpeichern = new javax.swing.JButton();
         jButtonFehler = new javax.swing.JButton();
+        jButtonCheck = new javax.swing.JButton();
 
         jPanelSenderLaden.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender starten"));
 
@@ -146,7 +153,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLadenLayout.setVerticalGroup(
             jPanelSenderLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 503, Short.MAX_VALUE)
+            .addGap(0, 507, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -178,7 +185,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLayout.setVerticalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 503, Short.MAX_VALUE)
+            .addGap(0, 507, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -208,7 +215,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelListenLayout.setVerticalGroup(
             jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 532, Short.MAX_VALUE)
+            .addGap(0, 536, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -240,6 +247,8 @@ public class GuiDebug extends PanelVorlage {
 
         jButtonFehler.setText("Fehler ausgeben");
 
+        jButtonCheck.setText("Check");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -253,6 +262,8 @@ public class GuiDebug extends PanelVorlage {
                 .addComponent(jButtonAllesSpeichern)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonFehler)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonCheck)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -266,7 +277,8 @@ public class GuiDebug extends PanelVorlage {
                     .addComponent(jToggleButtonAllesLaden)
                     .addComponent(jButtonFilmlisteLoeschen)
                     .addComponent(jButtonAllesSpeichern)
-                    .addComponent(jButtonFehler))
+                    .addComponent(jButtonFehler)
+                    .addComponent(jButtonCheck))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -293,16 +305,12 @@ public class GuiDebug extends PanelVorlage {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAllesSpeichern;
+    private javax.swing.JButton jButtonCheck;
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanelListen;
     private javax.swing.JPanel jPanelSender;
     private javax.swing.JPanel jPanelSenderLaden;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JToggleButton jToggleButtonAllesLaden;
     // End of variables declaration//GEN-END:variables
 
