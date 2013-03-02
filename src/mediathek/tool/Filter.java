@@ -31,16 +31,42 @@ public class Filter {
         // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
         // themaSuchen exakt mit thema
         // titelSuchen muss im Titel nur enthalten sein
+
         if (aboFilter_SenderSuchen.equals("") || imFilm_Sender.equalsIgnoreCase(aboFilter_SenderSuchen)) {
             if (aboFilter_themaSuchen.equals("") || imFilm_Thema.equalsIgnoreCase(aboFilter_themaSuchen)) {
 
-                if (pruefenTitel(aboFilter_titelSuchen, imFilm_Titel)) {
+                if (aboFilter_titelSuchen.equals("") || pruefenTitel(aboFilter_titelSuchen, imFilm_Titel)) {
 
                     if (aboFilter_themaTitelSuchen.equals("")) {
                         return true;
                     } else if (pruefenThemaTitel(aboFilter_themaTitelSuchen, imFilm_Thema)) {
                         return true;
                     } else if (pruefenThemaTitel(aboFilter_themaTitelSuchen, imFilm_Titel)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean filterBlacklist(String aboFilter_SenderSuchen, String aboFilter_themaSuchen, String aboFilter_titelSuchen, String aboFilter_themaTitelSuchen,
+            String imFilm_Sender, String imFilm_Thema, String imFilm_Titel) {
+        // liefert true wenn der Film angezeigt werden darf!
+        // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
+        // themaSuchen exakt mit thema
+        // titelSuchen muss im Titel nur enthalten sein
+
+        if (aboFilter_SenderSuchen.equals("") || !imFilm_Sender.equalsIgnoreCase(aboFilter_SenderSuchen)) {
+            if (aboFilter_themaSuchen.equals("") || !imFilm_Thema.equalsIgnoreCase(aboFilter_themaSuchen)) {
+
+                if (aboFilter_titelSuchen.equals("") || !pruefenTitel(aboFilter_titelSuchen, imFilm_Titel)) {
+
+                    if (aboFilter_themaTitelSuchen.equals("")) {
+                        return true;
+                    } else if (!pruefenThemaTitel(aboFilter_themaTitelSuchen, imFilm_Thema)) {
+                        return true;
+                    } else if (!pruefenThemaTitel(aboFilter_themaTitelSuchen, imFilm_Titel)) {
                         return true;
                     }
                 }
@@ -86,7 +112,7 @@ public class Filter {
     }
 
     private static boolean textPruefen(String filter, String imFilm) {
-        if (filter.equals("") || imFilm.toLowerCase().contains(filter.toLowerCase())) {
+        if (imFilm.toLowerCase().contains(filter.toLowerCase())) {
             return true;
         } else {
             return false;
@@ -123,6 +149,7 @@ public class Filter {
             tf.setBackground(Color.WHITE);
         }
     }
+
     public static void checkPattern2(JTextField tf) {
         // Schriftfarbe ändern wenn eine RegEx
         String text = tf.getText();

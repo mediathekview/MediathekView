@@ -215,7 +215,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="532" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="536" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -249,6 +249,8 @@
                   <Component id="jButtonAllesSpeichern" linkSize="1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jButtonFehler" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jButtonCheck" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -262,6 +264,7 @@
                       <Component id="jButtonFilmlisteLoeschen" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonAllesSpeichern" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonFehler" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonCheck" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -287,6 +290,11 @@
         <Component class="javax.swing.JButton" name="jButtonFehler">
           <Properties>
             <Property name="text" type="java.lang.String" value="Fehler ausgeben"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonCheck">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Check"/>
           </Properties>
         </Component>
       </SubComponents>
