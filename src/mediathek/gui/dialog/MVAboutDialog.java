@@ -168,7 +168,7 @@ public class MVAboutDialog extends JDialog {
         lblProgramIcon.setIcon(new ImageIcon(MVAboutDialog.class
                 .getResource("/mediathek/res/MediathekView.png")));
 
-        JLabel lblProgramName = new JLabel("Mediathek View");
+        JLabel lblProgramName = new JLabel("MediathekView");
         lblProgramName.setFont(new Font("Lucida Grande", Font.BOLD, 24));
 
         Color greyColor = new Color(159, 159, 159);

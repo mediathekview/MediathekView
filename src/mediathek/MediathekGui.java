@@ -27,6 +27,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +44,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -52,12 +55,10 @@ import mediathek.controller.io.CheckUpdate;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
-import mediathek.daten.ListePset;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
-import mediathek.gui.InfoPanel;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.DialogStarteinstellungen;
@@ -88,14 +89,28 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private DDaten ddaten;
     private BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     private DialogEinstellungen dialogEinstellungen;
-    private JSpinner jSpinnerAnzahl = new JSpinner(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
+    private JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
     JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
     JPanel jPanelAnzahl = new JPanel();
     JSplitPane splitPane = null;
+    private MVStatusBar statusBar;
+
+    /**
+     * Legt die statusbar an.
+     */
+    private void createStatusBar() {
+        statusBar = new MVStatusBar();
+        jPanelInfo.add(statusBar.getComponent(), BorderLayout.PAGE_START);
+    }
+
+    public MVStatusBar getStatusBar() {
+        return statusBar;
+    }
 
     public MediathekGui(String[] ar) {
         //we must check if we were started with enough memory, do it as early as possible
         checkMemoryRequirements();
+
         String pfad = "";
         boolean max = false;
         initComponents();
@@ -114,10 +129,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 }
             }
         }
+
         ddaten = new DDaten(pfad, true);
         Log.startMeldungen(this.getClass().getName());
-        jPanelInfo.setLayout(new BorderLayout());
-        jPanelInfo.add(ddaten.infoPanel, BorderLayout.CENTER);
+
+        createStatusBar();
+
         if (IoXmlLesen.einstellungenExistieren()) {
             // gibt schon Programmeinstellungen, dann damit starten
             ddaten.allesLaden();
@@ -125,20 +142,25 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             // erster Start
             new DialogStarteinstellungen(null, true, ddaten).setVisible(true);
         }
+
         setOrgTitel();
         GuiFunktionen.setLook(this);
         init();
         setSize(max);
+
         // Dialog mit den Programmeinstellungen einrichten
         dialogEinstellungen = new DialogEinstellungen(this, ddaten);
+
         // Prüfen obs ein Programmupdate gibt
         new CheckUpdate(ddaten).suchen();
+
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.filmlisteZuAlt()) {
                 Log.systemMeldung("Neue Fillmliste laden");
                 DDaten.filmeLaden.importFilmliste("");
             }
         }
+
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_ORG_TITEL, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -244,11 +266,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     private void setTitelUpdate() {
-        ddaten.mediathekGui.setTitle("Ein Programmupdate ist verfügbar");
+        setTitle("Ein Programmupdate ist verfügbar");
     }
 
     private void setTitelAllesAktuell() {
-        ddaten.mediathekGui.setTitle("Programmversion ist aktuell");
+        setTitle("Programmversion ist aktuell");
     }
 
     private void buttonAus() {
@@ -344,20 +366,20 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
             @Override
             public void progress_(ListenerFilmeLadenEvent event) {
-                ddaten.infoPanel.setProgressBar(event);
+                getStatusBar().updateProgressBar(event);
             }
 
             @Override
             public void fertig_(ListenerFilmeLadenEvent event) {
-                ddaten.infoPanel.clearProgress();
+                getStatusBar().hideProgressIndicators();
                 jButtonFilmeLaden.setEnabled(true);
                 jMenuItemFilmlisteLaden.setEnabled(true);
                 ddaten.allesSpeichern(); // damit nichts verlorengeht
             }
         });
-        addWindowListener(new java.awt.event.WindowAdapter() {
+        addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(java.awt.event.WindowEvent evt) {
+            public void windowClosing(WindowEvent evt) {
                 beenden();
             }
         });
@@ -379,8 +401,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         splitPane.addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                ddaten.mediathekGui.setToolbar(MediathekGui.ButtonAus);
-                ddaten.infoPanel.setIdx(InfoPanel.IDX_GUI_FILME);
+                setToolbar(MediathekGui.ButtonAus);
+                statusBar.setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.FILME);
             }
         });
         if (Daten.debug) {
@@ -975,17 +997,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout jPanelInfoLayout = new javax.swing.GroupLayout(jPanelInfo);
-        jPanelInfo.setLayout(jPanelInfoLayout);
-        jPanelInfoLayout.setHorizontalGroup(
-            jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1083, Short.MAX_VALUE)
-        );
-        jPanelInfoLayout.setVerticalGroup(
-            jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 21, Short.MAX_VALUE)
-        );
-
+        jPanelInfo.setLayout(new java.awt.BorderLayout());
         jPanel1.add(jPanelInfo, java.awt.BorderLayout.PAGE_END);
 
         jToolBar.setBackground(new java.awt.Color(204, 204, 204));
@@ -1113,7 +1125,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jTextFieldFilter.setDisabledTextColor(new java.awt.Color(102, 102, 102));
         jTextFieldFilter.setMaximumSize(new java.awt.Dimension(300, 35));
         jTextFieldFilter.setName("Thema/Titel"); // NOI18N
-        jTextFieldFilter.setOuterMargin(new java.awt.Insets(0, 0, 0, 0));
         jTextFieldFilter.setPreferredSize(new java.awt.Dimension(300, 25));
         jTextFieldFilter.setPrompt("Thema/Titel");
         jToolBar.add(jTextFieldFilter);
@@ -1273,7 +1284,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1083, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1282,6 +1293,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler5;
