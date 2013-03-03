@@ -1,0 +1,60 @@
+===============================================================
+com.explodingpixels
+
+macwidgets
+http://code.google.com/p/macwidgets/
+Mac Widgets for Java are a collection of widgets seen in OS X applications, offered in a Java API.
+
+
+===============================================================
+com.jidesoft
+
+Jide-oss
+http://java.net/projects/jide-oss
+JIDE Common Layer (Professional Swing Components)
+
+
+===============================================================
+commons-compress-1.4.1.jar
+
+Commons Compress
+http://commons.apache.org/proper/commons-compress/
+The Apache Commons Compress library defines an API for working with ar, cpio, Unix dump, tar, zip, gzip, XZ, Pack200 and bzip2 files. 
+
+
+===============================================================
+commons-lang3-3.1.jar
+
+Commons Lang
+http://commons.apache.org/proper/commons-lang/
+The standard Java libraries fail to provide enough methods for manipulation of its core classes. Apache Commons Lang provides these extra methods.
+
+
+===============================================================
+forms-1.2.1.jar
+
+JGoodies FormLayout
+http://www.jgoodies.com/freeware/libraries/forms/
+The FormLayout helps you lay out and implement consistent Swing panels fast. FormLayout makes simple things easy and the hard stuff possible.
+
+
+===============================================================
+org.simplericity.macify.eawt
+
+Macify Library
+http://simplericity.org/macify/
+The Macify Library helps you integrate your Java application with the Mac OS X platform.
+
+
+===============================================================
+swingx-all-1.6.4.jar
+
+SwingLabs Swing Component Extensions
+http://swingx.java.net/
+Contains extensions to the Swing GUI toolkit, including new and enhanced components that provide functionality commonly required by rich client applications.
+
+
+
+
+
+
