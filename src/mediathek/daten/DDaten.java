@@ -28,17 +28,17 @@ import mediathek.controller.io.starter.StarterClass;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
-import mediathek.gui.InfoPanel;
 import mediathek.tool.Konstanten;
 
+/**
+ * Diese Klasse enthält zusätzliche Konstanten, Systemeinstellungen und alles was wichtig ist für
+ * {@link mediathek.MediathekGui} und {@link mediathek.MediathekAuto}.
+ * Sie erweitert {@link mediathek.daten.Daten} für die Gui und Auto-Versionen
+ */
 public final class DDaten extends Daten {
-    // Konstanten, Systemeinstellungen und alles was wichtig ist für
-    // MediathekGui, MediathekAuto
-    // erweitert "Daten" um die Klassen für die Version Gui+Auto
-    //
     // Daten.listeFilme sind alle Filme,
     // DDaten.listeFilmeNachBlackList sind die Filme mit denen das Programm arbeitet, eben ohne die Blacklist
-    public static ListeFilme listeFilmeNachBlackList = null; 
+    public static ListeFilme listeFilmeNachBlackList = null;
     public ListeBlacklist listeBlacklist = null;
     public ListePset listePset = null;
     public ListeAbo listeAbo = null;
@@ -49,7 +49,6 @@ public final class DDaten extends Daten {
     public IoXmlLesen ioXmlLesen = null;
     public IoXmlSchreiben ioXmlSchreiben = null;
     public StarterClass starterClass = null; // Klasse zum Ausführen der Programme: VLC, flvstreamer, ...
-    public InfoPanel infoPanel = null; // Panel unten in der Gui mit den Infos: Anzahl Filme...
     // Panel
     public MediathekGui mediathekGui = null; // JFrame der Gui
     public GuiFilme guiFilme = null; // Tab mit den Filmen
@@ -72,9 +71,6 @@ public final class DDaten extends Daten {
         ioXmlSchreiben = new IoXmlSchreiben();
         history = new History(getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_HISTORY);
         starterClass = new StarterClass(this);
-        if (gui) {
-            infoPanel = new InfoPanel();
-        }
     }
 
     @Override
