@@ -106,6 +106,30 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
+//flexdock-1.2.3.jar
+//    private void startup() {
+//        // turn on floating support
+//        DockingManager.setFloatingEnabled(true);
+//        jPanelFilter.removeAll();
+//        jPanelFilter.setLayout(new BorderLayout());
+//
+//        Viewport viewport = new Viewport();
+//        jPanelFilter.add(viewport, BorderLayout.CENTER);
+//
+//        View viewFilter = createView("Filterpanel", "Filter", jPanelFilterInnen);
+//        viewport.dock(viewFilter);
+//        jPanelFilter.updateUI();
+//        updateUI();
+//    }
+//
+//    private View createView(String id, String text, JPanel panel) {
+//        View view = new View(id, text);
+//        view.addAction(View.CLOSE_ACTION);
+//        view.addAction(View.PIN_ACTION);
+//        view.setTerritoryBlocked(View.CENTER_REGION, true);
+//        view.setContentPane(new JScrollPane(panel));
+//        return view;
+//    }
     //===================================
     // Public
     //===================================
@@ -902,7 +926,6 @@ public class GuiFilme extends PanelVorlage {
                                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBlacklist;
     private javax.swing.JButton jButtonFilterLoeschen;
@@ -1274,7 +1297,7 @@ public class GuiFilme extends PanelVorlage {
                 if (nr >= 0) {
                     GuiFunktionen.copyToClipboard(
                             tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr),
-                                    DatenFilm.FILM_URL_NR).toString());
+                            DatenFilm.FILM_URL_NR).toString());
                 }
             }
         }
