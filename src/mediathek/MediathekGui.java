@@ -82,10 +82,10 @@ import org.simplericity.macify.eawt.DefaultApplication;
 
 public final class MediathekGui extends javax.swing.JFrame implements ApplicationListener {
 
-    public static final int ButtonAus = 0;
-    public static final int ButtonFilme = 1;
-    public static final int ButtonDonwload = 2;
-    public static final int ButtonAbo = 3;
+//    public static final int ButtonAus = 0;
+//    public static final int ButtonFilme = 1;
+//    public static final int ButtonDonwload = 2;
+//    public static final int ButtonAbo = 3;
     private DDaten ddaten;
     private BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     private DialogEinstellungen dialogEinstellungen;
@@ -94,6 +94,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     JPanel jPanelAnzahl = new JPanel();
     JSplitPane splitPane = null;
     private MVStatusBar statusBar;
+
+    public enum UIButtonState {
+
+        AUS, FILME, DOWNLOAD, ABO
+    }
 
     /**
      * Legt die statusbar an.
@@ -204,12 +209,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     //===================================
     // public
     //===================================
-    public void setToolbar(int nr) {
+    public void setToolbar(UIButtonState nr) {
+        // public enum UIButtonState {        AUS, FILME, DOWNLOAD, ABO    }
         switch (nr) {
-            case ButtonAus:
+            case AUS:
                 buttonAus();
                 break;
-            case ButtonFilme:
+            case FILME:
                 buttonAus();
                 jButtonFilmeLaden.setEnabled(true);
                 jButtonFilmAbspielen.setEnabled(true);
@@ -219,7 +225,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jCheckBoxMenuItemFilterAnzeigen.setEnabled(true);
                 filterAnzeigen(!Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
                 break;
-            case ButtonDonwload:
+            case DOWNLOAD:
                 buttonAus();
                 jButtonFilmeLaden.setEnabled(true);
                 jButtonDownloadAktualisieren.setEnabled(true);
@@ -242,7 +248,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jLabelAnzahl.setEnabled(true);
                 filterAnzeigen(false);
                 break;
-            case ButtonAbo:
+            case ABO:
                 buttonAus();
                 jButtonFilmeLaden.setEnabled(true);
                 jButtonAbosLoeschen.setEnabled(true);
@@ -401,7 +407,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         splitPane.addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                setToolbar(MediathekGui.ButtonAus);
+                setToolbar(MediathekGui.UIButtonState.AUS);
                 statusBar.setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.FILME);
             }
         });
@@ -1293,7 +1299,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler5;
