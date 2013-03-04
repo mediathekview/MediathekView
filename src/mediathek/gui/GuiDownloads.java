@@ -87,7 +87,7 @@ public class GuiDownloads extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonDonwload);
+        ddaten.mediathekGui.setToolbar(MediathekGui.UIButtonState.DOWNLOAD);
         ddaten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
     }
 

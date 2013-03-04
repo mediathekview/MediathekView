@@ -145,7 +145,7 @@ public class GuiFilme extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonFilme);
+        ddaten.mediathekGui.setToolbar(MediathekGui.UIButtonState.FILME);
         ddaten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.FILME);
     }
 

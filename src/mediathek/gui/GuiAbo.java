@@ -66,7 +66,7 @@ public class GuiAbo extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        ddaten.mediathekGui.setToolbar(MediathekGui.ButtonAbo);
+        ddaten.mediathekGui.setToolbar(MediathekGui.UIButtonState.ABO);
         ddaten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.ABO);
     }
 
