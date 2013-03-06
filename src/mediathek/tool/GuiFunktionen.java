@@ -191,6 +191,9 @@ public class GuiFunktionen extends Funktionen {
 
     private static String getAscii(String ret) {
         String r = "";
+        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UNICODE_AENDERN_NR])) {
+            return cleanUnicode(ret, "_");
+        }
         if (!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_NUR_ASCII_NR])) {
             return ret;
         } else {
@@ -207,6 +210,93 @@ public class GuiFunktionen extends Funktionen {
                 } else {
                     r += "_";
                 }
+            }
+        }
+        return r;
+    }
+
+    public static String cleanUnicode(String ret, String sonst) {
+        String r = "";
+        char c;
+        for (int i = 0; i < ret.length(); ++i) {
+            c = ret.charAt(i);
+            char hex = ret.charAt(i);
+            if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.BASIC_LATIN) {
+                r += c;
+            } else // Umlaute, 
+            if (c == 'Ä' || c == 'Ö' || c == 'Ü'
+                    || c == 'ä' || c == 'ö' || c == 'ü') {
+                r += c;
+            } else if (c == 'ß') {
+                r += "ß";
+            } else // Buchstaben
+            if (c == 'Â' || c == 'À' || c == 'Å' || c == 'Á') {
+                r += "A";
+            } else if (c == 'å' || c == 'á' || c == 'à' || c == 'â') {
+                r += "a";
+            } else if (c == 'Č' || c == 'Č') {
+                r += "C";
+            } else if (c == 'ć' || c == 'č' || c == 'ç') {
+                r += "c";
+            } else if (c == 'Đ') {
+                r += "D";
+            } else if (c == 'É' || c == 'È') {
+                r += "E";
+            } else if (c == 'é' || c == 'è' || c == 'ê' || c == 'ě' || c == 'ë') {
+                r += "e";
+            } else if (c == 'í') {
+                r += "i";
+            } else if (c == 'ñ') {
+                r += "n";
+            } else if (c == 'ó' || c == 'ô' || c == 'ø') {
+                r += "o";
+            } else if (c == 'Š') {
+                r += "S";
+            } else if (c == 'ś' || c == 'š' || c == 'ş') {
+                r += "s";
+            } else if (c == 'ł' || c == 'Ł') {
+                r += "t";
+            } else if (c == 'û' || c == 'ù') {
+                r += "u";
+            } else if (c == 'ý') {
+                r += "y";
+            } else if (c == 'Ž' || c == 'Ź') {
+                r += "Z";
+            } else if (c == 'ž' || c == 'ź') {
+                r += "z";
+            } else if (c == 'æ') {
+                r += "ae";
+            } else // Rest
+            if (c == '\n') {
+            } else if (c == '–') {
+                r += "-";
+            } else if (c == '„') {
+                r += "\"";
+            } else if (c == '„' || c == '”' || c == '“' || c == '«' || c == '»') {
+                r += "\"";
+            } else if (c == '?') {
+                r += "?";
+            } else if (c == '°' || c == '™') {
+                r += "";
+            } else if (c == '…') {
+                r += "...";
+            } else if (c == '€') {
+                r += "€";
+            } else if (c == '´' || c == '’' || c == '‘' || c == '¿') {
+                r += "'";
+            } else if (c == '\u003F') {
+                r += "?";
+            } else if (c == '\u0096') {
+                r += "-";
+            } else if (c == '\u0085') {
+            } else if (c == '\u0080') {
+            } else if (c == '\u0084') {
+            } else if (c == '\u0092') {
+            } else if (c == '\u0093') {
+            } else if (c == '\u0091') {
+                r += "-";
+            } else {
+                r += sonst;
             }
         }
         return r;

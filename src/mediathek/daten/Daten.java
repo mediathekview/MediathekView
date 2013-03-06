@@ -63,6 +63,7 @@ public class Daten {
         system[Konstanten.SYSTEM_VERSION_NR] = Konstanten.VERSION;
         system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR] = Boolean.TRUE.toString();
+        system[Konstanten.SYSTEM_UNICODE_AENDERN_NR] = Boolean.TRUE.toString();
         if (Daten.debug) {
             Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUS);
         }
@@ -138,7 +139,7 @@ public class Daten {
             if (!basisF.exists()) {
                 if (!basisF.mkdir()) {
                     Log.fehlerMeldung(898736548, Log.FEHLER_ART_PROG, "Daten.getBasisVerzeichnis", new String[]{"Kann den Ordner zum Speichern der Daten nicht anlegen!",
-                                "Daten.getBasisVerzeichnis"});
+                        "Daten.getBasisVerzeichnis"});
                 }
 
             }

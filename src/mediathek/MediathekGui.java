@@ -82,10 +82,6 @@ import org.simplericity.macify.eawt.DefaultApplication;
 
 public final class MediathekGui extends javax.swing.JFrame implements ApplicationListener {
 
-//    public static final int ButtonAus = 0;
-//    public static final int ButtonFilme = 1;
-//    public static final int ButtonDonwload = 2;
-//    public static final int ButtonAbo = 3;
     private DDaten ddaten;
     private BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     private DialogEinstellungen dialogEinstellungen;
@@ -776,12 +772,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 showAboutDialog();
             }
         });
-//        jMenuItemProgrammlog.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                ProgrammLog.LogDateiSchreiben(ddaten);
-//            }
-//        });
         setupUserInterfaceForOsx();
     }
 

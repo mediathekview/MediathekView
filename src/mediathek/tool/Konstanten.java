@@ -155,20 +155,22 @@ public class Konstanten {
     public static final int SYSTEM_ABOS_SOFORT_SUCHEN_NR = 44;
     public static final String SYSTEM_NUR_ASCII = "nur-Ascii-Zeichen";
     public static final int SYSTEM_NUR_ASCII_NR = 45;
+    public static final String SYSTEM_UNICODE_AENDERN = "Unicode-aendern";
+    public static final int SYSTEM_UNICODE_AENDERN_NR = 46;
     public static final String SYSTEM_HINWEIS_NR_ANGEZEIGT = "Hinweis-Nr-angezeigt";
-    public static final int SYSTEM_HINWEIS_NR_ANGEZEIGT_NR = 46;
+    public static final int SYSTEM_HINWEIS_NR_ANGEZEIGT_NR = 47;
     public static final String SYSTEM_ORDNER_OEFFNEN = "Download-Ordner-oeffnen";
-    public static final int SYSTEM_ORDNER_OEFFNEN_NR = 47;
+    public static final int SYSTEM_ORDNER_OEFFNEN_NR = 48;
     public static final String SYSTEM_BLACKLIST_ZUKUNFT__NICHT_ANZEIGEN = "Blacklist-Zukunft-nicht-anzeigen";
-    public static final int SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR = 48;
+    public static final int SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR = 49;
     public static final String SYSTEM_BLACKLIST_AUCH_ABO = "Blacklist-auch-Abo";
-    public static final int SYSTEM_BLACKLIST_AUCH_ABO_NR = 49;
+    public static final int SYSTEM_BLACKLIST_AUCH_ABO_NR = 50;
     public static final String SYSTEM_BLACKLIST_AUSGESCHALTET = "Blacklist-ausgeschaltet";
-    public static final int SYSTEM_BLACKLIST_AUSGESCHALTET_NR = 50;
+    public static final int SYSTEM_BLACKLIST_AUSGESCHALTET_NR = 51;
     public static final String SYSTEM_VERSION_PROGRAMMSET = "Version-Programmset";
-    public static final int SYSTEM_VERSION_PROGRAMMSET_NR = 51;
+    public static final int SYSTEM_VERSION_PROGRAMMSET_NR = 52;
     public static final String SYSTEM = "system";
-    public static final int SYSTEM_MAX_ELEM = 52;
+    public static final int SYSTEM_MAX_ELEM = 53;
     public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION,
         SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y, SYSTEM_POS_X, SYSTEM_POS_Y,
         SYSTEM_GROESSE_EINSTELLUNEN_X, SYSTEM_GROESSE_EINSTELLUNEN_Y, SYSTEM_POS_EINSTELLUNEN_X, SYSTEM_EINSTELLUNEN_POS_Y,
@@ -180,7 +182,7 @@ public class Konstanten {
         SYSTEM_FILTER_TAGE, SYSTEM_FILTER_KEINE_ABO, SYSTEM_FILTER_KEINE_GESEHENE,
         SYSTEM_PFAD_VLC, SYSTEM_PFAD_FLVSTREAMER, SYSTEM_PFAD_MPLAYER,
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME, SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS, SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS,
-        SYSTEM_ABOS_SOFORT_SUCHEN, SYSTEM_NUR_ASCII, SYSTEM_HINWEIS_NR_ANGEZEIGT, SYSTEM_ORDNER_OEFFNEN,
+        SYSTEM_ABOS_SOFORT_SUCHEN, SYSTEM_NUR_ASCII, SYSTEM_UNICODE_AENDERN, SYSTEM_HINWEIS_NR_ANGEZEIGT, SYSTEM_ORDNER_OEFFNEN,
         SYSTEM_BLACKLIST_ZUKUNFT__NICHT_ANZEIGEN, SYSTEM_BLACKLIST_AUCH_ABO, SYSTEM_BLACKLIST_AUSGESCHALTET,
         SYSTEM_VERSION_PROGRAMMSET
     };
