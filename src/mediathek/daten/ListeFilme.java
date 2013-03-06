@@ -43,6 +43,7 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.tool.TModelFilm;
 import org.apache.commons.lang3.StringEscapeUtils;
+import sun.net.www.content.audio.x_aiff;
 
 public class ListeFilme extends LinkedList<DatenFilm> {
 
@@ -96,38 +97,9 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         DatenFilm film;
         while (it.hasNext()) {
             film = it.next();
-            film.arr[DatenFilm.FILM_THEMA_NR] = getAscii(film.arr[DatenFilm.FILM_THEMA_NR]);
-            film.arr[DatenFilm.FILM_TITEL_NR] = getAscii(film.arr[DatenFilm.FILM_TITEL_NR]);
-//            if (!film.arr[DatenFilm.FILM_THEMA_NR].equals(film.arr[DatenFilm.FILM_THEMA_NR].replaceAll("[^\\p{L}\\p{N}]", ""))) {
-//                s1 = film.arr[DatenFilm.FILM_THEMA_NR];
-//                s2 = film.arr[DatenFilm.FILM_THEMA_NR].replaceAll("[^\\p{L}\\p{N}]", "");
-//                System.out.println(film.arr[DatenFilm.FILM_THEMA_NR]);
-//            }
-//            if (!film.arr[DatenFilm.FILM_TITEL_NR].equals(film.arr[DatenFilm.FILM_TITEL_NR].replaceAll("[^\\p{L}\\p{N}]", ""))) {
-//                s1 = film.arr[DatenFilm.FILM_TITEL_NR];
-//                s2 = film.arr[DatenFilm.FILM_TITEL_NR].replaceAll("[^\\p{L}\\p{N}]", "");
-//                System.out.println(film.arr[DatenFilm.FILM_TITEL_NR]);
-//            }
+            film.arr[DatenFilm.FILM_THEMA_NR] = GuiFunktionen.cleanUnicode(film.arr[DatenFilm.FILM_THEMA_NR], "!!!!!!!!!!!!!");
+            film.arr[DatenFilm.FILM_TITEL_NR] = GuiFunktionen.cleanUnicode(film.arr[DatenFilm.FILM_TITEL_NR], "!!!!!!!!!!!!!");
         }
-    }
-
-    private static String getAscii(String ret) {
-        String r = "";
-        char c;
-//        ret = ret.replace("ä", "ae");
-//        ret = ret.replace("ö", "oe");
-//        ret = ret.replace("ü", "ue");
-//        ret = ret.replace("Ä", "Ae");
-//        ret = ret.replace("Ö", "Oe");
-//        ret = ret.replace("Ü", "Ue");
-        for (int i = 0; i < ret.length(); ++i) {
-            if ((c = ret.charAt(i)) < 256) {
-                r += c;
-            } else {
-                r += "!!!!!!!!";
-            }
-        }
-        return r;
     }
 
     public void sort() {

@@ -10,7 +10,7 @@ import mediathek.tool.Log;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
+import java.util.EnumMap;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
  * Time: 19:54
  */
 public final class MVStatusBar {
+
     private boolean stopTimer = false;
     private JLabel lblCenter;
     private JLabel lblRechts;
@@ -33,7 +34,7 @@ public final class MVStatusBar {
     /**
      * This contains all the strings that will be displayed according to selected index.
      */
-    private HashMap<StatusbarIndex, String> displayListForLeftLabel = new HashMap<StatusbarIndex, String>();
+    private EnumMap<StatusbarIndex, String> displayListForLeftLabel = new EnumMap<StatusbarIndex, String>(StatusbarIndex.class);
     private StatusbarIndex currentIndex = StatusbarIndex.NONE;
 
     public MVStatusBar() {
@@ -98,8 +99,7 @@ public final class MVStatusBar {
         }
         if (Daten.debug) {
             lblRechts.setText(GuiFunktionen.textLaenge(60, event.text, true /* mitte */, true /*addVorne*/));
-        }
-        else {
+        } else {
             lblRechts.setVisible(false);
         }
     }
@@ -149,9 +149,10 @@ public final class MVStatusBar {
         lblCenter.setText(displayString);
     }
 
-    public enum StatusbarIndex {NONE, FILME, DOWNLOAD, ABO}
+    public enum StatusbarIndex {
 
-    ;
+        NONE, FILME, DOWNLOAD, ABO
+    };
 
     //FIXME use swing timer
     private class AgeUpdateTimer extends Thread {

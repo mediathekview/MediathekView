@@ -1,0 +1,14 @@
+Die Dateinamen der Filme enthalten
+Zeichen die nicht immer richtig dargestellt
+werden können. Beim Speichern können die
+Namen angepasst werden.
+
+Mit der Option:
+"Unicode-Zeichen vereinfachen"
+wird versucht, Zeichen die Probleme
+verursachen können, zu ersetzen.
+
+Die Option:
+"nur ASCII-Zeichen erlauben"
+geht noch strenger vor, da werden
+auch zB. Umlaute "ö -> oe" erstzt.

@@ -31,6 +31,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
+import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.GuiFunktionen;
@@ -48,13 +49,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, true, "\n"
-                        + "Die Dateinamen der Filme\n"
-                        + "die gespeichert werden,\n"
-                        + "enthalten nur noch ASCII-Zeichen.\n"
-                        + "\n"
-                        + "Sonderzeichen werden durch \"_\" \n"
-                        + "und Umlaute zB. ä mit ae ersetzt.").setVisible(true);
+                new DialogHilfe(null, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_UNICODE)).setVisible(true);
             }
         });
         jButtonHilfe.addActionListener(new ActionListener() {
@@ -96,7 +91,20 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jCheckBoxNurAscii.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (jCheckBoxNurAscii.isSelected()) {
+                    jCheckBoxUnicode.setSelected(false);
+                }
                 Daten.system[Konstanten.SYSTEM_NUR_ASCII_NR] = Boolean.toString(jCheckBoxNurAscii.isSelected());
+            }
+        });
+        jCheckBoxUnicode.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UNICODE_AENDERN_NR]));
+        jCheckBoxUnicode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (jCheckBoxUnicode.isSelected()) {
+                    jCheckBoxNurAscii.setSelected(false);
+                }
+                Daten.system[Konstanten.SYSTEM_UNICODE_AENDERN_NR] = Boolean.toString(jCheckBoxUnicode.isSelected());
             }
         });
         jButtonProgramm.addActionListener(new ActionListener() {
@@ -223,6 +231,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         jCheckBoxNurAscii = new javax.swing.JCheckBox();
         jButtonName = new javax.swing.JButton();
+        jCheckBoxUnicode = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jTextFieldProgramm = new javax.swing.JTextField();
         jButtonProgramm = new javax.swing.JButton();
@@ -239,7 +248,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jCheckBoxAboSuchen)
-                .addContainerGap(238, Short.MAX_VALUE))
+                .addContainerGap(184, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -302,25 +311,34 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jButtonName.setText("Hilfe");
 
+        jCheckBoxUnicode.setText("Unicode-Zeichen \"vereinfachen\"");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxNurAscii)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonName)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jCheckBoxNurAscii)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(jCheckBoxUnicode)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonName)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxNurAscii)
-                    .addComponent(jButtonName))
-                .addContainerGap(13, Short.MAX_VALUE))
+                    .addComponent(jButtonName)
+                    .addComponent(jCheckBoxUnicode))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxNurAscii)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab Download: Ordner öffnen"));
@@ -377,9 +395,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(218, Short.MAX_VALUE))
+                .addContainerGap(183, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -389,6 +407,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private javax.swing.JButton jButtonProgramm;
     private javax.swing.JCheckBox jCheckBoxAboSuchen;
     private javax.swing.JCheckBox jCheckBoxNurAscii;
+    private javax.swing.JCheckBox jCheckBoxUnicode;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JRadioButton jRadioButtonAuto;
     private javax.swing.JRadioButton jRadioButtonManuel;
