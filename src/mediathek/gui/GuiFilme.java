@@ -19,7 +19,6 @@
  */
 package mediathek.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -45,7 +44,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -81,9 +79,6 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.TModelFilm;
-import org.flexdock.docking.DockingManager;
-import org.flexdock.view.View;
-import org.flexdock.view.Viewport;
 
 public class GuiFilme extends PanelVorlage {
 
@@ -109,36 +104,34 @@ public class GuiFilme extends PanelVorlage {
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
-        if (Daten.debug) {
-            startup();
-        }
+//        if (Daten.debug) {
+//            startup();
+//        }
     }
 
-//flexdock-1.2.3.jar
-    private void startup() {
-        // turn on floating support
-        DockingManager.setFloatingEnabled(true);
-        jPanelFilter.removeAll();
-        jPanelFilter.setLayout(new BorderLayout());
-
-        Viewport viewport = new Viewport();
-        jPanelFilter.add(viewport, BorderLayout.CENTER);
-
-        View viewFilter = createView("Filterpanel", "Filter", jPanelFilterInnen);
-        viewport.dock(viewFilter);
-        jPanelFilter.updateUI();
-        updateUI();
-    }
-
-    private View createView(String id, String text, JPanel panel) {
-        View view = new View(id, text);
-        view.addAction(View.CLOSE_ACTION);
-        view.addAction(View.PIN_ACTION);
-        view.setTerritoryBlocked(View.CENTER_REGION, true);
-        view.setContentPane(new JScrollPane(panel));
-        return view;
-    }
-
+////flexdock-1.2.3.jar
+//    private void startup() {
+//        // turn on floating support
+//        DockingManager.setFloatingEnabled(true);
+//        jPanelFilter.removeAll();
+//        jPanelFilter.setLayout(new BorderLayout());
+//
+//        Viewport viewport = new Viewport();
+//        jPanelFilter.add(viewport, BorderLayout.CENTER);
+//
+//        View viewFilter = createView("Filterpanel", "Filter", jPanelFilterInnen);
+//        viewport.dock(viewFilter);
+//        jPanelFilter.updateUI();
+//        updateUI();
+//    }
+//    private View createView(String id, String text, JPanel panel) {
+//        View view = new View(id, text);
+//        view.addAction(View.CLOSE_ACTION);
+//        view.addAction(View.PIN_ACTION);
+//        view.setTerritoryBlocked(View.CENTER_REGION, true);
+//        view.setContentPane(new JScrollPane(panel));
+//        return view;
+//    }
     //===================================
     // Public
     //===================================
@@ -713,7 +706,6 @@ public class GuiFilme extends PanelVorlage {
         jPanelFilter.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
         jCheckBoxFilter.setBackground(new java.awt.Color(217, 217, 217));
-        jCheckBoxFilter.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         jCheckBoxFilter.setText("Filter");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
