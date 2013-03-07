@@ -150,18 +150,8 @@ public class GuiFilme extends PanelVorlage {
         filmSpeichern_();
     }
 
-    public void filtern(String themaTitel) {
-        // erst mal alles Anzeigen
-        stopBeob = true;
-        jCheckBoxKeineAbos.setSelected(false);
-        jCheckBoxKeineGesehenen.setSelected(false);
-        Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = Boolean.FALSE.toString();
-        Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = Boolean.FALSE.toString();
-        jComboBoxZeitraum.setSelectedIndex(0);
-        Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = "0";
-        stopBeob = false;
-        checkBlacklist();
-        tabelleLaden(themaTitel);
+    public void filtern() {
+        tabelleLaden();
     }
     //===================================
     // Private
@@ -169,7 +159,7 @@ public class GuiFilme extends PanelVorlage {
 
     private void init() {
         checkBlacklist();
-        panelFilterAnzeigen();
+        jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
         jComboBoxZeitraum.setModel(new DefaultComboBoxModel(COMBO_ZEIT));
         try {
             jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
@@ -307,13 +297,12 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_PANEL_FILTER_ANZEIGEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                panelFilterAnzeigen();
+                // Panel anzeigen und die Filmliste anpassen
+                jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+                checkBlacklist();
+                filtern();
             }
         });
-    }
-
-    private void panelFilterAnzeigen() {
-        jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
     }
 
     private void themenLaden() {
@@ -444,85 +433,91 @@ public class GuiFilme extends PanelVorlage {
         return ret;
     }
 
-    private void tabelleLaden() {
-        tabelleLaden("");
-    }
-
-    private synchronized void tabelleLaden(String themaTitel) {
+    private synchronized void tabelleLaden() {
         try {
-            boolean themaNichtDa = false;
-            stopBeob = true;
-            tabelle.getSpalten();
-            String filterThema = jComboBoxFilterThema.getSelectedItem().toString();
-            String filterSender = jComboBoxFilterSender.getSelectedItem().toString();
-            boolean themaOpen = jComboBoxFilterThema.isPopupVisible();
-            boolean senderOpen = jComboBoxFilterSender.isPopupVisible();
-            if (DDaten.listeFilmeNachBlackList.isEmpty()) {
-                //jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(DDaten.listeFilmeNachBlackList.getModelOfFieldSender()));
-                //jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(DDaten.listeFilmeNachBlackList.getModelOfFieldThema("")));
-                jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(sender));
-                jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen("")));
-                jComboBoxFilterSender.setSelectedIndex(0);
-                jComboBoxFilterThema.setSelectedIndex(0);
-                listeInModellLaden(themaTitel); // zum löschen der Tabelle
+            if (!Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+                // Filtern mit dem Filter in der Toolbar
+                stopBeob = true;
+                tabelle.getSpalten();
+                listeInModellLaden();
+                setInfo();
+                tabelle.setSpalten();
+                stopBeob = false;
             } else {
-                //Filme neu laden
-                listeInModellLaden(themaTitel);
-                //Filter Sender
-                jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(sender));
-                jComboBoxFilterSender.setSelectedIndex(0);
-                if (!filterSender.equals("")) {
-                    // ist wohl ein Bug beim Combo, klappt nur richtig wenn editable?!
-                    jComboBoxFilterSender.setEditable(true);
-                    jComboBoxFilterSender.setSelectedItem(filterSender);
-                    jComboBoxFilterSender.setEditable(false);
-                    if (jComboBoxFilterSender.getSelectedIndex() == 0) {
-                        // war wohl nix, der gewählte Sender wurde in die Blacklist eingetragen
-                        filterSender = "";
-                        listeInModellLaden(themaTitel);
-                    }
-                }
-                jComboBoxFilterSender.setPopupVisible(senderOpen);
-                // Filter Thema
-                if (filterSender.equals("")) {
+                boolean themaNichtDa = false;
+                stopBeob = true;
+                tabelle.getSpalten();
+                String filterThema = jComboBoxFilterThema.getSelectedItem().toString();
+                String filterSender = jComboBoxFilterSender.getSelectedItem().toString();
+                boolean themaOpen = jComboBoxFilterThema.isPopupVisible();
+                boolean senderOpen = jComboBoxFilterSender.isPopupVisible();
+                if (DDaten.listeFilmeNachBlackList.isEmpty()) {
+                    //jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(DDaten.listeFilmeNachBlackList.getModelOfFieldSender()));
+                    //jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(DDaten.listeFilmeNachBlackList.getModelOfFieldThema("")));
+                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(sender));
                     jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen("")));
+                    jComboBoxFilterSender.setSelectedIndex(0);
+                    jComboBoxFilterThema.setSelectedIndex(0);
+                    listeInModellLaden(); // zum löschen der Tabelle
                 } else {
-                    jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen(filterSender)));
+                    //Filme neu laden
+                    listeInModellLaden();
+                    //Filter Sender
+                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(sender));
+                    jComboBoxFilterSender.setSelectedIndex(0);
+                    if (!filterSender.equals("")) {
+                        // ist wohl ein Bug beim Combo, klappt nur richtig wenn editable?!
+                        jComboBoxFilterSender.setEditable(true);
+                        jComboBoxFilterSender.setSelectedItem(filterSender);
+                        jComboBoxFilterSender.setEditable(false);
+                        if (jComboBoxFilterSender.getSelectedIndex() == 0) {
+                            // war wohl nix, der gewählte Sender wurde in die Blacklist eingetragen
+                            filterSender = "";
+                            listeInModellLaden();
+                        }
+                    }
+                    jComboBoxFilterSender.setPopupVisible(senderOpen);
+                    // Filter Thema
+                    if (filterSender.equals("")) {
+                        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen("")));
+                    } else {
+                        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen(filterSender)));
+                    }
+                    // wenn Thema bei dem Sender vorhanden, dann wieder setzen
+                    // ist wohl ein Bug beim Combo, klappt nur richtig wenn editable?!
+                    jComboBoxFilterThema.setEditable(true);
+                    jComboBoxFilterThema.setSelectedItem(filterThema);
+                    jComboBoxFilterThema.setEditable(false);
+                    if (!filterThema.equals("") && jComboBoxFilterThema.getSelectedIndex() == 0) {
+                        // war wohl nix
+                        themaNichtDa = true;
+                    }
+                    jComboBoxFilterThema.setPopupVisible(themaOpen);
                 }
-                // wenn Thema bei dem Sender vorhanden, dann wieder setzen
-                // ist wohl ein Bug beim Combo, klappt nur richtig wenn editable?!
-                jComboBoxFilterThema.setEditable(true);
-                jComboBoxFilterThema.setSelectedItem(filterThema);
-                jComboBoxFilterThema.setEditable(false);
-                if (!filterThema.equals("") && jComboBoxFilterThema.getSelectedIndex() == 0) {
-                    // war wohl nix
-                    themaNichtDa = true;
+                setInfo();
+                tabelle.setSpalten();
+                stopBeob = false;
+                //filtern
+                if (themaNichtDa) {
+                    // nochmal filtern anschieben
+                    tabelleLaden();
                 }
-                jComboBoxFilterThema.setPopupVisible(themaOpen);
-            }
-            setInfo();
-            tabelle.setSpalten();
-            stopBeob = false;
-            //filtern
-            if (themaNichtDa) {
-                // nochmal filtern anschieben
-                tabelleLaden();
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(558965421, Log.FEHLER_ART_PROG, "GuiFilme.tabelleBauen", ex);
         }
     }
 
-    private synchronized void listeInModellLaden(String filterThemaTitel) {
+    private synchronized void listeInModellLaden() {
         TModelFilm m;
-        if (filterThemaTitel.equals("")) {
-            // normal mit den Filtern aus dem Filterpanel
+        if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+            // normal mit den Filtern aus dem Filterpanel suchen
             m = DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), jComboBoxFilterSender.getSelectedItem().toString(),
                     jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText());
         } else {
             // jetzt nur den Filter aus der Toolbar
             m = DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), "",
-                    "", "", filterThemaTitel);
+                    "", "", ddaten.mediathekGui.getFilterToolBar());
         }
         if (m.getRowCount() > 0) {
             if (jCheckBoxKeineGesehenen.isSelected() || jCheckBoxKeineAbos.isSelected() || jToggleButtonLivestram.isSelected()) {
@@ -662,6 +657,21 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void checkBlacklist() {
+        if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+            // dann Filterpanel zum Bauen der Filmliste nehmen
+            stopBeob = true;
+            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = Boolean.toString(jCheckBoxKeineAbos.isSelected());
+            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = Boolean.toString(jCheckBoxKeineGesehenen.isSelected());
+            Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(jComboBoxZeitraum.getSelectedIndex());
+            stopBeob = false;
+        } else {
+            // mit dem Filter in der Toolbar arbeiten
+            stopBeob = true;
+            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = Boolean.FALSE.toString();
+            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = Boolean.FALSE.toString();
+            Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = "0";
+            stopBeob = false;
+        }
         DDaten.listeFilmeNachBlackList = ddaten.listeBlacklist.filterListe(Daten.listeFilme);
         themenLaden();
         // Abos eintragen

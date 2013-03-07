@@ -108,6 +108,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         return statusBar;
     }
 
+    public String getFilterToolBar() {
+        return jTextFieldFilter.getText();
+    }
+
     public MediathekGui(String[] ar) {
         //we must check if we were started with enough memory, do it as early as possible
         checkMemoryRequirements();
@@ -347,7 +351,28 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 Filter.checkPattern2(jTextFieldFilter);
-                ddaten.guiFilme.filtern(jTextFieldFilter.getText());
+                ddaten.guiFilme.filtern();
+            }
+        });
+        jTextFieldFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            private void tus() {
+                Filter.checkPattern2(jTextFieldFilter);
+                ddaten.guiFilme.filtern();
             }
         });
 
@@ -602,27 +627,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemFilterAnzeigen.isSelected());
                 filterAnzeigen(ddaten.guiFilme.isVisible() && !Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getName());
-            }
-        });
-        jTextFieldFilter.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            private void tus() {
-                Filter.checkPattern2(jTextFieldFilter);
-                ddaten.guiFilme.filtern(jTextFieldFilter.getText());
             }
         });
 
