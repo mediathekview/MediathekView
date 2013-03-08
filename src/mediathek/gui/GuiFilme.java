@@ -64,9 +64,9 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogAddDownload;
-import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.tool.BeobMpanel;
 import mediathek.tool.CellRendererFilme;
@@ -86,7 +86,7 @@ public class GuiFilme extends PanelVorlage {
     private final String[] COMBO_ZEIT = new String[]{"alles", "1 Tag", "2 Tage", "3 Tage", "4 Tage", "5 Tage", "10 Tage", "15 Tage", "20 Tage", "30 Tage"};
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 4, 5, 10, 15, 20, 30};
     private BeobMausTabelle beobMausTabelle;
-    private DialogDatenFilm dialogDatenFilm = null;
+    private MVFilmInformation filmInfoHud;
     private String[] sender;
     private String[][] themenPerSender;
     //private String[] alleThemen;
@@ -96,9 +96,9 @@ public class GuiFilme extends PanelVorlage {
         initComponents();
         tabelle = new JTableMed(JTableMed.TABELLE_TAB_FILME);
         jScrollPane1.setViewportView(tabelle);
-        dialogDatenFilm = new DialogDatenFilm(null, false, ddaten);
         init(); //alles einrichten, Beobachter anhängen
         panelVideoplayer();
+        filmInfoHud = new MVFilmInformation(ddaten.mediathekGui);
         tabelleLaden(); //Filme laden
         tabelle.initTabelle();
         if (tabelle.getRowCount() > 0) {
@@ -551,7 +551,7 @@ public class GuiFilme extends PanelVorlage {
                 aktFilm = film;
             }
         }
-        dialogDatenFilm.setAktFilm(aktFilm);
+        filmInfoHud.updateCurrentFilm(aktFilm);
     }
 
     private void playerStarten(DatenPset pSet) {
@@ -1081,7 +1081,6 @@ public class GuiFilme extends PanelVorlage {
         JMenuItem itemSenderLaden = new JMenuItem("Sender aktualisieren");
         private BeobUrl beobUrl = new BeobUrl();
         private BeobPrint beobPrint = new BeobPrint();
-        private BeobInfo beobInfo = new BeobInfo();
         private BeobFilterLoeschen beobLoeschen = new BeobFilterLoeschen();
         private BeobAbo beobAbo = new BeobAbo(false /* mit Titel */);
         private BeobAbo beobAboMitTitel = new BeobAbo(true /* mit Titel */);
@@ -1270,7 +1269,15 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.add(item);
             //Infos
             item = new JMenuItem("Infos anzeigen");
-            item.addActionListener(beobInfo);
+            item.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    if (!filmInfoHud.isVisible()) {
+                        filmInfoHud.show();
+                    }
+                }
+            });
+
             jPopupMenu.add(item);
             // Tabellenspalten zurücksetzen
             item = new JMenuItem("Spalten zurücksetzen");
@@ -1284,14 +1291,6 @@ public class GuiFilme extends PanelVorlage {
 
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-
-        private class BeobInfo implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialogDatenFilm.setVis();
-            }
         }
 
         private class BeobSenderLaden implements ActionListener {
