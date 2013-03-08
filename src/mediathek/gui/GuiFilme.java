@@ -300,7 +300,7 @@ public class GuiFilme extends PanelVorlage {
                 // Panel anzeigen und die Filmliste anpassen
                 jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
                 checkBlacklist();
-                filtern();
+                tabelleLaden();
             }
         });
     }
