@@ -7,14 +7,6 @@ Mac Widgets for Java are a collection of widgets seen in OS X applications, offe
 
 
 ===============================================================
-com.jidesoft
-
-Jide-oss
-http://java.net/projects/jide-oss
-JIDE Common Layer (Professional Swing Components)
-
-
-===============================================================
 commons-compress-1.4.1.jar
 
 Commons Compress
@@ -36,6 +28,14 @@ forms-1.2.1.jar
 JGoodies FormLayout
 http://www.jgoodies.com/freeware/libraries/forms/
 The FormLayout helps you lay out and implement consistent Swing panels fast. FormLayout makes simple things easy and the hard stuff possible.
+
+
+===============================================================
+jide-oss-3.4.0.jar
+
+Jide-oss
+http://java.net/projects/jide-oss
+JIDE Common Layer (Professional Swing Components)
 
 
 ===============================================================
