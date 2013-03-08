@@ -18,6 +18,15 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+# Version 3.2.0
+	- Filter in der Toolbar (mit F8 kann man zwischen dem neuen und dem bisherigen Filterpanel umschalten)
+	- Neue Option in den Einstellungen: Es können Unicodezeichen vereinfacht werden, die beim Speichern im Dateinamen Probleme verursachen können
+	- Die Blacklist wurde erweitert und sie kann jetzt auch auf das Suchen der Abos angewandt werden (wenn im Dialog Blacklist eingeschalter)
+	- Livestreams wurden angepasst (ARD, ZDF)
+	- es gibt eine native MAC-Version und es sind einige Anpassungen an die MAC-Oberfläche eingebaut worden
+	- Anzeige der Restzeit bei Downloads
+	- Öffnen des Downloadordners eines Download im Kontextmenü der Maus im Tab Download
+	
 # Version 3.1.0
 	- Bei den Downloads gibt es jetzt eine Fortschrittsanzeige die in "Prozent" anzeigt, 
 	wieviel schon geladen wurde
