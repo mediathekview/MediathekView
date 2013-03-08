@@ -409,11 +409,7 @@ public class HudWindow {
                     Point windowPoint = SwingUtilities.convertPoint(fResizeCorner, e.getPoint(), fWindow);
                     fWindow.setSize(windowPoint.x + fXOffsetToWindowEdge,
                             windowPoint.y + fYOffsetToWidnowEdge);
-
-                    // the following two lines are a work-around to Sun bug 6318144:
-                    // http://bugs.sun.com/view_bug.do;?bug_id=6318144
-                    fWindow.invalidate();
-                    fWindow.validate();
+                   
                 }
             };
         }

@@ -51,6 +51,7 @@ import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogDatenFilm;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
+import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.BeobMpanel;
 import mediathek.tool.CellRendererDownloads;
 import mediathek.tool.Datum;
@@ -66,13 +67,15 @@ import mediathek.tool.TModelDownload;
 public class GuiDownloads extends PanelVorlage {
 
     private DialogDatenFilm dialogDatenFilm = null;
+    //private DialogDatenFilm dialogDatenFilm = null;
+    private MVFilmInformation filmInfoHud;
 
     public GuiDownloads(DDaten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         tabelle = new JTableMed(JTableMed.TABELLE_TAB_DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
-        dialogDatenFilm = new DialogDatenFilm(null, false, ddaten);
+        filmInfoHud = new MVFilmInformation(d.mediathekGui);
         init();
         downloadsAktualisieren(); // die Tabelle wird dabei gleich geladen
         tabelle.initTabelle();
@@ -491,7 +494,7 @@ public class GuiDownloads extends PanelVorlage {
                 aktFilm = film;
             }
         }
-        dialogDatenFilm.setAktFilm(aktFilm);
+        filmInfoHud.updateCurrentFilm(aktFilm);
     }
 
     /**
@@ -602,7 +605,6 @@ public class GuiDownloads extends PanelVorlage {
                                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JCheckBox jCheckBoxFilter;
@@ -820,7 +822,7 @@ public class GuiDownloads extends PanelVorlage {
                     if (nr >= 0) {
                         GuiFunktionen.copyToClipboard(
                                 tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr),
-                                        DatenDownload.DOWNLOAD_URL_NR).toString());
+                                DatenDownload.DOWNLOAD_URL_NR).toString());
                     }
                 }
             });
@@ -853,11 +855,14 @@ public class GuiDownloads extends PanelVorlage {
             jPopupMenu.add(itemPlayer);
 
             // Infos
+            //FIXME Infos anzeigen
             JMenuItem itemInfo = new JMenuItem("Infos anzeigen");
             itemInfo.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    dialogDatenFilm.setVis();
+                    if (!filmInfoHud.isVisible()) {
+                        filmInfoHud.show();
+                    }
                 }
             });
             jPopupMenu.add(itemInfo);
