@@ -1164,30 +1164,31 @@ public class GuiFilme extends PanelVorlage {
             //##Trenner##
             jPopupMenu.addSeparator();
             //##Trenner##
-
-            JMenu submenueFilter = new JMenu("Filter");
-            jPopupMenu.add(submenueFilter);
-            //Filter löschen
-            item = new JMenuItem("Filter löschen");
-            item.addActionListener(beobLoeschen);
-            submenueFilter.add(item);
-            //Sender
-            item = new JMenuItem("nach Sender filtern");
-            item.addActionListener(beobSender);
-            submenueFilter.add(item);
-            //Thema
-            item = new JMenuItem("nach Thema filtern");
-            item.addActionListener(beobThema);
-            submenueFilter.add(item);
-            //Thema+Sender
-            item = new JMenuItem("nach Sender und Thema filtern");
-            item.addActionListener(beobSenderThema);
-            submenueFilter.add(item);
-            //Thema+Sender+Titel
-            item = new JMenuItem("nach Sender, Thema und Titel filtern");
-            item.addActionListener(beobSenderThemaTitel);
-            submenueFilter.add(item);
-
+            if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+                // nur dann ist das Filterpanel sichtbar
+                JMenu submenueFilter = new JMenu("Filter");
+                jPopupMenu.add(submenueFilter);
+                //Filter löschen
+                item = new JMenuItem("Filter löschen");
+                item.addActionListener(beobLoeschen);
+                submenueFilter.add(item);
+                //Sender
+                item = new JMenuItem("nach Sender filtern");
+                item.addActionListener(beobSender);
+                submenueFilter.add(item);
+                //Thema
+                item = new JMenuItem("nach Thema filtern");
+                item.addActionListener(beobThema);
+                submenueFilter.add(item);
+                //Thema+Sender
+                item = new JMenuItem("nach Sender und Thema filtern");
+                item.addActionListener(beobSenderThema);
+                submenueFilter.add(item);
+                //Thema+Sender+Titel
+                item = new JMenuItem("nach Sender, Thema und Titel filtern");
+                item.addActionListener(beobSenderThemaTitel);
+                submenueFilter.add(item);
+            }
             JMenu submenueAbo = new JMenu("Abo");
             jPopupMenu.add(submenueAbo);
             //Abo anlegen
