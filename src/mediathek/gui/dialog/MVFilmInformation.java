@@ -2,6 +2,7 @@ package mediathek.gui.dialog;
 
 import com.explodingpixels.macwidgets.HudWidgetFactory;
 import com.explodingpixels.macwidgets.HudWindow;
+import com.explodingpixels.macwidgets.plaf.HudPaintingUtils;
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -51,7 +52,7 @@ public class MVFilmInformation implements ChangeListener {
         calculateHudPosition();
 
         tabbedPane.addChangeListener(this);
-        
+
         new EscBeenden(dialog) {
             @Override
             public void beenden_(JDialog d) {
@@ -201,6 +202,7 @@ public class MVFilmInformation implements ChangeListener {
             lblUrlThemaField.setAction(new UrlThemaHyperlinkAction(""));
         } catch (URISyntaxException ignored) {
         }
+        lblUrlThemaField.setFont(HudPaintingUtils.getHudFont());
         panel.add(lblUrlThemaField, "4, 20");
 
         label = HudWidgetFactory.createHudLabel("Abo-Name:");
