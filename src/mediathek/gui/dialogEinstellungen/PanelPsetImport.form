@@ -351,7 +351,7 @@
                       <Component id="jScrollPane4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonImportStandard" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="461" max="32767" attributes="0"/>
+                      <EmptySpace pref="476" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -392,8 +392,8 @@
         <Container class="javax.swing.JPanel" name="jPanel1">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Set imporieren">
-                <Property name="tabTitle" type="java.lang.String" value="Set imporieren"/>
+              <JTabbedPaneConstraints tabName="Set importieren">
+                <Property name="tabTitle" type="java.lang.String" value="Set importieren"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
