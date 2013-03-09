@@ -267,6 +267,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
     }
 
+    public void filterAnzeigen(boolean anz) {
+        jTextFieldFilter.setVisible(anz);
+        jButtonFilterPanel.setVisible(anz);
+    }
+
     //===================================
     // private
     //===================================
@@ -528,6 +533,14 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 ddaten.guiAbo.aendern();
             }
         });
+        jButtonFilterPanel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.TRUE.toString();
+                filterAnzeigen(ddaten.guiFilme.isVisible() && !Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getName());
+            }
+        });
     }
 
     private void initSpinner() {
@@ -784,10 +797,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         setupUserInterfaceForOsx();
     }
 
-    private void filterAnzeigen(boolean anz) {
-        jTextFieldFilter.setVisible(anz);
-    }
-
     /**
      * Display the About Box
      */
@@ -943,6 +952,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        jButtonFilterPanel = new javax.swing.JButton();
         jTextFieldFilter = new org.jdesktop.swingx.JXSearchField();
         filler8 = new javax.swing.Box.Filler(new java.awt.Dimension(2, 0), new java.awt.Dimension(2, 0), new java.awt.Dimension(2, 32767));
         jTabbedPane = new javax.swing.JTabbedPane();
@@ -1123,6 +1133,18 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jToolBar.add(filler7);
         jToolBar.add(filler5);
         jToolBar.add(filler6);
+
+        jButtonFilterPanel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-full_22.png"))); // NOI18N
+        jButtonFilterPanel.setToolTipText("Erweiterte Suche");
+        jButtonFilterPanel.setBorder(null);
+        jButtonFilterPanel.setFocusable(false);
+        jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonFilterPanel.setMaximumSize(new java.awt.Dimension(40, 40));
+        jButtonFilterPanel.setMinimumSize(new java.awt.Dimension(40, 40));
+        jButtonFilterPanel.setOpaque(false);
+        jButtonFilterPanel.setPreferredSize(new java.awt.Dimension(40, 40));
+        jButtonFilterPanel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar.add(jButtonFilterPanel);
 
         jTextFieldFilter.setBackground(new java.awt.Color(230, 230, 230));
         jTextFieldFilter.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -1316,6 +1338,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JButton jButtonFilmAbspielen;
     private javax.swing.JButton jButtonFilmSpeichern;
     private javax.swing.JButton jButtonFilmeLaden;
+    private javax.swing.JButton jButtonFilterPanel;
     private javax.swing.JCheckBoxMenuItem jCheckBoxIconKlein;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemFilterAnzeigen;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemMeldungen;

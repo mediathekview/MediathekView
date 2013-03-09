@@ -253,7 +253,16 @@ public class GuiFilme extends PanelVorlage {
         jScrollPane1.addMouseListener(new BeobMausLaufendeProgramme());
         ddaten.mediathekGui.getStatusBar().getComponent().addMouseListener(new BeobMausLaufendeProgramme());
         // Filter erst mal ausblenden
-        jCheckBoxFilter.addActionListener(new BeobMpanel(jCheckBoxFilter, jPanelFilter, "Filter"));
+        //jCheckBoxFilter.addActionListener(new BeobMpanel(jCheckBoxFilter, jPanelFilter, "Filter"));
+        jCheckBoxFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/no_16.png")));
+        jCheckBoxFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.mediathekGui.filterAnzeigen(true);
+                DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.FALSE.toString();
+                jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+            }
+        });
         jCheckBoxProgamme.addActionListener(new BeobMpanel(jCheckBoxProgamme, jPanelExtra, "weitere Videoplayer"));
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
