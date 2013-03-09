@@ -20,17 +20,14 @@
 package mediathek.tool;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
-import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.starter.RuntimeExec;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
-import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;

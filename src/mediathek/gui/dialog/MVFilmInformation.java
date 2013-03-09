@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import mediathek.tool.EscBeenden;
 
 /**
  * Display the current film information in a Apple-style HUD window.
@@ -50,6 +51,13 @@ public class MVFilmInformation implements ChangeListener {
         calculateHudPosition();
 
         tabbedPane.addChangeListener(this);
+        
+        new EscBeenden(dialog) {
+            @Override
+            public void beenden_(JDialog d) {
+                d.dispose();
+            }
+        };
     }
 
     private void calculateHudPosition() {
