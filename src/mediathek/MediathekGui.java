@@ -63,6 +63,7 @@ import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialog.MVAboutDialog;
+import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.gui.dialog.PanelHilfe;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
@@ -140,6 +141,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         createStatusBar();
 
+        //create the Film Information HUD
+        ddaten.filmInfoHud = new MVFilmInformation(this, jTabbedPane);
         if (IoXmlLesen.einstellungenExistieren()) {
             // gibt schon Programmeinstellungen, dann damit starten
             ddaten.allesLaden();

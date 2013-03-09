@@ -66,8 +66,6 @@ import mediathek.tool.TModelDownload;
 
 public class GuiDownloads extends PanelVorlage {
 
-    private DialogDatenFilm dialogDatenFilm = null;
-    //private DialogDatenFilm dialogDatenFilm = null;
     private MVFilmInformation filmInfoHud;
 
     public GuiDownloads(DDaten d, Component parentComponent) {
@@ -75,7 +73,7 @@ public class GuiDownloads extends PanelVorlage {
         initComponents();
         tabelle = new JTableMed(JTableMed.TABELLE_TAB_DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
-        filmInfoHud = new MVFilmInformation(d.mediathekGui);
+        filmInfoHud = ddaten.filmInfoHud;
         init();
         downloadsAktualisieren(); // die Tabelle wird dabei gleich geladen
         tabelle.initTabelle();
@@ -92,6 +90,7 @@ public class GuiDownloads extends PanelVorlage {
         super.isShown();
         ddaten.mediathekGui.setToolbar(MediathekGui.UIButtonState.DOWNLOAD);
         ddaten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
+        infoDialogSetzen();
     }
 
     public void aktualisieren() {
@@ -484,7 +483,7 @@ public class GuiDownloads extends PanelVorlage {
         ddaten.mediathekGui.getStatusBar().setTextCenter(MVStatusBar.StatusbarIndex.DOWNLOAD, textLinks);
     }
 
-    private void dialogDatenFilmSetzen() {
+    private void infoDialogSetzen() {
         DatenFilm aktFilm = new DatenFilm();
         int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
@@ -622,7 +621,7 @@ public class GuiDownloads extends PanelVorlage {
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (!event.getValueIsAdjusting()) {
-                dialogDatenFilmSetzen();
+                infoDialogSetzen();
             }
         }
     }
@@ -855,7 +854,6 @@ public class GuiDownloads extends PanelVorlage {
             jPopupMenu.add(itemPlayer);
 
             // Infos
-            //FIXME Infos anzeigen
             JMenuItem itemInfo = new JMenuItem("Infos anzeigen");
             itemInfo.addActionListener(new ActionListener() {
                 @Override
