@@ -56,10 +56,10 @@ public class MediathekAuto {
             ddaten.allesLaden();
             DDaten.filmeLaden.addAdListener(new BeobachterLadenFilme());
             if (Daten.listeFilme.filmlisteZuAlt()) {
-                Log.systemMeldung("Neue Fillmliste laden");
+                Log.systemMeldung("Neue Filmliste laden");
                 DDaten.filmeLaden.importFilmliste("");
             } else {
-                Log.systemMeldung("aktuelle Fillmliste verwenden");
+                Log.systemMeldung("aktuelle Filmliste verwenden");
                 filmeLaden();
             }
         } else {

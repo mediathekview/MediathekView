@@ -164,7 +164,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.filmlisteZuAlt()) {
-                Log.systemMeldung("Neue Fillmliste laden");
+                Log.systemMeldung("Neue Filmliste laden");
                 DDaten.filmeLaden.importFilmliste("");
             }
         }
