@@ -30,13 +30,18 @@ import javax.swing.KeyStroke;
 
 public class EscBeenden {
 
+    private JDialog d;
+    private JFrame f;
+
     public EscBeenden(JFrame frame) {
+        f = frame;
         // ESC zum Beenden
         frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "x");
         frame.getRootPane().getActionMap().put("x", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden_();
+                beenden_(f);
             }
         });
         // für den Mac
@@ -45,16 +50,20 @@ public class EscBeenden {
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden_();
+                beenden_(f);
             }
         });
     }
-   public EscBeenden(JDialog dialog) {
+
+    public EscBeenden(JDialog dialog) {
+        d = dialog;
         // ESC zum Beenden
         dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "x");
         dialog.getRootPane().getActionMap().put("x", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden_();
+                beenden_(d);
             }
         });
         // für den Mac
@@ -63,10 +72,17 @@ public class EscBeenden {
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden_();
+                beenden_(d);
             }
         });
     }
 
     public void beenden_() {
+    }
+
+    public void beenden_(JDialog dialog) {
+    }
+
+    public void beenden_(JFrame frame) {
     }
 }

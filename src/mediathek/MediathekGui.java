@@ -347,7 +347,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      */
     private void initSearchField() {
         jTextFieldFilter.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
-        jTextFieldFilter.setSearchMode(JXSearchField.SearchMode.INSTANT);
+        jTextFieldFilter.setSearchMode(JXSearchField.SearchMode.REGULAR);
         jTextFieldFilter.setUseNativeSearchFieldIfPossible(true);
         jTextFieldFilter.getFindButton().setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/viewmag_22.png")));
         jTextFieldFilter.addActionListener(new ActionListener() {
@@ -375,7 +375,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
             private void tus() {
                 Filter.checkPattern2(jTextFieldFilter);
-                ddaten.guiFilme.filtern();
+                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
+                    ddaten.guiFilme.filtern();
+                }
             }
         });
 
