@@ -14,11 +14,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * Display the current film information in a Apple-style HUD window.
  */
-public class MVFilmInformation {
+public class MVFilmInformation implements ChangeListener {
+
     private HudWindow hud;
     private JLabel lblNrField;
     private JLabel lblSenderField;
@@ -32,7 +35,7 @@ public class MVFilmInformation {
     private JXHyperlink lblUrlThemaField;
     private JLabel lblAboField;
 
-    public MVFilmInformation(Frame owner) {
+    public MVFilmInformation(Frame owner, JTabbedPane tabbedPane) {
         hud = new HudWindow("Filminformation", owner);
         hud.makeResizeable();
         JComponent content = buildContent();
@@ -42,9 +45,11 @@ public class MVFilmInformation {
         JDialog dialog = hud.getJDialog();
         dialog.pack();
         Dimension size = dialog.getSize();
-        size.width = 320;
+        size.width = 500;
         dialog.setSize(size);
         calculateHudPosition();
+
+        tabbedPane.addChangeListener(this);
     }
 
     private void calculateHudPosition() {
@@ -71,7 +76,13 @@ public class MVFilmInformation {
         lblUrlField.setText(film.arr[DatenFilm.FILM_URL_NR]);
         lblUrlRtmpField.setText(film.arr[DatenFilm.FILM_URL_RTMP_NR]);
         lblUrlAuthField.setText(film.arr[DatenFilm.FILM_URL_AUTH_NR]);
-        lblUrlThemaField.setText(film.arr[DatenFilm.FILM_URL_THEMA_NR]);
+        // setup Hyperlink
+        // FIXME ist das nicht besser zu lösen?
+        try {
+            lblUrlThemaField.setAction(new UrlThemaHyperlinkAction(film.arr[DatenFilm.FILM_URL_THEMA_NR]));
+            lblUrlThemaField.setForeground(Color.WHITE);
+        } catch (URISyntaxException ignored) {
+        }
         lblAboField.setText(film.arr[DatenFilm.FILM_ABO_NAME_NR]);
 
         hud.getJDialog().repaint();
@@ -80,33 +91,33 @@ public class MVFilmInformation {
     private JComponent buildContent() {
         JPanel panel = new JPanel();
         panel.setLayout(new FormLayout(new ColumnSpec[]{
-                FormFactory.RELATED_GAP_COLSPEC,
-                FormFactory.DEFAULT_COLSPEC,
-                FormFactory.RELATED_GAP_COLSPEC,
-                FormFactory.DEFAULT_COLSPEC,},
+            FormFactory.RELATED_GAP_COLSPEC,
+            FormFactory.DEFAULT_COLSPEC,
+            FormFactory.RELATED_GAP_COLSPEC,
+            FormFactory.DEFAULT_COLSPEC,},
                 new RowSpec[]{
-                        FormFactory.RELATED_GAP_ROWSPEC,
-                        FormFactory.DEFAULT_ROWSPEC,
-                        FormFactory.RELATED_GAP_ROWSPEC,
-                        FormFactory.DEFAULT_ROWSPEC,
-                        FormFactory.RELATED_GAP_ROWSPEC,
-                        FormFactory.DEFAULT_ROWSPEC,
-                        FormFactory.RELATED_GAP_ROWSPEC,
-                        FormFactory.DEFAULT_ROWSPEC,
-                        FormFactory.RELATED_GAP_ROWSPEC,
-                        FormFactory.DEFAULT_ROWSPEC,
-                        FormFactory.RELATED_GAP_ROWSPEC,
-                        FormFactory.DEFAULT_ROWSPEC,
-                        FormFactory.RELATED_GAP_ROWSPEC,
-                        FormFactory.DEFAULT_ROWSPEC,
-                        FormFactory.RELATED_GAP_ROWSPEC,
-                        FormFactory.DEFAULT_ROWSPEC,
-                        FormFactory.RELATED_GAP_ROWSPEC,
-                        FormFactory.DEFAULT_ROWSPEC,
-                        FormFactory.RELATED_GAP_ROWSPEC,
-                        FormFactory.DEFAULT_ROWSPEC,
-                        FormFactory.RELATED_GAP_ROWSPEC,
-                        FormFactory.DEFAULT_ROWSPEC,}));
+            FormFactory.RELATED_GAP_ROWSPEC,
+            FormFactory.DEFAULT_ROWSPEC,
+            FormFactory.RELATED_GAP_ROWSPEC,
+            FormFactory.DEFAULT_ROWSPEC,
+            FormFactory.RELATED_GAP_ROWSPEC,
+            FormFactory.DEFAULT_ROWSPEC,
+            FormFactory.RELATED_GAP_ROWSPEC,
+            FormFactory.DEFAULT_ROWSPEC,
+            FormFactory.RELATED_GAP_ROWSPEC,
+            FormFactory.DEFAULT_ROWSPEC,
+            FormFactory.RELATED_GAP_ROWSPEC,
+            FormFactory.DEFAULT_ROWSPEC,
+            FormFactory.RELATED_GAP_ROWSPEC,
+            FormFactory.DEFAULT_ROWSPEC,
+            FormFactory.RELATED_GAP_ROWSPEC,
+            FormFactory.DEFAULT_ROWSPEC,
+            FormFactory.RELATED_GAP_ROWSPEC,
+            FormFactory.DEFAULT_ROWSPEC,
+            FormFactory.RELATED_GAP_ROWSPEC,
+            FormFactory.DEFAULT_ROWSPEC,
+            FormFactory.RELATED_GAP_ROWSPEC,
+            FormFactory.DEFAULT_ROWSPEC,}));
 
 
         JLabel label = HudWidgetFactory.createHudLabel("Nr:");
@@ -177,11 +188,11 @@ public class MVFilmInformation {
         panel.add(label, "2, 20");
 
         lblUrlThemaField = new JXHyperlink();
+        lblUrlThemaField.setForeground(Color.WHITE);
         try {
-            lblUrlThemaField.setAction(new UrlThemaHyperlinkAction());
+            lblUrlThemaField.setAction(new UrlThemaHyperlinkAction(""));
         } catch (URISyntaxException ignored) {
         }
-        lblUrlThemaField.setForeground(Color.WHITE);
         panel.add(lblUrlThemaField, "4, 20");
 
         label = HudWidgetFactory.createHudLabel("Abo-Name:");
@@ -196,14 +207,19 @@ public class MVFilmInformation {
         return panel;
     }
 
+    @Override
+    public void stateChanged(ChangeEvent changeEvent) {
+        //Whenever there is a change event, reset HUD info to nothing
+        DatenFilm emptyFilm = new DatenFilm();
+        updateCurrentFilm(emptyFilm);
+    }
+
     private class UrlThemaHyperlinkAction extends HyperlinkAction {
 
-        private final static String HYPERLINK_URL = "";
-
-        public UrlThemaHyperlinkAction() throws URISyntaxException {
-            super(new URI(HYPERLINK_URL), Desktop.Action.BROWSE);
-            putValue(SHORT_DESCRIPTION, HYPERLINK_URL);
-            putValue(LONG_DESCRIPTION, HYPERLINK_URL);
+        public UrlThemaHyperlinkAction(String url) throws URISyntaxException {
+            super(new URI(url), Desktop.Action.BROWSE);
+            putValue(SHORT_DESCRIPTION, url);
+            putValue(LONG_DESCRIPTION, url);
         }
     }
 }

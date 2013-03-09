@@ -98,7 +98,7 @@ public class GuiFilme extends PanelVorlage {
         jScrollPane1.setViewportView(tabelle);
         init(); //alles einrichten, Beobachter anhängen
         panelVideoplayer();
-        filmInfoHud = new MVFilmInformation(ddaten.mediathekGui);
+        filmInfoHud = ddaten.filmInfoHud;
         tabelleLaden(); //Filme laden
         tabelle.initTabelle();
         if (tabelle.getRowCount() > 0) {
@@ -140,6 +140,7 @@ public class GuiFilme extends PanelVorlage {
         super.isShown();
         ddaten.mediathekGui.setToolbar(MediathekGui.UIButtonState.FILME);
         ddaten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.FILME);
+        infoDialogSetzen();
     }
 
     public void filmAbspielen() {
@@ -219,7 +220,7 @@ public class GuiFilme extends PanelVorlage {
         tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES));
         beobMausTabelle = new BeobMausTabelle();
         tabelle.addMouseListener(beobMausTabelle);
-        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect1());
+        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         tabelle.setDefaultRenderer(Object.class, new CellRendererFilme(ddaten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererFilme(ddaten));
         //beobachter Filter
@@ -541,7 +542,7 @@ public class GuiFilme extends PanelVorlage {
         tabelleLaden();
     }
 
-    private void table1Select() {
+    private void infoDialogSetzen() {
         DatenFilm aktFilm = new DatenFilm();
         int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
@@ -1003,14 +1004,14 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    private class BeobachterTableSelect1 implements ListSelectionListener {
+    private class BeobachterTableSelect implements ListSelectionListener {
 
         public int selectedModelRow = -1;
 
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (!event.getValueIsAdjusting()) {
-                table1Select();
+                infoDialogSetzen();
             }
         }
     }

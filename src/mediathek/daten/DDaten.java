@@ -28,6 +28,7 @@ import mediathek.controller.io.starter.StarterClass;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
+import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.Konstanten;
 
 /**
@@ -38,6 +39,7 @@ import mediathek.tool.Konstanten;
 public final class DDaten extends Daten {
     // Daten.listeFilme sind alle Filme,
     // DDaten.listeFilmeNachBlackList sind die Filme mit denen das Programm arbeitet, eben ohne die Blacklist
+
     public static ListeFilme listeFilmeNachBlackList = null;
     public ListeBlacklist listeBlacklist = null;
     public ListePset listePset = null;
@@ -57,6 +59,7 @@ public final class DDaten extends Daten {
     // für die Tabellen
     public String[] tabFilmeBreit = new String[DatenFilm.FILME_MAX_ELEM];
     public boolean nachDownloadShutDown = false;
+    public MVFilmInformation filmInfoHud = null;
 
     public DDaten(String basis, boolean gui) {
         super(basis);
