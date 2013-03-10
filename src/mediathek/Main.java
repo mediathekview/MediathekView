@@ -19,11 +19,11 @@
  */
 package mediathek;
 
-import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
 import mediathek.daten.Daten;
+import mediathek.tool.Funktionen;
 import mediathek.tool.Log;
 import mediathek.tool.MVSingleInstance;
 
@@ -75,7 +75,7 @@ public class Main {
                         }
                         if (s.equalsIgnoreCase("-d")) {
                             Daten.debug = true;
-                            if (SystemInfo.isMacOSX()) {
+                            if (Funktionen.isMacOSX()) {
                                 //prevent startup of multiple instances...useful during debugging :(
                                 MVSingleInstance singleInstanceWatcher = new MVSingleInstance();
                                 if (singleInstanceWatcher.isAppAlreadyActive()) {
@@ -83,7 +83,7 @@ public class Main {
                                     System.exit(1);
                                 }
                             }
-                            //use for debugging EDT violations
+                            // use for debugging EDT violations
                             RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
                         }
                         if (s.equalsIgnoreCase("-v")) {

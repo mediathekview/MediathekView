@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
 import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -34,6 +33,7 @@ import mediathek.controller.filmeLaden.importieren.DatenFilmlistenServer;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
@@ -222,7 +222,7 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (Funktionen.isMacOSX()) {
                 FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Filmlisten-Liste verwenden");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);

@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
 import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -29,6 +28,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import mediathek.daten.DDaten;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
 
@@ -185,7 +185,7 @@ public class DialogZiel extends javax.swing.JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (Funktionen.isMacOSX()) {
                 FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Logdatei speichern");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
