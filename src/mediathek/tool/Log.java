@@ -26,9 +26,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
-import mediathek.daten.ListePset;
+
 
 public class Log {
 

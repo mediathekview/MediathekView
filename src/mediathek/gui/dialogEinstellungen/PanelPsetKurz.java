@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FileDialog;
@@ -45,6 +44,7 @@ import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
 
@@ -373,7 +373,7 @@ public class PanelPsetKurz extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (Funktionen.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Film speichern");

@@ -19,7 +19,6 @@
  */
 package mediathek;
 
-import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -70,6 +69,7 @@ import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.tool.Filter;
+import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
@@ -194,7 +194,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Experience showed that default memory allocation for java RT is not enough
      */
     protected void checkMemoryRequirements() {
-        if (SystemInfo.isMacOSX()) {
+        if (Funktionen.isMacOSX()) {
             //all values in bytes
             final long TO_MBYTES = (1024 * 1024);
             long totalMemory = Runtime.getRuntime().maxMemory() / TO_MBYTES;
@@ -801,7 +801,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Display the About Box
      */
     private void showAboutDialog() {
-        MVAboutDialog aboutDialog = new MVAboutDialog(this, SystemInfo.isMacOSX());
+        MVAboutDialog aboutDialog = new MVAboutDialog(this, Funktionen.isMacOSX());
         aboutDialog.setVisible(true);
         aboutDialog.dispose();
     }

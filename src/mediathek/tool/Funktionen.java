@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.security.CodeSource;
 import java.util.ResourceBundle;
@@ -36,6 +37,11 @@ public class Funktionen {
     public static final String OS_WIN_64BIT_STRING = "Windows";
     public static final String OS_LINUX_STRING = "Linux";
     public static final String OS_MAC_STRING = "Mac";
+
+    public static boolean isMacOSX() {
+        //return getOs() == OS_MAC;
+        return SystemInfo.isMacOSX();
+    }
 
     public static int getOs() {
         int os = OS_UNKNOWN;
