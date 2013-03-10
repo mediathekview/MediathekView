@@ -44,10 +44,10 @@ public class DialogZiel extends javax.swing.JDialog {
      * @param parent
      * @param dd
      * @param modal
-     * @param zziel
+     * @param ziel
      * @param titel
      */
-    public DialogZiel(java.awt.Frame parent, DDaten dd, boolean modal, String zziel, String titel) {
+    public DialogZiel(java.awt.Frame parent, DDaten dd, boolean modal, String ziel, String titel) {
         super(parent, modal);
         parentComponent = parent;
         ddaten = dd;
@@ -56,8 +56,8 @@ public class DialogZiel extends javax.swing.JDialog {
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
         jButtonZiel.addActionListener(new ZielBeobachter());
-        jTextFieldPfad.setText(zziel);
-        ziel = zziel;
+        jTextFieldPfad.setText(ziel);
+        this.ziel = ziel;
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
@@ -218,7 +218,9 @@ public class DialogZiel extends javax.swing.JDialog {
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     try {
-                        jTextFieldPfad.setText(new File(chooser.getFile()).getAbsolutePath());
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
+                        jTextFieldPfad.setText(destination.getAbsolutePath());
+                        ziel = jTextFieldPfad.getText();
                     } catch (Exception ex) {
                         Log.fehlerMeldung(642109058, Log.FEHLER_ART_PROG, "DialogExport.ZielBeobachter", ex);
                     }
