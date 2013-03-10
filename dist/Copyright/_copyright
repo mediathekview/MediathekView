@@ -31,11 +31,16 @@ The FormLayout helps you lay out and implement consistent Swing panels fast. For
 
 
 ===============================================================
-jide-oss-3.4.0.jar
+jide-oss-3.5.1.jar
 
 Jide-oss
-http://java.net/projects/jide-oss
+http://www.jidesoft.com/products/oss.htm
+https://github.com/jidesoft/jide-oss
 JIDE Common Layer (Professional Swing Components)
+
+Die lib wird für MV so angepasst, dass nur GPL enthalten ist:
+https://sourceforge.net/p/zdfmediathk/jide-oss/?branch=ref%2Fmaster
+die damit gebaute lib, ist in MV enthalten
 
 
 ===============================================================
