@@ -258,9 +258,9 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxFilter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ddaten.mediathekGui.filterAnzeigen(true);
                 DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.FALSE.toString();
-                jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+                ddaten.mediathekGui.filterAnzeigen(true);
+                panelFilterSetzen();
             }
         });
         jCheckBoxProgamme.addActionListener(new BeobMpanel(jCheckBoxProgamme, jPanelExtra, "weitere Videoplayer"));
@@ -307,12 +307,16 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_PANEL_FILTER_ANZEIGEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                // Panel anzeigen und die Filmliste anpassen
-                jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
-                checkBlacklist();
-                tabelleLaden();
+                panelFilterSetzen();
             }
         });
+    }
+
+    private void panelFilterSetzen() {
+        // Panel anzeigen und die Filmliste anpassen
+        jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+        checkBlacklist();
+        tabelleLaden();
     }
 
     private void themenLaden() {

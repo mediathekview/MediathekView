@@ -435,7 +435,6 @@
                     <EmptyBorder bottom="8" left="8" right="8" top="8"/>
                   </Border>
                 </Property>
-                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="opaque" type="boolean" value="false"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
@@ -452,7 +451,6 @@
                     <EmptyBorder bottom="8" left="8" right="8" top="8"/>
                   </Border>
                 </Property>
-                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="opaque" type="boolean" value="false"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
@@ -487,7 +485,6 @@
                     <EmptyBorder bottom="8" left="8" right="8" top="8"/>
                   </Border>
                 </Property>
-                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="opaque" type="boolean" value="false"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
@@ -504,7 +501,6 @@
                     <EmptyBorder bottom="8" left="8" right="8" top="8"/>
                   </Border>
                 </Property>
-                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="opaque" type="boolean" value="false"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
@@ -521,7 +517,6 @@
                     <EmptyBorder bottom="8" left="8" right="8" top="8"/>
                   </Border>
                 </Property>
-                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="opaque" type="boolean" value="false"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
@@ -538,7 +533,6 @@
                     <EmptyBorder bottom="8" left="8" right="8" top="8"/>
                   </Border>
                 </Property>
-                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="opaque" type="boolean" value="false"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
@@ -555,7 +549,6 @@
                     <EmptyBorder bottom="8" left="8" right="8" top="8"/>
                   </Border>
                 </Property>
-                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="opaque" type="boolean" value="false"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
@@ -590,7 +583,6 @@
                     <EmptyBorder bottom="8" left="8" right="8" top="8"/>
                   </Border>
                 </Property>
-                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="opaque" type="boolean" value="false"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
@@ -607,7 +599,6 @@
                     <EmptyBorder bottom="8" left="8" right="8" top="8"/>
                   </Border>
                 </Property>
-                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="opaque" type="boolean" value="false"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
@@ -624,7 +615,6 @@
                     <EmptyBorder bottom="8" left="8" right="8" top="8"/>
                   </Border>
                 </Property>
-                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="opaque" type="boolean" value="false"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
@@ -641,7 +631,6 @@
                     <EmptyBorder bottom="8" left="8" right="8" top="8"/>
                   </Border>
                 </Property>
-                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="opaque" type="boolean" value="false"/>
                 <Property name="verticalTextPosition" type="int" value="3"/>
@@ -686,7 +675,6 @@
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
-                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[40, 40]"/>
