@@ -26,5 +26,6 @@ zip -r MediathekView_3.1.0_$datum.zip .
  
 # Dateien ins share-Verzeichnis von VmWare kopieren
 cp -r /mnt/daten/software/Mediathek/Mediathek/dist/* /mnt/daten/virtualbox/share/aktMed
+cp -r /mnt/daten/software/Mediathek/Mediathek/dist/MediathekView.jar /mnt/daten/software/Mediathek/MediathekServer/libs/
 
 fi

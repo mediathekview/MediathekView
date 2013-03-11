@@ -1,12 +1,4 @@
 ===============================================================
-com.explodingpixels
-
-macwidgets
-http://code.google.com/p/macwidgets/
-Mac Widgets for Java are a collection of widgets seen in OS X applications, offered in a Java API.
-
-
-===============================================================
 commons-compress-1.4.1.jar
 
 Commons Compress
@@ -44,6 +36,14 @@ die damit gebaute lib, ist in MV enthalten
 
 
 ===============================================================
+mac_widgets-0.9.5.jar
+
+macwidgets
+http://code.google.com/p/macwidgets/
+Mac Widgets for Java are a collection of widgets seen in OS X applications, offered in a Java API.
+
+
+===============================================================
 org.simplericity.macify.eawt
 
 Macify Library
@@ -57,9 +57,5 @@ swingx-all-1.6.4.jar
 SwingLabs Swing Component Extensions
 http://swingx.java.net/
 Contains extensions to the Swing GUI toolkit, including new and enhanced components that provide functionality commonly required by rich client applications.
-
-
-
-
 
 
