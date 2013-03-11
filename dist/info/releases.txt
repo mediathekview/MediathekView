@@ -19,14 +19,21 @@
  */
 
 # Version 3.2.0
+	Veränderungen an der grafischen Bedienungsoberfläche:
+	Mit Version 3.2 wurde Verbesserungen an der GUI eingeleitet und dazu macht MediathekView ab sofort von folgenden Bibliotheken Gebrauch:
+		- Swingx-Toolkit: Stellt GUI-Komponenten bereit um funktionsreiche Anwendungen zu entwickeln.
+		- JGoodies-Forms: Gerüst für Layout und Umsetzung eleganter Swing-Panels.
+		- Jide-OSS: Bereitstellung von fortgeschrittenen Swing-Komponenten.
+		- Macify von Simplericity: Für ein natives "Look and Feel" von Java-Anwendungen unter MacOSX.
+		- Mac-Widgets von Explodingpixels: Sie helfen Mac-ähnliche Anwendungen zu entwickeln, sind aber nicht nur auf Apple-Mac-Computer beschränkt.
+	
+	Weitere Veränderungen:
 	- Filter in der Toolbar (mit F8 kann man zwischen dem neuen und dem bisherigen Filterpanel umschalten)
 	- Neue Option in den Einstellungen: Es können Unicodezeichen vereinfacht werden, die beim Speichern im Dateinamen Probleme verursachen können
 	- Die Blacklist wurde erweitert und sie kann jetzt auch auf das Suchen der Abos angewandt werden (wenn im Dialog Blacklist eingeschalter)
-	- Livestreams wurden angepasst (ARD, ZDF)
-	- es gibt eine native MAC-Version und es sind einige Anpassungen an die MAC-Oberfläche eingebaut worden
 	- Anzeige der Restzeit bei Downloads
 	- Öffnen des Downloadordners eines Download im Kontextmenü der Maus im Tab Download
-	
+
 # Version 3.1.0
 	- Bei den Downloads gibt es jetzt eine Fortschrittsanzeige die in "Prozent" anzeigt, 
 	wieviel schon geladen wurde
