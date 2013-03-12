@@ -43,6 +43,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import mediathek.daten.Daten;
+import mediathek.tool.EscBeenden;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import org.jdesktop.swingx.JXHyperlink;
@@ -152,6 +153,12 @@ public class MVAboutDialog extends JDialog {
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.isRunningOnMac = isRunningOnMac;
+        new EscBeenden(this) {
+            @Override
+            public void beenden_(JDialog d) {
+                d.dispose();
+            }
+        };
 
         initMarqueePane();
 

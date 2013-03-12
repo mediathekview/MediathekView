@@ -2,7 +2,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>MediathekView.jar</jar>
-  <outfile>/mnt/daten/software/java/Mediathek_3/bin/MediathekView.exe</outfile>
+  <outfile>/mnt/daten/software/Mediathek/Mediathek/bin/MediathekView.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir></chdir>
@@ -12,7 +12,7 @@
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon>/mnt/daten/software/java/Mediathek_3/bin/info/MediathekView.ico</icon>
+  <icon>/mnt/daten/software/Mediathek/Mediathek/bin/info/MediathekView.ico</icon>
   <jre>
     <path></path>
     <minVersion>1.6.0</minVersion>
