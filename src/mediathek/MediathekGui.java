@@ -952,12 +952,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonAbosAusschalten = new javax.swing.JButton();
         jButtonAbosLoeschen = new javax.swing.JButton();
         jButtonAboAendern = new javax.swing.JButton();
-        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(1, 5), new java.awt.Dimension(1, 5), new java.awt.Dimension(32767, 5));
         jButtonFilterPanel = new javax.swing.JButton();
         jTextFieldFilter = new org.jdesktop.swingx.JXSearchField();
-        filler8 = new javax.swing.Box.Filler(new java.awt.Dimension(2, 0), new java.awt.Dimension(2, 0), new java.awt.Dimension(2, 32767));
+        filler8 = new javax.swing.Box.Filler(new java.awt.Dimension(4, 5), new java.awt.Dimension(4, 5), new java.awt.Dimension(4, 5));
         jTabbedPane = new javax.swing.JTabbedPane();
         javax.swing.JMenuBar jMenuBar = new javax.swing.JMenuBar();
         jMenuDatei = new javax.swing.JMenu();
@@ -1122,13 +1120,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonAboAendern.setOpaque(false);
         jButtonAboAendern.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonAboAendern);
-        jToolBar.add(filler7);
         jToolBar.add(filler5);
-        jToolBar.add(filler6);
 
         jButtonFilterPanel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-full_22.png"))); // NOI18N
         jButtonFilterPanel.setToolTipText("Erweiterte Suche");
         jButtonFilterPanel.setBorder(null);
+        jButtonFilterPanel.setBorderPainted(false);
         jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButtonFilterPanel.setMaximumSize(new java.awt.Dimension(40, 40));
         jButtonFilterPanel.setMinimumSize(new java.awt.Dimension(40, 40));
@@ -1314,8 +1311,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler5;
-    private javax.swing.Box.Filler filler6;
-    private javax.swing.Box.Filler filler7;
     private javax.swing.Box.Filler filler8;
     private javax.swing.JButton jButtonAboAendern;
     private javax.swing.JButton jButtonAbosAusschalten;
