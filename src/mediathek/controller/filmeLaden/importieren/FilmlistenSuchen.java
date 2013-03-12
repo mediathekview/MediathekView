@@ -104,8 +104,8 @@ public class FilmlistenSuchen {
         }
         if (listeDownloadUrlsFilmlisten.size() < 5) {
             // dann gibts ein paar fest hinterlegt URLs
-            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek1/Filmliste_10_00.bz2", "1", "10:20:00", getTag("10:20:00")));
-            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek2/Filmliste_13_00.bz2", "1", "13:20:00", getTag("13:20:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek1/Filmliste_09_00.bz2", "1", "09:20:00", getTag("09:20:00")));
+            listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek2/Filmliste_12_00.bz2", "1", "12:20:00", getTag("12:20:00")));
             listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek1/Filmliste_16_00.bz2", "1", "16:20:00", getTag("16:20:00")));
             listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek2/Filmliste_19_00.bz2", "1", "19:20:00", getTag("19:20:00")));
             listeDownloadUrlsFilmlisten.add(new DatenUrlFilmliste("http://176.28.8.161/mediathek1/Filmliste_20_00.bz2", "1", "20:20:00", getTag("20:20:00")));
