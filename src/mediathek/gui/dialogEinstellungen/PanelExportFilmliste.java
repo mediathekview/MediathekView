@@ -29,6 +29,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import com.jidesoft.utils.SystemInfo;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
@@ -201,13 +203,14 @@ public class PanelExportFilmliste extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (Funktionen.isMacOSX()) {
+            if (SystemInfo.isMacOSX()) {
                 FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Filme exportieren");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     try {
-                        jTextFieldPfad.setText(new File(chooser.getFile()).getAbsolutePath());
+                        File destination = new File(chooser.getDirectory()+chooser.getFile());
+                        jTextFieldPfad.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
                         Log.fehlerMeldung(679890147, Log.FEHLER_ART_PROG, "PanelExportImportDateiUrl.BeobImport", ex);
                     }

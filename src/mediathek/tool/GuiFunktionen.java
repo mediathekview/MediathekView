@@ -380,9 +380,7 @@ public class GuiFunktionen extends Funktionen {
         int len = str.length + 1;
         String[] liste = new String[len];
         liste[0] = "";
-        for (int i = 1; i < len; ++i) {
-            liste[i] = str[i - 1];
-        }
+        System.arraycopy(str, 0, liste, 1, len - 1);
         return liste;
     }
 

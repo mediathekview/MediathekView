@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -35,7 +36,6 @@ import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.BeobWeb;
-import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
@@ -446,13 +446,13 @@ public class PanelProgrammPfade extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (Funktionen.isMacOSX()) {
+            if (SystemInfo.isMacOSX()) {
                 FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Programmdatei auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     try {
-                        textField.setText(new File(chooser.getFile()).getAbsolutePath());
+                        textField.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
                         Log.fehlerMeldung(306087945, Log.FEHLER_ART_PROG, "PanelImportStandardProgramme.BeobPfad", ex);
                     }

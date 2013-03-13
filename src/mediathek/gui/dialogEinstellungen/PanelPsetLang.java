@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FileDialog;
@@ -45,7 +46,6 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.CellRendererProgramme;
 import mediathek.tool.CellRendererPset;
-import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
@@ -1190,13 +1190,13 @@ public class PanelPsetLang extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (Funktionen.isMacOSX()) {
+            if (SystemInfo.isMacOSX()) {
                 FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Programm auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     try {
-                        jTextFieldProgPfad.setText(new File(chooser.getFile()).getAbsolutePath());
+                        jTextFieldProgPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
                         Log.fehlerMeldung(369047894, Log.FEHLER_ART_PROG, "PanelPsetLang.BeobDateiDialogProg", ex);
                     }
@@ -1226,7 +1226,7 @@ public class PanelPsetLang extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
-            if (Funktionen.isMacOSX()) {
+            if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Film speichern");
@@ -1234,7 +1234,7 @@ public class PanelPsetLang extends PanelVorlage {
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed
                     try {
-                        jTextFieldGruppeZielPfad.setText(chooser.getDirectory() + chooser.getFile());
+                        jTextFieldGruppeZielPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
                         Log.fehlerMeldung(392847589, Log.FEHLER_ART_PROG, "DialogZielPset.ZielBeobachter", ex);
                     }

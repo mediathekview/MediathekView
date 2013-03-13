@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FileDialog;
@@ -557,13 +558,13 @@ public class PanelPsetImport extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (Funktionen.isMacOSX()) {
+            if (SystemInfo.isMacOSX()) {
                 FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Programmset auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     try {
-                        jTextFieldDatei.setText(new File(chooser.getFile()).getAbsolutePath());
+                        jTextFieldDatei.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
                         Log.fehlerMeldung(989563047, Log.FEHLER_ART_PROG, "PanelPsetImport.BeobPfad", ex);
                     }

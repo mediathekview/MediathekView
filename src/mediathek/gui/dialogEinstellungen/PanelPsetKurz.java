@@ -39,6 +39,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import com.jidesoft.utils.SystemInfo;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
@@ -373,7 +375,7 @@ public class PanelPsetKurz extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
-            if (Funktionen.isMacOSX()) {
+            if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Film speichern");
