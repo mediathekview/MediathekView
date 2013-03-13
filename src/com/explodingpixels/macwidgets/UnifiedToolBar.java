@@ -132,12 +132,8 @@ public class UnifiedToolBar {
 	 */
 	private static void fixUnifiedToolBarOnMacIfNeccessary(
 			TriAreaComponent unifiedToolBar) {
-		// install the custom painter if on non-Mac platforms or in other
-		// various Mac cases.
-		if (MacUtils.shouldManuallyPaintTexturedWindowBackground()) {
-			unifiedToolBar.setBackgroundPainter(MacPainterFactory
+		unifiedToolBar.setBackgroundPainter(MacPainterFactory
 					.createTexturedWindowWorkaroundPainter());
-		}
 	}
 
 	static void installUnifiedToolBarBorder(final JComponent component) {

@@ -26,6 +26,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+
+import com.jidesoft.utils.SystemInfo;
 import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
@@ -388,7 +390,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
-            if (Funktionen.isMacOSX()) {
+            if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Film speichern");

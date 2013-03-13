@@ -48,6 +48,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import com.jidesoft.utils.SystemInfo;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.CheckUpdate;
@@ -195,7 +197,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Experience showed that default memory allocation for java RT is not enough
      */
     protected void checkMemoryRequirements() {
-        if (Funktionen.isMacOSX()) {
+        if (SystemInfo.isMacOSX()) {
             //all values in bytes
             final long TO_MBYTES = (1024 * 1024);
             long totalMemory = Runtime.getRuntime().maxMemory() / TO_MBYTES;
@@ -803,7 +805,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Display the About Box
      */
     private void showAboutDialog() {
-        MVAboutDialog aboutDialog = new MVAboutDialog(this, Funktionen.isMacOSX());
+        MVAboutDialog aboutDialog = new MVAboutDialog(this, SystemInfo.isMacOSX());
         aboutDialog.setVisible(true);
         aboutDialog.dispose();
     }

@@ -32,6 +32,8 @@ import javax.swing.JFileChooser;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
+
+import com.jidesoft.utils.SystemInfo;
 import mediathek.controller.filmeLaden.importieren.DatenUrlFilmliste;
 import mediathek.controller.filmeLaden.importieren.FilmlistenSuchen;
 import mediathek.daten.DDaten;
@@ -416,13 +418,14 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (Funktionen.isMacOSX()) {
+            if (SystemInfo.isMacOSX()) {
                 FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Filmliste laden");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     try {
-                        jTextFieldUrl.setText(new File(chooser.getFile()).getAbsolutePath());
+                        File destination = new File(chooser.getDirectory()+chooser.getFile());
+                        jTextFieldUrl.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
                         Log.fehlerMeldung(102036579, Log.FEHLER_ART_PROG, "PanelImportFilme.BeobPfad", ex);
                     }

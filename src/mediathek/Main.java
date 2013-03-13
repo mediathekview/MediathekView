@@ -19,6 +19,7 @@
  */
 package mediathek;
 
+import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
@@ -75,7 +76,7 @@ public class Main {
                         }
                         if (s.equalsIgnoreCase("-d")) {
                             Daten.debug = true;
-                            if (Funktionen.isMacOSX()) {
+                            if (SystemInfo.isMacOSX()) {
                                 //prevent startup of multiple instances...useful during debugging :(
                                 MVSingleInstance singleInstanceWatcher = new MVSingleInstance();
                                 if (singleInstanceWatcher.isAppAlreadyActive()) {

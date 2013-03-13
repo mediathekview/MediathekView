@@ -27,7 +27,7 @@ public class PreferencesTabBar {
         Border b = BorderFactory.createEmptyBorder(0, 4, 0, 4);
         fPreferencesTabBar.getComponent().setBorder(b);
         UnifiedToolBar.installUnifiedToolBarBorder(fPreferencesTabBar.getComponent());
-        fixUnifiedToolBarOnMacIfNeccessary(fPreferencesTabBar);
+        fPreferencesTabBar.setBackgroundPainter(MacPainterFactory.createTexturedWindowWorkaroundPainter());
         WindowUtils.installJComponentRepainterOnWindowFocusChanged(fPreferencesTabBar.getComponent());
     }
 
@@ -77,20 +77,6 @@ public class PreferencesTabBar {
         if (button == null) {
             throw new IllegalArgumentException(
                     "The given button title does not represent a preferences tab.");
-        }
-    }
-
-    /**
-     * Installs a custom painter on the given {@link TriAreaComponent} that paints the Mac style
-     * unified toolbar gradient on non-Mac platforms as well as Mac platforms running using Java 6.
-     *
-     * @param unifiedToolBar the {@link TriAreaComponent} to install the custom painter on if
-     *                       necessary.
-     */
-    private static void fixUnifiedToolBarOnMacIfNeccessary(TriAreaComponent unifiedToolBar) {
-        // install the custom painter if on non-Mac platforms or in other various Mac cases.
-        if (MacUtils.shouldManuallyPaintTexturedWindowBackground()) {
-            unifiedToolBar.setBackgroundPainter(MacPainterFactory.createTexturedWindowWorkaroundPainter());
         }
     }
 }

@@ -28,12 +28,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import com.jidesoft.utils.SystemInfo;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
@@ -111,13 +112,14 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //we can use native chooser on Mac...
-                if (Funktionen.isMacOSX()) {
+                if (SystemInfo.isMacOSX()) {
                     FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Dateimanager suchen");
                     chooser.setMode(FileDialog.LOAD);
                     chooser.setVisible(true);
                     if (chooser.getFile() != null) {
                         try {
-                            jTextFieldProgramm.setText(new File(chooser.getFile()).getAbsolutePath());
+                            File destination = new File(chooser.getDirectory() + chooser.getFile());
+                            jTextFieldProgramm.setText(destination.getAbsolutePath());
                         } catch (Exception ex) {
                             Log.fehlerMeldung(798963047, Log.FEHLER_ART_PROG, "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }

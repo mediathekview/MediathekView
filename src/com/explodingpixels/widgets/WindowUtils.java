@@ -15,6 +15,7 @@ import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
 import com.explodingpixels.util.PlatformUtils;
+import com.jidesoft.utils.SystemInfo;
 
 /**
  * Utility methods for dealing with {@link Window}s.
@@ -39,7 +40,7 @@ public class WindowUtils {
 		// the window non-opaque.
 		window.setBackground(new Color(0, 0, 0, 0));
 		// on non-mac platforms, try to use the facilities of Java 6 update 10.
-		if (!PlatformUtils.isMac()) {
+		if (!SystemInfo.isMacOSX()) {
 			quietlyTryToMakeWindowNonOqaque(window);
 		}
 	}

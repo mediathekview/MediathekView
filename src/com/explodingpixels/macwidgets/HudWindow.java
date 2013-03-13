@@ -41,6 +41,7 @@ import javax.swing.border.Border;
 import com.explodingpixels.util.PlatformUtils;
 import com.explodingpixels.widgets.WindowDragger;
 import com.explodingpixels.widgets.WindowUtils;
+import com.jidesoft.utils.SystemInfo;
 
 /**
  * <p>
@@ -250,8 +251,8 @@ public class HudWindow {
 
             setLayout(new BorderLayout());
             add(fLabel, BorderLayout.CENTER);
-            add(fCloseButton, PlatformUtils.isMac() ? BorderLayout.WEST : BorderLayout.EAST);
-            add(fSpacer, PlatformUtils.isMac() ? BorderLayout.EAST : BorderLayout.WEST);
+            add(fCloseButton, SystemInfo.isMacOSX() ? BorderLayout.WEST : BorderLayout.EAST);
+            add(fSpacer, SystemInfo.isMacOSX() ? BorderLayout.EAST : BorderLayout.WEST);
         }
 
         private void hideCloseButton() {
@@ -260,7 +261,7 @@ public class HudWindow {
         }
 
         private Border getCloseButtonBorder() {
-            return PlatformUtils.isMac()
+            return SystemInfo.isMacOSX()
                     ? BorderFactory.createEmptyBorder(0, 5, 0, 0)
                     : BorderFactory.createEmptyBorder(0, 0, 0, 5);
         }
