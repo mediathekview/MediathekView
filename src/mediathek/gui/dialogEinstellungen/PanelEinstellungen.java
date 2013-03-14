@@ -20,9 +20,15 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Component;
+import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.io.ProgrammUpdateSuchen;
@@ -30,8 +36,6 @@ import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 
@@ -44,16 +48,19 @@ public class PanelEinstellungen extends PanelVorlage {
         init();
         jCheckBoxEchtzeit.addActionListener(new BeobCheckBox());
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
-        String[] theme = new String[GuiFunktionen.THEME.length];
-        for (int i = 0; i < GuiFunktionen.THEME.length; ++i) {
-            theme[i] = GuiFunktionen.THEME[i][0];
-        }
-        jComboBoxLook.setModel(new DefaultComboBoxModel(theme));
-        if (Daten.system[Konstanten.SYSTEM_LOOK_NR].equals("")) {
-            Daten.system[Konstanten.SYSTEM_LOOK_NR] = "0";
-        }
-        jComboBoxLook.setSelectedIndex(Integer.parseInt(Daten.system[Konstanten.SYSTEM_LOOK_NR]));
-        jComboBoxLook.addActionListener(new BeobLook());
+//        String[] theme = new String[GuiFunktionen.THEME.length];
+//        for (int i = 0; i < GuiFunktionen.THEME.length; ++i) {
+//            theme[i] = GuiFunktionen.THEME[i][0];
+//        }
+//        jComboBoxLook.setModel(new DefaultComboBoxModel(theme));
+//        if (Daten.system[Konstanten.SYSTEM_LOOK_NR].equals("")) {
+//            Daten.system[Konstanten.SYSTEM_LOOK_NR] = "0";
+//        }
+//        jComboBoxLook.setSelectedIndex(Integer.parseInt(Daten.system[Konstanten.SYSTEM_LOOK_NR]));
+//        jComboBoxLook.addActionListener(new BeobLook());
+
+        setupLookAndFeelComboBox();
+        
         jButtonHilfeAnzahl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -86,6 +93,59 @@ public class PanelEinstellungen extends PanelVorlage {
             Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] = "1";
         } else {
             jSpinnerDownload.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR]));
+        }
+    }
+
+    private void setupLookAndFeelComboBox() {
+        try {
+            //query all installed LAFs
+            final UIManager.LookAndFeelInfo info[];
+            info = UIManager.getInstalledLookAndFeels();
+
+            //fill in the combobox model
+            ArrayList<String> themeList = new ArrayList<String>();
+            for (UIManager.LookAndFeelInfo i : info) {
+                themeList.add(i.getName());
+            }
+
+            DefaultComboBoxModel model = new DefaultComboBoxModel(themeList.toArray());
+            jComboBoxLook.setModel(model);
+            //select the current
+            LookAndFeel laf = UIManager.getLookAndFeel();
+            int index = model.getIndexOf(laf.getName());
+            jComboBoxLook.setSelectedIndex(index);
+            ActionListener lst = new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    String lafName = (String) jComboBoxLook.getModel().getElementAt(jComboBoxLook.getSelectedIndex());
+                    String lafClass = "";
+                    //retrieve class name for selected LAF
+                    for (UIManager.LookAndFeelInfo i : info) {
+                        if (i.getName().equals(lafName)) {
+                            lafClass = i.getClassName();
+                            break;
+                        }
+                    }
+                    //and now switch it...
+                    try {
+                        UIManager.setLookAndFeel(lafClass);
+                        SwingUtilities.updateComponentTreeUI(ddaten.mediathekGui);
+                        for (Frame f : Frame.getFrames()) {
+                            SwingUtilities.updateComponentTreeUI(f);
+                            for (Window w : f.getOwnedWindows()) {
+                                SwingUtilities.updateComponentTreeUI(w);
+                            }
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    Daten.system[Konstanten.SYSTEM_LOOK_NR] = lafClass;  //
+                }
+            };
+            jComboBoxLook.addActionListener(lst);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -259,20 +319,20 @@ public class PanelEinstellungen extends PanelVorlage {
         }
     }
 
-    private class BeobLook implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (GuiFunktionen.setLook(ddaten.mediathekGui, Integer.parseInt(String.valueOf(jComboBoxLook.getSelectedIndex())))) {
-                Daten.system[Konstanten.SYSTEM_LOOK_NR] = String.valueOf(jComboBoxLook.getSelectedIndex());
-            } else {
-                Daten.system[Konstanten.SYSTEM_LOOK_NR] = "0";
-                jComboBoxLook.setSelectedIndex(0);
-                GuiFunktionen.setLook(ddaten.mediathekGui, 0);
-            }
-
-        }
-    }
+//    private class BeobLook implements ActionListener {
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            if (GuiFunktionen.setLook(ddaten.mediathekGui, Integer.parseInt(String.valueOf(jComboBoxLook.getSelectedIndex())))) {
+//                Daten.system[Konstanten.SYSTEM_LOOK_NR] = String.valueOf(jComboBoxLook.getSelectedIndex());
+//            } else {
+//                Daten.system[Konstanten.SYSTEM_LOOK_NR] = "0";
+//                jComboBoxLook.setSelectedIndex(0);
+//                GuiFunktionen.setLook(ddaten.mediathekGui, 0);
+//            }
+//
+//        }
+//    }
 
     private class BeobCheckBoxSuchen implements ActionListener {
 

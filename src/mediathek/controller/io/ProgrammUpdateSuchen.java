@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
+import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -44,46 +45,59 @@ public class ProgrammUpdateSuchen {
     private final String INFO = "Info";
     private final String INFO_NO = "number";
     private LinkedList<String[]> listInfos = new LinkedList<String[]>(); // String[] info = {Nummer, Info};
+    private String version;
+    private String release;
+    private String downloadUrlProgramm;
+    private String[] ret;
+    private boolean anzeigen;
+    private boolean hinweis;
+    private boolean hinweiseAlleAnzeigen;
+    private boolean neueVersion = false;
 
-    public boolean checkVersion(DDaten ddaten, boolean anzeigen, boolean hinweis, boolean hinweiseAlleAnzeigen) {
+    public boolean checkVersion(DDaten ddaten, boolean aanzeigen, boolean hhinweis, boolean hhinweiseAlleAnzeigen) {
         // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
-        String version;
-        String release;
-        String downloadUrlProgramm;
-        String[] ret;
-        boolean neueVersion = false;
+        anzeigen = aanzeigen;
+        hinweis = hhinweis;
+        hinweiseAlleAnzeigen = hhinweiseAlleAnzeigen;
+        neueVersion = false;
         try {
             ret = suchen();
-            // Hinweise anzeigen
-            if (hinweis) {
-                hinweiseAnzeigen(hinweiseAlleAnzeigen);
-            }
-            // Update-Info anzeigen
-            version = ret[0];
-            release = ret[1];
-            downloadUrlProgramm = ret[2];
-            if (!version.equals("")) {
-                Daten.system[Konstanten.SYSTEM_UPDATE_DATUM_NR] = DatumZeit.getHeute_yyyyMMdd();
-                if (checkObNeueVersion(version, Konstanten.VERSION)) {
-                    neueVersion = true;
-                    // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, DDaten ddaten) {
-                    new DialogHinweisUpdate(null, true, "Eine neue Version liegt vor",
-                            "   ==================================================\n"
-                            + "   Neue Version:\n" + "   " + version + "\n\n"
-                            + "   ==================================================\n"
-                            + "   Änderungen:\n" + "   " + release + "\n\n"
-                            + "   ==================================================\n"
-                            + "   URL:\n"
-                            + "   " + downloadUrlProgramm + "\n\n").setVisible(true);
-                } else {
-                    DialogHinweisUpdate dialog = new DialogHinweisUpdate(null, true, "Update suchen", "Alles aktuell!");
-                    if (anzeigen) {
-                        dialog.setVisible(true);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public synchronized void run() {
+
+                    // Hinweise anzeigen
+                    if (hinweis) {
+                        hinweiseAnzeigen(hinweiseAlleAnzeigen);
+                    }
+                    // Update-Info anzeigen
+                    version = ret[0];
+                    release = ret[1];
+                    downloadUrlProgramm = ret[2];
+                    if (!version.equals("")) {
+                        Daten.system[Konstanten.SYSTEM_UPDATE_DATUM_NR] = DatumZeit.getHeute_yyyyMMdd();
+                        if (checkObNeueVersion(version, Konstanten.VERSION)) {
+                            neueVersion = true;
+                            // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, DDaten ddaten) {
+                            new DialogHinweisUpdate(null, true, "Eine neue Version liegt vor",
+                                    "   ==================================================\n"
+                                    + "   Neue Version:\n" + "   " + version + "\n\n"
+                                    + "   ==================================================\n"
+                                    + "   Änderungen:\n" + "   " + release + "\n\n"
+                                    + "   ==================================================\n"
+                                    + "   URL:\n"
+                                    + "   " + downloadUrlProgramm + "\n\n").setVisible(true);
+                        } else {
+                            DialogHinweisUpdate dialog = new DialogHinweisUpdate(null, true, "Update suchen", "Alles aktuell!");
+                            if (anzeigen) {
+                                dialog.setVisible(true);
+                            }
+                        }
+                    } else {
+                        new DialogHinweisUpdate(null, true, "Fehler bei der Versionsprüfung!", "Es ist ein Fehler aufgetreten!" + "\n\n" + "").setVisible(true);
                     }
                 }
-            } else {
-                new DialogHinweisUpdate(null, true, "Fehler bei der Versionsprüfung!", "Es ist ein Fehler aufgetreten!" + "\n\n" + "").setVisible(true);
-            }
+            });
         } catch (Exception ex) {
             Log.fehlerMeldung(159002583, Log.FEHLER_ART_PROG, "ProgrammUpdateSuchen.checkVersion", ex);
         }

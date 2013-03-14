@@ -49,18 +49,12 @@ public class CheckUpdate {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR])) {
                     if (!Daten.system[Konstanten.SYSTEM_UPDATE_DATUM_NR].equals(DatumZeit.getHeute_yyyyMMdd())) {
                         final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
-                        //wir sind nicht auf dem EDT, erzeuegen aber Swing Dialoge...ergo aufpassen!
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public synchronized void run() {
-                                if (pgrUpdate.checkVersion(ddaten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
-                                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
-                                } else {
-                                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
-                                }
-                                ListePsetVorlagen.getNeuVersionStandarset(ddaten, Funktionen.getOsString());
-                            }
-                        });
+                        if (pgrUpdate.checkVersion(ddaten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
+                            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
+                        } else {
+                            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
+                        }
+                        ListePsetVorlagen.getNeuVersionStandarset(ddaten, Funktionen.getOsString());
                         try {
                             this.wait(10 * 1000); // 10 Sekunden den Titel anzeigen
                         } catch (Exception ignored) {

@@ -50,6 +50,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.jidesoft.utils.SystemInfo;
+import javax.swing.UIManager;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.CheckUpdate;
@@ -71,7 +72,6 @@ import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.tool.Filter;
-import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
@@ -154,7 +154,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
 
         setOrgTitel();
-        GuiFunktionen.setLook(this);
+        setLookAndFeel();
+        //GuiFunktionen.setLook(this);
         init();
         setSize(max);
 
@@ -190,6 +191,27 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
         jButtonFilmeLaden.setSelected(true);
+    }
+
+    /**
+     * This will set the Look&Feel based on Application Preferences.
+     * In case of error it will always reset to system LAF.
+     */
+    private void setLookAndFeel() {
+        try {
+            String laf = DDaten.system[Konstanten.SYSTEM_LOOK_NR];
+            //if we have the old values, reset to System LAF
+            if (laf.equals("") || laf.length() == 1) {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } else {
+                //otherwise set the requested UI
+                laf = DDaten.system[Konstanten.SYSTEM_LOOK_NR];
+                UIManager.setLookAndFeel(laf);
+            }
+        } catch (Exception ignored) {
+            //update the LAF parameter, just in case we tried to load a non-existing LAF before
+            DDaten.system[Konstanten.SYSTEM_LOOK_NR] = UIManager.getSystemLookAndFeelClassName();
+        }
     }
 
     /**

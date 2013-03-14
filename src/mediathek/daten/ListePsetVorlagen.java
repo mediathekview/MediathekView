@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
+import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
@@ -121,58 +122,73 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         return true;
     }
 
-    public static ListePset getNeuVersionStandarset(DDaten ddaten, String bs) {
+    public static void getNeuVersionStandarset(DDaten ddaten, String bs) {
         ListePset lp = getStandarset(ddaten, bs);
-        String version = Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR];
-        if (lp != null) {
-            if (!version.equals(lp.version)) {
-                String titel = "Das Standardset wurde aktualisert";
-                String text = "   ==================================================\n\n"
-                        + "   Es gibt ein neues Standardset der Videoplayer\n"
-                        + "   für den Download und das Abspielen der Filme\n"
-                        + "   \n"
-                        + "   ==================================================\n"
-                        + "   \n"
-                        + "   Soll das neue Set installiert werden?\n"
-                        + "   \n"
-                        + "   ==================================================\n"
-                        + "   \n"
-                        + "   Die bestehenden Einstellungen werden nicht verändert.\n"
-                        + "   Das neue Set muss dann erst noch in den\n"
-                        + "   \"Einstellungen->Videoplayer\"\n"
-                        + "   aktiviert werden\n"
-                        + "   \n"
-                        + "   \n"
-                        + "   \n";
-                DialogOkCancel dialogOkCancel = new DialogOkCancel(null, ddaten, true, titel, text);
-                dialogOkCancel.setVisible(true);
-                if (dialogOkCancel.ok) {
-                    Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = lp.version;
-                    // die Zielpafade anpassen
-                    ListePset org = ddaten.listePset.getListeSpeichern();
-                    for (DatenPset ps : lp.getListeSpeichern()) {
-                        ps.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR];
-                        ps.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR];
-                        ps.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR];
-                        ps.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR];
+        SwingUtilities.invokeLater(new GetNeuVersion(ddaten, bs, lp));
+    }
+
+    private static class GetNeuVersion implements Runnable {
+
+        DDaten ddaten;
+        String bs;
+        ListePset lp;
+
+        public GetNeuVersion(DDaten dd, String bbs, ListePset llp) {
+            ddaten = dd;
+            bs = bbs;
+            lp = llp;
+        }
+
+        @Override
+        public synchronized void run() {
+            String version = Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR];
+            if (lp != null) {
+                if (!version.equals(lp.version)) {
+                    String titel = "Das Standardset wurde aktualisert";
+                    String text = "   ==================================================\n\n"
+                            + "   Es gibt ein neues Standardset der Videoplayer\n"
+                            + "   für den Download und das Abspielen der Filme\n"
+                            + "   \n"
+                            + "   ==================================================\n"
+                            + "   \n"
+                            + "   Soll das neue Set installiert werden?\n"
+                            + "   \n"
+                            + "   ==================================================\n"
+                            + "   \n"
+                            + "   Die bestehenden Einstellungen werden nicht verändert.\n"
+                            + "   Das neue Set muss dann erst noch in den\n"
+                            + "   \"Einstellungen->Videoplayer\"\n"
+                            + "   aktiviert werden\n"
+                            + "   \n"
+                            + "   \n"
+                            + "   \n";
+                    DialogOkCancel dialogOkCancel = new DialogOkCancel(null, ddaten, true, titel, text);
+                    dialogOkCancel.setVisible(true);
+                    if (dialogOkCancel.ok) {
+                        Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = lp.version;
+                        // die Zielpafade anpassen
+                        ListePset org = ddaten.listePset.getListeSpeichern();
+                        for (DatenPset ps : lp.getListeSpeichern()) {
+                            ps.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR];
+                            ps.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR];
+                            ps.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR];
+                            ps.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR];
+                        }
+                        for (DatenPset ps : lp) {
+                            // die bestehenden Sets sollen nicht gestört werden
+                            ps.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
+                            ps.arr[DatenPset.PROGRAMMSET_IST_ABO_NR] = Boolean.FALSE.toString();
+                            ps.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR] = Boolean.FALSE.toString();
+                            ps.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.FALSE.toString();
+                        }
+                        ddaten.listePset.addPset(lp);
+                    } else if (!dialogOkCancel.morgen) {
+                        // dann auch die Versionsnummer aktualisieren
+                        Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = lp.version;
                     }
-                    for (DatenPset ps : lp) {
-                        // die bestehenden Sets sollen nicht gestört werden
-                        ps.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
-                        ps.arr[DatenPset.PROGRAMMSET_IST_ABO_NR] = Boolean.FALSE.toString();
-                        ps.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR] = Boolean.FALSE.toString();
-                        ps.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.FALSE.toString();
-                    }
-                    ddaten.listePset.addPset(lp);
-                } else if (!dialogOkCancel.morgen) {
-                    // dann auch die Versionsnummer aktualisieren
-                    Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = lp.version;
                 }
-                return lp;
             }
         }
-        // dann ist alles aktuell oder nichts gefunden
-        return null;
     }
 
     public static ListePset getStandarset(DDaten ddaten, String bs) {
@@ -202,7 +218,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         return pSet;
     }
 
-    public static ListePset getStandardprogramme(DDaten ddaten) {
+    private static ListePset getStandardprogramme(DDaten ddaten) {
         // liefert das Standard Programmset für das entsprechende BS
         ListePset pSet;
         InputStream datei;
