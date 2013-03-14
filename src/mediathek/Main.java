@@ -24,7 +24,6 @@ import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
 import mediathek.daten.Daten;
-import mediathek.tool.Funktionen;
 import mediathek.tool.Log;
 import mediathek.tool.MVSingleInstance;
 

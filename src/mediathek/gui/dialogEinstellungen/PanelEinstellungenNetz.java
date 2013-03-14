@@ -17,7 +17,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Component;
@@ -73,7 +72,7 @@ public class PanelEinstellungenNetz extends PanelVorlage {
         Daten.system[Konstanten.SYSTEM_HTTP_PROXY_USER_NR] = jTextFieldPUser.getText();
         Daten.system[Konstanten.SYSTEM_HTTP_PROXY_PWD_NR] = jTextFieldPPwd.getText();
         //system setzen
-        GuiFunktionen.setProxy(ddaten);
+        GuiFunktionen.setProxy();
     }
 
     /** This method is called from within the constructor to
@@ -178,7 +177,6 @@ public class PanelEinstellungenNetz extends PanelVorlage {
                 .addContainerGap(53, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox jCheckBoxProxy;
     private javax.swing.JLabel jLabelPass;
@@ -211,7 +209,6 @@ public class PanelEinstellungenNetz extends PanelVorlage {
         private void tus() {
             setProxy();
         }
-
     }
 
     private class BeobProxy implements ActionListener {
@@ -220,7 +217,5 @@ public class PanelEinstellungenNetz extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             setProxy();
         }
-
     }
-
 }
