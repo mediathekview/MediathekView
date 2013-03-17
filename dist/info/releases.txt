@@ -30,7 +30,7 @@
 	Weitere Veränderungen:
 	- Filter in der Toolbar (mit F8 kann man zwischen dem neuen und dem bisherigen Filterpanel umschalten)
 	- Neue Option in den Einstellungen: Es können Unicodezeichen vereinfacht werden, die beim Speichern im Dateinamen Probleme verursachen können
-	- Die Blacklist wurde erweitert und sie kann jetzt auch auf das Suchen der Abos angewandt werden (wenn im Dialog Blacklist eingeschalter)
+	- Die Blacklist wurde erweitert und sie kann jetzt auch auf das Suchen der Abos angewandt werden (wenn im Dialog Blacklist eingeschaltet)
 	- Anzeige der Restzeit bei Downloads
 	- Öffnen des Downloadordners eines Download im Kontextmenü der Maus im Tab Download
 
