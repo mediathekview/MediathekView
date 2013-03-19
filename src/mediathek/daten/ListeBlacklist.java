@@ -134,7 +134,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 blacklist = it.next();
                 // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
                 //                     String imSender, String imThema, String imText) {
-                if (!Filter.filterBlacklist(blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
+                if (Filter.filterBlacklist(blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
                         blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR],
                         film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
                     return false;
