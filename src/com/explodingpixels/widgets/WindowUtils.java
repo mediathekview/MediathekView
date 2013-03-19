@@ -1,8 +1,6 @@
 package com.explodingpixels.widgets;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.lang.ref.WeakReference;
@@ -16,6 +14,7 @@ import javax.swing.event.AncestorListener;
 
 import com.explodingpixels.util.PlatformUtils;
 import com.jidesoft.utils.SystemInfo;
+import com.sun.awt.AWTUtilities;
 
 /**
  * Utility methods for dealing with {@link Window}s.
@@ -36,11 +35,19 @@ public class WindowUtils {
 	 */
 	public static void makeWindowNonOpaque(Window window) {
 		// on the mac, simply setting the window's background color to be fully
-		// transparent makes
-		// the window non-opaque.
-		window.setBackground(new Color(0, 0, 0, 0));
+		// transparent makes the window non-opaque.
+        //TODO AWTUtilities calls have been made public in JDK7, see http://docs.oracle.com/javase/tutorial/uiswing/misc/trans_shaped_windows.html
+        boolean isPerPixelTranslucencySupported = AWTUtilities.isTranslucencySupported(AWTUtilities.Translucency.PERPIXEL_TRANSLUCENT);
+
+        //if per-pixel transparency is not supported, leave window opaque (non-transparent)
+        if (isPerPixelTranslucencySupported)
+		    window.setBackground(new Color(0, 0, 0, 0));
+        else
+            window.setBackground(Color.BLACK); //just to be sure..
+
 		// on non-mac platforms, try to use the facilities of Java 6 update 10.
-		if (!SystemInfo.isMacOSX()) {
+        //if not supported it will fail silently
+		if (!SystemInfo.isMacOSX() && isPerPixelTranslucencySupported) {
 			quietlyTryToMakeWindowNonOqaque(window);
 		}
 	}
@@ -56,6 +63,7 @@ public class WindowUtils {
 	 *            the {@code Window} to try and make non-opaque.
 	 */
 	private static void quietlyTryToMakeWindowNonOqaque(Window window) {
+        //TODO remove reflection
 		try {
             @SuppressWarnings("rawtypes")
 			Class clazz = Class.forName("com.sun.awt.AWTUtilities");
