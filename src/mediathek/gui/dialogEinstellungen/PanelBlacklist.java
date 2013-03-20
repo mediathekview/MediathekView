@@ -29,6 +29,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenBlacklist;
@@ -71,7 +73,23 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private void init() {
-        jTableSender.addMouseListener(new BeobMausTabelle());
+        jTableBlacklist.addMouseListener(new BeobMausTabelle());
+        jTableBlacklist.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
+        jRadioButtonWhitelist.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST_NR]));
+        jRadioButtonWhitelist.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST_NR] = Boolean.toString(jRadioButtonWhitelist.isSelected());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
+            }
+        });
+        jRadioButtonBlacklist.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST_NR] = Boolean.toString(jRadioButtonWhitelist.isSelected());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
+            }
+        });
         jCheckBoxZukunftNichtAnzeigen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -168,7 +186,7 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        jTableSender.setModel(new TModel(ddaten.listeBlacklist.getObjectData(), DatenBlacklist.BLACKLIST_COLUMN_NAMES_ANZEIGE));
+        jTableBlacklist.setModel(new TModel(ddaten.listeBlacklist.getObjectData(), DatenBlacklist.BLACKLIST_COLUMN_NAMES_ANZEIGE));
     }
 
     private void setPanelBlacklist() {
@@ -186,6 +204,34 @@ public class PanelBlacklist extends PanelVorlage {
         }
     }
 
+    private void tableSelect() {
+        DatenBlacklist bl = null;
+        int selectedTableRow = jTableBlacklist.getSelectedRow();
+        if (selectedTableRow >= 0) {
+            int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
+            String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR_NR).toString();
+            bl = ddaten.listeBlacklist.get(delNr);
+        }
+        if (bl != null) {
+            jComboBoxSender.setSelectedItem(bl.arr[DatenBlacklist.BLACKLIST_SENDER_NR]);
+            jComboBoxThema.setSelectedItem(bl.arr[DatenBlacklist.BLACKLIST_THEMA_NR]);
+            jTextFieldTitel.setText(bl.arr[DatenBlacklist.BLACKLIST_TITEL_NR]);
+            jTextFieldThemaTitel.setText(bl.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR]);
+        }
+    }
+
+    private DatenBlacklist tabelleZeileLoeschen() {
+        DatenBlacklist ret = null;
+        int selectedTableRow = jTableBlacklist.getSelectedRow();
+        if (selectedTableRow >= 0) {
+            int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
+            String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR_NR).toString();
+            ret = ddaten.listeBlacklist.remove(delNr);
+            tabelleLaden();
+        }
+        return ret;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -196,6 +242,7 @@ public class PanelBlacklist extends PanelVorlage {
 
         jPanel2 = new javax.swing.JPanel();
         label1 = new java.awt.Label();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jTabbedPaneBlacklist = new javax.swing.JTabbedPane();
         jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -207,9 +254,7 @@ public class PanelBlacklist extends PanelVorlage {
         jLabel9 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
-        jTableSender = new javax.swing.JTable();
-        jButtonTabelleLoeschen = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        jTableBlacklist = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jComboBoxSender = new javax.swing.JComboBox();
@@ -221,6 +266,11 @@ public class PanelBlacklist extends PanelVorlage {
         jTextFieldTitel = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jTextFieldThemaTitel = new javax.swing.JTextField();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
+        jButtonTabelleLoeschen = new javax.swing.JButton();
+        jRadioButtonBlacklist = new javax.swing.JRadioButton();
+        jRadioButtonWhitelist = new javax.swing.JRadioButton();
         jButtonHilfe = new javax.swing.JButton();
         jCheckBoxBlacklistAusschalten = new javax.swing.JCheckBox();
 
@@ -252,7 +302,7 @@ public class PanelBlacklist extends PanelVorlage {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
                     .addComponent(jCheckBoxZukunftNichtAnzeigen))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(124, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -314,17 +364,13 @@ public class PanelBlacklist extends PanelVorlage {
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(317, Short.MAX_VALUE))
+                .addContainerGap(367, Short.MAX_VALUE))
         );
 
         jTabbedPaneBlacklist.addTab("Blacklist allgemein", jPanel3);
 
-        jTableSender.setAutoCreateRowSorter(true);
-        jScrollPane1.setViewportView(jTableSender);
-
-        jButtonTabelleLoeschen.setText("Liste löschen");
-
-        jLabel1.setText("Sender - Thema - Titel aus der Filmliste löschen:");
+        jTableBlacklist.setAutoCreateRowSorter(true);
+        jScrollPane1.setViewportView(jTableBlacklist);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -342,9 +388,7 @@ public class PanelBlacklist extends PanelVorlage {
 
         jLabel8.setText("Titel:");
 
-        jLabel2.setText("Thema/Titel:");
-
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jLabel2.setText("Thema oder Titel:");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -354,37 +398,38 @@ public class PanelBlacklist extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonHinzufuegen))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6))
-                        .addGap(43, 43, 43)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBoxThema, 0, 335, Short.MAX_VALUE)
-                            .addComponent(jComboBoxSender, 0, 335, Short.MAX_VALUE)))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonHilfe))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel8))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
-                            .addComponent(jTextFieldThemaTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE))))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGap(68, 68, 68)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel5))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jComboBoxSender, 0, 410, Short.MAX_VALUE)
+                                    .addComponent(jComboBoxThema, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel8))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextFieldTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
+                                    .addComponent(jTextFieldThemaTitel))))
+                        .addGap(12, 12, 12))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonHinzufuegen)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel7)
-                    .addComponent(jButtonHilfe))
+                .addGap(23, 23, 23)
+                .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -408,6 +453,42 @@ public class PanelBlacklist extends PanelVorlage {
 
         jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxSender, jComboBoxThema, jTextFieldThemaTitel, jTextFieldTitel});
 
+        jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel10.setText("alle Einträge löschen:");
+
+        jButtonTabelleLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonTabelleLoeschen)
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel10)
+                    .addComponent(jButtonTabelleLoeschen))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        buttonGroup1.add(jRadioButtonBlacklist);
+        jRadioButtonBlacklist.setSelected(true);
+        jRadioButtonBlacklist.setText("\"Sender / Thema / Titel\" werden nicht angezeigt (Blacklist)");
+
+        buttonGroup1.add(jRadioButtonWhitelist);
+        jRadioButtonWhitelist.setText("nur diese \"Sender / Thema / Titel\" anzeigen (Whitelist)");
+
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -415,28 +496,34 @@ public class PanelBlacklist extends PanelVorlage {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonTabelleLoeschen)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButtonWhitelist)
+                            .addComponent(jRadioButtonBlacklist))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonHilfe)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jRadioButtonBlacklist)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButtonWhitelist))
+                    .addComponent(jButtonHilfe))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonTabelleLoeschen)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jTabbedPaneBlacklist.addTab("Sender-Thema-Titel", jPanel1);
@@ -460,13 +547,14 @@ public class PanelBlacklist extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPaneBlacklist, javax.swing.GroupLayout.PREFERRED_SIZE, 523, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jTabbedPaneBlacklist)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxBlacklistAusschalten)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonHinzufuegen;
     private javax.swing.JButton jButtonTabelleLoeschen;
@@ -475,7 +563,7 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxZukunftNichtAnzeigen;
     private javax.swing.JComboBox jComboBoxSender;
     private javax.swing.JComboBox jComboBoxThema;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -489,13 +577,26 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JRadioButton jRadioButtonBlacklist;
+    private javax.swing.JRadioButton jRadioButtonWhitelist;
     private javax.swing.JTabbedPane jTabbedPaneBlacklist;
-    private javax.swing.JTable jTableSender;
+    private javax.swing.JTable jTableBlacklist;
     private javax.swing.JTextField jTextFieldThemaTitel;
     private javax.swing.JTextField jTextFieldTitel;
     private java.awt.Label label1;
     // End of variables declaration//GEN-END:variables
+
+    private class BeobachterTableSelect implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            if (!event.getValueIsAdjusting()) {
+                tableSelect();
+            }
+        }
+    }
 
     private class BeobMausTabelle extends MouseAdapter {
 
@@ -520,9 +621,9 @@ public class PanelBlacklist extends PanelVorlage {
         private void showMenu(MouseEvent evt) {
             int nr;
             p = evt.getPoint();
-            nr = jTableSender.rowAtPoint(p);
+            nr = jTableBlacklist.rowAtPoint(p);
             if (nr >= 0) {
-                jTableSender.setRowSelectionInterval(nr, nr);
+                jTableBlacklist.setRowSelectionInterval(nr, nr);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();
             //löschen
@@ -537,12 +638,7 @@ public class PanelBlacklist extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedTableRow = jTableSender.getSelectedRow();
-                if (selectedTableRow >= 0) {
-                    int del = jTableSender.convertRowIndexToModel(selectedTableRow);
-                    ddaten.listeBlacklist.remove(del);
-                    tabelleLaden();
-                }
+                tabelleZeileLoeschen();
             }
         }
     }
@@ -567,9 +663,6 @@ public class PanelBlacklist extends PanelVorlage {
         private void tus() {
             Filter.checkPattern1(jTextFieldThemaTitel);
             Filter.checkPattern1(jTextFieldTitel);
-            if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
-                tabelleLaden();
-            }
         }
     }
 }

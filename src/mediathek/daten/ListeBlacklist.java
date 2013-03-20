@@ -37,10 +37,21 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     private long jetzt;
     private boolean zukunftNichtAnzeigen;
     private boolean blacklistAusgeschaltet;
+    private int nr = 0;
 
     @Override
     public boolean add(DatenBlacklist b) {
+        b.arr[DatenBlacklist.BLACKLIST_NR_NR] = getNr(nr++);
         boolean ret = super.add(b);
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        return ret;
+    }
+
+    public boolean change(String idx, DatenBlacklist b) {
+        boolean ret;
+        remove(idx);
+        b.arr[DatenBlacklist.BLACKLIST_NR_NR] = getNr(nr++);
+        ret = super.add(b);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
         return ret;
     }
@@ -57,6 +68,30 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         DatenBlacklist ret = super.remove(idx);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
         return ret;
+    }
+
+    public DatenBlacklist remove(String idx) {
+        DatenBlacklist bl;
+        if ((bl = get(idx)) != null) {
+            remove(bl);
+        }
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        return bl;
+    }
+
+    @Override
+    public DatenBlacklist get(int idx) {
+        DatenBlacklist ret = super.get(idx);
+        return ret;
+    }
+
+    public DatenBlacklist get(String nr) {
+        for (DatenBlacklist b : this) {
+            if (b.arr[DatenBlacklist.BLACKLIST_NR_NR].equals(nr)) {
+                return b;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -127,21 +162,32 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         if (this.size() == 0) {
             return true;
         }
-        if (!blacklistAusgeschaltet) {
-            // nur wenn Blacklist nicht ausgeschaltet: Blacklist-Regeln prüfen
-            Iterator<DatenBlacklist> it = this.iterator();
-            while (it.hasNext()) {
-                blacklist = it.next();
-                // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
-                //                     String imSender, String imThema, String imText) {
-                if (Filter.filterBlacklist(blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
-                        blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR],
-                        film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
+        if (blacklistAusgeschaltet) {
+            return true;
+        }
+        // nur wenn Blacklist nicht ausgeschaltet: Blacklist-Regeln prüfen
+        Iterator<DatenBlacklist> it = this.iterator();
+        while (it.hasNext()) {
+            blacklist = it.next();
+            // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
+            //                     String imSender, String imThema, String imText) {
+            if (Filter.filterAufAboPruefen(blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
+                    blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR],
+                    film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
+                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST_NR])) {
+                    return true;
+                } else {
                     return false;
                 }
             }
         }
-        return true;
+        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST_NR])) {
+            // nur anzeigen wenn ein Filter passt
+            return false;
+        } else {
+            // kein Filter gefunden, also anzeigen
+            return true;
+        }
     }
 
     private boolean checkDate(DatenFilm film) {
@@ -168,5 +214,15 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             Log.fehlerMeldung(462558700, Log.FEHLER_ART_PROG, "ListeBlacklist.checkDate: ", ex);
         }
         return true;
+    }
+
+    private String getNr(int nr) {
+        final int MAX_STELLEN = 3;
+        final String FUELL_ZEICHEN = "0";
+        String str = String.valueOf(nr);
+        while (str.length() < MAX_STELLEN) {
+            str = FUELL_ZEICHEN + str;
+        }
+        return str;
     }
 }
