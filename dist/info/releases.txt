@@ -34,7 +34,11 @@
 	- Anzeige der Restzeit bei Downloads
 	- Öffnen des Downloadordners eines Download im Kontextmenü der Maus im Tab Download
 
-# Version 3.1.0
+	# Version 3.1.1
+	- Fehler in der Blacklist behoben
+	- Darstellungsproblem bei bestimmten Javaversionen behoben
+	
+	# Version 3.1.0
 	- Bei den Downloads gibt es jetzt eine Fortschrittsanzeige die in "Prozent" anzeigt, 
 	wieviel schon geladen wurde
 	- In den Programmsets kann jetzt auch für Downloads eingestellt werden, dass ein Unterverzeichnis
