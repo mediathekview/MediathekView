@@ -22,7 +22,7 @@ cp /mnt/daten/software/Mediathek/Mediathek/src/mediathek/file/*.xml /mnt/daten/w
 # zip erstellen
 cd /mnt/daten/software/Mediathek/Mediathek/dist/
 datum=$(date +%Y.%m.%d )
-zip -r MediathekView_3.2.0_$datum.zip .
+zip -r MediathekView_3.2.1_$datum.zip .
  
 # Dateien ins share-Verzeichnis von VmWare kopieren
 cp -r /mnt/daten/software/Mediathek/Mediathek/dist/* /mnt/daten/virtualbox/share/aktMed
