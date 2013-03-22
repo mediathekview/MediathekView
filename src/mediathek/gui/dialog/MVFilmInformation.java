@@ -9,15 +9,16 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 import mediathek.daten.DatenFilm;
 import org.jdesktop.swingx.JXHyperlink;
-import org.jdesktop.swingx.hyperlink.HyperlinkAction;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URI;
+import java.awt.event.ActionEvent;
 import java.net.URISyntaxException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import mediathek.daten.DDaten;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.UrlOeffnen;
 
 /**
  * Display the current film information in a Apple-style HUD window.
@@ -36,10 +37,12 @@ public class MVFilmInformation implements ChangeListener {
     private JLabel lblUrlAuthField;
     private JXHyperlink lblUrlThemaField;
     private JLabel lblAboField;
+    private DDaten ddaten;
 
-    public MVFilmInformation(Frame owner, JTabbedPane tabbedPane) {
+    public MVFilmInformation(Frame owner, JTabbedPane tabbedPane, DDaten ddaten) {
         hud = new HudWindow("Filminformation", owner);
         hud.makeResizeable();
+        this.ddaten = ddaten;
         JComponent content = buildContent();
         //prevents flickering in JDK7, JDK6 is still buggy :(
         content.setOpaque(false);
@@ -224,12 +227,28 @@ public class MVFilmInformation implements ChangeListener {
         updateCurrentFilm(emptyFilm);
     }
 
-    private class UrlThemaHyperlinkAction extends HyperlinkAction {
+//    private class UrlThemaHyperlinkAction extends HyperlinkAction {
+//
+//        public UrlThemaHyperlinkAction(String url) throws URISyntaxException {
+//            super(new URI(url), Desktop.Action.BROWSE);
+//            putValue(SHORT_DESCRIPTION, url);
+//            putValue(LONG_DESCRIPTION, url);
+//        }
+//    }
+    private class UrlThemaHyperlinkAction extends AbstractAction {
+
+        String url;
 
         public UrlThemaHyperlinkAction(String url) throws URISyntaxException {
-            super(new URI(url), Desktop.Action.BROWSE);
-            putValue(SHORT_DESCRIPTION, url);
-            putValue(LONG_DESCRIPTION, url);
+            this.url = url;
+            super.putValue(Action.NAME, url);
+            super.putValue(SHORT_DESCRIPTION, url);
+            super.putValue(LONG_DESCRIPTION, url);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            UrlOeffnen.urlOeffnen(ddaten, url);
         }
     }
 }

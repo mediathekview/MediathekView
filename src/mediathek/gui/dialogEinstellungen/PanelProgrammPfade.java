@@ -80,11 +80,11 @@ public class PanelProgrammPfade extends JPanel {
         jTextFieldFlv.getDocument().addDocumentListener(new BeobDoc());
         jTextFieldMplayer.getDocument().addDocumentListener(new BeobDoc());
         jTextFieldUrlMplayer.setText(Konstanten.ADRESSE_WEBSITE_MPLAYER);
-        jTextFieldUrlMplayer.addActionListener(new BeobWeb(Konstanten.ADRESSE_WEBSITE_MPLAYER));
+        jTextFieldUrlMplayer.addActionListener(new BeobWeb(ddaten, Konstanten.ADRESSE_WEBSITE_MPLAYER));
         jTextFieldUrlVlc.setText(Konstanten.ADRESSE_WEBSITE_VLC);
-        jTextFieldUrlVlc.addActionListener(new BeobWeb(Konstanten.ADRESSE_WEBSITE_VLC));
+        jTextFieldUrlVlc.addActionListener(new BeobWeb(ddaten, Konstanten.ADRESSE_WEBSITE_VLC));
         jTextFieldUrlFlv.setText(Konstanten.ADRESSE_WEBSITE_FLVSTREAMER);
-        jTextFieldUrlFlv.addActionListener(new BeobWeb(Konstanten.ADRESSE_WEBSITE_FLVSTREAMER));
+        jTextFieldUrlFlv.addActionListener(new BeobWeb(ddaten, Konstanten.ADRESSE_WEBSITE_FLVSTREAMER));
         jButtonMplayerPfad.addActionListener(new BeobPfad(jTextFieldMplayer));
         jButtonVlcPfad.addActionListener(new BeobPfad(jTextFieldVlc));
         jButtonFlvPfad.addActionListener(new BeobPfad(jTextFieldFlv));

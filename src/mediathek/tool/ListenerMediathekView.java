@@ -41,7 +41,7 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_LOG_FEHLER = 15;
     public static final int EREIGNIS_LOG_SYSTEM = 16;
     public static final int EREIGNIS_LOG_PLAYER = 17;
-    public static final int EREIGNIS_PROGRAMM_ORDNER_OEFFNEN = 18;
+    public static final int EREIGNIS_PROGRAMM_OEFFNEN = 18;
     public static final int EREIGNIS_PROGRAMM_MEDIATHEKGUI_ORG_TITEL = 19;
     public static final int EREIGNIS_PROGRAMM_MEDIATHEKGUI_PROGRAMM_AKTUELL = 20;
     public static final int EREIGNIS_PROGRAMM_MEDIATHEKGUI_UPDATE_VERFUEGBAR = 21;

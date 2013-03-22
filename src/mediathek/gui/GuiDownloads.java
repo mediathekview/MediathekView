@@ -291,7 +291,8 @@ public class GuiDownloads extends PanelVorlage {
                     gut = false;
                     String programm = "";
                     if (Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR].equals("")) {
-                        DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(ddaten.mediathekGui, ddaten, true, "", "Dateimanager suchen");
+                        String text = "\n Der Dateimanager zum Anzeigen des Speicherordners wird nicht gefunden.\n Dateimanager selbst auswählen.";
+                        DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(ddaten.mediathekGui, ddaten, true, "", "Dateimanager suchen", text);
                         dialog.setVisible(true);
                         if (dialog.ok) {
                             programm = dialog.ziel;
@@ -302,7 +303,7 @@ public class GuiDownloads extends PanelVorlage {
                     if (sFile != null) {
                         Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
                         Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = programm;
-                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_ORDNER_OEFFNEN, GuiDownloads.class.getSimpleName());
+                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                         gut = true;
                     }
                 } catch (Exception eex) {
@@ -311,7 +312,7 @@ public class GuiDownloads extends PanelVorlage {
             } finally {
                 if (!gut) {
                     Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = "";
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_ORDNER_OEFFNEN, GuiDownloads.class.getSimpleName());
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                     JOptionPane.showMessageDialog(parentComponent, "Kann den Dateimanager nicht öffnen!",
                             "Fehler", JOptionPane.ERROR_MESSAGE);
                 }

@@ -33,12 +33,12 @@ public class DialogOkCancel extends javax.swing.JDialog {
     /**
      *
      * @param parent
-     * @param dd
+     * @param ddaten
      * @param modal
      * @param titel
      * @param text
      */
-    public DialogOkCancel(java.awt.Frame parent, DDaten dd, boolean modal, String titel, String text) {
+    public DialogOkCancel(java.awt.Frame parent, DDaten ddaten, boolean modal, String titel, String text) {
         super(parent, modal);
         initComponents();
         setTitle(titel);
@@ -49,11 +49,11 @@ public class DialogOkCancel extends javax.swing.JDialog {
                 morgen = jCheckBoxMorgen.isSelected();
             }
         });
-        jButtonAnleitung.addActionListener(new BeobWeb(jTextFieldAnleitung.getText()));
+        jButtonAnleitung.addActionListener(new BeobWeb(ddaten, jTextFieldAnleitung.getText()));
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
         if (parent != null) {
-            parent = dd.mediathekGui;
+            parent = ddaten.mediathekGui;
             setLocationRelativeTo(parent);
         }
         new EscBeenden(this) {

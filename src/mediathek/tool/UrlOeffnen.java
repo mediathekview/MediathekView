@@ -21,10 +21,13 @@ package mediathek.tool;
 
 import java.awt.Desktop;
 import java.net.URI;
+import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
+import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
 public class UrlOeffnen {
 
-    public static boolean urlOeffnen(String url) {
+    public static boolean urlOeffnen(DDaten ddaten, String url) {
         if (Desktop.isDesktopSupported()) {
             Desktop d = Desktop.getDesktop();
             try {
@@ -33,6 +36,25 @@ public class UrlOeffnen {
                     return true;
                 }
             } catch (Exception ex) {
+                try {
+                    String programm = "";
+                    if (Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR].equals("")) {
+                        String text = "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen.";
+                        DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(ddaten.mediathekGui, ddaten, true, "", "Browser suchen", text);
+                        dialog.setVisible(true);
+                        if (dialog.ok) {
+                            programm = dialog.ziel;
+                        }
+                    } else {
+                        programm = Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR];
+                    }
+                    Runtime.getRuntime().exec(programm + " " + url);
+                    Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR] = programm;
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, UrlOeffnen.class.getSimpleName());
+                } catch (Exception eex) {
+                    Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR] = ""; // dann wars wohl nix
+                    Log.fehlerMeldung(316497658, Log.FEHLER_ART_PROG, UrlOeffnen.class.getName(), eex, "URL öffnen: " + url);
+                }
             }
         }
         return false;

@@ -31,6 +31,7 @@
                   <Component id="jPanel1" alignment="1" max="32767" attributes="0"/>
                   <Component id="jPanel3" alignment="0" max="32767" attributes="0"/>
                   <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jPanel4" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -47,7 +48,9 @@
               <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="183" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="95" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -259,11 +262,11 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jTextFieldProgramm" max="32767" attributes="0"/>
+                  <Component id="jTextFieldProgrammDateimanager" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jButtonProgramm" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonProgrammDateimanager" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jButtonHilfeProgramm" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonHilfeProgrammDateimanager" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -273,9 +276,9 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jTextFieldProgramm" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonProgramm" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonHilfeProgramm" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jTextFieldProgrammDateimanager" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonProgrammDateimanager" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonHilfeProgrammDateimanager" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -283,16 +286,70 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JTextField" name="jTextFieldProgramm">
+        <Component class="javax.swing.JTextField" name="jTextFieldProgrammDateimanager">
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonProgramm">
+        <Component class="javax.swing.JButton" name="jButtonProgrammDateimanager">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mediathek/res/fileopen_16.png"/>
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonHilfeProgramm">
+        <Component class="javax.swing.JButton" name="jButtonHilfeProgrammDateimanager">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Hilfe"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="jPanel4">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Programm zum &#xd6;ffnen von URL&apos;s"/>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jTextFieldProgrammUrl" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jButtonProgrammUrl" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jButtonHilfeProgrammUrl" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jTextFieldProgrammUrl" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonProgrammUrl" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonHilfeProgrammUrl" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JTextField" name="jTextFieldProgrammUrl">
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonProgrammUrl">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/fileopen_16.png"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonHilfeProgrammUrl">
           <Properties>
             <Property name="text" type="java.lang.String" value="Hilfe"/>
           </Properties>

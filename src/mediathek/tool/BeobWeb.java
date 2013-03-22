@@ -21,17 +21,20 @@ package mediathek.tool;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import mediathek.daten.DDaten;
 
 public class BeobWeb implements ActionListener {
 
     private String url;
+    private DDaten ddaten;
 
-    public BeobWeb(String uurl) {
+    public BeobWeb(DDaten dd, String uurl) {
+        ddaten = dd;
         url = uurl;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        UrlOeffnen.urlOeffnen(url);
+        UrlOeffnen.urlOeffnen(ddaten, url);
     }
 }
