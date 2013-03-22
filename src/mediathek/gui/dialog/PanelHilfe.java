@@ -47,9 +47,9 @@ public class PanelHilfe extends PanelVorlage {
             jTextFieldVersion.setText(Konstanten.VERSION);
         }
         jTextFieldPfad.setText(Funktionen.getPathJar());
-        jButtonWebsite.addActionListener(new BeobWeb(jTextFieldWebsite.getText()));
-        jButtonAnleitung.addActionListener(new BeobWeb(jTextFieldAnleitung.getText()));
-        jButtonForum.addActionListener(new BeobWeb(jTextFieldForum.getText()));
+        jButtonWebsite.addActionListener(new BeobWeb(ddaten, jTextFieldWebsite.getText()));
+        jButtonAnleitung.addActionListener(new BeobWeb(ddaten, jTextFieldAnleitung.getText()));
+        jButtonForum.addActionListener(new BeobWeb(ddaten, jTextFieldForum.getText()));
         jButtonLogErstellen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

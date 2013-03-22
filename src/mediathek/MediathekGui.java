@@ -144,7 +144,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         createStatusBar();
 
         //create the Film Information HUD
-        ddaten.filmInfoHud = new MVFilmInformation(this, jTabbedPane);
+        ddaten.filmInfoHud = new MVFilmInformation(this, jTabbedPane, ddaten);
         if (IoXmlLesen.einstellungenExistieren()) {
             // gibt schon Programmeinstellungen, dann damit starten
             ddaten.allesLaden();

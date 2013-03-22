@@ -30,7 +30,6 @@ import javax.swing.JOptionPane;
 import com.jidesoft.utils.SystemInfo;
 import mediathek.daten.DDaten;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
 
@@ -49,12 +48,13 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
      * @param zziel
      * * @param titel
      */
-    public DialogProgrammOrdnerOeffnen(java.awt.Frame parent, DDaten dd, boolean modal, String zziel, String titel) {
+    public DialogProgrammOrdnerOeffnen(java.awt.Frame parent, DDaten dd, boolean modal, String zziel, String titel, String text) {
         super(parent, modal);
         parentComponent = parent;
         ddaten = dd;
         initComponents();
         setTitle(titel);
+        jTextArea1.setText(text);
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
         jButtonZiel.addActionListener(new ZielBeobachter());

@@ -50,9 +50,9 @@ public class PanelAbout extends PanelVorlage {
         jTextFieldProgrammpfad.setText(Funktionen.getPathJar());
         jTextFieldEinstellungen.setText(Daten.getBasisVerzeichnis(false) + Konstanten.XML_DATEI);
         jTextFieldFilme.setText(Daten.getBasisVerzeichnis(false) + Konstanten.XML_DATEI_FILME);
-        jButtonWebsite.addActionListener(new BeobWeb(jTextFieldWebsite.getText()));
-        jButtonAnleitung.addActionListener(new BeobWeb(jTextFieldAnleitung.getText()));
-        jButtonForum.addActionListener(new BeobWeb(jTextFieldForum.getText()));
+        jButtonWebsite.addActionListener(new BeobWeb(ddaten, jTextFieldWebsite.getText()));
+        jButtonAnleitung.addActionListener(new BeobWeb(ddaten, jTextFieldAnleitung.getText()));
+        jButtonForum.addActionListener(new BeobWeb(ddaten, jTextFieldForum.getText()));
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
