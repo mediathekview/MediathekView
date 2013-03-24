@@ -19,16 +19,26 @@
  */
 package mediathek.gui.dialog;
 
+import com.explodingpixels.macwidgets.plaf.HudPaintingUtils;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URISyntaxException;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import static javax.swing.Action.LONG_DESCRIPTION;
+import static javax.swing.Action.SHORT_DESCRIPTION;
 import mediathek.daten.DDaten;
-import mediathek.tool.BeobWeb;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.Konstanten;
+import mediathek.tool.UrlOeffnen;
+import org.jdesktop.swingx.JXHyperlink;
 
 public class DialogOkCancel extends javax.swing.JDialog {
 
     public boolean ok = false;
     public boolean morgen = true;
+    private DDaten ddaten;
 
     /**
      *
@@ -38,8 +48,9 @@ public class DialogOkCancel extends javax.swing.JDialog {
      * @param titel
      * @param text
      */
-    public DialogOkCancel(java.awt.Frame parent, DDaten ddaten, boolean modal, String titel, String text) {
+    public DialogOkCancel(java.awt.Frame parent, DDaten dd, boolean modal, String titel, String text) {
         super(parent, modal);
+        ddaten = dd;
         initComponents();
         setTitle(titel);
         jTextArea1.setText(text);
@@ -49,7 +60,11 @@ public class DialogOkCancel extends javax.swing.JDialog {
                 morgen = jCheckBoxMorgen.isSelected();
             }
         });
-        jButtonAnleitung.addActionListener(new BeobWeb(ddaten, jTextFieldAnleitung.getText()));
+        try {
+            jXHyperlinkAnleitung.setAction(new UrlThemaHyperlinkAction(Konstanten.ADRESSE_ANLEITUNG));
+        } catch (URISyntaxException ignored) {
+        }
+
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
         if (parent != null) {
@@ -83,8 +98,7 @@ public class DialogOkCancel extends javax.swing.JDialog {
         jTextArea1 = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
-        jTextFieldAnleitung = new javax.swing.JTextField();
-        jButtonAnleitung = new javax.swing.JButton();
+        jXHyperlinkAnleitung = new org.jdesktop.swingx.JXHyperlink();
         jCheckBoxMorgen = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -102,13 +116,7 @@ public class DialogOkCancel extends javax.swing.JDialog {
 
         jLabel7.setText("Anleitung:");
 
-        jTextFieldAnleitung.setEditable(false);
-        jTextFieldAnleitung.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        jTextFieldAnleitung.setForeground(new java.awt.Color(0, 51, 204));
-        jTextFieldAnleitung.setText("https://sourceforge.net/p/zdfmediathk/wiki/Home/");
-
-        jButtonAnleitung.setText("Browser");
-        jButtonAnleitung.setToolTipText("http://zdfmediathk.sourceforge.net/");
+        jXHyperlinkAnleitung.setText("jXHyperlink1");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -117,21 +125,18 @@ public class DialogOkCancel extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel7)
-                .addGap(6, 6, 6)
-                .addComponent(jTextFieldAnleitung)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonAnleitung)
+                .addComponent(jXHyperlinkAnleitung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jTextFieldAnleitung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonAnleitung))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jXHyperlinkAnleitung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jCheckBoxMorgen.setSelected(true);
@@ -146,7 +151,7 @@ public class DialogOkCancel extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(jCheckBoxMorgen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
                         .addComponent(jButtonOk)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonAbbrechen))
@@ -161,7 +166,7 @@ public class DialogOkCancel extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -176,14 +181,30 @@ public class DialogOkCancel extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAbbrechen;
-    private javax.swing.JButton jButtonAnleitung;
     private javax.swing.JButton jButtonOk;
     private javax.swing.JCheckBox jCheckBoxMorgen;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextFieldAnleitung;
+    private org.jdesktop.swingx.JXHyperlink jXHyperlinkAnleitung;
     // End of variables declaration//GEN-END:variables
+
+    private class UrlThemaHyperlinkAction extends AbstractAction {
+
+        String url;
+
+        public UrlThemaHyperlinkAction(String url) throws URISyntaxException {
+            this.url = url;
+            super.putValue(Action.NAME, url);
+            super.putValue(SHORT_DESCRIPTION, url);
+            super.putValue(LONG_DESCRIPTION, url);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            UrlOeffnen.urlOeffnen(ddaten, url);
+        }
+    }
 
     private class OkBeobachter implements ActionListener {
 
