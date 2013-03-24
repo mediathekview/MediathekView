@@ -23,7 +23,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jCheckBoxAuto" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jCheckBoxZeilen" min="-2" max="-2" attributes="0"/>
+                      <Component id="jCheckBoxUmbrechen" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="122" max="32767" attributes="0"/>
                       <Component id="jButtonLoeschen" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -47,7 +47,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonLoeschen" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jCheckBoxAuto" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jCheckBoxZeilen" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jCheckBoxUmbrechen" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -89,7 +89,7 @@
         <Property name="text" type="java.lang.String" value="Autoscroll"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="jCheckBoxZeilen">
+    <Component class="javax.swing.JCheckBox" name="jCheckBoxUmbrechen">
       <Properties>
         <Property name="text" type="java.lang.String" value="Zeilen umbrechen"/>
       </Properties>

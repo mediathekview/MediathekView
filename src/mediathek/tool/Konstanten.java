@@ -29,7 +29,7 @@ public class Konstanten {
     public static final String DATEINAME_LISTE_FILMLISTEN = "filmlisten.xml";
     public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/version.xml";
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";
-    public static final String ADRESSE_ANLEITUNG = "http://zdfmediathk.sourceforge.net";
+    public static final String ADRESSE_ANLEITUNG = "https://sourceforge.net/p/zdfmediathk/wiki/Home/";
     public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen/programmgruppen.xml";
     // ProgrammUrls
     public static final String ADRESSE_WEBSITE_MPLAYER = "http://sourceforge.net/projects/smplayer/";
@@ -173,8 +173,14 @@ public class Konstanten {
     public static final int SYSTEM_BLACKLIST_IST_WHITELIST_NR = 53;
     public static final String SYSTEM_VERSION_PROGRAMMSET = "Version-Programmset";
     public static final int SYSTEM_VERSION_PROGRAMMSET_NR = 54;
+    public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN = "Meldungsfenster-Systemmeldungen";
+    public static final int SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN_NR = 55;
+    public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN = "Meldungsfenster-Fehlermeldungen";
+    public static final int SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN_NR = 56;
+    public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN = "Meldungsfenster-Playermeldungen";
+    public static final int SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN_NR = 57;
     public static final String SYSTEM = "system";
-    public static final int SYSTEM_MAX_ELEM = 55;
+    public static final int SYSTEM_MAX_ELEM = 58;
     public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION,
         SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y, SYSTEM_POS_X, SYSTEM_POS_Y,
         SYSTEM_GROESSE_EINSTELLUNEN_X, SYSTEM_GROESSE_EINSTELLUNEN_Y, SYSTEM_POS_EINSTELLUNEN_X, SYSTEM_EINSTELLUNEN_POS_Y,
@@ -189,7 +195,8 @@ public class Konstanten {
         SYSTEM_ABOS_SOFORT_SUCHEN, SYSTEM_NUR_ASCII, SYSTEM_UNICODE_AENDERN, SYSTEM_HINWEIS_NR_ANGEZEIGT,
         SYSTEM_ORDNER_OEFFNEN, SYSTEM_URL_OEFFNEN,
         SYSTEM_BLACKLIST_ZUKUNFT__NICHT_ANZEIGEN, SYSTEM_BLACKLIST_AUCH_ABO, SYSTEM_BLACKLIST_AUSGESCHALTET, SYSTEM_BLACKLIST_IST_WHITELIST,
-        SYSTEM_VERSION_PROGRAMMSET
+        SYSTEM_VERSION_PROGRAMMSET,
+        SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN, SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN, SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN
     };
     //
 }
