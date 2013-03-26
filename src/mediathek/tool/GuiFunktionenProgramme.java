@@ -19,8 +19,18 @@
  */
 package mediathek.tool;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import javax.swing.JOptionPane;
 import mediathek.controller.io.starter.RuntimeExec;
 import mediathek.daten.DDaten;
@@ -205,10 +215,17 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
 //        pSet = IoXmlLesen.importPset(ddaten, datei, true);
 //        return pSet;
 //    }
-
     public static boolean addVorlagen(DDaten ddaten, ListePset pSet, boolean auto) {
         // Standardgruppen laden
         if (pSet != null) {
+            for (DatenPset ps : pSet) {
+                if (!ps.arr[DatenPset.PROGRAMMSET_ADD_ON_NR].equals("")) {
+                    if (!addOnZip(ps.arr[DatenPset.PROGRAMMSET_ADD_ON_NR])) {
+                        // und Tschüss
+                        return false;
+                    }
+                }
+            }
             if (!auto) {
                 DialogImportPset dialog = new DialogImportPset(null, true, ddaten, pSet);
                 dialog.setVisible(true);
@@ -217,7 +234,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 }
             }
             if (ddaten.listePset.addPset(pSet)) {
-//                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFunktionenProgramme.class.getSimpleName());
                 JOptionPane.showMessageDialog(null, pSet.size() + " Programmset importiert!",
                         "Ok", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -227,6 +243,119 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     "Fehler", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+    }
+
+    private static boolean addOnZip(String datei) {
+        String zielPfad = addsPfad(getPathJar(), "bin");
+        File zipFile;
+        int timeout = 10000; //10 Sekunden
+        int n;
+        URLConnection conn;
+        try {
+            if (!GuiFunktionen.istUrl(datei)) {
+                zipFile = new File(datei);
+                if (!zipFile.exists()) {
+                    // und Tschüss
+                    return false;
+                }
+                if (datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+                    if (!entpacken(zipFile, new File(zielPfad))) {
+                        // und Tschüss
+                        return false;
+                    }
+                } else {
+                    FileInputStream in = new FileInputStream(datei);
+                    FileOutputStream fOut = new FileOutputStream(GuiFunktionen.addsPfad(zielPfad, datei));
+                    final byte[] buffer = new byte[1024];
+                    while ((n = in.read(buffer)) != -1) {
+                        fOut.write(buffer, 0, n);
+                    }
+                    fOut.close();
+                    in.close();
+                }
+            } else {
+                conn = new URL(datei).openConnection();
+                conn.setConnectTimeout(timeout);
+                conn.setReadTimeout(timeout);
+                conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+                if (datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+
+                    File tmpFile = File.createTempFile("mediathek", null);
+                    tmpFile.deleteOnExit();
+                    BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
+                    FileOutputStream fOut = new FileOutputStream(tmpFile);
+                    final byte[] buffer = new byte[1024];
+                    while ((n = in.read(buffer)) != -1) {
+                        fOut.write(buffer, 0, n);
+                    }
+                    fOut.close();
+                    in.close();
+                    if (!entpacken(tmpFile, new File(zielPfad))) {
+                        // und Tschüss
+                        return false;
+                    }
+
+                } else {
+                    BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
+                    FileOutputStream fOut = new FileOutputStream(GuiFunktionen.addsPfad(zielPfad, datei));
+                    final byte[] buffer = new byte[1024];
+                    while ((n = in.read(buffer)) != -1) {
+                        fOut.write(buffer, 0, n);
+                    }
+                    fOut.close();
+                    in.close();
+                }
+            }
+        } catch (Exception ex) {
+        }
+        return true;
+    }
+
+    private static boolean entpacken(File archive, File destDir) throws Exception {
+        if (!destDir.exists()) {
+            return false;
+        }
+
+        ZipFile zipFile = new ZipFile(archive);
+        Enumeration entries = zipFile.entries();
+
+        byte[] buffer = new byte[16384];
+        int len;
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = (ZipEntry) entries.nextElement();
+
+            String entryFileName = entry.getName();
+
+            File dir = buildDirectoryHierarchyFor(entryFileName, destDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            if (!entry.isDirectory()) {
+                BufferedOutputStream bos = new BufferedOutputStream(
+                        new FileOutputStream(new File(destDir, entryFileName)));
+
+                BufferedInputStream bis = new BufferedInputStream(zipFile
+                        .getInputStream(entry));
+
+                while ((len = bis.read(buffer)) > 0) {
+                    bos.write(buffer, 0, len);
+                }
+
+                bos.flush();
+                bos.close();
+                bis.close();
+            }
+        }
+        zipFile.close();
+        return true;
+    }
+
+    private static File buildDirectoryHierarchyFor(String entryName, File destDir) {
+        int lastIndex = entryName.lastIndexOf('/');
+        String entryFileName = entryName.substring(lastIndex + 1);
+        String internalPathToEntry = entryName.substring(0, lastIndex + 1);
+        return new File(destDir, internalPathToEntry);
     }
 
     public static boolean praefixTesten(String str, String uurl, boolean praefix) {
