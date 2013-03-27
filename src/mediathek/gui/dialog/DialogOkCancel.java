@@ -19,8 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import com.explodingpixels.macwidgets.plaf.HudPaintingUtils;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
@@ -32,7 +30,6 @@ import mediathek.daten.DDaten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Konstanten;
 import mediathek.tool.UrlOeffnen;
-import org.jdesktop.swingx.JXHyperlink;
 
 public class DialogOkCancel extends javax.swing.JDialog {
 

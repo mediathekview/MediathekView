@@ -260,14 +260,14 @@ public class ListePset extends LinkedList<DatenPset> {
     public TModel getModel() {
         TModel model;
         Object[][] object;
-        DatenPset daten;
+        DatenPset datenPset;
         int i = 0;
         if (this.size() > 0) {
             ListIterator<DatenPset> iterator = this.listIterator(0);
             object = new Object[this.size()][DatenPset.PROGRAMMSET_MAX_ELEM];
             while (iterator.hasNext()) {
-                daten = iterator.next();
-                object[i][DatenPset.PROGRAMMSET_NAME_NR] = daten.arr[DatenPset.PROGRAMMSET_NAME_NR];
+                datenPset = iterator.next();
+                object[i] = datenPset.arr;
                 ++i;
             }
             model = new TModel(object, DatenPset.PROGRAMMSET_COLUMN_NAMES_);

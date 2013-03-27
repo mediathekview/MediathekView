@@ -19,12 +19,12 @@
  */
 package mediathek.tool;
 
+import java.awt.Cursor;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
@@ -38,6 +38,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
+import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;
@@ -215,9 +216,10 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
 //        pSet = IoXmlLesen.importPset(ddaten, datei, true);
 //        return pSet;
 //    }
-    public static boolean addVorlagen(DDaten ddaten, ListePset pSet, boolean auto) {
+    public static boolean addVorlagen(PanelVorlage parent, DDaten ddaten, ListePset pSet, boolean auto) {
         // Standardgruppen laden
         if (pSet != null) {
+            parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             for (DatenPset ps : pSet) {
                 if (!ps.arr[DatenPset.PROGRAMMSET_ADD_ON_NR].equals("")) {
                     if (!addOnZip(ps.arr[DatenPset.PROGRAMMSET_ADD_ON_NR])) {
@@ -226,6 +228,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     }
                 }
             }
+            parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             if (!auto) {
                 DialogImportPset dialog = new DialogImportPset(null, true, ddaten, pSet);
                 dialog.setVisible(true);

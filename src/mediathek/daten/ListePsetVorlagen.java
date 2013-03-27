@@ -55,8 +55,10 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     public static final int PGR_BS_NR = 3;
     public static final String PGR_URL = "URL";
     public static final int PGR_URL_NR = 4;
-    public static final int PGR_MAX_ELEM = 5;
-    public static final String[] PGR_COLUMN_NAMES = {PGR_NAME, PGR_BESCHREIBUNG, PGR_VERSION, PGR_BS, PGR_URL};
+    public static final String PGR_INFO = "Info";
+    public static final int PGR_INFO_NR = 5;
+    public static final int PGR_MAX_ELEM = 6;
+    public static final String[] PGR_COLUMN_NAMES = {PGR_NAME, PGR_BESCHREIBUNG, PGR_VERSION, PGR_BS, PGR_URL, PGR_INFO};
     // private
     private final int timeout = 10000;
 
