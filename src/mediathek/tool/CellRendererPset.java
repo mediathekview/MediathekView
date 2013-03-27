@@ -50,13 +50,16 @@ public class CellRendererPset extends DefaultTableCellRenderer {
         try {
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
-            DatenPset gruppe = daten.listePset.get(r);
+            DatenPset datenPset = new DatenPset();
+            for (int i = 0; i < DatenPset.PROGRAMMSET_MAX_ELEM; ++i) {
+                datenPset.arr[i] = table.getModel().getValueAt(r, i).toString();
+            }
             if (c == DatenPset.PROGRAMMSET_NAME_NR) {
-                setForeground(gruppe.getFarbe(daten));
+                setForeground(datenPset.getFarbe(daten));
             }
             if (c == DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR) {
                 setText(""); // nur das Icon anzeigen
-                if (gruppe.istAbspielen()) {
+                if (datenPset.istAbspielen()) {
                     if (isSelected) {
                         setBackground(GuiKonstanten.ABO_SEL);
                     } else {
@@ -74,7 +77,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
             }
             if (c == DatenPset.PROGRAMMSET_IST_SPEICHERN_NR) {
                 setText(""); // nur das Icon anzeigen
-                if (gruppe.istSpeichern()) {
+                if (datenPset.istSpeichern()) {
                     if (isSelected) {
                         setBackground(GuiKonstanten.ABO_SEL);
                     } else {
@@ -92,7 +95,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
             }
             if (c == DatenPset.PROGRAMMSET_IST_BUTTON_NR) {
                 setText(""); // nur das Icon anzeigen
-                if (gruppe.istButton()) {
+                if (datenPset.istButton()) {
                     if (isSelected) {
                         setBackground(GuiKonstanten.ABO_SEL);
                     } else {
@@ -110,7 +113,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
             }
             if (c == DatenPset.PROGRAMMSET_IST_ABO_NR) {
                 setText(""); // nur das Icon anzeigen
-                if (gruppe.istAbo()) {
+                if (datenPset.istAbo()) {
                     if (isSelected) {
                         setBackground(GuiKonstanten.ABO_SEL);
                     } else {
@@ -127,7 +130,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(962380071,Log.FEHLER_ART_PROG,this.getClass().getName(), ex);
+            Log.fehlerMeldung(962380071, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
         }
         return this;
     }
