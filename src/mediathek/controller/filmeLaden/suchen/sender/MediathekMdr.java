@@ -246,7 +246,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                         url = seite3.substring(pos1, pos2);
                     }
                     if (url.equals("")) {
-                        Log.fehlerMeldung(-256987304,Log.FEHLER_ART_MREADER, "MediathekMdr.addSendug", new String[]{"keine URL: " + urlThema, "Thema: " + thema, "UrlFeed: " + strUrlFeed});
+                        Log.fehlerMeldung(-256987304, Log.FEHLER_ART_MREADER, "MediathekMdr.addSendug", new String[]{"keine URL: " + urlThema, "Thema: " + thema, "UrlFeed: " + strUrlFeed});
                     } else {
                         url = MUSTER_ADD + url;
                         if (!tmpListe.contains(url)) {
@@ -279,12 +279,14 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             try {
                 seite4 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite4, "Thema: " + thema);
                 if ((pos = seite4.indexOf(MUSTER_START)) == -1) {
-                    Log.fehlerMeldung(-903656532,Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", urlFilm);
+                    Log.fehlerMeldung(-903656532, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", urlFilm);
                     return;
                 }
                 while ((pos = seite4.indexOf(MUSTER_TITEL, pos)) != -1) {
+                    pos += MUSTER_TITEL.length();
                     if ((posEnde = seite4.indexOf(MUSTER_ENDE, pos)) == -1) {
-                        Log.fehlerMeldung(-804142536, Log.FEHLER_ART_MREADER,"MediathekMdr.addXml", urlFilm);
+                        //////??
+                        Log.fehlerMeldung(-804142536, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", urlFilm);
                         continue;
                     }
                     url1 = "";
@@ -292,7 +294,6 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                     titel = "";
                     datum = "";
                     zeit = "";
-                    pos += MUSTER_TITEL.length();
                     pos1 = pos;
                     if ((pos2 = seite4.indexOf("<", pos)) != -1) {
                         titel = seite4.substring(pos1, pos2);
@@ -339,7 +340,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                         }
                     }// while
                     if (url1.equals("") || url2.equals("")) {
-                        Log.fehlerMeldung(-326541230,Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", new String[]{"keine URL: " + urlFilm, "Thema: " + thema, " UrlFeed: " + strUrlFeed});
+                        Log.fehlerMeldung(-326541230, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", new String[]{"keine URL: " + urlFilm, "Thema: " + thema, " UrlFeed: " + strUrlFeed});
                     } else {
                         //<flashMediaServerApplicationURL>rtmp://x4100mp4dynonlc22033.f.o.f.lb.core-cdn.net/22033mdr/ondemand</flashMediaServerApplicationURL>
                         //<flashMediaServerURL>mp4:4100mp4dynonl/FCMS-1582b584-bb95-4fd2-94d8-389e10a4e1bd-8442e17c3177.mp4</flashMediaServerURL>
@@ -357,7 +358,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-446286970,Log.FEHLER_ART_MREADER, "MediathekMdr.addFilme1", ex);
+                Log.fehlerMeldung(-446286970, Log.FEHLER_ART_MREADER, "MediathekMdr.addFilme1", ex);
             }
         }
     }
@@ -371,7 +372,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             sdfOut = new SimpleDateFormat("dd.MM.yyyy");
             datum = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung(-435209987, Log.FEHLER_ART_MREADER,"MediathekMdr.convertDatum", ex);
+            Log.fehlerMeldung(-435209987, Log.FEHLER_ART_MREADER, "MediathekMdr.convertDatum", ex);
         }
         return datum;
     }
@@ -385,7 +386,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             sdfOut = new SimpleDateFormat("HH:mm:ss");
             datum = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung(-102658736,Log.FEHLER_ART_MREADER, "MediathekMdr.convertDatum", ex);
+            Log.fehlerMeldung(-102658736, Log.FEHLER_ART_MREADER, "MediathekMdr.convertDatum", ex);
         }
         return datum;
     }
