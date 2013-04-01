@@ -33,7 +33,7 @@
     <Programmset>
         <Name>Speichern</Name>
         <Praefix>http</Praefix>
-        <Suffix>mp4,mp3,m4v,flv</Suffix>
+        <Suffix>mp4,mp3,m4v,flv,m4a</Suffix>
         <Zielpfad>ZIELPFAD</Zielpfad>
         <Zieldateiname>%t-%T-%N</Zieldateiname>
         <Abspielen>false</Abspielen>
