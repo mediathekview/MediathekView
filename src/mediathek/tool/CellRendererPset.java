@@ -19,7 +19,13 @@
  */
 package mediathek.tool;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.daten.DDaten;
@@ -128,6 +134,14 @@ public class CellRendererPset extends DefaultTableCellRenderer {
                     }
                     setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
                 }
+            }
+            if (c == DatenPset.PROGRAMMSET_BUTTON_1_NR) {
+                JButton button = new JButton("Einstellungen");
+                return button;
+            }
+            if (c == DatenPset.PROGRAMMSET_BUTTON_2_NR) {
+                JButton button = new JButton("Hilfsprogramme");
+                return button;
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(962380071, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
