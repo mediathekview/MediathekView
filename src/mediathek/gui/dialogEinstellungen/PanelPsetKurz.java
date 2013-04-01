@@ -41,12 +41,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.jidesoft.utils.SystemInfo;
+import java.awt.Dimension;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
 
@@ -166,28 +166,31 @@ public class PanelPsetKurz extends PanelVorlage {
         button.addActionListener(new ZielBeobachter(textField, arr, idx));
         gridbag.setConstraints(button, c);
         panel.add(button);
+        // Dimension(int width, int height)
+        int h = button.getPreferredSize().height;
+        int w = textField.getPreferredSize().width;
+        textField.setPreferredSize(new Dimension(w, h));
     }
 
-    private boolean check() {
-        ok = false;
-        if (jTextFieldName.getText().equals("")) {
-            JOptionPane.showMessageDialog(parentComponent, "Name ist leer", "Kein Name für das Programmset!", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-//        if (zielPfad.equals("")) {
-//            JOptionPane.showMessageDialog(null, "Pfad ist leer", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
-//        } else {
-//            if (!zielIstDatei) {
-//                if (GuiFunktionenProgramme.checkPfadBeschreibbar(zielPfad)) {
-//                    ok = true;
-//                } else {
-//                    JOptionPane.showMessageDialog(null, "Pfad ist nicht beschreibbar", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
-//                }
-//            }
+//    private boolean check() {
+//        ok = false;
+//        if (jTextFieldName.getText().equals("")) {
+//            JOptionPane.showMessageDialog(parentComponent, "Name ist leer", "Kein Name für das Programmset!", JOptionPane.ERROR_MESSAGE);
+//            return false;
 //        }
-        return true;
-    }
-
+////        if (zielPfad.equals("")) {
+////            JOptionPane.showMessageDialog(null, "Pfad ist leer", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
+////        } else {
+////            if (!zielIstDatei) {
+////                if (GuiFunktionenProgramme.checkPfadBeschreibbar(zielPfad)) {
+////                    ok = true;
+////                } else {
+////                    JOptionPane.showMessageDialog(null, "Pfad ist nicht beschreibbar", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
+////                }
+////            }
+////        }
+//        return true;
+//    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is

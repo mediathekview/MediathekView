@@ -27,8 +27,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.LinkedList;
+import javax.swing.AbstractCellEditor;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -37,6 +43,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableCellEditor;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
@@ -63,6 +70,9 @@ public class PanelPsetLang extends PanelVorlage {
     private JTableMed tabellePset;
     private JTableMed tabelleProgramme;
     private boolean modalHilfe = false;
+    JPanel p0;
+    JPanel p1;
+    JPanel p2;
 
     public PanelPsetLang(DDaten d, Component parentComponent) {
         super(d, parentComponent);
@@ -86,10 +96,21 @@ public class PanelPsetLang extends PanelVorlage {
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = llistePset;
         init();
+        jTabbedPane.remove(2);
+        jTabbedPane.remove(1);
+    }
+
+    void setTab() {
+        jTabbedPane.remove(0);
+        jTabbedPane.add(p1);
+        jTabbedPane.setTitleAt(0, "Set Name: " + getPset().arr[DatenPset.PROGRAMMSET_NAME_NR]);
     }
 
     private void init() {
         //Programme
+        p0 = jPanelPset;
+        p1 = jPanelDetails;
+        p2 = jPanelProgramme;
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -202,6 +223,7 @@ public class PanelPsetLang extends PanelVorlage {
         tabelleProgramme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
         tabelleProgramme.setDefaultRenderer(Object.class, new CellRendererProgramme(ddaten));
         tabellePset.setDefaultRenderer(Object.class, new CellRendererPset(ddaten));
+        tabellePset.setDefaultRenderer(JButton.class, new CellRendererPset(ddaten));
         tabellePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
         tabellePset();
         spaltenSetzen();
@@ -209,6 +231,7 @@ public class PanelPsetLang extends PanelVorlage {
             tabellePset.setRowSelectionInterval(0, 0);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(0, 0, false));
         }
+
     }
 
     private void tabellePset() {
@@ -222,7 +245,59 @@ public class PanelPsetLang extends PanelVorlage {
         tabellePset.setModel(listePset.getModel());
         spaltenSetzen();
         tabellePset.setSpalten();
+        tabellePset.setDefaultEditor(Object.class, new TabellePsetEditor());
         stopBeob = false;
+    }
+
+    public class TabellePsetEditor extends AbstractCellEditor
+            implements TableCellEditor,
+            ActionListener {
+
+        Color currentColor;
+        JButton button;
+        JColorChooser colorChooser;
+        JDialog dialog;
+        protected static final String EDIT = "edit";
+
+        public TabellePsetEditor() {
+            //Set up the editor (from the table's point of view),
+            button = new JButton();
+            button.setActionCommand(EDIT);
+            button.addActionListener(this);
+
+        }
+
+        /**
+         * Handles events from the editor button and from
+         * the dialog's OK button.
+         */
+        public void actionPerformed(ActionEvent e) {
+            if (EDIT.equals(e.getActionCommand())) {
+                //The user has clicked the cell, so
+                //bring up the dialog.
+                setTab();
+                //Make the renderer reappear.
+                fireEditingStopped();
+
+            } else { //User pressed dialog's "OK" button.
+                currentColor = colorChooser.getColor();
+            }
+        }
+
+        //Implement the one CellEditor method that AbstractCellEditor doesn't.
+        public Object getCellEditorValue() {
+            return currentColor;
+        }
+
+        //Implement the one method defined by TableCellEditor.
+        public Component getTableCellEditorComponent(JTable table,
+                Object value,
+                boolean isSelected,
+                int row,
+                int column) {
+            currentColor = (Color) Color.BLACK;
+            return button;
+        }
     }
 
     private void spaltenSetzen() {
@@ -235,6 +310,11 @@ public class PanelPsetLang extends PanelVorlage {
                     || i == DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR
                     || i == DatenPset.PROGRAMMSET_IST_BUTTON_NR
                     || i == DatenPset.PROGRAMMSET_IST_ABO_NR) {
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(10);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(100);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(3000);
+            } else if (i == DatenPset.PROGRAMMSET_BUTTON_1_NR
+                    || i == DatenPset.PROGRAMMSET_BUTTON_2_NR) {
                 tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(10);
                 tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(100);
                 tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(3000);
@@ -506,7 +586,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonHilfe = new javax.swing.JButton();
         jButtonPruefen = new javax.swing.JButton();
         jTabbedPane = new javax.swing.JTabbedPane();
-        javax.swing.JPanel jPanelPset = new javax.swing.JPanel();
+        jPanelPset = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         javax.swing.JTable jTablePset = new javax.swing.JTable();
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
@@ -520,7 +600,7 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxButton = new javax.swing.JCheckBox();
         jCheckBoxAbo = new javax.swing.JCheckBox();
         jButtonAbspielen = new javax.swing.JButton();
-        javax.swing.JPanel jPanelDetails = new javax.swing.JPanel();
+        jPanelDetails = new javax.swing.JPanel();
         javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
         jTextFieldGruppeDirektSuffix = new javax.swing.JTextField();
         javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
@@ -544,7 +624,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppePfad = new javax.swing.JButton();
         javax.swing.JLabel jLabel12 = new javax.swing.JLabel();
         jCheckBoxThema = new javax.swing.JCheckBox();
-        javax.swing.JPanel jPanelProgramme = new javax.swing.JPanel();
+        jPanelProgramme = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTableProgramme = new javax.swing.JTable();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
@@ -1097,6 +1177,9 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxRestart;
     private javax.swing.JCheckBox jCheckBoxSpeichern;
     private javax.swing.JCheckBox jCheckBoxThema;
+    private javax.swing.JPanel jPanelDetails;
+    private javax.swing.JPanel jPanelProgramme;
+    private javax.swing.JPanel jPanelPset;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSpinner jSpinnerLaenge;

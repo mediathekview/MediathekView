@@ -23,10 +23,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.regex.Matcher;
+import javax.swing.JButton;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
+import sun.font.TrueTypeFont;
 
 public class ListePset extends LinkedList<DatenPset> {
     // Liste aller Programmsets
@@ -270,7 +272,16 @@ public class ListePset extends LinkedList<DatenPset> {
                 object[i] = datenPset.arr;
                 ++i;
             }
-            model = new TModel(object, DatenPset.PROGRAMMSET_COLUMN_NAMES_);
+            model = new TModel(object, DatenPset.PROGRAMMSET_COLUMN_NAMES_) {
+                @Override
+                public boolean isCellEditable(int i, int j) {
+                    if (j == DatenPset.PROGRAMMSET_BUTTON_1_NR || j == DatenPset.PROGRAMMSET_BUTTON_2_NR) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            };
         } else {
             model = new TModel(new Object[0][DatenPset.PROGRAMMSET_MAX_ELEM], DatenPset.PROGRAMMSET_COLUMN_NAMES_);
         }

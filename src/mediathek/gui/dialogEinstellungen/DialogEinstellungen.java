@@ -30,6 +30,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
+import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.PanelAbout;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Konstanten;
@@ -48,7 +49,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private PanelBlacklist panelBlacklist;
     private PanelErledigteUrls panelErledigteAbos;
     private PanelErledigteUrls panelHistory;
-    private PanelPsetLang panelPset;
+    private PanelVorlage panelPset;
     private PanelPsetImport panelPsetVorlagen;
     // Infos
     private PanelAbout panelAbout;
@@ -122,7 +123,8 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         panelHistory.initHistory();
         panelErledigteAbos = new PanelErledigteUrls(ddaten, parentComponent);
         panelErledigteAbos.initAbo();
-        panelPset = new PanelPsetLang(ddaten, parentComponent);
+//        panelPset = new PanelPsetLang(ddaten, parentComponent);
+        panelPset = new PanelPset(ddaten, parentComponent);
         panelPsetVorlagen = new PanelPsetImport(ddaten, parentComponent);
         // Infos
         panelAbout = new PanelAbout(ddaten, parentComponent);
@@ -152,7 +154,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         final String NAME_fehlermeldungen = "Fehlermeldungen";
         final String NAME_meldungenProgramme = "Programmausgabe";
         //
-        DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode("Programm");
+        DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode(Konstanten.PROGRAMMNAME);
         // ===============================================================================
         // ######## Einstellulngen ############
         DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
@@ -168,7 +170,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         treeNodeStart.add(treeNodeEinstellungen);
         // ===============================================================================
         // ######## Filme ###############
-        DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filme");
+        DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filmliste");
         DefaultMutableTreeNode treeNodeFilmliste = new DefaultMutableTreeNode(NAME_filmListeLaden);
         treeNodeFilme.add(treeNodeFilmliste);
         DefaultMutableTreeNode treeNodeSenderLaden = new DefaultMutableTreeNode(NAME_senderLaden);
@@ -180,7 +182,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         treeNodeStart.add(treeNodeFilme);
         // ===============================================================================
         // ########### Programme ##############
-        DefaultMutableTreeNode treeNodeDownloads = new DefaultMutableTreeNode("Videoplayer");
+        DefaultMutableTreeNode treeNodeDownloads = new DefaultMutableTreeNode("Aufzeichnen und Abspielen");
         DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
         treeNodeDownloads.add(treeNodeProgramme);
         DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
@@ -297,10 +299,10 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private void initComponents() {
 
         jButtonBeenden = new javax.swing.JButton();
-        jSplitPane1 = new javax.swing.JSplitPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        javax.swing.JSplitPane jSplitPane1 = new javax.swing.JSplitPane();
+        javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jPanelExtra = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -308,7 +310,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         jButtonBeenden.setText("Schließen");
 
         jSplitPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jSplitPane1.setDividerLocation(200);
+        jSplitPane1.setDividerLocation(250);
         jSplitPane1.setContinuousLayout(true);
         jSplitPane1.setOneTouchExpandable(true);
 
@@ -349,9 +351,6 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBeenden;
     private javax.swing.JPanel jPanelExtra;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }
