@@ -194,10 +194,13 @@ public class MediathekBr extends MediathekReader implements Runnable {
                         }
                         //rtmp://gffstream.fcod.llnwd.net/a792/o16/br/b7/b7konks25460.mp4
                         //mp4:konks/b7/listra/konks/1316073962-b7konks_listra_144931476_7292.mp4
-//                    String urlRtmp = "--host " + host + " --app " + app + " --playpath mp4:" + play;
+                        String urlRtmp = "--host " + host + " --app " + app + " --playpath " + play;
+                        //String urlRtmp = "--host " + host + "/" + app + " --playpath " + play;
                         String urlOrg = "rtmp://" + host + "/" + app + "/" + play;
-                        // DatenFilm(ddaten, ssender, tthema, urlThema,  ttitel, uurl, uurlorg, uurlRtmp, datum, zeit, alt)
-                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, link, titel, urlOrg, datum, zeit);
+                        // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit)
+                        // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlRtmp, String datum, String zeit)
+                        //DatenFilm film = new DatenFilm(nameSenderMReader, thema, link, titel, urlOrg, datum, zeit);
+                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, link, titel, urlOrg, urlRtmp, datum, zeit);
                         addFilm(film);
                     }
                 } //while, die ganz große Schleife
