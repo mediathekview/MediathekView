@@ -18,7 +18,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jSplitPane1" max="32767" attributes="0"/>
+                  <Component id="jSplitPane1" pref="850" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="jButtonPruefen" min="-2" pref="84" max="-2" attributes="0"/>
@@ -101,7 +101,7 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="jScrollPane3" pref="525" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" pref="482" max="32767" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jButtonGruppeAuf" min="-2" max="-2" attributes="0"/>
@@ -340,7 +340,7 @@
                                                   <Component id="jSpinnerLaenge" min="-2" max="-2" attributes="0"/>
                                                   <EmptySpace max="-2" attributes="0"/>
                                                   <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
-                                                  <EmptySpace min="0" pref="139" max="32767" attributes="0"/>
+                                                  <EmptySpace min="0" pref="121" max="32767" attributes="0"/>
                                               </Group>
                                           </Group>
                                       </Group>
@@ -445,7 +445,7 @@
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                            <TitledBorder title="Beschreibung:"/>
+                            <TitledBorder title="Beschreibung"/>
                           </Border>
                         </Property>
                       </Properties>
@@ -463,7 +463,7 @@
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jScrollPane2" pref="94" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane2" pref="51" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -482,7 +482,7 @@
                             <Component class="javax.swing.JTextArea" name="jTextAreaBeschreibung">
                               <Properties>
                                 <Property name="columns" type="int" value="20"/>
-                                <Property name="rows" type="int" value="5"/>
+                                <Property name="rows" type="int" value="3"/>
                               </Properties>
                             </Component>
                           </SubComponents>
@@ -701,7 +701,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="355" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="312" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -869,7 +869,7 @@
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="jTextFieldProgSuffix" pref="204" max="32767" attributes="2"/>
+                                              <Component id="jTextFieldProgSuffix" pref="186" max="32767" attributes="2"/>
                                           </Group>
                                       </Group>
                                   </Group>

@@ -24,7 +24,9 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.Konstanten;
 
 public class PanelPset extends PanelVorlage {
 
@@ -34,9 +36,11 @@ public class PanelPset extends PanelVorlage {
         jCheckBoxAlleEinstellungen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_ANSICHT_SET_LANG_NR] = Boolean.toString(jCheckBoxAlleEinstellungen.isSelected());
                 pset();
             }
         });
+        jCheckBoxAlleEinstellungen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ANSICHT_SET_LANG_NR]));
         pset();
     }
 
