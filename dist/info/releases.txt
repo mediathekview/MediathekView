@@ -18,14 +18,18 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+# Version 3.2.1
+    - Fehler bei der Blacklist
+    - Probleme mit best. Java-Versionen
+
 # Version 3.2.0
-	Veränderungen an der grafischen Bedienungsoberfläche:
-	Mit Version 3.2 wurde Verbesserungen an der GUI eingeleitet und dazu macht MediathekView ab sofort von folgenden Bibliotheken Gebrauch:
-		- Swingx-Toolkit: Stellt GUI-Komponenten bereit um funktionsreiche Anwendungen zu entwickeln.
-		- JGoodies-Forms: Gerüst für Layout und Umsetzung eleganter Swing-Panels.
-		- Jide-OSS: Bereitstellung von fortgeschrittenen Swing-Komponenten.
-		- Macify von Simplericity: Für ein natives "Look and Feel" von Java-Anwendungen unter MacOSX.
-		- Mac-Widgets von Explodingpixels: Sie helfen Mac-ähnliche Anwendungen zu entwickeln, sind aber nicht nur auf Apple-Mac-Computer beschränkt.
+    Veränderungen an der grafischen Bedienungsoberfläche:
+    Mit Version 3.2 wurde Verbesserungen an der GUI eingeleitet und dazu macht MediathekView ab sofort von folgenden Bibliotheken Gebrauch:
+	- Swingx-Toolkit: Stellt GUI-Komponenten bereit um funktionsreiche Anwendungen zu entwickeln.
+	- JGoodies-Forms: Gerüst für Layout und Umsetzung eleganter Swing-Panels.
+	- Jide-OSS: Bereitstellung von fortgeschrittenen Swing-Komponenten.
+	- Macify von Simplericity: Für ein natives "Look and Feel" von Java-Anwendungen unter MacOSX.
+	- Mac-Widgets von Explodingpixels: Sie helfen Mac-ähnliche Anwendungen zu entwickeln, sind aber nicht nur auf Apple-Mac-Computer beschränkt.
 	
 	Weitere Veränderungen:
 	- Filter in der Toolbar (mit F8 kann man zwischen dem neuen und dem bisherigen Filterpanel umschalten)
