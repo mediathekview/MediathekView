@@ -23,12 +23,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.regex.Matcher;
-import javax.swing.JButton;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
-import sun.font.TrueTypeFont;
 
 public class ListePset extends LinkedList<DatenPset> {
     // Liste aller Programmsets
@@ -272,19 +270,29 @@ public class ListePset extends LinkedList<DatenPset> {
                 object[i] = datenPset.arr;
                 ++i;
             }
-            model = new TModel(object, DatenPset.PROGRAMMSET_COLUMN_NAMES_) {
-                @Override
-                public boolean isCellEditable(int i, int j) {
-                    if (j == DatenPset.PROGRAMMSET_BUTTON_1_NR || j == DatenPset.PROGRAMMSET_BUTTON_2_NR) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            };
+            model = new TModel(object, DatenPset.PROGRAMMSET_COLUMN_NAMES_);
         } else {
             model = new TModel(new Object[0][DatenPset.PROGRAMMSET_MAX_ELEM], DatenPset.PROGRAMMSET_COLUMN_NAMES_);
         }
         return model;
     }
+//    public TModel getModel() {
+//        TModel model;
+//        Object[][] object;
+//        DatenPset datenPset;
+//        int i = 0;
+//        if (this.size() > 0) {
+//            ListIterator<DatenPset> iterator = this.listIterator(0);
+//            object = new Object[this.size()][1];
+//            while (iterator.hasNext()) {
+//                datenPset = iterator.next();
+//                object[i][0] = datenPset.arr[DatenPset.PROGRAMMSET_NAME_NR];
+//                ++i;
+//            }
+//            model = new TModel(object, new String[]{DatenPset.PROGRAMMSET_COLUMN_NAMES_[DatenPset.PROGRAMMSET_NAME_NR]});
+//        } else {
+//            model = new TModel(new Object[0][1], new String[]{DatenPset.PROGRAMMSET_COLUMN_NAMES_[DatenPset.PROGRAMMSET_NAME_NR]});
+//        }
+//        return model;
+//    }
 }
