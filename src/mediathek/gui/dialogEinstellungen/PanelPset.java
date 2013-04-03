@@ -68,11 +68,11 @@ public class PanelPset extends PanelVorlage {
         jPanelPset.setLayout(jPanelPsetLayout);
         jPanelPsetLayout.setHorizontalGroup(
             jPanelPsetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 466, Short.MAX_VALUE)
         );
         jPanelPsetLayout.setVerticalGroup(
             jPanelPsetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 309, Short.MAX_VALUE)
+            .addGap(0, 308, Short.MAX_VALUE)
         );
 
         jCheckBoxAlleEinstellungen.setText("alle Einstellungen anzeigen");
@@ -93,10 +93,10 @@ public class PanelPset extends PanelVorlage {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanelPset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap(9, Short.MAX_VALUE)
                 .addComponent(jCheckBoxAlleEinstellungen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanelPset, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
