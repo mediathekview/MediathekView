@@ -2,6 +2,34 @@
 <Mediathek>
 
     <Programmset>
+        <Name>Speichern</Name>
+        <Praefix>http</Praefix>
+        <Suffix>mp4,mp3,m4v,flv,m4a</Suffix>
+        <Zielpfad>ZIELPFAD</Zielpfad>
+        <Zieldateiname>%t-%T-%N</Zieldateiname>
+        <Abspielen>false</Abspielen>
+        <Speichern>true</Speichern>
+        <Button>true</Button>
+        <Abo>true</Abo>
+        <max-Laenge>25</max-Laenge>
+        <Beschreibung>Standardset zum Speichern der Filme</Beschreibung>
+    </Programmset>
+    <Programm>
+        <Programmname>flvstreamer (rtmp &lt;#&gt; )</Programmname>
+        <Zieldateiname>%t-%T-%N.flv</Zieldateiname>
+        <Programmpfad>bin\flvstreamer_win32_latest.exe</Programmpfad>
+        <Programmschalter>%F --resume -o "**"</Programmschalter>
+        <Praefix>rtmp</Praefix>
+        <Restart>true</Restart>
+    </Programm>
+    <Programm>
+        <Programmname>vlc ( &lt;#&gt; )</Programmname>
+        <Zieldateiname>%t-%T-%N.asf</Zieldateiname>
+        <Programmpfad>PFAD_VLC</Programmpfad>
+        <Programmschalter>%f :sout=#standard{access=file,mux=asf,dst="**"} -I "dummy" --play-and-exit</Programmschalter>
+    </Programm>
+
+    <Programmset>
         <Name>Abspielen</Name>
         <Abspielen>true</Abspielen>
         <Speichern>false</Speichern>
@@ -28,34 +56,6 @@
         <Programmname>Vlc</Programmname>
         <Programmpfad>PFAD_VLC</Programmpfad>
         <Programmschalter>%f --play-and-exit</Programmschalter>
-    </Programm>
-
-    <Programmset>
-        <Name>Speichern</Name>
-        <Praefix>http</Praefix>
-        <Suffix>mp4,mp3,m4v,flv,m4a</Suffix>
-        <Zielpfad>ZIELPFAD</Zielpfad>
-        <Zieldateiname>%t-%T-%N</Zieldateiname>
-        <Abspielen>false</Abspielen>
-        <Speichern>true</Speichern>
-        <Button>true</Button>
-        <Abo>true</Abo>
-        <max-Laenge>25</max-Laenge>
-        <Beschreibung>Standardset zum Speichern der Filme</Beschreibung>
-    </Programmset>
-    <Programm>
-        <Programmname>flvstreamer (rtmp &lt;#&gt; )</Programmname>
-        <Zieldateiname>%t-%T-%N.flv</Zieldateiname>
-        <Programmpfad>bin\flvstreamer_win32_latest.exe</Programmpfad>
-        <Programmschalter>%F --resume -o "**"</Programmschalter>
-        <Praefix>rtmp</Praefix>
-        <Restart>true</Restart>
-    </Programm>
-    <Programm>
-        <Programmname>vlc ( &lt;#&gt; )</Programmname>
-        <Zieldateiname>%t-%T-%N.asf</Zieldateiname>
-        <Programmpfad>PFAD_VLC</Programmpfad>
-        <Programmschalter>%f :sout=#standard{access=file,mux=asf,dst="**"} -I "dummy" --play-and-exit</Programmschalter>
     </Programm>
 
 </Mediathek>

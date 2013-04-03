@@ -191,6 +191,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
         jButtonFilmeLaden.setSelected(true);
+        this.pack();
     }
 
     /**
