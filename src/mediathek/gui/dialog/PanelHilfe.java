@@ -22,12 +22,13 @@ package mediathek.gui.dialog;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URISyntaxException;
 import mediathek.controller.io.ProgrammLog;
 import mediathek.daten.DDaten;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.BeobWeb;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
+import mediathek.tool.UrlHyperlinkAction;
 
 public class PanelHilfe extends PanelVorlage {
 
@@ -47,9 +48,12 @@ public class PanelHilfe extends PanelVorlage {
             jTextFieldVersion.setText(Konstanten.VERSION);
         }
         jTextFieldPfad.setText(Funktionen.getPathJar());
-        jButtonWebsite.addActionListener(new BeobWeb(ddaten, jTextFieldWebsite.getText()));
-        jButtonAnleitung.addActionListener(new BeobWeb(ddaten, jTextFieldAnleitung.getText()));
-        jButtonForum.addActionListener(new BeobWeb(ddaten, jTextFieldForum.getText()));
+        try {
+            jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_WEBSITE));
+            jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_ANLEITUNG));
+            jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_FORUM));
+        } catch (URISyntaxException ignored) {
+        }
         jButtonLogErstellen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -60,23 +64,20 @@ public class PanelHilfe extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jTextFieldVersion = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jTextField1 = new javax.swing.JTextField();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JTextArea jTextArea1 = new javax.swing.JTextArea();
+        javax.swing.JTextField jTextField1 = new javax.swing.JTextField();
         jButtonLogErstellen = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        jButtonWebsite = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
-        jButtonAnleitung = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
-        jButtonForum = new javax.swing.JButton();
-        jTextFieldWebsite = new javax.swing.JTextField();
-        jTextFieldAnleitung = new javax.swing.JTextField();
-        jTextFieldForum = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        jXHyperlinkWebsite = new org.jdesktop.swingx.JXHyperlink();
+        jXHyperlinkAnleitung = new org.jdesktop.swingx.JXHyperlink();
+        jXHyperlinkForum = new org.jdesktop.swingx.JXHyperlink();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jTextFieldPfad = new javax.swing.JTextField();
 
         jLabel1.setText("Programmversion:");
@@ -102,32 +103,15 @@ public class PanelHilfe extends PanelVorlage {
 
         jLabel5.setText("Website:");
 
-        jButtonWebsite.setText("Browser");
-
         jLabel7.setText("Anleitung:");
-
-        jButtonAnleitung.setText("Browser");
-        jButtonAnleitung.setToolTipText("http://zdfmediathk.sourceforge.net/");
 
         jLabel9.setText("Forum:");
 
-        jButtonForum.setText("Browser");
-        jButtonForum.setToolTipText("http://zdfmediathk.sourceforge.net/");
+        jXHyperlinkWebsite.setText("http://zdfmediathk.sourceforge.net/");
 
-        jTextFieldWebsite.setEditable(false);
-        jTextFieldWebsite.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        jTextFieldWebsite.setForeground(new java.awt.Color(0, 51, 204));
-        jTextFieldWebsite.setText("http://zdfmediathk.sourceforge.net/");
+        jXHyperlinkAnleitung.setText("https://sourceforge.net/p/zdfmediathk/wiki/Home/");
 
-        jTextFieldAnleitung.setEditable(false);
-        jTextFieldAnleitung.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        jTextFieldAnleitung.setForeground(new java.awt.Color(0, 51, 204));
-        jTextFieldAnleitung.setText("https://sourceforge.net/p/zdfmediathk/wiki/Home/");
-
-        jTextFieldForum.setEditable(false);
-        jTextFieldForum.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        jTextFieldForum.setForeground(new java.awt.Color(0, 51, 204));
-        jTextFieldForum.setText("http://sourceforge.net/apps/phpbb/zdfmediathk/");
+        jXHyperlinkForum.setText("http://sourceforge.net/apps/phpbb/zdfmediathk/");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -140,16 +124,11 @@ public class PanelHilfe extends PanelVorlage {
                     .addComponent(jLabel7)
                     .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextFieldWebsite, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldAnleitung, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldForum, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonWebsite, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButtonAnleitung, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButtonForum, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
+                    .addComponent(jXHyperlinkWebsite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jXHyperlinkAnleitung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jXHyperlinkForum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -157,22 +136,17 @@ public class PanelHilfe extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextFieldWebsite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonWebsite))
+                    .addComponent(jXHyperlinkWebsite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldAnleitung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
-                    .addComponent(jButtonAnleitung))
+                    .addComponent(jXHyperlinkAnleitung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldForum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
-                    .addComponent(jButtonForum))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jXHyperlinkForum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
-
-        jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonAnleitung, jButtonForum, jButtonWebsite, jTextFieldAnleitung, jTextFieldForum, jTextFieldWebsite});
 
         jLabel2.setText("Programmpfad:");
 
@@ -212,7 +186,7 @@ public class PanelHilfe extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -229,23 +203,15 @@ public class PanelHilfe extends PanelVorlage {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAnleitung;
-    private javax.swing.JButton jButtonForum;
     private javax.swing.JButton jButtonLogErstellen;
-    private javax.swing.JButton jButtonWebsite;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextFieldAnleitung;
-    private javax.swing.JTextField jTextFieldForum;
     private javax.swing.JTextField jTextFieldPfad;
     private javax.swing.JTextField jTextFieldVersion;
-    private javax.swing.JTextField jTextFieldWebsite;
+    private org.jdesktop.swingx.JXHyperlink jXHyperlinkAnleitung;
+    private org.jdesktop.swingx.JXHyperlink jXHyperlinkForum;
+    private org.jdesktop.swingx.JXHyperlink jXHyperlinkWebsite;
     // End of variables declaration//GEN-END:variables
 }

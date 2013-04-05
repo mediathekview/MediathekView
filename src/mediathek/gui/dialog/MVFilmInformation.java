@@ -12,13 +12,12 @@ import org.jdesktop.swingx.JXHyperlink;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.net.URISyntaxException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.DDaten;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.UrlOeffnen;
+import mediathek.tool.UrlHyperlinkAction;
 
 /**
  * Display the current film information in a Apple-style HUD window.
@@ -91,7 +90,7 @@ public class MVFilmInformation implements ChangeListener {
         // setup Hyperlink
         // FIXME ist das nicht besser zu lösen?
         try {
-            lblUrlThemaField.setAction(new UrlThemaHyperlinkAction(film.arr[DatenFilm.FILM_URL_THEMA_NR]));
+            lblUrlThemaField.setAction(new UrlHyperlinkAction(ddaten, film.arr[DatenFilm.FILM_URL_THEMA_NR]));
             lblUrlThemaField.setForeground(Color.WHITE);
         } catch (URISyntaxException ignored) {
         }
@@ -202,7 +201,7 @@ public class MVFilmInformation implements ChangeListener {
         lblUrlThemaField = new JXHyperlink();
         lblUrlThemaField.setForeground(Color.WHITE);
         try {
-            lblUrlThemaField.setAction(new UrlThemaHyperlinkAction(""));
+            lblUrlThemaField.setAction(new UrlHyperlinkAction(ddaten, ""));
         } catch (URISyntaxException ignored) {
         }
         lblUrlThemaField.setFont(HudPaintingUtils.getHudFont());
@@ -225,30 +224,5 @@ public class MVFilmInformation implements ChangeListener {
         //Whenever there is a change event, reset HUD info to nothing
         DatenFilm emptyFilm = new DatenFilm();
         updateCurrentFilm(emptyFilm);
-    }
-
-//    private class UrlThemaHyperlinkAction extends HyperlinkAction {
-//
-//        public UrlThemaHyperlinkAction(String url) throws URISyntaxException {
-//            super(new URI(url), Desktop.Action.BROWSE);
-//            putValue(SHORT_DESCRIPTION, url);
-//            putValue(LONG_DESCRIPTION, url);
-//        }
-//    }
-    private class UrlThemaHyperlinkAction extends AbstractAction {
-
-        String url;
-
-        public UrlThemaHyperlinkAction(String url) throws URISyntaxException {
-            this.url = url;
-            super.putValue(Action.NAME, url);
-            super.putValue(SHORT_DESCRIPTION, url);
-            super.putValue(LONG_DESCRIPTION, url);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            UrlOeffnen.urlOeffnen(ddaten, url);
-        }
     }
 }

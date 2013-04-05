@@ -28,10 +28,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URISyntaxException;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import static javax.swing.Action.LONG_DESCRIPTION;
-import static javax.swing.Action.SHORT_DESCRIPTION;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.event.DocumentEvent;
@@ -49,7 +45,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Log;
 import mediathek.tool.TModel;
-import mediathek.tool.UrlOeffnen;
+import mediathek.tool.UrlHyperlinkAction;
 
 public class PanelPsetImport extends PanelVorlage {
 
@@ -167,7 +163,7 @@ public class PanelPsetImport extends PanelVorlage {
             jLabel8.setVisible(true);
             jXHyperlinkInfos.setVisible(true);
             try {
-                jXHyperlinkInfos.setAction(new UrlThemaHyperlinkAction(url));
+                jXHyperlinkInfos.setAction(new UrlHyperlinkAction(ddaten, url));
             } catch (URISyntaxException ignored) {
             }
         } else {
@@ -530,23 +526,6 @@ public class PanelPsetImport extends PanelVorlage {
     private javax.swing.JTextField jTextFieldUrl;
     private org.jdesktop.swingx.JXHyperlink jXHyperlinkInfos;
     // End of variables declaration//GEN-END:variables
-
-    private class UrlThemaHyperlinkAction extends AbstractAction {
-
-        String url;
-
-        public UrlThemaHyperlinkAction(String url) throws URISyntaxException {
-            this.url = url;
-            super.putValue(Action.NAME, url);
-            super.putValue(SHORT_DESCRIPTION, url);
-            super.putValue(LONG_DESCRIPTION, url);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            UrlOeffnen.urlOeffnen(ddaten, url);
-        }
-    }
 
     private class BeobPfadDoc implements DocumentListener {
 

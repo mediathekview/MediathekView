@@ -22,14 +22,10 @@ package mediathek.gui.dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import static javax.swing.Action.LONG_DESCRIPTION;
-import static javax.swing.Action.SHORT_DESCRIPTION;
 import mediathek.daten.DDaten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Konstanten;
-import mediathek.tool.UrlOeffnen;
+import mediathek.tool.UrlHyperlinkAction;
 
 public class DialogOkCancel extends javax.swing.JDialog {
 
@@ -58,7 +54,7 @@ public class DialogOkCancel extends javax.swing.JDialog {
             }
         });
         try {
-            jXHyperlinkAnleitung.setAction(new UrlThemaHyperlinkAction(Konstanten.ADRESSE_ANLEITUNG));
+            jXHyperlinkAnleitung.setAction(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_ANLEITUNG));
         } catch (URISyntaxException ignored) {
         }
 
@@ -185,23 +181,6 @@ public class DialogOkCancel extends javax.swing.JDialog {
     private javax.swing.JTextArea jTextArea1;
     private org.jdesktop.swingx.JXHyperlink jXHyperlinkAnleitung;
     // End of variables declaration//GEN-END:variables
-
-    private class UrlThemaHyperlinkAction extends AbstractAction {
-
-        String url;
-
-        public UrlThemaHyperlinkAction(String url) throws URISyntaxException {
-            this.url = url;
-            super.putValue(Action.NAME, url);
-            super.putValue(SHORT_DESCRIPTION, url);
-            super.putValue(LONG_DESCRIPTION, url);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            UrlOeffnen.urlOeffnen(ddaten, url);
-        }
-    }
 
     private class OkBeobachter implements ActionListener {
 
