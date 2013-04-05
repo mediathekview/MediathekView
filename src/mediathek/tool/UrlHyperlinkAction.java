@@ -20,14 +20,36 @@
 package mediathek.tool;
 
 import java.awt.Desktop;
+import java.awt.event.ActionEvent;
 import java.net.URI;
+import java.net.URISyntaxException;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import static javax.swing.Action.LONG_DESCRIPTION;
+import static javax.swing.Action.SHORT_DESCRIPTION;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
-public class UrlOeffnen {
+public class UrlHyperlinkAction extends AbstractAction {
 
-    public static boolean urlOeffnen(DDaten ddaten, String url) {
+    String url;
+    DDaten ddaten;
+
+    public UrlHyperlinkAction(DDaten ddaten, String url) throws URISyntaxException {
+        this.ddaten = ddaten;
+        this.url = url;
+        super.putValue(Action.NAME, url);
+        super.putValue(SHORT_DESCRIPTION, url);
+        super.putValue(LONG_DESCRIPTION, url);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        urlOeffnen(ddaten, url);
+    }
+
+    public boolean urlOeffnen(DDaten ddaten, String url) {
         if (Desktop.isDesktopSupported()) {
             Desktop d = Desktop.getDesktop();
             try {
@@ -50,10 +72,10 @@ public class UrlOeffnen {
                     }
                     Runtime.getRuntime().exec(programm + " " + url);
                     Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR] = programm;
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, UrlOeffnen.class.getSimpleName());
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, UrlHyperlinkAction.class.getSimpleName());
                 } catch (Exception eex) {
                     Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR] = ""; // dann wars wohl nix
-                    Log.fehlerMeldung(316497658, Log.FEHLER_ART_PROG, UrlOeffnen.class.getName(), eex, "URL öffnen: " + url);
+                    Log.fehlerMeldung(316497658, Log.FEHLER_ART_PROG, UrlHyperlinkAction.class.getName(), eex, "URL öffnen: " + url);
                 }
             }
         }

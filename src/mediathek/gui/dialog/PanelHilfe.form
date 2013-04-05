@@ -50,7 +50,7 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="jTextField1" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="274" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="302" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -157,18 +157,12 @@
                       <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="jTextFieldWebsite" alignment="0" max="32767" attributes="0"/>
-                      <Component id="jTextFieldAnleitung" alignment="0" max="32767" attributes="0"/>
-                      <Component id="jTextFieldForum" alignment="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
-                  <EmptySpace pref="12" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jButtonWebsite" alignment="1" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonAnleitung" alignment="1" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonForum" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="jXHyperlinkWebsite" min="-2" max="-2" attributes="0"/>
+                      <Component id="jXHyperlinkAnleitung" min="-2" max="-2" attributes="0"/>
+                      <Component id="jXHyperlinkForum" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -178,22 +172,19 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jTextFieldWebsite" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonWebsite" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jXHyperlinkWebsite" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jTextFieldAnleitung" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonAnleitung" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jXHyperlinkAnleitung" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jTextFieldForum" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonForum" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jXHyperlinkForum" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="14" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -208,11 +199,6 @@
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonWebsite">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Browser"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JLabel" name="jLabel7">
           <Properties>
             <Property name="text" type="java.lang.String" value="Anleitung:"/>
@@ -221,12 +207,6 @@
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonAnleitung">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Browser"/>
-            <Property name="toolTipText" type="java.lang.String" value="http://zdfmediathk.sourceforge.net/"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel9">
           <Properties>
@@ -237,45 +217,18 @@
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonForum">
+        <Component class="org.jdesktop.swingx.JXHyperlink" name="jXHyperlinkWebsite">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Browser"/>
-            <Property name="toolTipText" type="java.lang.String" value="http://zdfmediathk.sourceforge.net/"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="jTextFieldWebsite">
-          <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Dialog" size="12" style="1"/>
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="cc" green="33" red="0" type="rgb"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="http://zdfmediathk.sourceforge.net/"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="jTextFieldAnleitung">
+        <Component class="org.jdesktop.swingx.JXHyperlink" name="jXHyperlinkAnleitung">
           <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Dialog" size="12" style="1"/>
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="cc" green="33" red="0" type="rgb"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="https://sourceforge.net/p/zdfmediathk/wiki/Home/"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="jTextFieldForum">
+        <Component class="org.jdesktop.swingx.JXHyperlink" name="jXHyperlinkForum">
           <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Dialog" size="12" style="1"/>
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="cc" green="33" red="0" type="rgb"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="http://sourceforge.net/apps/phpbb/zdfmediathk/"/>
           </Properties>
         </Component>
