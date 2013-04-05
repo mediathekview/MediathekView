@@ -29,52 +29,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 
 public class GuiFunktionen extends Funktionen {
-    //Sender
-    //    public static final String SENDER_PREFX = "xml"; //für den XML-Standard
 
-//    public static final String[][] THEME = {{"", ""},
-//        {"System", ""},
-//        {"Metal", "javax.swing.plaf.metal.MetalLookAndFeel"},
-//        {"Nimbus", "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"},
-//        {"GTK-Linux", "com.sun.java.swing.plaf.gtk.GTKLookAndFeel"}};
-//    public static boolean setLook(JFrame frame) {
-//        int look;
-//        if (DDaten.system[Konstanten.SYSTEM_LOOK_NR].equals("")) {
-//            DDaten.system[Konstanten.SYSTEM_LOOK_NR] = "0";
-//        }
-//        look = Integer.parseInt(DDaten.system[Konstanten.SYSTEM_LOOK_NR]);
-//        if (look != 0) {
-//            return setLook(frame, look);
-//        }
-//        return true;
-//    }
-//
-//    public static boolean setLook(JFrame frame, int look) {
-//        boolean ret = false;
-//        try {
-//            switch (look) {
-//                case 0:
-//                case 1:
-//                    //bei 0 egentlich nichts tun, wenn aber gewechselt, dann zurückschalten
-//                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//                    break;
-//                default:
-//                    UIManager.setLookAndFeel(THEME[look][1]);
-//                    break;
-//            }
-//            SwingUtilities.updateComponentTreeUI(frame);
-//            for (Frame f : Frame.getFrames()) {
-//                SwingUtilities.updateComponentTreeUI(f);
-//                for (Window w : f.getOwnedWindows()) {
-//                    SwingUtilities.updateComponentTreeUI(w);
-//                }
-//            }
-//            ret = true;
-//        } catch (Exception e) {
-//            Log.fehlerMeldung(305964198, Log.FEHLER_ART_PROG, "GuiFunktionen.setLook", e, "Kann das Look and Feel nicht ändern!");
-//        }
-//        return ret;
-//    }
     public static void copyToClipboard(String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
     }

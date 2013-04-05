@@ -23,6 +23,7 @@ import java.io.File;
 import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
@@ -125,21 +126,27 @@ public class Daten {
     /**
      * Liefert das Verzeichnis der Programme
      *
-     * @param basis Der Ordner, indem das Ve
+     * @param basis Der Ordner, in dem die Einstellungen liegen
      * @param anlegen Anlegen, oder nicht.
-     * @return Den Verzeichnispfad als Strin
+     * @return Den Verzeichnispfad als String
      */
     private static String getBasisVerzeichnis(String basis, boolean anlegen) {
+        // 
         String ret;
         if (basis.equals("")) {
-            ret = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNISS_EINSTELLUNGEN + File.separator;
+            if (GuiFunktionen.isOsx()) {
+                /////////////////
+                ret = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNISS_EINSTELLUNGEN_MAC + File.separator;
+            } else {
+                ret = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNISS_EINSTELLUNGEN + File.separator;
+            }
         } else {
             ret = basis;
         }
         if (anlegen) {
             File basisF = new File(ret);
             if (!basisF.exists()) {
-                if (!basisF.mkdir()) {
+                if (!basisF.mkdirs()) {
                     Log.fehlerMeldung(898736548, Log.FEHLER_ART_PROG, "Daten.getBasisVerzeichnis", new String[]{"Kann den Ordner zum Speichern der Daten nicht anlegen!",
                         "Daten.getBasisVerzeichnis"});
                 }
