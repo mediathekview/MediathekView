@@ -32,14 +32,15 @@ public class Konstanten {
     public static final String ADRESSE_ANLEITUNG = "https://sourceforge.net/p/zdfmediathk/wiki/Home/";
     public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen/programmgruppen.xml";
     public static final String ADRESSE_WEBSITE = "http://zdfmediathk.sourceforge.net/";
-    public static final String ADRESSE_FORUM="http://sourceforge.net/apps/phpbb/zdfmediathk/";
+    public static final String ADRESSE_FORUM = "http://sourceforge.net/apps/phpbb/zdfmediathk/";
     // ProgrammUrls
     public static final String ADRESSE_WEBSITE_MPLAYER = "http://sourceforge.net/projects/smplayer/";
     public static final String ADRESSE_WEBSITE_VLC = "http://www.videolan.org/";
     public static final String ADRESSE_WEBSITE_FLVSTREAMER = "https://savannah.nongnu.org/projects/flvstreamer/";
     // Dateien/Verzeichnisse
     public static final String VERZEICNHISS_DOWNLOADS = PROGRAMMNAME; // Standard wenn nichts angeben, Verzeichnis wird im Homeverzeichnis angelegt
-    public static final String VERZEICHNISS_EINSTELLUNGEN = ".mediathek3";
+    public static final String VERZEICHNISS_EINSTELLUNGEN = ".mediathek3"; // im Homeverzeichnis
+    public static final String VERZEICHNISS_EINSTELLUNGEN_MAC = "Library/Preferences/mediathek3"; // im Homeverzeichnis
     public static final String LOG_DATEI_DOWNLOAD_ABOS = "downloadAbos.txt";
     public static final String LOG_DATEI_HISTORY = "history.txt";
     public static final String XML_DATEI = "mediathek.xml";
