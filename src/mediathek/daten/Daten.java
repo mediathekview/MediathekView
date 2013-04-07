@@ -23,7 +23,6 @@ import java.io.File;
 import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
