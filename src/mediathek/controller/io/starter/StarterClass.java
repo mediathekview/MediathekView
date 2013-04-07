@@ -428,11 +428,11 @@ public class StarterClass {
         }
     }
 
-    private void programmBeenden() {
-        if (ddaten.nachDownloadShutDown) {
-            // Sicherheitsabfrage, dann beenden
-        }
-    }
+//    private void programmBeenden() {
+//        if (ddaten.nachDownloadShutDown) {
+//            // Sicherheitsabfrage, dann beenden
+//        }
+//    }
 
     private int laenge(String url) {
         int ret;

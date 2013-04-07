@@ -131,15 +131,9 @@ public class Daten {
      * @return Den Verzeichnispfad als String
      */
     private static String getBasisVerzeichnis(String basis, boolean anlegen) {
-        // 
         String ret;
         if (basis.equals("")) {
-            if (GuiFunktionen.isOsx()) {
-                /////////////////
-                ret = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNISS_EINSTELLUNGEN_MAC + File.separator;
-            } else {
-                ret = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNISS_EINSTELLUNGEN + File.separator;
-            }
+            ret = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNISS_EINSTELLUNGEN + File.separator;
         } else {
             ret = basis;
         }
