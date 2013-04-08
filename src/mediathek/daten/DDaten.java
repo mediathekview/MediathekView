@@ -19,6 +19,8 @@
  */
 package mediathek.daten;
 
+import java.io.File;
+import javax.swing.JOptionPane;
 import mediathek.MediathekGui;
 import mediathek.controller.io.ErledigteAbos;
 import mediathek.controller.io.History;
@@ -29,7 +31,9 @@ import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.dialog.MVFilmInformation;
+import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 /**
  * Diese Klasse enthält zusätzliche Konstanten, Systemeinstellungen und alles was wichtig ist für
@@ -87,5 +91,31 @@ public final class DDaten extends Daten {
     public void allesSpeichern() {
         super.allesSpeichern();
         ioXmlSchreiben.datenSchreiben(this);
+        if (Daten.RESET) {
+            // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
+            // dazu wird den Ordner mit den Einstellungen umbenannt
+            String dir = DDaten.getBasisVerzeichnis();
+            if (dir.endsWith(File.separator)) {
+                dir = dir.substring(0, dir.length() - 1);
+            }
+            try {
+                if (new File(dir).renameTo(new File(dir + "--" + DatumZeit.getJetzt_yyyy_MM_dd__HH_mm_ss()))) {
+                    // erster Versuch
+                    return;
+                }
+                // für Win weitere Versuche
+                if (new File(dir).delete()) {
+                    return;
+                }
+                Log.systemMeldung("Die Einstellungen konnten nicht zurückgesetzt werden.");
+                JOptionPane.showMessageDialog(this.mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
+                        + "Es wird versucht die Einstellungen beim Beenden zu löschen.\n"
+                        + "Sollte auch das nicht klappen,\n"
+                        + "finden Sie im Forum weitere Hilfe.");
+                new File(dir).deleteOnExit();
+            } catch (Exception e) {
+                Log.fehlerMeldung(465690123, Log.FEHLER_ART_PROG, DDaten.class.getName(), e);
+            }
+        }
     }
 }

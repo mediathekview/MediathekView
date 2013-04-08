@@ -868,7 +868,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         event.setHandled(true);
     }
 
-    private void beenden() {
+    public void beenden() {
         // Tabelleneinstellungen merken
         ddaten.guiFilme.tabelleSpeichern();
         ddaten.guiDownloads.tabelleSpeichern();

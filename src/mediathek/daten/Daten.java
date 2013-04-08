@@ -37,6 +37,7 @@ public class Daten {
     public static boolean debug = false; // Debugmodus
     public static boolean nogui = false; // Version ohne Gui
     public static boolean auto = false; // Version: MediathekAuto
+    public static boolean RESET = false; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis = "";
     // zentrale Klassen

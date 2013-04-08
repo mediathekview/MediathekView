@@ -21,14 +21,9 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.daten.DDaten;
-import mediathek.gui.GuiAbo;
 import mediathek.tool.EscBeenden;
 
 public class DialogHilfe extends javax.swing.JDialog {
-
-    DDaten daten;
-    GuiAbo guiAbo;
 
     /** Creates new form HilfeDialog
      *

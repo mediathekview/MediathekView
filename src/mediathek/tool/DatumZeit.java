@@ -41,6 +41,16 @@ public class DatumZeit {
         return output;
     }
 
+    public static String getJetzt_yyyy_MM_dd__HH_mm_ss() {
+        Date today;
+        String output;
+        SimpleDateFormat formatter;
+        formatter = new SimpleDateFormat("yyyy.MM.dd__HH.mm.ss");
+        today = new Date();
+        output = formatter.format(today);
+        return output;
+    }
+
     public static String getJetzt_HH_MM_SS() {
         Date today;
         String output;
