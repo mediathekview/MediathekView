@@ -18,11 +18,16 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-# Version 3.2.1
+    # Version 3.3.0
+    - "Apache Commons IO Lib" für neue IO-Funktion
+    
+
+
+    # Version 3.2.1
     - Fehler bei der Blacklist
     - Probleme mit best. Java-Versionen
-
-# Version 3.2.0
+    
+    # Version 3.2.0
     Veränderungen an der grafischen Bedienungsoberfläche:
     Mit Version 3.2 wurde Verbesserungen an der GUI eingeleitet und dazu macht MediathekView ab sofort von folgenden Bibliotheken Gebrauch:
 	- Swingx-Toolkit: Stellt GUI-Komponenten bereit um funktionsreiche Anwendungen zu entwickeln.

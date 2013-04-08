@@ -25,6 +25,7 @@ public class GetFile {
     public static String PFAD_HILFETEXT_PRGRAMME = "/mediathek/file/hilfetext_programme.txt";
     public static String PFAD_HILFETEXT_STANDARD_PSET = "hilfetext_standardPset.txt";
     public static String PFAD_HILFETEXT_UNICODE = "hilfetext_unicode.txt";
+    public static String PFAD_HILFETEXT_RESET = "hilfetext_reset.txt";
 
     public String getHilfeSuchen(String pfad) {
         String ret = "";
