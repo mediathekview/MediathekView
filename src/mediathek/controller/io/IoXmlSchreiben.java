@@ -66,7 +66,7 @@ public class IoXmlSchreiben {
             xmlSchreibenPset(pSet);
             xmlSchreibenEnde(datei);
         } catch (Exception ex) {
-            Log.fehlerMeldung(392846204,Log.FEHLER_ART_PROG, "IoXmlSchreiben.exportPset", ex, "nach: " + datei);
+            Log.fehlerMeldung(392846204, Log.FEHLER_ART_PROG, "IoXmlSchreiben.exportPset", ex, "nach: " + datei);
         }
     }
 
@@ -87,7 +87,7 @@ public class IoXmlSchreiben {
             xmlSchreibenFilmUpdateServer(daten);
             xmlSchreibenEnde();
         } catch (Exception ex) {
-            Log.fehlerMeldung(656328109, Log.FEHLER_ART_PROG,"IoXml.xmlDatenSchreiben", ex);
+            Log.fehlerMeldung(656328109, Log.FEHLER_ART_PROG, "IoXml.xmlDatenSchreiben", ex);
         }
     }
 
@@ -187,7 +187,7 @@ public class IoXmlSchreiben {
         Iterator<DatenFilmlistenServer> it;
         it = DDaten.filmeLaden.getListeFilmlistnServer().iterator();
         while (it.hasNext()) {
-          DatenFilmlistenServer f = it.next();
+            DatenFilmlistenServer f = it.next();
             xmlSchreibenDaten(DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, f.arr);
         }
     }
@@ -206,7 +206,7 @@ public class IoXmlSchreiben {
             writer.writeEndElement();
             writer.writeCharacters("\n");//neue Zeile
         } catch (Exception ex) {
-            Log.fehlerMeldung(198325017,Log.FEHLER_ART_PROG, "IoXmlSchreiben.xmlSchreibenDaten", ex);
+            Log.fehlerMeldung(198325017, Log.FEHLER_ART_PROG, "IoXmlSchreiben.xmlSchreibenDaten", ex);
         }
     }
 
@@ -220,13 +220,16 @@ public class IoXmlSchreiben {
         writer.flush();
         if (datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
             writer.close();
+            out.close();
             bZip2CompressorOutputStream.close();
         } else if (datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
             zipOutputStream.closeEntry();
             writer.close();
+            out.close();
             zipOutputStream.close();
         } else {
             writer.close();
+            out.close();
         }
         Log.systemMeldung("geschrieben!");
     }

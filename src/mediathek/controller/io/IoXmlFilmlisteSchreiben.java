@@ -153,13 +153,16 @@ public class IoXmlFilmlisteSchreiben {
         writer.flush();
         if (datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
             writer.close();
+            out.close();
             bZip2CompressorOutputStream.close();
         } else if (datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
             zipOutputStream.closeEntry();
             writer.close();
+            out.close();
             zipOutputStream.close();
         } else {
             writer.close();
+            out.close();
         }
         Log.systemMeldung("geschrieben!");
     }
