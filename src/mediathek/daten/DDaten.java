@@ -94,17 +94,18 @@ public final class DDaten extends Daten {
         if (Daten.RESET) {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
             // dazu wird den Ordner mit den Einstellungen umbenannt
-            String dir = DDaten.getBasisVerzeichnis();
-            if (dir.endsWith(File.separator)) {
-                dir = dir.substring(0, dir.length() - 1);
+            String dir1 = DDaten.getBasisVerzeichnis();
+            if (dir1.endsWith(File.separator)) {
+                dir1 = dir1.substring(0, dir1.length() - 1);
             }
+            String dir2 = dir1 + "--" + DatumZeit.getJetzt_yyyy_MM_dd__HH_mm_ss();
             try {
-                if (new File(dir).renameTo(new File(dir + "--" + DatumZeit.getJetzt_yyyy_MM_dd__HH_mm_ss()))) {
+                if (new File(dir1).renameTo(new File(dir2))) {
                     // erster Versuch
                     return;
                 }
                 // für Win weitere Versuche
-                if (new File(dir).delete()) {
+                if (new File(dir1).delete()) {
                     return;
                 }
                 Log.systemMeldung("Die Einstellungen konnten nicht zurückgesetzt werden.");
@@ -112,7 +113,7 @@ public final class DDaten extends Daten {
                         + "Es wird versucht die Einstellungen beim Beenden zu löschen.\n"
                         + "Sollte auch das nicht klappen,\n"
                         + "finden Sie im Forum weitere Hilfe.");
-                new File(dir).deleteOnExit();
+                new File(dir1).deleteOnExit();
             } catch (Exception e) {
                 Log.fehlerMeldung(465690123, Log.FEHLER_ART_PROG, DDaten.class.getName(), e);
             }

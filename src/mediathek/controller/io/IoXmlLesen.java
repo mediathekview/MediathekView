@@ -89,7 +89,7 @@ public class IoXmlLesen {
         }
     }
 
-    public static ListePset importPset(DDaten dd, InputStream datei, boolean log) {
+    public static ListePset importPset(DDaten dd, InputStream inStream, boolean log) {
         DatenPset datenPset = null;
         ListePset liste = new ListePset();
         try {
@@ -98,7 +98,7 @@ public class IoXmlLesen {
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
             XMLStreamReader parser;
             InputStreamReader in;
-            in = new InputStreamReader(datei, Konstanten.KODIERUNG_UTF);
+            in = new InputStreamReader(inStream, Konstanten.KODIERUNG_UTF);
             parser = inFactory.createXMLStreamReader(in);
             while (parser.hasNext()) {
                 event = parser.next();
@@ -121,6 +121,7 @@ public class IoXmlLesen {
                     }
                 }
             }
+            in.close();
         } catch (Exception ex) {
             if (log) {
                 Log.fehlerMeldung(467810360, Log.FEHLER_ART_PROG, "IoXml.importPset", ex);
@@ -204,9 +205,8 @@ public class IoXmlLesen {
                 XMLInputFactory inFactory = XMLInputFactory.newInstance();
                 inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
                 XMLStreamReader parser;
-                InputStreamReader in;
                 DatenPset datenPset = null;
-                in = new InputStreamReader(new FileInputStream(datei), Konstanten.KODIERUNG_UTF);
+                InputStreamReader in = new InputStreamReader(new FileInputStream(datei), Konstanten.KODIERUNG_UTF);
                 parser = inFactory.createXMLStreamReader(in);
                 while (parser.hasNext()) {
                     event = parser.next();
@@ -263,6 +263,7 @@ public class IoXmlLesen {
                         }
                     }
                 }
+                in.close();
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(392840096, Log.FEHLER_ART_PROG, "IoXml.xmlDatenLesen", ex);
