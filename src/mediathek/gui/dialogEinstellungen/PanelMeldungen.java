@@ -36,6 +36,7 @@ public class PanelMeldungen extends PanelVorlage {
     private int logArt;
     private static int PANEL_NR_MAX = 0;
     private int panelNr = 0;
+    private int firstScroll = 25;
 
     public PanelMeldungen(DDaten d, Component parentComponent, StringBuffer ttext, int llogArt, String header) {
         super(d, parentComponent);
@@ -45,13 +46,24 @@ public class PanelMeldungen extends PanelVorlage {
         text = ttext;
         jLabelHeader.setText(header);
         logArt = llogArt;
+        if (logArt == ListenerMediathekView.EREIGNIS_LOG_SYSTEM) {
+            jCheckBoxAuto.setSelected(true);
+        } else {
+            jCheckBoxAuto.setSelected(false);
+        }
         setText();
         //init
         ListenerMediathekView.addListener(new ListenerMediathekView(logArt, PanelMeldungen.class.getName() + String.valueOf(panelNr)) {
             // + String.valueOf(PANEL_NR) damit die unterschiedlichen Panel unterschieden werden
             @Override
             public void ping() {
-                setLineWrab(); //setText wir da auch gemacht
+                //if (jToggleButtonEinschalten.isSelected()) {
+                if (jCheckBoxAuto.isSelected() || firstScroll > 0) {
+                    if (firstScroll > 0) {
+                        --firstScroll;
+                    }
+                    setLineWrab(); //setText wir da auch gemacht
+                }
             }
         });
         jButtonLoeschen.addActionListener(new BeobLoeschen());
@@ -146,16 +158,16 @@ public class PanelMeldungen extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabelHeader)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jCheckBoxAuto)
                         .addGap(18, 18, 18)
                         .addComponent(jCheckBoxUmbrechen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
-                        .addComponent(jButtonLoeschen))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabelHeader)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                        .addComponent(jButtonLoeschen)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -163,13 +175,13 @@ public class PanelMeldungen extends PanelVorlage {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelHeader)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonLoeschen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jCheckBoxAuto)
-                    .addComponent(jCheckBoxUmbrechen))
+                    .addComponent(jCheckBoxUmbrechen)
+                    .addComponent(jButtonLoeschen))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -186,6 +198,7 @@ public class PanelMeldungen extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent arg0) {
             Log.clearText(logArt);
+            setText();
         }
     }
 }
