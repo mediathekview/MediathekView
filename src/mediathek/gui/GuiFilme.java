@@ -208,15 +208,17 @@ public class GuiFilme extends PanelVorlage {
             }
         });
         //Tabelle einrichten
-        // ActionMap am = tabelle.getActionMap();
-        ActionMap am = new ActionMap();
-        tabelle.setActionMap(am);
+        ActionMap am = tabelle.getActionMap();
+        //ActionMap am = new ActionMap();
+        //tabelle.setActionMap(am);
         am.put("film_starten", new BeobAbstractAction());
-        // InputMap im = tabelle.getInputMap();
-        InputMap im = new InputMap();
-        tabelle.setInputMap(JComponent.WHEN_FOCUSED, im);
+
+        InputMap im = tabelle.getInputMap();
+        //InputMap im = new InputMap();
+        //tabelle.setInputMap(JComponent.WHEN_FOCUSED, im);
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         im.put(enter, "film_starten");
+        
         tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES));
         beobMausTabelle = new BeobMausTabelle();
         tabelle.addMouseListener(beobMausTabelle);
@@ -893,6 +895,15 @@ public class GuiFilme extends PanelVorlage {
         );
 
         jTable1.setAutoCreateRowSorter(true);
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
 
         jPanelExtra.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -1019,8 +1030,7 @@ public class GuiFilme extends PanelVorlage {
 
     private class BeobachterTableSelect implements ListSelectionListener {
 
-        public int selectedModelRow = -1;
-
+//        public int selectedModelRow = -1;
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (!event.getValueIsAdjusting()) {
