@@ -70,11 +70,11 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                         }
                     }
                 } else {
-                    Log.fehlerMeldung(-894562036,Log.FEHLER_ART_MREADER, "MediathekRBB.addToList", "keine URL");
+                    Log.fehlerMeldung(-894562036, Log.FEHLER_ART_MREADER, "MediathekRBB.addToList", "keine URL");
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(-398214058,Log.FEHLER_ART_MREADER, "MediathekRBB.addToList", ex);
+            Log.fehlerMeldung(-398214058, Log.FEHLER_ART_MREADER, "MediathekRBB.addToList", ex);
         }
         if (Daten.filmeLaden.getStop()) {
             meldungThreadUndFertig();
@@ -106,7 +106,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                     addFilme(link[0] /* url */);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-794625882,Log.FEHLER_ART_MREADER, "MediathekRBB.ThemaLaden.run", ex);
+                Log.fehlerMeldung(-794625882, Log.FEHLER_ART_MREADER, "MediathekRBB.ThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
         }
@@ -150,11 +150,28 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                         if (tpos > 0) {
                             int tpos2 = seite3.indexOf("</title>", tpos);
                             String title = seite3.substring(tpos + 7, tpos2);
-                            title = title.substring(15); // " rbb Mediathek: " abschneiden
-                            String datum = title.substring(title.length() - 26, title.length() - 16);
-                            String thema = title.substring(0, title.indexOf(" - "));
-                            title = title.substring(title.indexOf(" - ") + 3, title.indexOf(" - ", thema.length() + 3));
-
+                            // "rbb Mediathek: Bücher und Moor-Bücher und Moor (1/2013)-Donnerstag, 14.03.2013 | rbb Fernsehen"
+                            title = title.replace("rbb Mediathek:", "").trim();
+                            title = title.replace("| rbb Fernsehen", "").trim();
+                            // "Bücher und Moor-Bücher und Moor (1/2013)-Donnerstag, 14.03.2013"
+                            String datum = "";
+                            if (title.length() > 12) {
+                                datum = title.substring(title.length() - 10, title.length());
+                            }
+                            String thema = "";
+                            if (title.contains("-")) {
+                                thema = title.substring(0, title.indexOf("-")).trim();
+                                title = title.substring(thema.length() + 1).trim();
+                            }
+                            if (title.contains("-")) {
+                                title = title.substring(0, title.indexOf("-")).trim();
+                            } else {
+                                title = "";
+                            }
+//                            title = title.substring(15); // " rbb Mediathek: " abschneiden
+//                            String datum = title.substring(title.length() - 26, title.length() - 16);
+//                            String thema = title.substring(0, title.indexOf(" - "));
+//                            title = title.substring(title.indexOf(" - ") + 3, title.indexOf(" - ", thema.length() + 3));
                             int mpos = seite3.indexOf("mp4:");
                             int mpos2 = seite3.indexOf("\"", mpos);
                             String filmurl = seite3.substring(mpos, mpos2);
@@ -167,6 +184,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
+                Log.fehlerMeldung(-934670894, Log.FEHLER_ART_MREADER, "MediathekRBB.addFilme", ex);
             }
         }
     }
