@@ -72,7 +72,6 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     listeThemen.addUrl(add);
                 } else {
                     Log.fehlerMeldung(-198620778, Log.FEHLER_ART_MREADER, "MediathekSf.addToList", "keine URL");
-
                 }
             }
         }

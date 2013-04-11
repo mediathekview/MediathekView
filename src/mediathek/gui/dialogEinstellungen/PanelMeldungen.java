@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,6 +38,8 @@ public class PanelMeldungen extends PanelVorlage {
     private static int PANEL_NR_MAX = 0;
     private int panelNr = 0;
     private int firstScroll = 25;
+    private Color cGruen = new Color(0, 153, 51);
+    private Color cRot = new Color(255, 0, 0);
 
     public PanelMeldungen(DDaten d, Component parentComponent, StringBuffer ttext, int llogArt, String header) {
         super(d, parentComponent);
@@ -51,6 +54,7 @@ public class PanelMeldungen extends PanelVorlage {
         } else {
             jCheckBoxAuto.setSelected(false);
         }
+        jCheckBoxAuto.setForeground(jCheckBoxAuto.isSelected() ? cGruen : cRot);
         setText();
         //init
         ListenerMediathekView.addListener(new ListenerMediathekView(logArt, PanelMeldungen.class.getName() + String.valueOf(panelNr)) {
@@ -70,6 +74,7 @@ public class PanelMeldungen extends PanelVorlage {
         jCheckBoxAuto.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                jCheckBoxAuto.setForeground(jCheckBoxAuto.isSelected() ? cGruen : cRot);
                 setAuto();
             }
         });

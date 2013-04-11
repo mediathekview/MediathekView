@@ -415,12 +415,12 @@ public class GuiDownloads extends PanelVorlage {
                         arrayUrls.add(url);
                         //ddaten.starterClass.filmLoeschen(url);
                     }
-                    if (s.status > Start.STATUS_RUN) {
-                        // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                        if (s.datenDownload.istAbo()) {
-                            ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
-                        }
-                    }
+////                    if (s.status > Start.STATUS_RUN) {
+////                        // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
+////                        if (s.datenDownload.istAbo()) {
+////                            ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
+////                        }
+////                    }
                     arrayDownload.add(download);
                 }
             }
