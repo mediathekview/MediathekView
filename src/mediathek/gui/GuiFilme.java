@@ -37,7 +37,6 @@ import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.InputMap;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -218,7 +217,7 @@ public class GuiFilme extends PanelVorlage {
         //tabelle.setInputMap(JComponent.WHEN_FOCUSED, im);
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         im.put(enter, "film_starten");
-        
+
         tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES));
         beobMausTabelle = new BeobMausTabelle();
         tabelle.addMouseListener(beobMausTabelle);
@@ -579,19 +578,10 @@ public class GuiFilme extends PanelVorlage {
             // weiter mit dem Dialog "Speichern"
             filmSpeichern_(pSet);
         } else {
-            String url = "";
-            DatenFilm ersterFilm = new DatenFilm();
-            int selectedTableRows[] = tabelle.getSelectedRows();
-            for (int l = selectedTableRows.length - 1; l >= 0; --l) {
-                int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRows[l]);
-                ersterFilm = DDaten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
-                // jede neue URL davorsetzen
-                url = ersterFilm.arr[DatenFilm.FILM_URL_NR] + " " + url;
-                // und in die History eintragen
-                //ddaten.history.add(ersterFilm.getUrlOrg()); wird in StartetClass gemacht
-            }
-            ersterFilm.arr[DatenFilm.FILM_URL_NR] = url.trim();
-            ddaten.starterClass.urlStarten(pSet, ersterFilm);
+            // mit dem flvstreamer immer nur einen Filme starten
+            int selectedModelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
+            DatenFilm datenFilm = DDaten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+            ddaten.starterClass.urlStarten(pSet, datenFilm);
         }
     }
 
