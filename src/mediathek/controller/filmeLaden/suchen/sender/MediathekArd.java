@@ -417,19 +417,29 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         url2 = seite2.substring(pos1, pos3);
                     }
                 }
-                DatenFilm film;
+                url1a = url1a.replace(" ", "");
+                url1b = url1b.replace(" ", "");
+                url2 = url2.replace(" ", "");
                 if (flash) {
                     String urlOrg = addsUrl(protokoll + url1a, url1b);
                     urlOrg = addsUrl(urlOrg, url2);
                     String urlRtmp = "--host " + url1a + " --app " + url1b + " --playpath " + url2;
                     //flvstreamer --host vod.daserste.de --app ardfs --playpath mp4:videoportal/Film/c_100000/106579/format106899.f4v > bla.flv
                     //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
-                    film = new DatenFilm(nameSenderMReader, thema, urlFeed, titel, urlOrg, urlRtmp, datum, zeit);
+                    if (!urlOrg.equals("") && !urlRtmp.equals("")) {
+                        addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, urlOrg, urlRtmp, datum, zeit));
+                        ret = true;
+                    } else {
+                        Log.fehlerMeldung(-795630782, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm);
+                    }
                 } else {
-                    film = new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url2 /* url */, "" /* urlRtmp */, datum, zeit);
+                    if (!url2.equals("")) {
+                        addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url2 /* url */, "" /* urlRtmp */, datum, zeit));
+                        ret = true;
+                    } else {
+                        Log.fehlerMeldung(-159873540, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm);
+                    }
                 }
-                addFilm(film);
-                ret = true;
             } else {
                 Log.fehlerMeldung(-673219867, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm);
             }
