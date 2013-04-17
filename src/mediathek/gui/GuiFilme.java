@@ -67,6 +67,7 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
+import mediathek.res.GetIcon;
 import mediathek.tool.BeobMpanel;
 import mediathek.tool.CellRendererFilme;
 import mediathek.tool.Datum;
@@ -158,6 +159,10 @@ public class GuiFilme extends PanelVorlage {
     //===================================
 
     private void init() {
+        jButtonBlacklist.setIcon(GetIcon.getIcon("blacklist_16.png"));
+        jButtonFilterLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
+        jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
+
         checkBlacklist();
         jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
         jComboBoxZeitraum.setModel(new DefaultComboBoxModel(COMBO_ZEIT));
@@ -255,7 +260,7 @@ public class GuiFilme extends PanelVorlage {
         ddaten.mediathekGui.getStatusBar().getComponent().addMouseListener(new BeobMausLaufendeProgramme());
         // Filter erst mal ausblenden
         //jCheckBoxFilter.addActionListener(new BeobMpanel(jCheckBoxFilter, jPanelFilter, "Filter"));
-        jCheckBoxFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/no_16.png")));
+        jCheckBoxFilter.setIcon(GetIcon.getIcon("filter_loeschen_16.png"));
         jCheckBoxFilter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1155,7 +1160,7 @@ public class GuiFilme extends PanelVorlage {
 
             //Thema laden
             JMenuItem item = new JMenuItem("Film starten");
-            item.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_16.png")));
+            item.setIcon(GetIcon.getIcon("player_play_16.png"));
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -1165,7 +1170,7 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.add(item);
             //Url
             item = new JMenuItem("Film aufzeichnen");
-            item.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_rec_16.png")));
+            item.setIcon(GetIcon.getIcon("player_rec_16.png"));
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

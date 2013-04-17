@@ -36,6 +36,7 @@ import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
@@ -59,6 +60,10 @@ public class PanelProgrammPfade extends JPanel {
     }
 
     private void init() {
+        jButtonVlcPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonFlvPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonMplayerPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
         jPanelVlc.setVisible(vlc);
         jPanelFlv.setVisible(flvstreamer);
         jPanelMplayer.setVisible(mplayer);

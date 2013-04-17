@@ -35,7 +35,7 @@ import mediathek.controller.filmeLaden.importieren.DatenFilmlistenServer;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.Funktionen;
+import mediathek.res.GetIcon;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
@@ -50,6 +50,8 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
     }
 
     private void init() {
+        jButtonDateiAuswaehlen.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
         tabelleLaden();
         jButtonUpdate.addActionListener(new ActionListener() {
             @Override

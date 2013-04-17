@@ -32,7 +32,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -47,6 +46,7 @@ import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
+import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
 
@@ -60,6 +60,7 @@ public class PanelPsetKurz extends PanelVorlage {
     public PanelPsetKurz(DDaten d, Component parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
+        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
         listePset = llistePset;
         jListPset.setModel(new DefaultComboBoxModel(listePset.getObjectDataCombo()));
         if (listePset.size() > 0) {
@@ -162,7 +163,7 @@ public class PanelPsetKurz extends PanelVorlage {
         c.gridx = 2;
         c.weightx = 0;
         JButton button = new JButton();
-        button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png")));
+        button.setIcon(GetIcon.getIcon("fileopen_16.png"));
         button.addActionListener(new ZielBeobachter(textField, arr, idx));
         gridbag.setConstraints(button, c);
         panel.add(button);

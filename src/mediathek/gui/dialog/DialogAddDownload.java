@@ -33,6 +33,7 @@ import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
+import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -78,6 +79,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
     }
 
     private void init() {
+        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png")); 
         if (ddaten.listePset.getListeSpeichern().size() == 0) {
             JOptionPane.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);

@@ -51,6 +51,7 @@ import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 import mediathek.gui.dialog.MVFilmInformation;
+import mediathek.res.GetIcon;
 import mediathek.tool.BeobMpanel;
 import mediathek.tool.CellRendererDownloads;
 import mediathek.tool.Datum;
@@ -681,7 +682,7 @@ public class GuiDownloads extends PanelVorlage {
 
             // Download starten
             JMenuItem itemStarten = new JMenuItem("Download starten");
-            itemStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_16.png")));
+            itemStarten.setIcon(GetIcon.getIcon("player_play_16.png"));
             itemStarten.setEnabled(!wartenOderLaufen);
             jPopupMenu.add(itemStarten);
             itemStarten.addActionListener(new ActionListener() {
@@ -693,7 +694,7 @@ public class GuiDownloads extends PanelVorlage {
 
             // Download stoppen
             JMenuItem itemStoppen = new JMenuItem("Download stoppen");
-            itemStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
+            itemStoppen.setIcon(GetIcon.getIcon("player_stop_16.png"));
             itemStoppen.setEnabled(wartenOderLaufen);
             jPopupMenu.add(itemStoppen);
             itemStoppen.addActionListener(new ActionListener() {
@@ -705,7 +706,7 @@ public class GuiDownloads extends PanelVorlage {
 
             // Zielordner öffnen
             JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png")));
+            itemOeffnen.setIcon(GetIcon.getIcon("fileopen_16.png"));
             jPopupMenu.add(itemOeffnen);
             itemOeffnen.addActionListener(new ActionListener() {
                 @Override
@@ -720,7 +721,7 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
 
             JMenuItem itemVorziehen = new JMenuItem("Download vorziehen");
-            itemVorziehen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/up_blue_16.png")));
+            itemVorziehen.setIcon(GetIcon.getIcon("move_up_16.png"));
             jPopupMenu.add(itemVorziehen);
             itemVorziehen.addActionListener(new ActionListener() {
                 @Override
@@ -729,7 +730,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemLoeschen = new JMenuItem("Download zurückstellen");
-            itemLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/undo_16.png")));
+            itemLoeschen.setIcon(GetIcon.getIcon("undo_16.png"));
             jPopupMenu.add(itemLoeschen);
             itemLoeschen.addActionListener(new ActionListener() {
                 @Override
@@ -739,7 +740,7 @@ public class GuiDownloads extends PanelVorlage {
             });
             //dauerhaft löschen
             JMenuItem itemDauerhaftLoeschen = new JMenuItem("Download dauerhaft löschen");
-            itemDauerhaftLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
+            itemDauerhaftLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
             jPopupMenu.add(itemDauerhaftLoeschen);
             itemDauerhaftLoeschen.addActionListener(new ActionListener() {
                 @Override
@@ -749,7 +750,7 @@ public class GuiDownloads extends PanelVorlage {
             });
             //ändern
             JMenuItem itemAendern = new JMenuItem("Download Ändern");
-            itemAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png")));
+            itemAendern.setIcon(GetIcon.getIcon("configure_16.png"));
             jPopupMenu.add(itemAendern);
             itemAendern.addActionListener(new ActionListener() {
                 @Override
@@ -763,7 +764,7 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
 
             JMenuItem itemAlleStarten = new JMenuItem("alle Downloads starten");
-            itemAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_16.png")));
+            itemAlleStarten.setIcon(GetIcon.getIcon("alle_starten_16.png"));
             jPopupMenu.add(itemAlleStarten);
             itemAlleStarten.addActionListener(new ActionListener() {
                 @Override
@@ -772,7 +773,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemAlleStoppen = new JMenuItem("alle Downloads stoppen");
-            itemAlleStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
+            itemAlleStoppen.setIcon(GetIcon.getIcon("player_stop_16.png"));
             jPopupMenu.add(itemAlleStoppen);
             itemAlleStoppen.addActionListener(new ActionListener() {
                 @Override
@@ -781,7 +782,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
-            itemWartendeStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png")));
+            itemWartendeStoppen.setIcon(GetIcon.getIcon("player_stop_16.png"));
             jPopupMenu.add(itemWartendeStoppen);
             itemWartendeStoppen.addActionListener(new ActionListener() {
                 @Override
@@ -790,7 +791,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemAktualisieren = new JMenuItem("Liste der Downloads aktualisieren");
-            itemAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png")));
+            itemAktualisieren.setIcon(GetIcon.getIcon("view-refresh_16.png"));
             jPopupMenu.add(itemAktualisieren);
             itemAktualisieren.addActionListener(new ActionListener() {
                 @Override
@@ -799,7 +800,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemAufraeumen = new JMenuItem("Liste Aufräumen");
-            itemAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/edit-clear_16.png")));
+            itemAufraeumen.setIcon(GetIcon.getIcon("clear_16.png"));
             jPopupMenu.add(itemAufraeumen);
             itemAufraeumen.addActionListener(new ActionListener() {
                 @Override

@@ -19,25 +19,34 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Component;
+import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import mediathek.controller.io.ProgrammUpdateSuchen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.Log;
 
 public class PanelEinstellungen extends PanelVorlage {
 
@@ -48,19 +57,8 @@ public class PanelEinstellungen extends PanelVorlage {
         init();
         jCheckBoxEchtzeit.addActionListener(new BeobCheckBox());
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
-//        String[] theme = new String[GuiFunktionen.THEME.length];
-//        for (int i = 0; i < GuiFunktionen.THEME.length; ++i) {
-//            theme[i] = GuiFunktionen.THEME[i][0];
-//        }
-//        jComboBoxLook.setModel(new DefaultComboBoxModel(theme));
-//        if (Daten.system[Konstanten.SYSTEM_LOOK_NR].equals("")) {
-//            Daten.system[Konstanten.SYSTEM_LOOK_NR] = "0";
-//        }
-//        jComboBoxLook.setSelectedIndex(Integer.parseInt(Daten.system[Konstanten.SYSTEM_LOOK_NR]));
-//        jComboBoxLook.addActionListener(new BeobLook());
-
         setupLookAndFeelComboBox();
-        
+
         jButtonHilfeAnzahl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -81,6 +79,41 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
         jButtonSuchen.addActionListener(new BeobSuchen(false));
         jButtonInfos.addActionListener(new BeobSuchen(true));
+        jButtonOrdnerIcon.addActionListener(new BeobPfadIcon());
+        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ICON_STANDARD_NR])) {
+            jRadioButtonIconStandard.isSelected();
+        } else {
+            jRadioButtonIconEigene.isSelected();
+        }
+        jRadioButtonIconStandard.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_ICON_STANDARD_NR] = Boolean.toString(jRadioButtonIconStandard.isSelected());
+            }
+        });
+        jRadioButtonIconEigene.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_ICON_STANDARD_NR] = Boolean.toString(jRadioButtonIconStandard.isSelected());
+            }
+        });
+        jTextFieldPfadIcon.setText(Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR]);
+        jTextFieldPfadIcon.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR] = jTextFieldPfadIcon.getText();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR] = jTextFieldPfadIcon.getText();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR] = jTextFieldPfadIcon.getText();
+            }
+        });
     }
 
     private void init() {
@@ -158,6 +191,7 @@ public class PanelEinstellungen extends PanelVorlage {
     private void initComponents() {
 
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jSpinnerDownload = new javax.swing.JSpinner();
@@ -169,6 +203,11 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonInfos = new javax.swing.JButton();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         jComboBoxLook = new javax.swing.JComboBox();
+        jPanel1 = new javax.swing.JPanel();
+        jTextFieldPfadIcon = new javax.swing.JTextField();
+        jButtonOrdnerIcon = new javax.swing.JButton();
+        jRadioButtonIconStandard = new javax.swing.JRadioButton();
+        jRadioButtonIconEigene = new javax.swing.JRadioButton();
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
@@ -230,7 +269,7 @@ public class PanelEinstellungen extends PanelVorlage {
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButtonInfos)
                             .addComponent(jButtonSuchen))))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel7Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonInfos, jButtonSuchen});
@@ -267,16 +306,59 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Icons"));
+
+        jButtonOrdnerIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+
+        buttonGroup2.add(jRadioButtonIconStandard);
+        jRadioButtonIconStandard.setSelected(true);
+        jRadioButtonIconStandard.setText("Standard");
+
+        buttonGroup2.add(jRadioButtonIconEigene);
+        jRadioButtonIconEigene.setText("eigene Icon: ");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jRadioButtonIconStandard)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jRadioButtonIconEigene)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextFieldPfadIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonOrdnerIcon)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jRadioButtonIconStandard)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jTextFieldPfadIcon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonOrdnerIcon)
+                    .addComponent(jRadioButtonIconEigene))
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonOrdnerIcon, jTextFieldPfadIcon});
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -288,17 +370,25 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(56, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton jButtonHilfeAnzahl;
     private javax.swing.JButton jButtonInfos;
+    private javax.swing.JButton jButtonOrdnerIcon;
     private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
     private javax.swing.JCheckBox jCheckBoxSuchen;
     private javax.swing.JComboBox jComboBoxLook;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton jRadioButtonIconEigene;
+    private javax.swing.JRadioButton jRadioButtonIconStandard;
     private javax.swing.JSpinner jSpinnerDownload;
+    private javax.swing.JTextField jTextFieldPfadIcon;
     // End of variables declaration//GEN-END:variables
 
     private class BeobSpinnerDownload implements ChangeListener {
@@ -319,21 +409,6 @@ public class PanelEinstellungen extends PanelVorlage {
         }
     }
 
-//    private class BeobLook implements ActionListener {
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            if (GuiFunktionen.setLook(ddaten.mediathekGui, Integer.parseInt(String.valueOf(jComboBoxLook.getSelectedIndex())))) {
-//                Daten.system[Konstanten.SYSTEM_LOOK_NR] = String.valueOf(jComboBoxLook.getSelectedIndex());
-//            } else {
-//                Daten.system[Konstanten.SYSTEM_LOOK_NR] = "0";
-//                jComboBoxLook.setSelectedIndex(0);
-//                GuiFunktionen.setLook(ddaten.mediathekGui, 0);
-//            }
-//
-//        }
-//    }
-
     private class BeobCheckBoxSuchen implements ActionListener {
 
         @Override
@@ -353,6 +428,44 @@ public class PanelEinstellungen extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             new ProgrammUpdateSuchen().checkVersion(ddaten, !infos /* bei aktuell anzeigen */, infos /* Hinweis */, true /* hinweiseAlleAnzeigen */);
+        }
+    }
+
+    private class BeobPfadIcon implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native chooser on Mac...
+            if (SystemInfo.isMacOSX()) {
+                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Logdatei speichern");
+                chooser.setMode(FileDialog.SAVE);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
+                        jTextFieldPfadIcon.setText(destination.getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(642109058, Log.FEHLER_ART_PROG, "DialogExport.ZielBeobachter", ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jTextFieldPfadIcon.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldPfadIcon.getText()));
+                } else {
+                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldPfadIcon.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(642109058, Log.FEHLER_ART_PROG, "DialogExport.ZielBeobachter", ex);
+                    }
+                }
+            }
         }
     }
 }

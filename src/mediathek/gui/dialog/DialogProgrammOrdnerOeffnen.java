@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 
 import com.jidesoft.utils.SystemInfo;
 import mediathek.daten.DDaten;
+import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
@@ -53,6 +54,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
         parentComponent = parent;
         ddaten = dd;
         initComponents();
+        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png")); 
         setTitle(titel);
         jTextArea1.setText(text);
         jButtonOk.addActionListener(new OkBeobachter());

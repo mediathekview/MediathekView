@@ -33,7 +33,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -71,6 +70,7 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
+import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
@@ -380,7 +380,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jTextFieldFilter.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
         jTextFieldFilter.setSearchMode(JXSearchField.SearchMode.REGULAR);
         jTextFieldFilter.setUseNativeSearchFieldIfPossible(true);
-        jTextFieldFilter.getFindButton().setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/viewmag_22.png")));
+        jTextFieldFilter.getFindButton().setIcon(GetIcon.getIcon("suchen_22.png"));
         jTextFieldFilter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -415,6 +415,39 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     private void init() {
+        jButtonFilmeLaden.setIcon(GetIcon.getIcon("download_32.png"));
+        jButtonFilmAbspielen.setIcon(GetIcon.getIcon("player_play_32.png"));
+        jButtonFilmSpeichern.setIcon(GetIcon.getIcon("player_rec_32.png"));
+        jButtonDownloadAktualisieren.setIcon(GetIcon.getIcon("view-refresh_32.png"));
+        jButtonDownloadAlleStarten.setIcon(GetIcon.getIcon("alle_starten_32.png"));
+        jButtonDownloadZurueckstellen.setIcon(GetIcon.getIcon("undo_32.png"));
+        jButtonDownloadLoeschen.setIcon(GetIcon.getIcon("del_32.png"));
+        jButtonDownloadAufraeumen.setIcon(GetIcon.getIcon("clear_32.png"));
+        jButtonAbosEinschalten.setIcon(GetIcon.getIcon("ja_32.png"));
+        jButtonAbosAusschalten.setIcon(GetIcon.getIcon("nein_32.png"));
+        jButtonAbosLoeschen.setIcon(GetIcon.getIcon("del_32.png"));
+        jButtonAboAendern.setIcon(GetIcon.getIcon("configure_32.png"));
+        jButtonFilterPanel.setIcon(GetIcon.getIcon("filter_anzeigen_22.png"));
+        jMenuItemFilmlisteLaden.setIcon(GetIcon.getIcon("download_16.png"));
+        jMenuItemEinstellungen.setIcon(GetIcon.getIcon("configure_16.png"));
+        jMenuItemBeenden.setIcon(GetIcon.getIcon("beenden_16.png"));
+        jMenuItemFilmAbspielen.setIcon(GetIcon.getIcon("player_play_16.png"));
+        jMenuItemFilmAufzeichnen.setIcon(GetIcon.getIcon("player_rec_16.png"));
+        jMenuItemDownloadsAlleStarten.setIcon(GetIcon.getIcon("alle_starten_16.png"));
+        jMenuItemDownloadAlleStoppen.setIcon(GetIcon.getIcon("player_stop_16.png"));
+        jMenuItemDownloadStarten.setIcon(GetIcon.getIcon("player_play_16.png"));
+        jMenuItemDownloadStoppen.setIcon(GetIcon.getIcon("player_stop_16.png"));
+        jMenuItemDownloadVorziehen.setIcon(GetIcon.getIcon("move_up_16.png"));
+        jMenuItemDownloadsZurueckstellen.setIcon(GetIcon.getIcon("undo_16.png"));
+        jMenuItemDownloadsLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
+        jMenuItemDownloadAendern.setIcon(GetIcon.getIcon("configure_16.png"));
+        jMenuItemDownloadsAktualisieren.setIcon(GetIcon.getIcon("view-refresh_16.png"));
+        jMenuItemDownloadsAufraeumen.setIcon(GetIcon.getIcon("clear_16.png"));
+        jMenuItemAbosEinschalten.setIcon(GetIcon.getIcon("ja_16.png"));
+        jMenuItemAbosAusschalten.setIcon(GetIcon.getIcon("nein_16.png"));
+        jMenuItemAbosLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
+        jMenuItemAbosAendern.setIcon(GetIcon.getIcon("configure_16.png"));
+        jMenuItemAnleitung.setIcon(GetIcon.getIcon("help_16.png"));
         initTabs();
         initMenue();
         initToolBar();
@@ -904,31 +937,31 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxIconKlein.setSelected(klein);
         beobMausToolBar.itemKlein.setSelected(klein);
         if (klein) {
-            jButtonFilmeLaden.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/download_16.png")));
-            jButtonFilmAbspielen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/player_play_16.png")));
-            jButtonFilmSpeichern.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/player_rec_16.png")));
-            jButtonDownloadAktualisieren.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png")));
-            jButtonDownloadAlleStarten.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/next_16.png")));
-            jButtonDownloadZurueckstellen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/undo_16.png")));
-            jButtonDownloadLoeschen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
-            jButtonDownloadAufraeumen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/edit-clear_16.png")));
-            jButtonAbosLoeschen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
-            jButtonAbosEinschalten.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
-            jButtonAbosAusschalten.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/nein_16.png")));
-            jButtonAboAendern.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/configure_16.png")));
+            jButtonFilmeLaden.setIcon(GetIcon.getIcon("download_16.png"));
+            jButtonFilmAbspielen.setIcon(GetIcon.getIcon("player_play_16.png"));
+            jButtonFilmSpeichern.setIcon(GetIcon.getIcon("player_rec_16.png"));
+            jButtonDownloadAktualisieren.setIcon(GetIcon.getIcon("view-refresh_16.png"));
+            jButtonDownloadAlleStarten.setIcon(GetIcon.getIcon("alle_starten_16.png"));
+            jButtonDownloadZurueckstellen.setIcon(GetIcon.getIcon("undo_16.png"));
+            jButtonDownloadLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
+            jButtonDownloadAufraeumen.setIcon(GetIcon.getIcon("clear_16.png"));
+            jButtonAbosLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
+            jButtonAbosEinschalten.setIcon(GetIcon.getIcon("ja_16.png"));
+            jButtonAbosAusschalten.setIcon(GetIcon.getIcon("nein_16.png"));
+            jButtonAboAendern.setIcon(GetIcon.getIcon("configure_16.png"));
         } else {
-            jButtonFilmeLaden.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/download_32.png")));
-            jButtonFilmAbspielen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/player_play_32.png")));
-            jButtonFilmSpeichern.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/player_rec_32.png")));
-            jButtonDownloadAktualisieren.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/view-refresh_32.png")));
-            jButtonDownloadAlleStarten.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/next_32.png")));
-            jButtonDownloadZurueckstellen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/undo_32.png")));
-            jButtonDownloadLoeschen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/del_32.png")));
-            jButtonDownloadAufraeumen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/edit-clear_32.png")));
-            jButtonAbosLoeschen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/del_32.png")));
-            jButtonAbosEinschalten.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/ja_32.png")));
-            jButtonAbosAusschalten.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/nein_32.png")));
-            jButtonAboAendern.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/configure_32.png")));
+            jButtonFilmeLaden.setIcon(GetIcon.getIcon("download_32.png"));
+            jButtonFilmAbspielen.setIcon(GetIcon.getIcon("player_play_32.png"));
+            jButtonFilmSpeichern.setIcon(GetIcon.getIcon("player_rec_32.png"));
+            jButtonDownloadAktualisieren.setIcon(GetIcon.getIcon("view-refresh_32.png"));
+            jButtonDownloadAlleStarten.setIcon(GetIcon.getIcon("alle_starten_32.png"));
+            jButtonDownloadZurueckstellen.setIcon(GetIcon.getIcon("undo_32.png"));
+            jButtonDownloadLoeschen.setIcon(GetIcon.getIcon("del_32.png"));
+            jButtonDownloadAufraeumen.setIcon(GetIcon.getIcon("clear_32.png"));
+            jButtonAbosLoeschen.setIcon(GetIcon.getIcon("del_32.png"));
+            jButtonAbosEinschalten.setIcon(GetIcon.getIcon("ja_32.png"));
+            jButtonAbosAusschalten.setIcon(GetIcon.getIcon("nein_32.png"));
+            jButtonAboAendern.setIcon(GetIcon.getIcon("configure_32.png"));
         }
         this.repaint();
     }
@@ -1080,7 +1113,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonDownloadAktualisieren.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonDownloadAktualisieren);
 
-        jButtonDownloadAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_32.png"))); // NOI18N
+        jButtonDownloadAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/alle_starten_32.png"))); // NOI18N
         jButtonDownloadAlleStarten.setToolTipText("alle Downloads starten");
         jButtonDownloadAlleStarten.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonDownloadAlleStarten.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1104,7 +1137,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonDownloadLoeschen.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonDownloadLoeschen);
 
-        jButtonDownloadAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/edit-clear_32.png"))); // NOI18N
+        jButtonDownloadAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/clear_32.png"))); // NOI18N
         jButtonDownloadAufraeumen.setToolTipText("Liste der Downloads aufräumen");
         jButtonDownloadAufraeumen.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonDownloadAufraeumen.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1146,7 +1179,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jToolBar.add(jButtonAboAendern);
         jToolBar.add(filler5);
 
-        jButtonFilterPanel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-full_22.png"))); // NOI18N
+        jButtonFilterPanel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_anzeigen_22.png"))); // NOI18N
         jButtonFilterPanel.setToolTipText("Erweiterte Suche");
         jButtonFilterPanel.setBorder(null);
         jButtonFilterPanel.setBorderPainted(false);
@@ -1188,7 +1221,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuDatei.add(jMenuItemEinstellungen);
         jMenuDatei.add(jSeparator2);
 
-        jMenuItemBeenden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/exit_16.png"))); // NOI18N
+        jMenuItemBeenden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/beenden_16.png"))); // NOI18N
         jMenuItemBeenden.setText("Beenden");
         jMenuDatei.add(jMenuItemBeenden);
 
@@ -1215,7 +1248,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jMenuDownload.setText("Downloads");
 
-        jMenuItemDownloadsAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/next_16.png"))); // NOI18N
+        jMenuItemDownloadsAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/alle_starten_16.png"))); // NOI18N
         jMenuItemDownloadsAlleStarten.setText("alle Downloads starten");
         jMenuDownload.add(jMenuItemDownloadsAlleStarten);
 
@@ -1233,7 +1266,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemDownloadStoppen.setText("Download stoppen");
         jMenuDownload.add(jMenuItemDownloadStoppen);
 
-        jMenuItemDownloadVorziehen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/up_blue_16.png"))); // NOI18N
+        jMenuItemDownloadVorziehen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/move_up_16.png"))); // NOI18N
         jMenuItemDownloadVorziehen.setText("Download vorziehen");
         jMenuDownload.add(jMenuItemDownloadVorziehen);
 
@@ -1257,7 +1290,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemDownloadsAktualisieren.setText("Downloads aktualisieren");
         jMenuDownload.add(jMenuItemDownloadsAktualisieren);
 
-        jMenuItemDownloadsAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/edit-clear_16.png"))); // NOI18N
+        jMenuItemDownloadsAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/clear_16.png"))); // NOI18N
         jMenuItemDownloadsAufraeumen.setText("Downloads aufräumen");
         jMenuDownload.add(jMenuItemDownloadsAufraeumen);
         jMenuDownload.add(jSeparatorShutDown);
@@ -1307,7 +1340,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jMenuHilfe.setText("Hilfe");
 
-        jMenuItemAnleitung.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/agt_support.png"))); // NOI18N
+        jMenuItemAnleitung.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
         jMenuItemAnleitung.setText("Hilfe und Fragen zum Programm");
         jMenuHilfe.add(jMenuItemAnleitung);
         jMenuHilfe.add(jSeparator4);

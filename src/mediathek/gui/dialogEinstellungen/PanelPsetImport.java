@@ -40,6 +40,7 @@ import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
+import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -60,6 +61,8 @@ public class PanelPsetImport extends PanelVorlage {
     }
 
     private void init() {
+        jButtonAktualisieren.setIcon(GetIcon.getIcon("view-refresh_16.png"));
+        jButtonPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
         jComboBoxBs.setModel(new DefaultComboBoxModel(ListePsetVorlagen.BS));
         jComboBoxBs.addActionListener(new ActionListener() {
             @Override

@@ -29,12 +29,12 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 
@@ -46,6 +46,7 @@ public class PanelSenderLaden extends PanelVorlage {
     public PanelSenderLaden(DDaten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
+        jButtonStop.setIcon(GetIcon.getIcon("stop_16.png"));
         ddaten = d;
         init();
         jSpinnerWarten.addChangeListener(new BeobSpinnerWarten());

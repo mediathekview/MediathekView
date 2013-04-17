@@ -29,6 +29,7 @@ import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
+import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
@@ -44,6 +45,7 @@ public class PanelHilfe extends PanelVorlage {
     public PanelHilfe(DDaten dd, Component p) {
         super(dd, p);
         initComponents();
+        jButtonHilfeReset.setIcon(GetIcon.getIcon("help_16.png"));
         //init
         try {
             jTextFieldVersion.setText(Funktionen.getProgVersionString() + " vom: " + Funktionen.getCompileDate());
@@ -211,7 +213,7 @@ public class PanelHilfe extends PanelVorlage {
 
         jButtonReset.setText("alle Einstellungen zurücksetzen!");
 
-        jButtonHilfeReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/agt_support.png"))); // NOI18N
+        jButtonHilfeReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
         jButtonHilfeReset.setToolTipText("Hilfe");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);

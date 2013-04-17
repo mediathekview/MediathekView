@@ -35,7 +35,7 @@ import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.Funktionen;
+import mediathek.res.GetIcon;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
@@ -50,6 +50,7 @@ public class PanelExportFilmliste extends PanelVorlage {
     }
 
     private void init() {
+        jButtonExportPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
         jTextFieldPfad.setText(Daten.system[Konstanten.SYSTEM_EXPORT_DATEI_NR]);
         jTextFieldPfad.getDocument().addDocumentListener(new BeobTextFeld());
         jButtonExportieren.addActionListener(new BeobExport());
@@ -209,7 +210,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     try {
-                        File destination = new File(chooser.getDirectory()+chooser.getFile());
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldPfad.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
                         Log.fehlerMeldung(679890147, Log.FEHLER_ART_PROG, "PanelExportImportDateiUrl.BeobImport", ex);
