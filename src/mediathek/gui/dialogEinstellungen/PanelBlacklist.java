@@ -37,6 +37,7 @@ import mediathek.daten.DatenBlacklist;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
@@ -54,7 +55,8 @@ public class PanelBlacklist extends PanelVorlage {
     public PanelBlacklist(DDaten d, Component parentComponent, String nname) {
         super(d, parentComponent);
         initComponents();
-        name = nname;
+        jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonTabelleLoeschen.setIcon(GetIcon.getIcon("del_16.png")); 
         init_();
         init();
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name) {

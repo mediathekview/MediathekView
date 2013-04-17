@@ -34,7 +34,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jSplitPane1" pref="476" max="32767" attributes="0"/>
+              <Component id="jSplitPane1" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonHilfe" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -156,7 +156,7 @@
                               <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="84" max="32767" attributes="0"/>
+                              <EmptySpace pref="100" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -381,7 +381,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="289" max="32767" attributes="0"/>
+                          <EmptySpace pref="305" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -552,7 +552,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="349" max="32767" attributes="0"/>
+                          <EmptySpace pref="365" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -648,7 +648,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="148" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="164" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -740,7 +740,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgPlus">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/edit_add_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/add_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="neues Programm anlegen"/>
                       </Properties>
@@ -748,7 +748,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgMinus">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/edit_remove_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/remove_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="markiertes Programm l&#xf6;schen"/>
                       </Properties>
@@ -762,7 +762,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgAuf">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/up_blue_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/move_up_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="markierte Zeile eins nach oben"/>
                       </Properties>
@@ -770,7 +770,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgAb">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/down_blue_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/move_down_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="markierte Zeile eins nach unten"/>
                       </Properties>
@@ -994,7 +994,7 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="jScrollPane3" pref="318" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" pref="334" max="32767" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jButtonGruppeAuf" min="-2" max="-2" attributes="0"/>
@@ -1049,7 +1049,7 @@
             <Component class="javax.swing.JButton" name="jButtonGruppeNeu">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/edit_add_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/add_16.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="neue Programmgruppe anlegen"/>
               </Properties>
@@ -1057,7 +1057,7 @@
             <Component class="javax.swing.JButton" name="jButtonGruppeLoeschen">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/edit_remove_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/remove_16.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Programmgruppe l&#xf6;schen"/>
               </Properties>
@@ -1065,7 +1065,7 @@
             <Component class="javax.swing.JButton" name="jButtonGruppeAuf">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/up_blue_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/move_up_16.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Programmgruppe nach oben schieben"/>
               </Properties>
@@ -1073,7 +1073,7 @@
             <Component class="javax.swing.JButton" name="jButtonGruppeAb">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/down_blue_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/move_down_16.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Programmgruppe nach unten schieben"/>
               </Properties>

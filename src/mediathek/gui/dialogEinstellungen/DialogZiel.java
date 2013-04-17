@@ -29,8 +29,8 @@ import javax.swing.JOptionPane;
 
 import com.jidesoft.utils.SystemInfo;
 import mediathek.daten.DDaten;
+import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
 
@@ -54,6 +54,7 @@ public class DialogZiel extends javax.swing.JDialog {
         parentComponent = parent;
         ddaten = dd;
         initComponents();
+        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonZiel.addActionListener(new ZielBeobachter());
         if (name.equals("")) {

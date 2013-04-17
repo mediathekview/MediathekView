@@ -39,7 +39,7 @@ import mediathek.controller.filmeLaden.importieren.FilmlistenSuchen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.Funktionen;
+import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
@@ -65,6 +65,8 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void init() {
+        jButtonUpdate.setIcon(GetIcon.getIcon("view-refresh_16.png"));
+        jButtonDateiAuswaehlen.setIcon(GetIcon.getIcon("fileopen_16.png"));
         initRadio();
         tabelleLaden();
         jButtonUpdate.addActionListener(new BeobSuchen());
@@ -424,7 +426,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     try {
-                        File destination = new File(chooser.getDirectory()+chooser.getFile());
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldUrl.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
                         Log.fehlerMeldung(102036579, Log.FEHLER_ART_PROG, "PanelImportFilme.BeobPfad", ex);

@@ -35,6 +35,7 @@ import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
@@ -45,6 +46,8 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     public PanelEinstellungenErweitert(DDaten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
+        jButtonProgrammDateimanager.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonProgrammUrl.setIcon(GetIcon.getIcon("fileopen_16.png"));
         ddaten = d;
         init();
         jButtonName.addActionListener(new ActionListener() {

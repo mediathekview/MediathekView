@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import javax.swing.SwingUtilities;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.daten.Daten;
+import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
 
@@ -34,6 +35,7 @@ public final class InfoPanel extends javax.swing.JPanel {
     }
 
     private void init() {
+        jButtonStop.setIcon(GetIcon.getIcon("stop_16.png"));
         setBackground(new java.awt.Color(204, 204, 204));
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         clearProgress();

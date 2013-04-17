@@ -38,6 +38,7 @@ import mediathek.MediathekGui;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.res.GetIcon;
 import mediathek.tool.CellRendererAbo;
 import mediathek.tool.Datum;
 import mediathek.tool.HinweisKeineAuswahl;
@@ -235,7 +236,6 @@ public class GuiAbo extends PanelVorlage {
                                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -292,7 +292,7 @@ public class GuiAbo extends PanelVorlage {
             JPopupMenu jPopupMenu = new JPopupMenu();
             // Abo einschalten
             JMenuItem itemEinschalten = new JMenuItem("Abo einschalten");
-            itemEinschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
+            itemEinschalten.setIcon(GetIcon.getIcon("ja_16.png"));
             itemEinschalten.setEnabled(!ein);
             itemEinschalten.addActionListener(new ActionListener() {
                 @Override
@@ -303,7 +303,7 @@ public class GuiAbo extends PanelVorlage {
             jPopupMenu.add(itemEinschalten);
             // Abo deaktivieren
             JMenuItem itemDeaktivieren = new JMenuItem("Abo deaktivieren");
-            itemDeaktivieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_16.png")));
+            itemDeaktivieren.setIcon(GetIcon.getIcon("nein_16.png"));
             itemDeaktivieren.setEnabled(ein);
             itemDeaktivieren.addActionListener(new ActionListener() {
                 @Override
@@ -314,7 +314,7 @@ public class GuiAbo extends PanelVorlage {
             jPopupMenu.add(itemDeaktivieren);
             //Abo lösschen
             JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
-            itemLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png")));
+            itemLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
             itemLoeschen.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -324,7 +324,7 @@ public class GuiAbo extends PanelVorlage {
             jPopupMenu.add(itemLoeschen);
             //Abo ändern
             JMenuItem itemAendern = new JMenuItem("Abo ändern");
-            itemAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png")));
+            itemAendern.setIcon(GetIcon.getIcon("configure_16.png"));
             itemAendern.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

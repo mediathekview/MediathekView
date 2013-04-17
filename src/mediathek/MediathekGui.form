@@ -56,7 +56,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemBeenden">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/exit_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/beenden_16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Beenden"/>
               </Properties>
@@ -110,7 +110,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsAlleStarten">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/next_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/alle_starten_16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="alle Downloads starten"/>
               </Properties>
@@ -145,7 +145,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadVorziehen">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/up_blue_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/move_up_16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Download vorziehen"/>
               </Properties>
@@ -196,7 +196,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsAufraeumen">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/edit-clear_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/clear_16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Downloads aufr&#xe4;umen"/>
               </Properties>
@@ -286,7 +286,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAnleitung">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/agt_support.png"/>
+                  <Image iconType="3" name="/mediathek/res/help_16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Hilfe und Fragen zum Programm"/>
               </Properties>
@@ -493,7 +493,7 @@
             <Component class="javax.swing.JButton" name="jButtonDownloadAlleStarten">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/next_32.png"/>
+                  <Image iconType="3" name="/mediathek/res/alle_starten_32.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="alle Downloads starten"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -541,7 +541,7 @@
             <Component class="javax.swing.JButton" name="jButtonDownloadAufraeumen">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/edit-clear_32.png"/>
+                  <Image iconType="3" name="/mediathek/res/clear_32.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Liste der Downloads aufr&#xe4;umen"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -655,7 +655,7 @@
             <Component class="javax.swing.JButton" name="jButtonFilterPanel">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/view-full_22.png"/>
+                  <Image iconType="3" name="/mediathek/res/filter_anzeigen_22.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Erweiterte Suche"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
