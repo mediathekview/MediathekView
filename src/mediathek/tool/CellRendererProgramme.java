@@ -24,6 +24,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenProg;
+import mediathek.res.GetIcon;
 
 public class CellRendererProgramme extends DefaultTableCellRenderer {
 
@@ -48,14 +49,14 @@ public class CellRendererProgramme extends DefaultTableCellRenderer {
             int c = table.convertColumnIndexToModel(column);
             if (c == DatenProg.PROGRAMM_RESTART_NR) {
                 if (getText().equals(Boolean.TRUE.toString())) {
-                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
+                    setIcon(GetIcon.getIcon("ja_16.png"));
                 } else {
-                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
+                    setIcon(GetIcon.getIcon("nein_12.png"));
                 }
                 setText("");
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(338740095,Log.FEHLER_ART_PROG,this.getClass().getName(), ex);
+            Log.fehlerMeldung(338740095, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
         }
         return this;
     }

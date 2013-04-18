@@ -649,7 +649,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jPanelAnzahl.setLayout(new BorderLayout());
         jPanelAnzahl.add(jLabelAnzahl, BorderLayout.WEST);
         jPanelAnzahl.add(jSpinnerAnzahl, BorderLayout.EAST);
-        jLabelAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/up_down_16.png")));
+        jLabelAnzahl.setIcon(GetIcon.getIcon("up_down_16.png"));
         jSpinnerAnzahl.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent arg0) {

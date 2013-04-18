@@ -34,6 +34,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
+import mediathek.res.GetIcon;
 
 public class CellRendererDownloads extends DefaultTableCellRenderer {
 
@@ -108,16 +109,16 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     setForeground(GuiKonstanten.ABO_FOREGROUND);
                 } else {
                     setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
-                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
+                    setIcon(GetIcon.getIcon("nein_12.png"));
                     setHorizontalAlignment(SwingConstants.CENTER);
                 }
             } else if (c == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                 boolean restart = download.isRestart();
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (restart) {
-                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
+                    setIcon(GetIcon.getIcon("ja_16.png"));
                 } else {
-                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
+                    setIcon(GetIcon.getIcon("nein_12.png"));
                 }
             }
         } catch (Exception ex) {

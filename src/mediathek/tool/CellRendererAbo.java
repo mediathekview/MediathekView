@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
+import mediathek.res.GetIcon;
 
 public class CellRendererAbo extends DefaultTableCellRenderer {
 
@@ -66,9 +67,9 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
             if (c == DatenAbo.ABO_EINGESCHALTET_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (eingeschaltet) {
-                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
+                    setIcon(GetIcon.getIcon("ja_16.png"));
                 } else {
-                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
+                    setIcon(GetIcon.getIcon("nein_12.png"));
                 }
             }
         } catch (Exception ex) {

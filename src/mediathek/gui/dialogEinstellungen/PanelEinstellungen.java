@@ -30,7 +30,6 @@ import java.io.File;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -49,7 +48,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class PanelEinstellungen extends PanelVorlage {
-
+    
     public PanelEinstellungen(DDaten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
@@ -58,7 +57,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxEchtzeit.addActionListener(new BeobCheckBox());
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
         setupLookAndFeelComboBox();
-
+        
         jButtonHilfeAnzahl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -81,9 +80,9 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonInfos.addActionListener(new BeobSuchen(true));
         jButtonOrdnerIcon.addActionListener(new BeobPfadIcon());
         if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ICON_STANDARD_NR])) {
-            jRadioButtonIconStandard.isSelected();
+            jRadioButtonIconStandard.setSelected(true);
         } else {
-            jRadioButtonIconEigene.isSelected();
+            jRadioButtonIconEigene.setSelected(true);
         }
         jRadioButtonIconStandard.addActionListener(new ActionListener() {
             @Override
@@ -94,7 +93,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jRadioButtonIconEigene.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_ICON_STANDARD_NR] = Boolean.toString(jRadioButtonIconStandard.isSelected());
+                Daten.system[Konstanten.SYSTEM_ICON_STANDARD_NR] = Boolean.toString(!jRadioButtonIconEigene.isSelected());
             }
         });
         jTextFieldPfadIcon.setText(Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR]);
@@ -103,19 +102,19 @@ public class PanelEinstellungen extends PanelVorlage {
             public void insertUpdate(DocumentEvent e) {
                 Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR] = jTextFieldPfadIcon.getText();
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent e) {
                 Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR] = jTextFieldPfadIcon.getText();
             }
-
+            
             @Override
             public void changedUpdate(DocumentEvent e) {
                 Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR] = jTextFieldPfadIcon.getText();
             }
         });
     }
-
+    
     private void init() {
         jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR]));
         jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR]));
@@ -128,7 +127,7 @@ public class PanelEinstellungen extends PanelVorlage {
             jSpinnerDownload.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR]));
         }
     }
-
+    
     private void setupLookAndFeelComboBox() {
         try {
             //query all installed LAFs
@@ -140,7 +139,7 @@ public class PanelEinstellungen extends PanelVorlage {
             for (UIManager.LookAndFeelInfo i : info) {
                 themeList.add(i.getName());
             }
-
+            
             DefaultComboBoxModel model = new DefaultComboBoxModel(themeList.toArray());
             jComboBoxLook.setModel(model);
             //select the current
@@ -176,7 +175,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 }
             };
             jComboBoxLook.addActionListener(lst);
-
+            
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -208,6 +207,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonOrdnerIcon = new javax.swing.JButton();
         jRadioButtonIconStandard = new javax.swing.JRadioButton();
         jRadioButtonIconEigene = new javax.swing.JRadioButton();
+        jLabel1 = new javax.swing.JLabel();
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
@@ -317,6 +317,8 @@ public class PanelEinstellungen extends PanelVorlage {
         buttonGroup2.add(jRadioButtonIconEigene);
         jRadioButtonIconEigene.setText("eigene Icon: ");
 
+        jLabel1.setText("Um alle Icons richtig anzuzeigen, Programm neu starten");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -330,8 +332,9 @@ public class PanelEinstellungen extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jTextFieldPfadIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonOrdnerIcon)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButtonOrdnerIcon))
+                    .addComponent(jLabel1))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -343,7 +346,9 @@ public class PanelEinstellungen extends PanelVorlage {
                     .addComponent(jTextFieldPfadIcon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonOrdnerIcon)
                     .addComponent(jRadioButtonIconEigene))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonOrdnerIcon, jTextFieldPfadIcon});
@@ -372,7 +377,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -384,6 +389,7 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
     private javax.swing.JCheckBox jCheckBoxSuchen;
     private javax.swing.JComboBox jComboBoxLook;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton jRadioButtonIconEigene;
     private javax.swing.JRadioButton jRadioButtonIconStandard;
@@ -392,7 +398,7 @@ public class PanelEinstellungen extends PanelVorlage {
     // End of variables declaration//GEN-END:variables
 
     private class BeobSpinnerDownload implements ChangeListener {
-
+        
         @Override
         public void stateChanged(ChangeEvent arg0) {
             Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
@@ -400,39 +406,39 @@ public class PanelEinstellungen extends PanelVorlage {
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
         }
     }
-
+    
     private class BeobCheckBox implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR] = Boolean.toString(jCheckBoxEchtzeit.isSelected());
         }
     }
-
+    
     private class BeobCheckBoxSuchen implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.toString(jCheckBoxSuchen.isSelected());
         }
     }
-
+    
     private class BeobSuchen implements ActionListener {
-
+        
         private boolean infos = false;
-
+        
         public BeobSuchen(boolean iinfos) {
             infos = iinfos;
         }
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             new ProgrammUpdateSuchen().checkVersion(ddaten, !infos /* bei aktuell anzeigen */, infos /* Hinweis */, true /* hinweiseAlleAnzeigen */);
         }
     }
-
+    
     private class BeobPfadIcon implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
