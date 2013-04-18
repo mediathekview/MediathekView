@@ -195,27 +195,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
     }
 
-//    public static ListePset getStandardprogramme(DDaten ddaten) {
-//        // liefert das Standard Programmset für das entsprechende BS
-//        ListePset pSet;
-//        InputStream datei;
-//        switch (getOs()) {
-//            case OS_LINUX:
-//                datei = new GetFile().getPsetVorlageLinux();
-//                break;
-//            case OS_MAC:
-//                datei = new GetFile().getPsetVorlageMac();
-//                break;
-//            case OS_WIN_32BIT:
-//            case OS_WIN_64BIT:
-//            case OS_UNKNOWN:
-//            default:
-//                datei = new GetFile().getPsetVorlageWindows();
-//        }
-//        // Standardgruppen laden
-//        pSet = IoXmlLesen.importPset(ddaten, datei, true);
-//        return pSet;
-//    }
     public static boolean addVorlagen(PanelVorlage parent, DDaten ddaten, ListePset pSet, boolean auto) {
         // Standardgruppen laden
         if (pSet != null) {
@@ -483,15 +462,4 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         new DialogHilfe(null, true, text).setVisible(true);
         return ret;
     }
-//    public static void vlcPfadSchreiben(DDaten dd) {
-//        String befehl = GuiFunktionenProgramme.getPfadVlc(dd);
-//        if (!befehl.equals("")) {
-//            befehl = befehl + " --version";
-//            Log.playerMeldung("");
-//            Log.playerMeldung("====================================");
-//            Log.playerMeldung("VLC-Version");
-//            Log.playerMeldung("Befehl: " + befehl);
-//            new RuntimeExec(befehl).exec();
-//        }
-//    }
 }

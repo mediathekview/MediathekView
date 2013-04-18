@@ -22,18 +22,36 @@ package mediathek.res;
 import java.io.File;
 import javax.swing.ImageIcon;
 import mediathek.daten.Daten;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
+import mediathek.tool.Log;
 
 public class GetIcon {
 
     private final static String PFAD_INTERN = "/mediathek/res/";
 
-    public static ImageIcon getIcon(String icon) {
+    public static ImageIcon getIcon(String strIcon) {
         if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ICON_STANDARD_NR])) {
-            return new ImageIcon(GetIcon.class.getResource(PFAD_INTERN + icon));
+            return getStandard(strIcon);
         } else {
-            return new ImageIcon(Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR] + File.separator + icon);
+            ImageIcon icon;
+            try {
+                String pfad = GuiFunktionen.addsPfad(Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR], strIcon);
+                System.out.println(new File(pfad).getAbsolutePath());
+                if (new File(pfad).exists()) {
+                    icon = new ImageIcon(pfad);
+                } else {
+                    icon = getStandard(strIcon);
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(932107891, Log.FEHLER_ART_PROG, "GetIcon.getIcon", strIcon);
+                icon = getStandard(strIcon);
+            }
+            return icon;
         }
+    }
 
+    private static ImageIcon getStandard(String strIcon) {
+        return new ImageIcon(GetIcon.class.getResource(PFAD_INTERN + strIcon));
     }
 }

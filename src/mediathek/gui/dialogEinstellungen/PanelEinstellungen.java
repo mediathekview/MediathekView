@@ -48,7 +48,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class PanelEinstellungen extends PanelVorlage {
-    
+
     public PanelEinstellungen(DDaten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
@@ -57,7 +57,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxEchtzeit.addActionListener(new BeobCheckBox());
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
         setupLookAndFeelComboBox();
-        
+
         jButtonHilfeAnzahl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -102,19 +102,19 @@ public class PanelEinstellungen extends PanelVorlage {
             public void insertUpdate(DocumentEvent e) {
                 Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR] = jTextFieldPfadIcon.getText();
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR] = jTextFieldPfadIcon.getText();
             }
-            
+
             @Override
             public void changedUpdate(DocumentEvent e) {
                 Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR] = jTextFieldPfadIcon.getText();
             }
         });
     }
-    
+
     private void init() {
         jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR]));
         jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR]));
@@ -127,7 +127,7 @@ public class PanelEinstellungen extends PanelVorlage {
             jSpinnerDownload.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR]));
         }
     }
-    
+
     private void setupLookAndFeelComboBox() {
         try {
             //query all installed LAFs
@@ -139,7 +139,7 @@ public class PanelEinstellungen extends PanelVorlage {
             for (UIManager.LookAndFeelInfo i : info) {
                 themeList.add(i.getName());
             }
-            
+
             DefaultComboBoxModel model = new DefaultComboBoxModel(themeList.toArray());
             jComboBoxLook.setModel(model);
             //select the current
@@ -175,7 +175,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 }
             };
             jComboBoxLook.addActionListener(lst);
-            
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -269,7 +269,7 @@ public class PanelEinstellungen extends PanelVorlage {
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButtonInfos)
                             .addComponent(jButtonSuchen))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         jPanel7Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonInfos, jButtonSuchen});
@@ -326,15 +326,17 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButtonIconStandard)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButtonIconStandard)
+                            .addComponent(jLabel1))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jRadioButtonIconEigene)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextFieldPfadIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextFieldPfadIcon)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonOrdnerIcon))
-                    .addComponent(jLabel1))
-                .addContainerGap(26, Short.MAX_VALUE))
+                        .addComponent(jButtonOrdnerIcon))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -398,7 +400,7 @@ public class PanelEinstellungen extends PanelVorlage {
     // End of variables declaration//GEN-END:variables
 
     private class BeobSpinnerDownload implements ChangeListener {
-        
+
         @Override
         public void stateChanged(ChangeEvent arg0) {
             Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
@@ -406,69 +408,70 @@ public class PanelEinstellungen extends PanelVorlage {
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
         }
     }
-    
+
     private class BeobCheckBox implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR] = Boolean.toString(jCheckBoxEchtzeit.isSelected());
         }
     }
-    
+
     private class BeobCheckBoxSuchen implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.toString(jCheckBoxSuchen.isSelected());
         }
     }
-    
+
     private class BeobSuchen implements ActionListener {
-        
+
         private boolean infos = false;
-        
+
         public BeobSuchen(boolean iinfos) {
             infos = iinfos;
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             new ProgrammUpdateSuchen().checkVersion(ddaten, !infos /* bei aktuell anzeigen */, infos /* Hinweis */, true /* hinweiseAlleAnzeigen */);
         }
     }
-    
+
     private class BeobPfadIcon implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
+            //we can use native directory chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Logdatei speichern");
-                chooser.setMode(FileDialog.SAVE);
+                //we want to select a directory only, so temporarily change properties
+                System.setProperty("apple.awt.fileDialogForDirectories", "true");
+                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Iconpfad");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
+                    //A directory was selected, that means Cancel was not pressed
                     try {
-                        File destination = new File(chooser.getDirectory() + chooser.getFile());
-                        jTextFieldPfadIcon.setText(destination.getAbsolutePath());
+                        jTextFieldPfadIcon.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(642109058, Log.FEHLER_ART_PROG, "DialogExport.ZielBeobachter", ex);
+                        Log.fehlerMeldung(673014987, Log.FEHLER_ART_PROG, "PanelEinstellungenBeobPfadIcon", ex);
                     }
                 }
+                System.setProperty("apple.awt.fileDialogForDirectories", "false");
             } else {
+                //use the cross-platform swing chooser
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 if (!jTextFieldPfadIcon.getText().equals("")) {
                     chooser.setCurrentDirectory(new File(jTextFieldPfadIcon.getText()));
-                } else {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
                 }
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
-                        jTextFieldPfadIcon.setText(chooser.getSelectedFile().getAbsolutePath());
+                        jTextFieldPfadIcon.setText(chooser.getSelectedFile().getPath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(642109058, Log.FEHLER_ART_PROG, "DialogExport.ZielBeobachter", ex);
+                        Log.fehlerMeldung(302168730, Log.FEHLER_ART_PROG, "PanelEinstellungenBeobPfadIcon", ex);
                     }
                 }
             }

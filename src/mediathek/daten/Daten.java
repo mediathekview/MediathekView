@@ -23,6 +23,7 @@ import java.io.File;
 import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
+import mediathek.tool.Funktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
@@ -67,7 +68,7 @@ public class Daten {
         system[Konstanten.SYSTEM_UNICODE_AENDERN_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_ICON_STANDARD_NR] = Boolean.TRUE.toString();
-        system[Konstanten.SYSTEM_ICON_PFAD_NR] = "bin" + File.separator + "Icons" + File.separator + "SchwarzWeiss";
+        system[Konstanten.SYSTEM_ICON_PFAD_NR] = Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss";
 //        Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.TRUE.toString();
         if (Daten.debug) {
             Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUS);
