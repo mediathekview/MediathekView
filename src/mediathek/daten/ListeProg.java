@@ -20,7 +20,6 @@
 package mediathek.daten;
 
 import mediathek.tool.TModel;
-import mediathek.tool.GuiKonstanten;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -46,47 +45,6 @@ public class ListeProg extends LinkedList<DatenProg> {
         return ret;
     }
 
-//    public DatenProg getProgAbo(Daten daten, int art, String thema) {
-//        //Aus der Liste das Programm für das Thema des Abos suchen
-//        //wird kein passender Eintrag gefunden wird der letzte genommen
-//        DatenProg ret = null;
-//        String name = null;
-//        boolean gefunden = true;
-//        try {
-//            //erst Programmnamen suchen
-//            Iterator<DatenAbo> itAbo = daten.listeAbo.iterator();
-//            DatenAbo abo;
-//            while (itAbo.hasNext()) {
-//                abo = itAbo.next();
-//                if (abo.arr[Konstanten.ABO_THEMA_NR].equals(thema)) {
-//                    name = abo.arr[Konstanten.ABO_PGRUPPE_NR];
-//                    break;
-//                }
-//            }
-//            if (name != null) {
-//                Iterator<DatenProg> it = this.iterator();
-//                while (it.hasNext()) {
-//                    ret = it.next();
-//                    if (ret.arr[DatenProg.PROGRAMM_NAME_NR].equals(name)) {
-//                        gefunden = true;
-//                        break;
-//                    }
-//                }
-//            }
-//            if (!gefunden) {
-//                ret = this.getFirst();
-//                daten.fehler.fehlerMeldung("Fehler",
-//                                           new String[]{"Es wurde kein passendes Programm für ein Abo gefunden.",
-//                                                        "Thema: " + thema});
-//            }
-//        } catch (Exception ex) {
-//            daten.fehler.fehlerMeldung("Fehler", new String[]{"ListeProg.getProgAbo",
-//                                                              ex.getMessage(),
-//                                                              "Es wurde kein passendes Programm für ein Abo gefunden.",
-//                                                              "Thema: " + thema});
-//        }
-//        return ret;
-//    }
     public int auf(int idx, boolean auf) {
         DatenProg prog = this.remove(idx);
         int neu = idx;
