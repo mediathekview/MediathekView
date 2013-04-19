@@ -79,6 +79,7 @@ public class Funktionen {
     }
 
     public static String getPathJar() {
+        // liefert den Pfad der Programmdatei mit File.separator am Schluss
         String pFilePath = "pFile";
         File propFile = new File(pFilePath);
         if (!propFile.exists()) {
@@ -90,7 +91,15 @@ public class Funktionen {
             } catch (Exception ex) {
             }
         }
-        return propFile.getAbsolutePath().replace(pFilePath, "");
+        String s = propFile.getAbsolutePath().replace(pFilePath, "");
+        if (!s.endsWith(File.separator)) {
+            s = s + File.separator;
+        }
+        return s;
+    }
+
+    public static String getPfadIcons() {
+        return getPathJar() + Konstanten.VERZEICNHISS_ICONS;
     }
 
     public static String getProgVersionString() {
