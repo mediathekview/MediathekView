@@ -38,6 +38,7 @@ public class Konstanten {
     public static final String ADRESSE_WEBSITE_VLC = "http://www.videolan.org/";
     public static final String ADRESSE_WEBSITE_FLVSTREAMER = "https://savannah.nongnu.org/projects/flvstreamer/";
     // Dateien/Verzeichnisse
+    public static final String VERZEICNHISS_ICONS = "Icons"; // Unterverzeichnis im Programmverzeichnis in dem die Iconsets liegen
     public static final String VERZEICNHISS_DOWNLOADS = PROGRAMMNAME; // Standard wenn nichts angeben, Verzeichnis wird im Homeverzeichnis angelegt
     public static final String VERZEICHNISS_EINSTELLUNGEN = ".mediathek3"; // im Homeverzeichnis
     public static final String LOG_DATEI_DOWNLOAD_ABOS = "downloadAbos.txt";

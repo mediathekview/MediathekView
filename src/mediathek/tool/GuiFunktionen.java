@@ -30,6 +30,7 @@ import mediathek.daten.DatenFilm;
 
 public class GuiFunktionen extends Funktionen {
 
+
     public static void copyToClipboard(String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
     }

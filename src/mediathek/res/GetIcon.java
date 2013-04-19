@@ -37,7 +37,7 @@ public class GetIcon {
             ImageIcon icon;
             try {
                 String pfad = GuiFunktionen.addsPfad(Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR], strIcon);
-                System.out.println(new File(pfad).getAbsolutePath());
+//                System.out.println(new File(pfad).getAbsolutePath());
                 if (new File(pfad).exists()) {
                     icon = new ImageIcon(pfad);
                 } else {
