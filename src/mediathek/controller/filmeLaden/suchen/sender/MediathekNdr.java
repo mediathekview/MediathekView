@@ -31,6 +31,7 @@ import mediathek.tool.Log;
 public class MediathekNdr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "NDR";
+    private StringBuffer seiteAlle = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
     public MediathekNdr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
@@ -68,9 +69,16 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                     Log.fehlerMeldung(-210367600, Log.FEHLER_ART_MREADER, "MediathekNdr.addToList", "keine Url");
                     continue;
                 }
-                String[] add;
-                add = new String[]{"http://www.ndr.de/mediathek/" + url, thema};
-                listeThemen.addUrl(add);
+                String url_ = "http://www.ndr.de/mediathek/" + url;
+                String[] add = new String[]{url_, thema};
+                if (suchen.senderAllesLaden) {
+                    if (!alleSeiteSuchen(url_, thema)) {
+                        // dann halt so versuchen
+                        listeThemen.addUrl(add);
+                    }
+                } else {
+                    listeThemen.addUrl(add);
+                }
             } catch (Exception ex) {
                 Log.fehlerMeldung(-332945670, Log.FEHLER_ART_MREADER, "MediathekNdr.finden", ex);
             }
@@ -86,6 +94,39 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                 new Thread(new ThemaLaden()).start();
             }
         }
+    }
+
+    private boolean alleSeiteSuchen(String strUrlFeed, String tthema) {
+        boolean ret = false;
+        seiteAlle = getUrlIo.getUri(nameSenderMReader, strUrlFeed, Konstanten.KODIERUNG_UTF, 3 /* versuche */, seiteAlle, "Thema: " + tthema/* meldung */);
+        int pos1;
+        int pos2;
+        try {
+            // http://www.ndr.de/mediathek/mediatheksuche103_broadcast-35.html
+            // http://www.ndr.de/mediathek/mediatheksuche105_broadcast-35_format-video_page-1.html
+            final String WEITER = "Alle zeigen (";
+            if ((pos1 = seiteAlle.indexOf(WEITER)) != -1) {
+                pos1 += WEITER.length();
+                if ((pos2 = seiteAlle.indexOf(")", pos1)) != -1) {
+                    String anz = seiteAlle.substring(pos1, pos2);
+                    try {
+                        int z = Integer.parseInt(anz);
+                        for (int i = 1; i <= z / 10; ++i) {
+                            // geht bei 2 los da das ja schon die erste Seite ist!
+                            String url_ = strUrlFeed.replace(".html", "_format-video_page-" + String.valueOf(i) + ".html");
+                            url_ = url_.replace("mediatheksuche103", "mediatheksuche105");
+                            listeThemen.addUrl(new String[]{url_, tthema});
+                            ret = true;
+                        }
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(-913047821, Log.FEHLER_ART_MREADER, "MediathekNdr.feddEinerSeiteSuchen", strUrlFeed);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(-643208979, Log.FEHLER_ART_MREADER, "MediathekNdr.feddEinerSeiteSuchen", strUrlFeed);
+        }
+        return ret;
     }
 
     private void addTage() {
@@ -141,7 +182,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             String thema = tthema;
             String datum = "";
             String zeit = "";
-            String tmp = "";
+            String tmp;
             try {
                 while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_URL, pos)) != -1) {
                     pos += MUSTER_URL.length();
