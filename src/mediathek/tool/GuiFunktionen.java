@@ -30,12 +30,14 @@ import mediathek.daten.DatenFilm;
 
 public class GuiFunktionen extends Funktionen {
 
-
     public static void copyToClipboard(String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
     }
 
     public static void setProxy() {
+//        System.setProperty("proxySet", "true");
+//        System.setProperty("http.proxyHost", "127.0.0.1");
+//        System.setProperty("http.proxyPort", "3128");
         if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_HTTP_PROXY_ON_NR])) {
             System.setProperty("proxySet", "true");
             System.setProperty("http.proxyHost", DDaten.system[Konstanten.SYSTEM_HTTP_PROXY_SERVER_NR]);
