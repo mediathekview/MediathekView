@@ -19,8 +19,12 @@
  */
 package mediathek.tool;
 
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.RowSorter.SortKey;
+import javax.swing.SortOrder;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
@@ -40,7 +44,9 @@ public final class JTableMed extends JTable {
     public static final int TABELLE_TAB_DOWNLOADS = 1;
     public static final int TABELLE_TAB_ABOS = 2;
     public static final String FELDTRENNER = "|";
-    private List<? extends javax.swing.RowSorter.SortKey> listeSortKeys = null;
+    public static final String SORT_ASCENDING = "ASCENDING";
+    public static final String SORT_DESCENDING = "DESCENDING";
+    private List<? extends RowSorter.SortKey> listeSortKeys = null;
     int[] breite;
     int[] reihe;
     private int indexSpalte = 0;
@@ -90,6 +96,58 @@ public final class JTableMed extends JTable {
         reihe = getArray(spaltenTabelle.length);
         this.setAutoCreateRowSorter(true);
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+    }
+
+    public void initTabelle() {
+        // Tabelle das erste Mal initialisieren,
+        // mit den gespeicherten Daten oder
+        // mit den Standardwerten
+        // erst die Breite, dann die Reihenfolge
+        if (tabelle == TABELLE_STANDARD) {
+            // wird nur für eingerichtete Tabellen gemacht
+            return;
+        }
+        String b = "", r = "", s = "", upDown = "";
+        boolean ok = false;
+        if (!DDaten.system[nrDatenSystem].equals("")) {
+            ok = true;
+            int f1, f2, f3;
+            String d = DDaten.system[nrDatenSystem];
+            if ((f1 = DDaten.system[nrDatenSystem].indexOf(FELDTRENNER)) != -1) {
+                b = DDaten.system[nrDatenSystem].substring(0, f1);
+                if ((f2 = DDaten.system[nrDatenSystem].indexOf(FELDTRENNER, f1 + 1)) != -1) {
+                    r = DDaten.system[nrDatenSystem].substring(f1 + 1, f2);
+                }
+                if ((f3 = DDaten.system[nrDatenSystem].indexOf(FELDTRENNER, f2 + 1)) != -1) {
+                    s = DDaten.system[nrDatenSystem].substring(f2 + 1, f3);
+                    upDown = DDaten.system[nrDatenSystem].substring(f3 + 1);
+                }
+            }
+
+////            b = DDaten.system[nrDatenSystem].substring(0, DDaten.system[nrDatenSystem].indexOf(FELDTRENNER));
+////            r = DDaten.system[nrDatenSystem].substring(DDaten.system[nrDatenSystem].indexOf(FELDTRENNER) + 1);
+////            s = DDaten.system[nrDatenSystem].substring(DDaten.system[nrDatenSystem].indexOf(FELDTRENNER) + 1);
+            if (!arrLesen(b, breite)) {
+                ok = false;
+            }
+            if (!arrLesen(r, reihe)) {
+                ok = false;
+            }
+            SortKey sk = sortKeyLesen(s, upDown);
+            if (sk != null) {
+                LinkedList<SortKey> listSortKeys_ = new LinkedList<SortKey>();
+                listSortKeys_.add(sk);
+                this.getRowSorter().setSortKeys(listSortKeys_);
+            }
+        }
+        if (ok) {
+            setSpalten();
+        } else {
+            resetTabelle();
+            // setSpalten wird im resetTabelle gemacht
+        }
+        // und jetzt erst der Beobachter, damit Daten.system nicht vorher schon überschrieben wird
+        ///this.getColumnModel().addColumnModelListener(new BeobSpalten());
     }
 
     public void fireTableDataChanged(boolean setSpalten) {
@@ -215,39 +273,6 @@ public final class JTableMed extends JTable {
         stopBeob = false;
     }
 
-    public void initTabelle() {
-        // Tabelle das erste Mal initialisieren,
-        // mit den gespeicherten Daten oder
-        // mit den Standardwerten
-        // erst die Breite, dann die Reihenfolge
-        if (tabelle == TABELLE_STANDARD) {
-            // wird nur für eingerichtete Tabellen gemacht
-            return;
-        }
-        String b, r;
-        boolean ok = false;
-        if (!DDaten.system[nrDatenSystem].equals("")) {
-            ok = true;
-            //String d = DDaten.system[nrDatenSystem];
-            b = DDaten.system[nrDatenSystem].substring(0, DDaten.system[nrDatenSystem].indexOf(FELDTRENNER));
-            r = DDaten.system[nrDatenSystem].substring(DDaten.system[nrDatenSystem].indexOf(FELDTRENNER) + 1);
-            if (!arrLesen(b, breite)) {
-                ok = false;
-            }
-            if (!arrLesen(r, reihe)) {
-                ok = false;
-            }
-        }
-        if (ok) {
-            setSpalten();
-        } else {
-            resetTabelle();
-            // setSpalten wird im resetTabelle gemacht
-        }
-        // und jetzt erst der Beobachter, damit Daten.system nicht vorher schon überschrieben wird
-        ///this.getColumnModel().addColumnModelListener(new BeobSpalten());
-    }
-
     public void resetTabelle() {
         // Standardwerte wetzen
         for (int i = 0; i < spaltenTabelle.length; ++i) {
@@ -347,7 +372,7 @@ public final class JTableMed extends JTable {
         }
         // Tabellendaten ind die Daten.system schreiben
         // erst die Breite, dann die Reihenfolge
-        String b, r;
+        String b, r, s = "", upDown = "";
         int reihe_[] = new int[spaltenTabelle.length];
         int breite_[] = new int[spaltenTabelle.length];
         for (int i = 0; i < reihe_.length && i < this.getModel().getColumnCount(); ++i) {
@@ -362,7 +387,15 @@ public final class JTableMed extends JTable {
             b = b + "," + Integer.toString(breite_[i]);
             r = r + "," + Integer.toString(reihe_[i]);
         }
-        DDaten.system[nrDatenSystem] = b + FELDTRENNER + r;
+        listeSortKeys = this.getRowSorter().getSortKeys();
+        if (listeSortKeys != null) {
+            if (listeSortKeys.size() != 0) {
+                SortKey sk = listeSortKeys.get(0);
+                s = String.valueOf(sk.getColumn());
+                upDown = sk.getSortOrder().equals(SortOrder.ASCENDING) ? SORT_ASCENDING : SORT_DESCENDING;
+            }
+        }
+        DDaten.system[nrDatenSystem] = b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown;
     }
 
 //    private class BeobSpalten implements TableColumnModelListener {
@@ -427,6 +460,22 @@ public final class JTableMed extends JTable {
             }
         }
         return true;
+    }
+
+    private SortKey sortKeyLesen(String s, String upDown) {
+        SortKey sk = null;
+        int sp;
+        try {
+            sp = Integer.parseInt(s);
+            if (upDown.equals(SORT_DESCENDING)) {
+                sk = new SortKey(sp, SortOrder.DESCENDING);
+            } else {
+                sk = new SortKey(sp, SortOrder.ASCENDING);
+            }
+        } catch (Exception ex) {
+            return null;
+        }
+        return sk;
     }
 
     private int countString(String s) {
