@@ -398,36 +398,6 @@ public final class JTableMed extends JTable {
         DDaten.system[nrDatenSystem] = b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown;
     }
 
-//    private class BeobSpalten implements TableColumnModelListener {
-//        
-//        @Override
-//        public void columnAdded(TableColumnModelEvent arg0) {
-//        }
-//        
-//        @Override
-//        public void columnRemoved(TableColumnModelEvent arg0) {
-//        }
-//        
-//        @Override
-//        public void columnMoved(TableColumnModelEvent arg0) {
-//            set();
-//        }
-//        
-//        @Override
-//        public void columnMarginChanged(ChangeEvent arg0) {
-//            set();
-//        }
-//        
-//        @Override
-//        public void columnSelectionChanged(ListSelectionEvent arg0) {
-//        }
-//        
-//        private void set() {
-//            if (!stopBeob) {
-///                tabelleNachDatenSchreiben();
-//            }
-//        }
-//    }
     private int[] getArray(int anzahl) {
         int[] arr = new int[anzahl];
         for (int i = 0; i < arr.length; ++i) {
