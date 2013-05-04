@@ -61,6 +61,14 @@ public class RuntimeExec {
      */
     public Process exec() {
         try {
+////
+////            String p1 = prog.substring(0, prog.indexOf(" "));
+////            String p2 = prog.substring(prog.indexOf(" ") + 1);
+
+////            String[] arr = prog.split(" ");
+////            arr = split(prog);
+////            process = new ProcessBuilder(arr).start();
+
             process = Runtime.getRuntime().exec(prog);
             clearIn = new Thread(new ClearInOut(INPUT, process));
             clearOut = new Thread(new ClearInOut(ERROR, process));
