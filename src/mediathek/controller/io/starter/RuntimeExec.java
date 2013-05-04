@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mediathek.daten.DatenDownload;
@@ -61,7 +62,6 @@ public class RuntimeExec {
      */
     public Process exec() {
         try {
-////
 ////            String p1 = prog.substring(0, prog.indexOf(" "));
 ////            String p2 = prog.substring(prog.indexOf(" ") + 1);
 
@@ -86,6 +86,39 @@ public class RuntimeExec {
     //===================================
     // Private
     //===================================
+    
+////        private String[] split(String s) {
+////            ArrayList<String> list = new ArrayList<String>();
+////            String p = "";
+////            boolean STUECK = false;
+////            for (int i = 0; i < s.length(); ++i) {
+////                String ss = s.substring(i, i + 1);
+////                if (STUECK) {
+////                    if (ss.equals("\"")) {
+////                        STUECK = false;
+////                        list.add(p);
+////                        p = "";
+////                    } else {
+////                        p += ss;
+////                    }
+////                } else {
+////                    if (!ss.equals(" ")) {
+////                        if (ss.equals("\"")) {
+////                            STUECK = true;
+////                            continue;
+////                        }
+////                        p += ss;
+////                    } else {
+////                        list.add(p);
+////                        p = "";
+////                    }
+////                }
+////            }
+////            if (!p.equals("")) {
+////                list.add(p);
+////            }
+////            return list.toArray(new String[]{});
+////        }
     private class ClearInOut implements Runnable {
 
         private int art;
