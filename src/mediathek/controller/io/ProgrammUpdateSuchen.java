@@ -117,6 +117,7 @@ public class ProgrammUpdateSuchen {
                 for (int i = 0; i < listInfos.size(); ++i) {
                     String[] h = listInfos.get(i);
                     if (alleAnzeigen || angezeigt < Integer.parseInt(h[0])) {
+                        text.append("=======================================\n");
                         text.append(h[1]);
                         text.append("\n");
                         text.append("\n");

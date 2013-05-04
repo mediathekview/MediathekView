@@ -19,7 +19,6 @@
  */
 package mediathek.controller.io;
 
-import javax.swing.SwingUtilities;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePsetVorlagen;
