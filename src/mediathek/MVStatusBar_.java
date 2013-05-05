@@ -1,12 +1,29 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * MediathekView
+ * Copyright (C) 2008 W. Xaver
+ * W.Xaver[at]googlemail.com
+ * http://zdfmediathk.sourceforge.net/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui;
+package mediathek;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.daten.Daten;
@@ -18,18 +35,11 @@ import mediathek.tool.Log;
  *
  * @author emil
  */
-public final class InfoPanel extends javax.swing.JPanel {
+public class MVStatusBar_ extends MVStatusBar {
 
-    public static final int IDX_NIX = 0;
-    public static final int IDX_GUI_FILME = 1;
-    public static final int IDX_GUI_DOWNLOAD = 2;
-    public static final int IDX_GUI_ABO = 3;
-    private final int IDX_MAX = 4;
-    private String[] idx = new String[IDX_MAX];
-    private int aktIdx = 0;
-    private boolean stopTimer = false;
+    private ImageIcon backImage = GetIcon.getIcon("Statusbar.png");
 
-    public InfoPanel() {
+    public MVStatusBar_() {
         initComponents();
         init();
     }
@@ -38,12 +48,11 @@ public final class InfoPanel extends javax.swing.JPanel {
         jButtonStop.setIcon(GetIcon.getIcon("stop_16.png"));
         setBackground(new java.awt.Color(204, 204, 204));
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        clearProgress();
-        for (int i = 0; i < IDX_MAX; ++i) {
-            idx[i] = "";
-        }
+        hideProgressIndicators();
         jLabelStatusLinks.setMinimumSize(new Dimension(25, 25));
         jLabelRechts.setMinimumSize(new Dimension(25, 25));
+        jButtonStop.setIcon(GetIcon.getIcon("close_15.png"));
+        jButtonStop.setToolTipText("Abbrechen");
         jButtonStop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -51,20 +60,29 @@ public final class InfoPanel extends javax.swing.JPanel {
             }
         });
         new Thread(new TimerClass()).start();
-
     }
 
-    public void setTextLinks(int i, String text) {
-        idx[i] = text;
-        setIdx(aktIdx);
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(backImage.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
     }
 
-    public void setIdx(int i) {
-        aktIdx = i;
-        jLabelStatusLinks.setText(idx[i]);
+    @Override
+    public void setTextLeft(StatusbarIndex i, String text) {
+        displayListForLeftLabel.put(i, text);
+        setIndexForCenterDisplay(currentIndex);
     }
 
-    public void setProgressBar(ListenerFilmeLadenEvent event) {
+    @Override
+    public void setIndexForCenterDisplay(StatusbarIndex i) {
+        currentIndex = i;
+        String displayString = displayListForLeftLabel.get(i);
+        jLabelStatusLinks.setText(displayString);
+    }
+
+    @Override
+    public void updateProgressBar(ListenerFilmeLadenEvent event) {
         stopTimer = true;
         jProgressBar1.setVisible(true);
         jButtonStop.setVisible(true);
@@ -84,7 +102,8 @@ public final class InfoPanel extends javax.swing.JPanel {
         jLabelRechts.setText(GuiFunktionen.textLaenge(60, event.text, true /* mitte */, true /*addVorne*/));
     }
 
-    public void clearProgress() {
+    @Override
+    public void hideProgressIndicators() {
         stopTimer = false;
         jProgressBar1.setVisible(false);
         jButtonStop.setVisible(false);
@@ -132,10 +151,11 @@ public final class InfoPanel extends javax.swing.JPanel {
         jProgressBar1 = new javax.swing.JProgressBar();
         jButtonStop = new javax.swing.JButton();
 
-        setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         setMinimumSize(new java.awt.Dimension(15, 15));
 
         jLabelStatusLinks.setText("jLabel2");
+        jLabelStatusLinks.setMaximumSize(new java.awt.Dimension(60, 60));
+        jLabelStatusLinks.setMinimumSize(new java.awt.Dimension(60, 60));
 
         jLabelRechts.setText("jLabel1");
 
@@ -149,21 +169,26 @@ public final class InfoPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jLabelStatusLinks)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jLabelStatusLinks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 260, Short.MAX_VALUE)
                 .addComponent(jLabelRechts)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonStop))
+                .addComponent(jButtonStop)
+                .addGap(6, 6, 6))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                .addComponent(jLabelStatusLinks)
-                .addComponent(jLabelRechts)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jButtonStop))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabelStatusLinks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelRechts)
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonStop))
+                .addGap(5, 5, 5))
         );
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonStop, jProgressBar1});
@@ -194,7 +219,7 @@ public final class InfoPanel extends javax.swing.JPanel {
                         });
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(936251087, Log.FEHLER_ART_PROG, InfoPanel.class.getName(), ex);
+                    Log.fehlerMeldung(936251087, Log.FEHLER_ART_PROG, MVStatusBar_.class.getName(), ex);
                 }
             }
         }

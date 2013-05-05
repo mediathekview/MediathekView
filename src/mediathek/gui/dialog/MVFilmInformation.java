@@ -3,9 +3,9 @@ package mediathek.gui.dialog;
 import com.explodingpixels.macwidgets.HudWidgetFactory;
 import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.plaf.HudPaintingUtils;
-import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 import mediathek.daten.DatenFilm;
 import org.jdesktop.swingx.JXHyperlink;
@@ -101,103 +101,63 @@ public class MVFilmInformation implements ChangeListener {
 
     private JComponent buildContent() {
         JPanel panel = new JPanel();
-        panel.setLayout(new FormLayout(new ColumnSpec[]{
-            FormFactory.RELATED_GAP_COLSPEC,
-            FormFactory.DEFAULT_COLSPEC,
-            FormFactory.RELATED_GAP_COLSPEC,
-            FormFactory.DEFAULT_COLSPEC,},
-                new RowSpec[]{
-            FormFactory.RELATED_GAP_ROWSPEC,
-            FormFactory.DEFAULT_ROWSPEC,
-            FormFactory.RELATED_GAP_ROWSPEC,
-            FormFactory.DEFAULT_ROWSPEC,
-            FormFactory.RELATED_GAP_ROWSPEC,
-            FormFactory.DEFAULT_ROWSPEC,
-            FormFactory.RELATED_GAP_ROWSPEC,
-            FormFactory.DEFAULT_ROWSPEC,
-            FormFactory.RELATED_GAP_ROWSPEC,
-            FormFactory.DEFAULT_ROWSPEC,
-            FormFactory.RELATED_GAP_ROWSPEC,
-            FormFactory.DEFAULT_ROWSPEC,
-            FormFactory.RELATED_GAP_ROWSPEC,
-            FormFactory.DEFAULT_ROWSPEC,
-            FormFactory.RELATED_GAP_ROWSPEC,
-            FormFactory.DEFAULT_ROWSPEC,
-            FormFactory.RELATED_GAP_ROWSPEC,
-            FormFactory.DEFAULT_ROWSPEC,
-            FormFactory.RELATED_GAP_ROWSPEC,
-            FormFactory.DEFAULT_ROWSPEC,
-            FormFactory.RELATED_GAP_ROWSPEC,
-            FormFactory.DEFAULT_ROWSPEC,}));
+
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(5, 10, 10, 5);
+        panel.setLayout(gridbag);
+        int zeile = 0;
+        c.gridy = zeile;
 
 
         JLabel label = HudWidgetFactory.createHudLabel("Nr:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 2");
-
         lblNrField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblNrField, "4, 2");
+        addLable(zeile++, gridbag, c, panel, label, lblNrField);
 
         label = HudWidgetFactory.createHudLabel("Sender:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 4");
-
         lblSenderField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblSenderField, "4, 4");
+        addLable(zeile++, gridbag, c, panel, label, lblSenderField);
 
         label = HudWidgetFactory.createHudLabel("Thema:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 6");
-
         lblThemaField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblThemaField, "4, 6");
+        addLable(zeile++, gridbag, c, panel, label, lblThemaField);
 
         label = HudWidgetFactory.createHudLabel("Titel:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 8");
-
         lblTitleField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblTitleField, "4, 8");
+        addLable(zeile++, gridbag, c, panel, label, lblTitleField);
 
         label = HudWidgetFactory.createHudLabel("Datum:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 10");
-
         lblDatumField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblDatumField, "4, 10");
+        addLable(zeile++, gridbag, c, panel, label, lblDatumField);
 
         label = HudWidgetFactory.createHudLabel("Zeit:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 12");
-
         lblTimeField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblTimeField, "4, 12");
+        addLable(zeile++, gridbag, c, panel, label, lblTimeField);
 
         label = HudWidgetFactory.createHudLabel("URL:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 14");
-
         lblUrlField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblUrlField, "4, 14");
+        addLable(zeile++, gridbag, c, panel, label, lblUrlField);
 
         label = HudWidgetFactory.createHudLabel("UrlRTMP:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 16");
-
         lblUrlRtmpField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblUrlRtmpField, "4, 16");
+        addLable(zeile++, gridbag, c, panel, label, lblUrlRtmpField);
 
         label = HudWidgetFactory.createHudLabel("UrlAuth:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 18");
-
         lblUrlAuthField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblUrlAuthField, "4, 18");
+        addLable(zeile++, gridbag, c, panel, label, lblUrlAuthField);
 
         label = HudWidgetFactory.createHudLabel("UrlThema:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 20");
-
         lblUrlThemaField = new JXHyperlink();
         lblUrlThemaField.setForeground(Color.WHITE);
         try {
@@ -205,18 +165,30 @@ public class MVFilmInformation implements ChangeListener {
         } catch (URISyntaxException ignored) {
         }
         lblUrlThemaField.setFont(HudPaintingUtils.getHudFont());
-        panel.add(lblUrlThemaField, "4, 20");
+        addLable(zeile++, gridbag, c, panel, label, lblUrlThemaField);
 
         label = HudWidgetFactory.createHudLabel("Abo-Name:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 22");
-
         lblAboField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblAboField, "4, 22");
+        addLable(zeile++, gridbag, c, panel, label, lblAboField);
 
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         return panel;
+    }
+
+    private void addLable(int zeile, GridBagLayout gridbag, GridBagConstraints c, JPanel panel, JLabel l1, Component l2) {
+        //Label
+        c.gridy = zeile;
+        c.gridx = 0;
+        c.weightx = 0;
+        gridbag.setConstraints(l1, c);
+        panel.add(l1);
+        //Textfeld
+        c.gridx = 1;
+        c.weightx = 10;
+        gridbag.setConstraints(l2, c);
+        panel.add(l2);
     }
 
     @Override
