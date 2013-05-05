@@ -103,7 +103,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Legt die statusbar an.
      */
     private void createStatusBar() {
-        statusBar = new MVStatusBar();
+        if (SystemInfo.isMacOSX()) {
+            statusBar = new MVStatusBar_Mac();
+        } else {
+            statusBar = new MVStatusBar_();
+        }
         jPanelInfo.add(statusBar.getComponent(), BorderLayout.PAGE_START);
     }
 
@@ -498,7 +502,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 setToolbar(MediathekGui.UIButtonState.AUS);
-                statusBar.setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.FILME);
+                statusBar.setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.FILME);
             }
         });
         if (Daten.debug) {

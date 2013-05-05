@@ -38,7 +38,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.MVStatusBar;
+import mediathek.MVStatusBar_Mac;
 import mediathek.MediathekGui;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
@@ -89,7 +89,7 @@ public class GuiDownloads extends PanelVorlage {
     public void isShown() {
         super.isShown();
         ddaten.mediathekGui.setToolbar(MediathekGui.UIButtonState.DOWNLOAD);
-        ddaten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
+        ddaten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD);
         infoDialogSetzen();
     }
 
@@ -481,7 +481,7 @@ public class GuiDownloads extends PanelVorlage {
         }
         textLinks += ")";
         // Infopanel setzen
-        ddaten.mediathekGui.getStatusBar().setTextCenter(MVStatusBar.StatusbarIndex.DOWNLOAD, textLinks);
+        ddaten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD, textLinks);
     }
 
     private void infoDialogSetzen() {

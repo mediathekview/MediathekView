@@ -33,7 +33,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
-import mediathek.MVStatusBar;
+import mediathek.MVStatusBar_Mac;
 import mediathek.MediathekGui;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
@@ -68,7 +68,7 @@ public class GuiAbo extends PanelVorlage {
     public void isShown() {
         super.isShown();
         ddaten.mediathekGui.setToolbar(MediathekGui.UIButtonState.ABO);
-        ddaten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.ABO);
+        ddaten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.ABO);
     }
 
     public void aendern() {
@@ -197,7 +197,7 @@ public class GuiAbo extends PanelVorlage {
         }
         textLinks += "(" + ein + " eingeschaltet, " + aus + " ausgeschaltet)";
         // Infopanel setzen
-        ddaten.mediathekGui.getStatusBar().setTextCenter(MVStatusBar.StatusbarIndex.ABO, textLinks);
+        ddaten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.ABO, textLinks);
     }
 
     /**
