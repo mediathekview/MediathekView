@@ -61,7 +61,6 @@ public final class DDaten extends Daten {
     public GuiDownloads guiDownloads = null; // Tab mit den Downloads
     public GuiAbo guiAbo = null; // Tab mit den Abos
     // für die Tabellen
-    public String[] tabFilmeBreit = new String[DatenFilm.FILME_MAX_ELEM];
     public boolean nachDownloadShutDown = false;
     public MVFilmInformation filmInfoHud = null;
 
