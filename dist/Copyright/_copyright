@@ -23,6 +23,19 @@ The standard Java libraries fail to provide enough methods for manipulation of i
 
 
 ===============================================================
+jgoodies
+jgoodies-forms-1.7.1.jar
+jgoodies-common-1.6.0.jar
+
+JGoodies Common
+The JGoodies Common library provides convenience code for other JGoodies libraries and applications.
+
+JGoodies FormLayout
+The FormLayout helps you lay out and implement consistent Swing panels fast. FormLayout makes simple things easy and the hard stuff possible.
+
+http://www.jgoodies.com/downloads/libraries/
+
+===============================================================
 jgoodies-forms-1.7.1.jar
 
 JGoodies FormLayout

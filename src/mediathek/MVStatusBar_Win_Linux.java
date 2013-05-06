@@ -35,11 +35,11 @@ import mediathek.tool.Log;
  *
  * @author emil
  */
-public class MVStatusBar_ extends MVStatusBar {
+public class MVStatusBar_Win_Linux extends MVStatusBar {
 
     private ImageIcon backImage = GetIcon.getIcon("Statusbar.png");
 
-    public MVStatusBar_() {
+    public MVStatusBar_Win_Linux() {
         initComponents();
         init();
     }
@@ -151,8 +151,6 @@ public class MVStatusBar_ extends MVStatusBar {
         jProgressBar1 = new javax.swing.JProgressBar();
         jButtonStop = new javax.swing.JButton();
 
-        setMinimumSize(new java.awt.Dimension(15, 15));
-
         jLabelStatusLinks.setText("jLabel2");
         jLabelStatusLinks.setMaximumSize(new java.awt.Dimension(60, 60));
         jLabelStatusLinks.setMinimumSize(new java.awt.Dimension(60, 60));
@@ -219,7 +217,7 @@ public class MVStatusBar_ extends MVStatusBar {
                         });
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(936251087, Log.FEHLER_ART_PROG, MVStatusBar_.class.getName(), ex);
+                    Log.fehlerMeldung(936251087, Log.FEHLER_ART_PROG, MVStatusBar_Win_Linux.class.getName(), ex);
                 }
             }
         }

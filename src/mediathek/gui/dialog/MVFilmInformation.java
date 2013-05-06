@@ -101,63 +101,103 @@ public class MVFilmInformation implements ChangeListener {
 
     private JComponent buildContent() {
         JPanel panel = new JPanel();
-
-        GridBagLayout gridbag = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5, 10, 10, 5);
-        panel.setLayout(gridbag);
-        int zeile = 0;
-        c.gridy = zeile;
+        panel.setLayout(new FormLayout(new ColumnSpec[]{
+            FormSpecs.RELATED_GAP_COLSPEC,
+            FormSpecs.DEFAULT_COLSPEC,
+            FormSpecs.RELATED_GAP_COLSPEC,
+            FormSpecs.DEFAULT_COLSPEC,},
+                new RowSpec[]{
+            FormSpecs.RELATED_GAP_ROWSPEC,
+            FormSpecs.DEFAULT_ROWSPEC,
+            FormSpecs.RELATED_GAP_ROWSPEC,
+            FormSpecs.DEFAULT_ROWSPEC,
+            FormSpecs.RELATED_GAP_ROWSPEC,
+            FormSpecs.DEFAULT_ROWSPEC,
+            FormSpecs.RELATED_GAP_ROWSPEC,
+            FormSpecs.DEFAULT_ROWSPEC,
+            FormSpecs.RELATED_GAP_ROWSPEC,
+            FormSpecs.DEFAULT_ROWSPEC,
+            FormSpecs.RELATED_GAP_ROWSPEC,
+            FormSpecs.DEFAULT_ROWSPEC,
+            FormSpecs.RELATED_GAP_ROWSPEC,
+            FormSpecs.DEFAULT_ROWSPEC,
+            FormSpecs.RELATED_GAP_ROWSPEC,
+            FormSpecs.DEFAULT_ROWSPEC,
+            FormSpecs.RELATED_GAP_ROWSPEC,
+            FormSpecs.DEFAULT_ROWSPEC,
+            FormSpecs.RELATED_GAP_ROWSPEC,
+            FormSpecs.DEFAULT_ROWSPEC,
+            FormSpecs.RELATED_GAP_ROWSPEC,
+            FormSpecs.DEFAULT_ROWSPEC,}));
 
 
         JLabel label = HudWidgetFactory.createHudLabel("Nr:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(label, "2, 2");
+
         lblNrField = HudWidgetFactory.createHudLabel("");
-        addLable(zeile++, gridbag, c, panel, label, lblNrField);
+        panel.add(lblNrField, "4, 2");
 
         label = HudWidgetFactory.createHudLabel("Sender:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(label, "2, 4");
+
         lblSenderField = HudWidgetFactory.createHudLabel("");
-        addLable(zeile++, gridbag, c, panel, label, lblSenderField);
+        panel.add(lblSenderField, "4, 4");
 
         label = HudWidgetFactory.createHudLabel("Thema:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(label, "2, 6");
+
         lblThemaField = HudWidgetFactory.createHudLabel("");
-        addLable(zeile++, gridbag, c, panel, label, lblThemaField);
+        panel.add(lblThemaField, "4, 6");
 
         label = HudWidgetFactory.createHudLabel("Titel:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(label, "2, 8");
+
         lblTitleField = HudWidgetFactory.createHudLabel("");
-        addLable(zeile++, gridbag, c, panel, label, lblTitleField);
+        panel.add(lblTitleField, "4, 8");
 
         label = HudWidgetFactory.createHudLabel("Datum:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(label, "2, 10");
+
         lblDatumField = HudWidgetFactory.createHudLabel("");
-        addLable(zeile++, gridbag, c, panel, label, lblDatumField);
+        panel.add(lblDatumField, "4, 10");
 
         label = HudWidgetFactory.createHudLabel("Zeit:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(label, "2, 12");
+
         lblTimeField = HudWidgetFactory.createHudLabel("");
-        addLable(zeile++, gridbag, c, panel, label, lblTimeField);
+        panel.add(lblTimeField, "4, 12");
 
         label = HudWidgetFactory.createHudLabel("URL:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(label, "2, 14");
+
         lblUrlField = HudWidgetFactory.createHudLabel("");
-        addLable(zeile++, gridbag, c, panel, label, lblUrlField);
+        panel.add(lblUrlField, "4, 14");
 
         label = HudWidgetFactory.createHudLabel("UrlRTMP:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(label, "2, 16");
+
         lblUrlRtmpField = HudWidgetFactory.createHudLabel("");
-        addLable(zeile++, gridbag, c, panel, label, lblUrlRtmpField);
+        panel.add(lblUrlRtmpField, "4, 16");
 
         label = HudWidgetFactory.createHudLabel("UrlAuth:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(label, "2, 18");
+
         lblUrlAuthField = HudWidgetFactory.createHudLabel("");
-        addLable(zeile++, gridbag, c, panel, label, lblUrlAuthField);
+        panel.add(lblUrlAuthField, "4, 18");
 
         label = HudWidgetFactory.createHudLabel("UrlThema:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(label, "2, 20");
+
         lblUrlThemaField = new JXHyperlink();
         lblUrlThemaField.setForeground(Color.WHITE);
         try {
@@ -165,30 +205,18 @@ public class MVFilmInformation implements ChangeListener {
         } catch (URISyntaxException ignored) {
         }
         lblUrlThemaField.setFont(HudPaintingUtils.getHudFont());
-        addLable(zeile++, gridbag, c, panel, label, lblUrlThemaField);
+        panel.add(lblUrlThemaField, "4, 20");
 
         label = HudWidgetFactory.createHudLabel("Abo-Name:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(label, "2, 22");
+
         lblAboField = HudWidgetFactory.createHudLabel("");
-        addLable(zeile++, gridbag, c, panel, label, lblAboField);
+        panel.add(lblAboField, "4, 22");
 
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         return panel;
-    }
-
-    private void addLable(int zeile, GridBagLayout gridbag, GridBagConstraints c, JPanel panel, JLabel l1, Component l2) {
-        //Label
-        c.gridy = zeile;
-        c.gridx = 0;
-        c.weightx = 0;
-        gridbag.setConstraints(l1, c);
-        panel.add(l1);
-        //Textfeld
-        c.gridx = 1;
-        c.weightx = 10;
-        gridbag.setConstraints(l2, c);
-        panel.add(l2);
     }
 
     @Override
