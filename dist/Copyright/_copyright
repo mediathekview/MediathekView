@@ -1,82 +1,47 @@
 ===============================================================
-commons-compress-1.4.1.jar
-
 Commons Compress
+commons-compress-1.4.1.jar
 http://commons.apache.org/proper/commons-compress/
 The Apache Commons Compress library defines an API for working with ar, cpio, Unix dump, tar, zip, gzip, XZ, Pack200 and bzip2 files. 
 
-
 ===============================================================
-commons-io-2.4.jar
-
-Commons IO
-http://commons.apache.org/proper/commons-io/
-Commons IO is a library of utilities to assist with developing IO functionality. 
-
-
-===============================================================
-commons-lang3-3.1.jar
-
 Commons Lang
+commons-lang3-3.1.jar
 http://commons.apache.org/proper/commons-lang/
 The standard Java libraries fail to provide enough methods for manipulation of its core classes. Apache Commons Lang provides these extra methods.
 
-
 ===============================================================
-jgoodies
+JGoodies
 jgoodies-forms-1.7.1.jar
 jgoodies-common-1.6.0.jar
-
-JGoodies Common
 The JGoodies Common library provides convenience code for other JGoodies libraries and applications.
-
-JGoodies FormLayout
-The FormLayout helps you lay out and implement consistent Swing panels fast. FormLayout makes simple things easy and the hard stuff possible.
-
+JGoodies FormLayout helps you lay out and implement consistent Swing panels fast. FormLayout makes simple things easy and the hard stuff possible.
 http://www.jgoodies.com/downloads/libraries/
 
 ===============================================================
-jgoodies-forms-1.7.1.jar
-
-JGoodies FormLayout
-http://www.jgoodies.com/freeware/libraries/forms/
-The FormLayout helps you lay out and implement consistent Swing panels fast. FormLayout makes simple things easy and the hard stuff possible.
-
-
-===============================================================
-jide-oss-3.5.1.jar
-
 Jide-oss
+jide-oss-3.5.1.jar
 http://www.jidesoft.com/products/oss.htm
 https://github.com/jidesoft/jide-oss
 JIDE Common Layer (Professional Swing Components)
-
 Die lib wird für MV so angepasst, dass nur GPL enthalten ist:
 https://sourceforge.net/p/zdfmediathk/jide-oss/?branch=ref%2Fmaster
 die damit gebaute lib, ist in MV enthalten
 
-
 ===============================================================
-mac_widgets-0.9.5.jar
-
 macwidgets
+mac_widgets-0.9.5.jar
 http://code.google.com/p/macwidgets/
 Mac Widgets for Java are a collection of widgets seen in OS X applications, offered in a Java API.
 
-
 ===============================================================
-org.simplericity.macify.eawt
-
 Macify Library
+org.simplericity.macify.eawt
 http://simplericity.org/macify/
 The Macify Library helps you integrate your Java application with the Mac OS X platform.
 
-
 ===============================================================
-swingx-all-1.6.4.jar
-
 SwingLabs Swing Component Extensions
+swingx-all-1.6.4.jar
 http://swingx.java.net/
 Contains extensions to the Swing GUI toolkit, including new and enhanced components that provide functionality commonly required by rich client applications.
-
-
