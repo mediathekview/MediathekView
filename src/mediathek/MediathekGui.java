@@ -106,7 +106,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         if (SystemInfo.isMacOSX()) {
             statusBar = new MVStatusBar_Mac();
         } else {
-            statusBar = new MVStatusBar_Win_Linux();
+            statusBar = new MVStatusBar_Win_Linux(ddaten);
         }
         jPanelInfo.add(statusBar.getComponent(), BorderLayout.PAGE_START);
     }
@@ -143,6 +143,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
 
         ddaten = new DDaten(pfad, true);
+        ddaten.mediathekGui = this;
         Log.startMeldungen(this.getClass().getName());
 
         createStatusBar();
@@ -487,7 +488,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     private void initTabs() {
-        ddaten.mediathekGui = this;
         ddaten.guiFilme = new GuiFilme(ddaten, ddaten.mediathekGui);
         ddaten.guiDownloads = new GuiDownloads(ddaten, ddaten.mediathekGui);
         ddaten.guiAbo = new GuiAbo(ddaten, ddaten.mediathekGui);

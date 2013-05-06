@@ -23,9 +23,14 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
+import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
@@ -37,14 +42,28 @@ import mediathek.tool.Log;
  */
 public class MVStatusBar_Win_Linux extends MVStatusBar {
 
-    private ImageIcon backImage = GetIcon.getIcon("Statusbar.png");
+    private ImageIcon backImage1 = GetIcon.getIcon("Statusbar1.png");
+    private ImageIcon backImage2 = GetIcon.getIcon("Statusbar2.png");
+    private DDaten ddaten;
 
-    public MVStatusBar_Win_Linux() {
+    public MVStatusBar_Win_Linux(DDaten dd) {
+        ddaten = dd;
         initComponents();
         init();
     }
 
     private void init() {
+        ddaten.mediathekGui.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                updateUI();
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                updateUI();
+            }
+        });
         jButtonStop.setIcon(GetIcon.getIcon("stop_16.png"));
         setBackground(new java.awt.Color(204, 204, 204));
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -65,7 +84,11 @@ public class MVStatusBar_Win_Linux extends MVStatusBar {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(backImage.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
+        if (ddaten.mediathekGui.isActive()) {
+            g.drawImage(backImage1.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
+        } else {
+            g.drawImage(backImage2.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
+        }
     }
 
     @Override
