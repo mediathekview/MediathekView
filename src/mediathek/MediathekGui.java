@@ -106,7 +106,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         if (SystemInfo.isMacOSX()) {
             statusBar = new MVStatusBar_Mac();
         } else {
-            statusBar = new MVStatusBar_();
+            statusBar = new MVStatusBar_Win_Linux();
         }
         jPanelInfo.add(statusBar.getComponent(), BorderLayout.PAGE_START);
     }
