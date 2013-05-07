@@ -136,14 +136,19 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.DOWNLOAD_COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
+//      ist jetzt im  Menü  
         //aendern
-        ActionMap am = tabelle.getActionMap();
-        InputMap im = tabelle.getInputMap();
-        //aendern
-        am.put("aendern", new BeobAbstractActionAendern());
-        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-        im.put(enter, "aendern");
-        //
+//        ActionMap am = tabelle.getActionMap();
+//        InputMap im = tabelle.getInputMap();
+//        //aendern
+//        am.put("aendern", new BeobAbstractActionAendern());
+//        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+//        im.put(enter, "aendern");
+//        //löschen
+//        am.put("loeschen", new BeobAbstractActionLoeschen());
+//        KeyStroke del = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+//        im.put(del, "loeschen");
+//        //
         jRadioButtonAlles.addActionListener(new BeobAnzeige());
         jRadioButtonAbos.addActionListener(new BeobAnzeige());
         jRadioButtonDownloads.addActionListener(new BeobAnzeige());
@@ -344,9 +349,21 @@ public class GuiDownloads extends PanelVorlage {
                 ddaten.starterClass.filmLoeschen(url);
             }
             tabelleLaden();
+            ersteZeileMarkieren();
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
+    }
+
+    private void ersteZeileMarkieren() {
+        if (tabelle.getRowCount() > 0) {
+            // sonst ist schon eine Zeile markiert
+            if (tabelle.getSelectedRow() == -1) {
+                tabelle.requestFocus();
+                tabelle.setRowSelectionInterval(0, 0);
+            }
+        }
+
     }
 
     private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */) {
@@ -882,13 +899,21 @@ public class GuiDownloads extends PanelVorlage {
         }
     }
 
-    private class BeobAbstractActionAendern extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            downloadAendern();
-        }
-    }
+//    private class BeobAbstractActionAendern extends AbstractAction {
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            downloadAendern();
+//        }
+//    }
+//
+//    private class BeobAbstractActionLoeschen extends AbstractAction {
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            downloadLoeschen(true);
+//        }
+//    }
 
     private class BeobAnzeige implements ActionListener {
 
