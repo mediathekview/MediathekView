@@ -49,6 +49,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.jidesoft.utils.SystemInfo;
+import java.awt.Window;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
@@ -195,7 +197,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 setTitelUpdate();
             }
         });
-        jButtonFilmeLaden.setSelected(true);
+//        jButtonFilmeLaden.setSelected(true);
     }
 
     /**
@@ -208,10 +210,24 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             //if we have the old values, reset to System LAF
             if (laf.equals("") || laf.length() == 1) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                SwingUtilities.updateComponentTreeUI(this);
+                for (Frame f : Frame.getFrames()) {
+                    SwingUtilities.updateComponentTreeUI(f);
+                    for (Window w : f.getOwnedWindows()) {
+                        SwingUtilities.updateComponentTreeUI(w);
+                    }
+                }
             } else {
                 //otherwise set the requested UI
                 laf = DDaten.system[Konstanten.SYSTEM_LOOK_NR];
                 UIManager.setLookAndFeel(laf);
+                SwingUtilities.updateComponentTreeUI(this);
+                for (Frame f : Frame.getFrames()) {
+                    SwingUtilities.updateComponentTreeUI(f);
+                    for (Window w : f.getOwnedWindows()) {
+                        SwingUtilities.updateComponentTreeUI(w);
+                    }
+                }
             }
         } catch (Exception ignored) {
             //update the LAF parameter, just in case we tried to load a non-existing LAF before
@@ -1314,10 +1330,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAbosAusschalten.setText("ausschalten");
         jMenuAbos.add(jMenuItemAbosAusschalten);
 
+        jMenuItemAbosLoeschen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         jMenuItemAbosLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
         jMenuItemAbosLoeschen.setText("löschen");
         jMenuAbos.add(jMenuItemAbosLoeschen);
 
+        jMenuItemAbosAendern.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, 0));
         jMenuItemAbosAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png"))); // NOI18N
         jMenuItemAbosAendern.setText("ändern");
         jMenuAbos.add(jMenuItemAbosAendern);

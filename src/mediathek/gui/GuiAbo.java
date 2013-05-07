@@ -131,9 +131,20 @@ public class GuiAbo extends PanelVorlage {
                 }
             }
             tabelleLaden();
+            zeileMarkieren(0);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName());
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
+        }
+    }
+
+    private void zeileMarkieren(int row) {
+        if (tabelle.getRowCount() > 0) {
+            // sonst ist schon eine Zeile markiert
+            if (tabelle.getSelectedRow() == -1) {
+                tabelle.requestFocus();
+                tabelle.setRowSelectionInterval(row, row);
+            }
         }
     }
 
@@ -157,6 +168,7 @@ public class GuiAbo extends PanelVorlage {
     }
 
     private void aboEinAus(boolean ein) {
+        int sel = tabelle.getSelectedRow();
         int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int row : rows) {
@@ -166,6 +178,7 @@ public class GuiAbo extends PanelVorlage {
             }
             tabelleLaden();
             tabelle.clearSelection();
+            tabelle.requestFocus();
             for (int row : rows) {
                 tabelle.addRowSelectionInterval(row, row);
             }
