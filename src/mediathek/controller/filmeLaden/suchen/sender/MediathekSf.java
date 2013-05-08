@@ -25,13 +25,13 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class MediathekSf extends MediathekReader implements Runnable {
 
     //public static final String SENDER = "SF";
     public static final String SENDER = "SRF";
     private final int MAX_FILME_THEMA = 5;
-    private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
     public MediathekSf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
@@ -43,6 +43,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
         //<a class="sendung_name" href="/player/tv/sendung/1-gegen-100?id=6fd27ab0-d10f-450f-aaa9-836f1cac97bd">1 gegen 100</a>
         final String MUSTER = "sendung_name\" href=\"/player/tv";
         final String MUSTER_ID = "?id=";
+        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         listeThemen.clear();
         meldungStart();
         seite = getUrlIo.getUri_Utf(nameSenderMReader, "http://www.srf.ch/player/sendungen", seite, "");
@@ -100,8 +101,13 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 meldungAddThread();
                 String link[];
                 while (!Daten.filmeLaden.getStop() && (link = listeThemen.getListeThemen()) != null) {
+////
+////                    if (Daten.debug) {
+////                        if (!link[1].startsWith("1")) {
+////                            continue;
+////                        }
+////                    }
                     meldungProgress(link[0] /* url */);
-                    seite.setLength(0);
                     addFilme(link[1], link[0] /* url */);
                 }
             } catch (Exception ex) {
@@ -114,8 +120,10 @@ public class MediathekSf extends MediathekReader implements Runnable {
             // href="/player/tv/die-groessten-schweizer-talente/video/andrea-sutter-der-weg-ins-finale?id=06411758-1bd6-42ea-bc0e-cb8ebde3dfaa"
             // <title>Die grössten Schweizer Talente vom 17.03.2012, 20:11</title>
             // href="/player/tv/die-groessten-schweizer-talente/video/andrea-sutter-der-weg-ins-finale?id=06411758-1bd6-42ea-bc0e-cb8ebde3dfaa"&gt;Andrea Sutter - der Weg ins Finale&lt;/a&gt;&lt;/li&gt;
+            // oder <link>http://www.srf.ch/player/tv/dok-panamericana/video/panamericana-vom-machu-piccu-in-peru-nach-bolivien-67?id=09f2cb4d-c5be-4809-9c9c-2d4cc703ad00</link>
             final String MUSTER_TITEL = "&gt;"; //bis zum &
             final String MUSTER_URL = "href=\"/player/tv"; //bis zum ;
+            final String MUSTER_URL_NEU = "<link>http://www.srf.ch/player/tv"; //bis zum <
             final String MUSTER_ID = "?id=";
             final String MUSTER_ITEM_1 = "<item>";
             final String MUSTER_ITEM_2 = "</item>";
@@ -143,22 +151,26 @@ public class MediathekSf extends MediathekReader implements Runnable {
                     posItem1 += MUSTER_ITEM_1.length();
 //                    posItem2 = seite1.indexOf(MUSTER_ITEM_2, posItem1);
                     ++counter;
+                    titel = "";
                     if ((pos1 = seite1.indexOf(MUSTER_DATUM, posItem1)) != -1) {
                         pos1 += MUSTER_DATUM.length();
                         if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
                             tmp = seite1.substring(pos1, pos2);
                             if (tmp.contains("vom")) {
+                                titel = tmp.substring(0, tmp.indexOf("vom")).trim();
                                 tmp = tmp.substring(tmp.indexOf("vom") + 3);
                                 if (tmp.contains(",")) {
                                     datum = tmp.substring(0, tmp.indexOf(",")).trim();
                                     zeit = tmp.substring(tmp.indexOf(",") + 1).trim() + ":00";
+                                    titel = titel + " vom: " + datum;
                                 }
                             }
                         }
                     }
-                    if ((pos1 = seite1.indexOf(MUSTER_URL, posItem1)) != -1) {
-                        pos1 += MUSTER_URL.length();
-                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                    if ((pos1 = seite1.indexOf(MUSTER_URL_NEU, posItem1)) != -1) {
+                        // neu
+                        pos1 += MUSTER_URL_NEU.length();
+                        if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
                             url = seite1.substring(pos1, pos2);
                             if (url.contains(MUSTER_ID)) {
                                 url = url.substring(url.indexOf(MUSTER_ID) + MUSTER_ID.length());
@@ -166,13 +178,33 @@ public class MediathekSf extends MediathekReader implements Runnable {
                                 url = "";
                             }
                             if (!url.equals("")) {
-                                if ((pos1 = seite1.indexOf(MUSTER_TITEL, pos1)) != -1) {
-                                    pos1 += MUSTER_TITEL.length();
-                                    if ((pos2 = seite1.indexOf("&", pos1)) != -1) {
-                                        titel = seite1.substring(pos1, pos2);
-                                        addFilme2(thema, strUrlFeed, "http://www.videoportal.sf.tv/cvis/segment/" + url + "/.json", titel, datum, zeit);
-                                    } else {
-                                        Log.fehlerMeldung(-499556023, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme", "keine URL: " + strUrlFeed);
+                                if (titel.equals("")) {
+                                    titel = thema;
+                                }
+                                addFilme2(thema, strUrlFeed, "http://www.videoportal.sf.tv/cvis/segment/" + url + "/.json", titel, datum, zeit);
+                            } else {
+                                Log.fehlerMeldung(-499556023, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme", "keine URL: " + strUrlFeed);
+                            }
+                        }
+                    } else {
+                        if ((pos1 = seite1.indexOf(MUSTER_URL, posItem1)) != -1) {
+                            pos1 += MUSTER_URL.length();
+                            if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                                url = seite1.substring(pos1, pos2);
+                                if (url.contains(MUSTER_ID)) {
+                                    url = url.substring(url.indexOf(MUSTER_ID) + MUSTER_ID.length());
+                                } else {
+                                    url = "";
+                                }
+                                if (!url.equals("")) {
+                                    if ((pos1 = seite1.indexOf(MUSTER_TITEL, pos1)) != -1) {
+                                        pos1 += MUSTER_TITEL.length();
+                                        if ((pos2 = seite1.indexOf("&", pos1)) != -1) {
+                                            titel = seite1.substring(pos1, pos2);
+                                            addFilme2(thema, strUrlFeed, "http://www.videoportal.sf.tv/cvis/segment/" + url + "/.json", titel, datum, zeit);
+                                        } else {
+                                            Log.fehlerMeldung(-499556023, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme", "keine URL: " + strUrlFeed);
+                                        }
                                     }
                                 }
                             }
@@ -185,18 +217,29 @@ public class MediathekSf extends MediathekReader implements Runnable {
         }
 
         private void addFilme2(String thema, String strUrlFeed, String url, String titel, String datum, String zeit) {
+            // "description_title":"Panamericana: Vom Machu Piccu in Peru nach Bolivien (6\/7)"
+            // "description_title":"\u00abmyStory\u00bb \u2013 Mein Team (2\/4)",
             final String MUSTER_URL = "\"url\":\""; //bis zum "
+            final String MUSTER_TITEL = "\"description_title\":\"";
+            String t = "";
             meldung(url);
             seite2 = getUrl.getUri_Utf(nameSenderMReader, url, seite2, "");
             try {
-                int pos = 0;
                 int pos1;
                 int pos2;
-                if ((pos = seite2.indexOf(MUSTER_URL, pos)) != -1) {
-                    pos += MUSTER_URL.length();
-                    pos1 = pos;
-                    pos2 = seite2.indexOf("\"", pos);
-                    if (pos1 != -1 && pos2 != -1) {
+                if ((pos1 = seite2.indexOf(MUSTER_TITEL)) != -1) {
+                    pos1 += MUSTER_TITEL.length();
+                    if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
+                        t = seite2.substring(pos1, pos2);
+                        t = StringEscapeUtils.unescapeJava(t).trim();
+                        if (!t.equals("")) {
+                            titel = t;
+                        }
+                    }
+                }
+                if ((pos1 = seite2.indexOf(MUSTER_URL)) != -1) {
+                    pos1 += MUSTER_URL.length();
+                    if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
                         url = seite2.substring(pos1, pos2);
                         if (!url.equals("")) {
                             url = url.replace("\\", "");
