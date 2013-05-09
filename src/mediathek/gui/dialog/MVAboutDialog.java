@@ -413,7 +413,7 @@ public class MVAboutDialog extends JDialog {
 
     private class AnleitungHyperlinkAction extends HyperlinkAction {
 
-        private final static String ANLEITUNG_URL = "https://sourceforge.net/p/zdfmediathk/wiki/Home/";
+        private final static String ANLEITUNG_URL = "http://sourceforge.net/p/zdfmediathk/wiki/Home/";
 
         public AnleitungHyperlinkAction() throws URISyntaxException {
             super(new URI(ANLEITUNG_URL), Action.BROWSE);

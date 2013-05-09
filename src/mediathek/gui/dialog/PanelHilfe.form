@@ -229,7 +229,7 @@
         </Component>
         <Component class="org.jdesktop.swingx.JXHyperlink" name="jXHyperlinkAnleitung">
           <Properties>
-            <Property name="text" type="java.lang.String" value="https://sourceforge.net/p/zdfmediathk/wiki/Home/"/>
+            <Property name="text" type="java.lang.String" value="http://sourceforge.net/p/zdfmediathk/wiki/Home/"/>
           </Properties>
         </Component>
         <Component class="org.jdesktop.swingx.JXHyperlink" name="jXHyperlinkForum">

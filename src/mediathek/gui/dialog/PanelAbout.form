@@ -78,7 +78,7 @@
                       <Component id="jXHyperlinkAnleitung" min="-2" max="-2" attributes="0"/>
                       <Component id="jXHyperlinkForum" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="250" max="32767" attributes="0"/>
+                  <EmptySpace pref="258" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -140,7 +140,7 @@
         </Component>
         <Component class="org.jdesktop.swingx.JXHyperlink" name="jXHyperlinkAnleitung">
           <Properties>
-            <Property name="text" type="java.lang.String" value="https://sourceforge.net/p/zdfmediathk/wiki/Home/"/>
+            <Property name="text" type="java.lang.String" value="http://sourceforge.net/p/zdfmediathk/wiki/Home/"/>
           </Properties>
         </Component>
         <Component class="org.jdesktop.swingx.JXHyperlink" name="jXHyperlinkForum">
