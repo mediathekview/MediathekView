@@ -142,7 +142,7 @@ public class PanelHilfe extends PanelVorlage {
 
         jXHyperlinkWebsite.setText("http://zdfmediathk.sourceforge.net/");
 
-        jXHyperlinkAnleitung.setText("https://sourceforge.net/p/zdfmediathk/wiki/Home/");
+        jXHyperlinkAnleitung.setText("http://sourceforge.net/p/zdfmediathk/wiki/Home/");
 
         jXHyperlinkForum.setText("http://sourceforge.net/apps/phpbb/zdfmediathk/");
 

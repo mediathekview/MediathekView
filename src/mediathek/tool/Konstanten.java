@@ -29,7 +29,7 @@ public class Konstanten {
     public static final String DATEINAME_LISTE_FILMLISTEN = "filmlisten.xml";
     public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/version.xml";
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";
-    public static final String ADRESSE_ANLEITUNG = "https://sourceforge.net/p/zdfmediathk/wiki/Home/";
+    public static final String ADRESSE_ANLEITUNG = "http://sourceforge.net/p/zdfmediathk/wiki/Home/";
     public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen/programmgruppen.xml";
     public static final String ADRESSE_WEBSITE = "http://zdfmediathk.sourceforge.net/";
     public static final String ADRESSE_FORUM = "http://sourceforge.net/apps/phpbb/zdfmediathk/";

@@ -90,7 +90,7 @@ public class PanelAbout extends PanelVorlage {
 
         jXHyperlinkWebsite.setText("http://zdfmediathk.sourceforge.net/");
 
-        jXHyperlinkAnleitung.setText("https://sourceforge.net/p/zdfmediathk/wiki/Home/");
+        jXHyperlinkAnleitung.setText("http://sourceforge.net/p/zdfmediathk/wiki/Home/");
 
         jXHyperlinkForum.setText("http://sourceforge.net/apps/phpbb/zdfmediathk/");
 
@@ -109,7 +109,7 @@ public class PanelAbout extends PanelVorlage {
                     .addComponent(jXHyperlinkWebsite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jXHyperlinkAnleitung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jXHyperlinkForum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(250, Short.MAX_VALUE))
+                .addContainerGap(258, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
