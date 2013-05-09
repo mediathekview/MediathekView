@@ -12,7 +12,7 @@
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon>/mnt/daten/software/Mediathek/Mediathek/bin/info/MediathekView.ico</icon>
+  <icon>/mnt/daten/software/Mediathek/Mediathek/bin/MediathekView.ico</icon>
   <jre>
     <path></path>
     <minVersion>1.6.0</minVersion>
@@ -20,5 +20,6 @@
     <jdkPreference>preferJre</jdkPreference>
     <initialHeapSize>128</initialHeapSize>
     <maxHeapSize>1024</maxHeapSize>
+    <maxHeapPercent>75</maxHeapPercent>
   </jre>
 </launch4jConfig>
