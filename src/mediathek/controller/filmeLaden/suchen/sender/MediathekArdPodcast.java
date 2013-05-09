@@ -22,13 +22,13 @@ package mediathek.controller.filmeLaden.suchen.sender;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.Locale;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *
@@ -129,16 +129,13 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
             int pos = 0;
             int pos1 = 0;
             int pos2 = 0;
+            String url = "";
             final String MUSTER = "<a class=\"mt-box_preload mt-box-overflow\" href=\"";
             final String MUSTER_SET = "http://www.ardmediathek.de";
             LinkedList<String> listeWeiter = new LinkedList<String>();
             boolean weiter = false;
             final String MUSTER_WEITER = "<option value=\"";
             seite = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite, "Thema: " + thema);
-            pos = 0;
-            pos1 = 0;
-            pos2 = 0;
-            String url = "";
             //++++++++++++++++++++++++++++++++++ 1te Seite
             if ((pos = seite.indexOf(MUSTER, pos)) != -1) {
                 pos += MUSTER.length();
@@ -264,7 +261,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 //<title>ARD Mediathek: Gipfeltreffen mit Ilse Neubauer - 17.05.2012 | Bayerisches Fernsehen</title>
                 //<title>ARD Mediathek: Angeklickt: 18.05.2012, Es muss nicht immer Facebook sein | WDR Fernsehen</title>
                 //<title>ARD Mediathek: angeklickt: 30.11.2012, Online Videos bearbeiten | WDR Fernsehen</title>
-
+                // <title>Video-Clip &#034;Live aus Eging am See II - PS-Party in Pullmann City - 08.05.2013&#034; | Bayerisches Fernsehen | ARD Mediathek</title>
                 final String MUSTER_TITEL = "<title>";
                 if ((pos1 = seite2.indexOf(MUSTER_TITEL, 0)) == -1) {
                     return;
@@ -274,15 +271,25 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     return;
                 }
                 titel = seite2.substring(pos1, pos2);
-                if (!titel.startsWith("ARD Mediathek:")) {
+                if (titel.startsWith("Video-Clip")) {
+                    titel = titel.replaceFirst("Video-Clip", "").trim();
+                } else if (titel.startsWith("Audio-Clip")) {
+                    titel = titel.replaceFirst("Audio-Clip", "");
+                } else {
                     return;
                 }
-                titel = titel.replaceFirst("ARD Mediathek:", "").trim();
+                titel = StringEscapeUtils.unescapeHtml4(titel);
                 if (!titel.contains("|")) {
                     return;
                 }
-                titel = titel.substring(0, titel.lastIndexOf("|"));
+                titel = titel.substring(0, titel.indexOf("|"));
                 titel = titel.trim();
+                if (titel.startsWith("\"")) {
+                    titel = titel.substring(1);
+                }
+                if (titel.endsWith("\"")) {
+                    titel = titel.substring(0, titel.length() - 1);
+                }
                 if (titel.contains(" - ") && titel.contains("20")) {
                     datum = titel.substring(titel.lastIndexOf(" - ") + 3).trim();
                     if (datum.length() != 10) {
