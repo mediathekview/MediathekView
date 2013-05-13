@@ -216,12 +216,12 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 }
             }
             if (ddaten.listePset.addPset(pSet)) {
-                JOptionPane.showMessageDialog(null, pSet.size() + " Programmset importiert!",
+                MVMessageDialog.showMessageDialog(null, pSet.size() + " Programmset importiert!",
                         "Ok", JOptionPane.INFORMATION_MESSAGE);
             }
             return true;
         } else {
-            JOptionPane.showMessageDialog(null, "Die Datei wurde nicht importiert!",
+            MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
                     "Fehler", JOptionPane.ERROR_MESSAGE);
             return false;
         }

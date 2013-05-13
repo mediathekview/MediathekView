@@ -40,6 +40,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import mediathek.tool.MVMessageDialog;
 
 public class PanelEinstellungenErweitert extends PanelVorlage {
 
@@ -151,9 +152,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 if (!programm.equals("")) {
                     try {
                         if (!new File(programm).exists()) {
-                            JOptionPane.showMessageDialog(ddaten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!");
+                            MVMessageDialog.showMessageDialog(ddaten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
                         } else if (!new File(programm).canExecute()) {
-                            JOptionPane.showMessageDialog(ddaten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!");
+                            MVMessageDialog.showMessageDialog(ddaten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                         }
                     } catch (Exception ignored) {
                     }
@@ -201,9 +202,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 if (!programm.equals("")) {
                     try {
                         if (!new File(programm).exists()) {
-                            JOptionPane.showMessageDialog(ddaten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!");
+                            MVMessageDialog.showMessageDialog(ddaten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
                         } else if (!new File(programm).canExecute()) {
-                            JOptionPane.showMessageDialog(ddaten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!");
+                            MVMessageDialog.showMessageDialog(ddaten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                         }
                     } catch (Exception ignored) {
                     }

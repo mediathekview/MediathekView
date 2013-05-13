@@ -79,6 +79,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import mediathek.tool.MVMessageDialog;
 import org.jdesktop.swingx.JXSearchField;
 import org.simplericity.macify.eawt.Application;
 import org.simplericity.macify.eawt.ApplicationEvent;
@@ -250,7 +251,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 final String strMessage = "<html>Sie haben MediathekView wahrscheinlich nicht mit dem Startscript gestartet.<br>"
                         + "Dadurch kann das Laden der Filmliste wegen zuwenig Arbeitsspeicher fehlschlagen.<br><br>"
                         + "<b>Bitte nutzen Sie die Startscripte!</b></html>";
-                JOptionPane.showMessageDialog(this, strMessage, "Arbeitsspeicher", JOptionPane.WARNING_MESSAGE);
+                MVMessageDialog.showMessageDialog(this, strMessage, "Arbeitsspeicher", JOptionPane.WARNING_MESSAGE);
             }
         }
     }

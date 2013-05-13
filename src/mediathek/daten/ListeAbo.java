@@ -27,6 +27,7 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Filter;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
 
 public class ListeAbo extends LinkedList<DatenAbo> {
@@ -54,7 +55,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 addAbo(datenAbo);
                 ret = true;
             } else {
-                JOptionPane.showMessageDialog(null, "Abo existiert bereits", "Abo anlegen", JOptionPane.INFORMATION_MESSAGE);
+                MVMessageDialog.showMessageDialog(null, "Abo existiert bereits", "Abo anlegen", JOptionPane.INFORMATION_MESSAGE);
             }
         }
         return ret;

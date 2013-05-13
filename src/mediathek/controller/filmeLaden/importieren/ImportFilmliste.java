@@ -21,12 +21,18 @@ package mediathek.controller.filmeLaden.importieren;
 
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
+import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
+import mediathek.gui.dialog.DialogHinweisUpdate;
+import mediathek.tool.DatumZeit;
+import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVMessageDialog;
 
 public class ImportFilmliste {
 
@@ -74,8 +80,7 @@ public class ImportFilmliste {
                 }
             }
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {
-                ///
-                JOptionPane.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
                 Log.fehlerMeldung(951235497, Log.FEHLER_ART_PROG, "Filme laden", "Es konnten keine Filme geladen werden!");
             }
             fertigMelden();
@@ -102,7 +107,7 @@ public class ImportFilmliste {
         @Override
         public void run() {
             if (!urlLaden(pfad, istUrl)) {
-                JOptionPane.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
             }
             fertigMelden();
         }

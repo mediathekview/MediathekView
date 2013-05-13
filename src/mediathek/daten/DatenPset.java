@@ -26,6 +26,7 @@ import javax.swing.JOptionPane;
 import mediathek.controller.io.starter.Start;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Log;
+import mediathek.tool.MVMessageDialog;
 
 public class DatenPset {
 
@@ -174,7 +175,7 @@ public class DatenPset {
         //ist nur ein Programm in der Liste wird dieses genommen
         DatenProg ret = null;
         if (listeProg.size() == 0) {
-            JOptionPane.showMessageDialog(null, "Programme einrichten!",
+            MVMessageDialog.showMessageDialog(null, "Programme einrichten!",
                     "Kein Programm", JOptionPane.INFORMATION_MESSAGE);
         } else if (listeProg.size() == 1) {
             ret = listeProg.getFirst();

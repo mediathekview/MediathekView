@@ -34,6 +34,7 @@ import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVMessageDialog;
 
 /**
  * Diese Klasse enthält zusätzliche Konstanten, Systemeinstellungen und alles was wichtig ist für
@@ -108,10 +109,10 @@ public final class DDaten extends Daten {
                     return;
                 }
                 Log.systemMeldung("Die Einstellungen konnten nicht zurückgesetzt werden.");
-                JOptionPane.showMessageDialog(this.mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
+                MVMessageDialog.showMessageDialog(this.mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                         + "Es wird versucht die Einstellungen beim Beenden zu löschen.\n"
                         + "Sollte auch das nicht klappen,\n"
-                        + "finden Sie im Forum weitere Hilfe.");
+                        + "finden Sie im Forum weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
                 new File(dir1).deleteOnExit();
             } catch (Exception e) {
                 Log.fehlerMeldung(465690123, Log.FEHLER_ART_PROG, DDaten.class.getName(), e);

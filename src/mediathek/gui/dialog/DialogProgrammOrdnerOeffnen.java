@@ -33,6 +33,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
+import mediathek.tool.MVMessageDialog;
 
 public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
 
@@ -54,7 +55,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
         parentComponent = parent;
         ddaten = dd;
         initComponents();
-        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png")); 
+        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
         setTitle(titel);
         jTextArea1.setText(text);
         jButtonOk.addActionListener(new OkBeobachter());
@@ -80,9 +81,9 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
         if (!programm.equals("")) {
             try {
                 if (!new File(programm).exists()) {
-                    JOptionPane.showMessageDialog(parentComponent, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!");
+                    MVMessageDialog.showMessageDialog(parentComponent, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
                 } else if (!new File(programm).canExecute()) {
-                    JOptionPane.showMessageDialog(parentComponent, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!");
+                    MVMessageDialog.showMessageDialog(parentComponent, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                 } else {
                     ziel = programm;
                     ret = true;
@@ -233,7 +234,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     try {
-                        File destination = new File(chooser.getDirectory()+chooser.getFile());
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldProgramm.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
                         Log.fehlerMeldung(398762109, Log.FEHLER_ART_PROG, "DialogProgrammOrdnerOeffnen.ZielBeobachter", ex);
