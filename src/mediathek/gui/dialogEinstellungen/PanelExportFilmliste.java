@@ -38,6 +38,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVMessageDialog;
 
 public class PanelExportFilmliste extends PanelVorlage {
 
@@ -61,7 +62,7 @@ public class PanelExportFilmliste extends PanelVorlage {
         int ret;
         String exporDatei = Daten.system[Konstanten.SYSTEM_EXPORT_DATEI_NR];
         if (exporDatei.equals("")) {
-            JOptionPane.showMessageDialog(parentComponent, "Keine Datei angegeben", "Pfad", JOptionPane.INFORMATION_MESSAGE);
+            MVMessageDialog.showMessageDialog(parentComponent, "Keine Datei angegeben", "Pfad", JOptionPane.INFORMATION_MESSAGE);
         } else {
             try {
                 if (new File(exporDatei).exists()) {
@@ -74,7 +75,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     new IoXmlFilmlisteSchreiben().filmeSchreiben(exporDatei, Daten.listeFilme);
                     if (!new File(exporDatei).exists()) {
-                        JOptionPane.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        MVMessageDialog.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             } catch (Exception ex) {

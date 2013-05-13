@@ -33,6 +33,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
+import mediathek.tool.MVMessageDialog;
 
 public class DialogZiel extends javax.swing.JDialog {
 
@@ -73,7 +74,7 @@ public class DialogZiel extends javax.swing.JDialog {
     private boolean check() {
         String pfad = jTextFieldPfad.getText();
         if (pfad.equals("")) {
-            JOptionPane.showMessageDialog(parentComponent, "Pfad ist leer", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
+            MVMessageDialog.showMessageDialog(parentComponent, "Pfad ist leer", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (new File(pfad).exists()) {
@@ -194,7 +195,7 @@ public class DialogZiel extends javax.swing.JDialog {
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     try {
-                        File destination = new File(chooser.getDirectory()+chooser.getFile());
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldPfad.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
                         Log.fehlerMeldung(639874637, Log.FEHLER_ART_PROG, "DialogZielDatei.ZielBeobachter", ex);

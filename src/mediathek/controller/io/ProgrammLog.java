@@ -31,6 +31,7 @@ import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
+import mediathek.tool.MVMessageDialog;
 
 public class ProgrammLog {
 
@@ -42,7 +43,7 @@ public class ProgrammLog {
         }
         File f = new File(dialog.ziel);
         if (f == null) {
-            JOptionPane.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
+            MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                     "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
         } else {
             BufferedWriter bw = null;
@@ -130,7 +131,7 @@ public class ProgrammLog {
                 bw.close();
             } catch (Exception ex) {
                 Log.fehlerMeldung(319865493, Log.FEHLER_ART_PROG, "ProgrammLog.zeileSchreiben-1", ex);
-                JOptionPane.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
+                MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                         "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
             } finally {
                 try {

@@ -39,6 +39,7 @@ import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import mediathek.tool.MVMessageDialog;
 
 public class DialogAddDownload extends javax.swing.JDialog {
 
@@ -79,9 +80,9 @@ public class DialogAddDownload extends javax.swing.JDialog {
     }
 
     private void init() {
-        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png")); 
+        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
         if (ddaten.listePset.getListeSpeichern().size() == 0) {
-            JOptionPane.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
             // Satz mit x, war wohl nix
             ok = false;
@@ -151,7 +152,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         String name = jTextFieldName.getText();
         if (datenDownload != null) {
             if (pfad.equals("") || name.equals("")) {
-                JOptionPane.showMessageDialog(parentComponent, "Pfad oder Name ist leer", "Fehlerhafter Pfad/Name!", JOptionPane.ERROR_MESSAGE);
+                MVMessageDialog.showMessageDialog(parentComponent, "Pfad oder Name ist leer", "Fehlerhafter Pfad/Name!", JOptionPane.ERROR_MESSAGE);
             } else {
                 if (!pfad.substring(pfad.length() - 1).equals(File.separator)) {
                     pfad += File.separator;
@@ -159,7 +160,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 if (GuiFunktionenProgramme.checkPfadBeschreibbar(pfad)) {
                     ok = true;
                 } else {
-                    JOptionPane.showMessageDialog(parentComponent, "Pfad ist nicht beschreibbar", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
+                    MVMessageDialog.showMessageDialog(parentComponent, "Pfad ist nicht beschreibbar", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }

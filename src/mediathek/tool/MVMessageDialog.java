@@ -21,10 +21,21 @@ package mediathek.tool;
 
 import java.awt.Component;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
-public class HinweisKeineAuswahl {
+public class MVMessageDialog {
 
-    public void zeigen(Component parentComponent) {
-        MVMessageDialog.showMessageDialog(parentComponent, "Zeile auswählen", "keine Auswahl", JOptionPane.INFORMATION_MESSAGE);
+    public static void showMessageDialog(final Component parent, final String message, final String title, final int messageType) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            JOptionPane.showMessageDialog(parent, message, title, messageType);
+        } else {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    JOptionPane.showMessageDialog(parent, message, title, messageType);
+                }
+            });
+        }
+
     }
 }

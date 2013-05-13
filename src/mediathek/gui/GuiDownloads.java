@@ -62,6 +62,7 @@ import mediathek.tool.JTableMed;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelDownload;
 
 public class GuiDownloads extends PanelVorlage {
@@ -318,7 +319,7 @@ public class GuiDownloads extends PanelVorlage {
                 if (!gut) {
                     Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = "";
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
-                    JOptionPane.showMessageDialog(parentComponent, "Kann den Dateimanager nicht öffnen!",
+                    MVMessageDialog.showMessageDialog(parentComponent, "Kann den Dateimanager nicht öffnen!",
                             "Fehler", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -863,7 +864,7 @@ public class GuiDownloads extends PanelVorlage {
                                 ddaten.starterClass.urlStarten(gruppe, film);
                             }
                         } else {
-                            JOptionPane.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
+                            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
                                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
@@ -914,7 +915,6 @@ public class GuiDownloads extends PanelVorlage {
 //            downloadLoeschen(true);
 //        }
 //    }
-
     private class BeobAnzeige implements ActionListener {
 
         @Override
