@@ -31,6 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.controller.io.starter.Start;
+import mediathek.controller.io.starter.StarterClass;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
@@ -123,7 +124,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                     textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                 }
             } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                textfeldListe[i].setText(download.getTextProgress(ddaten, start));
+                textfeldListe[i].setText(StarterClass.getTextProgress(start));
             } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
                 textfeldListe[i].setText(download.getTextRestzeit(ddaten, start));
             } else if (i == DatenDownload.DOWNLOAD_ART_NR) {

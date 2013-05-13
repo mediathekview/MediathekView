@@ -25,7 +25,6 @@ import java.util.Iterator;
 import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekSwr;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekWdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
 import mediathek.controller.io.AsxLesen;
 import mediathek.controller.io.starter.Start;
@@ -37,12 +36,6 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class DatenDownload implements Comparable<DatenDownload> {
-    //Tags Filme
-
-    public static final int PROGRESS_NICHT_GESTARTET = -1;
-    public static final int PROGRESS_WARTEN = 0;
-    public static final int PROGRESS_GESTARTET = 1;
-    public static final int PROGRESS_FERTIG = 1000;
     //
     public static final String DOWNLOAD_NR = "Nr";
     public static final int DOWNLOAD_NR_NR = 0;
@@ -127,22 +120,22 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.TRUE.toString();
     }
 
-    public void statusMelden(int status) {
-        arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(status);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
-    }
-
-    public static void statusMelden(ArrayList<DatenDownload> ad, int status) {
-        for (DatenDownload d : ad) {
-            d.arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(status);
-        }
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
-    }
-
+//    public void statusMelden(int status) {
+//        arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(status);
+//        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
+//    }
+//
+//    public static void statusMelden(ArrayList<DatenDownload> ad, int status) {
+//        for (DatenDownload d : ad) {
+//            d.arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(status);
+//        }
+//        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
+//    }
     public void starten(DDaten ddaten) {
         // Start erstellen und zur Liste hinzufügen
         ddaten.starterClass.addStart(new Start(this));
-        statusMelden(DatenDownload.PROGRESS_WARTEN);
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
+//        statusMelden(DatenDownload.PROGRESS_WARTEN);
     }
 
     public static void starten(DDaten ddaten, ArrayList<DatenDownload> ad) {
@@ -153,7 +146,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
         //die Starts jetzt starten
         ddaten.starterClass.addStart(al);
-        statusMelden(ad, DatenDownload.PROGRESS_WARTEN);
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
+//      statusMelden(ad, DatenDownload.PROGRESS_WARTEN);
     }
 
     public DatenDownload getCopy() {
@@ -207,36 +201,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
             return false;
         }
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART_NR]);
-    }
-
-    public String getTextProgress(DDaten ddaten) {
-        Start s = ddaten.starterClass.getStart(arr[DatenDownload.DOWNLOAD_URL_NR]);
-        return getTextProgress(ddaten, s);
-    }
-
-    public String getTextProgress(DDaten ddaten, Start s) {
-        String ret = "";
-        if (s == null) {
-            return "";
-        }
-        int ii = Integer.parseInt(arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
-        if (ii == DatenDownload.PROGRESS_NICHT_GESTARTET) {
-            // noch nicht gestartet
-        } else if (ii == DatenDownload.PROGRESS_WARTEN) {
-            ret = "warten";
-        } else if (ii == DatenDownload.PROGRESS_GESTARTET) {
-            ret = "gestartet";
-        } else if (1 < ii && ii < DatenDownload.PROGRESS_FERTIG) {
-            double d = ii / 10.0;
-            ret = Double.toString(d) + "%";
-        } else if (ii == DatenDownload.PROGRESS_FERTIG) {
-            if (s.status == Start.STATUS_ERR) {
-                ret = "fehlerhaft";
-            } else {
-                ret = "fertig";
-            }
-        }
-        return ret;
     }
 
     public String getTextRestzeit(DDaten ddaten) {
@@ -464,7 +428,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }
-        arr[DOWNLOAD_PROGRESS_NR] = String.valueOf(PROGRESS_NICHT_GESTARTET);
         arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.FALSE.toString();
     }
 }

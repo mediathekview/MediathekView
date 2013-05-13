@@ -38,6 +38,11 @@ import mediathek.tool.Log;
 import mediathek.tool.TModel;
 
 public class StarterClass {
+    //Tags Filme
+    public static final int PROGRESS_NICHT_GESTARTET = -1;
+    public static final int PROGRESS_WARTEN = 0;
+    public static final int PROGRESS_GESTARTET = 1;
+    public static final int PROGRESS_FERTIG = 1000;
 
     private DDaten ddaten;
     private ListeStarts listeStarts;
@@ -126,6 +131,30 @@ public class StarterClass {
     public void pause() {
         pause = true;
     }
+
+    public static String getTextProgress(Start s) {
+        String ret = "";
+        if (s == null) {
+            return "";
+        }
+        if (s.percent == PROGRESS_NICHT_GESTARTET) {
+            // noch nicht gestartet
+        } else if (s.percent == PROGRESS_WARTEN) {
+            ret = "warten";
+        } else if (s.percent == PROGRESS_GESTARTET) {
+            ret = "gestartet";
+        } else if (1 < s.percent && s.percent < PROGRESS_FERTIG) {
+            double d = s.percent / 10.0;
+            ret = Double.toString(d) + "%";
+        } else if (s.percent == PROGRESS_FERTIG) {
+            if (s.status == Start.STATUS_ERR) {
+                ret = "fehlerhaft";
+            } else {
+                ret = "fertig";
+            }
+        }
+        return ret;
+    }
     // ===================================
     // Private
     // ===================================
@@ -186,7 +215,8 @@ public class StarterClass {
 
         private void startStarten(Start start) {
             start.startZeit = new Datum();
-            start.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+//            start.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
             switch (start.datenDownload.getArt()) {
                 case Start.ART_PROGRAMM:
                     StartenProgramm startenProgrammn = new StartenProgramm(start);
@@ -336,7 +366,8 @@ public class StarterClass {
             leeresFileLoeschen(file);
             fertigmeldung(start);
             start.restSekunden = -1;
-            start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+//            start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
 
@@ -385,10 +416,11 @@ public class StarterClass {
                         p = (downLen * (long) 1000) / maxLen;
                         // p muss zwischen 1 und 999 liegen
                         if (p == 0) {
-                            p = DatenDownload.PROGRESS_GESTARTET;
+                            p = StarterClass.PROGRESS_GESTARTET;
                         } else if (p >= 1000) {
                             p = 999;
                         }
+                        start.percent = (int) p;
                         if (p != pp) {
                             pp = p;
                             // Restzeit ermitteln
@@ -398,7 +430,8 @@ public class StarterClass {
                                 int restProzent = 1000 - (int) p;
                                 start.restSekunden = (diffZeit * restProzent / p);
                             }
-                            start.datenDownload.statusMelden((int) p);
+                            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+//                            start.datenDownload.statusMelden((int) p);
                         }
                     }
                     destStream.write(buffer, 0, len);
@@ -423,7 +456,8 @@ public class StarterClass {
             leeresFileLoeschen(new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
             fertigmeldung(start);
             start.restSekunden = -1;
-            start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+//            start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
     }
@@ -433,7 +467,6 @@ public class StarterClass {
 //            // Sicherheitsabfrage, dann beenden
 //        }
 //    }
-
     private int laenge(String url) {
         int ret;
         try {
@@ -456,8 +489,11 @@ public class StarterClass {
         File file = new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         if (!file.exists()) {
             Log.fehlerMeldung(550236231, Log.FEHLER_ART_PROG, "StartetClass.pruefen-1", "Download fehlgeschlagen: Datei existiert nicht" + start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-        } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_KB * 1024) {
+        } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
             Log.fehlerMeldung(795632500, Log.FEHLER_ART_PROG, "StartetClass.pruefen-2", "Download fehlgeschlagen: Datei zu klein" + start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        } else if (start.percent > -1 && start.percent < 995) {
+            // Prozent werden berechnet und es wurde vor 99,5% abgebrochen
+            Log.fehlerMeldung(696510258, Log.FEHLER_ART_PROG, "StartetClass.pruefen-3", "Download fehlgeschlagen: 99,5% wurden nicht erreicht" + start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else {
             if (start.datenDownload.istAbo()) {
                 ddaten.erledigteAbos.zeileSchreiben(start.datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
@@ -478,7 +514,7 @@ public class StarterClass {
                     // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
                     Log.systemMeldung(new String[]{"Restart/Aufräumen: leere Datei löschen", file.getAbsolutePath()});
                     file.delete();
-                } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_KB * 1024) {
+                } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
                     Log.systemMeldung(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", file.getAbsolutePath()});
                     file.delete();
                 }
