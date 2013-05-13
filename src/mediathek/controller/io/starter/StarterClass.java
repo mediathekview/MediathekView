@@ -39,11 +39,11 @@ import mediathek.tool.TModel;
 
 public class StarterClass {
     //Tags Filme
+
     public static final int PROGRESS_NICHT_GESTARTET = -1;
     public static final int PROGRESS_WARTEN = 0;
     public static final int PROGRESS_GESTARTET = 1;
     public static final int PROGRESS_FERTIG = 1000;
-
     private DDaten ddaten;
     private ListeStarts listeStarts;
     private Starten starten = null;
@@ -366,6 +366,7 @@ public class StarterClass {
             leeresFileLoeschen(file);
             fertigmeldung(start);
             start.restSekunden = -1;
+            start.percent = PROGRESS_FERTIG;
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
 //            start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
@@ -456,6 +457,7 @@ public class StarterClass {
             leeresFileLoeschen(new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
             fertigmeldung(start);
             start.restSekunden = -1;
+            start.percent = PROGRESS_FERTIG;
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
 //            start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
