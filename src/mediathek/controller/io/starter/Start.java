@@ -28,6 +28,7 @@ public class Start {
     public int startcounter = 0;
     public DatenDownload datenDownload = null;
     public Process process = null; //Prozess des Download
+    public int percent = -1; // Prozent fertiggestellt: -1=nix, 999=99,9%
     public boolean stoppen = false;
     public Datum startZeit = null;
     public long restSekunden = -1;

@@ -32,6 +32,7 @@ import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.io.starter.Start;
+import mediathek.controller.io.starter.StarterClass;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
@@ -74,34 +75,37 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
                 this.setText(download.getTextRestzeit(ddaten, s));
             } else if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                int i = Integer.parseInt(download.arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
                 setHorizontalAlignment(SwingConstants.CENTER);
-                if (s != null && 1 < i && i < DatenDownload.PROGRESS_FERTIG) {
-                    JProgressBar progressBar = new JProgressBar(0, 1000);
-                    JPanel panel = new JPanel(new BorderLayout());
-                    setColor(panel, s, isSelected);
-                    setColor(progressBar, s, isSelected);
-                    progressBar.setBorder(BorderFactory.createEmptyBorder());
-                    progressBar.setStringPainted(true);
-                    progressBar.setUI(new BasicProgressBarUI() {
-                        @Override
-                        protected Color getSelectionBackground() {
-                            return UIManager.getDefaults().getColor("Table.foreground");
-                        }
+                if (s != null) {
+                    if (1 < s.percent && s.percent < StarterClass.PROGRESS_FERTIG) {
+                        JProgressBar progressBar = new JProgressBar(0, 1000);
+                        JPanel panel = new JPanel(new BorderLayout());
+                        setColor(panel, s, isSelected);
+                        setColor(progressBar, s, isSelected);
+                        progressBar.setBorder(BorderFactory.createEmptyBorder());
+                        progressBar.setStringPainted(true);
+                        progressBar.setUI(new BasicProgressBarUI() {
+                            @Override
+                            protected Color getSelectionBackground() {
+                                return UIManager.getDefaults().getColor("Table.foreground");
+                            }
 
-                        @Override
-                        protected Color getSelectionForeground() {
-                            return Color.white;
-                        }
-                    });
-                    panel.add(progressBar);
-                    panel.setBorder(BorderFactory.createEmptyBorder());
-                    progressBar.setValue(i);
-                    double d = i / 10.0;
-                    progressBar.setString(Double.toString(d) + "%");
-                    return panel;
+                            @Override
+                            protected Color getSelectionForeground() {
+                                return Color.white;
+                            }
+                        });
+                        panel.add(progressBar);
+                        panel.setBorder(BorderFactory.createEmptyBorder());
+                        progressBar.setValue(s.percent);
+                        double d = s.percent / 10.0;
+                        progressBar.setString(Double.toString(d) + "%");
+                        return panel;
+                    } else {
+                        this.setText(StarterClass.getTextProgress(s));
+                    }
                 } else {
-                    this.setText(download.getTextProgress(ddaten, s));
+                    this.setText(StarterClass.getTextProgress(s));
                 }
             } else if (c == DatenDownload.DOWNLOAD_ABO_NR) {
                 setFont(new java.awt.Font("Dialog", Font.BOLD, 12));

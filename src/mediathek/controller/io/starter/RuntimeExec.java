@@ -23,10 +23,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class RuntimeExec {
@@ -37,7 +37,7 @@ public class RuntimeExec {
     Thread clearIn;
     Thread clearOut;
     private Process process = null;
-    Start s;
+    Start start;
     private static int procnr = 0; //TH
     private Pattern patternFlvstreamer = Pattern.compile("([0-9.]*%)");
     private Pattern patternFfmpeg = Pattern.compile("(?<=Duration: )[^,]*");
@@ -46,8 +46,8 @@ public class RuntimeExec {
     private String zeit, prozent;
 
     public RuntimeExec(Start st) {
-        s = st;
-        prog = s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
+        start = st;
+        prog = start.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
     }
 
     public RuntimeExec(String p) {
@@ -86,7 +86,6 @@ public class RuntimeExec {
     //===================================
     // Private
     //===================================
-    
 ////        private String[] split(String s) {
 ////            ArrayList<String> list = new ArrayList<String>();
 ////            String p = "";
@@ -176,7 +175,8 @@ public class RuntimeExec {
                     double d = Double.parseDouble(prozent);
                     meldenDouble(d);
                 } catch (Exception ex) {
-                    s.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
+//                    start.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
                     Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG, "RuntimeExec.GetPercentageFromErrorStream-1", input);
                 }
             } else {
@@ -200,7 +200,8 @@ public class RuntimeExec {
                         meldenDouble(d);
                     }
                 } catch (Exception ex) {
-                    s.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
+//                    start.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
                     Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG, "RuntimeExec.GetPercentageFromErrorStream-2", input);
                 }
             }
@@ -210,6 +211,7 @@ public class RuntimeExec {
             // nur ganze Int speichern, und 1000 Schritte
             d *= 10;
             int pNeu = (int) d;
+            start.percent = pNeu;
             if (pNeu != percent) {
                 percent = pNeu;
                 if (percent_start == -1) {
@@ -218,12 +220,13 @@ public class RuntimeExec {
                 }
                 if (percent > (percent_start + 5)) {
                     // sonst macht es noch keinen Sinn
-                    int diffZeit = s.startZeit.diffInSekunden();
+                    int diffZeit = start.startZeit.diffInSekunden();
                     int diffProzent = percent - percent_start;
                     int restProzent = 1000 - percent;
-                    s.restSekunden = (diffZeit * restProzent / diffProzent);
+                    start.restSekunden = (diffZeit * restProzent / diffProzent);
                 }
-                s.datenDownload.statusMelden(percent);
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
+//                start.datenDownload.statusMelden(percent);
             }
         }
     }

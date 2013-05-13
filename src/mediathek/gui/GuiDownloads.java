@@ -158,9 +158,7 @@ public class GuiDownloads extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                tabelle.fireTableDataChanged(true /*setSpalten*/);
-                setInfo();
-                //panelUpdate();
+                tabelleProzentGeaendert();
             }
         });
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
@@ -448,7 +446,9 @@ public class GuiDownloads extends PanelVorlage {
             DatenDownload.starten(ddaten, arrayDownload);
         } else {
             //oder alle Downloads stoppen
-            DatenDownload.statusMelden(arrayDownload, DatenDownload.PROGRESS_NICHT_GESTARTET);
+//            tabelleProzentGeaendert();
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getName());
+//            DatenDownload.statusMelden(arrayDownload, DatenDownload.PROGRESS_NICHT_GESTARTET);
         }
     }
 
@@ -468,6 +468,11 @@ public class GuiDownloads extends PanelVorlage {
         for (String url : urls) {
             ddaten.starterClass.filmLoeschen(url);
         }
+    }
+
+    private void tabelleProzentGeaendert() {
+        tabelle.fireTableDataChanged(true /*setSpalten*/);
+        setInfo();
     }
 
     private void setInfo() {
