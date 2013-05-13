@@ -24,18 +24,13 @@ import java.awt.Desktop;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.MVStatusBar_Mac;
@@ -885,7 +880,7 @@ public class GuiDownloads extends PanelVorlage {
             jPopupMenu.add(itemInfo);
 
             // Tabellenspalten zurücksetzen
-            JMenuItem item = new JMenuItem("Spalten zurücksetzen");
+            JMenuItem item = new JMenuItem("Spaltenbreite zurücksetzen");
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
