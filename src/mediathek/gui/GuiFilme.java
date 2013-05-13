@@ -1300,7 +1300,7 @@ public class GuiFilme extends PanelVorlage {
 
             jPopupMenu.add(item);
             // Tabellenspalten zurücksetzen
-            item = new JMenuItem("Spalten zurücksetzen");
+            item = new JMenuItem("Spaltenbreite zurücksetzen");
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

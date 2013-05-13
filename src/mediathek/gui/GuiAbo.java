@@ -351,7 +351,7 @@ public class GuiAbo extends PanelVorlage {
             //##Trenner##
 
             // Tabellenspalten zurücksetzen
-            JMenuItem item = new JMenuItem("Spalten zurücksetzen");
+            JMenuItem item = new JMenuItem("Spaltenbreite zurücksetzen");
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

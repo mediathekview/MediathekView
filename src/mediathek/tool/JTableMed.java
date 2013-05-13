@@ -326,6 +326,8 @@ public final class JTableMed extends JTable {
                 case TABELLE_STANDARD:
                     break;
             }
+            listeSortKeys = null;
+            this.getRowSorter().setSortKeys(null);
         }
         this.setRowSorter(null);
         this.setAutoCreateRowSorter(true);
