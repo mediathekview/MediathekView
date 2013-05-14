@@ -23,7 +23,7 @@
         <Restart>true</Restart>
     </Programm>
     <Programm>
-        <Programmname>vlc ( &lt;#&gt; )</Programmname>
+        <Programmname>VLC ( &lt;#&gt; )</Programmname>
         <Zieldateiname>%t-%T-%N.asf</Zieldateiname>
         <Programmpfad>PFAD_VLC</Programmpfad>
         <Programmschalter>%f :sout=#standard{access=file,mux=asf,dst="**"} -I "dummy" --play-and-exit</Programmschalter>

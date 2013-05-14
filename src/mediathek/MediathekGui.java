@@ -518,7 +518,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jTabbedPane.addTab("Abos", ddaten.guiAbo);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 new PanelMeldungen(ddaten, ddaten.mediathekGui, Log.textSystem, ListenerMediathekView.EREIGNIS_LOG_SYSTEM, "Systemmeldungen"),
-                new PanelMeldungen(ddaten, ddaten.mediathekGui, Log.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Videoplayer"));
+                new PanelMeldungen(ddaten, ddaten.mediathekGui, Log.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Hilfsprogramme"));
         splitPane.setName("Meldungen");
         splitPane.addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override

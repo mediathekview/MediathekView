@@ -28,7 +28,7 @@
                       <Component id="jCheckBoxAuto" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jCheckBoxUmbrechen" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="73" max="32767" attributes="0"/>
+                      <EmptySpace pref="69" max="32767" attributes="0"/>
                       <Component id="jButtonLoeschen" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -57,7 +57,7 @@
   <SubComponents>
     <Component class="javax.swing.JButton" name="jButtonLoeschen">
       <Properties>
-        <Property name="text" type="java.lang.String" value="l&#xf6;schen"/>
+        <Property name="text" type="java.lang.String" value="L&#xf6;schen"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane">

@@ -22,6 +22,9 @@
     - "Apache Commons IO Lib" für neue IO-Funktion
     - NDR angepasst
     - Sortierreihenfolge der Tabellen wird gespeichert
+    - Es kann ein eigenes Iconset verwendet werden
+    - Über den Menüpunkt "Hilfe->Hilfe und Fragen.." können alle Einstellungen zurückgesetzt werden
+    
     
 
 
