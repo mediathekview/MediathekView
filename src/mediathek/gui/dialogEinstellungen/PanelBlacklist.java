@@ -132,6 +132,31 @@ public class PanelBlacklist extends PanelVorlage {
                 }
             }
         });
+        jButtonAendern.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String se = jComboBoxSender.getSelectedItem().toString();
+                String th = jComboBoxThema.getSelectedItem().toString();
+                String ti = jTextFieldTitel.getText().trim();
+                String thti = jTextFieldThemaTitel.getText().trim();
+                if (!se.equals("") || !th.equals("") || !ti.equals("") || !thti.equals("")) {
+                    int selectedTableRow = jTableBlacklist.getSelectedRow();
+                    if (selectedTableRow >= 0) {
+                        int row = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
+                        String delNr = jTableBlacklist.getModel().getValueAt(row, DatenBlacklist.BLACKLIST_NR_NR).toString();
+                        DatenBlacklist bl = ddaten.listeBlacklist.get(delNr);
+                        bl.arr[DatenBlacklist.BLACKLIST_SENDER_NR] = se;
+                        bl.arr[DatenBlacklist.BLACKLIST_THEMA_NR] = th;
+                        bl.arr[DatenBlacklist.BLACKLIST_TITEL_NR] = ti;
+                        bl.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR] = thti;
+                        tabelleLaden();
+                        jTableBlacklist.addRowSelectionInterval(row, row);
+                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
+                    }
+                }
+
+            }
+        });
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -270,6 +295,7 @@ public class PanelBlacklist extends PanelVorlage {
         jTextFieldTitel = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jTextFieldThemaTitel = new javax.swing.JTextField();
+        jButtonAendern = new javax.swing.JButton();
         jRadioButtonBlacklist = new javax.swing.JRadioButton();
         jRadioButtonWhitelist = new javax.swing.JRadioButton();
         jButtonHilfe = new javax.swing.JButton();
@@ -393,6 +419,8 @@ public class PanelBlacklist extends PanelVorlage {
 
         jLabel2.setText("Thema oder Titel:");
 
+        jButtonAendern.setText("ändern");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -425,9 +453,14 @@ public class PanelBlacklist extends PanelVorlage {
                         .addGap(12, 12, 12))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonAendern)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonHinzufuegen)
                 .addContainerGap())
         );
+
+        jPanel4Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAendern, jButtonHinzufuegen});
+
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
@@ -450,7 +483,9 @@ public class PanelBlacklist extends PanelVorlage {
                     .addComponent(jLabel2)
                     .addComponent(jTextFieldThemaTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonHinzufuegen)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonHinzufuegen)
+                    .addComponent(jButtonAendern))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -541,6 +576,7 @@ public class PanelBlacklist extends PanelVorlage {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton jButtonAendern;
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonHinzufuegen;
     private javax.swing.JButton jButtonTabelleLoeschen;
