@@ -132,7 +132,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         panelMeldungenUbersicht = new PanelMeldungenUbersicht(ddaten, parentComponent);
         panelMeldungenFehler = new PanelMeldungen(ddaten, parentComponent, Log.textFehler, Log.LOG_FEHLER, "Fehlermeldungen");
         panelMeldungenSystem = new PanelMeldungen(ddaten, parentComponent, Log.textSystem, Log.LOG_SYSTEM, "Systemmeldungen");
-        panelMeldungenPlayer = new PanelMeldungen(ddaten, parentComponent, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Videoplayer");
+        panelMeldungenPlayer = new PanelMeldungen(ddaten, parentComponent, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Hilfsprogramme");
     }
 
     private void initTree() {
@@ -148,11 +148,11 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         // Infos
         final String NAME_allgemeineInfos = "Infos";
         final String NAME_history = "History";
-        final String NAME_logfile = "erledigte Abos";
+        final String NAME_logfile = "Erledigte Abos";
         final String NAME_meldungen = "Meldungen";
         final String NAME_systemmeldungen = "Systemmeldungen";
         final String NAME_fehlermeldungen = "Fehlermeldungen";
-        final String NAME_meldungenProgramme = "Programmausgabe";
+        final String NAME_meldungenProgramme = "Hilfsprogramme";
         //
         DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode(Konstanten.PROGRAMMNAME);
         // ===============================================================================

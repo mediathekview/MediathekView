@@ -411,7 +411,7 @@ public class PanelBlacklist extends PanelVorlage {
 
         jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jButtonHinzufuegen.setText("hinzufügen");
+        jButtonHinzufuegen.setText("Hinzufügen");
 
         jLabel7.setText("Sender, Thema, Titel oder Thema/Titel:");
 
@@ -419,7 +419,7 @@ public class PanelBlacklist extends PanelVorlage {
 
         jLabel2.setText("Thema oder Titel:");
 
-        jButtonAendern.setText("ändern");
+        jButtonAendern.setText("Ändern");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);

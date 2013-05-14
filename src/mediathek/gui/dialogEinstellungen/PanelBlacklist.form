@@ -418,7 +418,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonHinzufuegen">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="hinzuf&#xfc;gen"/>
+                    <Property name="text" type="java.lang.String" value="Hinzuf&#xfc;gen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel7">
@@ -442,7 +442,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonAendern">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="&#xe4;ndern"/>
+                    <Property name="text" type="java.lang.String" value="&#xc4;ndern"/>
                   </Properties>
                 </Component>
               </SubComponents>

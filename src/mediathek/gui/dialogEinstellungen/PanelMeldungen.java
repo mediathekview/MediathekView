@@ -142,7 +142,7 @@ public class PanelMeldungen extends PanelVorlage {
         jCheckBoxAuto = new javax.swing.JCheckBox();
         jCheckBoxUmbrechen = new javax.swing.JCheckBox();
 
-        jButtonLoeschen.setText("löschen");
+        jButtonLoeschen.setText("Löschen");
 
         jTextArea.setEditable(false);
         jTextArea.setColumns(20);
@@ -171,7 +171,7 @@ public class PanelMeldungen extends PanelVorlage {
                         .addComponent(jCheckBoxAuto)
                         .addGap(18, 18, 18)
                         .addComponent(jCheckBoxUmbrechen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
                         .addComponent(jButtonLoeschen)))
                 .addContainerGap())
         );

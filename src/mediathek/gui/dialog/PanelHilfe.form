@@ -60,7 +60,7 @@
               <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="63" max="32767" attributes="0"/>
+              <EmptySpace pref="38" max="32767" attributes="0"/>
               <Component id="jButtonLogErstellen" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -152,7 +152,7 @@
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jTextFieldPfad" pref="356" max="32767" attributes="0"/>
+                              <Component id="jTextFieldPfad" max="32767" attributes="0"/>
                               <Component id="jTextFieldVersion" max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -285,11 +285,22 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jButtonReset" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="jButtonHilfeReset" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <Component id="jButtonReset" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="jButtonHilfeReset" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -302,6 +313,10 @@
                       <Component id="jButtonReset" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonHilfeReset" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -310,7 +325,7 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="jButtonReset">
           <Properties>
-            <Property name="text" type="java.lang.String" value="alle Einstellungen zur&#xfc;cksetzen!"/>
+            <Property name="text" type="java.lang.String" value="Alle Einstellungen zur&#xfc;cksetzen!"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfeReset">
@@ -319,6 +334,16 @@
               <Image iconType="3" name="/mediathek/res/help_16.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Hilfe"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel3">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Achtung, es werden dadurch auch eigene"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel4">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Buttons, Abos und die Blacklists gel&#xf6;scht."/>
           </Properties>
         </Component>
       </SubComponents>
