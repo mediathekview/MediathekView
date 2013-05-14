@@ -21,16 +21,11 @@ package mediathek.controller.filmeLaden.importieren;
 
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
-import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
-import mediathek.gui.dialog.DialogHinweisUpdate;
-import mediathek.tool.DatumZeit;
-import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 
