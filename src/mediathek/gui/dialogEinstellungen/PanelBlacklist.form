@@ -339,7 +339,9 @@
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="jButtonHinzufuegen" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonAendern" linkSize="3" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButtonHinzufuegen" linkSize="3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -370,7 +372,10 @@
                               <Component id="jTextFieldThemaTitel" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="jButtonHinzufuegen" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jButtonHinzufuegen" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtonAendern" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -434,6 +439,11 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextFieldThemaTitel">
+                </Component>
+                <Component class="javax.swing.JButton" name="jButtonAendern">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="&#xe4;ndern"/>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>

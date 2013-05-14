@@ -1,60 +1,56 @@
 
-Eine Programmgruppe ist ein Satz von Programmen an die eine
-URL eines Films übergeben wird. Je nach Angabe der Programme
+Ein Set ist ein Satz von Programmen an die eine
+URL eines Films übergeben wird. Je nach Programm
 wird der Film dann aufgezeichnet oder angezeigt.
 
 
 Arten:
 
-Es muss je eine Programmgruppe zum Abspielen und zum Aufzeichnen angelegt
+Es muss je ein Set zum Abspielen und eins zum Aufzeichnen angelegt
 sein. Diese werden beim ersten Programmstart mit den "Standardeinstellungen"
-angelegt. Die Programmgruppe "Abspielen" wird gestartet, wenn ein Film zum
-Abspielen gestartet wird, die Gruppe "Speichern" ist dann für das Speichern
-eines Films zuständig. Sind mehrere Gruppen zum Speichern angelegt, wird die
-Gruppe zum Speichern für jeden Film in einem Dialog abgefragt.
-Werden Abos genutzt, muss auch dafür eine Programmgruppe angelegt sein. Meist
-eignet sich dafür die Programmgruppe "Speichern", bei dieser ist also "Speicher"
+angelegt. Das Set "Abspielen" wird gestartet, wenn ein Film zum
+Abspielen gestartet wird, das Set "Speichern" ist dann für das Speichern
+eines Films zuständig. Sind mehrere Sets zum Speichern angelegt, wird das
+Set zum Speichern für jeden Film in einem Dialog abgefragt.
+
+Werden Abos genutzt, muss auch dafür eine Set angelegt sein. Meist
+eignet sich dafür das Set "Speichern", bei diesem ist also "Speichern"
 und "Abo" eingeschaltet.
-"Button" ist eine Möglichkeit weitere Programme einzurichten, und diese dann
-über das Menü "Ansicht->weitere Videoplayer" anzuzeigen.
+
+"Button" ist eine Möglichkeit weitere Programme (Sets) einzurichten und 
+diese dann über das Menü "Ansicht->Buttons anzeigen" anzuzeigen.
 
 
-Details Programmgruppe:
+Details der Sets:
 
-Soll ein Film mit einer Programmgruppe aufgezeichnet werden, ist die Angabe des
+Soll ein Film mit einem Set aufgezeichnet werden, ist die Angabe des
 "Zielpfads" und des "Zieldateinamens" wichtig. Beim Namen sind diese Parameter
 möglich:
+
 %D Sendedatum des Films oder aktuelles Datum wenn Sendedatum leer
 %d Sendezeit des Films oder jetzt wenn Sendezeit leer
+%H heute, aktuelles Datum der Form JJJJMMTT zB. 20090815 (15.08.2009)
+%h jetzt, aktuelle Uhrzeit der Form SSMMss zB. 152059 (15:20:59)
+
 %s Sender des Films
 %N Originaldateiname des Films
 %T Titel des Films
 %t Thema des Films
-%H heute, aktuelles Datum der Form JJJJMMTT zB. 20090815 (15.08.2009)
-%h jetzt, aktuelle Uhrzeit der Form SSMMss zB. 152059 (15:20:59)
-
-%n der Name wird in einem Dialog abgefragt
-%p Pfad und Name der Zieldatei werden in einem Dialog abgefragt
-
-wird %p verwendet, dann wird das Feld Zielpfad als Vorgabe im
-Auswahldialog eingetragen. Es kann entweder %n oder %p verwendet 
-werden und wird dann vor dem Speichern abgefragt. Wird kein %p verwendet,
-muss ein fester existierender Pfad im Feld Pfad eingetragen werden.
-
 
 "Direkter Download, Präfix, Suffix": damit kann man URL's angeben, die nicht
 über ein Programm geladen werden sollen, sonder direkt als Download heruntergeladen
 werden.
 
 
-Programme:
 
-Hier werden die Programme zu der jeweiligen Programmgruppe eingetragen. Sind mehrere
+Hilfsprogramme:
+
+Hier werden die Programme zum jeweiligen Set eingetragen. Sind mehrere
 Programme eingetragen, kann man zu jedem Programm über die Felder Präfix und Suffix wählen,
 für welche URL ein Programm zuständig ist.
 
 "Zieldateiname": Damit kann ein eigener Zieldateiname für das jeweilige Programm gewählt
-werden. Ist das Feld leer, wird der Zieldateiname der Programmgruppe verwendet.
+werden. Ist das Feld leer, wird der Zieldateiname des Sets verwendet.
 
 "Programm": In dem Feld steht der Pfad zur Programmdatei.
 
@@ -64,11 +60,15 @@ zum Start braucht. Mögliche Parameter sind:
 Diese Angeben werden durch die URL ersetzt:
 %f ist die URL des Films (Original-URL)
 %F ist die URL des Films für den flvstreamer vorbereitet
-%k ist die URL des Films in "kleiner" Auflösung, nur 3sat, ZDF, NDR
+%k ist die URL des Films in "kleiner" Auflösung, 
+    nur bei wenn möglich sonst wie %f
+%K ist die URL des Films in "kleiner" Auflösung für den flvstreamer vorbereitet, 
+    wenn mögich sonst wie %F
+
 zwei Sterne ** werden durch den Zieldateinamen mit Pfad ersetzt.
 
-Nur zum Ansehen eines Films reicht meist einer der 3 ersten Parameter.
 
+Nur zum Ansehen eines Films reicht meist einer dieser Parameter.
 
 Beispiel für den vlc:
 Programm: "/usr/bin/vlc"
@@ -78,6 +78,5 @@ Dateiname: "%t-%T-%n.mp4"
 hier wird %f durch die URL des Films ersetzt. %t, %T und %n 
 werden durch einen Pfad und Dateinamen (Thema-Titel-Dateiname_des_Films.mp4)
 ersetzt und in den Programmschalter anstatt der "**" eingesetzt.
-
 
 
