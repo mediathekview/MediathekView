@@ -103,51 +103,55 @@ public final class JTableMed extends JTable {
         // mit den gespeicherten Daten oder
         // mit den Standardwerten
         // erst die Breite, dann die Reihenfolge
-        if (tabelle == TABELLE_STANDARD) {
-            // wird nur für eingerichtete Tabellen gemacht
-            return;
-        }
-        String b = "", r = "", s = "", upDown = "";
-        boolean ok = false;
-        if (!DDaten.system[nrDatenSystem].equals("")) {
-            ok = true;
-            int f1, f2, f3;
-            String d = DDaten.system[nrDatenSystem];
-            if ((f1 = DDaten.system[nrDatenSystem].indexOf(FELDTRENNER)) != -1) {
-                b = DDaten.system[nrDatenSystem].substring(0, f1);
-                if ((f2 = DDaten.system[nrDatenSystem].indexOf(FELDTRENNER, f1 + 1)) != -1) {
-                    r = DDaten.system[nrDatenSystem].substring(f1 + 1, f2);
-                }
-                if ((f3 = DDaten.system[nrDatenSystem].indexOf(FELDTRENNER, f2 + 1)) != -1) {
-                    s = DDaten.system[nrDatenSystem].substring(f2 + 1, f3);
-                    upDown = DDaten.system[nrDatenSystem].substring(f3 + 1);
-                }
+        try {
+            if (tabelle == TABELLE_STANDARD) {
+                // wird nur für eingerichtete Tabellen gemacht
+                return;
             }
+            String b = "", r = "", s = "", upDown = "";
+            boolean ok = false;
+            if (!DDaten.system[nrDatenSystem].equals("")) {
+                ok = true;
+                int f1, f2, f3;
+                String d = DDaten.system[nrDatenSystem];
+                if ((f1 = DDaten.system[nrDatenSystem].indexOf(FELDTRENNER)) != -1) {
+                    b = DDaten.system[nrDatenSystem].substring(0, f1);
+                    if ((f2 = DDaten.system[nrDatenSystem].indexOf(FELDTRENNER, f1 + 1)) != -1) {
+                        r = DDaten.system[nrDatenSystem].substring(f1 + 1, f2);
+                    }
+                    if ((f3 = DDaten.system[nrDatenSystem].indexOf(FELDTRENNER, f2 + 1)) != -1) {
+                        s = DDaten.system[nrDatenSystem].substring(f2 + 1, f3);
+                        upDown = DDaten.system[nrDatenSystem].substring(f3 + 1);
+                    }
+                }
 
 ////            b = DDaten.system[nrDatenSystem].substring(0, DDaten.system[nrDatenSystem].indexOf(FELDTRENNER));
 ////            r = DDaten.system[nrDatenSystem].substring(DDaten.system[nrDatenSystem].indexOf(FELDTRENNER) + 1);
 ////            s = DDaten.system[nrDatenSystem].substring(DDaten.system[nrDatenSystem].indexOf(FELDTRENNER) + 1);
-            if (!arrLesen(b, breite)) {
-                ok = false;
+                if (!arrLesen(b, breite)) {
+                    ok = false;
+                }
+                if (!arrLesen(r, reihe)) {
+                    ok = false;
+                }
+                SortKey sk = sortKeyLesen(s, upDown);
+                if (sk != null) {
+                    LinkedList<SortKey> listSortKeys_ = new LinkedList<SortKey>();
+                    listSortKeys_.add(sk);
+                    this.getRowSorter().setSortKeys(listSortKeys_);
+                }
             }
-            if (!arrLesen(r, reihe)) {
-                ok = false;
+            if (ok) {
+                setSpalten();
+            } else {
+                resetTabelle();
+                // setSpalten wird im resetTabelle gemacht
             }
-            SortKey sk = sortKeyLesen(s, upDown);
-            if (sk != null) {
-                LinkedList<SortKey> listSortKeys_ = new LinkedList<SortKey>();
-                listSortKeys_.add(sk);
-                this.getRowSorter().setSortKeys(listSortKeys_);
-            }
+            // und jetzt erst der Beobachter, damit Daten.system nicht vorher schon überschrieben wird
+            ///this.getColumnModel().addColumnModelListener(new BeobSpalten());
+        } catch (Exception ex) {
+            //vorsichtshalber
         }
-        if (ok) {
-            setSpalten();
-        } else {
-            resetTabelle();
-            // setSpalten wird im resetTabelle gemacht
-        }
-        // und jetzt erst der Beobachter, damit Daten.system nicht vorher schon überschrieben wird
-        ///this.getColumnModel().addColumnModelListener(new BeobSpalten());
     }
 
     public void fireTableDataChanged(boolean setSpalten) {

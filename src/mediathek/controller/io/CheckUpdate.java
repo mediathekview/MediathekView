@@ -49,16 +49,16 @@ public class CheckUpdate {
                     if (!Daten.system[Konstanten.SYSTEM_UPDATE_DATUM_NR].equals(DatumZeit.getHeute_yyyyMMdd())) {
                         final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
                         if (pgrUpdate.checkVersion(ddaten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
-                            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
+                            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
                         } else {
-                            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
+                            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
                         }
                         ListePsetVorlagen.getNeuVersionStandarset(ddaten, Funktionen.getOsString());
                         try {
                             this.wait(10 * 1000); // 10 Sekunden den Titel anzeigen
                         } catch (Exception ignored) {
                         }
-                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_ORG_TITEL, CheckUpdate.class.getSimpleName());
+                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, CheckUpdate.class.getSimpleName());
                     }
                 }
             } catch (Exception ex) {

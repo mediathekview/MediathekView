@@ -37,6 +37,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     private long jetzt;
     private boolean zukunftNichtAnzeigen;
     private boolean blacklistAusgeschaltet;
+    private long filmlaengeSoll = 0;
     private int nr = 0;
 
     @Override
@@ -125,6 +126,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         } catch (Exception ex) {
             tage = 0;
         }
+        try {
+            filmlaengeSoll = Long.valueOf(Daten.system[Konstanten.SYSTEM_BLACKLIST_FILMLAENGE_NR]) * 60; // Minuten
+        } catch (Exception ex) {
+            filmlaengeSoll = 0;
+        }
         blacklistAusgeschaltet = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR]);
         zukunftNichtAnzeigen = !blacklistAusgeschaltet && Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]);
         jetzt = DatumZeit.getMorgen_0_Uhr();
@@ -157,6 +163,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         // Alte Filme ausgewerten
         DatenBlacklist blacklist;
         if (!checkDate(film)) {
+            return false;
+        }
+        if (!checkFilmlaenge(film)) {
             return false;
         }
         if (this.size() == 0) {
@@ -212,6 +221,18 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(462558700, Log.FEHLER_ART_PROG, "ListeBlacklist.checkDate: ", ex);
+        }
+        return true;
+    }
+
+    private boolean checkFilmlaenge(DatenFilm film) {
+        // true wenn der Film angezeigt werden kann!
+        try {
+            if (filmlaengeSoll != 0 && film.durationL != 0 && filmlaengeSoll > film.durationL) {
+                return false;
+            }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(912304894, Log.FEHLER_ART_PROG, "ListeBlacklist.checkFilmlänge: ", ex);
         }
         return true;
     }

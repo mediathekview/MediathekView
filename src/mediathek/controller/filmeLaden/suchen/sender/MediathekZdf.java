@@ -255,13 +255,13 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 String thumbnailUrl = extractThumbnailURL(seite2);
                 String imageUrl = extractImageURL(seite2);
 
-                System.out.println(titel + ": " + durationInSeconds);
-                System.out.print("\tkeywords:");
-                for (String s : keywords) {
-                    System.out.print(" " + s);
-                }
-                System.out.println();
-                System.out.println(description);
+//                System.out.println(titel + ": " + durationInSeconds);
+//                System.out.print("\tkeywords:");
+//                for (String s : keywords) {
+//                    System.out.print(" " + s);
+//                }
+//                System.out.println();
+//                System.out.println(description);
                 if (titel.equals("")) {
                     //<title>Neu im Kino - &quot;Fair Game&quot; - ZDFneo - ZDFmediathek - ZDF Mediathek</title>
                     //<title>Trinkwasser aus dem Eisberg - Abenteuer Wissen - ZDFmediathek - ZDF Mediathek</title>

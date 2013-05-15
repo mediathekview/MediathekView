@@ -239,13 +239,13 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 String thumbnailUrl = extractThumbnailURL(seite2);
                 String imageUrl = extractImageURL(seite2);
 
-                System.out.println(thema + ": " + durationInSeconds);
-                System.out.print("\tkeywords:");
-                for (String s : keywords) {
-                    System.out.print(" " + s);
-                }
-                System.out.println();
-                System.out.println(description);
+//                System.out.println(thema + ": " + durationInSeconds);
+//                System.out.print("\tkeywords:");
+//                for (String s : keywords) {
+//                    System.out.print(" " + s);
+//                }
+//                System.out.println();
+//                System.out.println(description);
                 pos = 0;
                 pos1 = 0;
                 pos2 = 0;

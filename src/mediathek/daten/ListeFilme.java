@@ -126,7 +126,9 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeXml(film.arr[DatenFilm.FILM_THEMA_NR].trim());
         film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
 
-
+        // Beschreibung
+        film.arr[DatenFilm.FILM_DESCRIPTION_NR] = StringEscapeUtils.unescapeXml(film.arr[DatenFilm.FILM_DESCRIPTION_NR].trim());
+        film.arr[DatenFilm.FILM_DESCRIPTION_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_DESCRIPTION_NR].trim());
 
         // Titel
         film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeXml(film.arr[DatenFilm.FILM_TITEL_NR].trim());
@@ -173,7 +175,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public synchronized boolean addWithNr(DatenFilm film) {
         film.arr[DatenFilm.FILM_NR_NR] = getNr(nr++);
         film.arr[DatenFilm.FILM_URL_NR] = film.getUrlOrg();
-        film.setDatum();
+        film.setWerte();
         return add(film);
     }
 
@@ -403,19 +405,11 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             ListIterator<DatenFilm> iterator = this.listIterator(0);
             while (iterator.hasNext()) {
                 film = iterator.next();
-                // wird beim Laden der Liste gleich eintragen
-                // datenAbo = ddaten.listeAbo.getAbo(film.arr[DatenFilm.FILM_SENDER_NR],
-                //        film.arr[DatenFilm.FILM_THEMA_NR],
-                //        film.arr[DatenFilm.FILM_TITEL_NR]);
-                // if (datenAbo != null) {
-                //    film.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
-                // } else {
-                //    film.arr[DatenFilm.FILM_ABO_NAME_NR] = "";
-                // }
                 object = new Object[DatenFilm.FILME_MAX_ELEM];
                 for (int m = 0; m < DatenFilm.FILME_MAX_ELEM; ++m) {
-                    if (m == DatenFilm.FILM_DATUM_NR) {
-                        //object[m] = DatumZeit.getDatumForObject(film);
+                    if (m == DatenFilm.FILM_DURATION_NR) {
+                        object[m] = film.durationStr;
+                    } else if (m == DatenFilm.FILM_DATUM_NR) {
                         object[m] = film.datumFilm;
                     } else {
                         object[m] = film.arr[m];
