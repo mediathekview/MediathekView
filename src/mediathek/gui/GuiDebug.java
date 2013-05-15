@@ -83,6 +83,12 @@ public class GuiDebug extends PanelVorlage {
                 Daten.listeFilme.check();
             }
         });
+        jButtonAlleLaden.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, jToggleButtonAllesLaden.isSelected(), true);
+            }
+        });
         jPanelSenderLaden.setLayout(new BorderLayout());
         jPanelSenderLaden.add(new PanelSenderLaden(ddaten, ddaten.mediathekGui));
         jPanelListen.setLayout(new BorderLayout());
@@ -142,6 +148,7 @@ public class GuiDebug extends PanelVorlage {
         jButtonAllesSpeichern = new javax.swing.JButton();
         jButtonFehler = new javax.swing.JButton();
         jButtonCheck = new javax.swing.JButton();
+        jButtonAlleLaden = new javax.swing.JButton();
 
         jPanelSenderLaden.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender starten"));
 
@@ -249,6 +256,8 @@ public class GuiDebug extends PanelVorlage {
 
         jButtonCheck.setText("Check");
 
+        jButtonAlleLaden.setText("alle S. laden");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -264,6 +273,8 @@ public class GuiDebug extends PanelVorlage {
                 .addComponent(jButtonFehler)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonCheck)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonAlleLaden)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -278,7 +289,8 @@ public class GuiDebug extends PanelVorlage {
                     .addComponent(jButtonFilmlisteLoeschen)
                     .addComponent(jButtonAllesSpeichern)
                     .addComponent(jButtonFehler)
-                    .addComponent(jButtonCheck))
+                    .addComponent(jButtonCheck)
+                    .addComponent(jButtonAlleLaden))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -304,6 +316,7 @@ public class GuiDebug extends PanelVorlage {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAlleLaden;
     private javax.swing.JButton jButtonAllesSpeichern;
     private javax.swing.JButton jButtonCheck;
     private javax.swing.JButton jButtonFehler;

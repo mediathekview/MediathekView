@@ -173,6 +173,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
 
             final String MUSTER_URL = "<h4><a href=\"/";
             final String MUSTER_ZEIT = "<div class=\"subline\">";
+            final String MUSTER_DURATION = "<span class=\"runtime\" title=\"Spieldauer\">";
             seite1 = getUrlIo.getUri(nameSenderMReader, strUrlFeed, Konstanten.KODIERUNG_UTF, 3 /* versuche */, seite1, "Thema: " + tthema/* meldung */);
             int pos = 0;
             int pos1;
@@ -182,7 +183,9 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             String thema = tthema;
             String datum = "";
             String zeit = "";
+            long durationInSeconds = 0;
             String tmp;
+            int lastPos = 0;
             try {
                 while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_URL, pos)) != -1) {
                     pos += MUSTER_URL.length();
@@ -219,17 +222,49 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                             }
                         }
                     }
+                    // Die dauer des filmes kommt vor dem titel über welchen wir hier am
+                    // iterieren sind. Wir müssen also rückwärts suchen. Die url kommt jeweils doppelt
+                    // vor im dokument. Wir werdenden diese als marker zum zurückzu springen:
+    /*<a href="/fernsehen/sendungen/extra_3/videos/extra5349.html" title="Zum Video: Extra 3 vom 08.05.2013" >
+                     <img width="376" height="212" src="/fernsehen/ehring255_v-zweispaltig.jpg" alt="Moderator Christian Ehring mit einem Schild mit der Aufschrift, wer das umdreht ist doof, in der Hand.  " title="Moderator Christian Ehring mit einem Schild mit der Aufschrift, wer das umdreht ist doof, in der Hand."  /><div class="overlay">
+                     <div class="shiny_line">&nbsp;</div><div class="marker"></div>
+                     <div class="inner">
+                     <span class="icon icon_video" title="Video">Video</span>
+                     <span class="runtime" title="Spieldauer">28:55</span></div>
+                     </div>
+                     </a>
+                     <div class="content">
+                     <h4><a href="/fernsehen/sendungen/extra_3/videos/extra5349.html" title="Zum Video: Extra 3 vom 08.05.2013">Extra 3 vom 08.05.2013</a></h4>
+                     <div class="subline">extra&nbsp;3 -&nbsp;08.05.2013 22:50</div>*/
+                    if ((pos1 = seite1.indexOf(url, lastPos)) != -1) {
+                        if ((pos1 = seite1.indexOf(MUSTER_DURATION, pos1)) != -1) {
+                            pos1 += MUSTER_DURATION.length();
+                            if ((pos2 = seite1.indexOf("</span></div>", pos1)) != -1) {
+                                String duration = seite1.substring(pos1, pos2);
+                                String[] parts = duration.split(":");
+                                long power = 1;
+                                durationInSeconds = 0;
+                                for (int i = parts.length - 1; i >= 0; i--) {
+                                    durationInSeconds += Long.parseLong(parts[i]) * power;
+                                    power *= 60;
+                                }
+                            }
+                        }
+                    }
                     if (thema.equals("")) {
                         thema = "NDR";
                     }
-                    filmSuchen(strUrlFeed, thema, titel, "http://www.ndr.de/" + url, datum, zeit);
+//                    filmSuchen(strUrlFeed, thema, titel, "http://www.ndr.de/" + url, datum, zeit);
+                    filmSuchen(strUrlFeed, thema, titel, "http://www.ndr.de/" + url, datum, zeit, durationInSeconds);
+                    lastPos = pos;
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(-693219870, Log.FEHLER_ART_MREADER, "MediathekNdr.feddEinerSeiteSuchen", strUrlFeed);
             }
         }
 
-        void filmSuchen(String strUrlThema, String thema, String titel, String urlFilm, String datum, String zeit) {
+//        void filmSuchen(String strUrlThema, String thema, String titel, String urlFilm, String datum, String zeit) {
+        void filmSuchen(String strUrlThema, String thema, String titel, String urlFilm, String datum, String zeit, long durationInSeconds) {
             //playlist: [
             //{
             //1: {src:'http://hds.ndr.de/z/2013/0419/TV-20130419-1010-0801.,hi,hq,.mp4.csmil/manifest.f4m', type:"application/f4m+xml"},
@@ -241,6 +276,10 @@ public class MediathekNdr extends MediathekReader implements Runnable {
 
             final String MUSTER_URL = "3: {src:'http://";
             seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "strUrlThema: " + strUrlThema);
+            //long durationInSeconds = extractDuration(seite2);
+            String description = extractDescription(seite2);
+            String[] keywords = extractKeywords(seite2);
+            String imageUrl = extractImageURL(seite2);
             meldung(urlFilm);
             int pos;
             int pos1;
@@ -263,7 +302,8 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                                 }
                             }
                             //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel)
-                            addFilm(new DatenFilm(nameSenderMReader, thema, strUrlThema, titel, url, datum, zeit));
+//                            addFilm(new DatenFilm(nameSenderMReader, thema, strUrlThema, titel, url, datum, zeit));
+                            addFilm(new DatenFilm(nameSenderMReader, thema, strUrlThema, titel, url, datum, zeit, durationInSeconds, description, "", imageUrl, keywords));
                         } else {
                             Log.fehlerMeldung(-623657941, Log.FEHLER_ART_MREADER, "MediathekNdr.FilmSuchen", "keine URL: " + urlFilm);
                         }
@@ -275,6 +315,49 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             } catch (Exception ex) {
                 Log.fehlerMeldung(-699830157, Log.FEHLER_ART_MREADER, "MediathekNdr.FilmSuchen", ex);
             }
+        }
+
+        private String extractDescription(StringBuffer page) {
+            String desc = extractString(page, "<meta property=\"og:description\" content=\"", "\" />");
+            if (desc == null) {
+                return "";
+            }
+
+            return desc;
+        }
+
+        private String[] extractKeywords(StringBuffer page) {
+            String keywords = extractString(page, "<meta name=\"keywords\"  lang=\"de\" content=\"", "\" />");
+            if (keywords == null) {
+                return new String[]{""};
+            }
+
+            String[] k = keywords.split(",");
+            for (int i = 0; i < k.length; i++) {
+                k[i] = k[i].trim();
+            }
+
+            return k;
+        }
+
+        private String extractImageURL(StringBuffer page) {
+            return extractString(page, "<meta property=\"og:image\" content=\"", "\" />");
+        }
+
+        private String extractString(StringBuffer source, String startMarker, String endMarker) {
+            int start = source.indexOf(startMarker);
+            if (start == -1) {
+                return null;
+            }
+
+            start = start + startMarker.length();
+
+            int end = source.indexOf(endMarker, start);
+            if (end == -1) {
+                return null;
+            }
+
+            return source.substring(start, end);
         }
     }
 }

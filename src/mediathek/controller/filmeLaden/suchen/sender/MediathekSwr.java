@@ -19,6 +19,7 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
+import java.util.LinkedList;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
@@ -168,13 +169,18 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             final String MUSTER_URL_1 = "\"entry_media\":\"";
             final String MUSTER_URL_2 = "\"entry_media\",\"attr\":{\"val0\":\"h264\"";
             final String MUSTER_URL_3 = "\"entry_media\",\"attr\":{\"val0\":\"flashmedia\"";
+            final String MUSTER_DESCRIPTION = "\"entry_descl\":\"";
+            final String MUSTER_THUMBNAIL_URL = "\"entry_image_16_9\":\"";
             int pos1;
             int pos2;
             String url;
             String titel = "";
             String datum = "";
             String zeit = "";
-            String dauer = "";
+            long dauer = 0;
+            String description = "";
+            String thumbnailUrl = "";
+            String[] keywords = null;
             String tmp;
             try {
                 strSeite2 = getUrl.getUri_Utf(nameSenderMReader, urlJson, strSeite2, "");
@@ -194,6 +200,34 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         }
                     }
                 }
+                if ((pos1 = strSeite2.indexOf(MUSTER_DAUER)) != -1) {
+                    pos1 += MUSTER_DAUER.length();
+                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                        String d = strSeite2.substring(pos1, pos2);
+                        String[] parts = d.split(":");
+                        long power = 1;
+                        for (int i = parts.length - 1; i >= 0; i--) {
+                            dauer += Long.parseLong(parts[i]) * power;
+                            power *= 60;
+                        }
+                    }
+                }
+
+                if ((pos1 = strSeite2.indexOf(MUSTER_DESCRIPTION)) != -1) {
+                    pos1 += MUSTER_DESCRIPTION.length();
+                    if ((pos2 = strSeite2.indexOf("\",", pos1)) != -1) {
+                        description = strSeite2.substring(pos1, pos2);
+                    }
+                }
+
+                if ((pos1 = strSeite2.indexOf(MUSTER_THUMBNAIL_URL)) != -1) {
+                    pos1 += MUSTER_THUMBNAIL_URL.length();
+                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                        thumbnailUrl = strSeite2.substring(pos1, pos2);
+                    }
+                }
+
+                keywords = extractKeywords(strSeite2);
                 if ((pos1 = strSeite2.indexOf(MUSTER_DATUM)) != -1) {
                     pos1 += MUSTER_DATUM.length();
                     if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
@@ -212,12 +246,12 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         }
                     }
                 }
-                if ((pos1 = strSeite2.indexOf(MUSTER_DAUER)) != -1) {
-                    pos1 += MUSTER_DAUER.length();
-                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-                        dauer = strSeite2.substring(pos1, pos2);
-                    }
-                }
+//                if ((pos1 = strSeite2.indexOf(MUSTER_DAUER)) != -1) {
+//                    pos1 += MUSTER_DAUER.length();
+//                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+//                        dauer = strSeite2.substring(pos1, pos2);
+//                    }
+//                }
                 if ((pos1 = strSeite2.indexOf(MUSTER_ZEIT)) != -1) {
                     pos1 += MUSTER_ZEIT.length();
                     if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
@@ -253,7 +287,8 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                                 url = url.replace(".m.mp4", ".l.mp4");
                             }
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
+//                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
                             addFilm(film);
                         } else {
                             Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.addFilme2-4", thema + " " + urlJson);
@@ -271,7 +306,8 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                                 // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
                                 url = url.replace(".m.mp4", ".l.mp4");
                                 // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
+                                //DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
+                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
                                 addFilm(film);
                             } else {
                                 Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.json-1", thema + " " + urlJson);
@@ -290,7 +326,8 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                                 // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
                                 url = url.replace(".s.mp4", ".m.mp4");
                                 // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
+//                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
+                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
                                 addFilm(film);
                             } else {
                                 Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.json-1", thema + " " + urlJson);
@@ -304,6 +341,26 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             } catch (Exception ex) {
                 Log.fehlerMeldung(-939584720, Log.FEHLER_ART_MREADER, "MediathekSwr.json-3", thema + " " + urlJson);
             }
+        }
+
+        private String[] extractKeywords(StringBuffer strSeite2) {
+            // {"name":"entry_keywd","attr":{"val":"Fernsehserie"},"sub":[]}
+            final String MUSTER_KEYWORD_START = "{\"name\":\"entry_keywd\",\"attr\":{\"val\":\"";
+            final String MUSTER_KEYWORD_END = "\"},\"sub\":[]}";
+
+            LinkedList<String> keywords = new LinkedList<String>();
+            int pos = 0;
+            while ((pos = strSeite2.indexOf(MUSTER_KEYWORD_START, pos)) != -1) {
+                pos += MUSTER_KEYWORD_START.length();
+                int end = strSeite2.indexOf(MUSTER_KEYWORD_END, pos);
+                if (end != -1) {
+                    String keyword = strSeite2.substring(pos, end);
+                    keywords.add(keyword);
+                    pos = end;
+                }
+            }
+
+            return keywords.toArray(new String[keywords.size()]);
         }
     }
 }

@@ -61,7 +61,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                 String[] add = new String[]{"http://www.3sat.de/mediaplayer/rss/mediathek" + url, ""};
                 listeThemen.addUrl(add);
             } catch (Exception ex) {
-                Log.fehlerMeldung(-498653287, Log.FEHLER_ART_MREADER, "Mediathek3sat.addToList",ex);
+                Log.fehlerMeldung(-498653287, Log.FEHLER_ART_MREADER, "Mediathek3sat.addToList", ex);
             }
         }
         if (Daten.filmeLaden.getStop()) {
@@ -107,6 +107,9 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
             // <title>3sat.schweizweit: Mediathek-Beiträge</title>
             final String MUSTER_URL = "type=\"video/x-ms-asf\" url=\"";
             final String MUSTER_TITEL = "<title>";
+            final String MUSTER_DESCRIPTION = "<media:description>";
+            final String MUSTER_IMAGE = "<media:thumbnail url=\"";
+            final String MUSTER_DURATION = "media:content duration=\"";
             final String MUSTER_DATUM = "<pubDate>";
             final String MUSTER_LINK = "<link>";
             boolean urlAlle = url_rss.equals(MUSTER_ALLE);
@@ -119,6 +122,9 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
             String link;
             String datum;
             String zeit;
+            long duration;
+            String description;
+            String imageUrl;
             String titel;
             String tmp;
             if ((pos = seite1.indexOf(MUSTER_TITEL, pos)) == -1) {
@@ -144,6 +150,9 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                 datum = "";
                 zeit = "";
                 titel = "";
+                duration = 0;
+                description = "";
+                imageUrl = "";
                 try {
                     pos1 = pos;
                     if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
@@ -170,13 +179,34 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                             }
                         }
                     }
+                    if ((pos1 = seite1.indexOf(MUSTER_DESCRIPTION, pos)) != -1) {
+                        pos1 += MUSTER_DESCRIPTION.length();
+                        if ((pos2 = seite1.indexOf("</media:description>", pos1)) != -1) {
+                            description = seite1.substring(pos1, pos2);
+                        }
+                    }
+
+                    if ((pos1 = seite1.indexOf(MUSTER_DURATION, pos)) != -1) {
+                        pos1 += MUSTER_DURATION.length();
+                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                            duration = Long.parseLong(seite1.substring(pos1, pos2));
+                        }
+                    }
+
+                    if ((pos1 = seite1.indexOf(MUSTER_IMAGE, pos)) != -1) {
+                        pos1 += MUSTER_IMAGE.length();
+                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                            imageUrl = seite1.substring(pos1, pos2);
+                        }
+                    }
+
                     if ((pos1 = seite1.indexOf(MUSTER_DATUM, pos)) != -1) {
                         pos1 += MUSTER_DATUM.length();
                         if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
                             //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
                             tmp = seite1.substring(pos1, pos2);
                             if (tmp.equals("")) {
-                                Log.fehlerMeldung(-987453983,Log.FEHLER_ART_MREADER,  "Mediathek3Sat.addToList", "keine Datum");
+                                Log.fehlerMeldung(-987453983, Log.FEHLER_ART_MREADER, "Mediathek3Sat.addToList", "keine Datum");
                             } else {
                                 datum = DatumZeit.convertDatum(tmp);
                                 zeit = DatumZeit.convertTime(tmp);
@@ -197,27 +227,30 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                         }
                     }
                     if (url.equals("")) {
-                        Log.fehlerMeldung(-532169764,Log.FEHLER_ART_MREADER,  "Mediathek3Sat.addToList", "keine URL");
+                        Log.fehlerMeldung(-532169764, Log.FEHLER_ART_MREADER, "Mediathek3Sat.addToList", "keine URL");
                     } else {
                         url = url.replace("/300/", "/veryhigh/");
                         //    public DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum) {
                         //    public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
                         //addFilm(new DatenFilm(nameSenderMReader, (thema_rss.equals("") ? thema : thema_rss), link, titel, url, datum, zeit));
                         if (!url.endsWith("asx")) {
-                            Log.fehlerMeldung(-896325047,Log.FEHLER_ART_MREADER,  "Mediathek3sat.filmHolen-2", "keine URL: " + url);
+                            Log.fehlerMeldung(-896325047, Log.FEHLER_ART_MREADER, "Mediathek3sat.filmHolen-2", "keine URL: " + url);
                         } else {
-                            flashHolen(thema, titel, link, url, datum, zeit);
+                            //flashHolen(thema, titel, link, url, datum, zeit);
+                            flashHolen(thema, titel, link, url, datum, zeit, duration, description, imageUrl);
                         }
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(-823694892,Log.FEHLER_ART_MREADER,  "Mediathek3Sat.laden", ex);
+                    Log.fehlerMeldung(-823694892, Log.FEHLER_ART_MREADER, "Mediathek3Sat.laden", ex);
                 }
             } //while, die ganz große Schleife
         }
 
-        private void flashHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit) {
+        //private void flashHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit) {
+        private void flashHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String imageUrl) {
             meldung(urlFilm);
-            DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit);
+            //DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit);
+            DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit, durationInSeconds, description, "", imageUrl, new String[]{});
             if (f != null) {
                 addFilm(f);
             }

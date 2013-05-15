@@ -269,12 +269,26 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             final String MUSTER_URL_2 = "<flashMediaServerURL>";
             final String MUSTER_DATUM = "<broadcastStartDate>";
             final String MUSTER_FRABE_WIDTH = "<frameWidth>";
+            final String MUSTER_DURATION = "<duration>";
+            final String MUSTER_DURATION_END = "</duration>";
+            final String MUSTER_DESCRIPTION = "<teaserText>";
+            final String MUSTER_DESCRIPTION_END = "</teaserText>";
+            final String MUSTER_THUMBNAIL = "<teaserimage format=\"standard43\" width=\"180\" height=\"135\">";
+            final String MUSTER_THUMBNAIL_END = "</teaserimage>";
+            final String MUSTER_IMAGE = "<teaserimage format=\"big169\" width=\"512\" height=\"288\">";
+            final String MUSTER_IMAGE_END = "</teaserimage>";
+            final String MUSTER_URL_START = "<url>";
+            final String MUSTER_URL_END = "</url>";
 
             //<broadcastStartDate>23.08.2012 22:05</broadcastStartDate>
             int pos = 0, posEnde;
             int pos1;
             int pos2;
             String url1, url2, rtmpUrl, url, titel, datum, zeit, width;
+            long duration;
+            String description;
+            String thumbnailUrl;
+            String imageUrl;
             int widthAlt;
             try {
                 seite4 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite4, "Thema: " + thema);
@@ -294,6 +308,57 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                     titel = "";
                     datum = "";
                     zeit = "";
+                    duration = 0;
+                    description = "";
+                    thumbnailUrl = "";
+                    imageUrl = "";
+
+                    if ((pos1 = seite4.indexOf(MUSTER_DURATION, pos)) != -1) {
+                        pos1 += MUSTER_DURATION.length();
+                        if ((pos2 = seite4.indexOf(MUSTER_DURATION_END, pos1)) != -1) {
+                            String d = seite4.substring(pos1, pos2);
+                            String[] parts = d.split(":");
+                            duration = 0;
+                            long power = 1;
+                            for (int i = parts.length - 1; i >= 0; i--) {
+                                duration += Long.parseLong(parts[i]) * power;
+                                power *= 60;
+                            }
+                        }
+                    }
+
+                    if ((pos1 = seite4.indexOf(MUSTER_DESCRIPTION, pos)) != -1) {
+                        pos1 += MUSTER_DESCRIPTION.length();
+                        if ((pos2 = seite4.indexOf(MUSTER_DESCRIPTION_END, pos1)) != -1) {
+                            description = seite4.substring(pos1, pos2);
+                        }
+                    }
+
+                    if ((pos1 = seite4.indexOf(MUSTER_THUMBNAIL, pos)) != -1) {
+                        pos1 += MUSTER_THUMBNAIL.length();
+                        if ((pos2 = seite4.indexOf(MUSTER_THUMBNAIL_END, pos1)) != -1) {
+                            String tmp = seite4.substring(pos1, pos2);
+                            if ((pos1 = tmp.indexOf(MUSTER_URL_START)) != -1) {
+                                pos1 += MUSTER_URL_START.length();
+                                if ((pos2 = tmp.indexOf(MUSTER_URL_END, pos1)) != -1) {
+                                    thumbnailUrl = tmp.substring(pos1, pos2);
+                                }
+                            }
+                        }
+                    }
+
+                    if ((pos1 = seite4.indexOf(MUSTER_IMAGE, pos)) != -1) {
+                        pos1 += MUSTER_IMAGE.length();
+                        if ((pos2 = seite4.indexOf(MUSTER_IMAGE_END, pos1)) != -1) {
+                            String tmp = seite4.substring(pos1, pos2);
+                            if ((pos1 = tmp.indexOf(MUSTER_URL_START)) != -1) {
+                                pos1 += MUSTER_URL_START.length();
+                                if ((pos2 = tmp.indexOf(MUSTER_URL_END, pos1)) != -1) {
+                                    imageUrl = tmp.substring(pos1, pos2);
+                                }
+                            }
+                        }
+                    }
                     pos1 = pos;
                     if ((pos2 = seite4.indexOf("<", pos)) != -1) {
                         titel = seite4.substring(pos1, pos2);
@@ -350,7 +415,8 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                             addInListe(thema, titel, datum, zeit);
                             meldung(url);
                             //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, rtmpUrl, datum, zeit);
+//                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, rtmpUrl, datum, zeit);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, rtmpUrl, datum, zeit, duration, description, thumbnailUrl, imageUrl, new String[]{});
                             addFilm(film);
                         } else {
                             //Log.debugMeldung("MDR: Film doppelt");
