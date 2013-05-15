@@ -87,7 +87,7 @@ import org.simplericity.macify.eawt.ApplicationListener;
 import org.simplericity.macify.eawt.DefaultApplication;
 
 public final class MediathekGui extends javax.swing.JFrame implements ApplicationListener {
-    
+
     private DDaten ddaten;
     private BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     private DialogEinstellungen dialogEinstellungen;
@@ -96,9 +96,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     JPanel jPanelAnzahl = new JPanel();
     JSplitPane splitPane = null;
     private MVStatusBar statusBar;
-    
+
     public enum UIButtonState {
-        
+
         AUS, FILME, DOWNLOAD, ABO
     }
 
@@ -113,19 +113,19 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
         jPanelInfo.add(statusBar.getComponent(), BorderLayout.PAGE_START);
     }
-    
+
     public MVStatusBar getStatusBar() {
         return statusBar;
     }
-    
+
     public String getFilterToolBar() {
         return jTextFieldFilter.getText();
     }
-    
+
     public MediathekGui(String[] ar) {
         //we must check if we were started with enough memory, do it as early as possible
         checkMemoryRequirements();
-        
+
         String pfad = "";
         boolean max = false;
         initComponents();
@@ -144,11 +144,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 }
             }
         }
-        
+
         ddaten = new DDaten(pfad, true);
         ddaten.mediathekGui = this;
         Log.startMeldungen(this.getClass().getName());
-        
+
         createStatusBar();
 
         //create the Film Information HUD
@@ -160,7 +160,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             // erster Start
             new DialogStarteinstellungen(null, true, ddaten).setVisible(true);
         }
-        
+
         setOrgTitel();
         setLookAndFeel();
         //GuiFunktionen.setLook(this);
@@ -172,27 +172,27 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         // Prüfen obs ein Programmupdate gibt
         new CheckUpdate(ddaten).suchen();
-        
+
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.filmlisteZuAlt()) {
                 Log.systemMeldung("Neue Filmliste laden");
                 DDaten.filmeLaden.importFilmliste("");
             }
         }
-        
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_ORG_TITEL, MediathekGui.class.getSimpleName()) {
+
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 setOrgTitel();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_PROGRAMM_AKTUELL, MediathekGui.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 setTitelAllesAktuell();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_MEDIATHEKGUI_UPDATE_VERFUEGBAR, MediathekGui.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 setTitelUpdate();
@@ -313,11 +313,19 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 break;
         }
     }
-    
+
     public void filterAnzeigen(boolean anz) {
         jTextFieldFilter.setVisible(anz);
         jButtonFilterPanel.setVisible(anz);
         jCheckBoxMenuItemFilterAnzeigen.setSelected(!anz);
+    }
+
+    public void beschreibungAnzeigen(boolean anz) {
+        jCheckBoxMenuItemBeschreibung.setSelected(!anz);
+    }
+
+    public void videoplayerAnzeigen(boolean anz) {
+        jCheckBoxMenuItemVideoplayer.setSelected(!anz);
     }
 
     //===================================
@@ -326,15 +334,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private void setOrgTitel() {
         this.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
     }
-    
+
     private void setTitelUpdate() {
         setTitle("Ein Programmupdate ist verfügbar");
     }
-    
+
     private void setTitelAllesAktuell() {
         setTitle("Programmversion ist aktuell");
     }
-    
+
     private void buttonAus() {
         jButtonFilmeLaden.setEnabled(false);
         jButtonFilmAbspielen.setEnabled(false);
@@ -370,7 +378,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAbosLoeschen.setEnabled(false);
         jMenuItemAbosAendern.setEnabled(false);
     }
-    
+
     private void setSize(boolean max) {
         this.pack();
         if (max || Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR])) {
@@ -420,17 +428,17 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             public void insertUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             @Override
             public void changedUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             private void tus() {
                 Filter.checkPattern2(jTextFieldFilter);
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
@@ -438,9 +446,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 }
             }
         });
-        
+
     }
-    
+
     private void init() {
         jButtonFilmeLaden.setIcon(GetIcon.getIcon("download_32.png"));
         jButtonFilmAbspielen.setIcon(GetIcon.getIcon("player_play_32.png"));
@@ -486,12 +494,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jButtonFilmeLaden.setEnabled(false);
                 jMenuItemFilmlisteLaden.setEnabled(false);
             }
-            
+
             @Override
             public void progress_(ListenerFilmeLadenEvent event) {
                 getStatusBar().updateProgressBar(event);
             }
-            
+
             @Override
             public void fertig_(ListenerFilmeLadenEvent event) {
                 getStatusBar().hideProgressIndicators();
@@ -508,7 +516,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         });
         jToolBar.addMouseListener(beobMausToolBar);
     }
-    
+
     private void initTabs() {
         ddaten.guiFilme = new GuiFilme(ddaten, ddaten.mediathekGui);
         ddaten.guiDownloads = new GuiDownloads(ddaten, ddaten.mediathekGui);
@@ -532,7 +540,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             jTabbedPane.addTab("Starts", new PanelInfoStarts(ddaten, ddaten.mediathekGui));
         }
     }
-    
+
     private void setPanelMeldungen() {
         if (jCheckBoxMenuItemMeldungen.isSelected()) {
             jTabbedPane.add(splitPane, 3);
@@ -540,7 +548,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             jTabbedPane.remove(splitPane);
         }
     }
-    
+
     private void initToolBar() {
         setIcon(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ICON_KLEIN_NR]));
         jButtonFilmeLaden.addActionListener(new ActionListener() {
@@ -623,11 +631,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.TRUE.toString();
                 filterAnzeigen(ddaten.guiFilme.isVisible() && !Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getName());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getName());
             }
         });
     }
-    
+
     private void initSpinner() {
         if (Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR].equals("")) {
             jSpinnerAnzahl.setValue(1);
@@ -636,7 +644,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             jSpinnerAnzahl.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR]));
         }
     }
-    
+
     private void setupUserInterfaceForOsx() {
         //OS X specific menu initializations
         Application application = new DefaultApplication();
@@ -666,9 +674,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             jMenuHilfe.remove(jSeparator4);
             jMenuHilfe.remove(jMenuItemAbout);
         }
-        
+
     }
-    
+
     private void initMenue() {
         initSpinner();
         // Anzahl gleichzeitiger Downlaods
@@ -729,7 +737,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemFilterAnzeigen.isSelected());
                 filterAnzeigen(ddaten.guiFilme.isVisible() && !Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getName());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getName());
             }
         });
 
@@ -852,6 +860,14 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
             }
         });
+        jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR]));
+        jCheckBoxMenuItemBeschreibung.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemBeschreibung.isSelected());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
+            }
+        });
         jCheckBoxMenuItemMeldungen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR]));
         if (Daten.debug) {
             jCheckBoxMenuItemMeldungen.setSelected(true);
@@ -890,43 +906,43 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         aboutDialog.setVisible(true);
         aboutDialog.dispose();
     }
-    
+
     @Override
     public void handleQuit(ApplicationEvent event) {
         beenden();
     }
-    
+
     @Override
     public void handleReOpenApplication(ApplicationEvent event) {
         //unused
     }
-    
+
     @Override
     public void handlePrintFile(ApplicationEvent event) {
         //unused
     }
-    
+
     @Override
     public void handlePreferences(ApplicationEvent event) {
         dialogEinstellungen.setVisible(true);
     }
-    
+
     @Override
     public void handleOpenFile(ApplicationEvent event) {
         //unused
     }
-    
+
     @Override
     public void handleOpenApplication(ApplicationEvent event) {
         //unused
     }
-    
+
     @Override
     public void handleAbout(ApplicationEvent event) {
         showAboutDialog();
         event.setHandled(true);
     }
-    
+
     public void beenden() {
         // Tabelleneinstellungen merken
         ddaten.guiFilme.tabelleSpeichern();
@@ -958,7 +974,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         this.dispose();
         System.exit(0);
     }
-    
+
     private void setIcon(boolean klein) {
         Daten.system[Konstanten.SYSTEM_ICON_KLEIN_NR] = Boolean.toString(klein);
         jCheckBoxIconKlein.setSelected(klein);
@@ -992,7 +1008,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
         this.repaint();
     }
-    
+
     private void filmeLaden() {
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUS) {
             // Dialog zum Laden der Filme anzeigen
@@ -1051,7 +1067,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemFilmAbspielen = new javax.swing.JMenuItem();
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
-        jCheckBoxMenuItemFilterAnzeigen = new javax.swing.JCheckBoxMenuItem();
         jMenuDownload = new javax.swing.JMenu();
         jMenuItemDownloadsAlleStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadAlleStoppen = new javax.swing.JMenuItem();
@@ -1075,7 +1090,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuAnsicht = new javax.swing.JMenu();
         jCheckBoxMenuItemToolBar = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxIconKlein = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItemFilterAnzeigen = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemVideoplayer = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItemBeschreibung = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemMeldungen = new javax.swing.JCheckBoxMenuItem();
         jMenuHilfe = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
@@ -1267,10 +1284,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuFilme.add(jMenuItemFilmAufzeichnen);
         jMenuFilme.add(jSeparator5);
 
-        jCheckBoxMenuItemFilterAnzeigen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, 0));
-        jCheckBoxMenuItemFilterAnzeigen.setText("Filter anzeigen");
-        jMenuFilme.add(jCheckBoxMenuItemFilterAnzeigen);
-
         jMenuBar.add(jMenuFilme);
 
         jMenuDownload.setText("Downloads");
@@ -1359,8 +1372,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxIconKlein.setText("kleine Icons");
         jMenuAnsicht.add(jCheckBoxIconKlein);
 
+        jCheckBoxMenuItemFilterAnzeigen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, 0));
+        jCheckBoxMenuItemFilterAnzeigen.setText("Filter anzeigen");
+        jMenuAnsicht.add(jCheckBoxMenuItemFilterAnzeigen);
+
         jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
         jMenuAnsicht.add(jCheckBoxMenuItemVideoplayer);
+
+        jCheckBoxMenuItemBeschreibung.setText("Beschreibung anzeigen");
+        jMenuAnsicht.add(jCheckBoxMenuItemBeschreibung);
 
         jCheckBoxMenuItemMeldungen.setText("Meldungen anzeigen");
         jMenuAnsicht.add(jCheckBoxMenuItemMeldungen);
@@ -1412,6 +1432,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JButton jButtonFilmeLaden;
     private javax.swing.JButton jButtonFilterPanel;
     private javax.swing.JCheckBoxMenuItem jCheckBoxIconKlein;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemFilterAnzeigen;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemMeldungen;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemShutDown;
@@ -1459,28 +1480,28 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     // End of variables declaration//GEN-END:variables
 
     class BeobMausToolBar extends MouseAdapter {
-        
+
         JCheckBoxMenuItem itemKlein = new JCheckBoxMenuItem("kleine Icons");
         JMenuItem itemAusblenden = new JMenuItem("Toolbar ausblenden");
-        
+
         public BeobMausToolBar() {
             itemKlein.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ICON_KLEIN_NR]));
         }
-        
+
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
-        
+
         @Override
         public void mouseReleased(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
-        
+
         private void showMenu(MouseEvent evt) {
             JPopupMenu jPopupMenu = new JPopupMenu();
             itemAusblenden.addActionListener(new ActionListener() {

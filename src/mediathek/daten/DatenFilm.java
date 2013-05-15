@@ -75,6 +75,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
         "m", "n", "o", "p", "q"};
     public String[] arr;
     public Datum datumFilm = new Datum(0);
+    public String durationStr = "";
+    public long durationL = 0;
 
     public DatenFilm() {
         makeArr();
@@ -99,7 +101,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_THUMBNAIL_URL_NR] = thumbnailUrl;
         arr[FILM_IMAGE_URL_NR] = imageUrl;
         arr[FILM_KEYWORDS_NR] = keywordsToString(keywords);
-        setDatum();
+        setWerte(duration);
     }
 
     public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlRtmp,
@@ -124,7 +126,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_THUMBNAIL_URL_NR] = thumbnailUrl;
         arr[FILM_IMAGE_URL_NR] = imageUrl;
         arr[FILM_KEYWORDS_NR] = keywordsToString(keywords);
-        setDatum();
+        setWerte(duration);
     }
 
     private String keywordsToString(String[] keywords) {
@@ -180,8 +182,44 @@ public class DatenFilm implements Comparable<DatenFilm> {
         }
     }
 
-    final public void setDatum() {
+    final public void setWerte() {
+        if (this.arr[DatenFilm.FILM_DURATION_NR].equals("") || this.arr[DatenFilm.FILM_DURATION_NR].equals("0") || this.arr[DatenFilm.FILM_DURATION_NR].equals("-1")) {
+            durationStr = "";
+            durationL = 0;
+        } else {
+            long dur = Long.parseLong(this.arr[DatenFilm.FILM_DURATION_NR]);
+            durationL = dur;
+            long hours = dur / 3600;
+            dur = dur - (hours * 3600);
+            long min = dur / 60;
+            dur = dur - (min * 60);
+            long seconds = dur;
+            durationStr = fuellen(String.valueOf(hours)) + ":" + fuellen(String.valueOf(min)) + ":" + fuellen(String.valueOf(seconds));
+        }
         datumFilm = DatumZeit.getDatumForObject(this);
+    }
+
+    final public void setWerte(long l) {
+        if (l <= 0) {
+            durationStr = "";
+            durationL = 0;
+        } else {
+            long hours = l / 3600;
+            l = l - (hours * 3600);
+            long min = l / 60;
+            l = l - (min * 60);
+            long seconds = l;
+            durationStr = fuellen(String.valueOf(hours)) + ":" + fuellen(String.valueOf(min)) + ":" + fuellen(String.valueOf(seconds));
+            durationL = l;
+        }
+        datumFilm = DatumZeit.getDatumForObject(this);
+    }
+
+    private String fuellen(String s) {
+        while (s.length() < 2) {
+            s = "0" + s;
+        }
+        return s;
     }
 
     private static String checkDatum(String datum, String fehlermeldung) {
