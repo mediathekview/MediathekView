@@ -341,6 +341,20 @@ public class MediathekArd extends MediathekReader implements Runnable {
             boolean ret = false;
             meldung(urlFilm);
             seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "urlFeed: " + urlFeed);
+            long durationInSeconds = extractDuration(seite2);
+            String description = extractDescription(seite2);
+            String[] keywords = extractKeywords(seite2);
+            String thumbnailUrl = extractThumbnailURL(seite2);
+            String imageUrl = extractImageURL(seite2);
+
+            System.out.println(titel + ": " + durationInSeconds);
+            System.out.print("\tkeywords:");
+            for (String s : keywords) {
+                System.out.print(" " + s);
+            }
+            System.out.println();
+            System.out.println(description);
+
             int pos1;
             int pos1Tmp;
             int pos1a;
@@ -427,14 +441,16 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     //flvstreamer --host vod.daserste.de --app ardfs --playpath mp4:videoportal/Film/c_100000/106579/format106899.f4v > bla.flv
                     //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
                     if (!urlOrg.equals("") && !urlRtmp.equals("")) {
-                        addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, urlOrg, urlRtmp, datum, zeit));
+                        //addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, urlOrg, urlRtmp, datum, zeit));
+                        addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, urlOrg, urlRtmp, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
                         ret = true;
                     } else {
                         Log.fehlerMeldung(-795630782, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm);
                     }
                 } else {
                     if (!url2.equals("")) {
-                        addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url2 /* url */, "" /* urlRtmp */, datum, zeit));
+                        //addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url2 /* url */, "" /* urlRtmp */, datum, zeit));
+                        addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url2 /* url */, "" /* urlRtmp */, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
                         ret = true;
                     } else {
                         Log.fehlerMeldung(-159873540, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm);
@@ -448,6 +464,57 @@ public class MediathekArd extends MediathekReader implements Runnable {
 
         private synchronized String[] getListeThemen() {
             return listeThemen.pollFirst();
+        }
+
+        private long extractDuration(StringBuffer page) {
+            String duration = extractString(page, "<meta property=\"video:duration\" content=\"", "\"/>");
+            if (duration == null) {
+                return 0;
+            }
+
+            return Long.parseLong(duration);
+        }
+
+        private String extractDescription(StringBuffer page) {
+            String desc = extractString(page, "<meta property=\"og:description\" content=\"", "\"/>");
+            if (desc == null) {
+                return "";
+            }
+
+            return desc;
+        }
+
+        private String[] extractKeywords(StringBuffer page) {
+            String keywords = extractString(page, "<meta name=\"keywords\" content=\"", "\"/>");
+            if (keywords == null) {
+                return new String[]{""};
+            }
+
+            return keywords.split(", ");
+        }
+
+        private String extractThumbnailURL(StringBuffer page) {
+            return extractString(page, "<meta itemprop=\"thumbnailURL\" content=\"", "\"/>");
+        }
+
+        private String extractImageURL(StringBuffer page) {
+            return extractString(page, "<meta property=\"og:image\" content=\"", "\"/>");
+        }
+
+        private String extractString(StringBuffer source, String startMarker, String endMarker) {
+            int start = source.indexOf(startMarker);
+            if (start == -1) {
+                return null;
+            }
+
+            start = start + startMarker.length();
+
+            int end = source.indexOf(endMarker, start);
+            if (end == -1) {
+                return null;
+            }
+
+            return source.substring(start, end);
         }
     }
 }

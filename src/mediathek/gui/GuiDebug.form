@@ -251,6 +251,8 @@
                   <Component id="jButtonFehler" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jButtonCheck" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jButtonAlleLaden" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -265,6 +267,7 @@
                       <Component id="jButtonAllesSpeichern" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonFehler" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonCheck" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonAlleLaden" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -295,6 +298,11 @@
         <Component class="javax.swing.JButton" name="jButtonCheck">
           <Properties>
             <Property name="text" type="java.lang.String" value="Check"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonAlleLaden">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="alle S. laden"/>
           </Properties>
         </Component>
       </SubComponents>

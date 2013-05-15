@@ -108,9 +108,30 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     setForeground(GuiKonstanten.DOWNLOAD_FARBE_LIVE);
                 }
             }
+            if (column == DatenFilm.FILM_DURATION_NR) {
+                if (live) {
+                    setText("-");
+                } else {
+                    String durationAsString = table.getModel().getValueAt(r, DatenFilm.FILM_DURATION_NR).toString();
+                    long duration = Long.parseLong(durationAsString);
+                    long hours = duration / 3600;
+                    duration = duration - (hours * 3600);
+                    long min = duration / 60;
+                    duration = duration - (min * 60);
+                    long seconds = duration;
+                    setText(fuellen(String.valueOf(hours)) + ":" + fuellen(String.valueOf(min)) + ":" + fuellen(String.valueOf(seconds)));
+                }
+            }
         } catch (Exception ex) {
-            Log.fehlerMeldung(630098552,Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
+            Log.fehlerMeldung(630098552, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
         }
         return this;
+    }
+
+    private String fuellen(String s) {
+        while (s.length() < 2) {
+            s += "0";
+        }
+        return s;
     }
 }

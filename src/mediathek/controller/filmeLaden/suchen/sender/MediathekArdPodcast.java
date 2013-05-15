@@ -233,6 +233,19 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 final String MUSTER_3 = "addMediaStream(0, 1, \"\", \"";
                 seite2.setLength(0);
                 seite2 = getUrl.getUri_Utf(nameSenderMReader, urlIn, seite2, "Thema: " + thema);
+                long durationInSeconds = extractDuration(seite2);
+                String description = extractDescription(seite2);
+                String[] keywords = extractKeywords(seite2);
+                String thumbnailUrl = extractThumbnailURL(seite2);
+                String imageUrl = extractImageURL(seite2);
+
+                System.out.println(thema + ": " + durationInSeconds);
+                System.out.print("\tkeywords:");
+                for (String s : keywords) {
+                    System.out.print(" " + s);
+                }
+                System.out.println();
+                System.out.println(description);
                 pos = 0;
                 pos1 = 0;
                 pos2 = 0;
@@ -329,8 +342,60 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     Log.fehlerMeldung(-102589463, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-4", "kein Datum für: " + urlIn);
                 }
                 //  DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
-                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""));
+                //addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""));
+                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, "", durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
             }
+        }
+
+        private long extractDuration(StringBuffer page) {
+            String duration = extractString(page, "<meta property=\"video:duration\" content=\"", "\"/>");
+            if (duration == null) {
+                return 0;
+            }
+
+            return Long.parseLong(duration);
+        }
+
+        private String extractDescription(StringBuffer page) {
+            String desc = extractString(page, "<meta property=\"og:description\" content=\"", "\"/>");
+            if (desc == null) {
+                return "";
+            }
+
+            return desc;
+        }
+
+        private String[] extractKeywords(StringBuffer page) {
+            String keywords = extractString(page, "<meta name=\"keywords\" content=\"", "\"/>");
+            if (keywords == null) {
+                return new String[]{""};
+            }
+
+            return keywords.split(", ");
+        }
+
+        private String extractThumbnailURL(StringBuffer page) {
+            return extractString(page, "<meta itemprop=\"thumbnailURL\" content=\"", "\"/>");
+        }
+
+        private String extractImageURL(StringBuffer page) {
+            return extractString(page, "<meta property=\"og:image\" content=\"", "\"/>");
+        }
+
+        protected String extractString(StringBuffer source, String startMarker, String endMarker) {
+            int start = source.indexOf(startMarker);
+            if (start == -1) {
+                return null;
+            }
+
+            start = start + startMarker.length();
+
+            int end = source.indexOf(endMarker, start);
+            if (end == -1) {
+                return null;
+            }
+
+            return source.substring(start, end);
         }
     }
 
