@@ -204,13 +204,13 @@ public class DatenFilm implements Comparable<DatenFilm> {
             durationStr = "";
             durationL = 0;
         } else {
+            durationL = l;
             long hours = l / 3600;
             l = l - (hours * 3600);
             long min = l / 60;
             l = l - (min * 60);
             long seconds = l;
             durationStr = fuellen(String.valueOf(hours)) + ":" + fuellen(String.valueOf(min)) + ":" + fuellen(String.valueOf(seconds));
-            durationL = l;
         }
         datumFilm = DatumZeit.getDatumForObject(this);
     }
