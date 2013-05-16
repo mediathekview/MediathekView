@@ -1059,14 +1059,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jTabbedPane = new javax.swing.JTabbedPane();
         javax.swing.JMenuBar jMenuBar = new javax.swing.JMenuBar();
         jMenuDatei = new javax.swing.JMenu();
-        jMenuItemFilmlisteLaden = new javax.swing.JMenuItem();
         jMenuItemEinstellungen = new javax.swing.JMenuItem();
+        jMenuItemFilmlisteLaden = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItemBeenden = new javax.swing.JMenuItem();
         jMenuFilme = new javax.swing.JMenu();
         jMenuItemFilmAbspielen = new javax.swing.JMenuItem();
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
-        jSeparator5 = new javax.swing.JPopupMenu.Separator();
         jMenuDownload = new javax.swing.JMenu();
         jMenuItemDownloadsAlleStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadAlleStoppen = new javax.swing.JMenuItem();
@@ -1091,8 +1090,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemToolBar = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxIconKlein = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemFilterAnzeigen = new javax.swing.JCheckBoxMenuItem();
-        jCheckBoxMenuItemVideoplayer = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemBeschreibung = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItemVideoplayer = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemMeldungen = new javax.swing.JCheckBoxMenuItem();
         jMenuHilfe = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
@@ -1253,16 +1252,16 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jMenuDatei.setText("Datei");
 
-        jMenuItemFilmlisteLaden.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        jMenuItemFilmlisteLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_16.png"))); // NOI18N
-        jMenuItemFilmlisteLaden.setText("neue Filmliste laden");
-        jMenuDatei.add(jMenuItemFilmlisteLaden);
-
         jMenuItemEinstellungen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
         jMenuItemEinstellungen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png"))); // NOI18N
         jMenuItemEinstellungen.setText("Einstellungen");
         jMenuItemEinstellungen.setToolTipText("allgemeine Programmeinstellungen");
         jMenuDatei.add(jMenuItemEinstellungen);
+
+        jMenuItemFilmlisteLaden.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        jMenuItemFilmlisteLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_16.png"))); // NOI18N
+        jMenuItemFilmlisteLaden.setText("neue Filmliste laden");
+        jMenuDatei.add(jMenuItemFilmlisteLaden);
         jMenuDatei.add(jSeparator2);
 
         jMenuItemBeenden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/beenden_16.png"))); // NOI18N
@@ -1282,7 +1281,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemFilmAufzeichnen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_rec_16.png"))); // NOI18N
         jMenuItemFilmAufzeichnen.setText("Film aufzeichnen");
         jMenuFilme.add(jMenuItemFilmAufzeichnen);
-        jMenuFilme.add(jSeparator5);
 
         jMenuBar.add(jMenuFilme);
 
@@ -1376,11 +1374,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemFilterAnzeigen.setText("Filter anzeigen");
         jMenuAnsicht.add(jCheckBoxMenuItemFilterAnzeigen);
 
-        jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
-        jMenuAnsicht.add(jCheckBoxMenuItemVideoplayer);
-
+        jCheckBoxMenuItemBeschreibung.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
         jCheckBoxMenuItemBeschreibung.setText("Beschreibung anzeigen");
         jMenuAnsicht.add(jCheckBoxMenuItemBeschreibung);
+
+        jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
+        jMenuAnsicht.add(jCheckBoxMenuItemVideoplayer);
 
         jCheckBoxMenuItemMeldungen.setText("Meldungen anzeigen");
         jMenuAnsicht.add(jCheckBoxMenuItemMeldungen);
@@ -1472,7 +1471,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
-    private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparatorShutDown;
     private javax.swing.JTabbedPane jTabbedPane;
     private org.jdesktop.swingx.JXSearchField jTextFieldFilter;

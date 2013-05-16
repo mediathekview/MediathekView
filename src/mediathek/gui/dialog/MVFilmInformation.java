@@ -3,16 +3,24 @@ package mediathek.gui.dialog;
 import com.explodingpixels.macwidgets.HudWidgetFactory;
 import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.plaf.HudPaintingUtils;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.FormSpecs;
-import com.jgoodies.forms.layout.RowSpec;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import mediathek.daten.DatenFilm;
 import org.jdesktop.swingx.JXHyperlink;
 
-import javax.swing.*;
-import java.awt.*;
 import java.net.URISyntaxException;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.DDaten;
@@ -25,31 +33,28 @@ import mediathek.tool.UrlHyperlinkAction;
 public class MVFilmInformation implements ChangeListener {
 
     private HudWindow hud;
-    private JLabel lblNrField;
-    private JLabel lblSenderField;
-    private JLabel lblThemaField;
-    private JLabel lblTitleField;
-    private JLabel lblDatumField;
-    private JLabel lblTimeField;
-    private JLabel lblUrlField;
-    private JLabel lblUrlRtmpField;
-    private JLabel lblUrlAuthField;
     private JXHyperlink lblUrlThemaField;
-    private JLabel lblAboField;
+    private JXHyperlink lblUrlPicture;
+    private JXHyperlink lblUrlThumbnail;
+    private JTextArea textAreaBeschreibung;
     private DDaten ddaten;
+    private JLabel[] labelArrNames = new JLabel[DatenFilm.FILME_MAX_ELEM];
+    private JTextField[] txtArrCont = new JTextField[DatenFilm.FILME_MAX_ELEM];
 
     public MVFilmInformation(Frame owner, JTabbedPane tabbedPane, DDaten ddaten) {
         hud = new HudWindow("Filminformation", owner);
         hud.makeResizeable();
         this.ddaten = ddaten;
-        JComponent content = buildContent();
+        //JComponent content = buildContent();
+        JComponent content = setLable();
         //prevents flickering in JDK7, JDK6 is still buggy :(
         content.setOpaque(false);
         hud.setContentPane(content);
         JDialog dialog = hud.getJDialog();
         dialog.pack();
         Dimension size = dialog.getSize();
-        size.width = 500;
+        size.width = 600;
+        size.height = 500;
         dialog.setSize(size);
         calculateHudPosition();
 
@@ -61,6 +66,94 @@ public class MVFilmInformation implements ChangeListener {
                 d.dispose();
             }
         };
+    }
+
+    private JComponent setLable() {
+        JPanel panel = new JPanel();
+        panel.setDoubleBuffered(true);
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        for (int i = 0; i < DatenFilm.FILME_MAX_ELEM; ++i) {
+            labelArrNames[i] = HudWidgetFactory.createHudLabel(DatenFilm.FILME_COLUMN_NAMES[i] + ":");
+            labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);
+            txtArrCont[i] = HudWidgetFactory.createHudTextField("");
+            txtArrCont[i].setEditable(false);
+            txtArrCont[i].setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        }
+        lblUrlThemaField = new JXHyperlink();
+        lblUrlThemaField.setForeground(Color.WHITE);
+        try {
+            lblUrlThemaField.setAction(new UrlHyperlinkAction(ddaten, ""));
+        } catch (URISyntaxException ignored) {
+        }
+        lblUrlThemaField.setFont(HudPaintingUtils.getHudFont());
+        lblUrlPicture = new JXHyperlink();
+        lblUrlPicture.setForeground(Color.WHITE);
+        try {
+            lblUrlPicture.setAction(new UrlHyperlinkAction(ddaten, ""));
+        } catch (URISyntaxException ignored) {
+        }
+        lblUrlPicture.setFont(HudPaintingUtils.getHudFont());
+        lblUrlThumbnail = new JXHyperlink();
+        lblUrlThumbnail.setForeground(Color.WHITE);
+        try {
+            lblUrlThumbnail.setAction(new UrlHyperlinkAction(ddaten, ""));
+        } catch (URISyntaxException ignored) {
+        }
+        lblUrlThumbnail.setFont(HudPaintingUtils.getHudFont());
+        textAreaBeschreibung = new JTextArea();
+        textAreaBeschreibung.setLineWrap(true);
+        textAreaBeschreibung.setBackground(Color.BLACK);
+        textAreaBeschreibung.setForeground(Color.WHITE);
+        textAreaBeschreibung.setOpaque(false);
+        textAreaBeschreibung.setRows(4);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(4, 10, 4, 10);
+        panel.setLayout(gridbag);
+        int zeile = 0;
+        for (int i = 0; i < labelArrNames.length; ++i) {
+            if (i == DatenFilm.FILM_URL_RTMP_NR
+                    || i == DatenFilm.FILM_URL_AUTH_NR) {
+                continue;
+            }
+            c.gridy = zeile;
+            addLable(i, gridbag, c, panel);
+            ++zeile;
+        }
+        // zum zusammenschieben
+        c.weightx = 0;
+        c.gridx = 0;
+        c.weighty = 1;
+        c.gridy = zeile;
+        JLabel label = new JLabel();
+        gridbag.setConstraints(label, c);
+        panel.add(label);
+        return panel;
+    }
+
+    private void addLable(int i, GridBagLayout gridbag, GridBagConstraints c, JPanel panel) {
+        c.gridx = 0;
+        c.weightx = 0;
+        gridbag.setConstraints(labelArrNames[i], c);
+        panel.add(labelArrNames[i]);
+        c.gridx = 1;
+        c.weightx = 10;
+        if (i == DatenFilm.FILM_URL_THEMA_NR) {
+            gridbag.setConstraints(lblUrlThemaField, c);
+            panel.add(lblUrlThemaField);
+        } else if (i == DatenFilm.FILM_IMAGE_URL_NR) {
+            gridbag.setConstraints(lblUrlPicture, c);
+            panel.add(lblUrlPicture);
+        } else if (i == DatenFilm.FILM_THUMBNAIL_URL_NR) {
+            gridbag.setConstraints(lblUrlThumbnail, c);
+            panel.add(lblUrlThumbnail);
+        } else if (i == DatenFilm.FILM_DESCRIPTION_NR) {
+            gridbag.setConstraints(textAreaBeschreibung, c);
+            panel.add(textAreaBeschreibung);
+        } else {
+            gridbag.setConstraints(txtArrCont[i], c);
+            panel.add(txtArrCont[i]);
+        }
     }
 
     private void calculateHudPosition() {
@@ -76,147 +169,28 @@ public class MVFilmInformation implements ChangeListener {
     }
 
     public void updateCurrentFilm(DatenFilm film) {
-        //update data
-        //TODO überprüfen ob Nummeranzeige richtig geschrieben ist! Manchmal falsche Nummern
-        lblNrField.setText(film.arr[DatenFilm.FILM_NR_NR]);
-        lblSenderField.setText(film.arr[DatenFilm.FILM_SENDER_NR]);
-        lblThemaField.setText(film.arr[DatenFilm.FILM_THEMA_NR]);
-        lblTitleField.setText(film.arr[DatenFilm.FILM_TITEL_NR]);
-        lblDatumField.setText(film.arr[DatenFilm.FILM_DATUM_NR]);
-        lblTimeField.setText(film.arr[DatenFilm.FILM_ZEIT_NR]);
-        lblUrlField.setText(film.arr[DatenFilm.FILM_URL_NR]);
-        lblUrlRtmpField.setText(film.arr[DatenFilm.FILM_URL_RTMP_NR]);
-        lblUrlAuthField.setText(film.arr[DatenFilm.FILM_URL_AUTH_NR]);
+        for (int i = 0; i < txtArrCont.length; ++i) {
+            txtArrCont[i].setText(film.arr[i]);
+        }
+        if (film.arr[DatenFilm.FILM_DESCRIPTION_NR].equals("")) {
+            // sonst müsste die Größe gesetzt werden
+            textAreaBeschreibung.setText(" ");
+        } else {
+            textAreaBeschreibung.setText(film.arr[DatenFilm.FILM_DESCRIPTION_NR]);
+        }
         // setup Hyperlink
         // FIXME ist das nicht besser zu lösen?
         try {
             lblUrlThemaField.setAction(new UrlHyperlinkAction(ddaten, film.arr[DatenFilm.FILM_URL_THEMA_NR]));
             lblUrlThemaField.setForeground(Color.WHITE);
+            lblUrlPicture.setAction(new UrlHyperlinkAction(ddaten, film.arr[DatenFilm.FILM_IMAGE_URL_NR]));
+            lblUrlPicture.setForeground(Color.WHITE);
+            lblUrlThumbnail.setAction(new UrlHyperlinkAction(ddaten, film.arr[DatenFilm.FILM_THUMBNAIL_URL_NR]));
+            lblUrlThumbnail.setForeground(Color.WHITE);
         } catch (URISyntaxException ignored) {
         }
-        lblAboField.setText(film.arr[DatenFilm.FILM_ABO_NAME_NR]);
 
         hud.getJDialog().repaint();
-    }
-
-    private JComponent buildContent() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new FormLayout(new ColumnSpec[]{
-            FormSpecs.RELATED_GAP_COLSPEC,
-            FormSpecs.DEFAULT_COLSPEC,
-            FormSpecs.RELATED_GAP_COLSPEC,
-            FormSpecs.DEFAULT_COLSPEC,},
-                new RowSpec[]{
-            FormSpecs.RELATED_GAP_ROWSPEC,
-            FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC,
-            FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC,
-            FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC,
-            FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC,
-            FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC,
-            FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC,
-            FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC,
-            FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC,
-            FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC,
-            FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC,
-            FormSpecs.DEFAULT_ROWSPEC,}));
-
-
-        JLabel label = HudWidgetFactory.createHudLabel("Nr:");
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 2");
-
-        lblNrField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblNrField, "4, 2");
-
-        label = HudWidgetFactory.createHudLabel("Sender:");
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 4");
-
-        lblSenderField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblSenderField, "4, 4");
-
-        label = HudWidgetFactory.createHudLabel("Thema:");
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 6");
-
-        lblThemaField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblThemaField, "4, 6");
-
-        label = HudWidgetFactory.createHudLabel("Titel:");
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 8");
-
-        lblTitleField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblTitleField, "4, 8");
-
-        label = HudWidgetFactory.createHudLabel("Datum:");
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 10");
-
-        lblDatumField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblDatumField, "4, 10");
-
-        label = HudWidgetFactory.createHudLabel("Zeit:");
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 12");
-
-        lblTimeField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblTimeField, "4, 12");
-
-        label = HudWidgetFactory.createHudLabel("URL:");
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 14");
-
-        lblUrlField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblUrlField, "4, 14");
-
-        label = HudWidgetFactory.createHudLabel("UrlRTMP:");
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 16");
-
-        lblUrlRtmpField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblUrlRtmpField, "4, 16");
-
-        label = HudWidgetFactory.createHudLabel("UrlAuth:");
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 18");
-
-        lblUrlAuthField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblUrlAuthField, "4, 18");
-
-        label = HudWidgetFactory.createHudLabel("UrlThema:");
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 20");
-
-        lblUrlThemaField = new JXHyperlink();
-        lblUrlThemaField.setForeground(Color.WHITE);
-        try {
-            lblUrlThemaField.setAction(new UrlHyperlinkAction(ddaten, ""));
-        } catch (URISyntaxException ignored) {
-        }
-        lblUrlThemaField.setFont(HudPaintingUtils.getHudFont());
-        panel.add(lblUrlThemaField, "4, 20");
-
-        label = HudWidgetFactory.createHudLabel("Abo-Name:");
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        panel.add(label, "2, 22");
-
-        lblAboField = HudWidgetFactory.createHudLabel("");
-        panel.add(lblAboField, "4, 22");
-
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        return panel;
     }
 
     @Override

@@ -32,47 +32,62 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final String FELD_INFO = "Feldinfo";
     public static final String FILME = "Filme";
     public static final String FILME_ = "X";
-    public static final int FILME_MAX_ELEM = 16;
     //
     public static final String FILM_NR = "Nr"; // wird vor dem Speichern gelöscht!
+    public static final String FILM_NR_ = "a"; // wird vor dem Speichern gelöscht!
     public static final int FILM_NR_NR = 0;
     public static final String FILM_SENDER = "Sender";
+    public static final String FILM_SENDER_ = "b";
     public static final int FILM_SENDER_NR = 1;
     public static final String FILM_THEMA = "Thema";
+    public static final String FILM_THEMA_ = "c";
     public static final int FILM_THEMA_NR = 2;
     public static final String FILM_TITEL = "Titel";
+    public static final String FILM_TITEL_ = "d";
     public static final int FILM_TITEL_NR = 3;
     public static final String FILM_DATUM = "Datum";
+    public static final String FILM_DATUM_ = "e";
     public static final int FILM_DATUM_NR = 4;
     public static final String FILM_ZEIT = "Zeit";
+    public static final String FILM_ZEIT_ = "f";
     public static final int FILM_ZEIT_NR = 5;
-    public static final String FILM_URL = "Url";
-    public static final int FILM_URL_NR = 6;
-    //public static final String FILM_URL_ORG = "UrlOrg";
-    //public static final int FILM_URL_ORG_NR = 7;
-    public static final String FILM_URL_RTMP = "UrlRTMP";
-    public static final int FILM_URL_RTMP_NR = 7;
-    public static final String FILM_URL_AUTH = "UrlAuth";
-    public static final int FILM_URL_AUTH_NR = 8;
-    public static final String FILM_URL_THEMA = "UrlThema";//url des Themas zum nachladen
-    public static final int FILM_URL_THEMA_NR = 9;
-    public static final String FILM_ABO_NAME = "Abo-Name";// wird vor dem Speichern gelöscht!
-    public static final int FILM_ABO_NAME_NR = 10;
     public static final String FILM_DURATION = "Dauer";
-    public static final int FILM_DURATION_NR = 11;
+    public static final String FILM_DURATION_ = "m";
+    public static final int FILM_DURATION_NR = 6;
     public static final String FILM_DESCRIPTION = "Beschreibung";
-    public static final int FILM_DESCRIPTION_NR = 12;
-    public static final String FILM_IMAGE_URL = "Bild";
-    public static final int FILM_IMAGE_URL_NR = 13;
-    public static final String FILM_THUMBNAIL_URL = "Thumbnail";
-    public static final int FILM_THUMBNAIL_URL_NR = 14;
+    public static final String FILM_DESCRIPTION_ = "n";
+    public static final int FILM_DESCRIPTION_NR = 7;
     public static final String FILM_KEYWORDS = "Keywords";
-    public static final int FILM_KEYWORDS_NR = 15;
-    public static final String[] FILME_COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT /*f*/,
-        FILM_URL /*g*/ /*FILM_URL_ORG h*/, FILM_URL_RTMP, FILM_URL_AUTH, FILM_URL_THEMA, FILM_ABO_NAME /*l*/,
-        FILM_DURATION, FILM_DESCRIPTION, FILM_IMAGE_URL, FILM_THUMBNAIL_URL, FILM_KEYWORDS};
-    public static final String[] FILME_COLUMN_NAMES_ = {"a", "b", "c", "d", "e", "f", "g" /*"h"*/, "i", "j", "k", "l",
-        "m", "n", "o", "p", "q"};
+    public static final String FILM_KEYWORDS_ = "q";
+    public static final int FILM_KEYWORDS_NR = 8;
+    public static final String FILM_URL = "Url";
+    public static final String FILM_URL_ = "g";
+    public static final int FILM_URL_NR = 9;
+    public static final String FILM_URL_THEMA = "UrlThema";//url des Themas zum nachladen
+    public static final String FILM_URL_THEMA_ = "k";//url des Themas zum nachladen
+    public static final int FILM_URL_THEMA_NR = 10;
+    public static final String FILM_ABO_NAME = "Abo-Name";// wird vor dem Speichern gelöscht!
+    public static final String FILM_ABO_NAME_ = "l";// wird vor dem Speichern gelöscht!
+    public static final int FILM_ABO_NAME_NR = 11;
+    public static final String FILM_IMAGE_URL = "Bild";
+    public static final String FILM_IMAGE_URL_ = "o";
+    public static final int FILM_IMAGE_URL_NR = 12;
+    public static final String FILM_THUMBNAIL_URL = "Thumbnail";
+    public static final String FILM_THUMBNAIL_URL_ = "p";
+    public static final int FILM_THUMBNAIL_URL_NR = 13;
+    public static final String FILM_URL_RTMP = "UrlRTMP";
+    public static final String FILM_URL_RTMP_ = "i";
+    public static final int FILM_URL_RTMP_NR = 14;
+    public static final String FILM_URL_AUTH = "UrlAuth";
+    public static final String FILM_URL_AUTH_ = "j";
+    public static final int FILM_URL_AUTH_NR = 15;
+    public static final int FILME_MAX_ELEM = 16;
+    public static final String[] FILME_COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT, FILM_DURATION,
+        FILM_DESCRIPTION, FILM_KEYWORDS, FILM_URL, FILM_URL_THEMA, FILM_ABO_NAME,
+        FILM_IMAGE_URL, FILM_THUMBNAIL_URL, FILM_URL_RTMP, FILM_URL_AUTH};
+    public static final String[] FILME_COLUMN_NAMES_ = {FILM_NR_, FILM_SENDER_, FILM_THEMA_, FILM_TITEL_, FILM_DATUM_, FILM_ZEIT_, FILM_DURATION_,
+        FILM_DESCRIPTION_, FILM_KEYWORDS_, FILM_URL_, FILM_URL_THEMA_, FILM_ABO_NAME_,
+        FILM_IMAGE_URL_, FILM_THUMBNAIL_URL_, FILM_URL_RTMP_, FILM_URL_AUTH_};
     public String[] arr;
     public Datum datumFilm = new Datum(0);
     public String durationStr = "";
