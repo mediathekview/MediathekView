@@ -214,7 +214,7 @@
                             <Component class="javax.swing.JTextArea" name="jTextAreaBeschreibung">
                               <Properties>
                                 <Property name="columns" type="int" value="20"/>
-                                <Property name="rows" type="int" value="3"/>
+                                <Property name="rows" type="int" value="8"/>
                               </Properties>
                             </Component>
                           </SubComponents>

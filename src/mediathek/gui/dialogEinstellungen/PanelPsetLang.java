@@ -612,7 +612,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Beschreibung"));
 
         jTextAreaBeschreibung.setColumns(20);
-        jTextAreaBeschreibung.setRows(3);
+        jTextAreaBeschreibung.setRows(8);
         jScrollPane2.setViewportView(jTextAreaBeschreibung);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);

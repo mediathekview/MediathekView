@@ -68,7 +68,6 @@ import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
-import mediathek.tool.BeobMpanel;
 import mediathek.tool.CellRendererFilme;
 import mediathek.tool.Datum;
 import mediathek.tool.Filter;
