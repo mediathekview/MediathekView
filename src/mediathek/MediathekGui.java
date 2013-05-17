@@ -1059,8 +1059,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jTabbedPane = new javax.swing.JTabbedPane();
         javax.swing.JMenuBar jMenuBar = new javax.swing.JMenuBar();
         jMenuDatei = new javax.swing.JMenu();
-        jMenuItemEinstellungen = new javax.swing.JMenuItem();
         jMenuItemFilmlisteLaden = new javax.swing.JMenuItem();
+        jMenuItemEinstellungen = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItemBeenden = new javax.swing.JMenuItem();
         jMenuFilme = new javax.swing.JMenu();
@@ -1252,16 +1252,16 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jMenuDatei.setText("Datei");
 
+        jMenuItemFilmlisteLaden.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        jMenuItemFilmlisteLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_16.png"))); // NOI18N
+        jMenuItemFilmlisteLaden.setText("neue Filmliste laden");
+        jMenuDatei.add(jMenuItemFilmlisteLaden);
+
         jMenuItemEinstellungen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
         jMenuItemEinstellungen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/configure_16.png"))); // NOI18N
         jMenuItemEinstellungen.setText("Einstellungen");
         jMenuItemEinstellungen.setToolTipText("allgemeine Programmeinstellungen");
         jMenuDatei.add(jMenuItemEinstellungen);
-
-        jMenuItemFilmlisteLaden.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        jMenuItemFilmlisteLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_16.png"))); // NOI18N
-        jMenuItemFilmlisteLaden.setText("neue Filmliste laden");
-        jMenuDatei.add(jMenuItemFilmlisteLaden);
         jMenuDatei.add(jSeparator2);
 
         jMenuItemBeenden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/beenden_16.png"))); // NOI18N

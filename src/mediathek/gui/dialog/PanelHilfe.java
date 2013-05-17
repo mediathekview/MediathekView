@@ -54,8 +54,11 @@ public class PanelHilfe extends PanelVorlage {
         }
         jTextFieldPfad.setText(Funktionen.getPathJar());
         try {
+            jXHyperlinkWebsite.setText(Konstanten.ADRESSE_WEBSITE);
             jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_WEBSITE));
+            jXHyperlinkAnleitung.setText(Konstanten.ADRESSE_ANLEITUNG);
             jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_ANLEITUNG));
+            jXHyperlinkForum.setText(Konstanten.ADRESSE_FORUM);
             jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_FORUM));
         } catch (URISyntaxException ignored) {
         }

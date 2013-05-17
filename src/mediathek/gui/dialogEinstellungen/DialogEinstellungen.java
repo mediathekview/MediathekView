@@ -146,10 +146,10 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         final String NAME_programmset = "Set bearbeiten";
         final String NAME_programmsetImportieren = "Set importieren";
         // Infos
-        final String NAME_allgemeineInfos = "Infos";
+        final String NAME_programmInfos = "Programminfos";
         final String NAME_history = "History";
         final String NAME_logfile = "Erledigte Abos";
-        final String NAME_meldungen = "Meldungen";
+        final String NAME_logdatei = "Logdatei erstellen";
         final String NAME_systemmeldungen = "Systemmeldungen";
         final String NAME_fehlermeldungen = "Fehlermeldungen";
         final String NAME_meldungenProgramme = "Hilfsprogramme";
@@ -190,7 +190,9 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         treeNodeStart.add(treeNodeDownloads);
         // ===============================================================================
         // ####### Infos #########
-        DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode(NAME_allgemeineInfos);
+        DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode("Infos");
+        DefaultMutableTreeNode treeNodeProgrammInfos = new DefaultMutableTreeNode(NAME_programmInfos);
+        treeNodeInfos.add(treeNodeProgrammInfos);
         DefaultMutableTreeNode treeNodeHistory = new DefaultMutableTreeNode(NAME_history);
         treeNodeInfos.add(treeNodeHistory);
         DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
@@ -199,6 +201,8 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         // ===============================================================================
         // ############ Systemmeldungen ###############
         DefaultMutableTreeNode treeNodeSystem = new DefaultMutableTreeNode("Meldungen");
+        DefaultMutableTreeNode treeNodeLogdatei = new DefaultMutableTreeNode(NAME_logdatei);
+        treeNodeSystem.add(treeNodeLogdatei);
         DefaultMutableTreeNode treeNodeSystemmeldungen = new DefaultMutableTreeNode(NAME_systemmeldungen);
         treeNodeSystem.add(treeNodeSystemmeldungen);
         if (DDaten.debug) {
@@ -255,10 +259,10 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                     } else if (name.equals(NAME_programmsetImportieren)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelPsetVorlagen);
-                    } else if (name.equals(NAME_allgemeineInfos)) {
+                    } else if (name.equals(NAME_programmInfos)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelAbout);
-                    } else if (name.equals(NAME_meldungen)) {
+                    } else if (name.equals(NAME_logdatei)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelMeldungenUbersicht);
                     } else if (name.equals(NAME_systemmeldungen)) {
