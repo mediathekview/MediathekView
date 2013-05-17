@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Mediathek>
-
+    
     <Programmset>
         <Name>Speichern</Name>
         <Praefix>http</Praefix>
@@ -11,7 +11,8 @@
         <Speichern>true</Speichern>
         <Button>true</Button>
         <Abo>true</Abo>
-        <max-Laenge>25</max-Laenge>
+        <Laenge>true</Laenge> 
+        <max-Laenge>100</max-Laenge> 
         <Beschreibung>Standardset zum Speichern der Filme</Beschreibung>
     </Programmset>
     <Programm>
@@ -23,12 +24,12 @@
         <Restart>true</Restart>
     </Programm>
     <Programm>
-        <Programmname>VLC ( &lt;#&gt; )</Programmname>
+        <Programmname>vlc ( &lt;#&gt; )</Programmname>
         <Zieldateiname>%t-%T-%N.asf</Zieldateiname>
-        <Programmpfad>PFAD_VLC</Programmpfad>
-        <Programmschalter>%f :sout=#standard{access=file,mux=asf,dst="**"} -I "dummy" --play-and-exit</Programmschalter>
+        <Programmpfad>cmd /c</Programmpfad>
+        <Programmschalter>"PFAD_VLC" %f :sout=#standard{access=file,mux=asf,dst="**"} -I "dummy" --play-and-exit</Programmschalter>
     </Programm>
-
+    
     <Programmset>
         <Name>Abspielen</Name>
         <Abspielen>true</Abspielen>
@@ -39,23 +40,23 @@
         <Beschreibung>Standardset zum direkten Abspielen der Filme</Beschreibung>
     </Programmset>
     <Programm>
-        <Programmname>skript</Programmname>
-        <Programmpfad>bin\flv.bat</Programmpfad>
-        <Programmschalter>bin\flvstreamer_win32_latest.exe "PFAD_VLC" -r "%f"</Programmschalter>
+        <Programmname>flvstreamer</Programmname>
+        <Programmpfad>cmd /c</Programmpfad>
+        <Programmschalter>bin\flvstreamer_win32_latest.exe -r "%f" --quiet | "PFAD_VLC" -</Programmschalter>
         <Praefix>rtmp://arte</Praefix>
         <Restart>false</Restart>
     </Programm>
     <Programm>
-        <Programmname>skript</Programmname>
-        <Programmpfad>bin\flv.bat</Programmpfad>
-        <Programmschalter>bin\flvstreamer_win32_latest.exe "PFAD_VLC" %F</Programmschalter>
+        <Programmname>flvstreamer</Programmname>
+        <Programmpfad>cmd /c</Programmpfad>
+        <Programmschalter>bin\flvstreamer_win32_latest.exe %F --quiet | "PFAD_VLC" -</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>false</Restart>
     </Programm>
     <Programm>
         <Programmname>Vlc</Programmname>
-        <Programmpfad>PFAD_VLC</Programmpfad>
-        <Programmschalter>%f --play-and-exit</Programmschalter>
+        <Programmpfad>cmd /c</Programmpfad>
+        <Programmschalter>"PFAD_VLC" %f --play-and-exit</Programmschalter>
     </Programm>
-
+    
 </Mediathek>
