@@ -21,28 +21,39 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import mediathek.daten.DDaten;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.Konstanten;
+import mediathek.tool.UrlHyperlinkAction;
 
 public class DialogHinweisUpdate extends javax.swing.JDialog {
-
+    
     private String text = "";
+    private DDaten ddaten;
 
     /**
      *
      * @param parent
      * @param modal
+     * @param dd
      * @param dialogTitel
      * @param ttext
      */
-    public DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String dialogTitel, String ttext) {
+    public DialogHinweisUpdate(java.awt.Frame parent, boolean modal, DDaten dd, String dialogTitel, String ttext) {
         super(parent, modal);
+        ddaten = dd;
         text = ttext;
         this.setTitle(dialogTitel);
         initComponents();
         initBeob();
     }
-
+    
     private void initBeob() {
+        try {
+            jXHyperlinkWebsite.setText(Konstanten.ADRESSE_DOWNLAD);
+            jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_DOWNLAD));
+        } catch (Exception ex) {
+        }
         jButtonOk.addActionListener(new BeobBeenden());
         jTextArea1.setText(text);
         new EscBeenden(this) {
@@ -52,7 +63,7 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
             }
         };
     }
-
+    
     private void beenden() {
         this.dispose();
     }
@@ -68,7 +79,8 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
         javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jButtonOk = new javax.swing.JButton();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
+        jXHyperlinkWebsite = new org.jdesktop.swingx.JXHyperlink();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -80,7 +92,9 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
 
         jButtonOk.setText("OK");
 
-        jLabel1.setText("                                        ");
+        jXHyperlinkWebsite.setText("jXHyperlink1");
+
+        jLabel2.setText("Website:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -89,22 +103,27 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jXHyperlinkWebsite, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(16, 16, 16)
-                        .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jButtonOk))
+                    .addComponent(jXHyperlinkWebsite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonOk)
                 .addContainerGap())
         );
 
@@ -112,11 +131,13 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonOk;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JTextArea jTextArea1;
+    private org.jdesktop.swingx.JXHyperlink jXHyperlinkWebsite;
     // End of variables declaration//GEN-END:variables
 
     private class BeobBeenden implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             beenden();

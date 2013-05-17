@@ -979,8 +979,9 @@ public class GuiFilme extends PanelVorlage {
         jTextAreaBeschreibung.setEditable(false);
         jTextAreaBeschreibung.setColumns(20);
         jTextAreaBeschreibung.setLineWrap(true);
-        jTextAreaBeschreibung.setRows(5);
+        jTextAreaBeschreibung.setRows(4);
         jTextAreaBeschreibung.setMargin(new java.awt.Insets(4, 4, 4, 4));
+        jTextAreaBeschreibung.setPreferredSize(new java.awt.Dimension(228, 50));
         jScrollPane2.setViewportView(jTextAreaBeschreibung);
 
         javax.swing.GroupLayout jPanelBeschreibungInnenLayout = new javax.swing.GroupLayout(jPanelBeschreibungInnen);
