@@ -29,6 +29,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import mediathek.MediathekGui;
+import mediathek.controller.io.starter.RuntimeExec;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
@@ -93,6 +94,15 @@ public class GuiDebug extends PanelVorlage {
         jPanelSenderLaden.add(new PanelSenderLaden(ddaten, ddaten.mediathekGui));
         jPanelListen.setLayout(new BorderLayout());
         jPanelListen.add(new PanelListeFilmlistenServer(d, ddaten.mediathekGui));
+        jButtonTasklist.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    jTextArea1.setText(RuntimeExec.isProcessRunging());
+                } catch (Exception ex) {
+                }
+            }
+        });
     }
 
     private void addSender() {
@@ -142,6 +152,10 @@ public class GuiDebug extends PanelVorlage {
         jPanelSender = new javax.swing.JPanel();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         jPanelListen = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jButtonTasklist = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
         jToggleButtonAllesLaden = new javax.swing.JToggleButton();
         jButtonFilmlisteLoeschen = new javax.swing.JButton();
@@ -156,7 +170,7 @@ public class GuiDebug extends PanelVorlage {
         jPanelSenderLaden.setLayout(jPanelSenderLadenLayout);
         jPanelSenderLadenLayout.setHorizontalGroup(
             jPanelSenderLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 878, Short.MAX_VALUE)
+            .addGap(0, 823, Short.MAX_VALUE)
         );
         jPanelSenderLadenLayout.setVerticalGroup(
             jPanelSenderLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,7 +202,7 @@ public class GuiDebug extends PanelVorlage {
         jPanelSender.setLayout(jPanelSenderLayout);
         jPanelSenderLayout.setHorizontalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 878, Short.MAX_VALUE)
+            .addGap(0, 823, Short.MAX_VALUE)
         );
         jPanelSenderLayout.setVerticalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -218,7 +232,7 @@ public class GuiDebug extends PanelVorlage {
         jPanelListen.setLayout(jPanelListenLayout);
         jPanelListenLayout.setHorizontalGroup(
             jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 892, Short.MAX_VALUE)
+            .addGap(0, 837, Short.MAX_VALUE)
         );
         jPanelListenLayout.setVerticalGroup(
             jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -243,6 +257,37 @@ public class GuiDebug extends PanelVorlage {
         );
 
         jTabbedPane1.addTab("tab3", jPanel3);
+
+        jButtonTasklist.setText("Tasklist");
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 837, Short.MAX_VALUE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jButtonTasklist)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButtonTasklist)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("tab4", jPanel5);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -321,9 +366,13 @@ public class GuiDebug extends PanelVorlage {
     private javax.swing.JButton jButtonCheck;
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
+    private javax.swing.JButton jButtonTasklist;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelListen;
     private javax.swing.JPanel jPanelSender;
     private javax.swing.JPanel jPanelSenderLaden;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JToggleButton jToggleButtonAllesLaden;
     // End of variables declaration//GEN-END:variables
 

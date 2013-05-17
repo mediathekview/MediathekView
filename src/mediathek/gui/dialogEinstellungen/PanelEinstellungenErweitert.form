@@ -60,7 +60,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Neuladen der Filmliste"/>
+            <TitledBorder title="Nach dem Neuladen der Filmliste"/>
           </Border>
         </Property>
       </Properties>

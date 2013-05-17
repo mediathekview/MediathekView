@@ -176,7 +176,7 @@ public class RuntimeExec {
                     meldenDouble(d);
                 } catch (Exception ex) {
 //                    start.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
                     Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG, "RuntimeExec.GetPercentageFromErrorStream-1", input);
                 }
             } else {
@@ -229,5 +229,20 @@ public class RuntimeExec {
 //                start.datenDownload.statusMelden(percent);
             }
         }
+    }
+    private static final String TASKLIST = "tasklist";
+
+    public static String isProcessRunging() throws Exception {
+        String ret = "";
+        Process p = Runtime.getRuntime().exec(TASKLIST);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+            ret += line + "\n";
+        }
+
+        return ret;
+
     }
 }

@@ -215,6 +215,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         // Aufbauen
         jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNodeStart));
         jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        jTree1.setRootVisible(false);
         jTree1.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
@@ -323,6 +324,8 @@ public class DialogEinstellungen extends javax.swing.JFrame {
 
         jSplitPane1.setRightComponent(jScrollPane2);
 
+        jTree1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jTree1.setRootVisible(false);
         jScrollPane1.setViewportView(jTree1);
 
         jSplitPane1.setLeftComponent(jScrollPane1);

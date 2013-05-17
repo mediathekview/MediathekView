@@ -328,7 +328,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonProgrammUrl = new javax.swing.JButton();
         jButtonHilfeProgrammUrl = new javax.swing.JButton();
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Neuladen der Filmliste"));
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Nach dem Neuladen der Filmliste"));
 
         jCheckBoxAboSuchen.setText("Abos automatisch suchen");
 
