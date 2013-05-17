@@ -39,7 +39,8 @@ public class RuntimeExec {
     private Process process = null;
     Start start;
     private static int procnr = 0; //TH
-    private Pattern patternFlvstreamer = Pattern.compile("([0-9.]*%)");
+    //private Pattern patternFlvstreamer = Pattern.compile("([0-9.]*%)");
+    private Pattern patternFlvstreamer = Pattern.compile("([0-9]*.[0-9]{1}%)");
     private Pattern patternFfmpeg = Pattern.compile("(?<=Duration: )[^,]*");
     private Pattern patternZeit = Pattern.compile("(?<=time=)[\\d.]+");
     private double totalSecs = 0;
