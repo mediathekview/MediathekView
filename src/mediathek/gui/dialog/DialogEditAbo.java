@@ -43,8 +43,8 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private DDaten ddaten;
     private DatenAbo aktAbo;
     private JTextField[] textfeldListe;
-    private JComboBox comboboxProgramm = new JComboBox();
-    private JComboBox comboboxSender = new JComboBox();
+    private JComboBox<String> comboboxProgramm = new JComboBox<String>();
+    private JComboBox<String> comboboxSender = new JComboBox<String>();
     private JCheckBox checkBoxEingeschaltet = new JCheckBox();
     public boolean ok = false;
 
@@ -53,8 +53,8 @@ public class DialogEditAbo extends javax.swing.JDialog {
         initComponents();
         ddaten = d;
         aktAbo = aktA;
-        comboboxProgramm.setModel(new javax.swing.DefaultComboBoxModel(ddaten.listePset.getListeAbo().getObjectDataCombo()));
-        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel(GuiFunktionen.addLeerListe(DDaten.filmeLaden.getSenderNamen())));
+        comboboxProgramm.setModel(new javax.swing.DefaultComboBoxModel<String>(ddaten.listePset.getListeAbo().getObjectDataCombo()));
+        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<String>(GuiFunktionen.addLeerListe(DDaten.filmeLaden.getSenderNamen())));
         jButtonBeenden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
