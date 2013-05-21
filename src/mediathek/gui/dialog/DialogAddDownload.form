@@ -56,7 +56,7 @@
                   <Component id="jButtonAbbrechen" alignment="2" min="-2" max="-2" attributes="0"/>
                   <Component id="jCheckBoxStarten" alignment="2" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="15" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

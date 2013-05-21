@@ -192,19 +192,19 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jButtonBeenden = new javax.swing.JButton();
         jButtonAbbrechen = new javax.swing.JButton();
         jCheckBoxStarten = new javax.swing.JCheckBox();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jTextFieldTitel = new javax.swing.JTextField();
         jTextFieldSender = new javax.swing.JTextField();
-        jPanel5 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
         jComboBoxPgr = new javax.swing.JComboBox();
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jTextFieldName = new javax.swing.JTextField();
         jButtonZiel = new javax.swing.JButton();
         jTextFieldPfad = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -356,7 +356,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                     .addComponent(jButtonBeenden)
                     .addComponent(jButtonAbbrechen)
                     .addComponent(jCheckBoxStarten))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
@@ -367,13 +367,6 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private javax.swing.JButton jButtonZiel;
     private javax.swing.JCheckBox jCheckBoxStarten;
     private javax.swing.JComboBox jComboBoxPgr;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JTextField jTextFieldName;
     private javax.swing.JTextField jTextFieldPfad;
     private javax.swing.JTextField jTextFieldSender;
