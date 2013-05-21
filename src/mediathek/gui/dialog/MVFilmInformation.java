@@ -12,6 +12,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import mediathek.daten.DatenFilm;
 import org.jdesktop.swingx.JXHyperlink;
@@ -39,7 +43,7 @@ import mediathek.tool.UrlHyperlinkAction;
  * Display the current film information in a Apple-style HUD window.
  */
 public class MVFilmInformation implements ChangeListener {
-    
+
     private HudWindow hud = null;
     private JDialog dialog = null;
     private JXHyperlink lblUrlThemaField;
@@ -51,7 +55,8 @@ public class MVFilmInformation implements ChangeListener {
     private JTextField[] txtArrCont = new JTextField[DatenFilm.FILME_MAX_ELEM];
     private ViewImage viewImage = new ViewImage();
     private Color foreground, background;
-    
+    private DatenFilm aktFilm = new DatenFilm();
+
     public MVFilmInformation(Frame owner, JTabbedPane tabbedPane, DDaten ddaten) {
         this.ddaten = ddaten;
         if (Funktionen.getOs() == Funktionen.OS_LINUX) {
@@ -65,7 +70,7 @@ public class MVFilmInformation implements ChangeListener {
                 labelArrNames[i].setDoubleBuffered(true);
                 labelArrNames[i].setForeground(foreground);
                 labelArrNames[i].setBackground(background);
-                
+
                 txtArrCont[i] = new JTextField("");
                 txtArrCont[i].setEditable(false);
                 txtArrCont[i].setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -105,9 +110,8 @@ public class MVFilmInformation implements ChangeListener {
         size.height = 600;
         dialog.setSize(size);
         calculateHudPosition();
-        
+
         tabbedPane.addChangeListener(this);
-        
         new EscBeenden(dialog) {
             @Override
             public void beenden_(JDialog d) {
@@ -115,7 +119,7 @@ public class MVFilmInformation implements ChangeListener {
             }
         };
     }
-    
+
     private JComponent setLable() {
         JPanel panel = new JPanel();
         GridBagLayout gridbag = new GridBagLayout();
@@ -183,7 +187,7 @@ public class MVFilmInformation implements ChangeListener {
         panel.add(label);
         return panel;
     }
-    
+
     private void addLable(int i, GridBagLayout gridbag, GridBagConstraints c, JPanel panel) {
         c.gridx = 0;
         c.weightx = 0;
@@ -208,59 +212,70 @@ public class MVFilmInformation implements ChangeListener {
             panel.add(txtArrCont[i]);
         }
     }
-    
+
     private void calculateHudPosition() {
         //FIXME calculate the HUD position
     }
-    
+
     public void show() {
 //        hud.getJDialog().setVisible(true);
+        setAktFilm();
         dialog.setVisible(true);
     }
-    
+
     public boolean isVisible() {
 //        return hud.getJDialog().isVisible();
         return dialog.isVisible();
     }
-    
+
     public void updateCurrentFilm(DatenFilm film) {
-        for (int i = 0; i < txtArrCont.length; ++i) {
-            txtArrCont[i].setText(film.arr[i]);
+        aktFilm = film;
+        if (this.isVisible()) {
+            setAktFilm();
         }
-        txtArrCont[DatenFilm.FILM_DURATION_NR].setText(film.durationStr);
-        if (film.arr[DatenFilm.FILM_DESCRIPTION_NR].equals("")) {
+    }
+
+    private void setAktFilm() {
+        for (int i = 0; i < txtArrCont.length; ++i) {
+            txtArrCont[i].setText(aktFilm.arr[i]);
+        }
+        txtArrCont[DatenFilm.FILM_DURATION_NR].setText(aktFilm.durationStr);
+        if (aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR].equals("")) {
             // sonst müsste die Größe gesetzt werden
             textAreaBeschreibung.setText(" ");
         } else {
-            textAreaBeschreibung.setText(film.arr[DatenFilm.FILM_DESCRIPTION_NR]);
+            textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR]);
         }
         // setup Hyperlink
         // FIXME ist das nicht besser zu lösen?
         try {
-            lblUrlThemaField.setAction(new UrlHyperlinkAction(ddaten, film.arr[DatenFilm.FILM_URL_THEMA_NR]));
+            lblUrlThemaField.setAction(new UrlHyperlinkAction(ddaten, aktFilm.arr[DatenFilm.FILM_URL_THEMA_NR]));
             lblUrlThemaField.setForeground(foreground);
-            lblUrlPicture.setAction(new UrlHyperlinkAction(ddaten, film.arr[DatenFilm.FILM_IMAGE_URL_NR]));
+            lblUrlPicture.setAction(new UrlHyperlinkAction(ddaten, aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]));
             lblUrlPicture.setForeground(foreground);
-            lblUrlThumbnail.setAction(new UrlHyperlinkAction(ddaten, film.arr[DatenFilm.FILM_THUMBNAIL_URL_NR]));
+            lblUrlThumbnail.setAction(new UrlHyperlinkAction(ddaten, aktFilm.arr[DatenFilm.FILM_THUMBNAIL_URL_NR]));
             lblUrlThumbnail.setForeground(foreground);
         } catch (URISyntaxException ignored) {
         }
-        viewImage.setImage(film.arr[DatenFilm.FILM_IMAGE_URL_NR]);
-//        hud.getJDialog().repaint();
+        if (!aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {
+            viewImage.setImage(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
+        } else {
+            viewImage.setImage(aktFilm.arr[DatenFilm.FILM_THUMBNAIL_URL_NR]);
+        }
         dialog.repaint();
     }
-    
+
     @Override
     public void stateChanged(ChangeEvent changeEvent) {
         //Whenever there is a change event, reset HUD info to nothing
         DatenFilm emptyFilm = new DatenFilm();
         updateCurrentFilm(emptyFilm);
     }
-    
+
     private class ViewImage extends JComponent {
-        
+
         private BufferedImage image = null;
-        
+
         public void setImage(String urlStr) {
             if (urlStr.equals("")) {
                 image = null;
@@ -278,7 +293,7 @@ public class MVFilmInformation implements ChangeListener {
             }
             repaint();
         }
-        
+
         @Override
         protected void paintComponent(Graphics g) {
             if (image != null) {
@@ -288,21 +303,21 @@ public class MVFilmInformation implements ChangeListener {
                 super.paintComponent(g);
             }
         }
-        
+
         private BufferedImage scale(BufferedImage img, Dimension d) {
             float factor = getFactor(img.getWidth(), img.getHeight(), d);
             // create the image
             int w = (int) (img.getWidth() * factor);
             int h = (int) (img.getHeight() * factor);
             BufferedImage scaled = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-            
+
             Graphics2D g = scaled.createGraphics();
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g.drawImage(img, 0, 0, w, h, null);
             g.dispose();
             return scaled;
         }
-        
+
         float getFactor(int width, int height, Dimension dim) {
             float sx = dim.width / (float) width;
             float sy = dim.height / (float) height;

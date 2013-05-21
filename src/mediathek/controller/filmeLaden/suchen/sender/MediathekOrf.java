@@ -35,7 +35,10 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -213,14 +216,26 @@ public class MediathekOrf extends MediathekReader implements Runnable {
             //<title> ORF TVthek: a.viso - 28.11.2010 09:05 Uhr</title>
             final String MUSTER_DATUM_1 = "<span>"; //TH
             final String MUSTER_DATUM_2 = "Uhr</span>"; //TH
+            final String MUSTER_THUMBNAIL = "<meta property=\"og:image\" content=\"";
             seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "Thema: " + thema);
             int pos = 0;
             int pos1;
             int pos2;
             String datum = "";
             String zeit = "";
+            long duration = 0;
+            String description = "";
+            boolean descriptionParsed = false;
+            String thumbnail = "";
             String tmp;
 
+            if ((pos1 = seite1.indexOf(MUSTER_THUMBNAIL)) != -1) {
+                pos1 += MUSTER_THUMBNAIL.length();
+                if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                    // <meta property="og:image" content="http://tvthek.orf.at/assets/1368818375/orf_segments/image1/5967241.jpeg" />
+                    thumbnail = seite1.substring(pos1, pos2);
+                }
+            }
             if ((pos1 = seite1.indexOf(MUSTER_DATUM_1)) != -1) {
                 pos1 += MUSTER_DATUM_1.length();
                 if ((pos2 = seite1.indexOf(MUSTER_DATUM_2, pos1)) != -1) {
@@ -252,6 +267,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                         docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
                         Document doc = docBuilder.parse(new InputSource(new StringReader(xml)));
                         Node rootNode = doc.getDocumentElement();
+                        String alternateDescription = extractAlternateDescriptionText(rootNode);
                         NodeList nodeList = rootNode.getChildNodes();
                         for (int i = 0; i < nodeList.getLength(); ++i) {
                             Node Item = nodeList.item(i);
@@ -266,6 +282,9 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                                             if ("Item".equals(childItem2.getNodeName())) {
                                                 String url = "";
                                                 String titel = "";
+                                                duration = 0;
+                                                description = "";
+                                                descriptionParsed = false;
                                                 NodeList childNodeList3 = childItem2.getChildNodes();
                                                 for (int l = 0; l < childNodeList3.getLength(); ++l) {
                                                     Node childItem3 = childNodeList3.item(l);
@@ -286,6 +305,22 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                                                             url = childItem3.getTextContent();
                                                         }
                                                     }
+                                                    if (("Duration").equals(childItem3.getNodeName())) {
+                                                        String d = childItem3.getTextContent();
+                                                        duration = Long.parseLong(d) / 1000; // time in milliseconds
+                                                    }
+
+                                                    if ("Description".equals(childItem3.getNodeName())) {
+                                                        description = childItem3.getTextContent();
+                                                        description = StringEscapeUtils.unescapeJava(description).trim();
+
+                                                        // Some items do not contain a description (the Description tag is
+                                                        // empty but their normally contain a description in the Text tag in
+                                                        // embeded inside the AdditionalInfo tag in the root element.
+                                                        if (description.length() == 0) {
+                                                            description = alternateDescription;
+                                                        }
+                                                    }
                                                 }
                                                 if (!url.isEmpty() && !titel.isEmpty()) {
                                                     String urlRtmp = "";
@@ -304,7 +339,8 @@ public class MediathekOrf extends MediathekReader implements Runnable {
 
 
                                                     //addFilm(new DatenFilm(senderName, thema, strUrlFeed, titel, url, datum, zeit));
-                                                    addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, urlRtmp, datum, zeit));
+//                                                    addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, urlRtmp, datum, zeit));
+                                                    addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, urlRtmp, datum, zeit, duration, description, thumbnail, "", new String[]{}));
                                                 }
                                             }
                                         }
@@ -321,6 +357,21 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                     }
                 }
             }
+        }
+
+        private String extractAlternateDescriptionText(Node rootNode) throws DOMException {
+            Element rootElement = (Element) rootNode;
+            NodeList additionalInfos = rootElement.getElementsByTagName("AdditionalInfo");
+            if (additionalInfos.getLength() > 0) {
+                Element n = (Element) additionalInfos.item(0);
+                NodeList t = n.getElementsByTagName("Text");
+                if (t.getLength() > 0) {
+                    Node text = t.item(0);
+                    return StringEscapeUtils.unescapeJava(text.getTextContent()).trim();
+                }
+            }
+
+            return "";
         }
     }
 }

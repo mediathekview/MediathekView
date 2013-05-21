@@ -143,6 +143,13 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                         // Wir haben den URL der Sendung
                         seite3.setLength(0);
                         seite3 = getUrlIo.getUri_Utf(nameSenderMReader, showurl, seite3, "");
+
+                        long durationInSeconds = extractDuration(seite3);
+                        String description = extractDescription(seite3);
+                        String[] keywords = extractKeywords(seite3);
+                        String thumbnailUrl = extractThumbnailURL(seite3);
+                        String imageUrl = extractImageURL(seite3);
+
                         meldung(showurl);
 
                         // Titel
@@ -177,7 +184,8 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                             String filmurl = seite3.substring(mpos, mpos2);
                             String urlRtmp = "--host ondemand.rbb-online.de --app ondemand/ --playpath " + filmurl;
                             String urlOrg = addsUrl("rtmp://ondemand.rbb-online.de/ondemand/", filmurl);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlOrg, urlRtmp, datum, ""/* zeit */);
+                            // DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlOrg, urlRtmp, datum, ""/* zeit */);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlOrg, urlRtmp, datum, ""/* zeit */, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
                             addFilm(film);
                         }
                         rpos = rpos2; // hinter Element gehts weiter
@@ -186,6 +194,57 @@ public class MediathekRbb extends MediathekReader implements Runnable {
             } catch (Exception ex) {
                 Log.fehlerMeldung(-934670894, Log.FEHLER_ART_MREADER, "MediathekRBB.addFilme", ex);
             }
+        }
+
+        private long extractDuration(StringBuffer page) {
+            String duration = extractString(page, "<meta property=\"video:duration\" content=\"", "\"/>");
+            if (duration == null) {
+                return 0;
+            }
+
+            return Long.parseLong(duration);
+        }
+
+        private String extractDescription(StringBuffer page) {
+            String desc = extractString(page, "<meta property=\"og:description\" content=\"", "\"/>");
+            if (desc == null) {
+                return "";
+            }
+
+            return desc;
+        }
+
+        private String[] extractKeywords(StringBuffer page) {
+            String keywords = extractString(page, "<meta name=\"keywords\" content=\"", "\"/>");
+            if (keywords == null) {
+                return new String[]{""};
+            }
+
+            return keywords.split(", ");
+        }
+
+        private String extractThumbnailURL(StringBuffer page) {
+            return extractString(page, "<meta itemprop=\"thumbnailURL\" content=\"", "\"/>");
+        }
+
+        private String extractImageURL(StringBuffer page) {
+            return extractString(page, " <meta property=\"og:image\" content=\"", "\"/>");
+        }
+
+        private String extractString(StringBuffer source, String startMarker, String endMarker) {
+            int start = source.indexOf(startMarker);
+            if (start == -1) {
+                return null;
+            }
+
+            start = start + startMarker.length();
+
+            int end = source.indexOf(endMarker, start);
+            if (end == -1) {
+                return null;
+            }
+
+            return source.substring(start, end);
         }
     }
 }

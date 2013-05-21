@@ -19,6 +19,7 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
+import java.util.LinkedList;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
@@ -221,12 +222,53 @@ public class MediathekSf extends MediathekReader implements Runnable {
             // "description_title":"\u00abmyStory\u00bb \u2013 Mein Team (2\/4)",
             final String MUSTER_URL = "\"url\":\""; //bis zum "
             final String MUSTER_TITEL = "\"description_title\":\"";
+            final String MUSTER_DURATION = "\"mark_out\":";
+            //final String MUSTER_DESCRIPTION = "\"description_lead\":\"";
+            final String MUSTER_DESCRIPTION = "\"description\":\"";
+            final String MUSTER_ID = "\"segments\":[{\"id\":\"";
             String t = "";
             meldung(url);
             seite2 = getUrl.getUri_Utf(nameSenderMReader, url, seite2, "");
             try {
                 int pos1;
                 int pos2;
+
+                long duration = 0;
+                String description = "";
+                String thumbnail = "";
+                String image = "";
+
+                if ((pos1 = seite2.indexOf(MUSTER_DURATION)) != -1) {
+                    pos1 += MUSTER_DURATION.length();
+                    if ((pos2 = seite2.indexOf(",", pos1)) != -1) {
+                        int pos3 = seite2.indexOf(".", pos1);
+                        if (pos3 != -1 && pos3 < pos2) {
+                            // we need to strip the . decimal divider
+                            pos2 = pos3;
+                        }
+                        String d = seite2.substring(pos1, pos2);
+                        duration = Long.parseLong(d);
+                    }
+                }
+
+                if ((pos1 = seite2.indexOf(MUSTER_DESCRIPTION)) != -1) {
+                    pos1 += MUSTER_DESCRIPTION.length();
+                    if ((pos2 = seite2.indexOf("\",", pos1)) != -1) {
+                        description = seite2.substring(pos1, pos2);
+                        description = StringEscapeUtils.unescapeJava(description).trim();
+                    }
+                }
+
+                if ((pos1 = seite2.indexOf(MUSTER_ID)) != -1) {
+                    pos1 += MUSTER_ID.length();
+                    if ((pos2 = seite2.indexOf("\",", pos1)) != -1) {
+                        String id = seite2.substring(pos1, pos2);
+                        thumbnail = "http://www.srf.ch/webservice/cvis/segment/thumbnail/" + id + "?width=150";
+                        image = "http://www.srf.ch/webservice/cvis/segment/thumbnail/" + id;
+                    }
+                }
+
+                String[] keywords = extractKeywords(seite2);
                 if ((pos1 = seite2.indexOf(MUSTER_TITEL)) != -1) {
                     pos1 += MUSTER_TITEL.length();
                     if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
@@ -251,7 +293,8 @@ public class MediathekSf extends MediathekReader implements Runnable {
                                 }
                             }
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
+                            // DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit, duration, description, thumbnail, image, keywords);
                             addFilm(film);
                         } else {
                             Log.fehlerMeldung(-698325618, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme2", "keine URL" + url);
@@ -290,6 +333,48 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 Log.fehlerMeldung(-827485890, Log.FEHLER_ART_MREADER, "MediathekSf.getUrlFrom_m3u8", ex);
             }
             return url;
+        }
+
+        private String[] extractKeywords(StringBuffer string) {
+            LinkedList<String> l = new LinkedList<String>();
+
+            /*	"tags": {
+             "user": [],
+             "editor": [{
+             "name": "Show",
+             "count": 1
+             }, {
+             "name": "Susanne Kunz",
+             "count": 1
+             }, {
+             "name": "Quiz",
+             "count": 1
+             }, {
+             "name": "1 gegen 100",
+             "count": 1
+             }]
+             },*/
+
+            final String PATTERN_TAGS_START = "\"tags\":{";
+            final String PATTERN_TAGS_END = "]},";
+            final String PATTERN_TAG_START = "\"name\":\"";
+
+            int pos0 = string.indexOf(PATTERN_TAGS_START);
+            if (pos0 != -1) {
+                pos0 += PATTERN_TAGS_START.length();
+                int pos1 = string.indexOf(PATTERN_TAGS_END, pos0);
+                String tags = string.substring(pos0, pos1);
+                pos0 = 0;
+                while ((pos0 = tags.indexOf(PATTERN_TAG_START, pos0)) != -1) {
+                    pos0 += PATTERN_TAG_START.length();
+                    pos1 = tags.indexOf("\",", pos0);
+                    if (pos1 != -1) {
+                        String tag = tags.substring(pos0, pos1);
+                        l.add(tag);
+                    }
+                }
+            }
+            return l.toArray(new String[l.size()]);
         }
     }
 }

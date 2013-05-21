@@ -229,6 +229,13 @@ public class MediathekHr extends MediathekReader implements Runnable {
             final String MUSTER_ITEM_1 = "<item>";
             final String MUSTER_DATUM = "<pubDate>"; //<pubDate>03.01.2011</pubDate>
             final String MUSTER_THEMA = "<jwplayer:author>"; //TH 7.8.2012
+
+            final String MUSTER_DURATION = "<media:content duration=\"";
+            final String MUSTER_DURATION_END = "\"";
+            final String MUSTER_DESCRIPTION = "<description>";
+            final String MUSTER_DESCRIPTIO_END = "</description>";
+            final String MUSTER_IMAGE = "<media:thumbnail url=\"";
+            final String MUSTER_IMAGE_END = "\" />";
             meldung(strUrlFeed);
             seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "");
             try {
@@ -240,8 +247,38 @@ public class MediathekHr extends MediathekReader implements Runnable {
                 String url2;
                 String datum = "";
                 String titel = "";
+                long duration = 0;
+                String description = "";
+                String image = "";
                 while (!Daten.filmeLaden.getStop() && (posItem1 = seite1.indexOf(MUSTER_ITEM_1, posItem1)) != -1) {
                     posItem1 += MUSTER_ITEM_1.length();
+                    if ((pos1 = seite1.indexOf(MUSTER_DURATION, posItem1)) != -1) {
+                        pos1 += MUSTER_DURATION.length();
+                        if ((pos2 = seite1.indexOf(MUSTER_DURATION_END, pos1)) != -1) {
+                            String d = seite1.substring(pos1, pos2);
+                            String[] parts = d.split(":");
+                            long power = 1;
+                            for (int i = parts.length - 1; i >= 0; i--) {
+                                duration += Long.parseLong(parts[i]) * power;
+                                power *= 60;
+                            }
+                        }
+                    }
+
+                    if ((pos1 = seite1.indexOf(MUSTER_DESCRIPTION, posItem1)) != -1) {
+                        pos1 += MUSTER_DESCRIPTION.length();
+                        if ((pos2 = seite1.indexOf(MUSTER_DESCRIPTIO_END, pos1)) != -1) {
+                            description = seite1.substring(pos1, pos2);
+                        }
+                    }
+
+                    if ((pos1 = seite1.indexOf(MUSTER_IMAGE, posItem1)) != -1) {
+                        pos1 += MUSTER_IMAGE.length();
+                        if ((pos2 = seite1.indexOf(MUSTER_IMAGE_END, pos1)) != -1) {
+                            image = seite1.substring(pos1, pos2);
+                            image = image.replaceAll("&amp;", "&");
+                        }
+                    }
                     //posItem2 = seite1.indexOf(MUSTER_ITEM_2, posItem1);
                     if ((pos1 = seite1.indexOf(MUSTER_DATUM, posItem1)) != -1) {
                         pos1 += MUSTER_DATUM.length();
@@ -289,14 +326,15 @@ public class MediathekHr extends MediathekReader implements Runnable {
                             datum = getDate(url);
                         }
                         // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String datum, String zeit) {
-                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, furl, datum, "");
+                        //DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, furl, datum, "");
+                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, furl, datum, "", duration, description, "", image, new String[]{});
                         addFilm(film);
                     } else {
                         Log.fehlerMeldung(-649882036, Log.FEHLER_ART_MREADER, "MediathekHr.addFilme", "keine URL");
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-487774126,Log.FEHLER_ART_MREADER,  "MediathekHr.addFilme", ex, "");
+                Log.fehlerMeldung(-487774126, Log.FEHLER_ART_MREADER, "MediathekHr.addFilme", ex, "");
             }
         }
 
