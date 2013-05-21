@@ -127,11 +127,19 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
             final String MUSTER_THEMA_2 = "</title>";
             final String MUSTER_URL_1 = "url=\"http://";
             final String MUSTER_DATE = "<pubDate>";
+            final String MUSTER_DURATION = "<itunes:duration>";
+            final String MUSTER_DESCRIPTION = "<itunes:summary>";
+            final String MUSTER_IMAGE = "<itunes:image href=\"";
+            final String MUSTER_KEYWORDS = "<itunes:keywords>";
             int pos = 0, pos1;
             int pos2;
             String titel;
             String url = "";
-            String datum, zeit = "";
+            String datum, zeit;
+            long duration = 0;
+            String description = "";
+            String image = "";
+            String[] keywords = {};
             try {
                 meldung(strUrlFeed);
                 seite = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite, "Thema: " + thema);
@@ -144,9 +152,48 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
 //                            thema = thema.substring(0, thema.indexOf(" "));
 //                        }
                 }
+                // Image of show (unfortunatly we do not have an custom image for each entry
+                // <itunes:image href="http://api-internet.sf.tv/xmlservice/picture/1.0/vis/videogroup/c3d7c0d6-5250-0001-a1ac-edeb183b17d8/0003" />
+                int pos3 = seite.indexOf(MUSTER_IMAGE);
+                if (pos3 != -1) {
+                    pos3 += MUSTER_IMAGE.length();
+                    int pos4 = seite.indexOf("\"", pos3);
+                    if (pos4 != -1) {
+                        image = seite.substring(pos3, pos4);
+                    }
+                }
                 while ((pos = seite.indexOf(MUSTER_THEMA_1, pos)) != -1) { //start der Einträge, erster Eintrag ist der Titel
                     pos += MUSTER_THEMA_1.length();
                     pos1 = pos;
+                    int pos5 = 0;
+                    if ((pos5 = seite.indexOf(MUSTER_DURATION, pos)) != -1) {
+                        pos5 += MUSTER_DURATION.length();
+                        if ((pos2 = seite.indexOf("</", pos5)) != -1) {
+                            String d = seite.substring(pos5, pos2);
+                            // unfortunately the duration tag can be empty :-(
+                            if (d.length() > 0) {
+                                duration = Long.parseLong(d);
+                            }
+                        }
+                    }
+
+                    if ((pos5 = seite.indexOf(MUSTER_DESCRIPTION, pos)) != -1) {
+                        pos5 += MUSTER_DESCRIPTION.length();
+                        if ((pos2 = seite.indexOf("</", pos5)) != -1) {
+                            description = seite.substring(pos5, pos2);
+                        }
+                    }
+
+                    if ((pos5 = seite.indexOf(MUSTER_KEYWORDS, pos)) != -1) {
+                        pos5 += MUSTER_KEYWORDS.length();
+                        if ((pos2 = seite.indexOf("</", pos5)) != -1) {
+                            String k = seite.substring(pos5, pos2);
+                            keywords = k.split(",");
+                            for (int i = 0; i < keywords.length; i++) {
+                                keywords[i] = keywords[i].trim();
+                            }
+                        }
+                    }
                     if ((pos2 = seite.indexOf(MUSTER_THEMA_2, pos1)) != -1) {
                         titel = seite.substring(pos1, pos2).trim();
                         datum = "";
@@ -174,7 +221,8 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                                 Log.fehlerMeldung(-463820049, Log.FEHLER_ART_MREADER, "MediathekSfPod.addFilme", "keine URL: " + strUrlFeed);
                             } else {
 //                            urlorg = urlorg.replace("%20", "\u0020;");
-                                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit));
+//                                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit));
+                                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit, duration, description, "", image, keywords));
                             }
                         }
                     }
