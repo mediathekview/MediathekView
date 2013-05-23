@@ -282,14 +282,14 @@ public class GetUrl {
             if (lVersuch) {
                 String[] text;
                 if (meldung.equals("")) {
-                    text = new String[]{sender + " - timout: " + timeo + " Versuche: " + versuch, addr};
+                    text = new String[]{sender + " - timout: " + timeo + " Versuche: " + versuch, addr /*, (proxyB ? "Porxy - " : "")*/};
                 } else {
-                    text = new String[]{sender + " - timout: " + timeo + " Versuche: " + versuch, addr, meldung};
+                    text = new String[]{sender + " - timout: " + timeo + " Versuche: " + versuch, addr, meldung/*, (proxyB ? "Porxy - " : "")*/};
                 }
-                Log.fehlerMeldung(502739817, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, (proxyB ? "Porxy - " : "") + text);
+                Log.fehlerMeldung(502739817, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, text);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(973969801, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, (proxyB ? "Porxy - " : ""));
+            Log.fehlerMeldung(973969801, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, "");
         } finally {
             try {
                 if (in != null) {

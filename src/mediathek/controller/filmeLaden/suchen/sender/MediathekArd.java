@@ -314,33 +314,41 @@ public class MediathekArd extends MediathekReader implements Runnable {
         }
 
         boolean filmLaden(String urlFeed, String urlFilm, String thema, String titel, String datum, String zeit) {
-            //mediaCollection.addMediaStream(0, 0, "rtmp://vod.daserste.de/ardfs/", "mp4:videoportal/Film/c_110000/115698/format117354.f4v?sen=Beckmann&amp;for=Web-S&amp;clip=Simone+Rethel+%FCber+Altern+in+W%FCrde");
-            //mediaCollection.addMediaStream(0, 1, "rtmp://vod.daserste.de/ardfs/", "mp4:videoportal/Film/c_110000/115698/format117353.f4v?sen=Beckmann&amp;for=Web-M&amp;clip=Simone+Rethel+%FCber+Altern+in+W%FCrde");
-            //mediaCollection.addMediaStream(0, 2, "rtmp://vod.daserste.de/ardfs/", "mp4:videoportal/Film/c_110000/115698/format117383.f4v?sen=Beckmann&amp;for=Web-L&amp;clip=Simone+Rethel+%FCber+Altern+in+W%FCrde");
-
-            //mediaCollection.addMediaStream(0, 1, "", "http://www.hr.gl-systemhaus.de/flash/fs/ctmagazin/20100206_ct_schnurer_hilft.flv");
-            //mediaCollection.addMediaStream(0, 2, "", "http://www.hr.gl-systemhaus.de/mp4/ARDmediathek/20100206_ct_schnurer_hilft.mp4");
-
-            //mediaCollection.addMediaStream(2, 0, "", "http://lsd.newmedia.nacamar.net/bb/redirect.lsc?stream=swr/extra/abgeordnet/301131.s.wmv&content=content&media=ms");
-            //mediaCollection.addMediaStream(2, 1, "", "http://lsd.newmedia.nacamar.net/bb/redirect.lsc?stream=swr/extra/abgeordnet/301131.m.wmv&content=content&media=ms");
-
-            //mediaCollection.addMediaStream(0, 0, "rtmp://swr.fcod.llnwd.net/a4332/e6/", "swr-fernsehen/dasding-tv/2010/02-13/337138.s");
-
+            // mediaCollection.addMediaStream(0, 0, "", "http://http-ras.wdr.de/CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460800.mp4", "default");
+            // mediaCollection.addMediaStream(0, 1, "rtmp://gffstream.fcod.llnwd.net/a792/e2/", "mp4:CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460799.mp4", "limelight");
+            // mediaCollection.addMediaStream(0, 2, "rtmp://gffstream.fcod.llnwd.net/a792/e2/", "mp4:CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460798.mp4", "limelight");
+            //
+            // mediaCollection.addMediaStream(1, 0, "", "http://http-ras.wdr.de/CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460800.mp4", "default");
+            // mediaCollection.addMediaStream(1, 1, "", "http://http-ras.wdr.de/CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460799.mp4", "default");
+            // mediaCollection.addMediaStream(1, 2, "", "http://http-ras.wdr.de/CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460798.mp4", "default");
             //url bauen:
             //flvstreamer --host vod.daserste.de --app ardfs --playpath mp4:videoportal/Film/c_100000/106579/format106899.f4v > bla.flv
 
-            final String MUSTER_URL1a = "mediaCollection.addMediaStream(0, 2, \"rtmp";
-            final String MUSTER_URL1b = "mediaCollection.addMediaStream(0, 1, \"rtmp";
-            final String MUSTER_URL1c = "mediaCollection.addMediaStream(0, 0, \"rtmp";
+            final String MUSTER_URL1a = "mediaCollection.addMediaStream(0, 2, \"rtmp://";
+            final String MUSTER_URL1b = "mediaCollection.addMediaStream(0, 1, \"rtmp://";
+            final String MUSTER_URL1c = "mediaCollection.addMediaStream(0, 0, \"rtmp://";
 
-            final String MUSTER_URL2a = "mediaCollection.addMediaStream(0, 2, \"\"";
-            final String MUSTER_URL2b = "mediaCollection.addMediaStream(2, 2, \"\"";
-            final String MUSTER_URL2c = "mediaCollection.addMediaStream(0, 1, \"\"";
-            final String MUSTER_URL2d = "mediaCollection.addMediaStream(2, 1, \"\"";
+            final String MUSTER_URL1d = "mediaCollection.addMediaStream(0, 2, \"rtmpt://";
+            final String MUSTER_URL1e = "mediaCollection.addMediaStream(0, 1, \"rtmpt://";
+            final String MUSTER_URL1f = "mediaCollection.addMediaStream(0, 0, \"rtmpt://";
 
-            boolean ret = false;
+
+            // mediaCollection.addMediaStream(1, 0, "", "http://
+            final String MUSTER_URL2a = "mediaCollection.addMediaStream(1, 2, \"\", \"http://";
+            final String MUSTER_URL2b = "mediaCollection.addMediaStream(1, 1, \"\", \"http://";
+            final String MUSTER_URL2c = "mediaCollection.addMediaStream(1, 0, \"\", \"http://";
+            final String MUSTER_URL2d = "mediaCollection.addMediaStream(0, 1, \"\", \"http://";
+
+
+
+            boolean ret = false, flash;
+            String protokoll="";
             meldung(urlFilm);
             seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "urlFeed: " + urlFeed);
+            if (seite2.length() == 0) {
+                Log.fehlerMeldung(-201549307, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm + ", leere Seite");
+                return false;
+            }
             long durationInSeconds = extractDuration(seite2);
             String description = extractDescription(seite2);
             String[] keywords = extractKeywords(seite2);
@@ -356,108 +364,97 @@ public class MediathekArd extends MediathekReader implements Runnable {
 //            System.out.println(description);
 
             int pos1;
-            int pos1Tmp;
-            int pos1a;
             int pos2;
             int pos3;
-            String protokoll = "";
             String url1a = "";
             String url1b = "";
-            String url2 = "";
-            boolean flash = true;
-            //Flashfilme
+            String url = "";
             if ((pos1 = seite2.indexOf(MUSTER_URL1a)) != -1) {
                 pos1 += MUSTER_URL1a.length();
+                protokoll = "rtmp://";
             } else if ((pos1 = seite2.indexOf(MUSTER_URL1b)) != -1) {
+                protokoll = "rtmp://";
                 pos1 += MUSTER_URL1b.length();
             } else if ((pos1 = seite2.indexOf(MUSTER_URL1c)) != -1) {
+                protokoll = "rtmp://";
                 pos1 += MUSTER_URL1c.length();
+            } else if ((pos1 = seite2.indexOf(MUSTER_URL1d)) != -1) {
+                protokoll = "rtmpt://";
+                pos1 += MUSTER_URL1d.length();
+            } else if ((pos1 = seite2.indexOf(MUSTER_URL1e)) != -1) {
+                protokoll = "rtmpt://";
+                pos1 += MUSTER_URL1e.length();
+            } else if ((pos1 = seite2.indexOf(MUSTER_URL1f)) != -1) {
+                protokoll = "rtmpt://";
+                pos1 += MUSTER_URL1f.length();
             }
             if (pos1 != -1) {
-                //wenn Flash und eine url gefunden, dann ...
-                if ((pos1a = seite2.indexOf("//", pos1)) != -1) {
-                    pos1a += 2;
-                    if ((pos2 = seite2.indexOf("\"", pos1a)) != -1) {
-                        protokoll = seite2.substring(pos1, pos1a);
-                        protokoll = "rtmp" + protokoll;
-                        url1a = seite2.substring(pos1a, pos2);
-                        if (!url1a.equals("")) {
-                            url1b = url1a.substring(url1a.indexOf("/") + 1);
-                            url1a = url1a.substring(0, url1a.indexOf("/"));
-                        }
-                        pos1 = pos2;
+                flash = true;
+                // ########################################
+                // Flashfilm
+                if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
+                    url1a = seite2.substring(pos1, pos2);
+                    if (!url1a.equals("")) {
+                        url1b = url1a.substring(url1a.indexOf("/") + 1);
+                        url1a = url1a.substring(0, url1a.indexOf("/"));
                     }
-                }
-            }
-            if (pos1 == -1) {
-                //reguläre Filme
-                flash = false;
-                if ((pos1 = seite2.indexOf(MUSTER_URL2a, 0)) != -1) {
-                    pos1 += MUSTER_URL2a.length();
-                } else if ((pos1 = seite2.indexOf(MUSTER_URL2b)) != -1) {
-                    pos1 += MUSTER_URL2b.length();
-                } else if ((pos1 = seite2.indexOf(MUSTER_URL2c)) != -1) {
-                    pos1 += MUSTER_URL2c.length();
-                    //falls es einen weiteren gibt (für Tagesschau..)
-                    if ((pos1Tmp = seite2.indexOf(MUSTER_URL2c, pos1)) != -1) {
-                        pos1 = pos1Tmp + MUSTER_URL2c.length();
-                    }
-                } else if ((pos1 = seite2.indexOf(MUSTER_URL2d)) != -1) {
-                    pos1 += MUSTER_URL2d.length();
-                }
-            }
-            //############################
-            //Teil 2 der URL finden
-            if (pos1 != -1) {
-                //wenn eine url gefunden, dann ...
-                pos1 = pos1 + 1;
-                pos1 = seite2.indexOf("\"", pos1); //Anfang
-                pos1 += 1;
-                pos2 = seite2.indexOf("?", pos1); //entweder Ende
-                pos3 = seite2.indexOf("\"", pos1); // oder da zu Ende
-                if (flash) {
+                    pos1 = pos2 + 1;
+                    //wenn eine url gefunden, dann ...
+                    pos1 = seite2.indexOf("\"", pos1) + 1; //Anfang
+                    pos2 = seite2.indexOf("?", pos1); //entweder Ende
+                    pos3 = seite2.indexOf("\"", pos1); // oder da zu Ende
                     if (pos2 < pos3) {
-                        if (pos1 != -1 && pos2 != -1) {
-                            url2 = seite2.substring(pos1, pos2);
+                        if (pos1 > 1 && pos2 != -1) {
+                            url = seite2.substring(pos1, pos2);
                         }
                     } else {
-                        if (pos1 != -1 && pos3 != -1) {
-                            url2 = seite2.substring(pos1, pos3);
+                        if (pos1 > 1 && pos3 != -1) {
+                            url = seite2.substring(pos1, pos3);
                         }
                     }
-                } else {
-                    //kein Flash, dann die ganze Zeile nehmen
-                    if (pos1 != -1 && pos3 != -1) {
-                        url2 = seite2.substring(pos1, pos3);
-                    }
-                }
-                url1a = url1a.replace(" ", "");
-                url1b = url1b.replace(" ", "");
-                url2 = url2.replace(" ", "");
-                if (flash) {
+                    url1a = url1a.replace(" ", "");
+                    url1b = url1b.replace(" ", "");
+                    url = url.replace(" ", "");
                     String urlOrg = addsUrl(protokoll + url1a, url1b);
-                    urlOrg = addsUrl(urlOrg, url2);
-                    String urlRtmp = "--host " + url1a + " --app " + url1b + " --playpath " + url2;
+                    urlOrg = addsUrl(urlOrg, url);
+                    String urlRtmp = "--host " + url1a + " --app " + url1b + " --playpath " + url;
                     //flvstreamer --host vod.daserste.de --app ardfs --playpath mp4:videoportal/Film/c_100000/106579/format106899.f4v > bla.flv
                     //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
                     if (!urlOrg.equals("") && !urlRtmp.equals("")) {
                         //addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, urlOrg, urlRtmp, datum, zeit));
                         addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, urlOrg, urlRtmp, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
                         ret = true;
-                    } else {
-                        Log.fehlerMeldung(-795630782, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm);
-                    }
-                } else {
-                    if (!url2.equals("")) {
-                        //addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url2 /* url */, "" /* urlRtmp */, datum, zeit));
-                        addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url2 /* url */, "" /* urlRtmp */, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
-                        ret = true;
-                    } else {
-                        Log.fehlerMeldung(-159873540, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm);
                     }
                 }
             } else {
-                Log.fehlerMeldung(-673219867, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm);
+                flash = false;
+                // ###############################
+                // reguläre Filme
+                if ((pos1 = seite2.indexOf(MUSTER_URL2a)) != -1) {
+                    pos1 += MUSTER_URL2a.length();
+                } else if ((pos1 = seite2.indexOf(MUSTER_URL2b)) != -1) {
+                    pos1 += MUSTER_URL2b.length();
+                } else if ((pos1 = seite2.indexOf(MUSTER_URL2c)) != -1) {
+                    pos1 += MUSTER_URL2c.length();
+                } else if ((pos1 = seite2.indexOf(MUSTER_URL2d)) != -1) {
+                    pos1 += MUSTER_URL2d.length();
+                }
+                if (pos1 != -1) {
+                    //wenn eine url gefunden, dann ...
+                    if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
+                        url = seite2.substring(pos1, pos2);
+                        if (!url.equals("")) {
+                            url = "http://" + url;
+                            //addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url2 /* url */, "" /* urlRtmp */, datum, zeit));
+                            addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url /* url */, "" /* urlRtmp */, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
+                            ret = true;
+                        }
+                    }
+
+                }
+            }
+            if (!ret) {
+                Log.fehlerMeldung(-159873540, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm + "Flash: " + flash);
             }
             return ret;
         }

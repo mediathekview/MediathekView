@@ -203,12 +203,19 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                 if ((pos1 = strSeite2.indexOf(MUSTER_DAUER)) != -1) {
                     pos1 += MUSTER_DAUER.length();
                     if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-                        String d = strSeite2.substring(pos1, pos2);
-                        String[] parts = d.split(":");
-                        long power = 1;
-                        for (int i = parts.length - 1; i >= 0; i--) {
-                            dauer += Long.parseLong(parts[i]) * power;
-                            power *= 60;
+                        String d = null;
+                        try {
+                            d = strSeite2.substring(pos1, pos2);
+                            if (!d.equals("")) {
+                                String[] parts = d.split(":");
+                                long power = 1;
+                                for (int i = parts.length - 1; i >= 0; i--) {
+                                    dauer += Long.parseLong(parts[i]) * power;
+                                    power *= 60;
+                                }
+                            }
+                        } catch (Exception ex) {
+                            Log.fehlerMeldung(-679012497, Log.FEHLER_ART_MREADER, "MediathekSwr.json", "d: " + (d == null ? " " : d));
                         }
                     }
                 }
