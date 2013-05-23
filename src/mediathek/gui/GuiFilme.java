@@ -31,6 +31,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -79,6 +80,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelFilm;
+import mediathek.tool.UrlHyperlinkAction;
 
 public class GuiFilme extends PanelVorlage {
 
@@ -288,8 +290,11 @@ public class GuiFilme extends PanelVorlage {
                 panelBeschreibungSetzen();
             }
         });
-        //jCheckBoxProgamme.addActionListener(new BeobMpanel(jCheckBoxProgamme, jPanelExtra, "weitere Videoplayer"));
-        //jCheckBoxBeschreibung.addActionListener(new BeobMpanel(jCheckBoxBeschreibung, jPanelBeschreibung, "Beschreibung"));
+        jXHyperlinkWebsite.setText("");
+        try {
+            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(ddaten, ""));
+        } catch (URISyntaxException ignored) {
+        }
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -604,6 +609,12 @@ public class GuiFilme extends PanelVorlage {
         filmInfoHud.updateCurrentFilm(aktFilm);
         // Beschreibung setzen
         jTextAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR]);
+        if (aktFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
+            jCheckBoxBeschreibung.setText("Beschreibung");
+        } else {
+            jCheckBoxBeschreibung.setText("Beschreibung vom Sender: " + aktFilm.arr[DatenFilm.FILM_SENDER_NR]);
+        }
+        jXHyperlinkWebsite.setText(aktFilm.arr[DatenFilm.FILM_URL_THEMA_NR]);
     }
 
     private void playerStarten(DatenPset pSet) {
@@ -760,6 +771,8 @@ public class GuiFilme extends PanelVorlage {
         jPanelBeschreibungInnen = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextAreaBeschreibung = new javax.swing.JTextArea();
+        jXHyperlinkWebsite = new org.jdesktop.swingx.JXHyperlink();
+        jLabel4 = new javax.swing.JLabel();
 
         jPanelFilter.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
@@ -984,15 +997,31 @@ public class GuiFilme extends PanelVorlage {
         jTextAreaBeschreibung.setPreferredSize(new java.awt.Dimension(228, 50));
         jScrollPane2.setViewportView(jTextAreaBeschreibung);
 
+        jXHyperlinkWebsite.setText("jXHyperlink1");
+
+        jLabel4.setText("zur Website:");
+
         javax.swing.GroupLayout jPanelBeschreibungInnenLayout = new javax.swing.GroupLayout(jPanelBeschreibungInnen);
         jPanelBeschreibungInnen.setLayout(jPanelBeschreibungInnenLayout);
         jPanelBeschreibungInnenLayout.setHorizontalGroup(
             jPanelBeschreibungInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 911, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelBeschreibungInnenLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jXHyperlinkWebsite, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanelBeschreibungInnenLayout.setVerticalGroup(
             jPanelBeschreibungInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+            .addGroup(jPanelBeschreibungInnenLayout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
+                .addGroup(jPanelBeschreibungInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jXHyperlinkWebsite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addGap(0, 12, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanelBeschreibungLayout = new javax.swing.GroupLayout(jPanelBeschreibung);
@@ -1030,7 +1059,7 @@ public class GuiFilme extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jPanelFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1050,6 +1079,7 @@ public class GuiFilme extends PanelVorlage {
     private javax.swing.JComboBox jComboBoxFilterSender;
     private javax.swing.JComboBox jComboBoxFilterThema;
     private javax.swing.JComboBox jComboBoxZeitraum;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JPanel jPanelBeschreibungInnen;
     private javax.swing.JPanel jPanelExtra;
@@ -1062,6 +1092,7 @@ public class GuiFilme extends PanelVorlage {
     private javax.swing.JTextField jTextFieldFilterThemaTitel;
     private javax.swing.JTextField jTextFieldFilterTitel;
     private javax.swing.JToggleButton jToggleButtonLivestram;
+    private org.jdesktop.swingx.JXHyperlink jXHyperlinkWebsite;
     // End of variables declaration//GEN-END:variables
 
     private class BeobOpen implements ActionListener {

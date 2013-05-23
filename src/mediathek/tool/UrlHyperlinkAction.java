@@ -25,8 +25,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import static javax.swing.Action.LONG_DESCRIPTION;
-import static javax.swing.Action.SHORT_DESCRIPTION;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
@@ -40,16 +38,19 @@ public class UrlHyperlinkAction extends AbstractAction {
         this.ddaten = ddaten;
         this.url = url;
         super.putValue(Action.NAME, url);
-        super.putValue(SHORT_DESCRIPTION, url);
-        super.putValue(LONG_DESCRIPTION, url);
+//        super.putValue(SHORT_DESCRIPTION, url);
+//        super.putValue(LONG_DESCRIPTION, url);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        urlOeffnen(ddaten, url);
+        try {
+            urlOeffnen(ddaten, e.getActionCommand());
+        } catch (URISyntaxException ignored) {
+        }
     }
 
-    public boolean urlOeffnen(DDaten ddaten, String url) {
+    public boolean urlOeffnen(DDaten ddaten, String url) throws URISyntaxException {
         if (Desktop.isDesktopSupported()) {
             Desktop d = Desktop.getDesktop();
             try {

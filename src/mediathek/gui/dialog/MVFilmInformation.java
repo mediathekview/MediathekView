@@ -12,10 +12,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.RenderingHints;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import mediathek.daten.DatenFilm;
 import org.jdesktop.swingx.JXHyperlink;
@@ -23,6 +21,7 @@ import org.jdesktop.swingx.JXHyperlink;
 import java.net.URISyntaxException;
 import java.net.URL;
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -48,12 +47,12 @@ public class MVFilmInformation implements ChangeListener {
     private JDialog dialog = null;
     private JXHyperlink lblUrlThemaField;
     private JXHyperlink lblUrlPicture;
-    private JXHyperlink lblUrlThumbnail;
     private JTextArea textAreaBeschreibung;
     private DDaten ddaten;
     private JLabel[] labelArrNames = new JLabel[DatenFilm.FILME_MAX_ELEM];
     private JTextField[] txtArrCont = new JTextField[DatenFilm.FILME_MAX_ELEM];
     private ViewImage viewImage = new ViewImage();
+    private JButton buttonBild = new JButton("Bild laden");
     private Color foreground, background;
     private DatenFilm aktFilm = new DatenFilm();
 
@@ -64,6 +63,7 @@ public class MVFilmInformation implements ChangeListener {
             background = Color.BLACK;
             dialog = new JDialog(ddaten.mediathekGui);
             dialog.setTitle("Filminformation");
+
             for (int i = 0; i < DatenFilm.FILME_MAX_ELEM; ++i) {
                 labelArrNames[i] = new JLabel(DatenFilm.FILME_COLUMN_NAMES[i] + ":");
                 labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);
@@ -104,6 +104,16 @@ public class MVFilmInformation implements ChangeListener {
             hud.setContentPane(content);
             dialog = hud.getJDialog();
         }
+        viewImage.setDoubleBuffered(true);
+        buttonBild.setOpaque(false);
+        buttonBild.setBackground(background);
+        buttonBild.setForeground(foreground);
+        buttonBild.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                setAktFilm(true);
+            }
+        });
         dialog.pack();
         Dimension size = dialog.getSize();
         size.width = 600;
@@ -140,14 +150,6 @@ public class MVFilmInformation implements ChangeListener {
         } catch (URISyntaxException ignored) {
         }
         lblUrlPicture.setFont(HudPaintingUtils.getHudFont());
-        lblUrlThumbnail = new JXHyperlink();
-        lblUrlThumbnail.setDoubleBuffered(true);
-        lblUrlThumbnail.setForeground(foreground);
-        try {
-            lblUrlThumbnail.setAction(new UrlHyperlinkAction(ddaten, ""));
-        } catch (URISyntaxException ignored) {
-        }
-        lblUrlThumbnail.setFont(HudPaintingUtils.getHudFont());
         textAreaBeschreibung = new JTextArea();
         textAreaBeschreibung.setDoubleBuffered(true);
         textAreaBeschreibung.setLineWrap(true);
@@ -162,7 +164,8 @@ public class MVFilmInformation implements ChangeListener {
         int zeile = 0;
         for (int i = 0; i < labelArrNames.length; ++i) {
             if (i == DatenFilm.FILM_URL_RTMP_NR
-                    || i == DatenFilm.FILM_URL_AUTH_NR) {
+                    || i == DatenFilm.FILM_URL_AUTH_NR
+                    || i == DatenFilm.FILM_THUMBNAIL_URL_NR) {
                 continue;
             }
             c.gridy = zeile;
@@ -173,7 +176,9 @@ public class MVFilmInformation implements ChangeListener {
         c.weightx = 0;
         c.gridx = 1;
         c.gridy = zeile++;
-        viewImage.setDoubleBuffered(true);
+        gridbag.setConstraints(buttonBild, c);
+        panel.add(buttonBild);
+        c.gridy = zeile++;
         gridbag.setConstraints(viewImage, c);
         panel.add(viewImage);
 
@@ -201,9 +206,6 @@ public class MVFilmInformation implements ChangeListener {
         } else if (i == DatenFilm.FILM_IMAGE_URL_NR) {
             gridbag.setConstraints(lblUrlPicture, c);
             panel.add(lblUrlPicture);
-        } else if (i == DatenFilm.FILM_THUMBNAIL_URL_NR) {
-            gridbag.setConstraints(lblUrlThumbnail, c);
-            panel.add(lblUrlThumbnail);
         } else if (i == DatenFilm.FILM_DESCRIPTION_NR) {
             gridbag.setConstraints(textAreaBeschreibung, c);
             panel.add(textAreaBeschreibung);
@@ -218,24 +220,22 @@ public class MVFilmInformation implements ChangeListener {
     }
 
     public void show() {
-//        hud.getJDialog().setVisible(true);
-        setAktFilm();
+        setAktFilm(false);
         dialog.setVisible(true);
     }
 
     public boolean isVisible() {
-//        return hud.getJDialog().isVisible();
         return dialog.isVisible();
     }
 
     public void updateCurrentFilm(DatenFilm film) {
         aktFilm = film;
         if (this.isVisible()) {
-            setAktFilm();
+            setAktFilm(false);
         }
     }
 
-    private void setAktFilm() {
+    private void setAktFilm(boolean bild) {
         for (int i = 0; i < txtArrCont.length; ++i) {
             txtArrCont[i].setText(aktFilm.arr[i]);
         }
@@ -246,21 +246,37 @@ public class MVFilmInformation implements ChangeListener {
         } else {
             textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR]);
         }
-        // setup Hyperlink
-        // FIXME ist das nicht besser zu lösen?
-        try {
-            lblUrlThemaField.setAction(new UrlHyperlinkAction(ddaten, aktFilm.arr[DatenFilm.FILM_URL_THEMA_NR]));
-            lblUrlThemaField.setForeground(foreground);
-            lblUrlPicture.setAction(new UrlHyperlinkAction(ddaten, aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]));
-            lblUrlPicture.setForeground(foreground);
-            lblUrlThumbnail.setAction(new UrlHyperlinkAction(ddaten, aktFilm.arr[DatenFilm.FILM_THUMBNAIL_URL_NR]));
-            lblUrlThumbnail.setForeground(foreground);
-        } catch (URISyntaxException ignored) {
-        }
+        lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_URL_THEMA_NR]);
+        lblUrlThemaField.setForeground(foreground);
+        // bei den Bildern wird nur eins gesetzt
         if (!aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {
-            viewImage.setImage(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
+            lblUrlPicture.setText(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
+        } else if (!aktFilm.arr[DatenFilm.FILM_THUMBNAIL_URL_NR].equals("")) {
+            lblUrlPicture.setText(aktFilm.arr[DatenFilm.FILM_THUMBNAIL_URL_NR]);
         } else {
-            viewImage.setImage(aktFilm.arr[DatenFilm.FILM_THUMBNAIL_URL_NR]);
+            lblUrlPicture.setText("");
+        }
+        lblUrlPicture.setForeground(foreground);
+        if (aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("") && aktFilm.arr[DatenFilm.FILM_THUMBNAIL_URL_NR].equals("")) {
+            // wenns kein Bild gibt brauchts auch nichts zum Anzeigen
+            buttonBild.setVisible(false);
+            viewImage.setImage(""); // zum löschen
+        } else {
+            if (aktFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
+                buttonBild.setText("Bild laden");
+            } else {
+                buttonBild.setText("Bild vom Sender  " + aktFilm.arr[DatenFilm.FILM_SENDER_NR] + "  laden");
+            }
+            buttonBild.setVisible(true);
+            if (bild) {
+                if (!aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {
+                    viewImage.setImage(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
+                } else {
+                    viewImage.setImage(aktFilm.arr[DatenFilm.FILM_THUMBNAIL_URL_NR]);
+                }
+            } else {
+                viewImage.setImage(""); // zum löschen
+            }
         }
         dialog.repaint();
     }
