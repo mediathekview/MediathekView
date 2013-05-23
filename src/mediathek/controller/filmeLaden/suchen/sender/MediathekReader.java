@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.Log;
@@ -45,7 +46,7 @@ public class MediathekReader implements Runnable {
 
     /**
      *
-     *  @param ddaten
+     * @param ddaten
      */
     public MediathekReader(FilmeSuchenSender ssearch, String nameMreader, int ssenderMaxThread, int ssenderWartenSeiteLaden, int sstartPrio) {
         suchen = ssearch;
@@ -55,6 +56,10 @@ public class MediathekReader implements Runnable {
         nameSenderMReader = nameMreader;
         maxThreadLaufen = ssenderMaxThread;
         startPrio = sstartPrio;
+        if (Daten.debug) {
+////            maxThreadLaufen = 1;
+////            wartenSeiteLaden=100;
+        }
     }
     //===================================
     // public 
@@ -101,7 +106,7 @@ public class MediathekReader implements Runnable {
             threads = 0;
             addToList();
         } catch (Exception ex) {
-            Log.fehlerMeldung(-397543600,Log.FEHLER_ART_MREADER, "MediathekReader.run", ex, nameSenderMReader);
+            Log.fehlerMeldung(-397543600, Log.FEHLER_ART_MREADER, "MediathekReader.run", ex, nameSenderMReader);
         }
     }
 
@@ -191,7 +196,7 @@ public class MediathekReader implements Runnable {
             }
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(-469872800,Log.FEHLER_ART_MREADER, "MediathekReader.addsUrl", pfad1 + " " + pfad2);
+            Log.fehlerMeldung(-469872800, Log.FEHLER_ART_MREADER, "MediathekReader.addsUrl", pfad1 + " " + pfad2);
         }
         return ret;
     }
