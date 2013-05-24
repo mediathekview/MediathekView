@@ -286,7 +286,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             } while (!Daten.filmeLaden.getStop() && neueSeite);
         }
 
-        private void addFilme2(String strUrlFeed, String thema, String titel, String urlFilm) {
+        private void addFilme2(String strUrlFeed, String thema, String titel, String filmWebsite) {
             // ;dslSrc=rtmp://gffstream.fcod.llnwd.net/a792/e1/media/video/2009/02/14/20090214_a40_komplett_big.flv&amp;isdnSrc=rtm
             // <p class="wsArticleAutor">Ein Beitrag von Heinke Schröder, 24.11.2010	</p>
             final String MUSTER_URL = "dslSrc=";
@@ -303,8 +303,8 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             final String MUSTER_IMAGE_END = "\" alt=\"\" height=\"288\" width=\"512\"/>";
             final String MUSTER_KEYWORDS = "<meta name=\"Keywords\" content=\"";
             final String MUSTER_KEYWORDS_END = "\" />";
-            meldung(urlFilm);
-            strSeite2 = getUrl.getUri_Iso(nameSenderMReader, urlFilm, strSeite2, "");
+            meldung(filmWebsite);
+            strSeite2 = getUrl.getUri_Iso(nameSenderMReader, filmWebsite, strSeite2, "");
             int pos;
             int pos1;
             int pos2;
@@ -422,7 +422,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                         if (!url.equals("")) {
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                             //DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""/* zeit */);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""/* zeit */, duration, description, thumnail, image, keywords);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, datum, ""/* zeit */, duration, description, thumnail, image, keywords);
                             addFilm(film);
                         } else {
                             Log.fehlerMeldung(-763299001, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme2-1", "keine Url" + thema);

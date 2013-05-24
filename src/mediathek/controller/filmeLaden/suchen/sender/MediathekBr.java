@@ -69,7 +69,6 @@ public class MediathekBr extends MediathekReader implements Runnable {
             int pos2;
             String url;
             String thema;
-            String link;
             String datum;
             String zeit;
             String titel;
@@ -107,7 +106,6 @@ public class MediathekBr extends MediathekReader implements Runnable {
                     }
                     url = "";
                     thema = "";
-                    link = "";
                     datum = "";
                     zeit = "";
                     titel = "";
@@ -200,7 +198,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                         // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit)
                         // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlRtmp, String datum, String zeit)
                         //DatenFilm film = new DatenFilm(nameSenderMReader, thema, link, titel, urlOrg, datum, zeit);
-                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, link, titel, urlOrg, urlRtmp, datum, zeit);
+                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, "http://www.br.de/mediathek/index.html", titel, urlOrg, urlRtmp, datum, zeit);
                         addFilm(film);
                     }
                 } //while, die ganz große Schleife

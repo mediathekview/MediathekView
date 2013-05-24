@@ -123,7 +123,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
             meldungThreadUndFertig();
         }
 
-        private void feedEinerSeiteSuchen(String strUrlFeed, String thema) {
+        private void feedEinerSeiteSuchen(String urlFeed, String thema) {
             //Feed eines Themas laden
             //<a class="mt-box_preload mt-box-overflow" href="/ard/servlet/ajax-cache/3516938/view=switch/documentId=427262/index.html">
             int pos = 0;
@@ -135,7 +135,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
             LinkedList<String> listeWeiter = new LinkedList<String>();
             boolean weiter = false;
             final String MUSTER_WEITER = "<option value=\"";
-            seite = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite, "Thema: " + thema);
+            seite = getUrl.getUri_Utf(nameSenderMReader, urlFeed, seite, "Thema: " + thema);
             //++++++++++++++++++++++++++++++++++ 1te Seite
             if ((pos = seite.indexOf(MUSTER, pos)) != -1) {
                 pos += MUSTER.length();
@@ -146,7 +146,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 }
                 if (url.equals("")) {
                     //-------------
-                    Log.fehlerMeldung(-643188097, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-1", "keine URL für: " + strUrlFeed);
+                    Log.fehlerMeldung(-643188097, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-1", "keine URL für: " + urlFeed);
                 } else {
                     url = MUSTER_SET + url;
                     //++++++++++++++++++++++++++++++++++ 2te Seite
@@ -198,10 +198,10 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                                 Log.fehlerMeldung(-698025468, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + tmpUrl);
                             } else if (url.equals("")) {
                                 //-------------
-                                Log.fehlerMeldung(-456903578, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-2", "keine URL für: " + strUrlFeed);
+                                Log.fehlerMeldung(-456903578, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-2", "keine URL für: " + urlFeed);
                             } else {
                                 url = MUSTER_SET + url;
-                                filmLaden(strUrlFeed, url, thema);
+                                filmLaden(urlFeed, url, thema);
                             }
                         }
                         if (suchen.senderAllesLaden && listeWeiter.size() > 0) {
@@ -217,22 +217,22 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
 
         }
 
-        private void filmLaden(String strUrlFeed, String urlIn, String thema) {
+        private void filmLaden(String urlFeed, String filmWebsite, String thema) {
             int pos = 0;
             int pos1 = 0;
             int pos2 = 0;
             final String MUSTER_ = "http://www.ardmediathek.de/ard/servlet/content/3517244";
-            if (urlIn.contains("?")) {
+            if (filmWebsite.contains("?")) {
                 //3517136 ersetzen mit 3517244
                 //http://www.ardmediathek.de/ard/servlet/content/3516968?documentId=2584998
                 //
-                urlIn = MUSTER_ + urlIn.substring(urlIn.indexOf("?"));
+                filmWebsite = MUSTER_ + filmWebsite.substring(filmWebsite.indexOf("?"));
                 //++++++++++++++++++++++++++++++++++ 3te Seite
                 //<input name="" type="text" value="http://www1.swr.de/podcast/xml/swr-fernsehen/60-jahre-rlp.xml" />
                 //final String MUSTER_3 = "<input name=\"\" type=\"text\" value=\"";
                 final String MUSTER_3 = "addMediaStream(0, 1, \"\", \"";
                 seite2.setLength(0);
-                seite2 = getUrl.getUri_Utf(nameSenderMReader, urlIn, seite2, "Thema: " + thema);
+                seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "Thema: " + thema);
                 long durationInSeconds = extractDuration(seite2);
                 String description = extractDescription(seite2);
                 String[] keywords = extractKeywords(seite2);
@@ -261,8 +261,8 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     }
                     if (url.equals("")) {
                         //-------------
-                        Log.fehlerMeldung(-789628694, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + urlIn);
-                        Log.fehlerMeldung(-495623876, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + strUrlFeed);
+                        Log.fehlerMeldung(-789628694, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + filmWebsite);
+                        Log.fehlerMeldung(-495623876, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + urlFeed);
                         return;
                     }
                 }
@@ -339,11 +339,11 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     }
                 }
                 if (datum.equals("")) {
-                    Log.fehlerMeldung(-102589463, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-4", "kein Datum für: " + urlIn);
+                    Log.fehlerMeldung(-102589463, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-4", "kein Datum für: " + filmWebsite);
                 }
-                //  DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
-                //addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""));
-                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, "", durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
+                // public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
+                //  long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+                addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, datum, "", durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
             }
         }
 

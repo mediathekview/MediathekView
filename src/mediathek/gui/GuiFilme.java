@@ -614,7 +614,7 @@ public class GuiFilme extends PanelVorlage {
         } else {
             jCheckBoxBeschreibung.setText("Beschreibung vom Sender: " + aktFilm.arr[DatenFilm.FILM_SENDER_NR]);
         }
-        jXHyperlinkWebsite.setText(aktFilm.arr[DatenFilm.FILM_URL_THEMA_NR]);
+        jXHyperlinkWebsite.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
     }
 
     private void playerStarten(DatenPset pSet) {

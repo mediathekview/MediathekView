@@ -222,7 +222,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
             meldungThreadUndFertig();
         }
 
-        private void addFilme(String thema, String strUrlFeed) {
+        private void addFilme(String thema, String filmWebsite) {
             final String MUSTER_TITEL = "<title>"; //<title>alle wetter! vom 03.01.2011</title>
             final String MUSTER_URL_1 = "<jwplayer:streamer>";//<jwplayer:streamer>rtmp://gffstream.fcod.llnwd.net/a792/e4</jwplayer:streamer>
             final String MUSTER_URL_2 = "\" url=\"";//<media:content duration="00:29:42" type="video/mp4" url="mp4:flash/fs/hessenschau/20110103_1930" />
@@ -236,8 +236,8 @@ public class MediathekHr extends MediathekReader implements Runnable {
             final String MUSTER_DESCRIPTIO_END = "</description>";
             final String MUSTER_IMAGE = "<media:thumbnail url=\"";
             final String MUSTER_IMAGE_END = "\" />";
-            meldung(strUrlFeed);
-            seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "");
+            meldung(filmWebsite);
+            seite1 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite1, "");
             try {
                 int posItem1 = 0;
                 int pos1;
@@ -334,7 +334,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                         }
                         // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String datum, String zeit) {
                         //DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, furl, datum, "");
-                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, furl, datum, "", duration, description, "", image, new String[]{});
+                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, furl, datum, "", duration, description, "", image, new String[]{});
                         addFilm(film);
                     } else {
                         Log.fehlerMeldung(-649882036, Log.FEHLER_ART_MREADER, "MediathekHr.addFilme", "keine URL");

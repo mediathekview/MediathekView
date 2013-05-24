@@ -248,7 +248,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             meldungThreadUndFertig(); // und im SeitenThread gelöscht
         }
 
-        private void addFilme2(String strUrlFeed, String thema, String titel, String urlFilm) {
+        private void addFilme2(String strUrlFeed, String thema, String titel, String filmWebsite) {
             //Film eines Themas laden
             // Muster zum Suchen:
             //vars_player.videorefFileUrl = "http://videos.arte.tv/de/do_delegate/videos/virtuelle_welten_in_cannes-3220966,view,asPlayerXml.xml";
@@ -257,16 +257,16 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
 
             final String MUSTER_URL = "vars_player.videorefFileUrl = \"";
             final String MUSTER_AUTH = "var url_player = \"";
-            meldung(urlFilm);
+            meldung(filmWebsite);
             if (Daten.filmeLaden.getStop()) {
                 return;
             }
             if (thema.startsWith(THEMA_ARTE_7)) {
                 //strSeite2 = getUrl7.getUri_Utf(senderName, urlFilm, strSeite2, "");
-                strSeite2 = getUrlIo.getUri(nameSenderMReader, urlFilm, Konstanten.KODIERUNG_UTF, 3 /* versuche */, strSeite2, "" /* Meldung */);
+                strSeite2 = getUrlIo.getUri(nameSenderMReader, filmWebsite, Konstanten.KODIERUNG_UTF, 3 /* versuche */, strSeite2, "" /* Meldung */);
             } else {
                 //strSeite2 = getUrl.getUri_Utf(senderName, urlFilm, strSeite2, "");
-                strSeite2 = getUrlIo.getUri(nameSenderMReader, urlFilm, Konstanten.KODIERUNG_UTF, 2 /* versuche */, strSeite2, "" /* Meldung */);
+                strSeite2 = getUrlIo.getUri(nameSenderMReader, filmWebsite, Konstanten.KODIERUNG_UTF, 2 /* versuche */, strSeite2, "" /* Meldung */);
             }
             int pos = 0;
             int pos1;
@@ -295,7 +295,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                     url = strSeite2.substring(pos1, pos2);
                     if (!url.equals("")) {
                         //weiter gehts
-                        addFilme3(strUrlFeed, thema, titel, url, authurl);
+                        addFilme3(filmWebsite, thema, titel, url, authurl);
                     } else {
                         Log.fehlerMeldung(-462037812, Log.FEHLER_ART_MREADER, "MediathekArte.addFilme2", "keine Url" + nameSenderMReader + thema);
                     }
@@ -303,7 +303,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             }
         }
 
-        private void addFilme3(String strUrlFeed, String thema, String titel, String urlFilm, String authurl) {
+        private void addFilme3(String filmWebsite, String thema, String titel, String urlFilm, String authurl) {
             //Film eines Themas laden
             // Muster zum Suchen:
             // de
@@ -336,7 +336,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                     url = strSeite2.substring(pos1, pos2);
                     if (!url.equals("")) {
                         //weiter gehts jetzt wirklich zum Film
-                        addFilme4(SENDER_ARTE_DE, strUrlFeed, thema, titel, url, authurl);
+                        addFilme4(SENDER_ARTE_DE, filmWebsite, thema, titel, url, authurl);
                     } else {
                         Log.fehlerMeldung(-983269760, Log.FEHLER_ART_MREADER, "MediathekArte.addFilme3-1", "keine Url für DE" + SENDER_ARTE_DE + " " + urlFilm);
                     }
@@ -351,8 +351,9 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                 if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
                     url = strSeite2.substring(pos1, pos2);
                     if (!url.equals("")) {
+                        // url filmwebsite anpassen
                         //weiter gehts jetzt wirklich zum Film
-                        addFilme4(SENDER_ARTE_FR, strUrlFeed, thema, titel, url, authurl);
+                        addFilme4(SENDER_ARTE_FR, filmWebsite.replaceFirst("http://videos.arte.tv/de/", "http://videos.arte.tv/fr/"), thema, titel, url, authurl);
                     } else {
                         Log.fehlerMeldung(-965884360, Log.FEHLER_ART_MREADER, "MediathekArte.addFilme3-2", "keine Url für FR" + SENDER_ARTE_FR + " " + urlFilm);
                     }
@@ -362,7 +363,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
             }
         }
 
-        private void addFilme4(String senderArte, String strUrlFeed, String thema, String titel, String urlFilm, String authurl) {
+        private void addFilme4(String senderArte, String filmWebsite, String thema, String titel, String urlFilm, String authurl) {
             //Film eines Themas laden
             // Muster zum Suchen:
             //<url quality="hd">
@@ -423,7 +424,7 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                         Log.fehlerMeldung(-306921883, Log.FEHLER_ART_MREADER, "MediathekArte.addfilme4-2", "keine Url: " + senderArte + " " + urlFilm);
                     } else {
                         // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                        DatenFilm film = new DatenFilm(senderArte, thema, strUrlFeed, name, url, ""/* urlRtmp */, datum, zeit);
+                        DatenFilm film = new DatenFilm(senderArte, thema, filmWebsite, name, url, ""/* urlRtmp */, datum, zeit);
                         film.arr[DatenFilm.FILM_URL_AUTH_NR] = authurl;
                         addFilm(film);
                     }

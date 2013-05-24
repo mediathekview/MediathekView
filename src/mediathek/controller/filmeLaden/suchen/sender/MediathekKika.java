@@ -137,12 +137,12 @@ public class MediathekKika extends MediathekReader implements Runnable {
             meldungThreadUndFertig();
         }
 
-        void laden(String url, String thema, String titel, String datum) {
+        void laden(String filmWebsite, String thema, String titel, String datum) {
             //so.addVariable("pfad","rtmp://88.198.74.226/vod/mp4:1348908081-7b8b1356b478db154fdbf8bf6a01fc1f.mp4");
             //so.addVariable("fullscreenPfad", "rtmp://88.198.74.226/vod/mp4:1348908081-7b8b1356b478db154fdbf8bf6a01fc1f-01.mp4");	
             final String MUSTER_URL_1 = "so.addVariable(\"pfad\",\"";
             final String MUSTER_URL_2 = "so.addVariable(\"fullscreenPfad\", \"";
-            seite1 = getUrlIo.getUri(nameSenderMReader, url, Konstanten.KODIERUNG_UTF, 1, seite1, thema + " " + titel);
+            seite1 = getUrlIo.getUri(nameSenderMReader, filmWebsite, Konstanten.KODIERUNG_UTF, 1, seite1, thema + " " + titel);
             int pos1, pos2;
             String urlFilm = "";
             if ((pos1 = seite1.indexOf(MUSTER_URL_2)) != -1) {
@@ -161,7 +161,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
             }
             if (!urlFilm.equals("")) {
                 meldung(urlFilm);
-                addFilm(new DatenFilm(nameSenderMReader, thema, url, titel, urlFilm, "-r " + urlFilm + " --flashVer WIN11,4,402,265"/* urlRtmp */, datum/*datum*/, ""/*zeit*/));
+                addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlFilm, "-r " + urlFilm + " --flashVer WIN11,4,402,265"/* urlRtmp */, datum/*datum*/, ""/*zeit*/));
             }
 
 

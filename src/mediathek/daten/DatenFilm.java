@@ -34,7 +34,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final String FILME_ = "X";
     //
     public static final String FILM_NR = "Nr"; // wird vor dem Speichern gelöscht!
-    public static final String FILM_NR_ = "a"; // wird vor dem Speichern gelöscht!
+    public static final String FILM_NR_ = "a";
     public static final int FILM_NR_NR = 0;
     public static final String FILM_SENDER = "Sender";
     public static final String FILM_SENDER_ = "b";
@@ -63,11 +63,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final String FILM_URL = "Url";
     public static final String FILM_URL_ = "g";
     public static final int FILM_URL_NR = 9;
-    public static final String FILM_URL_THEMA = "UrlThema";//url des Themas zum nachladen
-    public static final String FILM_URL_THEMA_ = "k";//url des Themas zum nachladen
-    public static final int FILM_URL_THEMA_NR = 10;
-    public static final String FILM_ABO_NAME = "Abo-Name";// wird vor dem Speichern gelöscht!
-    public static final String FILM_ABO_NAME_ = "l";// wird vor dem Speichern gelöscht!
+    public static final String FILM_WEBSEITE = "Website"; //URL der Website des Films beim Sender
+    public static final String FILM_WEBSEITE_ = "k";
+    public static final int FILM_WEBSEITE_NR = 10;
+    public static final String FILM_ABO_NAME = "Aboname";// wird vor dem Speichern gelöscht!
+    public static final String FILM_ABO_NAME_ = "l";
     public static final int FILM_ABO_NAME_NR = 11;
     public static final String FILM_IMAGE_URL = "Bild";
     public static final String FILM_IMAGE_URL_ = "o";
@@ -83,10 +83,10 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final int FILM_URL_AUTH_NR = 15;
     public static final int FILME_MAX_ELEM = 16;
     public static final String[] FILME_COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT, FILM_DURATION,
-        FILM_DESCRIPTION, FILM_KEYWORDS, FILM_URL, FILM_URL_THEMA, FILM_ABO_NAME,
+        FILM_DESCRIPTION, FILM_KEYWORDS, FILM_URL, FILM_WEBSEITE, FILM_ABO_NAME,
         FILM_IMAGE_URL, FILM_THUMBNAIL_URL, FILM_URL_RTMP, FILM_URL_AUTH};
     public static final String[] FILME_COLUMN_NAMES_ = {FILM_NR_, FILM_SENDER_, FILM_THEMA_, FILM_TITEL_, FILM_DATUM_, FILM_ZEIT_, FILM_DURATION_,
-        FILM_DESCRIPTION_, FILM_KEYWORDS_, FILM_URL_, FILM_URL_THEMA_, FILM_ABO_NAME_,
+        FILM_DESCRIPTION_, FILM_KEYWORDS_, FILM_URL_, FILM_WEBSEITE_, FILM_ABO_NAME_,
         FILM_IMAGE_URL_, FILM_THUMBNAIL_URL_, FILM_URL_RTMP_, FILM_URL_AUTH_};
     public String[] arr;
     public Datum datumFilm = new Datum(0);
@@ -101,7 +101,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this(ssender, tthema, urlThema, ttitel, uurl, datum, zeit, 0, "", "", "", new String[]{""});
     }
 
-    public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit,
+    public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
             long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
         makeArr();
         arr[FILM_SENDER_NR] = ssender;
@@ -110,9 +110,9 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_URL_NR] = uurl;
         arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
-        arr[FILM_URL_THEMA_NR] = urlThema;
+        arr[FILM_WEBSEITE_NR] = filmWebsite;
         arr[FILM_DURATION_NR] = "" + duration;
-        arr[FILM_DESCRIPTION_NR] = description;
+        arr[FILM_DESCRIPTION_NR] = beschreibung(description);
         arr[FILM_THUMBNAIL_URL_NR] = thumbnailUrl;
         arr[FILM_IMAGE_URL_NR] = imageUrl;
         arr[FILM_KEYWORDS_NR] = keywordsToString(keywords);
@@ -124,7 +124,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this(ssender, tthema, urlThema, ttitel, uurl, uurlRtmp, datum, zeit, 0, "", "", "", new String[]{""});
     }
 
-    public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlRtmp,
+    public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
             String datum, String zeit,
             long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
         makeArr();
@@ -133,15 +133,25 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_TITEL_NR] = ttitel;
         arr[FILM_URL_NR] = uurl;
         arr[FILM_URL_RTMP_NR] = uurlRtmp;
-        arr[FILM_URL_THEMA_NR] = urlThema;
+        arr[FILM_WEBSEITE_NR] = filmWebsite;
         arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_DURATION_NR] = "" + duration;
-        arr[FILM_DESCRIPTION_NR] = description;
+        arr[FILM_DESCRIPTION_NR] = beschreibung(description);
         arr[FILM_THUMBNAIL_URL_NR] = thumbnailUrl;
         arr[FILM_IMAGE_URL_NR] = imageUrl;
         arr[FILM_KEYWORDS_NR] = keywordsToString(keywords);
         setWerte(duration);
+    }
+
+    private String beschreibung(String s) {
+        // die Beschreibung auf x Zeichen beschränken
+        final int x = 250;
+        if (s.length() > x) {
+            return s.substring(0, x) + "\n.....";
+        } else {
+            return s;
+        }
     }
 
     private String keywordsToString(String[] keywords) {

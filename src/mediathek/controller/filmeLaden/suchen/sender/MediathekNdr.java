@@ -264,7 +264,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         }
 
 //        void filmSuchen(String strUrlThema, String thema, String titel, String urlFilm, String datum, String zeit) {
-        void filmSuchen(String strUrlThema, String thema, String titel, String urlFilm, String datum, String zeit, long durationInSeconds) {
+        void filmSuchen(String strUrlThema, String thema, String titel, String filmWebsite, String datum, String zeit, long durationInSeconds) {
             //playlist: [
             //{
             //1: {src:'http://hds.ndr.de/z/2013/0419/TV-20130419-1010-0801.,hi,hq,.mp4.csmil/manifest.f4m', type:"application/f4m+xml"},
@@ -275,12 +275,12 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             // rtmpt://cp160844.edgefcs.net/ondemand/mp4:flashmedia/streams/ndr/2012/0820/TV-20120820-2300-0701.hq.mp4
 
             final String MUSTER_URL = "3: {src:'http://";
-            seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "strUrlThema: " + strUrlThema);
+            seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "strUrlThema: " + strUrlThema);
             //long durationInSeconds = extractDuration(seite2);
             String description = extractDescription(seite2);
             String[] keywords = extractKeywords(seite2);
             String imageUrl = extractImageURL(seite2);
-            meldung(urlFilm);
+            meldung(filmWebsite);
             int pos;
             int pos1;
             int pos2;
@@ -303,14 +303,14 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                             }
                             //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel)
 //                            addFilm(new DatenFilm(nameSenderMReader, thema, strUrlThema, titel, url, datum, zeit));
-                            addFilm(new DatenFilm(nameSenderMReader, thema, strUrlThema, titel, url, datum, zeit, durationInSeconds, description, "", imageUrl, keywords));
+                            addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, datum, zeit, durationInSeconds, description, "", imageUrl, keywords));
                         } else {
-                            Log.fehlerMeldung(-623657941, Log.FEHLER_ART_MREADER, "MediathekNdr.FilmSuchen", "keine URL: " + urlFilm);
+                            Log.fehlerMeldung(-623657941, Log.FEHLER_ART_MREADER, "MediathekNdr.FilmSuchen", "keine URL: " + filmWebsite);
                         }
                     }
                 } else {
                     // Mist!
-                    Log.fehlerMeldung(-698970145, Log.FEHLER_ART_MREADER, "MediathekNdr.FilmSuchen", "keine Url: " + urlFilm);
+                    Log.fehlerMeldung(-698970145, Log.FEHLER_ART_MREADER, "MediathekNdr.FilmSuchen", "keine Url: " + filmWebsite);
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(-699830157, Log.FEHLER_ART_MREADER, "MediathekNdr.FilmSuchen", ex);

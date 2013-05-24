@@ -144,6 +144,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 int pos1;
                 int pos2;
                 String url;
+                String urlWebsite;
                 String datum = "";
                 String zeit = "";
                 String titel;
@@ -174,17 +175,16 @@ public class MediathekSf extends MediathekReader implements Runnable {
                         if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
                             url = seite1.substring(pos1, pos2);
                             if (url.contains(MUSTER_ID)) {
+                                urlWebsite = "http://www.srf.ch/player/tv" + url;
                                 url = url.substring(url.indexOf(MUSTER_ID) + MUSTER_ID.length());
-                            } else {
-                                url = "";
-                            }
-                            if (!url.equals("")) {
-                                if (titel.equals("")) {
-                                    titel = thema;
+                                if (!url.equals("")) {
+                                    if (titel.equals("")) {
+                                        titel = thema;
+                                    }
+                                    addFilme2(thema, urlWebsite, "http://www.videoportal.sf.tv/cvis/segment/" + url + "/.json", titel, datum, zeit);
+                                } else {
+                                    Log.fehlerMeldung(-499556023, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme", "keine URL: " + strUrlFeed);
                                 }
-                                addFilme2(thema, strUrlFeed, "http://www.videoportal.sf.tv/cvis/segment/" + url + "/.json", titel, datum, zeit);
-                            } else {
-                                Log.fehlerMeldung(-499556023, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme", "keine URL: " + strUrlFeed);
                             }
                         }
                     } else {
@@ -193,18 +193,17 @@ public class MediathekSf extends MediathekReader implements Runnable {
                             if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
                                 url = seite1.substring(pos1, pos2);
                                 if (url.contains(MUSTER_ID)) {
+                                    urlWebsite = "http://www.srf.ch/player/tv" + url;
                                     url = url.substring(url.indexOf(MUSTER_ID) + MUSTER_ID.length());
-                                } else {
-                                    url = "";
-                                }
-                                if (!url.equals("")) {
-                                    if ((pos1 = seite1.indexOf(MUSTER_TITEL, pos1)) != -1) {
-                                        pos1 += MUSTER_TITEL.length();
-                                        if ((pos2 = seite1.indexOf("&", pos1)) != -1) {
-                                            titel = seite1.substring(pos1, pos2);
-                                            addFilme2(thema, strUrlFeed, "http://www.videoportal.sf.tv/cvis/segment/" + url + "/.json", titel, datum, zeit);
-                                        } else {
-                                            Log.fehlerMeldung(-499556023, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme", "keine URL: " + strUrlFeed);
+                                    if (!url.equals("")) {
+                                        if ((pos1 = seite1.indexOf(MUSTER_TITEL, pos1)) != -1) {
+                                            pos1 += MUSTER_TITEL.length();
+                                            if ((pos2 = seite1.indexOf("&", pos1)) != -1) {
+                                                titel = seite1.substring(pos1, pos2);
+                                                addFilme2(thema, urlWebsite, "http://www.videoportal.sf.tv/cvis/segment/" + url + "/.json", titel, datum, zeit);
+                                            } else {
+                                                Log.fehlerMeldung(-499556023, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme", "keine URL: " + strUrlFeed);
+                                            }
                                         }
                                     }
                                 }
@@ -217,7 +216,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
             }
         }
 
-        private void addFilme2(String thema, String strUrlFeed, String url, String titel, String datum, String zeit) {
+        private void addFilme2(String thema, String urlWebsite, String urlFilm, String titel, String datum, String zeit) {
             // "description_title":"Panamericana: Vom Machu Piccu in Peru nach Bolivien (6\/7)"
             // "description_title":"\u00abmyStory\u00bb \u2013 Mein Team (2\/4)",
             final String MUSTER_URL = "\"url\":\""; //bis zum "
@@ -227,8 +226,8 @@ public class MediathekSf extends MediathekReader implements Runnable {
             final String MUSTER_DESCRIPTION = "\"description\":\"";
             final String MUSTER_ID = "\"segments\":[{\"id\":\"";
             String t = "";
-            meldung(url);
-            seite2 = getUrl.getUri_Utf(nameSenderMReader, url, seite2, "");
+            meldung(urlFilm);
+            seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "");
             try {
                 int pos1;
                 int pos2;
@@ -282,7 +281,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                 if ((pos1 = seite2.indexOf(MUSTER_URL)) != -1) {
                     pos1 += MUSTER_URL.length();
                     if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
-                        url = seite2.substring(pos1, pos2);
+                        String url = seite2.substring(pos1, pos2);
                         if (!url.equals("")) {
                             url = url.replace("\\", "");
                             if (url.endsWith("m3u8")) {
@@ -294,7 +293,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                             }
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                             // DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit, duration, description, thumbnail, image, keywords);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, urlWebsite, titel, url, datum, zeit, duration, description, thumbnail, image, keywords);
                             addFilm(film);
                         } else {
                             Log.fehlerMeldung(-698325618, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme2", "keine URL" + url);
