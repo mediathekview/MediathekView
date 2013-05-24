@@ -232,7 +232,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             }
         }
 
-        private void filmHolen(String thema, String titel, String urlThema, String uurlFilm) {
+        private void filmHolen(String thema, String titel, String urlThema, String filmWebsite) {
             final String MUSTER_URL_1 = "<li>DSL 2000 <a href=\"http://wstreaming.zdf.de/zdf/veryhigh/";
             final String MUSTER_URL_2 = "<li>DSL 2000 <a href=\"http://wgeostreaming.zdf.de/zdf/veryhigh/";
             final String MUSTER_TITEL_1 = "<title>";
@@ -247,8 +247,8 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             int pos1;
             int pos2;
             try {
-                meldung(uurlFilm);
-                seite2 = getUrl.getUri_Utf(nameSenderMReader, uurlFilm, seite2, "urlThema: " + urlThema);
+                meldung(filmWebsite);
+                seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "urlThema: " + urlThema);
                 long durationInSeconds = extractDuration(seite2);
                 String description = extractDescription(seite2);
                 String[] keywords = extractKeywords(seite2);
@@ -315,7 +315,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                         } else {
                             //addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
                             //flashHolen(thema, titel, urlThema, urlFilm, datum, zeit);
-                            flashHolen(thema, titel, urlThema, urlFilm, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
+                            flashHolen(thema, titel, filmWebsite, urlFilm, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
                         }
                     }
                 }
@@ -325,11 +325,11 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         }
 
         //private void flashHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit) {
-        private void flashHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+        private void flashHolen(String thema, String titel, String filmWebsite, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
             meldung(urlFilm);
 
             //DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit);
-            DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
+            DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, filmWebsite, urlFilm, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
             if (f != null) {
                 addFilm(f);
             }
@@ -405,7 +405,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
     }
 
     //public static DatenFilm flash(GetUrl getUrl, StringBuffer seiteFlash, String senderName, String thema, String titel, String urlThema, String urlFilm, String datum, String zeit) {
-    public static DatenFilm flash(GetUrl getUrl, StringBuffer seiteFlash, String senderName, String thema, String titel, String urlThema, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+    public static DatenFilm flash(GetUrl getUrl, StringBuffer seiteFlash, String senderName, String thema, String titel, String filmWebsite, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
         //<param name="app" value="ondemand" />
         //<param name="host" value="cp125301.edgefcs.net" />
         //<param name="protocols" value="rtmp,rtmpt" />
@@ -441,7 +441,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             orgUrl = orgUrl.replace("http://wstreaming.zdf.de", "http://fstreaming.zdf.de");
             orgUrl = orgUrl.replace("http://wgeostreaming.zdf.de", "http://fgeostreaming.zdf.de");
             orgUrl = orgUrl.replace(".asx", ".smil");
-            seiteFlash = getUrl.getUri_Utf(senderName, orgUrl, seiteFlash, "urlThema: " + urlThema);
+            seiteFlash = getUrl.getUri_Utf(senderName, orgUrl, seiteFlash, "filmWebsite: " + filmWebsite);
             String strSeiteFlash = seiteFlash.toString();
             if ((pos1 = strSeiteFlash.indexOf(MUSTER_HOST, 0)) != -1) {
                 pos1 += MUSTER_HOST.length();
@@ -523,7 +523,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             } else {
                 url = "rtmpt://" + host + "/" + app + "/" + url;
                 //ret = new DatenFilm(senderName, thema, urlThema, titel, url, ""/* urlRtmp */, datum, zeit);
-                ret = new DatenFilm(senderName, thema, urlThema, titel, url, ""/* urlRtmp */, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
+                ret = new DatenFilm(senderName, thema, filmWebsite, titel, url, ""/* urlRtmp */, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(-265847128, Log.FEHLER_ART_MREADER, "MediathekZdf.flash" + senderName, ex, urlFilm);

@@ -313,7 +313,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             return ret;
         }
 
-        boolean filmLaden(String urlFeed, String urlFilm, String thema, String titel, String datum, String zeit) {
+        boolean filmLaden(String urlThema, String filmWebsite, String thema, String titel, String datum, String zeit) {
             // mediaCollection.addMediaStream(0, 0, "", "http://http-ras.wdr.de/CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460800.mp4", "default");
             // mediaCollection.addMediaStream(0, 1, "rtmp://gffstream.fcod.llnwd.net/a792/e2/", "mp4:CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460799.mp4", "limelight");
             // mediaCollection.addMediaStream(0, 2, "rtmp://gffstream.fcod.llnwd.net/a792/e2/", "mp4:CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460798.mp4", "limelight");
@@ -343,10 +343,10 @@ public class MediathekArd extends MediathekReader implements Runnable {
 
             boolean ret = false, flash;
             String protokoll="";
-            meldung(urlFilm);
-            seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "urlFeed: " + urlFeed);
+            meldung(filmWebsite);
+            seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "urlFeed: " + urlThema);
             if (seite2.length() == 0) {
-                Log.fehlerMeldung(-201549307, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm + ", leere Seite");
+                Log.fehlerMeldung(-201549307, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + filmWebsite + ", leere Seite");
                 return false;
             }
             long durationInSeconds = extractDuration(seite2);
@@ -422,7 +422,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
                     if (!urlOrg.equals("") && !urlRtmp.equals("")) {
                         //addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, urlOrg, urlRtmp, datum, zeit));
-                        addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, urlOrg, urlRtmp, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
+                        addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlOrg, urlRtmp, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
                         ret = true;
                     }
                 }
@@ -446,7 +446,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         if (!url.equals("")) {
                             url = "http://" + url;
                             //addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url2 /* url */, "" /* urlRtmp */, datum, zeit));
-                            addFilm(new DatenFilm(nameSenderMReader, thema, urlFeed, titel, url /* url */, "" /* urlRtmp */, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
+                            addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url /* url */, "" /* urlRtmp */, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
                             ret = true;
                         }
                     }
@@ -454,7 +454,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 }
             }
             if (!ret) {
-                Log.fehlerMeldung(-159873540, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + urlFilm + "Flash: " + flash);
+                Log.fehlerMeldung(-159873540, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + filmWebsite + "Flash: " + flash);
             }
             return ret;
         }

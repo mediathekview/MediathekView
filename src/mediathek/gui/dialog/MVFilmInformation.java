@@ -200,7 +200,7 @@ public class MVFilmInformation implements ChangeListener {
         panel.add(labelArrNames[i]);
         c.gridx = 1;
         c.weightx = 10;
-        if (i == DatenFilm.FILM_URL_THEMA_NR) {
+        if (i == DatenFilm.FILM_WEBSEITE_NR) {
             gridbag.setConstraints(lblUrlThemaField, c);
             panel.add(lblUrlThemaField);
         } else if (i == DatenFilm.FILM_IMAGE_URL_NR) {
@@ -246,7 +246,7 @@ public class MVFilmInformation implements ChangeListener {
         } else {
             textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR]);
         }
-        lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_URL_THEMA_NR]);
+        lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
         lblUrlThemaField.setForeground(foreground);
         // bei den Bildern wird nur eins gesetzt
         if (!aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {

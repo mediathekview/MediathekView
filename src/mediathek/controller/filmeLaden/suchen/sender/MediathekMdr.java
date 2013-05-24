@@ -261,7 +261,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             }
         }
 
-        void addXml(String strUrlFeed, String thema, String urlFilm) {
+        void addXml(String strUrlFeed, String thema, String filmWebsite) {
             final String MUSTER_START = "<avDocument>";
             final String MUSTER_ENDE = "</avDocument>";
             final String MUSTER_TITEL = "<title>";
@@ -291,16 +291,16 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             String imageUrl;
             int widthAlt;
             try {
-                seite4 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite4, "Thema: " + thema);
+                seite4 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite4, "Thema: " + thema);
                 if ((pos = seite4.indexOf(MUSTER_START)) == -1) {
-                    Log.fehlerMeldung(-903656532, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", urlFilm);
+                    Log.fehlerMeldung(-903656532, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", filmWebsite);
                     return;
                 }
                 while ((pos = seite4.indexOf(MUSTER_TITEL, pos)) != -1) {
                     pos += MUSTER_TITEL.length();
                     if ((posEnde = seite4.indexOf(MUSTER_ENDE, pos)) == -1) {
                         //////??
-                        Log.fehlerMeldung(-804142536, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", urlFilm);
+                        Log.fehlerMeldung(-804142536, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", filmWebsite);
                         continue;
                     }
                     url1 = "";
@@ -405,7 +405,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                         }
                     }// while
                     if (url1.equals("") || url2.equals("")) {
-                        Log.fehlerMeldung(-326541230, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", new String[]{"keine URL: " + urlFilm, "Thema: " + thema, " UrlFeed: " + strUrlFeed});
+                        Log.fehlerMeldung(-326541230, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", new String[]{"keine URL: " + filmWebsite, "Thema: " + thema, " UrlFeed: " + strUrlFeed});
                     } else {
                         //<flashMediaServerApplicationURL>rtmp://x4100mp4dynonlc22033.f.o.f.lb.core-cdn.net/22033mdr/ondemand</flashMediaServerApplicationURL>
                         //<flashMediaServerURL>mp4:4100mp4dynonl/FCMS-1582b584-bb95-4fd2-94d8-389e10a4e1bd-8442e17c3177.mp4</flashMediaServerURL>
@@ -416,7 +416,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                             meldung(url);
                             //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
 //                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, rtmpUrl, datum, zeit);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, rtmpUrl, datum, zeit, duration, description, thumbnailUrl, imageUrl, new String[]{});
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, rtmpUrl, datum, zeit, duration, description, thumbnailUrl, imageUrl, new String[]{});
                             addFilm(film);
                         } else {
                             //Log.debugMeldung("MDR: Film doppelt");

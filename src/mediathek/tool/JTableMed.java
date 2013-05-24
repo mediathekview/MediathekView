@@ -345,7 +345,7 @@ public final class JTableMed extends JTable {
                 case TABELLE_TAB_FILME:
                     if (i == DatenFilm.FILM_URL_RTMP_NR
                             || i == DatenFilm.FILM_URL_AUTH_NR
-                            || i == DatenFilm.FILM_URL_THEMA_NR) {
+                            || i == DatenFilm.FILM_WEBSEITE_NR) {
                         breite[i] = 0;
                     }
                     break;
