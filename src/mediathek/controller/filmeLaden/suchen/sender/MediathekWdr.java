@@ -21,6 +21,7 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
+import java.util.LinkedList;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
@@ -31,9 +32,8 @@ import mediathek.tool.Log;
 public class MediathekWdr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "WDR";
-    private final int MAX_COUNT = 5;
     final String ROCKPALAST_URL = "http://www.wdr.de/tv/rockpalast/videos/uebersicht.jsp"; //TH
-    private LinkedListUrl listeFilme = new LinkedListUrl();
+    private StringBuffer strSeite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
     /**
      *
@@ -51,9 +51,8 @@ public class MediathekWdr extends MediathekReader implements Runnable {
     public synchronized void addToList() {
         //Theman suchen
         listeThemen.clear();
-        listeFilme.clear();
         meldungStart();
-        addToList__("http://www.wdr.de/mediathek/html/regional/index.xml");
+        addToList__("http://www1.wdr.de/mediathek/video/sendungen/abisz-a102.html");
         if (suchen.senderAllesLaden) {
             //TH Rockpalast hinzu
             String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
@@ -75,76 +74,66 @@ public class MediathekWdr extends MediathekReader implements Runnable {
     // private
     //===================================
     private void addToList__(String ADRESSE) {
+        // http://www1.wdr.de/mediathek/video/sendungen/abisz-b100.html
         //Theman suchen
-        final String MUSTER_URL = "<a href=\"";
-        final String START = "<h2>Sendungen A-Z</h2>";
-        final String ENDE = "<h2>Themen</h2>";
+        final String MUSTER_URL = "<a href=\"/mediathek/video/sendungen/abisz-";
         StringBuffer strSeite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         strSeite = getUrlIo.getUri_Iso(nameSenderMReader, ADRESSE, strSeite, "");
-        int pos;
+        int pos1 = 0;
+        int pos2;
+        String url;
+        themenSeitenSuchen(ADRESSE); // ist die erste Seite: "a"
+        while (!Daten.filmeLaden.getStop() && (pos1 = strSeite.indexOf(MUSTER_URL, pos1)) != -1) {
+            pos1 += MUSTER_URL.length();
+            if ((pos2 = strSeite.indexOf("\"", pos1)) != -1) {
+                url = strSeite.substring(pos1, pos2);
+                if (url.equals("")) {
+                    Log.fehlerMeldung(-995122047, Log.FEHLER_ART_MREADER, "MediathekWdr.addToList__", "keine URL");
+                } else {
+                    url = "http://www1.wdr.de/mediathek/video/sendungen/abisz-" + url;
+                    themenSeitenSuchen(url);
+                }
+            }
+        }
+    }
+
+    private void themenSeitenSuchen(String strUrlFeed) {
+        //<ul class="linkList pictured">
+        //<li class="neutral" >
+        //<img src="/mediathek/video/sendungen/abenteuer_erde/logo-abenteuer-erde100_v-ARDGrosserTeaser.jpg"    title="Bildrechte: wdr" alt="Logo Abenteuer Erde"   />
+        //<a href="/mediathek/video/sendungen/abenteuer_erde/filterseite-abenteuer-erde100.html" >
+        //<strong>
+        //<strong>Abenteuer Erde</strong>: Die Sendungen im Überblick
+        //</strong>
+        //</a>
+
+        // url:
+        // http://www1.wdr.de/mediathek/video/sendungen/dittsche/videonichtimpapamobil100.html
+
+        final String MUSTER_START = "<ul class=\"linkList pictured\">";
+        final String MUSTER_URL = "<a href=\"/mediathek/video/sendungen/";
         int pos1;
         int pos2;
         String url;
-        String thema;
-        // nach Sendungen suchen
-        int ende = strSeite.indexOf(ENDE);
-        int start = strSeite.indexOf(START);
-        if (start != -1 && ende != -1) {
-            pos = start;
-            while (!Daten.filmeLaden.getStop() && (pos = strSeite.indexOf(MUSTER_URL, pos)) != -1) {
-                if (pos > ende) {
-                    //Themenbereich zu Ende
-                    break;
-                }
-                thema = "";
-                pos += MUSTER_URL.length();
-                pos1 = pos;
-                pos2 = strSeite.indexOf("\"", pos);
-                if (pos1 != -1 && pos2 != -1 && pos1 != pos2) {
-                    url = strSeite.substring(pos1, pos2);
-                    pos1 = strSeite.indexOf("\">", pos);
-                    pos2 = strSeite.indexOf("<", pos);
-                    if (pos1 != -1 && pos2 != -1) {
-                        thema = strSeite.substring(pos1 + 2, pos2).trim();
-                    }
-                    if (url.equals("")) {
-                        Log.fehlerMeldung(-995122047, Log.FEHLER_ART_MREADER, "MediathekWdr.addToList__", "keine URL");
-                    } else {
-                        url = url.replace("&amp;", "&");
-                        String[] add;
-                        if (suchen.senderAllesLaden) {
-                            add = new String[]{"http://www.wdr.de" + url + "&rankingcount=20", thema};
-                        } else {
-                            add = new String[]{"http://www.wdr.de" + url + "&rankingcount=10", thema};
-                        }
-                        listeThemen.addUrl(add);
-                    }
-                }
-            }
-        } else {
-            Log.fehlerMeldung(-778521300, Log.FEHLER_ART_MREADER, "MediathekWdr", "nix gefunden!!");
+        strSeite = getUrlIo.getUri_Iso(nameSenderMReader, strUrlFeed, strSeite, "");
+        meldung(strUrlFeed);
+        if ((pos1 = strSeite.indexOf(MUSTER_START)) == -1) {
+            Log.fehlerMeldung(-460857479, Log.FEHLER_ART_MREADER, "MediathekWdr.themenSeiteSuchen", "keine Url" + strUrlFeed);
+            return;
         }
-        // nach Datum suchen
-        final String MUSTER_URL_DATUM = "href=\"/mediathek/html/regional/ergebnisse/datum.xml?";
-        pos = 0;
-        while (!Daten.filmeLaden.getStop() && (pos = strSeite.indexOf(MUSTER_URL_DATUM, pos)) != -1) {
-            thema = "";
-            pos += MUSTER_URL_DATUM.length();
-            if ((pos2 = strSeite.indexOf("\"", pos)) != -1) {
-                url = strSeite.substring(pos, pos2);
-                if (url.equals("")) {
-                    Log.fehlerMeldung(-656360477, Log.FEHLER_ART_MREADER, "MediathekWdr.addToList__", "keine URL");
-                } else {
-                    url = url.replace("&amp;", "&");
+        while (!Daten.filmeLaden.getStop() && (pos1 = strSeite.indexOf(MUSTER_URL, pos1)) != -1) {
+            pos1 += MUSTER_URL.length();
+            if ((pos2 = strSeite.indexOf("\"", pos1)) != -1) {
+                url = strSeite.substring(pos1, pos2).trim();
+                if (!url.equals("")) {
+                    url = "http://www1.wdr.de/mediathek/video/sendungen/" + url;
+                    //weiter gehts
                     String[] add;
-                    final String a = "http://www.wdr.de/mediathek/html/regional/ergebnisse/datum.xml?";
-                    if (suchen.senderAllesLaden) {
-                        add = new String[]{a + url + "&rankingcount=20", thema};
-                    } else {
-                        add = new String[]{a + url + "&rankingcount=10", thema};
-                    }
+                    add = new String[]{url, ""};
                     listeThemen.addUrl(add);
                 }
+            } else {
+                Log.fehlerMeldung(-375862100, Log.FEHLER_ART_MREADER, "MediathekWdr.themenSeiteSuchen", "keine Url" + strUrlFeed);
             }
         }
     }
@@ -154,6 +143,8 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer strSeite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         private StringBuffer strSeite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer strSeite3 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private StringBuffer strSeite4 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         private StringBuffer strVideoSeite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
@@ -166,7 +157,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     if (ROCKPALAST_URL.equals(link[0])) {
                         themenSeiteRockpalast();
                     } else {
-                        themenSeitenSuchen(link[0] /* url */, link[1] /* Thema */);
+                        sendungsSeitenSuchen(link[0] /* url */);
                     }
                     meldungProgress(link[0]);
                 }
@@ -174,6 +165,267 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 Log.fehlerMeldung(-633250489, Log.FEHLER_ART_MREADER, "MediathekWdr.SenderThemaLaden.run", ex);
             }
             meldungThreadUndFertig();
+        }
+
+        private void sendungsSeitenSuchen(String strUrl) {
+            //<div class="pictureCont" id="picturedList0">
+            //<ul class="linkList pictured">
+            //<li class="mediathekvideo" >
+            //<img src="/mediathek/video/sendungen/der_vorkoster/dervorkosterspeisesalzimqualitaetsvergleich100_v-ARDGrosserTeaser.jpg"    title="Bildrechte: wdr" alt="Zwei verschiedene Salzsorten"   />
+            //<a href="/mediathek/video/sendungen/der_vorkoster/videodervorkosterspeisesalzimqualitaetsvergleich100.html" >
+            //<strong>
+            //Der Vorkoster - Speisesalz im Qualitätsvergleich: Sendung vom 03.05.2013
+            //</strong>
+            //<span class="supplementary">
+            //<span class="mediaLength">
+            //<span class="hidden">L&auml;nge: </span>00:44:27 <abbr title="Minuten">Min.</abbr>
+            //</span>
+
+            // url:
+            // http://www1.wdr.de/mediathek/video/sendungen/der_vorkoster/videodervorkosterspeisesalzimqualitaetsvergleich100.html
+
+            final String MUSTER_START_1 = "<ul class=\"linkList pictured\">";
+            final String MUSTER_START_2 = "<div id=\"pageLeadIn\">";
+
+            final String MUSTER_URL = "<a href=\"/mediathek/video/sendungen/";
+            final String MUSTER_TITEL = "<strong>";
+            final String MUSTER_DAUER = "<span class=\"hidden\">L&auml;nge: </span>";
+            final String MUSTER_THEMA = "<title>";
+            int pos;
+            int pos1;
+            int pos2;
+            int ende;
+            String url;
+            String titel = "";
+            String dauer = "";
+            String datum = "";
+            String thema = "";
+            long duration = 0;
+            pos = 0;
+            strSeite2 = getUrl.getUri_Utf(nameSenderMReader, strUrl, strSeite2, "");
+            meldung(strUrl);
+            // Thema suchen
+            // <title>Lokalzeit aus Bonn - WDR MEDIATHEK</title>
+            if ((pos1 = strSeite2.indexOf(MUSTER_THEMA, pos)) != -1) {
+                pos1 += MUSTER_THEMA.length();
+                if ((pos2 = strSeite2.indexOf("<", pos1)) != -1) {
+                    thema = strSeite2.substring(pos1, pos2);
+                    // putzen
+                    thema = thema.replace("- WDR MEDIATHEK", "").trim();
+                }
+            }
+            // und jetzt die Beiträge
+            if ((pos = strSeite2.indexOf(MUSTER_START_1)) == -1) {
+                if ((pos = strSeite2.indexOf(MUSTER_START_2)) == -1) {
+                    Log.fehlerMeldung(-765323079, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen", "keine Url" + strUrl);
+                    return;
+                }
+            }
+            if ((ende = strSeite2.indexOf("<ul class=\"pageCounterNavi\">", pos)) == -1) {
+                if ((ende = strSeite2.indexOf("<div id=\"socialBookmarks\">", pos)) == -1) {
+                    Log.fehlerMeldung(-646897321, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen", "keine Url" + strUrl);
+                    return;
+                }
+            }
+            while (!Daten.filmeLaden.getStop() && (pos = strSeite2.indexOf(MUSTER_URL, pos)) != -1) {
+                if (pos > ende) {
+                    break;
+                }
+                pos += MUSTER_URL.length();
+                pos1 = pos;
+                if ((pos2 = strSeite2.indexOf("\"", pos)) != -1) {
+                    url = strSeite2.substring(pos1, pos2).trim();
+                    if (!url.equals("")) {
+                        url = "http://www1.wdr.de/mediathek/video/sendungen/" + url;
+                        if ((pos1 = strSeite2.indexOf(MUSTER_TITEL, pos)) != -1) {
+                            pos1 += MUSTER_TITEL.length();
+                            if ((pos2 = strSeite2.indexOf("<", pos1)) != -1) {
+                                titel = strSeite2.substring(pos1, pos2).trim();
+                                // putzen
+                                titel = titel.replace("\n", "");
+                                if (titel.contains("-")) {
+                                    titel = titel.substring(titel.indexOf("-") + 1, titel.length());
+                                }
+                                if (titel.contains(":")) {
+                                    datum = titel.substring(titel.lastIndexOf(":") + 1, titel.length()).trim();
+                                    if (datum.contains(" vom")){
+                                        datum = datum.substring(datum.indexOf(" vom") + " vom".length()).trim();
+                                    }
+                                    titel = titel.substring(0, titel.lastIndexOf(":")).trim();
+                                }
+                            }
+                        }
+                        if ((pos1 = strSeite2.indexOf(MUSTER_DAUER, pos)) != -1) {
+                            pos1 += MUSTER_DAUER.length();
+                            if ((pos2 = strSeite2.indexOf("<", pos1)) != -1) {
+                                dauer = strSeite2.substring(pos1, pos2).trim();
+                                try {
+                                    if (!dauer.equals("")) {
+                                        String[] parts = dauer.split(":");
+                                        duration = 0;
+                                        long power = 1;
+                                        for (int i = parts.length - 1; i >= 0; i--) {
+                                            duration += Long.parseLong(parts[i]) * power;
+                                            power *= 60;
+                                        }
+                                    }
+                                } catch (Exception ex) {
+                                    Log.fehlerMeldung(-306597519, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen", ex, strUrl);
+                                }
+                            }
+                        }
+                        if (thema.equals("") || datum.equals("") || titel.equals("") || duration == 0) {
+                            Log.fehlerMeldung(-32356701, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen", strUrl);
+                        }
+                        //weiter gehts
+                        addFilm1(strUrl, thema, titel, url, duration, datum);
+                    } else {
+                        Log.fehlerMeldung(-646432970, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen-1", "keine Url" + strUrl);
+                    }
+                }
+            }
+        }
+
+        private void addFilm1(String urlThema, String thema, String titel, String filmWebsite, long dauer, String datum) {
+            // http://www1.wdr.de/mediathek/video/sendungen/die_story/videopharmasklaven100-videoplayer_size-L.html
+
+            final String MUSTER_URL_START = "<span class=\"videoLink\">";
+            final String MUSTER_URL = "<a href=\"/mediathek/video/sendungen/";
+            final String MUSTER_DESCRIPTION = "<meta name=\"Description\" content=\"";
+            final String MUSTER_DESCRIPTION_END = "/>";
+            final String MUSTER_IMAGE_START = "<div class=\"linkCont\">";
+            final String MUSTER_IMAGE = "<img src=\"/mediathek/video/sendungen/";
+
+            final String MUSTER_KEYWORDS = "<meta name=\"Keywords\" content=\"";
+            final String MUSTER_KEYWORDS_END = "\" />";
+            meldung(filmWebsite);
+            strSeite3 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, strSeite3, "");
+            int pos1;
+            int pos2;
+            String url = "";
+            String description = "";
+            String image = "";
+            String[] keywords = new String[]{};
+
+            if ((pos1 = strSeite3.indexOf(MUSTER_DESCRIPTION)) != -1) {
+                pos1 += MUSTER_DESCRIPTION.length();
+                if ((pos2 = strSeite3.indexOf(MUSTER_DESCRIPTION_END, pos1)) != -1) {
+                    description = strSeite3.substring(pos1, pos2);
+                }
+            }
+
+            if ((pos1 = strSeite3.indexOf(MUSTER_IMAGE_START)) != -1) {
+                pos1 += MUSTER_IMAGE_START.length();
+                if ((pos1 = strSeite3.indexOf(MUSTER_IMAGE, pos1)) != -1) {
+                    pos1 += MUSTER_IMAGE.length();
+                    if ((pos2 = strSeite3.indexOf("\"", pos1)) != -1) {
+                        image = "http://www1.wdr.de/mediathek/video/sendungen/" + strSeite3.substring(pos1, pos2);
+                    }
+                }
+            } else if ((pos1 = strSeite3.indexOf("<li class=\"mediathekvideo\" >")) != -1) {
+                //pos1 += "<li class=\"mediathekvideo\" >".length();
+                if ((pos1 = strSeite3.indexOf(MUSTER_IMAGE, pos1)) != -1) {
+                    pos1 += MUSTER_IMAGE.length();
+                    if ((pos2 = strSeite3.indexOf("\"", pos1)) != -1) {
+                        image = "http://www1.wdr.de/mediathek/video/sendungen/" + strSeite3.substring(pos1, pos2);
+                    }
+                }
+            }
+
+            if ((pos1 = strSeite3.indexOf(MUSTER_KEYWORDS)) != -1) {
+                pos1 += MUSTER_KEYWORDS.length();
+                if ((pos2 = strSeite3.indexOf(MUSTER_KEYWORDS_END, pos1)) != -1) {
+                    String k = strSeite3.substring(pos1, pos2);
+                    keywords = k.split(", ");
+                }
+            }
+            // URL suchen
+            if ((pos1 = strSeite3.indexOf(MUSTER_URL_START)) != -1) {
+                pos1 += MUSTER_URL_START.length();
+                if ((pos1 = strSeite3.indexOf(MUSTER_URL, pos1)) != -1) {
+                    pos1 += MUSTER_URL.length();
+                    if ((pos2 = strSeite3.indexOf("\"", pos1)) != -1) {
+                        url = strSeite3.substring(pos1, pos2);
+                    }
+                }
+            } else if ((pos1 = strSeite3.indexOf("<li class=\"mediathekvideo\" >")) != -1) {
+                //pos1 += "<li class=\"mediathekvideo\" >".length();
+                if ((pos1 = strSeite3.indexOf(MUSTER_URL, pos1)) != -1) {
+                    pos1 += MUSTER_URL.length();
+                    if ((pos2 = strSeite3.indexOf("\"", pos1)) != -1) {
+                        url = strSeite3.substring(pos1, pos2);
+                    }
+                }
+            }
+
+
+            if (description.equals("") || image.equals("") || keywords.equals("")) {
+                Log.fehlerMeldung(-649830789, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilm1", new String[]{filmWebsite, "UrlThema: " + urlThema});
+            }
+            if (!url.equals("")) {
+                addFilm2(urlThema, thema, titel, "http://www1.wdr.de/mediathek/video/sendungen/" + url, dauer, datum, description, keywords, image);
+            } else {
+                Log.fehlerMeldung(-763299001, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme1", new String[]{"keine Url: " + filmWebsite, "UrlThema: " + urlThema});
+            }
+
+        }
+
+        private void addFilm2(String urlThema, String thema, String titel, String filmWebsite, long dauer, String datum, String beschreibung, String[] keyword, String image) {
+            // ;dslSrc=rtmp://gffstream.fcod.llnwd.net/a792/e1/media/video/2009/02/14/20090214_a40_komplett_big.flv&amp;isdnSrc=rtm
+            // <p class="wsArticleAutor">Ein Beitrag von Heinke Schröder, 24.11.2010	</p>
+            final String MUSTER_URL_L = "<a rel=\"webL\"  href=\"";
+            final String MUSTER_URL_M = "<a rel=\"webM\"  href=\"";
+            final String MUSTER_URL_S = "<a rel=\"webS\"  href=\"";
+            meldung(filmWebsite);
+            strSeite4 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, strSeite4, "");
+            int pos1;
+            int pos2;
+            String url = "";
+            String urlKlein = "";
+
+            // URL suchen
+            if ((pos1 = strSeite4.indexOf(MUSTER_URL_L)) != -1) {
+                pos1 += MUSTER_URL_L.length();
+                if ((pos2 = strSeite4.indexOf("\"", pos1)) != -1) {
+                    url = strSeite4.substring(pos1, pos2);
+                }
+            }
+            if ((pos1 = strSeite4.indexOf(MUSTER_URL_M)) != -1) {
+                pos1 += MUSTER_URL_M.length();
+                if ((pos2 = strSeite4.indexOf("\"", pos1)) != -1) {
+                    if (url.equals("")) {
+                        url = strSeite4.substring(pos1, pos2);
+                    } else {
+                        urlKlein = strSeite4.substring(pos1, pos2);
+                    }
+                }
+            }
+            if ((pos1 = strSeite4.indexOf(MUSTER_URL_S)) != -1) {
+                pos1 += MUSTER_URL_S.length();
+                if ((pos2 = strSeite4.indexOf("\"", pos1)) != -1) {
+                    if (url.equals("")) {
+                        url = strSeite4.substring(pos1, pos2);
+                    } else {
+                        if (urlKlein.equals("")) {
+                            urlKlein = strSeite4.substring(pos1, pos2);
+                        }
+                    }
+                }
+            }
+            if (!url.equals("")) {
+                // URL bauen von
+                // http://mobile-ondemand.wdr.de/CMS2010/mdb/14/149491/lokalzeitausaachen_1474195.mp4
+                // nach
+                // rtmp://gffstream.fcod.llnwd.net/a792/e2/mp4:CMS2010/mdb/14/149491/lokalzeitausaachen_1474195.mp4
+                url = url.replace("http://mobile-ondemand.wdr.de/", "rtmp://gffstream.fcod.llnwd.net/a792/e2/mp4:");
+                //public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
+                //long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, datum, ""/* zeit */,
+                        dauer, beschreibung, "", image, keyword);
+                addFilm(film);
+            } else {
+                Log.fehlerMeldung(-763299001, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme1", new String[]{"keine Url: " + filmWebsite, "UrlThema: " + urlThema});
+            }
         }
 
         //TH
@@ -197,7 +449,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     String titel = strVideoSeite.substring(pos2 + 2, pos3);
                     String url = ROOTADR + strVideoSeite.substring(pos1, pos2);
                     //System.out.println ("TH rock url = " + url + ", " + titel);
-                    addFilme2(ROCKPALAST_URL, "Rockpalast", titel, url);
+                    addFilmeRockpalast("Rockpalast", titel, url);
                     pos = pos3;
                 }
             } catch (Exception ex) {
@@ -205,88 +457,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             }
         }
 
-        private void themenSeitenSuchen(String strUrlFeed, String thema) {
-            //<div class="wsDisplayP"><strong>Video:</strong> http://www.wdr.de/mediathek/html/regional/
-            //              2009/02/14/a40-komplett.xml;jsessionid=F203466678603049365CEB7FD61F087C.mediathek4</div>
-            // diathek4" title="Zum Video 'Von Wundern und Bunkern'">
-
-            //oder Audio:
-            //    <div class="wsDisplayP"><strong>Audio:</strong> http://www.wdr.de/mediathek/html/regional/2009/01/
-            //        30/cosmo-konsum.xml;jsessionid=A5A9CDE4FCA9E3339AFC9137656767CA.mediathek4</div>
-            // title="Zum Audio 'Kauflaune ungetrübt'">Kauflaune u
-
-
-            //<li class="wsVor">
-            // <a href="?rankingtype=sendung&amp;rankingvisible=newest&amp;rankingvalue=A40&amp;rankingcount=5&amp;rankingpage=1">
-
-            final String NEUESEITE_1 = "<li class=\"wsVor\">";
-            final String NEUESEITE_2 = "<a href=\"?";
-            final String MUSTER_URL = "<div class=\"wsDisplayP\"><strong>Video:</strong>";
-            final String TITEL = "title=\"Zum Video '";
-            int seitenCount = 0;
-            int pos;
-            int pos1;
-            int pos2;
-            boolean neueSeite;
-            String url;
-            String titel;
-            do {
-                neueSeite = false;
-                pos = 0;
-                strSeite1 = getUrl.getUri_Iso(nameSenderMReader, strUrlFeed, strSeite1, "");
-                ++seitenCount;
-                meldung(strUrlFeed);
-                while (!Daten.filmeLaden.getStop() && (pos = strSeite1.indexOf(MUSTER_URL, pos)) != -1) {
-                    pos += MUSTER_URL.length();
-                    pos1 = pos;
-                    pos2 = strSeite1.indexOf("<", pos);
-                    if (pos1 != -1 && pos2 != -1 && pos1 != pos2) {
-                        url = strSeite1.substring(pos1, pos2).trim();
-                        if (!url.equals("")) {
-                            // erst mal schauen obs die schon gab
-                            if (listeFilme.addUrl(new String[]{url})) {
-                                pos1 = strSeite1.indexOf(TITEL, pos);
-                                if (pos1 != -1) {
-                                    pos1 += TITEL.length();
-                                    pos2 = strSeite1.indexOf("'", pos1);
-                                    if (pos2 != -1 && pos1 < pos2) {
-                                        titel = strSeite1.substring(pos1, pos2);
-                                        //weiter gehts
-                                        addFilme2(strUrlFeed, thema, titel, url);
-                                    }
-                                }
-                            } else {
-                                //Log.debugMeldung("WDR-doppelt");
-                            }
-                        } else {
-                            Log.fehlerMeldung(-375862100, Log.FEHLER_ART_MREADER, "MediathekWdr.themenSeiteSuchen-1", "keine Url" + thema);
-                        }
-                    } else {
-                        Log.fehlerMeldung(-752589666, Log.FEHLER_ART_MREADER, "MediathekWdr.themenSeiteSuchen-2", "keine Url" + thema);
-                    }
-                }
-                if (suchen.senderAllesLaden) {
-                    if ((pos = strSeite1.indexOf(NEUESEITE_1)) != -1) {
-                        if ((pos = strSeite1.indexOf(NEUESEITE_2, pos)) != -1) {
-                            pos += NEUESEITE_2.length();
-                            pos1 = pos;
-                            pos2 = strSeite1.indexOf("\"", pos);
-                            if (pos2 != -1 && pos1 < pos2) {
-                                strUrlFeed = "http://www.wdr.de/mediathek/html/regional/ergebnisse/sendung.xml?" + strSeite1.substring(pos1, pos2);
-                                strUrlFeed = strUrlFeed.replace("&amp;", "&");
-                                if (!strUrlFeed.equals("")) {
-                                    if (seitenCount < MAX_COUNT) {
-                                        neueSeite = true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            } while (!Daten.filmeLaden.getStop() && neueSeite);
-        }
-
-        private void addFilme2(String strUrlFeed, String thema, String titel, String filmWebsite) {
+        private void addFilmeRockpalast(String thema, String titel, String filmWebsite) {
             // ;dslSrc=rtmp://gffstream.fcod.llnwd.net/a792/e1/media/video/2009/02/14/20090214_a40_komplett_big.flv&amp;isdnSrc=rtm
             // <p class="wsArticleAutor">Ein Beitrag von Heinke Schröder, 24.11.2010	</p>
             final String MUSTER_URL = "dslSrc=";

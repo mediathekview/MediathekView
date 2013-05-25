@@ -316,13 +316,19 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                     if ((pos1 = seite4.indexOf(MUSTER_DURATION, pos)) != -1) {
                         pos1 += MUSTER_DURATION.length();
                         if ((pos2 = seite4.indexOf(MUSTER_DURATION_END, pos1)) != -1) {
-                            String d = seite4.substring(pos1, pos2);
-                            String[] parts = d.split(":");
-                            duration = 0;
-                            long power = 1;
-                            for (int i = parts.length - 1; i >= 0; i--) {
-                                duration += Long.parseLong(parts[i]) * power;
-                                power *= 60;
+                            try {
+                                String d = seite4.substring(pos1, pos2);
+                                if (!d.equals("")) {
+                                    String[] parts = d.split(":");
+                                    duration = 0;
+                                    long power = 1;
+                                    for (int i = parts.length - 1; i >= 0; i--) {
+                                        duration += Long.parseLong(parts[i]) * power;
+                                        power *= 60;
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                Log.fehlerMeldung(-313698749, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", ex, filmWebsite);
                             }
                         }
                     }
