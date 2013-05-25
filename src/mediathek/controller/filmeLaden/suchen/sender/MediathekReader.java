@@ -57,8 +57,9 @@ public class MediathekReader implements Runnable {
         maxThreadLaufen = ssenderMaxThread;
         startPrio = sstartPrio;
         if (Daten.debug) {
+            //////////////
 ////            maxThreadLaufen = 1;
-////            wartenSeiteLaden=100;
+////            wartenSeiteLaden = 100;
         }
     }
     //===================================
