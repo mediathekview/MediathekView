@@ -181,7 +181,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             } else if (checkListe(film.arr[DatenFilm.FILM_URL_NR])) {
                 // haben wir schon in der Downloadliste
                 continue;
-            } else if (checkBlack && !ddaten.listeBlacklist.checkBlackOkFilm(film)) {
+            } else if (checkBlack && !ddaten.listeBlacklist.checkBlackOkFilme_Downloads(film)) {
                 // wenn Blacklist auch für Abos, dann ers mal da schauen
                 continue;
             } else {
