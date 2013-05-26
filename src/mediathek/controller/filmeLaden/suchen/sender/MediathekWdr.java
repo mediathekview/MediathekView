@@ -157,7 +157,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     if (ROCKPALAST_URL.equals(link[0])) {
                         themenSeiteRockpalast();
                     } else {
-                        sendungsSeitenSuchen(link[0] /* url */);
+                        sendungsSeitenSuchen1(link[0] /* url */);
                     }
                     meldungProgress(link[0]);
                 }
@@ -167,7 +167,37 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             meldungThreadUndFertig();
         }
 
-        private void sendungsSeitenSuchen(String strUrl) {
+        private void sendungsSeitenSuchen1(String strUrl) {
+            // http://www1.wdr.de/mediathek/video/sendungen/ein_fall_fuer_die_anrheiner/filterseite-ein-fall-fuer-die-anrheiner100_compage-2_paginationId-picturedList0.html#picturedList0
+            int pos1;
+            int pos2;
+            int ende;
+            strSeite1 = getUrl.getUri_Utf(nameSenderMReader, strUrl, strSeite1, "");
+            meldung(strUrl);
+            // Sendungen auf der Seite
+            sendungsSeitenSuchen2(strUrl);
+            // weitere Seiten suchen
+            if ((pos1 = strSeite1.indexOf("<ul class=\"pageCounterNavi\">")) != -1) {
+                if ((ende = strSeite1.indexOf("</ul>", pos1)) != -1) {
+                    while ((pos1 = strSeite1.indexOf("<a href=\"/mediathek/video/sendungen/", pos1)) != -1) {
+                        if (pos1 > ende) {
+                            // dann wars das
+                            return;
+                        }
+                        pos1 += "<a href=\"/mediathek/video/sendungen/".length();
+                        if ((pos2 = strSeite1.indexOf("\"", pos1)) != -1) {
+                            String urlWeiter = strSeite1.substring(pos1, pos2);
+                            if (!urlWeiter.equals("")) {
+                                // Sendungen auf der Seite
+                                sendungsSeitenSuchen2("http://www1.wdr.de/mediathek/video/sendungen/" + urlWeiter);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void sendungsSeitenSuchen2(String strUrl) {
             //<div class="pictureCont" id="picturedList0">
             //<ul class="linkList pictured">
             //<li class="mediathekvideo" >
@@ -248,7 +278,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                                 }
                                 if (titel.contains(":")) {
                                     datum = titel.substring(titel.lastIndexOf(":") + 1, titel.length()).trim();
-                                    if (datum.contains(" vom")){
+                                    if (datum.contains(" vom")) {
                                         datum = datum.substring(datum.indexOf(" vom") + " vom".length()).trim();
                                     }
                                     titel = titel.substring(0, titel.lastIndexOf(":")).trim();
@@ -467,7 +497,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             final String MUSTER_DURATION_START_1 = "(";
             final String MUSTER_DURATION_END = ")<span";
             final String MUSTER_DESCRIPTION = "<meta name=\"description\" content=\"";
-            final String MUSTER_DESCRIPTION_END = "\" />";
+            final String MUSTER_DESCRIPTION_END = "/>";
             final String MUSTER_THUMBNAIL = "<link rel=\"image_src\" href=\"";
             final String MUSTER_THUMBNAIL_END = "\" />";
             final String MUSTER_IMAGE = "<img class=\"teaserPic\" src=\"";
@@ -507,6 +537,15 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 pos1 += MUSTER_DESCRIPTION.length();
                 if ((pos2 = strSeite2.indexOf(MUSTER_DESCRIPTION_END, pos1)) != -1) {
                     description = strSeite2.substring(pos1, pos2);
+                    if (description.startsWith("<p>")) {
+                        description = description.replaceFirst("<p>", "");
+                    }
+                    if (description.endsWith("\"")) {
+                        description = description.replace("\"", "");
+                    }
+                    if (description.endsWith("</p>")) {
+                        description = description.replace("</p>", "");
+                    }
                 }
             }
 

@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.daten.Daten;
 
-
 public class Log {
 
     public static StringBuffer textSystem = new StringBuffer(10000);
@@ -275,6 +274,10 @@ public class Log {
     private static void fehlermeldung_(int fehlerNummer, int art, String klasse, Exception ex, String[] texte) {
         addFehlerNummer(fehlerNummer, art, ex != null);
         if (ex != null || Daten.debug) {
+            try {
+                ex.printStackTrace();
+            } catch (Exception nix) {
+            }
             // Exceptions immer ausgeben
             if (progress) {
                 // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
