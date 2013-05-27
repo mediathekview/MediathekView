@@ -138,9 +138,14 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                     pfad = ar[0];
                 }
             }
-            for (String anAr : ar) {
-                if (anAr.equals("-M")) {
+            for (int i = 0; i < ar.length; ++i) {
+                if (ar[i].equalsIgnoreCase(Main.STARTP_MAXIMIERT)) {
                     max = true;
+                }
+                if (ar[i].equalsIgnoreCase(Main.STARTP_LOGFILE)) {
+                    if (ar.length > i) {
+                        Log.setLogFile(new File(ar[i + 1]));
+                    }
                 }
             }
         }
