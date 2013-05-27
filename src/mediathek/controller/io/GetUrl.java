@@ -26,9 +26,10 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.SocketAddress;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
@@ -53,17 +54,16 @@ public class GetUrl {
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehlerVersuche = new LinkedList<Seitenzaehler>();
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerWartezeitFehlerVersuche = new LinkedList<Seitenzaehler>(); // Wartezeit für Wiederholungen [s]
     private static LinkedList<Seitenzaehler> listeSummeByte = new LinkedList<Seitenzaehler>(); // Summe Daten in Byte für jeden Sender
-    private static LinkedList<Seitenzaehler> listeLadeArt = new LinkedList<Seitenzaehler>(); // Summe Daten in Byte für die verschiedenen Ladearten
     private static final int LADE_ART_UNBEKANNT = 0;
     private static final int LADE_ART_NIX = 1;
     private static final int LADE_ART_DEFLATE = 2;
     private static final int LADE_ART_GZIP = 3;
+    final static Lock lock = new ReentrantLock();
 
     private class Seitenzaehler {
 
         String senderName = "";
         long seitenAnzahl = 0;
-        long ladeArtUnbekannt = 0;
         long ladeArtNix = 0;
         long ladeArtDeflate = 0;
         long ladeArtGzip = 0;
@@ -71,6 +71,21 @@ public class GetUrl {
         public Seitenzaehler(String ssenderName, int sseitenAnzahl) {
             senderName = ssenderName;
             seitenAnzahl = sseitenAnzahl;
+        }
+
+        public void addLadeArt(int ladeArt, int inc) {
+            switch (ladeArt) {
+                case LADE_ART_NIX:
+                    ladeArtNix += inc;
+                    break;
+                case LADE_ART_DEFLATE:
+                    ladeArtDeflate += inc;
+                    break;
+                case LADE_ART_GZIP:
+                    ladeArtGzip += inc;
+                    break;
+                default:
+            }
         }
     }
 
@@ -152,7 +167,7 @@ public class GetUrl {
         return timeout;
     }
 
-    public static long getSeitenZaehler(int art, String sender) {
+    public static synchronized long getSeitenZaehler(int art, String sender) {
         long ret = 0;
         LinkedList<Seitenzaehler> liste = getListe(art);
         Iterator<Seitenzaehler> it = liste.iterator();
@@ -191,8 +206,7 @@ public class GetUrl {
         while (it.hasNext()) {
             Seitenzaehler sz = it.next();
             if (sz.senderName.equals(sender)) {
-                ret = "Unbekannt: " + (sz.ladeArtUnbekannt == 0 ? "0" : ((sz.ladeArtUnbekannt / 1024 / 1024) == 0 ? "<1" : String.valueOf(sz.ladeArtUnbekannt / 1024 / 1024)))
-                        + "   Nix: " + (sz.ladeArtNix == 0 ? "0" : ((sz.ladeArtNix / 1024 / 1024) == 0 ? "<1" : String.valueOf(sz.ladeArtNix / 1024 / 1024)))
+                ret = "   Nix: " + (sz.ladeArtNix == 0 ? "0" : ((sz.ladeArtNix / 1024 / 1024) == 0 ? "<1" : String.valueOf(sz.ladeArtNix / 1024 / 1024)))
                         + "   Deflaet: " + (sz.ladeArtDeflate == 0 ? "0" : ((sz.ladeArtDeflate / 1024 / 1024) == 0 ? "<1" : String.valueOf(sz.ladeArtDeflate / 1024 / 1024)))
                         + "   Gzip: " + (sz.ladeArtGzip == 0 ? "0" : ((sz.ladeArtGzip / 1024 / 1024) == 0 ? "<1" : String.valueOf(sz.ladeArtGzip / 1024 / 1024)));
             }
@@ -211,7 +225,7 @@ public class GetUrl {
     //===================================
     // private
     //===================================
-    private static LinkedList<Seitenzaehler> getListe(int art) {
+    private static synchronized LinkedList<Seitenzaehler> getListe(int art) {
         switch (art) {
             case LISTE_SEITEN_ZAEHLER:
                 return listeSeitenZaehler;
@@ -228,40 +242,30 @@ public class GetUrl {
         }
     }
 
-    private synchronized void incSeitenZaehler(int art, String sender, int inc, int ladeArt) {
-        boolean gefunden = false;
-        LinkedList<Seitenzaehler> liste = getListe(art);
-        Iterator<Seitenzaehler> it = liste.iterator();
-        Seitenzaehler sz;
-        while (it.hasNext()) {
-            sz = it.next();
-            if (sz.senderName.equals(sender)) {
-                sz.seitenAnzahl += inc;
-                addLadeArt(sz, ladeArt, inc);
-                gefunden = true;
-                break;
+    private void incSeitenZaehler(int art, String sender, int inc, int ladeArt) {
+        lock.lock();
+        try {
+            boolean gefunden = false;
+            LinkedList<Seitenzaehler> liste = getListe(art);
+            Iterator<Seitenzaehler> it = liste.iterator();
+            Seitenzaehler sz;
+            while (it.hasNext()) {
+                sz = it.next();
+                if (sz.senderName.equals(sender)) {
+                    sz.seitenAnzahl += inc;
+                    sz.addLadeArt(ladeArt, inc);
+                    gefunden = true;
+                    break;
+                }
             }
-        }
-        if (!gefunden) {
-            sz = new Seitenzaehler(sender, inc);
-            addLadeArt(sz, ladeArt, inc);
-            liste.add(sz);
-        }
-    }
-
-    private void addLadeArt(Seitenzaehler sz, int ladeArt, int inc) {
-        switch (ladeArt) {
-            case LADE_ART_NIX:
-                sz.ladeArtNix += inc;
-                break;
-            case LADE_ART_DEFLATE:
-                sz.ladeArtDeflate += inc;
-                break;
-            case LADE_ART_GZIP:
-                sz.ladeArtGzip += inc;
-                break;
-            default:
-                sz.ladeArtUnbekannt += inc;
+            if (!gefunden) {
+                Seitenzaehler s = new Seitenzaehler(sender, inc);
+                s.addLadeArt(ladeArt, inc);
+                liste.add(s);
+            }
+        } catch (Exception ex) {
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -288,9 +292,6 @@ public class GetUrl {
             // conn = url.openConnection(Proxy.NO_PROXY);
             conn = (HttpURLConnection) new URL(addr).openConnection();
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-            conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-            System.setProperty("http.maxConnections", "600");
-            System.setProperty("http.keepAlive", "false");
             conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
             if (timeout > 0) {
                 conn.setReadTimeout(timeout);
@@ -334,16 +335,16 @@ public class GetUrl {
                 in = conn.getInputStream();
             }
             inReader = new InputStreamReader(in, kodierung);
-////            while (!Daten.filmeLaden.getStop() && inReader.read(zeichen) != -1) {
-////                seite.append(zeichen);
-////                incSeitenZaehler(LISTE_SUMME_BYTE, sender, 1);
-////            }
-            char[] buff = new char[256];
-            int cnt;
-            while (!Daten.filmeLaden.getStop() && (cnt = inReader.read(buff)) > 0) {
-                seite.append(buff, 0, cnt);
-                incSeitenZaehler(LISTE_SUMME_BYTE, sender, cnt, ladeArt);
+            while (!Daten.filmeLaden.getStop() && inReader.read(zeichen) != -1) {
+                seite.append(zeichen);
+                incSeitenZaehler(LISTE_SUMME_BYTE, sender, 1, ladeArt);
             }
+//            char[] buff = new char[1024];
+//            int cnt;
+//            while (!Daten.filmeLaden.getStop() && (cnt = inReader.read(buff)) > 0) {
+//                seite.append(buff, 0, cnt);
+//                incSeitenZaehler(LISTE_SUMME_BYTE, sender, cnt, ladeArt);
+//            }
         } catch (IOException ex) {
             // consume error stream, otherwise, connection won't be reused
             if (conn != null) {
