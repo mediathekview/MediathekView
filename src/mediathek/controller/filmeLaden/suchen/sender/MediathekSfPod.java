@@ -170,9 +170,13 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                         pos5 += MUSTER_DURATION.length();
                         if ((pos2 = seite.indexOf("</", pos5)) != -1) {
                             String d = seite.substring(pos5, pos2);
-                            // unfortunately the duration tag can be empty :-(
-                            if (d.length() > 0) {
-                                duration = Long.parseLong(d);
+                            try {
+                                // unfortunately the duration tag can be empty :-(
+                                if (d.length() > 0) {
+                                    duration = Long.parseLong(d);
+                                }
+                            } catch (Exception ex) {
+                                Log.fehlerMeldung(-708096931, Log.FEHLER_ART_MREADER, "MediathekSfPod.addFilme", "d: " + (d == null ? " " : d));
                             }
                         }
                     }
