@@ -21,7 +21,6 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
-import java.util.LinkedList;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
@@ -176,22 +175,28 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             meldung(strUrl);
             // Sendungen auf der Seite
             sendungsSeitenSuchen2(strUrl);
+            if (!suchen.senderAllesLaden) {
+                // dann wars das
+                return;
+            }
             // weitere Seiten suchen
-            if ((pos1 = strSeite1.indexOf("<ul class=\"pageCounterNavi\">")) != -1) {
-                if ((ende = strSeite1.indexOf("</ul>", pos1)) != -1) {
-                    while ((pos1 = strSeite1.indexOf("<a href=\"/mediathek/video/sendungen/", pos1)) != -1) {
-                        if (pos1 > ende) {
-                            // dann wars das
-                            return;
-                        }
-                        pos1 += "<a href=\"/mediathek/video/sendungen/".length();
-                        if ((pos2 = strSeite1.indexOf("\"", pos1)) != -1) {
-                            String urlWeiter = strSeite1.substring(pos1, pos2);
-                            if (!urlWeiter.equals("")) {
-                                // Sendungen auf der Seite
-                                sendungsSeitenSuchen2("http://www1.wdr.de/mediathek/video/sendungen/" + urlWeiter);
-                            }
-                        }
+            if ((pos1 = strSeite1.indexOf("<ul class=\"pageCounterNavi\">")) == -1) {
+                return;
+            }
+            if ((ende = strSeite1.indexOf("</ul>", pos1)) == -1) {
+                return;
+            }
+            while ((pos1 = strSeite1.indexOf("<a href=\"/mediathek/video/sendungen/", pos1)) != -1) {
+                if (pos1 > ende) {
+                    // dann wars das
+                    return;
+                }
+                pos1 += "<a href=\"/mediathek/video/sendungen/".length();
+                if ((pos2 = strSeite1.indexOf("\"", pos1)) != -1) {
+                    String urlWeiter = strSeite1.substring(pos1, pos2);
+                    if (!urlWeiter.equals("")) {
+                        // Sendungen auf der Seite
+                        sendungsSeitenSuchen2("http://www1.wdr.de/mediathek/video/sendungen/" + urlWeiter);
                     }
                 }
             }

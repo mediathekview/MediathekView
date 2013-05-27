@@ -22,6 +22,8 @@ package mediathek.tool;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -275,7 +277,9 @@ public class Log {
         addFehlerNummer(fehlerNummer, art, ex != null);
         if (ex != null || Daten.debug) {
             try {
-                ex.printStackTrace();
+                String s = getStackTrace(ex);
+                System.out.println(s);
+                logFileSchreiben(new String[]{s});
             } catch (Exception nix) {
             }
             // Exceptions immer ausgeben
@@ -322,6 +326,7 @@ public class Log {
                 System.out.print(progressText);
             }
         }
+        logFileSchreiben(texte);
     }
 
     private static void debugmeldung(String texte) {
@@ -333,6 +338,7 @@ public class Log {
         if (progress) {
             System.out.print(progressText);
         }
+        logFileSchreiben(new String[]{texte});
     }
 
     private static void systemmeldung(String[] texte) {
@@ -435,6 +441,15 @@ public class Log {
             addText(textProgramm, "[" + getNr(zeilenNrProgramm++) + "]   " + zeile);
         }
         ListenerMediathekView.notify(art, Log.class.getName());
+    }
+
+    private static String getStackTrace(Throwable t) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw, true);
+        t.printStackTrace(pw);
+        pw.flush();
+        sw.flush();
+        return sw.toString();
     }
 
     private static String getNr(int nr) {

@@ -26,9 +26,12 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.SocketAddress;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 import mediathek.daten.Daten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
@@ -40,6 +43,7 @@ public class GetUrl {
     public static final int LISTE_SEITEN_ZAEHLER_FEHLERVERSUCHE = 3;
     public static final int LISTE_SEITEN_ZAEHLER_WARTEZEIT_FEHLVERSUCHE = 4;
     public static final int LISTE_SUMME_BYTE = 5;
+    public static final int LISTE_LADEART = 6;
     private static final long UrlWartenBasis = 500;//ms, Basiswert zu dem dann der Faktor multipliziert wird
     private int faktorWarten = 1;
     private int timeout = 10000;
@@ -49,16 +53,20 @@ public class GetUrl {
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerFehlerVersuche = new LinkedList<Seitenzaehler>();
     private static LinkedList<Seitenzaehler> listeSeitenZaehlerWartezeitFehlerVersuche = new LinkedList<Seitenzaehler>(); // Wartezeit für Wiederholungen [s]
     private static LinkedList<Seitenzaehler> listeSummeByte = new LinkedList<Seitenzaehler>(); // Summe Daten in Byte für jeden Sender
+    private static LinkedList<Seitenzaehler> listeLadeArt = new LinkedList<Seitenzaehler>(); // Summe Daten in Byte für die verschiedenen Ladearten
+    private static final int LADE_ART_UNBEKANNT = 0;
+    private static final int LADE_ART_NIX = 1;
+    private static final int LADE_ART_DEFLATE = 2;
+    private static final int LADE_ART_GZIP = 3;
 
     private class Seitenzaehler {
 
         String senderName = "";
         long seitenAnzahl = 0;
-
-        public Seitenzaehler(String ssenderName) {
-            senderName = ssenderName;
-            seitenAnzahl = 1;
-        }
+        long ladeArtUnbekannt = 0;
+        long ladeArtNix = 0;
+        long ladeArtDeflate = 0;
+        long ladeArtGzip = 0;
 
         public Seitenzaehler(String ssenderName, int sseitenAnzahl) {
             senderName = ssenderName;
@@ -108,7 +116,7 @@ public class GetUrl {
                         Log.systemMeldung(text);
                     }
                     // nur dann zählen
-                    incSeitenZaehler(LISTE_SEITEN_ZAEHLER, sender, 1);
+                    incSeitenZaehler(LISTE_SEITEN_ZAEHLER, sender, 1, LADE_ART_UNBEKANNT);
                     return seite;
                 } else {
                     // hat nicht geklappt
@@ -117,11 +125,11 @@ public class GetUrl {
                     } else {
                         wartezeit = (aktTimeout);
                     }
-                    incSeitenZaehler(LISTE_SEITEN_ZAEHLER_WARTEZEIT_FEHLVERSUCHE, sender, wartezeit / 1000);
-                    incSeitenZaehler(LISTE_SEITEN_ZAEHLER_FEHLERVERSUCHE, sender, 1);
+                    incSeitenZaehler(LISTE_SEITEN_ZAEHLER_WARTEZEIT_FEHLVERSUCHE, sender, wartezeit / 1000, LADE_ART_UNBEKANNT);
+                    incSeitenZaehler(LISTE_SEITEN_ZAEHLER_FEHLERVERSUCHE, sender, 1, LADE_ART_UNBEKANNT);
                     if (letzterVersuch) {
                         // dann wars leider nichts
-                        incSeitenZaehler(LISTE_SEITEN_ZAEHLER_FEHlER, sender, 1);
+                        incSeitenZaehler(LISTE_SEITEN_ZAEHLER_FEHlER, sender, 1, LADE_ART_UNBEKANNT);
                     }
                 }
             } catch (Exception ex) {
@@ -133,7 +141,7 @@ public class GetUrl {
 
     public synchronized void getDummy(String sender) {
         // Dummy zum hochzählen des Seitenzählers
-        incSeitenZaehler(LISTE_SEITEN_ZAEHLER, sender, 1);
+        incSeitenZaehler(LISTE_SEITEN_ZAEHLER, sender, 1, LADE_ART_UNBEKANNT);
     }
 
     public void setTimeout(int ttimeout) {
@@ -176,6 +184,22 @@ public class GetUrl {
         return ret;
     }
 
+    public static synchronized String getSeitenZaehlerLadeArt(String sender) {
+        String ret = "";
+        LinkedList<Seitenzaehler> liste = getListe(LISTE_SUMME_BYTE);
+        Iterator<Seitenzaehler> it = liste.iterator();
+        while (it.hasNext()) {
+            Seitenzaehler sz = it.next();
+            if (sz.senderName.equals(sender)) {
+                ret = "Unbekannt: " + (sz.ladeArtUnbekannt == 0 ? "0" : ((sz.ladeArtUnbekannt / 1024 / 1024) == 0 ? "<1" : String.valueOf(sz.ladeArtUnbekannt / 1024 / 1024)))
+                        + "   Nix: " + (sz.ladeArtNix == 0 ? "0" : ((sz.ladeArtNix / 1024 / 1024) == 0 ? "<1" : String.valueOf(sz.ladeArtNix / 1024 / 1024)))
+                        + "   Deflaet: " + (sz.ladeArtDeflate == 0 ? "0" : ((sz.ladeArtDeflate / 1024 / 1024) == 0 ? "<1" : String.valueOf(sz.ladeArtDeflate / 1024 / 1024)))
+                        + "   Gzip: " + (sz.ladeArtGzip == 0 ? "0" : ((sz.ladeArtGzip / 1024 / 1024) == 0 ? "<1" : String.valueOf(sz.ladeArtGzip / 1024 / 1024)));
+            }
+        }
+        return ret;
+    }
+
     public static synchronized void resetZaehler() {
         listeSeitenZaehler.clear();
         listeSeitenZaehlerFehler.clear();
@@ -204,7 +228,7 @@ public class GetUrl {
         }
     }
 
-    private synchronized void incSeitenZaehler(int art, String sender, int inc) {
+    private synchronized void incSeitenZaehler(int art, String sender, int inc, int ladeArt) {
         boolean gefunden = false;
         LinkedList<Seitenzaehler> liste = getListe(art);
         Iterator<Seitenzaehler> it = liste.iterator();
@@ -213,12 +237,31 @@ public class GetUrl {
             sz = it.next();
             if (sz.senderName.equals(sender)) {
                 sz.seitenAnzahl += inc;
+                addLadeArt(sz, ladeArt, inc);
                 gefunden = true;
                 break;
             }
         }
         if (!gefunden) {
-            liste.add(new Seitenzaehler(sender, inc));
+            sz = new Seitenzaehler(sender, inc);
+            addLadeArt(sz, ladeArt, inc);
+            liste.add(sz);
+        }
+    }
+
+    private void addLadeArt(Seitenzaehler sz, int ladeArt, int inc) {
+        switch (ladeArt) {
+            case LADE_ART_NIX:
+                sz.ladeArtNix += inc;
+                break;
+            case LADE_ART_DEFLATE:
+                sz.ladeArtDeflate += inc;
+                break;
+            case LADE_ART_GZIP:
+                sz.ladeArtGzip += inc;
+                break;
+            default:
+                sz.ladeArtUnbekannt += inc;
         }
     }
 
@@ -227,12 +270,13 @@ public class GetUrl {
         boolean proxyB = false;
         char[] zeichen = new char[1];
         seite.setLength(0);
-        URLConnection conn;
+        HttpURLConnection conn = null;
         int code = 0;
         InputStream in = null;
         InputStreamReader inReader = null;
         Proxy proxy = null;
         SocketAddress saddr = null;
+        int ladeArt = LADE_ART_UNBEKANNT;
         // immer etwas bremsen
         try {
             long w = wartenBasis * faktorWarten;
@@ -241,17 +285,22 @@ public class GetUrl {
             Log.fehlerMeldung(976120379, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, sender);
         }
         try {
-            URL url = new URL(addr);
             // conn = url.openConnection(Proxy.NO_PROXY);
-            conn = url.openConnection();
+            conn = (HttpURLConnection) new URL(addr).openConnection();
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+            conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+            System.setProperty("http.maxConnections", "600");
+            System.setProperty("http.keepAlive", "false");
+            conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
             if (timeout > 0) {
                 conn.setReadTimeout(timeout);
                 conn.setConnectTimeout(timeout);
             }
-            if (conn instanceof HttpURLConnection) {
-                HttpURLConnection httpConnection = (HttpURLConnection) conn;
-                code = httpConnection.getResponseCode();
+            // the encoding returned by the server
+            String encoding = conn.getContentEncoding();
+//            if (conn instanceof HttpURLConnection) {
+//                HttpURLConnection httpConnection = (HttpURLConnection) conn;
+//                code = httpConnection.getResponseCode();
 //                if (code >= 400) {
 //                    if (true) {
 //                        // wenn möglich, einen Proxy einrichten
@@ -269,16 +318,47 @@ public class GetUrl {
 //                        Log.fehlerMeldung(864123698, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", "returncode >= 400");
 //                    }
 //                }
+//            } else {
+//                Log.fehlerMeldung(949697315, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", "keine HTTPcon");
+//            }
+            //in = conn.getInputStream();
+
+            if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
+                ladeArt = LADE_ART_GZIP;
+                in = new GZIPInputStream(conn.getInputStream());
+            } else if (encoding != null && encoding.equalsIgnoreCase("deflate")) {
+                ladeArt = LADE_ART_DEFLATE;
+                in = new InflaterInputStream(conn.getInputStream(), new Inflater(true));
             } else {
-                Log.fehlerMeldung(949697315, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", "keine HTTPcon");
+                ladeArt = LADE_ART_NIX;
+                in = conn.getInputStream();
             }
-            in = conn.getInputStream();
             inReader = new InputStreamReader(in, kodierung);
-            while (!Daten.filmeLaden.getStop() && inReader.read(zeichen) != -1) {
-                seite.append(zeichen);
-                incSeitenZaehler(LISTE_SUMME_BYTE, sender, 1);
+////            while (!Daten.filmeLaden.getStop() && inReader.read(zeichen) != -1) {
+////                seite.append(zeichen);
+////                incSeitenZaehler(LISTE_SUMME_BYTE, sender, 1);
+////            }
+            char[] buff = new char[256];
+            int cnt;
+            while (!Daten.filmeLaden.getStop() && (cnt = inReader.read(buff)) > 0) {
+                seite.append(buff, 0, cnt);
+                incSeitenZaehler(LISTE_SUMME_BYTE, sender, cnt, ladeArt);
             }
         } catch (IOException ex) {
+            // consume error stream, otherwise, connection won't be reused
+            if (conn != null) {
+                try {
+                    InputStream i = conn.getErrorStream();
+                    if (i != null) {
+                        i.close();
+                    }
+                    if (inReader != null) {
+                        inReader.close();
+                    }
+                } catch (Exception e) {
+                    Log.fehlerMeldung(645105987, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", e, "");
+                }
+            }
             if (lVersuch) {
                 String[] text;
                 if (meldung.equals("")) {
@@ -286,16 +366,21 @@ public class GetUrl {
                 } else {
                     text = new String[]{sender + " - timout: " + timeo + " Versuche: " + versuch, addr, meldung/*, (proxyB ? "Porxy - " : "")*/};
                 }
-                Log.fehlerMeldung(502739817, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, text);
+                if (ex.getMessage().equals("Read timed out")) {
+                    Log.fehlerMeldung(502739817, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri: TimeOut", text);
+                } else {
+                    Log.fehlerMeldung(502739817, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, text);
+                }
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(973969801, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, "");
         } finally {
             try {
                 if (in != null) {
-                    inReader.close();
+                    in.close();
                 }
-            } catch (IOException ex) {
+            } catch (Exception ex) {
+                Log.fehlerMeldung(696321478, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, "");
             }
         }
         return seite;

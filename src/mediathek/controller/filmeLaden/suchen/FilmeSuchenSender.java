@@ -226,6 +226,11 @@ public class FilmeSuchenSender {
             String groesse = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE, run.sender) == 0) ? "<1" : Long.toString(GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE, run.sender));
             zeile += textLaenge(MAX1, "Daten[MByte]: " + groesse);
             fertigMeldung.add(zeile);
+            // Zeile 3
+            zeile = textLaenge(MAX_SENDER, "");
+            zeile += textLaenge(MAX1, "Ladeart[MB]:");
+            zeile += GetUrl.getSeitenZaehlerLadeArt(run.sender);
+            fertigMeldung.add(zeile);
         }
         // wird einmal aufgerufen, wenn alle Sender fertig sind
         if (listeSenderLaufen.listeFertig()) {
@@ -267,6 +272,7 @@ public class FilmeSuchenSender {
             if (sekunden <= 0) {
                 sekunden = 1;
             }
+            // Durchschnittswerte ausgeben
             long kb = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE) * 1024) / sekunden;
             Log.systemMeldung("     -> Rate[kByte/s]: " + (kb == 0 ? "<1" : kb));
             Log.systemMeldung("     ->    Dauer[Min]: " + (sekunden / 60 == 0 ? "<1" : sekunden / 60));
