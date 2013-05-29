@@ -307,7 +307,13 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                                                     }
                                                     if (("Duration").equals(childItem3.getNodeName())) {
                                                         String d = childItem3.getTextContent();
-                                                        duration = Long.parseLong(d) / 1000; // time in milliseconds
+                                                        try {
+                                                            if (!d.equals("")) {
+                                                                duration = Long.parseLong(d) / 1000; // time in milliseconds
+                                                            }
+                                                        } catch (Exception ex) {
+                                                            Log.fehlerMeldung(-918593079, Log.FEHLER_ART_MREADER, "MediathekOrf.feedEinerSeiteSuchen", ex);
+                                                        }
                                                     }
 
                                                     if ("Description".equals(childItem3.getNodeName())) {

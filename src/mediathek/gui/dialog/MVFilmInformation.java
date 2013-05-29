@@ -164,8 +164,7 @@ public class MVFilmInformation implements ChangeListener {
         int zeile = 0;
         for (int i = 0; i < labelArrNames.length; ++i) {
             if (i == DatenFilm.FILM_URL_RTMP_NR
-                    || i == DatenFilm.FILM_URL_AUTH_NR
-                    || i == DatenFilm.FILM_THUMBNAIL_URL_NR) {
+                    || i == DatenFilm.FILM_URL_AUTH_NR) {
                 continue;
             }
             c.gridy = zeile;
@@ -249,15 +248,9 @@ public class MVFilmInformation implements ChangeListener {
         lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
         lblUrlThemaField.setForeground(foreground);
         // bei den Bildern wird nur eins gesetzt
-        if (!aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {
-            lblUrlPicture.setText(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
-        } else if (!aktFilm.arr[DatenFilm.FILM_THUMBNAIL_URL_NR].equals("")) {
-            lblUrlPicture.setText(aktFilm.arr[DatenFilm.FILM_THUMBNAIL_URL_NR]);
-        } else {
-            lblUrlPicture.setText("");
-        }
+        lblUrlPicture.setText(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
         lblUrlPicture.setForeground(foreground);
-        if (aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("") && aktFilm.arr[DatenFilm.FILM_THUMBNAIL_URL_NR].equals("")) {
+        if (aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {
             // wenns kein Bild gibt brauchts auch nichts zum Anzeigen
             buttonBild.setVisible(false);
             viewImage.setImage(""); // zum löschen
@@ -271,8 +264,6 @@ public class MVFilmInformation implements ChangeListener {
             if (bild) {
                 if (!aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {
                     viewImage.setImage(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
-                } else {
-                    viewImage.setImage(aktFilm.arr[DatenFilm.FILM_THUMBNAIL_URL_NR]);
                 }
             } else {
                 viewImage.setImage(""); // zum löschen

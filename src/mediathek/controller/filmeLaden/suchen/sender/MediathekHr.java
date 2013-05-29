@@ -235,7 +235,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
             final String MUSTER_DESCRIPTION = "<description>";
             final String MUSTER_DESCRIPTIO_END = "</description>";
             final String MUSTER_IMAGE = "<media:thumbnail url=\"";
-            final String MUSTER_IMAGE_END = "\" />";
+            final String MUSTER_IMAGE_END = "\"";
             meldung(filmWebsite);
             seite1 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite1, "");
             try {

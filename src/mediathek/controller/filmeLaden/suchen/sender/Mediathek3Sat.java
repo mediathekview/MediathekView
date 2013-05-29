@@ -157,11 +157,6 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                     pos1 = pos;
                     if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
                         titel = seite1.substring(pos1, pos2);
-//                        if (titel.contains("Cern")) {
-//                            System.out.print("");
-//                        } else {
-//                            continue;
-//                        }
                         if (titel.contains(":") && (titel.indexOf(":") + 1) < titel.length()) {
                             //enthält : und ist nicht das letztes zeichen
                             if (urlAlle) {
@@ -189,7 +184,11 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                     if ((pos1 = seite1.indexOf(MUSTER_DURATION, pos)) != -1) {
                         pos1 += MUSTER_DURATION.length();
                         if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                            duration = Long.parseLong(seite1.substring(pos1, pos2));
+                            try {
+                                duration = Long.parseLong(seite1.substring(pos1, pos2));
+                            } catch (Exception ex) {
+                                Log.fehlerMeldung(-363524108, Log.FEHLER_ART_MREADER, "Mediathek3Sat.addToList", "duration");
+                            }
                         }
                     }
 

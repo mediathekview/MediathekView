@@ -313,7 +313,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                             Log.fehlerMeldung(-32356701, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen", strUrl);
                         }
                         //weiter gehts
-                        addFilm1(strUrl, thema, titel, url, duration, datum);
+                        addFilm1(thema, titel, url, duration, datum);
                     } else {
                         Log.fehlerMeldung(-646432970, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen-1", "keine Url" + strUrl);
                     }
@@ -321,18 +321,16 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             }
         }
 
-        private void addFilm1(String urlThema, String thema, String titel, String filmWebsite, long dauer, String datum) {
+        private void addFilm1(String thema, String titel, String filmWebsite, long dauer, String datum) {
             // http://www1.wdr.de/mediathek/video/sendungen/die_story/videopharmasklaven100-videoplayer_size-L.html
 
             final String MUSTER_URL_START = "<span class=\"videoLink\">";
             final String MUSTER_URL = "<a href=\"/mediathek/video/sendungen/";
             final String MUSTER_DESCRIPTION = "<meta name=\"Description\" content=\"";
-            final String MUSTER_DESCRIPTION_END = "/>";
             final String MUSTER_IMAGE_START = "<div class=\"linkCont\">";
             final String MUSTER_IMAGE = "<img src=\"/mediathek/video/sendungen/";
 
             final String MUSTER_KEYWORDS = "<meta name=\"Keywords\" content=\"";
-            final String MUSTER_KEYWORDS_END = "\" />";
             meldung(filmWebsite);
             strSeite3 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, strSeite3, "");
             int pos1;
@@ -344,7 +342,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
 
             if ((pos1 = strSeite3.indexOf(MUSTER_DESCRIPTION)) != -1) {
                 pos1 += MUSTER_DESCRIPTION.length();
-                if ((pos2 = strSeite3.indexOf(MUSTER_DESCRIPTION_END, pos1)) != -1) {
+                if ((pos2 = strSeite3.indexOf("\"", pos1)) != -1) {
                     description = strSeite3.substring(pos1, pos2);
                 }
             }
@@ -369,7 +367,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
 
             if ((pos1 = strSeite3.indexOf(MUSTER_KEYWORDS)) != -1) {
                 pos1 += MUSTER_KEYWORDS.length();
-                if ((pos2 = strSeite3.indexOf(MUSTER_KEYWORDS_END, pos1)) != -1) {
+                if ((pos2 = strSeite3.indexOf("\"", pos1)) != -1) {
                     String k = strSeite3.substring(pos1, pos2);
                     keywords = k.split(", ");
                 }
@@ -395,24 +393,24 @@ public class MediathekWdr extends MediathekReader implements Runnable {
 
 
             if (description.equals("") || image.equals("") || keywords.equals("")) {
-                Log.fehlerMeldung(-649830789, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilm1", new String[]{filmWebsite, "UrlThema: " + urlThema});
+                Log.fehlerMeldung(-649830789, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilm1", new String[]{filmWebsite});
             }
             if (!url.equals("")) {
-                addFilm2(urlThema, thema, titel, "http://www1.wdr.de/mediathek/video/sendungen/" + url, dauer, datum, description, keywords, image);
+                addFilm2(filmWebsite, thema, titel, "http://www1.wdr.de/mediathek/video/sendungen/" + url, dauer, datum, description, keywords, image);
             } else {
-                Log.fehlerMeldung(-763299001, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme1", new String[]{"keine Url: " + filmWebsite, "UrlThema: " + urlThema});
+                Log.fehlerMeldung(-763299001, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme1", new String[]{"keine Url: " + filmWebsite});
             }
 
         }
 
-        private void addFilm2(String urlThema, String thema, String titel, String filmWebsite, long dauer, String datum, String beschreibung, String[] keyword, String image) {
+        private void addFilm2(String filmWebsite, String thema, String titel, String urlFilmSuchen, long dauer, String datum, String beschreibung, String[] keyword, String image) {
             // ;dslSrc=rtmp://gffstream.fcod.llnwd.net/a792/e1/media/video/2009/02/14/20090214_a40_komplett_big.flv&amp;isdnSrc=rtm
             // <p class="wsArticleAutor">Ein Beitrag von Heinke Schröder, 24.11.2010	</p>
             final String MUSTER_URL_L = "<a rel=\"webL\"  href=\"";
             final String MUSTER_URL_M = "<a rel=\"webM\"  href=\"";
             final String MUSTER_URL_S = "<a rel=\"webS\"  href=\"";
-            meldung(filmWebsite);
-            strSeite4 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, strSeite4, "");
+            meldung(urlFilmSuchen);
+            strSeite4 = getUrl.getUri_Utf(nameSenderMReader, urlFilmSuchen, strSeite4, "");
             int pos1;
             int pos2;
             String url = "";
@@ -459,7 +457,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                         dauer, beschreibung, "", image, keyword);
                 addFilm(film);
             } else {
-                Log.fehlerMeldung(-763299001, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme1", new String[]{"keine Url: " + filmWebsite, "UrlThema: " + urlThema});
+                Log.fehlerMeldung(-763299001, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme1", new String[]{"keine Url: " + urlFilmSuchen, "UrlThema: " + filmWebsite});
             }
         }
 
@@ -500,15 +498,15 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             final String MUSTER_THEMA = "Homepage der Sendung ["; //Homepage der Sendung [west.art]</a>
             final String MUSTER_DURATION_START_0 = "<span class=\"moVideoIcon\">Video:";
             final String MUSTER_DURATION_START_1 = "(";
-            final String MUSTER_DURATION_END = ")<span";
+            final String MUSTER_DURATION_END = ")";
             final String MUSTER_DESCRIPTION = "<meta name=\"description\" content=\"";
             final String MUSTER_DESCRIPTION_END = "/>";
             final String MUSTER_THUMBNAIL = "<link rel=\"image_src\" href=\"";
-            final String MUSTER_THUMBNAIL_END = "\" />";
+            final String MUSTER_THUMBNAIL_END = "\"";
             final String MUSTER_IMAGE = "<img class=\"teaserPic\" src=\"";
-            final String MUSTER_IMAGE_END = "\" alt=\"\" height=\"288\" width=\"512\"/>";
+            final String MUSTER_IMAGE_END = "\"";
             final String MUSTER_KEYWORDS = "<meta name=\"Keywords\" content=\"";
-            final String MUSTER_KEYWORDS_END = "\" />";
+            final String MUSTER_KEYWORDS_END = "\"";
             meldung(filmWebsite);
             strSeite2 = getUrl.getUri_Iso(nameSenderMReader, filmWebsite, strSeite2, "");
             int pos;
@@ -527,12 +525,18 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 if ((pos1 = strSeite2.indexOf(MUSTER_DURATION_START_1, pos1)) != -1) {
                     pos1 += MUSTER_DURATION_START_1.length();
                     if ((pos2 = strSeite2.indexOf(MUSTER_DURATION_END, pos1)) != -1) {
-                        String d = strSeite2.substring(pos1, pos2);
-                        String[] parts = d.split(":");
-                        long power = 1;
-                        for (int i = parts.length - 1; i >= 0; i--) {
-                            duration += Long.parseLong(parts[i]) * power;
-                            power *= 60;
+                        try {
+                            String d = strSeite2.substring(pos1, pos2);
+                            if (!d.equals("")) {
+                                String[] parts = d.split(":");
+                                long power = 1;
+                                for (int i = parts.length - 1; i >= 0; i--) {
+                                    duration += Long.parseLong(parts[i]) * power;
+                                    power *= 60;
+                                }
+                            }
+                        } catch (Exception ex) {
+                            Log.fehlerMeldung(-302058974, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme2-1", ex, "keine Url" + thema);
                         }
                     }
                 }
@@ -574,7 +578,8 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     String k = strSeite2.substring(pos1, pos2);
                     keywords = k.split(", ");
                 }
-            }            // Datum suchen
+            }
+            // Datum suchen
             if ((pos = strSeite2.indexOf(MUSTER_DATUM)) != -1) {
                 pos += MUSTER_DATUM.length();
                 pos1 = pos;
