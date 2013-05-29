@@ -174,6 +174,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                                 // unfortunately the duration tag can be empty :-(
                                 if (d.length() > 0) {
                                     duration = Long.parseLong(d);
+                                } else {
                                 }
                             } catch (Exception ex) {
                                 Log.fehlerMeldung(-708096931, Log.FEHLER_ART_MREADER, "MediathekSfPod.addFilme", "d: " + (d == null ? " " : d));
@@ -192,9 +193,11 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                         pos5 += MUSTER_KEYWORDS.length();
                         if ((pos2 = seite.indexOf("</", pos5)) != -1) {
                             String k = seite.substring(pos5, pos2);
-                            keywords = k.split(",");
-                            for (int i = 0; i < keywords.length; i++) {
-                                keywords[i] = keywords[i].trim();
+                            if (k.length() > 0) {
+                                keywords = k.split(",");
+                                for (int i = 0; i < keywords.length; i++) {
+                                    keywords[i] = keywords[i].trim();
+                                }
                             }
                         }
                     }
@@ -202,17 +205,13 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                         titel = seite.substring(pos1, pos2).trim();
                         datum = "";
                         zeit = "";
-                        if (titel.contains("vom")) {
-                            datum = titel.substring(titel.indexOf("vom") + 3).trim();
-                        } else {
-                            int p1, p2;
-                            if ((p1 = seite.indexOf(MUSTER_DATE, pos1)) != -1) {
-                                p1 += MUSTER_DATE.length();
-                                if ((p2 = seite.indexOf("<", p1)) != -1) {
-                                    String tmp = seite.substring(p1, p2);
-                                    datum = DatumZeit.convertDatum(tmp);
-                                    zeit = DatumZeit.convertTime(tmp);
-                                }
+                        int p1, p2;
+                        if ((p1 = seite.indexOf(MUSTER_DATE, pos1)) != -1) {
+                            p1 += MUSTER_DATE.length();
+                            if ((p2 = seite.indexOf("<", p1)) != -1) {
+                                String tmp = seite.substring(p1, p2);
+                                datum = DatumZeit.convertDatum(tmp);
+                                zeit = DatumZeit.convertTime(tmp);
                             }
                         }
                         if ((pos1 = seite.indexOf(MUSTER_URL_1, pos1)) != -1) {
@@ -224,9 +223,10 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                             if (url.equals("")) {
                                 Log.fehlerMeldung(-463820049, Log.FEHLER_ART_MREADER, "MediathekSfPod.addFilme", "keine URL: " + strUrlFeed);
                             } else {
-//                            urlorg = urlorg.replace("%20", "\u0020;");
-//                                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit));
-                                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit, duration, description, "", image, keywords));
+                                // public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
+                                //      long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+                                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit,
+                                        duration, description, "", image, keywords));
                             }
                         }
                     }
@@ -235,19 +235,5 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                 Log.fehlerMeldung(-496352007, Log.FEHLER_ART_MREADER, "MediathekSfPod.addFilme", ex);
             }
         }
-    }
-
-    public static String[] convertDatum(String ddatum) {
-        // <pubDate>Wed, 21 Nov 2012 00:02:00 +0100</pubDate>
-        //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
-        String datum = "", zeit = "";
-        try {
-            Date filmDate = new SimpleDateFormat("dd, MMM yyyy HH:mm:ss Z", Locale.US).parse(ddatum);
-            datum = new SimpleDateFormat("dd.MM.yyyy").format(filmDate);
-            zeit = new SimpleDateFormat("HH:mm:ss").format(filmDate);
-        } catch (Exception ex) {
-            Log.fehlerMeldung(-979451236, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.convertDatum", ex);
-        }
-        return new String[]{datum, zeit};
     }
 }

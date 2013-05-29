@@ -258,7 +258,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return s;
     }
 
-    private static String checkDatum(String datum, String fehlermeldung) {
+    public static String checkDatum(String datum, String fehlermeldung) {
         //Datum max. 100 Tage in der Zukunft
         final long MAX = 1000L * 60L * 60L * 24L * 100L;
         String ret = datum.trim();
@@ -295,7 +295,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return ret;
     }
 
-    private static String checkZeit(String datum, String zeit, String text) {
+    public static String checkZeit(String datum, String zeit, String fehlermeldung) {
         String ret = zeit.trim();
         if (datum.equals("")) {
             //wenn kein Datum, macht die Zeit auch keinen Sinn
@@ -309,7 +309,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
                     ret = "";
                 }
                 if (ret.equals("")) {
-                    Log.debugMeldung("DatenFilm.CheckZeit [" + zeit + "] " + text);
+                    Log.debugMeldung("DatenFilm.CheckZeit [" + zeit + "] " + fehlermeldung);
                 }
             }
         }

@@ -33,6 +33,8 @@ import mediathek.tool.Log;
 public class MediathekArd extends MediathekReader implements Runnable {
 
     public static final String SENDER = "ARD";
+    private static int wiederholungen = 0;
+    private static final int MAX_WIEDERHOLUNGEN = 50;
 
     /**
      *
@@ -44,6 +46,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
 
     @Override
     void addToList() {
+        wiederholungen = 0;
         final String ADRESSE = "http://www.ardmediathek.de/ard/servlet/ajax-cache/3551682/view=module/index.html";
         final String MUSTER_URL = "?documentId=";
         final String MUSTER_THEMA = "{ \"titel\": \"";
@@ -53,7 +56,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
         seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, "" /* Meldung */);
         if (seite.length() == 0) {
             Log.systemMeldung("ARD: Versuch 2");
-            warten();
+            warten(2 * 60 /*Sekunden*/);
             seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, "" /* Meldung */);
             if (seite.length() == 0) {
                 Log.fehlerMeldung(-104689736, Log.FEHLER_ART_MREADER, "MediathekArd.addToList", "wieder nichts gefunden");
@@ -108,13 +111,14 @@ public class MediathekArd extends MediathekReader implements Runnable {
         }
     }
 
-    private synchronized void warten() {
+    private synchronized void warten(int i) {
+        // Sekunden warten
         try {
             // war wohl nix, warten und dann nochmal
             // timeout: the maximum time to wait in milliseconds.
-            long warten = 2 * 60 * 1000;
+            long warten = i * 1000;
             this.wait(warten);
-        } catch (InterruptedException ex) {
+        } catch (Exception ex) {
             Log.fehlerMeldung(-369502367, Log.FEHLER_ART_MREADER, "MediathekArd.warten", ex, "2. Versuch");
         }
     }
@@ -313,7 +317,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             return ret;
         }
 
-        boolean filmLaden(String urlThema, String filmWebsite, String thema, String titel, String datum, String zeit) {
+        boolean filmLaden(String urlFeed, String filmWebsite, String thema, String titel, String datum, String zeit) {
             // mediaCollection.addMediaStream(0, 0, "", "http://http-ras.wdr.de/CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460800.mp4", "default");
             // mediaCollection.addMediaStream(0, 1, "rtmp://gffstream.fcod.llnwd.net/a792/e2/", "mp4:CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460799.mp4", "limelight");
             // mediaCollection.addMediaStream(0, 2, "rtmp://gffstream.fcod.llnwd.net/a792/e2/", "mp4:CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460798.mp4", "limelight");
@@ -339,12 +343,15 @@ public class MediathekArd extends MediathekReader implements Runnable {
             final String MUSTER_URL2c = "mediaCollection.addMediaStream(1, 0, \"\", \"http://";
             final String MUSTER_URL2d = "mediaCollection.addMediaStream(0, 1, \"\", \"http://";
 
-
-
             boolean ret = false, flash;
             String protokoll = "";
             meldung(filmWebsite);
-            seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "urlFeed: " + urlThema);
+            seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "urlFeed: " + urlFeed);
+            if (seite2.length() == 0 && wiederholungen < MAX_WIEDERHOLUNGEN) {
+                ++wiederholungen;
+                warten(5 /*Sekunden*/);
+                seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "urlFeed: " + urlFeed);
+            }
             if (seite2.length() == 0) {
                 Log.fehlerMeldung(-201549307, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + filmWebsite + ", leere Seite");
                 return false;

@@ -187,7 +187,9 @@ public class DatumZeit {
                 } else {
                     tmp.setTime(sdf_datum.parse(film.arr[DatenFilm.FILM_DATUM_NR]).getTime());
                 }
-            } catch (ParseException ex) {
+            } catch (Exception ex) {
+                Log.fehlerMeldung(649897321, Log.FEHLER_ART_PROG, "DatumZeit.getDatumForObject", ex,
+                        new String[]{"Dateum: " + film.arr[DatenFilm.FILM_DATUM_NR], "Zeit: " + film.arr[DatenFilm.FILM_ZEIT_NR]});
             }
         }
         return tmp;
@@ -202,7 +204,9 @@ public class DatumZeit {
                 } else {
                     tmp.setTime(sdf_datum.parse(datenDownload.arr[DatenDownload.DOWNLOAD_DATUM_NR]).getTime());
                 }
-            } catch (ParseException ex) {
+            } catch (Exception ex) {
+                Log.fehlerMeldung(649897321, Log.FEHLER_ART_PROG, "DatumZeit.getDatumForObject", ex,
+                        new String[]{"Dateum: " + datenDownload.arr[DatenDownload.DOWNLOAD_DATUM_NR], "Zeit: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZEIT_NR]});
             }
         }
         return tmp;
