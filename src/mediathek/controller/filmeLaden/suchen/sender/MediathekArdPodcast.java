@@ -348,16 +348,19 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
         }
 
         private long extractDuration(StringBuffer page) {
-            String duration = extractString(page, "<meta property=\"video:duration\" content=\"", "\"/>");
+            String duration = extractString(page, "<meta property=\"video:duration\" content=\"", "\"");
             if (duration == null) {
                 return 0;
             }
-
-            return Long.parseLong(duration);
+            try {
+                return Long.parseLong(duration);
+            } catch (Exception ex) {
+                return 0;
+            }
         }
 
         private String extractDescription(StringBuffer page) {
-            String desc = extractString(page, "<meta property=\"og:description\" content=\"", "\"/>");
+            String desc = extractString(page, "<meta property=\"og:description\" content=\"", "\"");
             if (desc == null) {
                 return "";
             }
@@ -366,7 +369,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
         }
 
         private String[] extractKeywords(StringBuffer page) {
-            String keywords = extractString(page, "<meta name=\"keywords\" content=\"", "\"/>");
+            String keywords = extractString(page, "<meta name=\"keywords\" content=\"", "\"");
             if (keywords == null) {
                 return new String[]{""};
             }
@@ -375,11 +378,11 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
         }
 
         private String extractThumbnailURL(StringBuffer page) {
-            return extractString(page, "<meta itemprop=\"thumbnailURL\" content=\"", "\"/>");
+            return extractString(page, "<meta itemprop=\"thumbnailURL\" content=\"", "\"");
         }
 
         private String extractImageURL(StringBuffer page) {
-            return extractString(page, "<meta property=\"og:image\" content=\"", "\"/>");
+            return extractString(page, "<meta property=\"og:image\" content=\"", "\"");
         }
 
         protected String extractString(StringBuffer source, String startMarker, String endMarker) {

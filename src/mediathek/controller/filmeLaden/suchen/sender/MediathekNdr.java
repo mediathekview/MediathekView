@@ -239,14 +239,20 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                     if ((pos1 = seite1.indexOf(url, lastPos)) != -1) {
                         if ((pos1 = seite1.indexOf(MUSTER_DURATION, pos1)) != -1) {
                             pos1 += MUSTER_DURATION.length();
-                            if ((pos2 = seite1.indexOf("</span></div>", pos1)) != -1) {
-                                String duration = seite1.substring(pos1, pos2);
-                                String[] parts = duration.split(":");
-                                long power = 1;
-                                durationInSeconds = 0;
-                                for (int i = parts.length - 1; i >= 0; i--) {
-                                    durationInSeconds += Long.parseLong(parts[i]) * power;
-                                    power *= 60;
+                            if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
+                                try {
+                                    String duration = seite1.substring(pos1, pos2);
+                                    if (!duration.equals("")) {
+                                        String[] parts = duration.split(":");
+                                        long power = 1;
+                                        durationInSeconds = 0;
+                                        for (int i = parts.length - 1; i >= 0; i--) {
+                                            durationInSeconds += Long.parseLong(parts[i]) * power;
+                                            power *= 60;
+                                        }
+                                    }
+                                } catch (Exception ex) {
+                                    Log.fehlerMeldung(-369015497, Log.FEHLER_ART_MREADER, "MediathekNdr.feddEinerSeiteSuchen", ex, strUrlFeed);
                                 }
                             }
                         }
@@ -318,7 +324,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         }
 
         private String extractDescription(StringBuffer page) {
-            String desc = extractString(page, "<meta property=\"og:description\" content=\"", "\" />");
+            String desc = extractString(page, "<meta property=\"og:description\" content=\"", "\"");
             if (desc == null) {
                 return "";
             }
@@ -327,7 +333,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         }
 
         private String[] extractKeywords(StringBuffer page) {
-            String keywords = extractString(page, "<meta name=\"keywords\"  lang=\"de\" content=\"", "\" />");
+            String keywords = extractString(page, "<meta name=\"keywords\"  lang=\"de\" content=\"", "\"");
             if (keywords == null) {
                 return new String[]{""};
             }
@@ -341,7 +347,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         }
 
         private String extractImageURL(StringBuffer page) {
-            return extractString(page, "<meta property=\"og:image\" content=\"", "\" />");
+            return extractString(page, "<meta property=\"og:image\" content=\"", "\"");
         }
 
         private String extractString(StringBuffer source, String startMarker, String endMarker) {

@@ -30,7 +30,6 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 public class MediathekSf extends MediathekReader implements Runnable {
 
-    //public static final String SENDER = "SF";
     public static final String SENDER = "SRF";
     private final int MAX_FILME_THEMA = 5;
 
@@ -245,8 +244,14 @@ public class MediathekSf extends MediathekReader implements Runnable {
                             // we need to strip the . decimal divider
                             pos2 = pos3;
                         }
-                        String d = seite2.substring(pos1, pos2);
-                        duration = Long.parseLong(d);
+                        try {
+                            String d = seite2.substring(pos1, pos2);
+                            if (!d.equals("")) {
+                                duration = Long.parseLong(d);
+                            }
+                        } catch (Exception ex) {
+                            Log.fehlerMeldung(-646490237, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme2", ex);
+                        }
                     }
                 }
 

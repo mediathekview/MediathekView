@@ -340,24 +340,26 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         }
 
         private long extractDuration(StringBuffer page) {
+            long durationInSeconds = 0;
             String duration = extractString(page, "<p class=\"datum\">VIDEO, ", "</p>");
             if (duration == null) {
                 return 0;
             }
-
-            String[] parts = duration.split(":");
-            long durationInSeconds = 0;
-            long power = 1;
-            for (int i = parts.length - 1; i >= 0; i--) {
-                durationInSeconds += Long.parseLong(parts[i]) * power;
-                power *= 60;
+            try {
+                String[] parts = duration.split(":");
+                long power = 1;
+                for (int i = parts.length - 1; i >= 0; i--) {
+                    durationInSeconds += Long.parseLong(parts[i]) * power;
+                    power *= 60;
+                }
+            } catch (Exception ex) {
+                return 0;
             }
-
             return durationInSeconds;
         }
 
         private String extractDescription(StringBuffer page) {
-            String desc = extractString(page, "<meta name=\"description\" content=\"", "\" />");
+            String desc = extractString(page, "<meta name=\"description\" content=\"", "\"");
             if (desc == null) {
                 return "";
             }
@@ -366,7 +368,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         }
 
         private String[] extractKeywords(StringBuffer page) {
-            String keywords = extractString(page, "<meta name=\"keywords\" content=\"", "\" />");
+            String keywords = extractString(page, "<meta name=\"keywords\" content=\"", "\"");
             if (keywords == null) {
                 return new String[]{""};
             }
@@ -379,7 +381,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         }
 
         private String extractImageURL(StringBuffer page) {
-            String imageUrl = extractString(page, "background-image: url(/ZDFmediathek", ");");
+            String imageUrl = extractString(page, "background-image: url(/ZDFmediathek", ")");
             if (imageUrl == null) {
                 return "";
             }
