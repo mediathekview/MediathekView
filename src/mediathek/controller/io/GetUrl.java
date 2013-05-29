@@ -370,7 +370,7 @@ public class GetUrl {
                 if (ex.getMessage().equals("Read timed out")) {
                     Log.fehlerMeldung(502739817, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri: TimeOut", text);
                 } else {
-                    Log.fehlerMeldung(502739817, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, text);
+                    Log.fehlerMeldung(379861049, Log.FEHLER_ART_GETURL, GetUrl.class.getName() + ".getUri", ex, text);
                 }
             }
         } catch (Exception ex) {
