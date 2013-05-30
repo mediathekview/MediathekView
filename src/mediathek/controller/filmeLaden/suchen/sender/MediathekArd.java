@@ -33,7 +33,8 @@ import mediathek.tool.Log;
 public class MediathekArd extends MediathekReader implements Runnable {
 
     public static final String SENDER = "ARD";
-    private static int wiederholungen = 0;
+    private static int wiederholungen1 = 0;
+    private static int wiederholungen2 = 0;
     private static final int MAX_WIEDERHOLUNGEN = 50;
 
     /**
@@ -46,7 +47,8 @@ public class MediathekArd extends MediathekReader implements Runnable {
 
     @Override
     void addToList() {
-        wiederholungen = 0;
+        wiederholungen1 = 0;
+        wiederholungen2 = 0;
         final String ADRESSE = "http://www.ardmediathek.de/ard/servlet/ajax-cache/3551682/view=module/index.html";
         final String MUSTER_URL = "?documentId=";
         final String MUSTER_THEMA = "{ \"titel\": \"";
@@ -155,19 +157,18 @@ public class MediathekArd extends MediathekReader implements Runnable {
             //<option value="/ard/servlet/ajax-cache/3516962/view=list/documentId=1175574/goto=2/index.html">2</option>
             //URL: http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=4106/index.html
             final String MUSTER = "<option value=\"";
-            seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "Thema: " + thema);
+            //seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "Thema: " + thema);
+            seite1 = getUrl.getUri(nameSenderMReader, strUrlFeed, Konstanten.KODIERUNG_UTF, (wiederholungen1 < MAX_WIEDERHOLUNGEN ? 2 : 1)/*max Versuche*/, seite1, "Thema: " + thema);
+            if (seite1.length() == 0) {
+                Log.fehlerMeldung(-207956317, Log.FEHLER_ART_MREADER, "MediathekArd.feedSuchen", "Leere Seite: " + strUrlFeed);
+                return;
+            }
             int pos;
             int pos1;
             int pos2;
             String url;
             //erst mal die erste Seite holen
-            if (!feedEinerSeiteSuchen(seite1, strUrlFeed, thema)) {
-                // http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=3322404/index.html
-                // http://www.ardmediathek.de/ard/servlet/ajax-cache/3516992/view=switch/documentId=3322404/index.html
-                String tmp = strUrlFeed.replace("ajax-cache/3516962/view=list", "ajax-cache/3516992/view=switch");
-                seiteFehler = getUrl.getUri_Utf(nameSenderMReader, tmp, seiteFehler, "Thema: " + thema);
-                feedEinerSeiteSuchen(seiteFehler, tmp, thema);
-            }
+            feedEinerSeiteSuchen(seite1, strUrlFeed, thema);
             //nach weitern Seiten schauen
             if (suchen.senderAllesLaden) {
                 pos = 0;
@@ -346,14 +347,10 @@ public class MediathekArd extends MediathekReader implements Runnable {
             boolean ret = false, flash;
             String protokoll = "";
             meldung(filmWebsite);
-            seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "urlFeed: " + urlFeed);
-            if (seite2.length() == 0 && wiederholungen < MAX_WIEDERHOLUNGEN) {
-                ++wiederholungen;
-                warten(5 /*Sekunden*/);
-                seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "urlFeed: " + urlFeed);
-            }
+            //seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "urlFeed: " + urlFeed);
+            seite2 = getUrl.getUri(nameSenderMReader, filmWebsite, Konstanten.KODIERUNG_UTF, (wiederholungen2 < MAX_WIEDERHOLUNGEN ? 2 : 1)/*max Versuche*/, seite2, "urlFeed: " + urlFeed);
             if (seite2.length() == 0) {
-                Log.fehlerMeldung(-201549307, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + filmWebsite + ", leere Seite");
+                Log.fehlerMeldung(-201549307, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "leere Seite: " + filmWebsite);
                 return false;
             }
             long durationInSeconds = extractDuration(seite2);
@@ -461,7 +458,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 }
             }
             if (!ret) {
-                Log.fehlerMeldung(-159873540, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + filmWebsite + "Flash: " + flash);
+                Log.fehlerMeldung(-159873540, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + filmWebsite + " Flash: " + flash);
             }
             return ret;
         }
