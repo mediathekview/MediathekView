@@ -310,7 +310,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                             }
                         }
                         if (thema.equals("") || datum.equals("") || titel.equals("") || duration == 0) {
-                            Log.fehlerMeldung(-32356701, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen", strUrl);
+                            Log.fehlerMeldung(-323569701, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen", strUrl);
                         }
                         //weiter gehts
                         addFilm1(thema, titel, url, duration, datum);
@@ -469,7 +469,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             int pos = 0;
             strVideoSeite = getUrl.getUri_Iso(nameSenderMReader, ROCKPALAST_URL, strVideoSeite, "");
             try {
-                while ((pos = strVideoSeite.indexOf(ITEM_1, pos)) != -1) {
+                while (!Daten.filmeLaden.getStop() && (pos = strVideoSeite.indexOf(ITEM_1, pos)) != -1) {
                     int pos1 = pos + 9;
                     int pos2 = strVideoSeite.indexOf("\">", pos1);
                     if (pos2 < 0) {
@@ -499,7 +499,8 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             final String MUSTER_DURATION_START_0 = "<span class=\"moVideoIcon\">Video:";
             final String MUSTER_DURATION_START_1 = "(";
             final String MUSTER_DURATION_END = ")";
-            final String MUSTER_DESCRIPTION = "<meta name=\"description\" content=\"";
+            final String MUSTER_DESCRIPTION_1 = "<meta name=\"description\" content=\"";
+            final String MUSTER_DESCRIPTION_2 = "<meta name=\"Description\" content=\"";
             final String MUSTER_DESCRIPTION_END = "/>";
             final String MUSTER_THUMBNAIL = "<link rel=\"image_src\" href=\"";
             final String MUSTER_THUMBNAIL_END = "\"";
@@ -525,9 +526,9 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 if ((pos1 = strSeite2.indexOf(MUSTER_DURATION_START_1, pos1)) != -1) {
                     pos1 += MUSTER_DURATION_START_1.length();
                     if ((pos2 = strSeite2.indexOf(MUSTER_DURATION_END, pos1)) != -1) {
+                        String d = strSeite2.substring(pos1, pos2);
                         try {
-                            String d = strSeite2.substring(pos1, pos2);
-                            if (!d.equals("")) {
+                            if (!d.equals("") && d.length() < 8 && d.contains(":")) {
                                 String[] parts = d.split(":");
                                 long power = 1;
                                 for (int i = parts.length - 1; i >= 0; i--) {
@@ -536,14 +537,27 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                                 }
                             }
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(-302058974, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme2-1", ex, "keine Url" + thema);
+                            Log.fehlerMeldung(-302058974, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme2-1", ex, "duration: " + d);
                         }
                     }
                 }
             }
-
-            if ((pos1 = strSeite2.indexOf(MUSTER_DESCRIPTION)) != -1) {
-                pos1 += MUSTER_DESCRIPTION.length();
+            if ((pos1 = strSeite2.indexOf(MUSTER_DESCRIPTION_1, 0)) != -1) {
+                pos1 += MUSTER_DESCRIPTION_1.length();
+                if ((pos2 = strSeite2.indexOf(MUSTER_DESCRIPTION_END, pos1)) != -1) {
+                    description = strSeite2.substring(pos1, pos2);
+                    if (description.startsWith("<p>")) {
+                        description = description.replaceFirst("<p>", "");
+                    }
+                    if (description.endsWith("\"")) {
+                        description = description.replace("\"", "");
+                    }
+                    if (description.endsWith("</p>")) {
+                        description = description.replace("</p>", "");
+                    }
+                }
+            } else if ((pos1 = strSeite2.indexOf(MUSTER_DESCRIPTION_2, 0)) != -1) {
+                pos1 += MUSTER_DESCRIPTION_2.length();
                 if ((pos2 = strSeite2.indexOf(MUSTER_DESCRIPTION_END, pos1)) != -1) {
                     description = strSeite2.substring(pos1, pos2);
                     if (description.startsWith("<p>")) {

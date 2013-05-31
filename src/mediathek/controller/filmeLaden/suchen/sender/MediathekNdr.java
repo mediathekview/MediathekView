@@ -240,8 +240,8 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                         if ((pos1 = seite1.indexOf(MUSTER_DURATION, pos1)) != -1) {
                             pos1 += MUSTER_DURATION.length();
                             if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
+                                String duration = seite1.substring(pos1, pos2).trim();
                                 try {
-                                    String duration = seite1.substring(pos1, pos2);
                                     if (!duration.equals("")) {
                                         String[] parts = duration.split(":");
                                         long power = 1;
@@ -287,15 +287,13 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             String[] keywords = extractKeywords(seite2);
             String imageUrl = extractImageURL(seite2);
             meldung(filmWebsite);
-            int pos;
             int pos1;
             int pos2;
             String url, tmp;
             try {
-                if ((pos = seite2.indexOf(MUSTER_URL)) != -1) {
-                    pos += MUSTER_URL.length();
-                    pos1 = pos;
-                    if ((pos2 = seite2.indexOf("'", pos)) != -1) {
+                if ((pos1 = seite2.indexOf(MUSTER_URL)) != -1) {
+                    pos1 += MUSTER_URL.length();
+                    if ((pos2 = seite2.indexOf("'", pos1)) != -1) {
                         url = seite2.substring(pos1, pos2);
                         if (!url.equals("")) {
                             url = "http://" + url;
@@ -328,7 +326,6 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             if (desc == null) {
                 return "";
             }
-
             return desc;
         }
 
@@ -337,17 +334,19 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             if (keywords == null) {
                 return new String[]{""};
             }
-
             String[] k = keywords.split(",");
             for (int i = 0; i < k.length; i++) {
                 k[i] = k[i].trim();
             }
-
             return k;
         }
 
         private String extractImageURL(StringBuffer page) {
-            return extractString(page, "<meta property=\"og:image\" content=\"", "\"");
+            String image = extractString(page, "<meta property=\"og:image\" content=\"", "\"");
+            if (image == null) {
+                return "";
+            }
+            return image;
         }
 
         private String extractString(StringBuffer source, String startMarker, String endMarker) {
@@ -355,14 +354,11 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             if (start == -1) {
                 return null;
             }
-
             start = start + startMarker.length();
-
             int end = source.indexOf(endMarker, start);
             if (end == -1) {
                 return null;
             }
-
             return source.substring(start, end);
         }
     }
