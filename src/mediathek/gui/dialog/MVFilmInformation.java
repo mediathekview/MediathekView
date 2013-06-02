@@ -293,8 +293,9 @@ public class MVFilmInformation implements ChangeListener {
             try {
                 image = ImageIO.read(new URL(urlStr));
                 image = scale(image, new Dimension(250, 250));
-                this.setMinimumSize(new Dimension(image.getWidth(), image.getHeight()));
+                this.setMinimumSize(new Dimension(image.getWidth(), image.getHeight() ));
                 this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+                this.setSize(new Dimension(image.getWidth() , image.getHeight() ));
             } catch (Exception ex) {
                 Log.fehlerMeldung(919302497, Log.FEHLER_ART_PROG, MVFilmInformation.class.getName(), ex);
             }
@@ -304,8 +305,8 @@ public class MVFilmInformation implements ChangeListener {
         @Override
         protected void paintComponent(Graphics g) {
             if (image != null) {
-                super.paintComponent(g);
                 g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), this);
+                super.paintComponent(g);
             } else {
                 super.paintComponent(g);
             }

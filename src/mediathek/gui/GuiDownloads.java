@@ -655,8 +655,6 @@ public class GuiDownloads extends PanelVorlage {
                 if (arg0.getClickCount() > 1) {
                     downloadAendern();
                 }
-//            } else if (arg0.getButton() == MouseEvent.BUTTON3) {
-//                showMenu(arg0);
             }
         }
 
