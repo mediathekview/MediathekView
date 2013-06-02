@@ -990,11 +990,9 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxBeschreibung.setText("Beschreibung");
 
         jTextAreaBeschreibung.setEditable(false);
-        jTextAreaBeschreibung.setColumns(20);
         jTextAreaBeschreibung.setLineWrap(true);
         jTextAreaBeschreibung.setRows(4);
         jTextAreaBeschreibung.setMargin(new java.awt.Insets(4, 4, 4, 4));
-        jTextAreaBeschreibung.setPreferredSize(new java.awt.Dimension(228, 50));
         jScrollPane2.setViewportView(jTextAreaBeschreibung);
 
         jXHyperlinkWebsite.setText("jXHyperlink1");
