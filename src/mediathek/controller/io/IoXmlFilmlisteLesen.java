@@ -79,7 +79,7 @@ public class IoXmlFilmlisteLesen {
                 this.notifyStart(300);
                 this.notifyProgress(datei);
             } else {
-                this.notifyStart(100);
+                this.notifyStart(150);
                 this.notifyProgress(datei);
             }
             if (!istUrl) {
@@ -110,7 +110,7 @@ public class IoXmlFilmlisteLesen {
                     while (!Daten.filmeLaden.getStop() && (n = in.read(buffer)) != -1) {
                         fOut.write(buffer, 0, n);
                         ++count;
-                        if (count > 25) {
+                        if (count > 50) {
                             this.notifyProgress(datei);
                             count = 0;
                         }
@@ -194,7 +194,7 @@ public class IoXmlFilmlisteLesen {
                                 datenFilm.arr[DatenFilm.FILM_THEMA_NR] = datenFilmAlt.arr[DatenFilm.FILM_THEMA_NR];
                             }
                             ++count;
-                            if (count > 250) {
+                            if (count > 500) {
                                 count = 0;
                                 this.notifyProgress(text);
                             }

@@ -457,7 +457,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                         dauer, beschreibung, "", image, keyword);
                 addFilm(film);
             } else {
-                Log.fehlerMeldung(-763299001, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme1", new String[]{"keine Url: " + urlFilmSuchen, "UrlThema: " + filmWebsite});
+                Log.fehlerMeldung(-978451239, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme2", new String[]{"keine Url: " + urlFilmSuchen, "UrlThema: " + filmWebsite});
             }
         }
 
@@ -659,12 +659,12 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, datum, ""/* zeit */, duration, description, thumnail, image, keywords);
                             addFilm(film);
                         } else {
-                            Log.fehlerMeldung(-763299001, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme2-1", "keine Url" + thema);
+                            Log.fehlerMeldung(-632917318, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilmeRockpalast", "keine Url" + thema);
                         }
                     }
                 }
             } else {
-                Log.fehlerMeldung(-596631004, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme2-2", "keine Url" + thema);
+                Log.fehlerMeldung(-596631004, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilmeRockpalast", "keine Url" + thema);
             }
         }
     }
