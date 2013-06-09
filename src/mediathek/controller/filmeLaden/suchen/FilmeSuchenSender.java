@@ -269,6 +269,7 @@ public class FilmeSuchenSender {
             Log.systemMeldung("       Seiten geladen: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER));
             String groesse = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE) == 0) ? "<1" : Long.toString(GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE));
             Log.systemMeldung(" Summe geladen[MByte]: " + groesse);
+            Log.systemMeldung("      Traffic [MByte]: " + GetUrl.getSummeMegaByte());
             if (sekunden <= 0) {
                 sekunden = 1;
             }
