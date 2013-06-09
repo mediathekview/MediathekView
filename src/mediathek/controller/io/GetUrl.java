@@ -19,6 +19,7 @@
  */
 package mediathek.controller.io;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,6 +60,7 @@ public class GetUrl {
     private static final int LADE_ART_DEFLATE = 2;
     private static final int LADE_ART_GZIP = 3;
     final static Lock lock = new ReentrantLock();
+    private static long summeByte = 0;
 
     private class Seitenzaehler {
 
@@ -68,12 +70,12 @@ public class GetUrl {
         long ladeArtDeflate = 0;
         long ladeArtGzip = 0;
 
-        public Seitenzaehler(String ssenderName, int sseitenAnzahl) {
+        public Seitenzaehler(String ssenderName, long sseitenAnzahl) {
             senderName = ssenderName;
             seitenAnzahl = sseitenAnzahl;
         }
 
-        public void addLadeArt(int ladeArt, int inc) {
+        public void addLadeArt(int ladeArt, long inc) {
             switch (ladeArt) {
                 case LADE_ART_NIX:
                     ladeArtNix += inc;
@@ -157,6 +159,7 @@ public class GetUrl {
     public synchronized void getDummy(String sender) {
         // Dummy zum hochzählen des Seitenzählers
         incSeitenZaehler(LISTE_SEITEN_ZAEHLER, sender, 1, LADE_ART_UNBEKANNT);
+        summeByte += 1;
     }
 
     public void setTimeout(int ttimeout) {
@@ -165,6 +168,11 @@ public class GetUrl {
 
     public int getTimeout() {
         return timeout;
+    }
+
+    public static synchronized String getSummeMegaByte() {
+        // liefert MB zurück
+        return summeByte == 0 ? "0" : ((summeByte / 1024 / 1024) == 0 ? "<1" : String.valueOf(summeByte / 1024 / 1024));
     }
 
     public static synchronized long getSeitenZaehler(int art, String sender) {
@@ -220,6 +228,7 @@ public class GetUrl {
         listeSeitenZaehlerFehlerVersuche.clear();
         listeSeitenZaehlerWartezeitFehlerVersuche.clear();
         listeSummeByte.clear();
+        summeByte = 0;
     }
 
     //===================================
@@ -242,7 +251,7 @@ public class GetUrl {
         }
     }
 
-    private void incSeitenZaehler(int art, String sender, int inc, int ladeArt) {
+    private void incSeitenZaehler(int art, String sender, long inc, int ladeArt) {
         lock.lock();
         try {
             boolean gefunden = false;
@@ -324,21 +333,26 @@ public class GetUrl {
 //            }
             //in = conn.getInputStream();
 
+            MVInputStream mvIn = new MVInputStream(conn);
+            if (mvIn.getInputStream() == null) {
+                return seite;
+            }
             if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
                 ladeArt = LADE_ART_GZIP;
-                in = new GZIPInputStream(conn.getInputStream());
+                in = new GZIPInputStream(mvIn);
             } else if (encoding != null && encoding.equalsIgnoreCase("deflate")) {
                 ladeArt = LADE_ART_DEFLATE;
-                in = new InflaterInputStream(conn.getInputStream(), new Inflater(true));
+                in = new InflaterInputStream(mvIn, new Inflater(true));
             } else {
                 ladeArt = LADE_ART_NIX;
-                in = conn.getInputStream();
+                in = mvIn;
             }
             inReader = new InputStreamReader(in, kodierung);
             while (!Daten.filmeLaden.getStop() && inReader.read(zeichen) != -1) {
                 seite.append(zeichen);
                 incSeitenZaehler(LISTE_SUMME_BYTE, sender, 1, ladeArt);
             }
+//            incSeitenZaehler(LISTE_SUMME_BYTE, sender, conIn.getSumme(), ladeArt);
 //            char[] buff = new char[1024];
 //            int cnt;
 //            while (!Daten.filmeLaden.getStop() && (cnt = inReader.read(buff)) > 0) {
@@ -385,5 +399,59 @@ public class GetUrl {
             }
         }
         return seite;
+    }
+
+    private class MVInputStream extends InputStream {
+
+        InputStream in = null;
+        long summe = 0;
+        int nr = 0;
+
+        public MVInputStream(HttpURLConnection con) {
+            try {
+                if (con != null) {
+                    in = con.getInputStream();
+                }
+            } catch (Exception ex) {
+            }
+        }
+
+        public InputStream getInputStream() {
+            return in;
+        }
+
+        public long getSumme() {
+            return summe;
+        }
+
+        @Override
+        public int read(byte[] b) throws IOException {
+            nr = in.read(b);
+            if (nr != -  1) {
+                summe += nr;
+                summeByte += nr;
+            }
+            return nr;
+        }
+
+        @Override
+        public int read() throws IOException {
+            nr = in.read();
+            if (nr != -  1) {
+                ++summe;
+                ++summeByte;
+            }
+            return nr;
+        }
+
+        @Override
+        public int read(byte b[], int off, int len) throws IOException {
+            nr = in.read(b, off, len);
+            if (nr != -1) {
+                summe += nr;
+                summeByte += nr;
+            }
+            return nr;
+        }
     }
 }
