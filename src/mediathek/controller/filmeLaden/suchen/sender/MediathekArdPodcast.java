@@ -222,7 +222,10 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
             int pos1 = 0;
             int pos2 = 0;
             final String MUSTER_ = "http://www.ardmediathek.de/ard/servlet/content/3517244";
-            if (filmWebsite.contains("?")) {
+            if (!filmWebsite.contains("?")) {
+                Log.fehlerMeldung(-969875421, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeLaden", "keine URL für: " + filmWebsite);
+                return;
+            } else {
                 //3517136 ersetzen mit 3517244
                 //http://www.ardmediathek.de/ard/servlet/content/3516968?documentId=2584998
                 //
@@ -233,6 +236,10 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 final String MUSTER_3 = "addMediaStream(0, 1, \"\", \"";
                 seite2.setLength(0);
                 seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "Thema: " + thema);
+                if (seite2.length() == 0) {
+                    Log.fehlerMeldung(-646569896, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeLaden", "keine URL für: " + filmWebsite);
+                    return;
+                }
                 long durationInSeconds = extractDuration(seite2);
                 String description = extractDescription(seite2);
                 String[] keywords = extractKeywords(seite2);
@@ -261,8 +268,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     }
                     if (url.equals("")) {
                         //-------------
-                        Log.fehlerMeldung(-789628694, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + filmWebsite);
-                        Log.fehlerMeldung(-495623876, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-3", "keine URL für: " + urlFeed);
+                        Log.fehlerMeldung(-363698701, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeLaden", "keine URL für: " + filmWebsite);
                         return;
                     }
                 }
@@ -277,10 +283,12 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 // <title>Video-Clip &#034;Live aus Eging am See II - PS-Party in Pullmann City - 08.05.2013&#034; | Bayerisches Fernsehen | ARD Mediathek</title>
                 final String MUSTER_TITEL = "<title>";
                 if ((pos1 = seite2.indexOf(MUSTER_TITEL, 0)) == -1) {
+                    Log.fehlerMeldung(-465698731, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeLaden", "keine URL für: " + filmWebsite);
                     return;
                 }
                 pos1 += MUSTER_TITEL.length();
                 if ((pos2 = seite2.indexOf("<", pos1)) == -1) {
+                    Log.fehlerMeldung(-915487398, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeLaden", "keine URL für: " + filmWebsite);
                     return;
                 }
                 titel = seite2.substring(pos1, pos2);
@@ -288,11 +296,17 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     titel = titel.replaceFirst("Video-Clip", "").trim();
                 } else if (titel.startsWith("Audio-Clip")) {
                     titel = titel.replaceFirst("Audio-Clip", "");
+                } else if (titel.startsWith("Video")) {
+                    titel = titel.replaceFirst("Video", "").trim();
+                } else if (titel.startsWith("Audio")) {
+                    titel = titel.replaceFirst("Audio", "");
                 } else {
+                    Log.fehlerMeldung(-996500478, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeLaden", "keine URL für: " + filmWebsite);
                     return;
                 }
                 titel = StringEscapeUtils.unescapeHtml4(titel);
                 if (!titel.contains("|")) {
+                    Log.fehlerMeldung(-102036977, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeLaden", "keine URL für: " + filmWebsite);
                     return;
                 }
                 titel = titel.substring(0, titel.indexOf("|"));
@@ -339,7 +353,7 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                     }
                 }
                 if (datum.equals("")) {
-                    Log.fehlerMeldung(-102589463, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeEinerSeiteSuchen-4", "kein Datum für: " + filmWebsite);
+                    Log.fehlerMeldung(-102589463, Log.FEHLER_ART_MREADER, "MediathekArdPodcast.filmeLaden", "kein Datum für: " + filmWebsite);
                 }
                 // public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
                 //  long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
