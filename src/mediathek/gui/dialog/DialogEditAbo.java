@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialog;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -29,7 +30,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.daten.DDaten;
@@ -39,15 +43,17 @@ import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 
 public class DialogEditAbo extends javax.swing.JDialog {
-
+    
     private DDaten ddaten;
     private DatenAbo aktAbo;
     private JTextField[] textfeldListe;
     private JComboBox<String> comboboxProgramm = new JComboBox<String>();
     private JComboBox<String> comboboxSender = new JComboBox<String>();
     private JCheckBox checkBoxEingeschaltet = new JCheckBox();
+    private JSlider sliderDauer = new JSlider(0, 100, 0);
+    private JLabel labelDauer = new JLabel("0");
     public boolean ok = false;
-
+    
     public DialogEditAbo(java.awt.Frame parent, boolean modal, DDaten d, DatenAbo aktA) {
         super(parent, modal);
         initComponents();
@@ -77,7 +83,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         };
         setExtra();
     }
-
+    
     private void setExtra() {
         textfeldListe = new JTextField[DatenAbo.ABO_MAX_ELEM];
         GridBagLayout gridbag = new GridBagLayout();
@@ -92,7 +98,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
             c.gridy = zeile;
         }
     }
-
+    
     private void addExtraFeld(int i, GridBagLayout gridbag, GridBagConstraints c,
             JPanel panel, String[] item) {
         //Label
@@ -140,6 +146,23 @@ public class DialogEditAbo extends javax.swing.JDialog {
             comboboxSender.addActionListener(new BeobComboSender());
             gridbag.setConstraints(comboboxSender, c);
             panel.add(comboboxSender);
+        } else if (i == DatenAbo.ABO_MINDESTDAUER_NR) {
+            sliderDauer.setValue(aktAbo.mindestdauerMinuten);
+            labelDauer.setText(String.valueOf(aktAbo.mindestdauerMinuten));
+            sliderDauer.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    labelDauer.setText("  " + String.valueOf(sliderDauer.getValue()) + " ");
+                    if (!sliderDauer.getValueIsAdjusting()) {
+                        aktAbo.setMindestDauerMinuten(sliderDauer.getValue() * 60 /*Sekunden*/);
+                    }
+                }
+            });
+            JPanel p = new JPanel(new BorderLayout());
+            p.add(sliderDauer, BorderLayout.CENTER);
+            p.add(labelDauer, BorderLayout.EAST);
+            gridbag.setConstraints(p, c);
+            panel.add(p);
         } else if (i == DatenAbo.ABO_EINGESCHALTET_NR) {
             checkBoxEingeschaltet.setSelected(Boolean.parseBoolean(item[i]));
             checkBoxEingeschaltet.addActionListener(new BeobCheckbox());
@@ -159,12 +182,12 @@ public class DialogEditAbo extends javax.swing.JDialog {
             panel.add(textfeld);
         }
     }
-
+    
     private void check() {
         aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR] = GuiFunktionen.replaceLeerDateiname(aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR], true /* pfadtrennerEntfernen */, true /* leerEntfernen */);
         ok = true;
     }
-
+    
     private void beenden() {
         this.dispose();
     }
@@ -190,11 +213,11 @@ public class DialogEditAbo extends javax.swing.JDialog {
         jPanelExtra.setLayout(jPanelExtraLayout);
         jPanelExtraLayout.setHorizontalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 504, Short.MAX_VALUE)
+            .addGap(0, 507, Short.MAX_VALUE)
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 469, Short.MAX_VALUE)
+            .addGap(0, 496, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(jPanelExtra);
@@ -212,7 +235,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 207, Short.MAX_VALUE)
+                        .addGap(0, 290, Short.MAX_VALUE)
                         .addComponent(jButtonBeenden, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonAbbrechen)))
@@ -225,7 +248,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonBeenden)
@@ -242,51 +265,51 @@ public class DialogEditAbo extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private class BeobachterDocumentTextfeld implements DocumentListener {
-
+        
         int nr;
-
+        
         public BeobachterDocumentTextfeld(int n) {
             nr = n;
         }
-
+        
         @Override
         public void insertUpdate(DocumentEvent arg0) {
             eingabe();
         }
-
+        
         @Override
         public void removeUpdate(DocumentEvent arg0) {
             eingabe();
         }
-
+        
         @Override
         public void changedUpdate(DocumentEvent arg0) {
             eingabe();
         }
-
+        
         private void eingabe() {
             aktAbo.arr[nr] = textfeldListe[nr].getText().trim();
         }
     }
-
+    
     private class BeobComboProgramm implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             aktAbo.arr[DatenAbo.ABO_PSET_NR] = comboboxProgramm.getSelectedItem().toString();
         }
     }
-
+    
     private class BeobComboSender implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             aktAbo.arr[DatenAbo.ABO_SENDER_NR] = comboboxSender.getSelectedItem().toString();
         }
     }
-
+    
     private class BeobCheckbox implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             aktAbo.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(checkBoxEingeschaltet.isSelected());

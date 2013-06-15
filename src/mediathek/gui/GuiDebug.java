@@ -87,7 +87,12 @@ public class GuiDebug extends PanelVorlage {
         jButtonAlleLaden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, jToggleButtonAllesLaden.isSelected(), true);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, jToggleButtonAllesLaden.isSelected(), true);
+                    }
+                }).start();
             }
         });
         jPanelSenderLaden.setLayout(new BorderLayout());

@@ -168,9 +168,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         ListIterator<DatenFilm> itFilm = Daten.listeFilme.listIterator();
         while (itFilm.hasNext()) {
             film = itFilm.next();
-            abo = ddaten.listeAbo.getAbo(film.arr[DatenFilm.FILM_SENDER_NR],
-                    film.arr[DatenFilm.FILM_THEMA_NR],
-                    film.arr[DatenFilm.FILM_TITEL_NR]);
+            abo = ddaten.listeAbo.getAbo(film);
             if (abo == null) {
                 continue;
             } else if (!abo.aboIstEingeschaltet()) {

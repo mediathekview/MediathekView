@@ -91,7 +91,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public String[] arr;
     public Datum datumFilm = new Datum(0);
     public String durationStr = "";
-    public long durationL = 0;
+    public long durationL = 0; // Sekunden
 
     public DatenFilm() {
         makeArr();
@@ -112,7 +112,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_WEBSEITE_NR] = filmWebsite;
         arr[FILM_DURATION_NR] = "" + duration;
-        arr[FILM_DESCRIPTION_NR] = beschreibung(description);
+        arr[FILM_DESCRIPTION_NR] = beschreibung(description, tthema, ttitel);
         if (!imageUrl.equals("")) {
             arr[FILM_IMAGE_URL_NR] = imageUrl;
         } else {
@@ -140,7 +140,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_DURATION_NR] = "" + duration;
-        arr[FILM_DESCRIPTION_NR] = beschreibung(description);
+        arr[FILM_DESCRIPTION_NR] = beschreibung(description, tthema, ttitel);
         if (!imageUrl.equals("")) {
             arr[FILM_IMAGE_URL_NR] = imageUrl;
         } else {
@@ -150,8 +150,26 @@ public class DatenFilm implements Comparable<DatenFilm> {
         setWerte(duration);
     }
 
-    private String beschreibung(String s) {
+    private String beschreibung(String s, String thema, String titel) {
         // die Beschreibung auf x Zeichen beschränken
+        if (s.startsWith(titel)) {
+            s = s.substring(titel.length()).trim();
+        }
+        if (s.startsWith(thema)) {
+            s = s.substring(thema.length()).trim();
+        }
+        if (s.startsWith("|")) {
+            s = s.substring(1).trim();
+        }
+        if (s.startsWith("Video-Clip")) {
+            s = s.substring("Video-Clip".length()).trim();
+        }
+        if (s.startsWith(titel)) {
+            s = s.substring(titel.length()).trim();
+        }
+        if (s.startsWith(":")) {
+            s = s.substring(1).trim();
+        }
         final int x = 250;
         if (s.length() > x) {
             return s.substring(0, x) + "\n.....";
@@ -161,7 +179,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     private String keywordsToString(String[] keywords) {
-        final int x = 250;
+        final int x = 200;
         String k = "";
         for (String kk : keywords) {
             if (k.length() + kk.length() > x) {
