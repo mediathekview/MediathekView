@@ -104,7 +104,10 @@ public class FilmeSuchenSender {
         listeFilmeNeu.liveStreamEintragen();
         // die mReader nach Prio starten
         mrStarten(0);
-        mrStarten(1);
+        if (!Daten.filmeLaden.getStop()) {
+            mrWarten();
+            mrStarten(1);
+        }
     }
 
     private synchronized void mrStarten(int prio) {
@@ -117,10 +120,18 @@ public class FilmeSuchenSender {
                 new Thread(mr).start();
             }
         }
+    }
+
+    private synchronized void mrWarten() {
         try {
-            this.wait(3 * 60 * 1000); // 3 Min. warten, Sender nach der Gesamtlaufzeit starten
+            for (int i = 0; i < 6; ++i) {
+                if (Daten.filmeLaden.getStop()) {
+                    break;
+                }
+                this.wait(30 * 1000); // 0,5 Min. warten, Sender nach der Gesamtlaufzeit starten
+            }
         } catch (Exception ex) {
-            Log.fehlerMeldung(952210369, Log.FEHLER_ART_PROG, "FilmeSuchenSender.mrStarten", ex);
+            Log.fehlerMeldung(978754213, Log.FEHLER_ART_PROG, "FilmeSuchenSender.mrWarten", ex);
         }
     }
 

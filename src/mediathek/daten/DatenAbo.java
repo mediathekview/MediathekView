@@ -20,12 +20,12 @@
 package mediathek.daten;
 
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
 
 public class DatenAbo implements Comparable<DatenAbo> {
     //Tags Abo
 
     public static final String ABO = "Abonnement";
-    public static final int ABO_MAX_ELEM = 10;
     public static final String ABO_NR = "Nr";
     public static final int ABO_NR_NR = 0;
     public static final String ABO_EINGESCHALTET = "aktiv";
@@ -40,27 +40,35 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_TITEL_NR = 5;
     public static final String ABO_THEMA_TITEL = DatenFilm.FILM_THEMA + "-" + DatenFilm.FILM_TITEL;
     public static final int ABO_THEMA_TITEL_NR = 6;
+    public static final String ABO_IRGENDWO = "Irgendwo";
+    public static final int ABO_IRGENDWO_NR = 7;
+    public static final String ABO_MINDESTDAUER = "Mindestdauer";
+    public static final int ABO_MINDESTDAUER_NR = 8;
     public static final String ABO_ZIELPFAD = "Zielpfad";
-    public static final int ABO_ZIELPFAD_NR = 7;
+    public static final int ABO_ZIELPFAD_NR = 9;
     public static final String ABO_DOWN_DATUM = "letztes_Abo";
-    public static final int ABO_DOWN_DATUM_NR = 8;
+    public static final int ABO_DOWN_DATUM_NR = 10;
     public static final String ABO_PSET = "Programmset";
-    public static final int ABO_PSET_NR = 9;
+    public static final int ABO_PSET_NR = 11;
+    public static final int ABO_MAX_ELEM = 12;
     public static final String[] ABO_COLUMN_NAMES = {ABO_NR, ABO_EINGESCHALTET, ABO_NAME, ABO_SENDER, ABO_THEMA, ABO_TITEL, ABO_THEMA_TITEL,
-        ABO_ZIELPFAD, ABO_DOWN_DATUM, ABO_PSET};
+        ABO_IRGENDWO, ABO_MINDESTDAUER, ABO_ZIELPFAD, ABO_DOWN_DATUM, ABO_PSET};
     public String[] arr;
+    public int mindestdauerMinuten = 0;
 
     public DatenAbo() {
         makeArr();
     }
 
-    public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String ziel, String pset) {
+    public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, String ziel, String pset) {
         makeArr();
         arr[ABO_NAME_NR] = name;
         arr[ABO_SENDER_NR] = sender;
         arr[ABO_THEMA_NR] = thema;
         arr[ABO_TITEL_NR] = titel;
         arr[ABO_THEMA_TITEL_NR] = themaTitel;
+        arr[ABO_IRGENDWO_NR] = irgendwo;
+        setMindestDauerMinuten(mmindestdauerMinuten);
         arr[ABO_ZIELPFAD_NR] = ziel;
         arr[ABO_PSET_NR] = pset;
     }
@@ -70,7 +78,28 @@ public class DatenAbo implements Comparable<DatenAbo> {
         for (int i = 0; i < arr.length; ++i) {
             ret.arr[i] = new String(this.arr[i]);
         }
+        ret.mindestdauerMinuten = this.mindestdauerMinuten;
         return ret;
+    }
+
+    public final void setMindestDauerMinuten(int d) {
+        mindestdauerMinuten = d;
+        arr[ABO_MINDESTDAUER_NR] = String.valueOf(d);
+    }
+
+    public void setMindestDauerMinuten() {
+        if (this.arr[DatenAbo.ABO_MINDESTDAUER_NR].equals("")) {
+            // für den ProgUpdate
+            mindestdauerMinuten = 0;
+            arr[ABO_MINDESTDAUER_NR] = "0";
+        }
+        try {
+            mindestdauerMinuten = Integer.parseInt(this.arr[DatenAbo.ABO_MINDESTDAUER_NR]);
+        } catch (Exception ex) {
+            Log.fehlerMeldung(462558700, Log.FEHLER_ART_PROG, "DatenAbo.setMindestDauerMinuten", ex);
+            mindestdauerMinuten = 0;
+            arr[ABO_MINDESTDAUER_NR] = "0";
+        }
     }
 
     public boolean aboIstEingeschaltet() {

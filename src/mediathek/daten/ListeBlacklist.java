@@ -179,20 +179,17 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             return false;
         }
         if (!checkFilmlaenge(film)) {
+            // wegen der Möglichkeit "Whiteliste" muss das extra geprüft werden
             return false;
         }
         if (this.size() == 0) {
             return true;
         }
-        // nur wenn Blacklist nicht ausgeschaltet: Blacklist-Regeln prüfen
         Iterator<DatenBlacklist> it = this.iterator();
         while (it.hasNext()) {
             blacklist = it.next();
-            // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
-            //                     String imSender, String imThema, String imText) {
             if (Filter.filterAufAboPruefen(blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
-                    blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR],
-                    film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
+                    blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR].split(","), blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].split(","), new String[]{""}, 0, film)) {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST_NR])) {
                     return true;
                 } else {

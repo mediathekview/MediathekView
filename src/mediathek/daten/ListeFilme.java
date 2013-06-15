@@ -252,13 +252,26 @@ public class ListeFilme extends LinkedList<DatenFilm> {
 //            }
 //        }
 //    }
-    public synchronized TModelFilm getModelTabFilme(DDaten ddaten, TModelFilm modelFilm__, String filterSender, String filterThema, String filterTitel, String filterThemaTitel) {
+    public synchronized TModelFilm getModelTabFilme(DDaten ddaten, TModelFilm modelFilm__, String filterSender, String filterThema,
+            String filterTitel, String filterThemaTitel, String filterIrgendwo, int laenge) {
         TModelFilm modelFilm = new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES);
 //        modelFilm.setRowCount(0);
         if (this.size() != 0) {
-            if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("")) {
+            if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("") && filterIrgendwo.equals("") && laenge == 0) {
                 addObjectDataTabFilme(ddaten, modelFilm);
             } else {
+                String[] arrTitel = filterTitel.split(",");
+                String[] arrThemaTitel = filterThemaTitel.split(",");
+                String[] arrIrgendwo = filterIrgendwo.split(",");
+                for (int i = 0; i < arrTitel.length; ++i) {
+                    arrTitel[i] = arrTitel[i].trim();
+                }
+                for (int i = 0; i < arrThemaTitel.length; ++i) {
+                    arrThemaTitel[i] = arrThemaTitel[i].trim();
+                }
+                for (int i = 0; i < arrIrgendwo.length; ++i) {
+                    arrIrgendwo[i] = arrIrgendwo[i].trim();
+                }
                 ListeFilme liste = new ListeFilme();
                 DatenFilm film;
                 Iterator<DatenFilm> it = this.iterator();
@@ -266,12 +279,25 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                     film = it.next();
                     // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
                     //                     String imSender, String imThema, String imText) {
-                    if (Filter.filterAufAboPruefen(filterSender, filterThema, filterTitel, filterThemaTitel,
-                            film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
+                    if (Filter.filterAufAboPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film)) {
                         liste.add(film);
                     }
                 }
                 liste.addObjectDataTabFilme(ddaten, modelFilm);
+//            } else {
+//                ListeFilme liste = new ListeFilme();
+//                DatenFilm film;
+//                Iterator<DatenFilm> it = this.iterator();
+//                while (it.hasNext()) {
+//                    film = it.next();
+//                    // aboPruefen(String senderSuchen, String themaSuchen, boolean themaExakt, String textSuchen,
+//                    //                     String imSender, String imThema, String imText) {
+//                    if (Filter.filterAufAboPruefen(filterSender, filterThema, filterTitel, filterThemaTitel,
+//                            film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR])) {
+//                        liste.add(film);
+//                    }
+//                }
+//                liste.addObjectDataTabFilme(ddaten, modelFilm);
             }
         }
         return modelFilm;
@@ -426,9 +452,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         ListIterator<DatenFilm> iterator = this.listIterator(0);
         while (iterator.hasNext()) {
             film = iterator.next();
-            datenAbo = ddaten.listeAbo.getAbo(film.arr[DatenFilm.FILM_SENDER_NR],
-                    film.arr[DatenFilm.FILM_THEMA_NR],
-                    film.arr[DatenFilm.FILM_TITEL_NR]);
+            datenAbo = ddaten.listeAbo.getAbo(film);
             if (datenAbo != null) {
                 film.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
             } else {
