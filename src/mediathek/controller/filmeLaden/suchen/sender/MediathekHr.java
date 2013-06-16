@@ -259,6 +259,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                             try {
                                 d = seite1.substring(pos1, pos2);
                                 if (!d.equals("")) {
+                                    duration = 0;
                                     String[] parts = d.split(":");
                                     long power = 1;
                                     for (int i = parts.length - 1; i >= 0; i--) {
