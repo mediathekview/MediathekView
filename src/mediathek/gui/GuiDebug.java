@@ -179,7 +179,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLadenLayout.setVerticalGroup(
             jPanelSenderLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 507, Short.MAX_VALUE)
+            .addGap(0, 514, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -211,7 +211,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLayout.setVerticalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 507, Short.MAX_VALUE)
+            .addGap(0, 514, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -241,7 +241,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelListenLayout.setVerticalGroup(
             jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 536, Short.MAX_VALUE)
+            .addGap(0, 537, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -288,7 +288,7 @@ public class GuiDebug extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jButtonTasklist)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
