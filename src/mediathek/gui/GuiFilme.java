@@ -586,7 +586,7 @@ public class GuiFilme extends PanelVorlage {
             // normal mit den Filtern aus dem Filterpanel suchen
             m = DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), jComboBoxFilterSender.getSelectedItem().toString(),
                     jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(),
-                    jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue() * 60 /*Sekunden*/);
+                    jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue());
         } else {
             // jetzt nur den Filter aus der Toolbar
             m = DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), "",
@@ -1727,5 +1727,4 @@ public class GuiFilme extends PanelVorlage {
             }
         }
     }
-
 }
