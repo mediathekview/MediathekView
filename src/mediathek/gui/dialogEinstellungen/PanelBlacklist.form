@@ -44,7 +44,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="jCheckBoxBlacklistAusschalten" min="-2" max="-2" attributes="0"/>
+                      <Component id="jCheckBoxBlacklistEingeschaltet" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
                   <Component id="jTabbedPaneBlacklist" pref="648" max="32767" attributes="0"/>
@@ -57,7 +57,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jCheckBoxBlacklistAusschalten" min="-2" max="-2" attributes="0"/>
+              <Component id="jCheckBoxBlacklistEingeschaltet" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
               <Component id="jTabbedPaneBlacklist" pref="542" max="32767" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -578,7 +578,7 @@
         </Container>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JCheckBox" name="jCheckBoxBlacklistAusschalten">
+    <Component class="javax.swing.JCheckBox" name="jCheckBoxBlacklistEingeschaltet">
       <Properties>
         <Property name="text" type="java.lang.String" value="Blacklist ausschalten"/>
       </Properties>

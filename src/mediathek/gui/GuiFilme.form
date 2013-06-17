@@ -34,7 +34,7 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="jPanelFilter" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="213" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="206" max="32767" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="jPanelBeschreibung" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -274,7 +274,7 @@
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="jSliderMinuten" max="32767" attributes="0"/>
                                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="jButtonFilterLoeschen" linkSize="2" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jButtonFilterLoeschen" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <Component id="jTextFieldFilterThemaTitel" max="32767" attributes="0"/>
                                       <Component id="jTextFieldFilterIrgendwo" max="32767" attributes="0"/>
@@ -291,29 +291,29 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
                               <Component id="jLabel2" alignment="2" min="-2" max="-2" attributes="0"/>
-                              <Component id="jComboBoxFilterSender" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="jComboBoxFilterSender" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel3" alignment="2" min="-2" max="-2" attributes="0"/>
-                              <Component id="jComboBoxFilterThema" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="jComboBoxFilterThema" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel5" alignment="2" min="-2" max="-2" attributes="0"/>
-                              <Component id="jTextFieldFilterTitel" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="jTextFieldFilterTitel" alignment="2" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jTextFieldFilterThemaTitel" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jTextFieldFilterThemaTitel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jTextFieldFilterIrgendwo" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jTextFieldFilterIrgendwo" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
                               <Component id="jLabel8" alignment="2" min="-2" max="-2" attributes="0"/>
-                              <Component id="jTextFieldFilterMinuten" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="jTextFieldFilterMinuten" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel9" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="jSliderMinuten" alignment="2" min="-2" max="-2" attributes="0"/>
-                              <Component id="jButtonFilterLoeschen" linkSize="1" alignment="2" min="-2" pref="16" max="-2" attributes="0"/>
+                              <Component id="jButtonFilterLoeschen" alignment="2" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>

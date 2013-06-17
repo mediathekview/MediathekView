@@ -238,23 +238,14 @@ public class DatenFilm implements Comparable<DatenFilm> {
 
     final public void setWerte() {
         if (this.arr[DatenFilm.FILM_DURATION_NR].equals("") || this.arr[DatenFilm.FILM_DURATION_NR].equals("0") || this.arr[DatenFilm.FILM_DURATION_NR].equals("-1")) {
-            durationStr = "";
-            durationL = 0;
+            setWerte(0);
         } else {
-            long dur = Long.parseLong(this.arr[DatenFilm.FILM_DURATION_NR]);
-            durationL = dur;
-            long hours = dur / 3600;
-            dur = dur - (hours * 3600);
-            long min = dur / 60;
-            dur = dur - (min * 60);
-            long seconds = dur;
-            durationStr = fuellen(String.valueOf(hours)) + ":" + fuellen(String.valueOf(min)) + ":" + fuellen(String.valueOf(seconds));
+            setWerte(Long.parseLong(this.arr[DatenFilm.FILM_DURATION_NR]));
         }
-        datumFilm = DatumZeit.getDatumForObject(this);
     }
 
     final public void setWerte(long l) {
-        if (l <= 0) {
+        if (l <= 0 || l > 3600 * 5 /* Werte über 5 Stungen */) {
             durationStr = "";
             durationL = 0;
         } else {
@@ -266,6 +257,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
             long seconds = l;
             durationStr = fuellen(String.valueOf(hours)) + ":" + fuellen(String.valueOf(min)) + ":" + fuellen(String.valueOf(seconds));
         }
+        arr[FILM_DURATION_NR] = "" + durationL;
         datumFilm = DatumZeit.getDatumForObject(this);
     }
 
