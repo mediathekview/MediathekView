@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -53,6 +54,8 @@ public class PanelBlacklist extends PanelVorlage {
     private String[] sender;
     private String[][] themenPerSender;
     private String name;
+    private Color cGruen = new Color(0, 153, 51);
+    private Color cRot = new Color(255, 0, 0);
 
     public PanelBlacklist(DDaten d, Component parentComponent, String nname) {
         super(d, parentComponent);
@@ -72,7 +75,9 @@ public class PanelBlacklist extends PanelVorlage {
 
     private void init_() {
         jCheckBoxAbo.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUCH_ABO_NR]));
-        jCheckBoxBlacklistAusschalten.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR]));
+        jCheckBoxBlacklistEingeschaltet.setSelected(!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR]));
+        jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
+        jCheckBoxBlacklistEingeschaltet.setText(jCheckBoxBlacklistEingeschaltet.isSelected() ? "Blacklist eingeschaltet" : "Blacklist ausgeschaltet");
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]));
         setPanelBlacklist();
         tabelleLaden();
@@ -113,10 +118,12 @@ public class PanelBlacklist extends PanelVorlage {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
             }
         });
-        jCheckBoxBlacklistAusschalten.addActionListener(new ActionListener() {
+        jCheckBoxBlacklistEingeschaltet.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR] = Boolean.toString(jCheckBoxBlacklistAusschalten.isSelected());
+                jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
+                jCheckBoxBlacklistEingeschaltet.setText(jCheckBoxBlacklistEingeschaltet.isSelected() ? "Blacklist eingeschaltet" : "Blacklist ausgeschaltet");
+                Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR] = Boolean.toString(!jCheckBoxBlacklistEingeschaltet.isSelected());
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
                 setPanelBlacklist();
             }
@@ -238,18 +245,18 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private void setPanelBlacklist() {
-        jTabbedPaneBlacklist.setEnabled(!jCheckBoxBlacklistAusschalten.isSelected());
-        setComponentsEnabled(jTabbedPaneBlacklist, !jCheckBoxBlacklistAusschalten.isSelected());
-    }
-
-    private void setComponentsEnabled(java.awt.Container c, boolean en) {
-        Component[] components = c.getComponents();
-        for (Component comp : components) {
-            if (comp instanceof java.awt.Container) {
-                setComponentsEnabled((java.awt.Container) comp, en);
-            }
-            comp.setEnabled(en);
-        }
+//        jTabbedPaneBlacklist.setEnabled(jCheckBoxBlacklistEingeschaltet.isSelected());
+//        setComponentsEnabled(jTabbedPaneBlacklist, jCheckBoxBlacklistEingeschaltet.isSelected());
+//    }
+//
+//    private void setComponentsEnabled(java.awt.Container c, boolean en) {
+//        Component[] components = c.getComponents();
+//        for (Component comp : components) {
+//            if (comp instanceof java.awt.Container) {
+//                setComponentsEnabled((java.awt.Container) comp, en);
+//            }
+//            comp.setEnabled(en);
+//        }
     }
 
     private void tableSelect() {
@@ -327,7 +334,7 @@ public class PanelBlacklist extends PanelVorlage {
         jButtonHilfe = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         jButtonTabelleLoeschen = new javax.swing.JButton();
-        jCheckBoxBlacklistAusschalten = new javax.swing.JCheckBox();
+        jCheckBoxBlacklistEingeschaltet = new javax.swing.JCheckBox();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -630,7 +637,7 @@ public class PanelBlacklist extends PanelVorlage {
 
         jTabbedPaneBlacklist.addTab("Sender-Thema-Titel", jPanel1);
 
-        jCheckBoxBlacklistAusschalten.setText("Blacklist ausschalten");
+        jCheckBoxBlacklistEingeschaltet.setText("Blacklist ausschalten");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -640,7 +647,7 @@ public class PanelBlacklist extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBoxBlacklistAusschalten)
+                        .addComponent(jCheckBoxBlacklistEingeschaltet)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jTabbedPaneBlacklist, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE))
                 .addContainerGap())
@@ -649,7 +656,7 @@ public class PanelBlacklist extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxBlacklistAusschalten)
+                .addComponent(jCheckBoxBlacklistEingeschaltet)
                 .addGap(18, 18, 18)
                 .addComponent(jTabbedPaneBlacklist, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
                 .addContainerGap())
@@ -662,7 +669,7 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JButton jButtonHinzufuegen;
     private javax.swing.JButton jButtonTabelleLoeschen;
     private javax.swing.JCheckBox jCheckBoxAbo;
-    private javax.swing.JCheckBox jCheckBoxBlacklistAusschalten;
+    private javax.swing.JCheckBox jCheckBoxBlacklistEingeschaltet;
     private javax.swing.JCheckBox jCheckBoxZukunftNichtAnzeigen;
     private javax.swing.JComboBox jComboBoxSender;
     private javax.swing.JComboBox jComboBoxThema;
