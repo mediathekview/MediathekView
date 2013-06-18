@@ -49,7 +49,7 @@
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="103" max="32767" attributes="0"/>
+              <EmptySpace pref="106" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -122,7 +122,7 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxEchtzeit">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Echtzeitsuche im Suchfeld &quot;Titel/Thema&quot;"/>
+            <Property name="text" type="java.lang.String" value="Echtzeitsuche im Filter"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfeAnzahl">

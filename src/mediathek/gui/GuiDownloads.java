@@ -324,11 +324,11 @@ public class GuiDownloads extends PanelVorlage {
     private void downloadLoeschen(boolean dauerhaft) {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
-            String[] urls = new String[rows.length];
+            ArrayList<String> arrayUrls = new ArrayList<String>();
             for (int i = 0; i < rows.length; ++i) {
-                urls[i] = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(rows[i]), DatenDownload.DOWNLOAD_URL_NR).toString();
+                arrayUrls.add(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(rows[i]), DatenDownload.DOWNLOAD_URL_NR).toString());
             }
-            for (String url : urls) {
+            for (String url : arrayUrls) {
                 DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
                 if (dauerhaft) {
                     if (download.istAbo()) {
@@ -340,8 +340,8 @@ public class GuiDownloads extends PanelVorlage {
                     // wenn nicht dauerhaft
                     download.zurueckstellen();
                 }
-                ddaten.starterClass.filmLoeschen(url);
             }
+            ddaten.starterClass.filmLoeschen(arrayUrls);
             tabelleLaden();
             ersteZeileMarkieren();
         } else {
