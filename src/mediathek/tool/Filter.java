@@ -102,6 +102,12 @@ public class Filter {
 
     private static boolean pruefen(String[] aboFilter, String im) {
         // wenn einer passt, dann ists gut
+        if (aboFilter.length == 1) {
+            Pattern p = makePattern(aboFilter[0]);
+            if (p != null) {
+                return (p.matcher(im).matches());
+            }
+        }
         for (String s : aboFilter) {
             if (textPruefen(s, im)) {
                 return true;
@@ -127,6 +133,7 @@ public class Filter {
         try {
             if (isPattern(textSuchen)) {
                 //p = Pattern.compile(textSuchen.substring(2));
+                //String s = textSuchen.substring(2);
                 p = Pattern.compile(textSuchen.substring(2), Pattern.CASE_INSENSITIVE);
             }
         } catch (Exception ex) {

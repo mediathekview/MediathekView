@@ -237,17 +237,35 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("") && filterIrgendwo.equals("") && laenge == 0) {
                 addObjectDataTabFilme(ddaten, modelFilm);
             } else {
-                String[] arrTitel = filterTitel.split(",");
-                String[] arrThemaTitel = filterThemaTitel.split(",");
-                String[] arrIrgendwo = filterIrgendwo.split(",");
-                for (int i = 0; i < arrTitel.length; ++i) {
-                    arrTitel[i] = arrTitel[i].trim();
+                // Titel
+                String[] arrTitel;
+                if (Filter.isPattern(filterTitel)) {
+                    arrTitel = new String[]{filterTitel};
+                } else {
+                    arrTitel = filterTitel.split(",");
+                    for (int i = 0; i < arrTitel.length; ++i) {
+                        arrTitel[i] = arrTitel[i].trim();
+                    }
                 }
-                for (int i = 0; i < arrThemaTitel.length; ++i) {
-                    arrThemaTitel[i] = arrThemaTitel[i].trim();
+                // ThemaTitel
+                String[] arrThemaTitel;
+                if (Filter.isPattern(filterThemaTitel)) {
+                    arrThemaTitel = new String[]{filterThemaTitel};
+                } else {
+                    arrThemaTitel = filterThemaTitel.split(",");
+                    for (int i = 0; i < arrThemaTitel.length; ++i) {
+                        arrThemaTitel[i] = arrThemaTitel[i].trim();
+                    }
                 }
-                for (int i = 0; i < arrIrgendwo.length; ++i) {
-                    arrIrgendwo[i] = arrIrgendwo[i].trim();
+                // Irgendwo
+                String[] arrIrgendwo;
+                if (Filter.isPattern(filterIrgendwo)) {
+                    arrIrgendwo = new String[]{filterIrgendwo};
+                } else {
+                    arrIrgendwo = filterIrgendwo.split(",");
+                    for (int i = 0; i < arrIrgendwo.length; ++i) {
+                        arrIrgendwo[i] = arrIrgendwo[i].trim();
+                    }
                 }
                 ListeFilme liste = new ListeFilme();
                 DatenFilm film;

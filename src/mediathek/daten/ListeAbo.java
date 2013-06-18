@@ -53,7 +53,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         if (dialogEditAbo.ok) {
 //            if (getAbo(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR], datenAbo.arr[DatenAbo.ABO_TITEL_NR],
 //                    datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR], datenAbo.mindestdauerMinuten) == null) {
-            if (aboExistiertBereits(datenAbo)) {
+            if (!aboExistiertBereits(datenAbo)) {
                 addAbo(datenAbo);
                 ret = true;
             } else {
@@ -113,6 +113,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
 
     private boolean aboExistiertBereits(DatenAbo abo) {
+        // true wenn es das Abo schon gibt
         DatenAbo datenAbo;
         ListIterator<DatenAbo> it = this.listIterator();
         while (it.hasNext()) {
@@ -130,8 +131,10 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         while (it.hasNext()) {
             datenAbo = it.next();
             if (Filter.filterAufAboPruefen(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR],
-                    datenAbo.arr[DatenAbo.ABO_TITEL_NR].split(","), datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR].split(","),
-                    datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR].split(","), datenAbo.mindestdauerMinuten,
+                    Filter.isPattern(datenAbo.arr[DatenAbo.ABO_TITEL_NR]) ? new String[]{datenAbo.arr[DatenAbo.ABO_TITEL_NR]} : datenAbo.arr[DatenAbo.ABO_TITEL_NR].split(","),
+                    Filter.isPattern(datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR]) ? new String[]{datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR]} : datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR].split(","),
+                    Filter.isPattern(datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR]) ? new String[]{datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR]} : datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR].split(","),
+                    datenAbo.mindestdauerMinuten,
                     film)) {
                 return datenAbo;
             }

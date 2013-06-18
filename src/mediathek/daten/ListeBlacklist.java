@@ -189,7 +189,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         while (it.hasNext()) {
             blacklist = it.next();
             if (Filter.filterAufAboPruefen(blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
-                    blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR].split(","), blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].split(","), new String[]{""}, 0, film)) {
+                    Filter.isPattern(blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR])
+                    ? new String[]{blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR]} : blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR].split(","),
+                    Filter.isPattern(blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR])
+                    ? new String[]{blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR]} : blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].split(","),
+                    new String[]{""}, 0, film)) {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST_NR])) {
                     return true;
                 } else {
