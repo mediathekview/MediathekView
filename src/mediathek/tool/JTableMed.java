@@ -313,7 +313,8 @@ public final class JTableMed extends JTable {
                             || i == DatenDownload.DOWNLOAD_ZEIT_NR
                             || i == DatenDownload.DOWNLOAD_SENDER_NR
                             || i == DatenDownload.DOWNLOAD_PROGRESS_NR
-                            || i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                            || i == DatenDownload.DOWNLOAD_RESTZEIT_NR
+                            || i == DatenDownload.DOWNLOAD_DAUER_NR) {
                         breite[i] = 100;
                     }
                     break;

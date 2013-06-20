@@ -135,6 +135,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = new String(datenAbo.arr[i]);
         }
+        this.mindestdauerMinuten = datenAbo.mindestdauerMinuten;
     }
 
     public String aboPfadAnhaengen(String pfad) {

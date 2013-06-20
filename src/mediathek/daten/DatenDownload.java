@@ -28,6 +28,7 @@ import mediathek.controller.filmeLaden.suchen.sender.MediathekSwr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
 import mediathek.controller.io.AsxLesen;
 import mediathek.controller.io.starter.Start;
+import mediathek.tool.Datum;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
@@ -37,6 +38,7 @@ import mediathek.tool.Log;
 
 public class DatenDownload implements Comparable<DatenDownload> {
     //
+
     public static final String DOWNLOAD_NR = "Nr";
     public static final int DOWNLOAD_NR_NR = 0;
     public static final String DOWNLOAD_FILM_NR = "Filmnr";
@@ -57,41 +59,46 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_DATUM_NR = 8;
     public static final String DOWNLOAD_ZEIT = "Zeit";
     public static final int DOWNLOAD_ZEIT_NR = 9;
+    public static final String DOWNLOAD_DAUER = "Dauer";
+    public static final int DOWNLOAD_DAUER_NR = 10;
     public static final String DOWNLOAD_URL = "URL";
-    public static final int DOWNLOAD_URL_NR = 10;
+    public static final int DOWNLOAD_URL_NR = 11;
     public static final String DOWNLOAD_URL_AUTH = "URL-Auth";
-    public static final int DOWNLOAD_URL_AUTH_NR = 11;
+    public static final int DOWNLOAD_URL_AUTH_NR = 12;
     public static final String DOWNLOAD_URL_RTMP = "URL-rtmp";
-    public static final int DOWNLOAD_URL_RTMP_NR = 12;
+    public static final int DOWNLOAD_URL_RTMP_NR = 13;
     public static final String DOWNLOAD_PROGRAMMSET = "Programmset";
-    public static final int DOWNLOAD_PROGRAMMSET_NR = 13;
+    public static final int DOWNLOAD_PROGRAMMSET_NR = 14;
     public static final String DOWNLOAD_PROGRAMM = "Programm";
-    public static final int DOWNLOAD_PROGRAMM_NR = 14;
+    public static final int DOWNLOAD_PROGRAMM_NR = 15;
     public static final String DOWNLOAD_PROGRAMM_AUFRUF = "Programmaufruf";
-    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 15;
+    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 16;
     public static final String DOWNLOAD_PROGRAMM_RESTART = "Restart";
-    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 16;
+    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 17;
     public static final String DOWNLOAD_ZIEL_DATEINAME = "Dateiname";
-    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 17;
+    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 18;
     public static final String DOWNLOAD_ZIEL_PFAD = "Pfad";
-    public static final int DOWNLOAD_ZIEL_PFAD_NR = 18;
+    public static final int DOWNLOAD_ZIEL_PFAD_NR = 19;
     public static final String DOWNLOAD_ZIEL_PFAD_DATEINAME = "Pfad-Dateiname";
-    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 19;
+    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 20;
     public static final String DOWNLOAD_ART = "Art"; //Art des Downloads: direkter Dateidownload oder über ein Programm
-    public static final int DOWNLOAD_ART_NR = 20;
+    public static final int DOWNLOAD_ART_NR = 21;
     public static final String DOWNLOAD_QUELLE = "Quelle"; //Quelle: gestartet über einen Button, Download, Abo
-    public static final int DOWNLOAD_QUELLE_NR = 21;
+    public static final int DOWNLOAD_QUELLE_NR = 22;
     public static final String DOWNLOAD_ZURUECKGESTELLT = "Zurueckgestellt";
-    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 22;
+    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 23;
     //
     public static final String DOWNLOAD = "Downlad";
-    public static final int DOWNLOAD_MAX_ELEM = 23;
+    public static final int DOWNLOAD_MAX_ELEM = 24;
     public static final String[] DOWNLOAD_COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT,
-        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_URL, DOWNLOAD_URL_AUTH, DOWNLOAD_URL_RTMP,
+        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_URL, DOWNLOAD_URL_AUTH, DOWNLOAD_URL_RTMP,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT};
     public String[] arr;
+    public Datum datumFilm = new Datum(0);
+    public String durationStr = "";
+    public long durationL = 0; // Sekunden
 
     public DatenDownload() {
         makeArr();
@@ -108,8 +115,44 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_DATUM_NR] = film.arr[DatenFilm.FILM_DATUM_NR];
         arr[DOWNLOAD_ZEIT_NR] = film.arr[DatenFilm.FILM_ZEIT_NR];
         arr[DOWNLOAD_URL_RTMP_NR] = film.arr[DatenFilm.FILM_URL_RTMP_NR];
+        arr[DOWNLOAD_DAUER_NR] = film.arr[DatenFilm.FILM_DURATION_NR];
         arr[DOWNLOAD_QUELLE_NR] = String.valueOf(quelle);
+        durationL = film.durationL;
+        durationStr = film.durationStr;
         aufrufBauen(pSet, film, abo, name, pfad);
+        setWerte();
+    }
+
+    final public void setWerte() {
+        if (this.arr[DOWNLOAD_DAUER_NR].equals("") || this.arr[DOWNLOAD_DAUER_NR].equals("0") || this.arr[DOWNLOAD_DAUER_NR].equals("-1")) {
+            setWerte(0);
+        } else {
+            setWerte(Long.parseLong(this.arr[DOWNLOAD_DAUER_NR]));
+        }
+    }
+
+    private void setWerte(long l) {
+        if (l <= 0 || l > 3600 * 5 /* Werte über 5 Stungen */) {
+            durationStr = "";
+            durationL = 0;
+        } else {
+            durationL = l;
+            long hours = l / 3600;
+            l = l - (hours * 3600);
+            long min = l / 60;
+            l = l - (min * 60);
+            long seconds = l;
+            durationStr = fuellen(String.valueOf(hours)) + ":" + fuellen(String.valueOf(min)) + ":" + fuellen(String.valueOf(seconds));
+        }
+        arr[DOWNLOAD_DAUER_NR] = "" + durationL;
+        datumFilm = DatumZeit.getDatumForObject(this);
+    }
+
+    private String fuellen(String s) {
+        while (s.length() < 2) {
+            s = "0" + s;
+        }
+        return s;
     }
 
     public boolean istZurueckgestellt() {
@@ -155,6 +198,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
         for (int i = 0; i < arr.length; ++i) {
             ret.arr[i] = new String(this.arr[i]);
         }
+        ret.datumFilm = this.datumFilm;
+        ret.durationL = this.durationL;
+        ret.durationStr = this.durationStr;
         return ret;
     }
 

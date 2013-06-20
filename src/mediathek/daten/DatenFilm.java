@@ -244,7 +244,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         }
     }
 
-    final public void setWerte(long l) {
+    private void setWerte(long l) {
         if (l <= 0 || l > 3600 * 5 /* Werte über 5 Stungen */) {
             durationStr = "";
             durationL = 0;

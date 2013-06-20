@@ -235,6 +235,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         private void filmHolen(String thema, String titel, String urlThema, String filmWebsite) {
             final String MUSTER_URL_1 = "<li>DSL 2000 <a href=\"http://wstreaming.zdf.de/zdf/veryhigh/";
             final String MUSTER_URL_2 = "<li>DSL 2000 <a href=\"http://wgeostreaming.zdf.de/zdf/veryhigh/";
+         ///////                                <li>DSL 2000 <a href=" http://hgeostreaming.zdf.de/zdf/veryhigh/13/06/130617_aidaverona_miz.mov" class="play" target="_blank">Abspielen</a></li>
             final String MUSTER_TITEL_1 = "<title>";
             final String MUSTER_TITEL_2 = "</title>";
             final String MUSTER_DATUM_1 = "<p class=\"datum\">";
