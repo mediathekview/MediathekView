@@ -56,6 +56,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
+    @Override
+    public boolean add(DatenDownload d) {
+        d.setWerte();
+        return super.add(d);
+    }
+
     public synchronized void zurueckgestellteWiederAktivieren() {
         DatenDownload d = null;
         ListIterator<DatenDownload> it = this.listIterator(0);
@@ -145,8 +151,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     for (int i = 0; i < DatenDownload.DOWNLOAD_MAX_ELEM; ++i) {
                         if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                             object[i] = "";
+                        } else if (i == DatenDownload.DOWNLOAD_DAUER_NR) {
+                            object[i] = datenDownload.durationStr;
                         } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
-                            object[i] = DatumZeit.getDatumForObject(datenDownload);
+                            object[i] = datenDownload.datumFilm;
                         } else {
                             object[i] = datenDownload.arr[i];
                         }

@@ -154,7 +154,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
                 public void stateChanged(ChangeEvent e) {
                     labelDauer.setText("  " + String.valueOf(sliderDauer.getValue()) + " ");
                     if (!sliderDauer.getValueIsAdjusting()) {
-                        aktAbo.setMindestDauerMinuten(sliderDauer.getValue() * 60 /*Sekunden*/);
+                        aktAbo.setMindestDauerMinuten(sliderDauer.getValue() );
                     }
                 }
             });

@@ -206,7 +206,7 @@ public class DatumZeit {
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(649897321, Log.FEHLER_ART_PROG, "DatumZeit.getDatumForObject", ex,
-                        new String[]{"Dateum: " + datenDownload.arr[DatenDownload.DOWNLOAD_DATUM_NR], "Zeit: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZEIT_NR]});
+                        new String[]{"Datum: " + datenDownload.arr[DatenDownload.DOWNLOAD_DATUM_NR], "Zeit: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZEIT_NR]});
             }
         }
         return tmp;
