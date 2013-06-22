@@ -223,55 +223,35 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                             link = seite1.substring(pos1, pos2);
                         }
                     }
+                    // =============================================================================
+                    // URL suchen
                     pos1 = seite1.indexOf(MUSTER_URL, pos);
-                    if (pos1 == -1 || (ende != -1 && pos1 > ende)) {
-                        // dann nach Quicktime-Link suchen
-                        if ((pos1 = seite1.indexOf(MUSTER_URL_QUICKTIME_1, pos)) != -1) {
-                            pos1 += MUSTER_URL_QUICKTIME_1.length();
-                            if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                                url = seite1.substring(pos1, pos2);
-                            }
-//                            } else {
-//                                // 2. Möglichkeit von Quicktime
-//                                if ((pos1 = seite1.indexOf(MUSTER_URL_QUICKTIME_2, pos)) != -1) {
-//                                    pos1 += MUSTER_URL_QUICKTIME_1.length();
-//                                    if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-//                                        url = seite1.substring(pos1, pos2);
-//                                    }
-//                                }
-                        }
-                        if (url.equals("")) {
-                            Log.fehlerMeldung(-398745632, Log.FEHLER_ART_MREADER, "Mediathek3Sat.addToList-quicktime", "keine URL" + url_rss);
-                        } else {
-                            url = "http://hstreaming.zdf.de/3sat/veryhigh" + url;
-                            if (!url.endsWith("mov")) {
-                                Log.fehlerMeldung(-798965430, Log.FEHLER_ART_MREADER, "Mediathek3sat.filmHolen", "keine URL: " + url_rss);
-                            } else {
-                                quicktimeHolen(thema, titel, link, url, datum, zeit, duration, description, imageUrl);
-                            }
-                        }
-                    } else if (pos1 != -1 && ((ende != -1 && pos1 < ende) || ende == -1)) {
+                    if (pos1 != -1 && (ende == -1 || pos1 < ende)) {
                         // asx
                         pos1 += MUSTER_URL.length();
                         if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
                             url = seite1.substring(pos1, pos2);
                         }
-                        if (url.equals("")) {
-                            Log.fehlerMeldung(-532169764, Log.FEHLER_ART_MREADER, "Mediathek3Sat.addToList-asx", "keine URL");
-                        } else {
+                        if (!url.equals("") && url.endsWith("asx")) {
                             url = url.replace("/300/", "/veryhigh/");
-                            //    public DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum) {
-                            //    public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
-                            //addFilm(new DatenFilm(nameSenderMReader, (thema_rss.equals("") ? thema : thema_rss), link, titel, url, datum, zeit));
-                            if (!url.endsWith("asx")) {
-                                Log.fehlerMeldung(-896325047, Log.FEHLER_ART_MREADER, "Mediathek3sat.filmHolen-2", "keine URL: " + url_rss);
-                            } else {
-                                //flashHolen(thema, titel, link, url, datum, zeit);
-                                flashHolen(thema, titel, link, url, datum, zeit, duration, description, imageUrl);
-                            }
+                            flashHolen(thema, titel, link, url, datum, zeit, duration, description, imageUrl);
                         }
                     } else {
-                        Log.fehlerMeldung(-978741398, Log.FEHLER_ART_MREADER, "Mediathek3sat.filmHolen", "kann nicht sein, URL: " + url_rss);
+                        // dann mit Quicktime-Link versuchen
+                        pos1 = seite1.indexOf(MUSTER_URL_QUICKTIME_1, pos);
+                        if (pos1 != -1 && (ende == -1 || pos1 < ende)) {
+                            pos1 += MUSTER_URL_QUICKTIME_1.length();
+                            if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                                url = seite1.substring(pos1, pos2);
+                            }
+                            if (!url.equals("") && url.endsWith("mov")) {
+                                url = "http://hstreaming.zdf.de/3sat/veryhigh" + url;
+                                quicktimeHolen(thema, titel, link, url, datum, zeit, duration, description, imageUrl);
+                            }
+                        }
+                    }
+                    if (url.equals("")) {
+                        Log.fehlerMeldung(-976432589, Log.FEHLER_ART_MREADER, "Mediathek3Sat.addToList", new String[]{"keine URL:", titel, url_rss});
                     }
                 } catch (Exception ex) {
                     Log.fehlerMeldung(-823694892, Log.FEHLER_ART_MREADER, "Mediathek3Sat.laden", ex);
@@ -279,7 +259,6 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
             } //while, die ganz große Schleife
         }
 
-        //private void flashHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit) {
         private void flashHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String imageUrl) {
             meldung(urlFilm);
             //DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit);
