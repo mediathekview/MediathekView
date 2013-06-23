@@ -425,7 +425,8 @@ public class GuiFilme extends PanelVorlage {
             } else {
                 for (int selRow : selRows) {
                     selRow = tabelle.convertRowIndexToModel(selRow);
-                    film = DDaten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
+                    // film = DDaten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
+                    film = DDaten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_NR_NR).toString());
                     DialogAddDownload dialog = new DialogAddDownload(ddaten.mediathekGui, ddaten, film, pSet);
                     dialog.setVisible(true);
                 }
@@ -621,7 +622,8 @@ public class GuiFilme extends PanelVorlage {
         int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
             int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
-            DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+            //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
             if (film != null) {
                 aktFilm = film;
             }
@@ -648,7 +650,8 @@ public class GuiFilme extends PanelVorlage {
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
             int selectedModelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
-            DatenFilm datenFilm = DDaten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+            //DatenFilm datenFilm = DDaten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+            DatenFilm datenFilm = DDaten.listeFilmeNachBlackList.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
             ddaten.starterClass.urlStarten(pSet, datenFilm);
         }
     }
@@ -1326,7 +1329,7 @@ public class GuiFilme extends PanelVorlage {
                 tabelle.setRowSelectionInterval(nr, nr);
             }
             int selectedModelRow = tabelle.convertRowIndexToModel(nr);
-            DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
             JPopupMenu jPopupMenu = new JPopupMenu();
 
             //Thema laden
@@ -1618,7 +1621,8 @@ public class GuiFilme extends PanelVorlage {
                     if (nr >= 0) {
                         stopBeob = true;
                         int selectedModelRow = tabelle.convertRowIndexToModel(nr);
-                        DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+                        //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+                        DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
                         DatenAbo datenAbo;
                         if (film != null) {
                             if ((datenAbo = ddaten.listeAbo.getAboFuerFilm(film)) != null) {
