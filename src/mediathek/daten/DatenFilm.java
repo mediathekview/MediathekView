@@ -92,6 +92,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public Datum datumFilm = new Datum(0);
     public String durationStr = "";
     public long durationL = 0; // Sekunden
+    
 
     public DatenFilm() {
         makeArr();

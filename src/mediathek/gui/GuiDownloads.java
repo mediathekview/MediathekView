@@ -507,7 +507,8 @@ public class GuiDownloads extends PanelVorlage {
         int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
             int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
-            DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+            //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_FILM_NR_NR).toString());
             if (film != null) {
                 aktFilm = film;
             }
@@ -851,7 +852,7 @@ public class GuiDownloads extends PanelVorlage {
                         DatenPset gruppe = ddaten.listePset.getPsetAbspielen();
                         if (gruppe != null) {
                             int selectedModelRow = tabelle.convertRowIndexToModel(nr);
-                            DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_FILM_NR_NR).toString());
                             if (film != null) {
                                 // in die History eintragen
                                 ddaten.history.add(film.getUrlOrg());
