@@ -92,7 +92,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public Datum datumFilm = new Datum(0);
     public String durationStr = "";
     public long durationL = 0; // Sekunden
-    
 
     public DatenFilm() {
         makeArr();
@@ -197,7 +196,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
 
     public String getIndex() {
         // liefert einen eindeutigen Index für die Filmliste
-        return arr[FILM_SENDER_NR] + arr[FILM_THEMA_NR] + arr[FILM_URL_NR];
+        return arr[FILM_SENDER_NR].toLowerCase() + arr[FILM_THEMA_NR].toLowerCase() + arr[FILM_URL_NR];
     }
 
     public DatenFilm getClean() {
