@@ -262,7 +262,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
         private void flashHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String imageUrl) {
             meldung(urlFilm);
             //DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit);
-            DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit, durationInSeconds, description, "", imageUrl, new String[]{});
+            DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit, durationInSeconds, description, imageUrl, new String[]{});
             if (f != null) {
                 addFilm(f);
             }
@@ -271,52 +271,10 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
         private void quicktimeHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String imageUrl) {
             meldung(urlFilm);
             //DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit);
-            DatenFilm f = quicktime(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit, durationInSeconds, description, "", imageUrl, new String[]{});
+            DatenFilm f = MediathekZdf.quicktime(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit, durationInSeconds, description, "", imageUrl, new String[]{});
             if (f != null) {
                 addFilm(f);
             }
-        }
-
-        private DatenFilm quicktime(GetUrl getUrl, StringBuffer seiteQuicktime, String senderName, String thema, String titel, String filmWebsite, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
-            // RTSPtext
-            // rtsp://a1966.v1252936.c125293.g.vq.akamaistream.net/7/1966/125293/v0001/mp4.od.origin.zdf.de.gl-systemhaus.de/none/3sat/13/06/130614_meyer_kuz_1596k_p13v9.mp4
-            // 
-            // daraus wird:
-            // http://rodl.zdf.de / none/3sat/13/06/130621_news_kuz_436k_p9v11.mp4
-            DatenFilm ret = null;
-            final String MUSTER_URL = "rtsp://";
-            final String MUSTER_TAUSCH = "gl-systemhaus.de";
-            final String MUSTER_ENDE = ".mp4";
-            String orgUrl = urlFilm;
-            String url, tmpUrl = "";
-            int pos1;
-            int pos2;
-            try {
-                seiteQuicktime = getUrl.getUri_Utf(senderName, orgUrl, seiteQuicktime, "filmWebsite: " + filmWebsite);
-                String strSeiteQuicktime = seiteQuicktime.toString();
-                if ((pos1 = strSeiteQuicktime.indexOf(MUSTER_URL, 0)) != -1) {
-                    pos1 += MUSTER_URL.length();
-                    if ((pos2 = strSeiteQuicktime.indexOf(MUSTER_ENDE, pos1)) != -1) {
-                        tmpUrl = strSeiteQuicktime.substring(pos1, pos2);
-                    }
-                }
-                if (tmpUrl.equals("")) {
-                    Log.fehlerMeldung(-679893014, Log.FEHLER_ART_MREADER, "Mediathek3sat.quicktime", "!gefunden: " + urlFilm);
-                } else {
-                    tmpUrl = MUSTER_URL + tmpUrl + MUSTER_ENDE;
-                    if ((pos1 = tmpUrl.indexOf(MUSTER_TAUSCH)) != -1) {
-                        pos1 += MUSTER_TAUSCH.length();
-                        url = "http://rodl.zdf.de" + tmpUrl.substring(pos1);
-                        //ret = new DatenFilm(senderName, thema, urlThema, titel, url, ""/* urlRtmp */, datum, zeit);
-                        ret = new DatenFilm(senderName, thema, filmWebsite, titel, url, ""/* urlRtmp */, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
-                    } else {
-                        Log.fehlerMeldung(-918596307, Log.FEHLER_ART_MREADER, "Mediathek3sat.quicktime", "url passt nicht: " + urlFilm);
-                    }
-                }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(-265847128, Log.FEHLER_ART_MREADER, "MediathekZdf.flash" + senderName, ex, urlFilm);
-            }
-            return ret;
         }
 
         private synchronized String[] getListeThemen() {
