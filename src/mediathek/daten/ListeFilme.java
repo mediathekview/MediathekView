@@ -122,6 +122,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         // nur für die MediathekReader
         // ist eine URL,Sender,Thema,Titel schon vorhanden, wird sie verworfen, die aktuellste bleibt erhalten
         DatenFilm f;
+        String idx = film.getIndex();
         // Thema
         film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeXml(film.arr[DatenFilm.FILM_THEMA_NR].trim());
         film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
@@ -137,7 +138,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         Iterator<DatenFilm> it = this.iterator();
         while (it.hasNext()) {
             f = it.next();
-            if (f.getIndex().equals(film.getIndex())) {
+            if (f.getIndex().equals(idx)) {
                 return false;
             }
         }
@@ -399,7 +400,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
 //        }
 //        return ret;
 //    }
-
     public synchronized DatenFilm getFilmByNr(String nr) {
         DatenFilm ret = null;
         ListIterator<DatenFilm> it = this.listIterator(0);

@@ -25,7 +25,11 @@
     - Es kann ein eigenes Iconset verwendet werden
     - Über den Menüpunkt "Hilfe->Hilfe und Fragen.." können alle Einstellungen zurückgesetzt werden
     - Neue Infos zu den Sendungen: Beschreibung, Bild, Sendungsdauer
-
+    - Die unterschiedliche Behandlung von Strings im "Titel" und "Thema/Titel" Feld wurde vereinheitlicht.
+    Soll jetzt nach mehreren Begriffen gesucht werden, müssen sie durch Komma getrennt werden, 
+	es ist also jetzt auch möglich nach Begriffen mit Leerzeichen zu suchen 
+	zB.: "hallo ich,tatort" sucht nach "hallo ich" oder "tatort". Es gibt jetzt auch einen Filter für die Sendungsdauer.
+    
     # Version 3.2.1
     - Fehler bei der Blacklist
     - Probleme mit best. Java-Versionen

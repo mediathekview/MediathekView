@@ -397,7 +397,7 @@ public final class JTableMed extends JTable {
         }
         listeSortKeys = this.getRowSorter().getSortKeys();
         if (listeSortKeys != null) {
-            if (listeSortKeys.size() != 0) {
+            if (!listeSortKeys.isEmpty()) {
                 SortKey sk = listeSortKeys.get(0);
                 s = String.valueOf(sk.getColumn());
                 upDown = sk.getSortOrder().equals(SortOrder.ASCENDING) ? SORT_ASCENDING : SORT_DESCENDING;
@@ -441,7 +441,7 @@ public final class JTableMed extends JTable {
     }
 
     private SortKey sortKeyLesen(String s, String upDown) {
-        SortKey sk = null;
+        SortKey sk;
         int sp;
         try {
             sp = Integer.parseInt(s);
