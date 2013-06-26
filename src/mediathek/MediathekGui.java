@@ -274,6 +274,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 buttonAus();
                 jButtonFilmeLaden.setEnabled(true);
                 jButtonFilmAbspielen.setEnabled(true);
+                jButtonInfo.setEnabled(true);
                 jButtonFilmSpeichern.setEnabled(true);
                 jMenuItemFilmAbspielen.setEnabled(true);
                 jMenuItemFilmAufzeichnen.setEnabled(true);
@@ -282,6 +283,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 break;
             case DOWNLOAD:
                 buttonAus();
+                jButtonInfo.setEnabled(true);
                 jButtonFilmeLaden.setEnabled(true);
                 jButtonDownloadAktualisieren.setEnabled(true);
                 jButtonDownloadAlleStarten.setEnabled(true);
@@ -351,6 +353,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private void buttonAus() {
         jButtonFilmeLaden.setEnabled(false);
         jButtonFilmAbspielen.setEnabled(false);
+        jButtonInfo.setEnabled(false);
         jButtonFilmSpeichern.setEnabled(false);
         jButtonDownloadAktualisieren.setEnabled(false);
         jButtonDownloadAlleStarten.setEnabled(false);
@@ -457,6 +460,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private void init() {
         jButtonFilmeLaden.setIcon(GetIcon.getIcon("download_32.png"));
         jButtonFilmAbspielen.setIcon(GetIcon.getIcon("player_play_32.png"));
+        jButtonInfo.setIcon(GetIcon.getIcon("info_32.png"));
         jButtonFilmSpeichern.setIcon(GetIcon.getIcon("player_rec_32.png"));
         jButtonDownloadAktualisieren.setIcon(GetIcon.getIcon("view-refresh_32.png"));
         jButtonDownloadAlleStarten.setIcon(GetIcon.getIcon("alle_starten_32.png"));
@@ -573,6 +577,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             @Override
             public void actionPerformed(ActionEvent e) {
                 ddaten.guiFilme.filmAbspielen();
+            }
+        });
+        jButtonInfo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.filmInfoHud.show();
             }
         });
         // Tab Downloads
@@ -987,6 +997,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         if (klein) {
             jButtonFilmeLaden.setIcon(GetIcon.getIcon("download_16.png"));
             jButtonFilmAbspielen.setIcon(GetIcon.getIcon("player_play_16.png"));
+            jButtonInfo.setIcon(GetIcon.getIcon("info_16.png"));
             jButtonFilmSpeichern.setIcon(GetIcon.getIcon("player_rec_16.png"));
             jButtonDownloadAktualisieren.setIcon(GetIcon.getIcon("view-refresh_16.png"));
             jButtonDownloadAlleStarten.setIcon(GetIcon.getIcon("alle_starten_16.png"));
@@ -1000,6 +1011,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         } else {
             jButtonFilmeLaden.setIcon(GetIcon.getIcon("download_32.png"));
             jButtonFilmAbspielen.setIcon(GetIcon.getIcon("player_play_32.png"));
+            jButtonInfo.setIcon(GetIcon.getIcon("info_32.png"));
             jButtonFilmSpeichern.setIcon(GetIcon.getIcon("player_rec_32.png"));
             jButtonDownloadAktualisieren.setIcon(GetIcon.getIcon("view-refresh_32.png"));
             jButtonDownloadAlleStarten.setIcon(GetIcon.getIcon("alle_starten_32.png"));
@@ -1044,6 +1056,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
         jButtonFilmeLaden = new javax.swing.JButton();
         javax.swing.Box.Filler filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
+        jButtonInfo = new javax.swing.JButton();
+        filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
         jButtonFilmAbspielen = new javax.swing.JButton();
         jButtonFilmSpeichern = new javax.swing.JButton();
         javax.swing.Box.Filler filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
@@ -1135,6 +1149,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonFilmeLaden.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar.add(jButtonFilmeLaden);
         jToolBar.add(filler1);
+
+        jButtonInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/info_32.png"))); // NOI18N
+        jButtonInfo.setToolTipText("Infos anzeigen");
+        jButtonInfo.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        jButtonInfo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonInfo.setOpaque(false);
+        jButtonInfo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar.add(jButtonInfo);
+        jToolBar.add(filler6);
 
         jButtonFilmAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_play_32.png"))); // NOI18N
         jButtonFilmAbspielen.setToolTipText("Film abspielen");
@@ -1421,6 +1444,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler5;
+    private javax.swing.Box.Filler filler6;
     private javax.swing.Box.Filler filler8;
     private javax.swing.JButton jButtonAboAendern;
     private javax.swing.JButton jButtonAbosAusschalten;
@@ -1435,6 +1459,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JButton jButtonFilmSpeichern;
     private javax.swing.JButton jButtonFilmeLaden;
     private javax.swing.JButton jButtonFilterPanel;
+    private javax.swing.JButton jButtonInfo;
     private javax.swing.JCheckBoxMenuItem jCheckBoxIconKlein;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemFilterAnzeigen;
