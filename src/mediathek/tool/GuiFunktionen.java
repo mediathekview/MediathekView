@@ -49,44 +49,6 @@ public class GuiFunktionen extends Funktionen {
         }
     }
 
-    public static String replaceString(String s, DatenFilm film) {
-        s = s.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
-        s = s.replace("%d", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? DatumZeit.getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT_NR]));
-        s = s.replace("%t", film.arr[DatenFilm.FILM_THEMA_NR]);
-        s = s.replace("%T", film.arr[DatenFilm.FILM_TITEL_NR]);
-        s = s.replace("%s", film.arr[DatenFilm.FILM_SENDER_NR]);
-        s = s.replace("%H", DatumZeit.getHeute_yyyyMMdd());
-        s = s.replace("%h", DatumZeit.getJetzt_HHMMSS());
-        s = s.replace("%N", GuiFunktionen.getDateiName(film.arr[DatenFilm.FILM_URL_NR]));
-        return s;
-    }
-
-    private static String datumDrehen(String datum) {
-        String ret = "";
-        if (!datum.equals("")) {
-            try {
-                if (datum.length() == 10) {
-                    String tmp = datum.substring(6); // Jahr
-                    tmp += "." + datum.substring(3, 5); // Monat
-                    tmp += "." + datum.substring(0, 2); // Tag
-                    ret = tmp;
-                }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(775421006, Log.FEHLER_ART_PROG, "DatenFilm.datumDrehen", ex, datum);
-            }
-
-        }
-        return ret;
-    }
-
-    private static String datumDatumZeitReinigen(String datum) {
-        String ret;
-        ret = datum;
-        ret = ret.replace(":", "");
-        ret = ret.replace(".", "");
-        return ret;
-    }
-
     public static String replaceLeerDateiname(String pfad, boolean pfadtrennerEntfernen, boolean leerEntfernen) {
         // verbotene Zeichen entfernen
         // < > ? " : | \ / *
@@ -303,6 +265,27 @@ public class GuiFunktionen extends Funktionen {
         }
         if (ret.equals("")) {
             Log.fehlerMeldung(395019631, Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiName", pfad);
+        }
+        return ret;
+    }
+
+    public static String getDateiSuffix(String pfad) {
+        //Suffix einer URL extrahieren
+        String ret = "";
+        if (pfad != null) {
+            if (!pfad.equals("") && pfad.contains(".")) {
+                ret = pfad.substring(pfad.lastIndexOf(".") + 1);
+            }
+        }
+        if (ret.equals("")) {
+            Log.fehlerMeldung(969871236, Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiSuffix", pfad);
+        }
+        if (ret.length() > 3) {
+            if (ret.length() > 5) {
+                // dann ist was faul
+                ret="---";
+            }
+            Log.fehlerMeldung(821397046, Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiSuffix", pfad);
         }
         return ret;
     }
