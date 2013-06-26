@@ -583,7 +583,6 @@
                 <Component class="javax.swing.JTextArea" name="jTextAreaBeschreibung">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
-                    <Property name="lineWrap" type="boolean" value="true"/>
                     <Property name="rows" type="int" value="4"/>
                     <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                       <Insets value="[4, 4, 4, 4]"/>
