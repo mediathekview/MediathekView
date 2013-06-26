@@ -163,22 +163,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.TRUE.toString();
     }
 
-//    public void statusMelden(int status) {
-//        arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(status);
-//        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
-//    }
-//
-//    public static void statusMelden(ArrayList<DatenDownload> ad, int status) {
-//        for (DatenDownload d : ad) {
-//            d.arr[DatenDownload.DOWNLOAD_PROGRESS_NR] = String.valueOf(status);
-//        }
-//        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
-//    }
     public void starten(DDaten ddaten) {
         // Start erstellen und zur Liste hinzufügen
         ddaten.starterClass.addStart(new Start(this));
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
-//        statusMelden(DatenDownload.PROGRESS_WARTEN);
     }
 
     public static void starten(DDaten ddaten, ArrayList<DatenDownload> ad) {
@@ -190,7 +178,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
         //die Starts jetzt starten
         ddaten.starterClass.addStart(al);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
-//      statusMelden(ad, DatenDownload.PROGRESS_WARTEN);
     }
 
     public DatenDownload getCopy() {
@@ -325,7 +312,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             if (name.equals("")) {
                 name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
             }
-            name = GuiFunktionen.replaceString(name, film);
+            name = replaceString(name, film);
             name = GuiFunktionen.replaceLeerDateiname(name, true/* pfadtrennerEntfernen */, true /* leerEntfernen */);
             // prüfen ob das Suffix 2x vorkommt
             if (name.length() > 8) {
@@ -375,7 +362,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 // bei Downloads den Namen des Themas an den Zielpfad anhängen
                 pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR], true/* pfadtrennerEntfernen */, true /* leerEntfernen */));
             }
-            pfad = GuiFunktionen.replaceString(pfad, film);
+            pfad = replaceString(pfad, film);
             pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* pfadtrennerEntfernen */, false /* leerEntfernen */);
         }
         if (pfad.endsWith(File.separator)) {
@@ -410,6 +397,45 @@ public class DatenDownload implements Comparable<DatenDownload> {
         } else {
             arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = befehlsString;
         }
+    }
+
+    private String replaceString(String s, DatenFilm film) {
+        s = s.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
+        s = s.replace("%d", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? DatumZeit.getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT_NR]));
+        s = s.replace("%t", film.arr[DatenFilm.FILM_THEMA_NR]);
+        s = s.replace("%T", film.arr[DatenFilm.FILM_TITEL_NR]);
+        s = s.replace("%s", film.arr[DatenFilm.FILM_SENDER_NR]);
+        s = s.replace("%H", DatumZeit.getHeute_yyyyMMdd());
+        s = s.replace("%h", DatumZeit.getJetzt_HHMMSS());
+        s = s.replace("%N", GuiFunktionen.getDateiName(film.arr[DatenFilm.FILM_URL_NR]));
+        s = s.replace("%S", GuiFunktionen.getDateiSuffix(film.arr[DatenFilm.FILM_URL_NR]));
+        return s;
+    }
+
+    private static String datumDrehen(String datum) {
+        String ret = "";
+        if (!datum.equals("")) {
+            try {
+                if (datum.length() == 10) {
+                    String tmp = datum.substring(6); // Jahr
+                    tmp += "." + datum.substring(3, 5); // Monat
+                    tmp += "." + datum.substring(0, 2); // Tag
+                    ret = tmp;
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(775421006, Log.FEHLER_ART_PROG, "DatenFilm.datumDrehen", ex, datum);
+            }
+
+        }
+        return ret;
+    }
+
+    private static String datumDatumZeitReinigen(String datum) {
+        String ret;
+        ret = datum;
+        ret = ret.replace(":", "");
+        ret = ret.replace(".", "");
+        return ret;
     }
 
     private String getUrlFlvstreamer() {
