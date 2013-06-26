@@ -297,12 +297,17 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                         url = seite2.substring(pos1, pos2);
                         if (!url.equals("")) {
                             url = "http://" + url;
-                            // rtmp bauen
+//                            // rtmp bauen
+//                            if (url.contains("http://media.ndr.de/progressive")) {
+//                                tmp = url.replace("http://media.ndr.de/progressive", "rtmpt://cp160844.edgefcs.net/ondemand/mp4:flashmedia/streams/ndr");
+//                                if (tmp.contains("hi.mp4")) {
+//                                    tmp = tmp.replace("hi.mp4", "hq.mp4");
+//                                    url = tmp;
+//                                }
+//                            }
                             if (url.contains("http://media.ndr.de/progressive")) {
-                                tmp = url.replace("http://media.ndr.de/progressive", "rtmpt://cp160844.edgefcs.net/ondemand/mp4:flashmedia/streams/ndr");
-                                if (tmp.contains("hi.mp4")) {
-                                    tmp = tmp.replace("hi.mp4", "hq.mp4");
-                                    url = tmp;
+                                if (url.contains("hi.mp4")) {
+                                    url = url.replace("hi.mp4", "hq.mp4");
                                 }
                             }
                             //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel)
