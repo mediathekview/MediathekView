@@ -61,38 +61,41 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_ZEIT_NR = 9;
     public static final String DOWNLOAD_DAUER = "Dauer";
     public static final int DOWNLOAD_DAUER_NR = 10;
+    public static final String DOWNLOAD_FILM_URL = "Film-URL";
+    public static final int DOWNLOAD_FILM_URL_NR = 11;
     public static final String DOWNLOAD_URL = "URL";
-    public static final int DOWNLOAD_URL_NR = 11;
-    public static final String DOWNLOAD_URL_AUTH = "URL-Auth";
-    public static final int DOWNLOAD_URL_AUTH_NR = 12;
+    public static final int DOWNLOAD_URL_NR = 12;
     public static final String DOWNLOAD_URL_RTMP = "URL-rtmp";
     public static final int DOWNLOAD_URL_RTMP_NR = 13;
+    public static final String DOWNLOAD_URL_AUTH = "URL-Auth";
+    public static final int DOWNLOAD_URL_AUTH_NR = 14;
     public static final String DOWNLOAD_PROGRAMMSET = "Programmset";
-    public static final int DOWNLOAD_PROGRAMMSET_NR = 14;
+    public static final int DOWNLOAD_PROGRAMMSET_NR = 15;
     public static final String DOWNLOAD_PROGRAMM = "Programm";
-    public static final int DOWNLOAD_PROGRAMM_NR = 15;
+    public static final int DOWNLOAD_PROGRAMM_NR = 16;
     public static final String DOWNLOAD_PROGRAMM_AUFRUF = "Programmaufruf";
-    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 16;
+    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 17;
     public static final String DOWNLOAD_PROGRAMM_RESTART = "Restart";
-    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 17;
+    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 18;
     public static final String DOWNLOAD_ZIEL_DATEINAME = "Dateiname";
-    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 18;
+    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 19;
     public static final String DOWNLOAD_ZIEL_PFAD = "Pfad";
-    public static final int DOWNLOAD_ZIEL_PFAD_NR = 19;
+    public static final int DOWNLOAD_ZIEL_PFAD_NR = 20;
     public static final String DOWNLOAD_ZIEL_PFAD_DATEINAME = "Pfad-Dateiname";
-    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 20;
+    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 21;
     public static final String DOWNLOAD_ART = "Art"; //Art des Downloads: direkter Dateidownload oder über ein Programm
-    public static final int DOWNLOAD_ART_NR = 21;
+    public static final int DOWNLOAD_ART_NR = 22;
     public static final String DOWNLOAD_QUELLE = "Quelle"; //Quelle: gestartet über einen Button, Download, Abo
-    public static final int DOWNLOAD_QUELLE_NR = 22;
+    public static final int DOWNLOAD_QUELLE_NR = 23;
     public static final String DOWNLOAD_ZURUECKGESTELLT = "Zurueckgestellt";
-    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 23;
+    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 24;
     //
     public static final String DOWNLOAD = "Downlad";
-    public static final int DOWNLOAD_MAX_ELEM = 24;
+    public static final int DOWNLOAD_MAX_ELEM = 25;
     public static final String[] DOWNLOAD_COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT,
-        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_URL, DOWNLOAD_URL_AUTH, DOWNLOAD_URL_RTMP,
+        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER,
+        DOWNLOAD_FILM_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT};
     public String[] arr;
@@ -117,6 +120,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_URL_RTMP_NR] = film.arr[DatenFilm.FILM_URL_RTMP_NR];
         arr[DOWNLOAD_DAUER_NR] = film.arr[DatenFilm.FILM_DURATION_NR];
         arr[DOWNLOAD_QUELLE_NR] = String.valueOf(quelle);
+        if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_KLEINE_AUFLOESUNG_NR])) {
+            arr[DOWNLOAD_URL_NR] = getUrlLow(film.arr[DatenFilm.FILM_URL_NR]);
+            arr[DOWNLOAD_URL_RTMP_NR] = getUrlLow(getUrlFlvstreamer(film));
+        } else {
+            arr[DOWNLOAD_URL_NR] = film.arr[DatenFilm.FILM_URL_NR];
+            arr[DOWNLOAD_URL_RTMP_NR] = getUrlFlvstreamer(film);
+        }
         durationL = film.durationL;
         durationStr = film.durationStr;
         aufrufBauen(pSet, film, abo, name, pfad);
@@ -377,9 +387,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
         String befehlsString = programm.getProgrammAufruf();
         befehlsString = befehlsString.replace("**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         befehlsString = befehlsString.replace("%f", arr[DOWNLOAD_URL_NR]);
-        befehlsString = befehlsString.replace("%F", getUrlFlvstreamer());
-        befehlsString = befehlsString.replace("%k", getUrlLow());
-        befehlsString = befehlsString.replace("%K", getUrlLow(getUrlFlvstreamer()));
+        befehlsString = befehlsString.replace("%F", arr[DOWNLOAD_URL_RTMP_NR]);
+        befehlsString = befehlsString.replace("%k", arr[DOWNLOAD_URL_NR]); // ehemals kleine Auflösung
+        befehlsString = befehlsString.replace("%K", arr[DOWNLOAD_URL_RTMP_NR]); // ehemals kleine Auflösung
         if (befehlsString.contains("%x")) {
             // sonst holt er doch tatsächlich immer erst die asx-datei!
             befehlsString = befehlsString.replace("%x", AsxLesen.lesen(arr[DOWNLOAD_URL_NR]));
@@ -438,24 +448,32 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return ret;
     }
 
-    private String getUrlFlvstreamer() {
+    private String getUrlFlvstreamer(DatenFilm film) {
         String ret;
-        if (!arr[DOWNLOAD_URL_RTMP_NR].equals("")) {
-            ret = arr[DOWNLOAD_URL_RTMP_NR];
+        if (!film.arr[DatenFilm.FILM_URL_RTMP_NR].equals("")) {
+            ret = film.arr[DatenFilm.FILM_URL_RTMP_NR];
         } else {
-            if (arr[DOWNLOAD_URL_NR].startsWith(GuiKonstanten.RTMP_PRTOKOLL)) {
-                ret = GuiKonstanten.RTMP_FLVSTREAMER + arr[DOWNLOAD_URL_NR];
+            if (film.arr[DatenFilm.FILM_URL_NR].startsWith(GuiKonstanten.RTMP_PRTOKOLL)) {
+                ret = GuiKonstanten.RTMP_FLVSTREAMER + film.arr[DatenFilm.FILM_URL_NR];
             } else {
-                ret = arr[DOWNLOAD_URL_NR];
+                ret = film.arr[DatenFilm.FILM_URL_NR];
             }
         }
+//        if (!arr[DOWNLOAD_URL_RTMP_NR].equals("")) {
+//            ret = arr[DOWNLOAD_URL_RTMP_NR];
+//        } else {
+//            if (arr[DOWNLOAD_URL_NR].startsWith(GuiKonstanten.RTMP_PRTOKOLL)) {
+//                ret = GuiKonstanten.RTMP_FLVSTREAMER + arr[DOWNLOAD_URL_NR];
+//            } else {
+//                ret = arr[DOWNLOAD_URL_NR];
+//            }
+//        }
         return ret;
     }
 
-    private String getUrlLow() {
-        return getUrlLow(arr[DOWNLOAD_URL_NR]);
-    }
-
+//    private String getUrlLow() {
+//        return getUrlLow(arr[DOWNLOAD_URL_NR]);
+//    }
     private String getUrlLow(String url) {
         String ret = url;
         if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
@@ -472,7 +490,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
             // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_1596k_p13v9.mp4" system-bitrate="1700000">
             if (url.endsWith("vh.mp4")) {
                 ret = url.replace("vh.mp4", "h.mp4");
-            } else {
+            } else if (url.endsWith("1456k_p13v11.mp4")) {
+                ret = url.replace("1456k_p13v11.mp4", "436k_p9v11.mp4");
+            } else if (url.endsWith("1596k_p13v9.mp4")) {
                 ret = url.replace("1596k_p13v9.mp4", "536k_p9v9.mp4");
             }
         } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekNdr.SENDER)) {

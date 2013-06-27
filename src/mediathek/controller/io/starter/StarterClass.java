@@ -404,10 +404,9 @@ public class StarterClass {
             try {
                 int len;
                 new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
-                URL feedUrl = new URL(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                int maxLen = laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                int downLen = 0;
-                input = feedUrl.openStream();
+                long maxLen = laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                long downLen = 0;
+                input = new URL(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]).openStream();
                 byte[] buffer = new byte[1024];
                 long p, pp = 0;
                 destStream = new FileOutputStream(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
@@ -469,11 +468,11 @@ public class StarterClass {
 //            // Sicherheitsabfrage, dann beenden
 //        }
 //    }
-    private int laenge(String url) {
-        int ret;
+    private long laenge(String url) {
+        long ret;
         try {
             URL u = new URL(url);
-            ret = u.openConnection().getContentLength();
+            ret = u.openConnection().getContentLengthLong();
         } catch (Exception ex) {
             ret = -1;
             Log.fehlerMeldung(643298301, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload.laenge", ex);
