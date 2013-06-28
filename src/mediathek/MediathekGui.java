@@ -203,7 +203,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 setTitelUpdate();
             }
         });
-//        jButtonFilmeLaden.setSelected(true);
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR]));
+            }
+        });
     }
 
     /**
@@ -325,10 +330,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jTextFieldFilter.setVisible(anz);
         jButtonFilterPanel.setVisible(anz);
         jCheckBoxMenuItemFilterAnzeigen.setSelected(!anz);
-    }
-
-    public void beschreibungAnzeigen(boolean anz) {
-        jCheckBoxMenuItemBeschreibung.setSelected(!anz);
     }
 
     public void videoplayerAnzeigen(boolean anz) {
