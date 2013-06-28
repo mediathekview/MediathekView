@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Point;
@@ -63,6 +64,7 @@ import mediathek.tool.TModelDownload;
 public class GuiDownloads extends PanelVorlage {
 
     private MVFilmInformation filmInfoHud;
+    private PanelBeschreibung panelBeschreibung;
 
     public GuiDownloads(DDaten d, Component parentComponent) {
         super(d, parentComponent);
@@ -70,6 +72,9 @@ public class GuiDownloads extends PanelVorlage {
         tabelle = new JTableMed(JTableMed.TABELLE_TAB_DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
         filmInfoHud = ddaten.filmInfoHud;
+        panelBeschreibung = new PanelBeschreibung(ddaten);
+        jPanelBeschreibung.setLayout(new BorderLayout());
+        jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
         init();
         downloadsAktualisieren(); // die Tabelle wird dabei gleich geladen
         tabelle.initTabelle();
@@ -86,7 +91,7 @@ public class GuiDownloads extends PanelVorlage {
         super.isShown();
         ddaten.mediathekGui.setToolbar(MediathekGui.UIButtonState.DOWNLOAD);
         ddaten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD);
-        infoDialogSetzen();
+        aktFilmSetzen();
     }
 
     public void aktualisieren() {
@@ -125,6 +130,7 @@ public class GuiDownloads extends PanelVorlage {
     //private
     //===================================
     private void init() {
+        panelBeschreibungSetzen();
         jRadioButtonAbos.setForeground(GuiKonstanten.ABO_FOREGROUND);
         jRadioButtonDownloads.setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
         tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads(ddaten));
@@ -194,6 +200,16 @@ public class GuiDownloads extends PanelVorlage {
                 setInfo();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiDownloads.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                panelBeschreibungSetzen();
+            }
+        });
+    }
+
+    private void panelBeschreibungSetzen() {
+        jPanelBeschreibung.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR]));
     }
 
     private synchronized void tabelleLaden() {
@@ -502,7 +518,7 @@ public class GuiDownloads extends PanelVorlage {
         ddaten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD, textLinks);
     }
 
-    private void infoDialogSetzen() {
+    private void aktFilmSetzen() {
         DatenFilm aktFilm = new DatenFilm();
         int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
@@ -514,6 +530,8 @@ public class GuiDownloads extends PanelVorlage {
             }
         }
         filmInfoHud.updateCurrentFilm(aktFilm);
+        // Beschreibung setzen
+        panelBeschreibung.setAktFilm(aktFilm);
     }
 
     /**
@@ -534,6 +552,7 @@ public class GuiDownloads extends PanelVorlage {
         jRadioButtonAlles = new javax.swing.JRadioButton();
         jRadioButtonDownloads = new javax.swing.JRadioButton();
         jRadioButtonAbos = new javax.swing.JRadioButton();
+        jPanelBeschreibung = new javax.swing.JPanel();
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
@@ -603,6 +622,19 @@ public class GuiDownloads extends PanelVorlage {
                 .addComponent(jPanelFilterInnen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        jPanelBeschreibung.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+
+        javax.swing.GroupLayout jPanelBeschreibungLayout = new javax.swing.GroupLayout(jPanelBeschreibung);
+        jPanelBeschreibung.setLayout(jPanelBeschreibungLayout);
+        jPanelBeschreibungLayout.setHorizontalGroup(
+            jPanelBeschreibungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 668, Short.MAX_VALUE)
+        );
+        jPanelBeschreibungLayout.setVerticalGroup(
+            jPanelBeschreibungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 127, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -610,8 +642,9 @@ public class GuiDownloads extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
-                    .addComponent(jPanelFilter, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanelFilter, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -620,12 +653,15 @@ public class GuiDownloads extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jPanelFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(6, 6, 6))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox jCheckBoxFilter;
+    private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JPanel jPanelFilter;
     private javax.swing.JRadioButton jRadioButtonAbos;
     private javax.swing.JRadioButton jRadioButtonAlles;
@@ -638,7 +674,7 @@ public class GuiDownloads extends PanelVorlage {
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (!event.getValueIsAdjusting()) {
-                infoDialogSetzen();
+                aktFilmSetzen();
             }
         }
     }

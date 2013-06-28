@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
-import mediathek.daten.DatenFilm;
 
 public class GuiFunktionen extends Funktionen {
 
