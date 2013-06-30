@@ -212,9 +212,9 @@ public class PanelBlacklist extends PanelVorlage {
     private void comboThemaLaden() {
         String filterSender = jComboBoxSender.getSelectedItem().toString();
         if (filterSender.equals("")) {
-            jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen("")));
+            jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen("")));
         } else {
-            jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen(filterSender)));
+            jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen(filterSender)));
         }
 
     }
@@ -232,7 +232,7 @@ public class PanelBlacklist extends PanelVorlage {
     private void initCombo() {
         // der erste Sender ist ""
         sender = GuiFunktionen.addLeerListe(DDaten.filmeLaden.getSenderNamen());
-        jComboBoxSender.setModel(new javax.swing.DefaultComboBoxModel(sender));
+        jComboBoxSender.setModel(new javax.swing.DefaultComboBoxModel<String>(sender));
         //für den Sender "" sind alle Themen im themenPerSender[0]
         themenPerSender = new String[sender.length][];
         for (int i = 0; i < sender.length; ++i) {
@@ -319,9 +319,9 @@ public class PanelBlacklist extends PanelVorlage {
         jTableBlacklist = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        jComboBoxSender = new javax.swing.JComboBox();
+        jComboBoxSender = new javax.swing.JComboBox<String>();
         jLabel6 = new javax.swing.JLabel();
-        jComboBoxThema = new javax.swing.JComboBox();
+        jComboBoxThema = new javax.swing.JComboBox<String>();
         jButtonHinzufuegen = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -493,11 +493,7 @@ public class PanelBlacklist extends PanelVorlage {
 
         jLabel5.setText("Sender:");
 
-        jComboBoxSender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel6.setText("Thema:");
-
-        jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButtonHinzufuegen.setText("Hinzufügen");
 
@@ -649,7 +645,7 @@ public class PanelBlacklist extends PanelVorlage {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jCheckBoxBlacklistEingeschaltet)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jTabbedPaneBlacklist, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE))
+                    .addComponent(jTabbedPaneBlacklist))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -658,7 +654,7 @@ public class PanelBlacklist extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jCheckBoxBlacklistEingeschaltet)
                 .addGap(18, 18, 18)
-                .addComponent(jTabbedPaneBlacklist, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
+                .addComponent(jTabbedPaneBlacklist)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -671,8 +667,8 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxAbo;
     private javax.swing.JCheckBox jCheckBoxBlacklistEingeschaltet;
     private javax.swing.JCheckBox jCheckBoxZukunftNichtAnzeigen;
-    private javax.swing.JComboBox jComboBoxSender;
-    private javax.swing.JComboBox jComboBoxThema;
+    private javax.swing.JComboBox<String> jComboBoxSender;
+    private javax.swing.JComboBox<String> jComboBoxThema;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

@@ -62,7 +62,7 @@ public class PanelPsetKurz extends PanelVorlage {
         initComponents();
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
         listePset = llistePset;
-        jListPset.setModel(new DefaultComboBoxModel(listePset.getObjectDataCombo()));
+        jListPset.setModel(new DefaultComboBoxModel<String>(listePset.getObjectDataCombo()));
         if (listePset.size() > 0) {
             jListPset.setSelectedIndex(0);
             jListPset.addListSelectionListener(new ListSelectionListener() {
@@ -189,7 +189,7 @@ public class PanelPsetKurz extends PanelVorlage {
         javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
-        jListPset = new javax.swing.JList();
+        jListPset = new javax.swing.JList<String>();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255)));
 
@@ -250,11 +250,6 @@ public class PanelPsetKurz extends PanelVorlage {
         jTextArea1.setRows(4);
         jScrollPane2.setViewportView(jTextArea1);
 
-        jListPset.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(jListPset);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -327,7 +322,7 @@ public class PanelPsetKurz extends PanelVorlage {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonZiel;
-    private javax.swing.JList jListPset;
+    private javax.swing.JList<String> jListPset;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextFieldName;
@@ -465,7 +460,7 @@ public class PanelPsetKurz extends PanelVorlage {
                 stopBeob = true;
                 pSet.arr[ DatenPset.PROGRAMMSET_NAME_NR] = jTextFieldName.getText();
                 int i = jListPset.getSelectedIndex();
-                jListPset.setModel(new DefaultComboBoxModel(listePset.getObjectDataCombo()));
+                jListPset.setModel(new DefaultComboBoxModel<String>(listePset.getObjectDataCombo()));
                 jListPset.setSelectedIndex(i);
                 stopBeob = false;
             }

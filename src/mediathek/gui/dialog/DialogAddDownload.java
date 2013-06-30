@@ -112,7 +112,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 beenden();
             }
         });
-        jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel(ddaten.listePset.getListeSpeichern().getObjectDataCombo()));
+        jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel<String>(ddaten.listePset.getListeSpeichern().getObjectDataCombo()));
         if (pSet != null) {
             jComboBoxPgr.setSelectedItem(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
         }
@@ -198,7 +198,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jTextFieldTitel = new javax.swing.JTextField();
         jTextFieldSender = new javax.swing.JTextField();
         javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
-        jComboBoxPgr = new javax.swing.JComboBox();
+        jComboBoxPgr = new javax.swing.JComboBox<String>();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jTextFieldName = new javax.swing.JTextField();
         jButtonZiel = new javax.swing.JButton();
@@ -259,8 +259,6 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jTextFieldSender, jTextFieldTitel});
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Programmset zum Aufzeichnen"));
-
-        jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -356,7 +354,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                     .addComponent(jButtonBeenden)
                     .addComponent(jButtonAbbrechen)
                     .addComponent(jCheckBoxStarten))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         pack();
@@ -366,7 +364,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private javax.swing.JButton jButtonBeenden;
     private javax.swing.JButton jButtonZiel;
     private javax.swing.JCheckBox jCheckBoxStarten;
-    private javax.swing.JComboBox jComboBoxPgr;
+    private javax.swing.JComboBox<String> jComboBoxPgr;
     private javax.swing.JTextField jTextFieldName;
     private javax.swing.JTextField jTextFieldPfad;
     private javax.swing.JTextField jTextFieldSender;

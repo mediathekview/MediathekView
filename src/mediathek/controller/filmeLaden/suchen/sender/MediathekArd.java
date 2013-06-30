@@ -491,27 +491,28 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     urlRtmp = "--host " + url1a + " --app " + url1b + " --playpath " + url;
                     //flvstreamer --host vod.daserste.de --app ardfs --playpath mp4:videoportal/Film/c_100000/106579/format106899.f4v > bla.flv
                     //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
-                } else {
-                    if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
-                        url = seite2.substring(pos1, pos2);
-                        if (!url.equals("")) {
-                            urlOrg = "http://" + url;
-                        }
-                    }
                 }
-                if (flash && !urlOrg.equals("") && !urlRtmp.equals("") || !flash && !urlOrg.equals("")) {
-                    if (f.arr[DatenFilm.FILM_URL_NR].equals("")) {
-                        // dann zuerst die normale URL füllen
-                        f.arr[DatenFilm.FILM_URL_NR] = urlOrg;
-                        f.arr[DatenFilm.FILM_URL_RTMP_NR] = urlRtmp;
-                        return false;
-                    } else {
-                        // als 2. URL einfügen
-                        f.addKleineUrl(urlOrg, urlRtmp);
-                        return true;
+            } else {
+                if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
+                    url = seite2.substring(pos1, pos2);
+                    if (!url.equals("")) {
+                        urlOrg = "http://" + url;
                     }
                 }
             }
+            if (flash && !urlOrg.equals("") && !urlRtmp.equals("") || !flash && !urlOrg.equals("")) {
+                if (f.arr[DatenFilm.FILM_URL_NR].equals("")) {
+                    // dann zuerst die normale URL füllen
+                    f.arr[DatenFilm.FILM_URL_NR] = urlOrg;
+                    f.arr[DatenFilm.FILM_URL_RTMP_NR] = urlRtmp;
+                    return false;
+                } else {
+                    // als 2. URL einfügen
+                    f.addKleineUrl(urlOrg, urlRtmp);
+                    return true;
+                }
+            }
+
             return false;
         }
 

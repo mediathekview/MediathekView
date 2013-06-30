@@ -204,10 +204,10 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonSuchen = new javax.swing.JButton();
         jButtonInfos = new javax.swing.JButton();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
-        jComboBoxLook = new javax.swing.JComboBox();
+        jComboBoxLook = new javax.swing.JComboBox<String>();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jComboBoxIcons = new javax.swing.JComboBox();
+        jComboBoxIcons = new javax.swing.JComboBox<String>();
         jButtonRefresh = new javax.swing.JButton();
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -283,12 +283,10 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jButtonSuchen)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonInfos)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Look and Feel:"));
-
-        jComboBoxLook.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -304,14 +302,12 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jComboBoxLook, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Icons"));
 
         jLabel1.setText("Um alle Icons richtig anzuzeigen, Programm neu starten");
-
-        jComboBoxIcons.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButtonRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/icons_refresh_16.png"))); // NOI18N
         jButtonRefresh.setToolTipText("neue Icons suchen");
@@ -379,8 +375,8 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
     private javax.swing.JCheckBox jCheckBoxSuchen;
-    private javax.swing.JComboBox jComboBoxIcons;
-    private javax.swing.JComboBox jComboBoxLook;
+    private javax.swing.JComboBox<String> jComboBoxIcons;
+    private javax.swing.JComboBox<String> jComboBoxLook;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSpinner jSpinnerDownload;

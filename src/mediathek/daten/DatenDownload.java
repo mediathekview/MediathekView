@@ -22,11 +22,6 @@ package mediathek.daten;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
-import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekArd;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekSwr;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
 import mediathek.controller.io.AsxLesen;
 import mediathek.controller.io.starter.Start;
 import mediathek.tool.Datum;
@@ -446,39 +441,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
         ret = datum;
         ret = ret.replace(":", "");
         ret = ret.replace(".", "");
-        return ret;
-    }
-
-    private String getUrlLow(String url) {
-        String ret = url;
-
-        if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekArd.SENDER)) {
-        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
-            //swr
-            ret = url.replace(".l.mp4", ".m.mp4");
-//        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekWdr.SENDER) && !arr[DOWNLOAD_THEMA_NR].equals("Rockpalast")) {
-//            //WDR
-//            ret = url.replace("-l.mp4", "-m.mp4");
-//            // funktioniert nur bei einem Teil (Thema: Rockpalast geht nie)
-        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER) || arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
-            // ZDF und 3sat
-            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_51k_p7v9.mp4" system-bitrate="62000">
-            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_536k_p9v9.mp4" system-bitrate="700000">
-            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_1596k_p13v9.mp4" system-bitrate="1700000">
-            if (url.endsWith("vh.mp4")) {
-                ret = url.replace("vh.mp4", "h.mp4");
-            } else if (url.endsWith("1456k_p13v11.mp4")) {
-                ret = url.replace("1456k_p13v11.mp4", "436k_p9v11.mp4");
-            } else if (url.endsWith("1596k_p13v9.mp4")) {
-                ret = url.replace("1596k_p13v9.mp4", "536k_p9v9.mp4");
-            }
-        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekNdr.SENDER)) {
-            //NDR
-            ret = url.replace(".hq.", ".hi.");
-        } else if ((url.startsWith("rtmpt://cp160844.edgefcs.net") || url.startsWith("--host cp160844.edgefcs.net")) && url.endsWith(".hq.mp4")) {
-            // für die NDR-Filme beim ARD
-            ret = url.replace(".hq.", ".hi.");
-        }
         return ret;
     }
 
