@@ -63,7 +63,7 @@ public class PanelPsetImport extends PanelVorlage {
     private void init() {
         jButtonAktualisieren.setIcon(GetIcon.getIcon("view-refresh_16.png"));
         jButtonPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        jComboBoxBs.setModel(new DefaultComboBoxModel(ListePsetVorlagen.BS));
+        jComboBoxBs.setModel(new DefaultComboBoxModel<String>(ListePsetVorlagen.BS));
         jComboBoxBs.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -204,7 +204,7 @@ public class PanelPsetImport extends PanelVorlage {
         jButtonAktualisieren = new javax.swing.JButton();
         javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
         javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
-        jComboBoxBs = new javax.swing.JComboBox();
+        jComboBoxBs = new javax.swing.JComboBox<String>();
         javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
         jButtonImportStandard = new javax.swing.JButton();
         javax.swing.JScrollPane jScrollPane4 = new javax.swing.JScrollPane();
@@ -323,8 +323,6 @@ public class PanelPsetImport extends PanelVorlage {
 
         jLabel5.setText("Betriebssystem:");
 
-        jComboBoxBs.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -354,7 +352,7 @@ public class PanelPsetImport extends PanelVorlage {
                     .addComponent(jLabel5)
                     .addComponent(jComboBoxBs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -392,7 +390,7 @@ public class PanelPsetImport extends PanelVorlage {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonImportStandard)
-                .addContainerGap(325, Short.MAX_VALUE))
+                .addContainerGap(340, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Standardset", jPanel5);
@@ -464,7 +462,7 @@ public class PanelPsetImport extends PanelVorlage {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextAreaImport, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
+                .addComponent(jTextAreaImport, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonImportText)
                 .addContainerGap())
@@ -517,7 +515,7 @@ public class PanelPsetImport extends PanelVorlage {
     private javax.swing.JButton jButtonImportText;
     private javax.swing.JButton jButtonImportVorlage;
     private javax.swing.JButton jButtonPfad;
-    private javax.swing.JComboBox jComboBoxBs;
+    private javax.swing.JComboBox<String> jComboBoxBs;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTable jTableVorlagen;

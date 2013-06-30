@@ -173,7 +173,7 @@ public class GuiFilme extends PanelVorlage {
         checkBlacklist();
         panelBeschreibungSetzen();
         jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
-        jComboBoxZeitraum.setModel(new DefaultComboBoxModel(COMBO_ZEIT));
+        jComboBoxZeitraum.setModel(new DefaultComboBoxModel<String>(COMBO_ZEIT));
         try {
             jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
             jCheckBoxKeineGesehenen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR]));
@@ -244,8 +244,8 @@ public class GuiFilme extends PanelVorlage {
                 if (!stopBeob) {
                     stopBeob = true;
                     //auch die Filter löschen
-                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(sender));
-                    jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen("")));
+                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<String>(sender));
+                    jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen("")));
                     jTextFieldFilterTitel.setText("");
                 }
                 tabelleLaden();
@@ -253,9 +253,9 @@ public class GuiFilme extends PanelVorlage {
         });
         //Combo Sender
         jButtonFilterLoeschen.addActionListener(new BeobFilterLoeschen());
-        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(sender));
+        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<String>(sender));
         jComboBoxFilterSender.addActionListener(new BeobFilterSender());
-        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen("")));
+        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen("")));
         jComboBoxFilterThema.addActionListener(new BeobFilter());
         jTextFieldFilterTitel.addActionListener(new BeobFilter());
         jTextFieldFilterTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
@@ -514,8 +514,8 @@ public class GuiFilme extends PanelVorlage {
                 if (DDaten.listeFilmeNachBlackList.isEmpty()) {
                     //jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(DDaten.listeFilmeNachBlackList.getModelOfFieldSender()));
                     //jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(DDaten.listeFilmeNachBlackList.getModelOfFieldThema("")));
-                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(sender));
-                    jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen("")));
+                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<String>(sender));
+                    jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen("")));
                     jComboBoxFilterSender.setSelectedIndex(0);
                     jComboBoxFilterThema.setSelectedIndex(0);
                     listeInModellLaden(); // zum löschen der Tabelle
@@ -523,7 +523,7 @@ public class GuiFilme extends PanelVorlage {
                     //Filme neu laden
                     listeInModellLaden();
                     //Filter Sender
-                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(sender));
+                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<String>(sender));
                     jComboBoxFilterSender.setSelectedIndex(0);
                     if (!filterSender.equals("")) {
                         // ist wohl ein Bug beim Combo, klappt nur richtig wenn editable?!
@@ -539,9 +539,9 @@ public class GuiFilme extends PanelVorlage {
                     jComboBoxFilterSender.setPopupVisible(senderOpen);
                     // Filter Thema
                     if (filterSender.equals("")) {
-                        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen("")));
+                        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen("")));
                     } else {
-                        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen(filterSender)));
+                        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen(filterSender)));
                     }
                     // wenn Thema bei dem Sender vorhanden, dann wieder setzen
                     // ist wohl ein Bug beim Combo, klappt nur richtig wenn editable?!
@@ -594,8 +594,8 @@ public class GuiFilme extends PanelVorlage {
     private void filterLoeschen() {
         stopBeob = true;
         //ComboModels neu aufbauen
-        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(sender));
-        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(getThemen("")));
+        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<String>(sender));
+        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen("")));
         jTextFieldFilterTitel.setText("");
         jTextFieldFilterThemaTitel.setText("");
         jTextFieldFilterIrgendwo.setText("");
@@ -749,7 +749,7 @@ public class GuiFilme extends PanelVorlage {
         jPanelFilterInnen = new javax.swing.JPanel();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jComboBoxZeitraum = new javax.swing.JComboBox();
+        jComboBoxZeitraum = new javax.swing.JComboBox<String>();
         jCheckBoxKeineGesehenen = new javax.swing.JCheckBox();
         jCheckBoxKeineAbos = new javax.swing.JCheckBox();
         jToggleButtonLivestram = new javax.swing.JToggleButton();
@@ -757,9 +757,9 @@ public class GuiFilme extends PanelVorlage {
         jButtonHilfe = new javax.swing.JButton();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        jComboBoxFilterSender = new javax.swing.JComboBox();
+        jComboBoxFilterSender = new javax.swing.JComboBox<String>();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
-        jComboBoxFilterThema = new javax.swing.JComboBox();
+        jComboBoxFilterThema = new javax.swing.JComboBox<String>();
         javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
         jTextFieldFilterTitel = new javax.swing.JTextField();
         javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
@@ -788,7 +788,6 @@ public class GuiFilme extends PanelVorlage {
         jLabel1.setText("Zeitraum:");
 
         jComboBoxZeitraum.setMaximumRowCount(10);
-        jComboBoxZeitraum.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jCheckBoxKeineGesehenen.setText("keine gesehenen");
 
@@ -1060,9 +1059,9 @@ public class GuiFilme extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxKeineAbos;
     private javax.swing.JCheckBox jCheckBoxKeineGesehenen;
     private javax.swing.JCheckBox jCheckBoxProgamme;
-    private javax.swing.JComboBox jComboBoxFilterSender;
-    private javax.swing.JComboBox jComboBoxFilterThema;
-    private javax.swing.JComboBox jComboBoxZeitraum;
+    private javax.swing.JComboBox<String> jComboBoxFilterSender;
+    private javax.swing.JComboBox<String> jComboBoxFilterThema;
+    private javax.swing.JComboBox<String> jComboBoxZeitraum;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
