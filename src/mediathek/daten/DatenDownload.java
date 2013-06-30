@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
+import mediathek.controller.filmeLaden.suchen.sender.MediathekArd;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekSwr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
@@ -121,11 +122,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_DAUER_NR] = film.arr[DatenFilm.FILM_DURATION_NR];
         arr[DOWNLOAD_QUELLE_NR] = String.valueOf(quelle);
         if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_KLEINE_AUFLOESUNG_NR])) {
-            arr[DOWNLOAD_URL_NR] = getUrlLow(film.arr[DatenFilm.FILM_URL_NR]);
-            arr[DOWNLOAD_URL_RTMP_NR] = getUrlLow(getUrlFlvstreamer(film));
+            arr[DOWNLOAD_URL_NR] = film.getUrlKleinNormal();
+            arr[DOWNLOAD_URL_RTMP_NR] = film.getUrlKleinFlvstreamer();
         } else {
-            arr[DOWNLOAD_URL_NR] = film.arr[DatenFilm.FILM_URL_NR];
-            arr[DOWNLOAD_URL_RTMP_NR] = getUrlFlvstreamer(film);
+            arr[DOWNLOAD_URL_NR] = film.getUrlNormal();
+            arr[DOWNLOAD_URL_RTMP_NR] = film.getUrlFlvstreamer();
         }
         durationL = film.durationL;
         durationStr = film.durationStr;
@@ -448,35 +449,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return ret;
     }
 
-    private String getUrlFlvstreamer(DatenFilm film) {
-        String ret;
-        if (!film.arr[DatenFilm.FILM_URL_RTMP_NR].equals("")) {
-            ret = film.arr[DatenFilm.FILM_URL_RTMP_NR];
-        } else {
-            if (film.arr[DatenFilm.FILM_URL_NR].startsWith(GuiKonstanten.RTMP_PRTOKOLL)) {
-                ret = GuiKonstanten.RTMP_FLVSTREAMER + film.arr[DatenFilm.FILM_URL_NR];
-            } else {
-                ret = film.arr[DatenFilm.FILM_URL_NR];
-            }
-        }
-//        if (!arr[DOWNLOAD_URL_RTMP_NR].equals("")) {
-//            ret = arr[DOWNLOAD_URL_RTMP_NR];
-//        } else {
-//            if (arr[DOWNLOAD_URL_NR].startsWith(GuiKonstanten.RTMP_PRTOKOLL)) {
-//                ret = GuiKonstanten.RTMP_FLVSTREAMER + arr[DOWNLOAD_URL_NR];
-//            } else {
-//                ret = arr[DOWNLOAD_URL_NR];
-//            }
-//        }
-        return ret;
-    }
-
-//    private String getUrlLow() {
-//        return getUrlLow(arr[DOWNLOAD_URL_NR]);
-//    }
     private String getUrlLow(String url) {
         String ret = url;
-        if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
+
+        if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekArd.SENDER)) {
+        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
             //swr
             ret = url.replace(".l.mp4", ".m.mp4");
 //        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekWdr.SENDER) && !arr[DOWNLOAD_THEMA_NR].equals("Rockpalast")) {

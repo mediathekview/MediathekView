@@ -43,7 +43,7 @@ import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 
 public class DialogEditAbo extends javax.swing.JDialog {
-    
+
     private DDaten ddaten;
     private DatenAbo aktAbo;
     private JTextField[] textfeldListe;
@@ -53,7 +53,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private JSlider sliderDauer = new JSlider(0, 100, 0);
     private JLabel labelDauer = new JLabel("0");
     public boolean ok = false;
-    
+
     public DialogEditAbo(java.awt.Frame parent, boolean modal, DDaten d, DatenAbo aktA) {
         super(parent, modal);
         initComponents();
@@ -83,7 +83,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         };
         setExtra();
     }
-    
+
     private void setExtra() {
         textfeldListe = new JTextField[DatenAbo.ABO_MAX_ELEM];
         GridBagLayout gridbag = new GridBagLayout();
@@ -98,14 +98,14 @@ public class DialogEditAbo extends javax.swing.JDialog {
             c.gridy = zeile;
         }
     }
-    
+
     private void addExtraFeld(int i, GridBagLayout gridbag, GridBagConstraints c,
             JPanel panel, String[] item) {
         //Label
         c.gridx = 0;
         c.weightx = 0;
         JLabel label;
-        if (i == DatenAbo.ABO_SENDER_NR || i == DatenAbo.ABO_THEMA_NR || i == DatenAbo.ABO_TITEL_NR || i == DatenAbo.ABO_THEMA_TITEL_NR) {
+        if (i == DatenAbo.ABO_SENDER_NR || i == DatenAbo.ABO_THEMA_NR || i == DatenAbo.ABO_TITEL_NR || i == DatenAbo.ABO_THEMA_TITEL_NR || i == DatenAbo.ABO_IRGENDWO_NR) {
             label = new JLabel("  " + DatenAbo.ABO_COLUMN_NAMES[i] + ": ");
             label.setForeground(Color.BLUE);
         } else {
@@ -154,7 +154,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
                 public void stateChanged(ChangeEvent e) {
                     labelDauer.setText("  " + String.valueOf(sliderDauer.getValue()) + " ");
                     if (!sliderDauer.getValueIsAdjusting()) {
-                        aktAbo.setMindestDauerMinuten(sliderDauer.getValue() );
+                        aktAbo.setMindestDauerMinuten(sliderDauer.getValue());
                     }
                 }
             });
@@ -182,12 +182,12 @@ public class DialogEditAbo extends javax.swing.JDialog {
             panel.add(textfeld);
         }
     }
-    
+
     private void check() {
         aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR] = GuiFunktionen.replaceLeerDateiname(aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR], true /* pfadtrennerEntfernen */, true /* leerEntfernen */);
         ok = true;
     }
-    
+
     private void beenden() {
         this.dispose();
     }
@@ -265,51 +265,51 @@ public class DialogEditAbo extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private class BeobachterDocumentTextfeld implements DocumentListener {
-        
+
         int nr;
-        
+
         public BeobachterDocumentTextfeld(int n) {
             nr = n;
         }
-        
+
         @Override
         public void insertUpdate(DocumentEvent arg0) {
             eingabe();
         }
-        
+
         @Override
         public void removeUpdate(DocumentEvent arg0) {
             eingabe();
         }
-        
+
         @Override
         public void changedUpdate(DocumentEvent arg0) {
             eingabe();
         }
-        
+
         private void eingabe() {
             aktAbo.arr[nr] = textfeldListe[nr].getText().trim();
         }
     }
-    
+
     private class BeobComboProgramm implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             aktAbo.arr[DatenAbo.ABO_PSET_NR] = comboboxProgramm.getSelectedItem().toString();
         }
     }
-    
+
     private class BeobComboSender implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             aktAbo.arr[DatenAbo.ABO_SENDER_NR] = comboboxSender.getSelectedItem().toString();
         }
     }
-    
+
     private class BeobCheckbox implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             aktAbo.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(checkBoxEingeschaltet.isSelected());
