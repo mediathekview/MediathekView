@@ -67,7 +67,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
             int posEnde;
             int pos1;
             int pos2;
-            String url;
+            String url, url_klein;
             String thema;
             String datum;
             String zeit;
@@ -105,6 +105,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                         break;
                     }
                     url = "";
+                    url_klein = "";
                     thema = "";
                     datum = "";
                     zeit = "";
@@ -121,6 +122,9 @@ public class MediathekBr extends MediathekReader implements Runnable {
                                     break;
                                 }
                                 url = seite.substring(pos1, pos2);
+                                if (url.contains("small")) {
+                                    url_klein = url;
+                                }
                                 if (url.contains("xlarge")) {
                                     break;
                                 }
@@ -177,7 +181,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                         int p;
                         String host = "";
                         String app = "";
-                        String play = "";
+                        String play = "", play_klein = "";
                         if ((p = url.indexOf("host=\"")) != -1) {
                             p += "host=\"".length();
                             host = url.substring(p, url.indexOf("\"", p));
@@ -190,15 +194,22 @@ public class MediathekBr extends MediathekReader implements Runnable {
                             p += "stream=\"".length();
                             play = url.substring(p, url.indexOf("\"", p));
                         }
+                        if ((p = url_klein.indexOf("stream=\"")) != -1) {
+                            p += "stream=\"".length();
+                            play_klein = url_klein.substring(p, url_klein.indexOf("\"", p));
+                        }
                         //rtmp://gffstream.fcod.llnwd.net/a792/o16/br/b7/b7konks25460.mp4
                         //mp4:konks/b7/listra/konks/1316073962-b7konks_listra_144931476_7292.mp4
                         String urlRtmp = "--host " + host + " --app " + app + " --playpath " + play;
+                        String urlRtmp_klein = "--host " + host + " --app " + app + " --playpath " + play_klein;
                         //String urlRtmp = "--host " + host + "/" + app + " --playpath " + play;
                         String urlOrg = "rtmp://" + host + "/" + app + "/" + play;
+                        String urlOrg_klein = "rtmp://" + host + "/" + app + "/" + play_klein;
                         // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit)
                         // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlRtmp, String datum, String zeit)
                         //DatenFilm film = new DatenFilm(nameSenderMReader, thema, link, titel, urlOrg, datum, zeit);
                         DatenFilm film = new DatenFilm(nameSenderMReader, thema, "http://www.br.de/mediathek/index.html", titel, urlOrg, urlRtmp, datum, zeit);
+                        film.addKleineUrl(urlOrg_klein, urlRtmp_klein);
                         addFilm(film);
                     }
                 } //while, die ganz große Schleife
