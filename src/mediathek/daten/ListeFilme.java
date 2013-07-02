@@ -387,19 +387,19 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return a;
     }
 
-//    public synchronized DatenFilm getFilmByUrl(String url) {
-//        // Problem wegen gleicher URLs
-//        DatenFilm ret = null;
-//        ListIterator<DatenFilm> it = this.listIterator(0);
-//        while (it.hasNext()) {
-//            DatenFilm f = it.next();
-//            if (f.arr[DatenFilm.FILM_URL_NR].equals(url)) {
-//                ret = f;
-//                break;
-//            }
-//        }
-//        return ret;
-//    }
+    public synchronized DatenFilm getFilmByUrl(String url) {
+        // Problem wegen gleicher URLs
+        DatenFilm ret = null;
+        ListIterator<DatenFilm> it = this.listIterator(0);
+        while (it.hasNext()) {
+            DatenFilm f = it.next();
+            if (f.arr[DatenFilm.FILM_URL_NR].equals(url)) {
+                ret = f;
+                break;
+            }
+        }
+        return ret;
+    }
     public synchronized DatenFilm getFilmByNr(String nr) {
         DatenFilm ret = null;
         ListIterator<DatenFilm> it = this.listIterator(0);
