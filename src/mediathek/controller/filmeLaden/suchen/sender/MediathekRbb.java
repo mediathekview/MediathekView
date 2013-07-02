@@ -179,14 +179,37 @@ public class MediathekRbb extends MediathekReader implements Runnable {
 //                            String datum = title.substring(title.length() - 26, title.length() - 16);
 //                            String thema = title.substring(0, title.indexOf(" - "));
 //                            title = title.substring(title.indexOf(" - ") + 3, title.indexOf(" - ", thema.length() + 3));
-                            int mpos = seite3.indexOf("mp4:");
-                            int mpos2 = seite3.indexOf("\"", mpos);
-                            String filmurl = seite3.substring(mpos, mpos2);
-                            String urlRtmp = "--host ondemand.rbb-online.de --app ondemand/ --playpath " + filmurl;
-                            String urlOrg = addsUrl("rtmp://ondemand.rbb-online.de/ondemand/", filmurl);
-                            // DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlOrg, urlRtmp, datum, ""/* zeit */);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlOrg, urlRtmp, datum, ""/* zeit */, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
-                            addFilm(film);
+                            int mpos, mpos2;
+                            String urlRtmp = "";
+                            String urlOrg = "";
+                            String filmurl = "";
+                            if ((mpos = seite3.indexOf("mp4:")) != -1) {
+                                if ((mpos2 = seite3.indexOf("\"", mpos)) != -1) {
+                                    filmurl = seite3.substring(mpos, mpos2);
+                                    urlRtmp = "--host ondemand.rbb-online.de --app ondemand/ --playpath " + filmurl;
+                                    urlOrg = addsUrl("rtmp://ondemand.rbb-online.de/ondemand/", filmurl);
+                                }
+                            }
+                            String urlMp4 = "";
+                            int pos1, pos2;
+                            if ((pos1 = seite3.indexOf("http://http-stream")) != -1) {
+                                pos1 += "http://http-stream".length();
+                                if ((pos2 = seite3.indexOf("\"", pos1)) != -1) {
+                                    urlMp4 = "http://http-stream" + seite3.substring(pos1, pos2);
+                                }
+                            }
+                            if (urlMp4.isEmpty() && filmurl.isEmpty()) {
+                                Log.fehlerMeldung(-316498587, Log.FEHLER_ART_MREADER, "MediathekRBB.addFilme", "keine URL für: " + showurl);
+                            } else if (urlMp4.isEmpty()) {
+                                // DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlOrg, urlRtmp, datum, ""/* zeit */);
+                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlOrg, urlRtmp,
+                                        datum, ""/* zeit */, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
+                                addFilm(film);
+                            } else {
+                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlMp4, "" /*urlRtmp*/,
+                                        datum, ""/* zeit */, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
+                                addFilm(film);
+                            }
                         }
                         rpos = rpos2; // hinter Element gehts weiter
                     }
