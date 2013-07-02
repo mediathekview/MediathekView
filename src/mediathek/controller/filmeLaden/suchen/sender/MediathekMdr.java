@@ -268,7 +268,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             final String MUSTER_URL_1 = "<flashMediaServerApplicationURL>";
             final String MUSTER_URL_2 = "<flashMediaServerURL>";
             final String MUSTER_DATUM = "<broadcastStartDate>";
-            final String MUSTER_FRABE_WIDTH = "<frameWidth>";
+            final String MUSTER_FRAME_WIDTH = "<frameWidth>";
             final String MUSTER_DURATION = "<duration>";
             final String MUSTER_DURATION_END = "</duration>";
             final String MUSTER_DESCRIPTION = "<teaserText>";
@@ -279,12 +279,13 @@ public class MediathekMdr extends MediathekReader implements Runnable {
             final String MUSTER_IMAGE_END = "</teaserimage>";
             final String MUSTER_URL_START = "<url>";
             final String MUSTER_URL_END = "</url>";
-
+            final String MUSTER_URL_MP4 = "<progressiveDownloadUrl>";
+            //<progressiveDownloadUrl>http://x4100mp4dynonlc22033.f.o.l.lb.core-cdn.net/22033mdr/ondemand/4100mp4dynonl/FCMS-ad2e1bc5-d967-4791-b7ce-e5630252531a-c7cca1d51b4b.mp4</progressiveDownloadUrl>
             //<broadcastStartDate>23.08.2012 22:05</broadcastStartDate>
             int pos = 0, posEnde;
             int pos1;
             int pos2;
-            String url1, url2, rtmpUrl, url, titel, datum, zeit, width;
+            String url1, url2, rtmpUrl, url, titel, datum, zeit, width, urlMp4, urlMp4_klein;
             long duration;
             String description;
             String thumbnailUrl;
@@ -305,6 +306,8 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                     }
                     url1 = "";
                     url2 = "";
+                    urlMp4 = "";
+                    urlMp4_klein = "";
                     titel = "";
                     datum = "";
                     zeit = "";
@@ -380,11 +383,11 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                     // URL mit der besten Auflösung suchen
                     pos1 = pos;
                     widthAlt = 0;
-                    while ((pos1 = seite4.indexOf(MUSTER_FRABE_WIDTH, pos1)) != -1) {
+                    while ((pos1 = seite4.indexOf(MUSTER_FRAME_WIDTH, pos1)) != -1) {
                         if (pos1 > posEnde) {
                             break;
                         }
-                        pos1 += MUSTER_FRABE_WIDTH.length();
+                        pos1 += MUSTER_FRAME_WIDTH.length();
                         if ((pos2 = seite4.indexOf("<", pos1)) != -1) {
                             width = seite4.substring(pos1, pos2);
                             try {
@@ -397,32 +400,58 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                             } catch (Exception ex) {
                             }
                         }
-                        if ((pos1 = seite4.indexOf(MUSTER_URL_1, pos1)) != -1) {
-                            pos1 += MUSTER_URL_1.length();
+
+                        if ((pos1 = seite4.indexOf(MUSTER_URL_MP4, pos1)) != -1) {
+                            pos1 += MUSTER_URL_MP4.length();
                             if ((pos2 = seite4.indexOf("<", pos1)) != -1) {
-                                url1 = seite4.substring(pos1, pos2);
+                                if (!urlMp4.isEmpty()) {
+                                    urlMp4_klein = urlMp4;
+                                }
+                                urlMp4 = seite4.substring(pos1, pos2);
                             }
                         }
-                        if ((pos1 = seite4.indexOf(MUSTER_URL_2, pos1)) != -1) {
-                            pos1 += MUSTER_URL_2.length();
-                            if ((pos2 = seite4.indexOf("<", pos1)) != -1) {
-                                url2 = seite4.substring(pos1, pos2);
-                            }
-                        }
+//                        if ((pos1 = seite4.indexOf(MUSTER_URL_1, pos1)) != -1) {
+//                            pos1 += MUSTER_URL_1.length();
+//                            if ((pos2 = seite4.indexOf("<", pos1)) != -1) {
+//                                url1 = seite4.substring(pos1, pos2);
+//                            }
+//                        }
+//                        if ((pos1 = seite4.indexOf(MUSTER_URL_2, pos1)) != -1) {
+//                            pos1 += MUSTER_URL_2.length();
+//                            if ((pos2 = seite4.indexOf("<", pos1)) != -1) {
+//                                url2 = seite4.substring(pos1, pos2);
+//                            }
+//                        }
                     }// while
-                    if (url1.equals("") || url2.equals("")) {
+//                    if (url1.equals("") || url2.equals("")) {
+//                        Log.fehlerMeldung(-326541230, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", new String[]{"keine URL: " + filmWebsite, "Thema: " + thema, " UrlFeed: " + strUrlFeed});
+//                    } else {
+//                        //<flashMediaServerApplicationURL>rtmp://x4100mp4dynonlc22033.f.o.f.lb.core-cdn.net/22033mdr/ondemand</flashMediaServerApplicationURL>
+//                        //<flashMediaServerURL>mp4:4100mp4dynonl/FCMS-1582b584-bb95-4fd2-94d8-389e10a4e1bd-8442e17c3177.mp4</flashMediaServerURL>
+//                        url = addsUrl(url1, url2);
+//                        rtmpUrl = "-r " + url1 + " -y " + url2;
+//                        if (!istInListe(thema, titel, datum, zeit)) {
+//                            addInListe(thema, titel, datum, zeit);
+//                            meldung(url);
+//                            //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
+////                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, rtmpUrl, datum, zeit);
+//                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, rtmpUrl, datum, zeit, duration, description, thumbnailUrl, imageUrl, new String[]{});
+//                            addFilm(film);
+//                        } else {
+//                            //Log.debugMeldung("MDR: Film doppelt");
+//                        }
+//                    }
+                    if (urlMp4.equals("")) {
                         Log.fehlerMeldung(-326541230, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", new String[]{"keine URL: " + filmWebsite, "Thema: " + thema, " UrlFeed: " + strUrlFeed});
                     } else {
                         //<flashMediaServerApplicationURL>rtmp://x4100mp4dynonlc22033.f.o.f.lb.core-cdn.net/22033mdr/ondemand</flashMediaServerApplicationURL>
                         //<flashMediaServerURL>mp4:4100mp4dynonl/FCMS-1582b584-bb95-4fd2-94d8-389e10a4e1bd-8442e17c3177.mp4</flashMediaServerURL>
-                        url = addsUrl(url1, url2);
-                        rtmpUrl = "-r " + url1 + " -y " + url2;
-                        if (!istInListe(thema, titel, datum, zeit)) {
-                            addInListe(thema, titel, datum, zeit);
-                            meldung(url);
+                        if (!existiertSchon(thema, titel, datum, zeit)) {
+                            meldung(urlMp4);
                             //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
 //                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, rtmpUrl, datum, zeit);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, rtmpUrl, datum, zeit, duration, description, thumbnailUrl, imageUrl, new String[]{});
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlMp4, ""/*rtmpUrl*/, datum, zeit, duration, description, thumbnailUrl, imageUrl, new String[]{});
+                            film.addKleineUrl(urlMp4_klein, "");
                             addFilm(film);
                         } else {
                             //Log.debugMeldung("MDR: Film doppelt");
@@ -467,18 +496,19 @@ public class MediathekMdr extends MediathekReader implements Runnable {
         return listeTage.pollFirst();
     }
 
-    private synchronized boolean istInListe(String thema, String titel, String datum, String zeit) {
+    private synchronized boolean existiertSchon(String thema, String titel, String datum, String zeit) {
+        // liefert true wenn schon in der Liste, ansonsten fügt es ein
+        boolean gefunden = false;
         Iterator<String[]> it = listeGesucht.iterator();
         while (it.hasNext()) {
             String[] k = it.next();
             if (k[0].equalsIgnoreCase(thema) && k[1].equalsIgnoreCase(titel) && k[2].equalsIgnoreCase(datum) && k[3].equalsIgnoreCase(zeit)) {
-                return true;
+                gefunden = true;
             }
         }
-        return false;
-    }
-
-    private void addInListe(String thema, String titel, String datum, String zeit) {
-        listeGesucht.add(new String[]{thema, titel, datum, zeit});
+        if (!gefunden) {
+            listeGesucht.add(new String[]{thema, titel, datum, zeit});
+        }
+        return gefunden;
     }
 }
