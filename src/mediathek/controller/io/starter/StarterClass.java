@@ -499,7 +499,7 @@ public class StarterClass {
             if (start.datenDownload.istAbo()) {
                 ddaten.erledigteAbos.zeileSchreiben(start.datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
                         start.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                        start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                        start.datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
             }
             ret = true;
         }

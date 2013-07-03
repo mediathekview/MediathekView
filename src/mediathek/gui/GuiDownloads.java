@@ -349,7 +349,8 @@ public class GuiDownloads extends PanelVorlage {
                 if (dauerhaft) {
                     if (download.istAbo()) {
                         // ein Abo wird zusätzlich ins Logfile geschrieben
-                        ddaten.erledigteAbos.zeileSchreiben(download.arr[DatenDownload.DOWNLOAD_THEMA_NR], download.arr[DatenDownload.DOWNLOAD_TITEL_NR], url);
+                        ddaten.erledigteAbos.zeileSchreiben(download.arr[DatenDownload.DOWNLOAD_THEMA_NR],
+                                download.arr[DatenDownload.DOWNLOAD_TITEL_NR], download.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
                     }
                     ddaten.listeDownloads.delDownloadByUrl(url);
                 } else {
