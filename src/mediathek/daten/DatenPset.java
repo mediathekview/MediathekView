@@ -100,6 +100,11 @@ public class DatenPset {
         return listeProg.get(i);
     }
 
+    public boolean kleineAufloesung() {
+        // liefert true wenn das Pset auf "kleine Auflösung" gesetzt ist
+        return Boolean.parseBoolean(arr[DatenPset.PROGRAMMSET_KLEINE_AUFLOESUNG_NR]);
+    }
+
     public boolean progsContainPath() {
         // ein Programmschalter mit "**"
         boolean ret = false;
