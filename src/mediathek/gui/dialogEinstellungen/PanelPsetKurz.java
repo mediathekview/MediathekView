@@ -48,13 +48,14 @@ import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class PanelPsetKurz extends PanelVorlage {
 
     public boolean ok = false;
     public String zielPfad = "";
-    private DatenPset pSet;
+    private DatenPset pSet = null;
     private ListePset listePset;
 
     public PanelPsetKurz(DDaten d, Component parentComponent, ListePset llistePset) {
@@ -65,21 +66,33 @@ public class PanelPsetKurz extends PanelVorlage {
         jListPset.setModel(new DefaultComboBoxModel<String>(listePset.getObjectDataCombo()));
         if (listePset.size() > 0) {
             jListPset.setSelectedIndex(0);
+            init();
             jListPset.addListSelectionListener(new ListSelectionListener() {
                 @Override
                 public void valueChanged(ListSelectionEvent e) {
                     if (!stopBeob) {
                         stopBeob = true;
-                        pSet = listePset.get(jListPset.getSelectedIndex());
                         init();
                         stopBeob = false;
                     }
                 }
             });
-            pSet = listePset.getFirst();
-            init();
-            initBeob();
         }
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetKurz.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                if (!stopBeob) {
+                    stopBeob = true;
+                    jListPset.setModel(new DefaultComboBoxModel<String>(listePset.getObjectDataCombo()));
+                    if (listePset.size() > 0) {
+                        jListPset.setSelectedIndex(0);
+                    }
+                    init();
+                    stopBeob = false;
+                }
+            }
+        });
+        initBeob();
     }
 
     private void initBeob() {
@@ -89,26 +102,42 @@ public class PanelPsetKurz extends PanelVorlage {
     }
 
     private void init() {
-        jTextFieldName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
-        jTextArea1.setText(pSet.arr[DatenPset.PROGRAMMSET_BESCHREIBUNG_NR]);
-        if (!pSet.istSpeichern() && pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
-            jTextFieldZiel.setEditable(false);
-            jButtonZiel.setEnabled(false);
+        if (jListPset.getSelectedIndex() != -1) {
+            pSet = listePset.get(jListPset.getSelectedIndex());
         } else {
-            jTextFieldZiel.setEditable(true);
-            jButtonZiel.setEnabled(true);
-            // Zielpfad muss gesetzt werden
-            if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
-                pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = GuiFunktionen.getHomePath();
-            }
+            pSet = null;
         }
-        jTextFieldZiel.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR]);
-        extra();
+        if (pSet != null) {
+            jTextFieldName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
+            jTextArea1.setText(pSet.arr[DatenPset.PROGRAMMSET_BESCHREIBUNG_NR]);
+            if (!pSet.istSpeichern() && pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
+                jTextFieldZiel.setEditable(false);
+                jButtonZiel.setEnabled(false);
+            } else {
+                jTextFieldZiel.setEditable(true);
+                jButtonZiel.setEnabled(true);
+                // Zielpfad muss gesetzt werden
+                if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
+                    pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = GuiFunktionen.getHomePath();
+                }
+            }
+            jTextFieldZiel.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR]);
+            extra();
+        } else {
+            jTextFieldName.setText("");
+            jTextArea1.setText("");
+            jTextFieldZiel.setText("");
+            delExtra();
+        }
+    }
+
+    private void delExtra() {
+        jPanelExtra.removeAll();
+        jPanelExtra.updateUI();
     }
 
     private void extra() {
-        jPanelExtra.removeAll();
-        jPanelExtra.updateUI();
+        delExtra();
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -349,6 +378,9 @@ public class PanelPsetKurz extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (pSet == null) {
+                return;
+            }
             //we can use native directory chooser on Mac...
             if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
@@ -426,6 +458,9 @@ public class PanelPsetKurz extends PanelVorlage {
         }
 
         private void set() {
+            if (pSet == null) {
+                return;
+            }
             if (!stopBeob) {
                 stopBeob = true;
                 if (arr == null) {
@@ -456,6 +491,9 @@ public class PanelPsetKurz extends PanelVorlage {
         }
 
         private void set() {
+            if (pSet == null) {
+                return;
+            }
             if (!stopBeob) {
                 stopBeob = true;
                 pSet.arr[ DatenPset.PROGRAMMSET_NAME_NR] = jTextFieldName.getText();
