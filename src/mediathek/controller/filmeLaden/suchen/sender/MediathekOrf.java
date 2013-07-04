@@ -280,7 +280,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                                         for (int k = 0; k < childNodeList2.getLength(); ++k) {
                                             Node childItem2 = childNodeList2.item(k);
                                             if ("Item".equals(childItem2.getNodeName())) {
-                                                String url = "";
+                                                String url = "", url_klein = "";
                                                 String titel = "";
                                                 duration = 0;
                                                 description = "";
@@ -299,6 +299,10 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                                                             if (node != null) {
                                                                 quality = node.getNodeValue();
                                                             }
+                                                        }
+                                                        // "Q1A"-Qualität nehmen
+                                                        if ("Q1A".equals(quality)) {
+                                                            url_klein = childItem3.getTextContent();
                                                         }
                                                         // "SMIL"-Qualität nehmen, oder "keine Qualität"
                                                         if ((quality == null && titel.isEmpty()) || "SMIL".equals(quality)) {
@@ -329,10 +333,17 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                                                     }
                                                 }
                                                 if (!url.isEmpty() && !titel.isEmpty()) {
-                                                    String urlRtmp = "";
+                                                    String urlRtmp = "", urlRtmp_klein = "";
                                                     int mpos = url.indexOf("mp4:");
                                                     if (mpos != -1) {
                                                         urlRtmp = "-r " + url + " -y " + url.substring(mpos) + " --flashVer WIN11,4,402,265 --swfUrl http://tvthek.orf.at/flash/player/TVThekPlayer_9_ver18_1.swf";
+                                                    }
+                                                    if (!url_klein.isEmpty()) {
+                                                        mpos = url_klein.indexOf("mp4:");
+                                                        if (mpos != -1) {
+                                                            urlRtmp_klein = "-r " + url_klein + " -y " + url_klein.substring(mpos) + " --flashVer WIN11,4,402,265 --swfUrl http://tvthek.orf.at/flash/player/TVThekPlayer_9_ver18_1.swf";
+                                                        }
+
                                                     }
                                                     //rtmp://apasfw.apa.at/cms-worldwide/mp4:2012-09-09_1305_tl_23_UNGARISCHES-MAGAZIN_Beszelgetes-Szabo-Er__4582591__o__0000214447__s4588253___n__BHiRes_13241400P_13280400P_Q6A.mp4
                                                     //flvr=WIN11,4,402,265
@@ -342,11 +353,12 @@ public class MediathekOrf extends MediathekReader implements Runnable {
                                                     //play=mp4:1950-01-01_1200_in_00_Ungarnkrise-1956_____3230831__o__0000936285__s3230833___Q6A.mp4
                                                     //flvstreamer --resume --rtmp %tcUrl% --flashVer %flvr% --app %app% --swfUrl %swfUrl% --playpath %play% --flv %Ziel%
 
-
-
                                                     //addFilm(new DatenFilm(senderName, thema, strUrlFeed, titel, url, datum, zeit));
 //                                                    addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, urlRtmp, datum, zeit));
-                                                    addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, urlRtmp, datum, zeit, duration, description, thumbnail, "", new String[]{}));
+                                                    DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, urlRtmp, datum, zeit, duration, description, thumbnail, "", new String[]{});
+                                                    film.addKleineUrl(url_klein, urlRtmp_klein);
+                                                    addFilm(film);
+
                                                 }
                                             }
                                         }
