@@ -19,9 +19,6 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;

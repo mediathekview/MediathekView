@@ -22,11 +22,10 @@ package mediathek.daten;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekArd;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
+import mediathek.controller.filmeLaden.suchen.sender.MediathekSf;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekSwr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
-import static mediathek.daten.DatenDownload.DOWNLOAD_SENDER_NR;
 import mediathek.tool.Datum;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
@@ -270,6 +269,10 @@ public class DatenFilm implements Comparable<DatenFilm> {
                 ret = url.replace("1456k_p13v11.mp4", "436k_p9v11.mp4");
             } else if (url.endsWith("1596k_p13v9.mp4")) {
                 ret = url.replace("1596k_p13v9.mp4", "536k_p9v9.mp4");
+            }
+        } else if (arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(MediathekSf.SENDER)) {
+            if (url.endsWith("_hq1.mp4")) {
+                ret = url.replace("_hq1.mp4", "_lq1.mp4");
             }
         } else if (arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(MediathekNdr.SENDER)) {
             //NDR
