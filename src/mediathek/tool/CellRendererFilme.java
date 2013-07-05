@@ -57,7 +57,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             String url = table.getModel().getValueAt(r, DatenFilm.FILM_URL_NR).toString();
             boolean live = table.getModel().getValueAt(r, DatenFilm.FILM_THEMA_NR).equals(ListeFilme.THEMA_LIVE);
             boolean start = false;
-            Start s = ddaten.starterClass.getStart(url);
+            Start s = ddaten.starterClass.getStartOrgUrl(url);
             if (s != null) {
                 if (s.datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
                     start = true;
@@ -113,5 +113,4 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         }
         return this;
     }
-
 }

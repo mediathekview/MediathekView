@@ -175,7 +175,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
 
     public synchronized boolean addWithNr(DatenFilm film) {
         film.arr[DatenFilm.FILM_NR_NR] = getNr(nr++);
-        film.arr[DatenFilm.FILM_URL_NR] = film.getUrlOrg();
         film.setWerte();
         return add(film);
     }
@@ -400,6 +399,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret;
     }
+
     public synchronized DatenFilm getFilmByNr(String nr) {
         DatenFilm ret = null;
         ListIterator<DatenFilm> it = this.listIterator(0);
