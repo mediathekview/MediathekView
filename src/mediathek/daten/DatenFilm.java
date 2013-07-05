@@ -359,10 +359,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return ret;
     }
 
-    public String getUrlOrg() {
-        return arr[FILM_URL_NR];
-    }
-
     private void makeArr() {
         arr = new String[FILME_MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {

@@ -111,6 +111,10 @@ public class StarterClass {
         return listeStarts.getStart(url);
     }
 
+    public synchronized Start getStartOrgUrl(String url) {
+        return listeStarts.getStartOrgUrl(url);
+    }
+
     public synchronized void aufraeumen() {
         listeStarts.aufraeumen();
     }
@@ -216,7 +220,6 @@ public class StarterClass {
         private void startStarten(Start start) {
             start.startZeit = new Datum();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
-//            start.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
             switch (start.datenDownload.getArt()) {
                 case Start.ART_PROGRAMM:
                     StartenProgramm startenProgrammn = new StartenProgramm(start);
@@ -243,7 +246,6 @@ public class StarterClass {
             start = s;
             start.status = Start.STATUS_RUN;
             file = new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-//            int maxLen = laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
             notifyStartEvent();
             try {
                 new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();

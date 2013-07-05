@@ -413,7 +413,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         s = s.replace("%s", film.arr[DatenFilm.FILM_SENDER_NR]);
         s = s.replace("%H", DatumZeit.getHeute_yyyyMMdd());
         s = s.replace("%h", DatumZeit.getJetzt_HHMMSS());
-        s = s.replace("%N", GuiFunktionen.getDateiName(film.arr[DatenFilm.FILM_URL_NR]));
+        s = s.replace("%N", GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
         s = s.replace("%S", GuiFunktionen.getDateiSuffix(film.arr[DatenFilm.FILM_URL_NR]));
         return s;
     }

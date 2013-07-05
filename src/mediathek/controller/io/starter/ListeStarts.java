@@ -44,8 +44,8 @@ public class ListeStarts extends LinkedList<Start> {
         if (start != null) {
             if (!contain(start)) {
                 add(start);
-                // gestartete Filme auch in die History eintragen
-                ddaten.history.add(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                // gestartete Filme (originalURL des Films) auch in die History eintragen
+                ddaten.history.add(start.datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
             }
         }
         notifyStartEvent();
@@ -59,12 +59,25 @@ public class ListeStarts extends LinkedList<Start> {
                 if (!contain(s)) {
                     add(s);
                     // gestartete Filme auch in die History eintragen
-                    al.add(s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                    al.add(s.datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
                 }
             }
             ddaten.history.adds(al.toArray(new String[]{}));
         }
         notifyStartEvent();
+    }
+
+    synchronized Start getStartOrgUrl(String orgUrl) {
+        Start ret = null;
+        Iterator<Start> it = iterator();
+        while (it.hasNext()) {
+            Start s = it.next();
+            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL_NR].equals(orgUrl)) {
+                ret = s;
+                break;
+            }
+        }
+        return ret;
     }
 
     synchronized Start getStart(String url) {

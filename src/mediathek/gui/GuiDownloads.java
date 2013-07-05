@@ -889,12 +889,21 @@ public class GuiDownloads extends PanelVorlage {
                         DatenPset gruppe = ddaten.listePset.getPsetAbspielen();
                         if (gruppe != null) {
                             int selectedModelRow = tabelle.convertRowIndexToModel(nr);
-                            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_FILM_NR_NR).toString());
+                            String url = tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString();
+                            String filmNr = tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_FILM_NR_NR).toString();
+                            DatenFilm film = Daten.listeFilme.getFilmByNr(filmNr);
                             if (film != null) {
+                                DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
+                                DatenFilm filmDownload = film.getCopy();
+                                // und jetzt die tatsächlichen URLs des Downloads eintragen
+                                filmDownload.arr[DatenFilm.FILM_URL_NR] = download.arr[DatenDownload.DOWNLOAD_URL_NR];
+                                filmDownload.arr[DatenFilm.FILM_URL_RTMP_NR] = download.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR];
+                                filmDownload.arr[DatenFilm.FILM_URL_KLEIN_NR] = "";
+                                filmDownload.arr[DatenFilm.FILM_URL_RTMP_KLEIN_NR] = "";
                                 // in die History eintragen
-                                ddaten.history.add(film.getUrlOrg());
+                                ddaten.history.add(film.getUrlNormal());
                                 // und starten
-                                ddaten.starterClass.urlStarten(gruppe, film);
+                                ddaten.starterClass.urlStarten(gruppe, filmDownload);
                             }
                         } else {
                             MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
