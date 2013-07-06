@@ -118,21 +118,28 @@ public class MediathekBr extends MediathekReader implements Runnable {
                         } else {
                             pos1 += MUSTER_URL.length();
                             if ((pos2 = seite.indexOf("/>", pos1)) != -1) {
-                                if (pos1 > posEnde || pos2 > posEnde) {
+                                if (pos2 > posEnde) {
                                     break;
                                 }
-                                url = seite.substring(pos1, pos2);
-                                if (url.contains("small")) {
+                                String tmpUrl = seite.substring(pos1, pos2);
+                                if (tmpUrl.contains("\"large\"")) {
                                     url_klein = url;
                                 }
-                                if (url.contains("xlarge")) {
+                                if (url.isEmpty() || tmpUrl.contains("\"xlarge\"")) {
+                                    url = tmpUrl;
+                                }
+                                if (!url.isEmpty() && !url_klein.isEmpty()) {
                                     break;
                                 }
                             }
                         }
                     }
+                    if (url.equals(url_klein)) {
+                        // dann gibts nur "large"
+                        url_klein = "";
+                    }
                     if (url.equals("")) {
-                        //LogFilme.fehlerMeldung("MediathekBr.addToList", "keine URL");
+                        Log.fehlerMeldung(-978451398, Log.FEHLER_ART_MREADER, "MediathekBr.laden", "");
                     } else {
                         if ((pos1 = seite.indexOf(MUSTER_THEMA, pos)) != -1) {
                             pos1 += MUSTER_THEMA.length();
@@ -213,6 +220,131 @@ public class MediathekBr extends MediathekReader implements Runnable {
                         addFilm(film);
                     }
                 } //while, die ganz große Schleife
+                // ====================================================
+                // und jetzt noch für Sendungen
+                final String FEED_1 = "<feed name=\"";
+                final String FEED_2 = "</feed>";
+                final String PODCAST = "<podcast";
+                final String TITEL = "<title>";
+                final String BESCHREIBUNG = "<description>";
+                final String BILD = "<image>";
+                final String DATUM = "<pubdate>";
+                final String DAUER = "<duration>";
+                final String URL = ">http://cdn-storage";
+                String beschreibung;
+                String bild;
+                String dauer;
+                String urlThema;
+                url_klein = "";
+                long duration = 0;
+                while ((pos = seite.indexOf(FEED_1, pos)) != -1) {
+                    pos += FEED_1.length();
+                    if ((posEnde = seite.indexOf(FEED_2, pos)) == -1) {
+                        break;
+                    }
+                    thema = "";
+                    bild = "";
+                    pos1 = pos;
+                    if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
+                        thema = seite.substring(pos1, pos2);
+                        if (thema.isEmpty()) {
+                            thema = SENDER;
+                        }
+                    }
+                    if ((pos1 = seite.indexOf(BILD, pos)) != -1) {
+                        pos1 += BILD.length();
+                        if ((pos2 = seite.indexOf("<", pos1)) != -1) {
+                            if (pos2 > posEnde) {
+                                break;
+                            }
+                            bild = seite.substring(pos1, pos2);
+                        }
+                    }
+                    while ((pos1 = seite.indexOf(PODCAST, pos)) != -1) {
+                        if (pos1 > posEnde) {
+                            break;
+                        }
+                        pos = pos1 + PODCAST.length();
+                        url = "";
+                        datum = "";
+                        zeit = "";
+                        titel = "";
+                        beschreibung = "";
+                        dauer = "";
+                        if ((pos1 = seite.indexOf(TITEL, pos)) != -1) {
+                            pos1 += TITEL.length();
+                            if ((pos2 = seite.indexOf("<", pos1)) != -1) {
+                                if (pos2 > posEnde) {
+                                    break;
+                                }
+                                titel = seite.substring(pos1, pos2);
+                            }
+                        }
+                        if ((pos1 = seite.indexOf(BESCHREIBUNG, pos)) != -1) {
+                            pos1 += BESCHREIBUNG.length();
+                            if ((pos2 = seite.indexOf("<", pos1)) != -1) {
+                                if (pos2 > posEnde) {
+                                    break;
+                                }
+                                beschreibung = seite.substring(pos1, pos2);
+                            }
+                        }
+                        if ((pos1 = seite.indexOf(DAUER, pos)) != -1) {
+                            pos1 += DAUER.length();
+                            if ((pos2 = seite.indexOf("<", pos1)) != -1) {
+                                if (pos2 > posEnde) {
+                                    break;
+                                }
+                                dauer = seite.substring(pos1, pos2);
+                                try {
+                                    if (!dauer.equals("")) {
+                                        duration = 0;
+                                        String[] parts = dauer.split(":");
+                                        long power = 1;
+                                        for (int i = parts.length - 1; i >= 0; i--) {
+                                            duration += Long.parseLong(parts[i]) * power;
+                                            power *= 60;
+                                        }
+                                    }
+                                } catch (Exception ex) {
+                                    Log.fehlerMeldung(-963297054, Log.FEHLER_ART_MREADER, "MediathekBr.addFilm", "d: " + (dauer == null ? " " : dauer));
+                                }
+                            }
+                        }
+                        if ((pos1 = seite.indexOf(DATUM, pos)) != -1) {
+                            pos1 += DATUM.length();
+                            if ((pos2 = seite.indexOf("<", pos1)) != -1) {
+                                if (pos2 > posEnde) {
+                                    break;
+                                }
+                                tmp = seite.substring(pos1, pos2);
+                                datum = convertDatum(tmp);
+                                zeit = convertTime(tmp);
+                            }
+                        }
+                        if ((pos1 = seite.indexOf(URL, pos)) != -1) {
+                            pos1 += URL.length();
+                            if ((pos2 = seite.indexOf("<", pos1)) != -1) {
+                                if (pos2 > posEnde) {
+                                    break;
+                                }
+                                url = seite.substring(pos1, pos2);
+                            }
+                        }
+                        if (url.equals("")) {
+                            Log.fehlerMeldung(-978451398, Log.FEHLER_ART_MREADER, "MediathekBr.laden", "");
+                        } else {
+                            // DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
+                            //     String datum, String zeit,
+                            //     long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+                            url = "http://cdn-storage" + url;
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, "http://www.br-online.de/podcast/", titel, url, "" /*urlRtmp*/, datum, zeit,
+                                    duration, beschreibung, bild, ""/* imageUrl*/, new String[]{""} /*Beschreibung*/);
+                            addFilm(film);
+                        }
+                    }
+                } //while, die ganz große Schleife
+
             } catch (Exception ex) {
                 Log.fehlerMeldung(-963486054, Log.FEHLER_ART_MREADER, "MediathekBr.laden", ex, "");
             }
