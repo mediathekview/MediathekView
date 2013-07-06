@@ -473,7 +473,6 @@ public class MediathekArte7 extends MediathekReader implements Runnable {
                     if (url.equals("")) {
                         Log.fehlerMeldung(-306921883, Log.FEHLER_ART_MREADER, "MediathekArte.addfilme4-2", "keine Url: " + senderArte + " " + urlFilm);
                     } else {
-                        // DatenFilm film = new DatenFilm(senderArte, thema, filmWebsite, name, url, ""/* urlRtmp */, datum, zeit);
                         // DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
                         //     String datum, String zeit,
                         //     long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {

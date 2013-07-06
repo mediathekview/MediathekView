@@ -121,8 +121,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         // Filme die beim Sender gesucht wurden (und nur die) hier eintragen
         // nur für die MediathekReader
         // ist eine URL,Sender,Thema,Titel schon vorhanden, wird sie verworfen, die aktuellste bleibt erhalten
-        DatenFilm f;
-        String idx = film.getIndex();
         // Thema
         film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeXml(film.arr[DatenFilm.FILM_THEMA_NR].trim());
         film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
@@ -135,6 +133,8 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeXml(film.arr[DatenFilm.FILM_TITEL_NR].trim());
         film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_TITEL_NR].trim());
         // erst mal schauen obs das schon gibt
+        DatenFilm f;
+        String idx = film.getIndex();
         Iterator<DatenFilm> it = this.iterator();
         while (it.hasNext()) {
             f = it.next();
