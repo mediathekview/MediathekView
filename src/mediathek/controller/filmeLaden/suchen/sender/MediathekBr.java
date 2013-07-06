@@ -73,12 +73,15 @@ public class MediathekBr extends MediathekReader implements Runnable {
             String zeit;
             String titel;
             String tmp;
+            String beschreibung;
             final String ITEM_1 = "<ausstrahlung";
             final String ITEM_2 = "</ausstrahlung>";
             final String MUSTER_URL = "<video ";
             final String MUSTER_THEMA = "<titel>";
             final String MUSTER_TITEL = "<nebentitel>";
             final String MUSTER_DATUM = "<beginnPlan>";
+            final String MUSTER_BESCHREIBUNG = "<beschreibung>";
+            final String MUSTER_KURZBESCHREIBUNG = "<kurzbeschreibung>";
             //final String ADRESSE = "http://rd.gl-systemhaus.de/br/b7/archive/archive.xml.zip.adler32";
             //final String ADRESSE = "http://rd.gl-systemhaus.de/br/b7/listra/archive/archive.xml.zip.adler32";
             //final String ADRESSE="http://mediathek-video.br.de/nc/archive/archive-1328897218.xml.zip.adler32";
@@ -110,6 +113,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                     datum = "";
                     zeit = "";
                     titel = "";
+                    beschreibung = "";
                     pos1 = pos;
                     while (true) {
                         pos1 = seite.indexOf(MUSTER_URL, pos1);
@@ -141,6 +145,36 @@ public class MediathekBr extends MediathekReader implements Runnable {
                     if (url.equals("")) {
                         Log.fehlerMeldung(-978451398, Log.FEHLER_ART_MREADER, "MediathekBr.laden", "");
                     } else {
+                        if ((pos1 = seite.indexOf(MUSTER_BESCHREIBUNG, pos)) != -1) {
+                            pos1 += MUSTER_BESCHREIBUNG.length();
+                            if ((pos2 = seite.indexOf("</", pos1)) != -1) {
+                                if (pos2 < posEnde) {
+                                    // <beschreibung><![CDATA[In dieser Woche sind zu Gast:auspieler]]></beschreibung>
+                                    beschreibung = seite.substring(pos1, pos2);
+                                    beschreibung = beschreibung.replace("<!", "");
+                                    beschreibung = beschreibung.replace("[", "");
+                                    beschreibung = beschreibung.replace("CDATA", "");
+                                    beschreibung = beschreibung.replace("]", "");
+                                    beschreibung = beschreibung.replace(">", "");
+                                }
+                            }
+                        }
+                        if (beschreibung.isEmpty()) {
+                            if ((pos1 = seite.indexOf(MUSTER_KURZBESCHREIBUNG, pos)) != -1) {
+                                pos1 += MUSTER_KURZBESCHREIBUNG.length();
+                                if ((pos2 = seite.indexOf("</", pos1)) != -1) {
+                                    if (pos2 < posEnde) {
+                                        // <kurzbeschreibung><![CDATA[Pflanzen in unserer Umgebung]]></kurzbeschreibung>
+                                        beschreibung = seite.substring(pos1, pos2);
+                                        beschreibung = beschreibung.replace("<!", "");
+                                        beschreibung = beschreibung.replace("[", "");
+                                        beschreibung = beschreibung.replace("CDATA", "");
+                                        beschreibung = beschreibung.replace("]", "");
+                                        beschreibung = beschreibung.replace(">", "");
+                                    }
+                                }
+                            }
+                        }
                         if ((pos1 = seite.indexOf(MUSTER_THEMA, pos)) != -1) {
                             pos1 += MUSTER_THEMA.length();
                             if ((pos2 = seite.indexOf("</", pos1)) != -1) {
@@ -212,10 +246,10 @@ public class MediathekBr extends MediathekReader implements Runnable {
                         //String urlRtmp = "--host " + host + "/" + app + " --playpath " + play;
                         String urlOrg = "rtmp://" + host + "/" + app + "/" + play;
                         String urlOrg_klein = "rtmp://" + host + "/" + app + "/" + play_klein;
-                        // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit)
-                        // DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlRtmp, String datum, String zeit)
-                        //DatenFilm film = new DatenFilm(nameSenderMReader, thema, link, titel, urlOrg, datum, zeit);
-                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, "http://www.br.de/mediathek/index.html", titel, urlOrg, urlRtmp, datum, zeit);
+
+                        DatenFilm film = new DatenFilm(nameSenderMReader, thema, "http://www.br.de/mediathek/index.html", titel, urlOrg, urlRtmp, datum, zeit,
+                                0 /*duration*/, beschreibung, ""/*bild*/, ""/* imageUrl*/, new String[]{""});
+                        //DatenFilm film = new DatenFilm(nameSenderMReader, thema, "http://www.br.de/mediathek/index.html", titel, urlOrg, urlRtmp, datum, zeit);
                         film.addKleineUrl(urlOrg_klein, urlRtmp_klein);
                         addFilm(film);
                     }
@@ -231,7 +265,6 @@ public class MediathekBr extends MediathekReader implements Runnable {
                 final String DATUM = "<pubdate>";
                 final String DAUER = "<duration>";
                 final String URL = ">http://cdn-storage";
-                String beschreibung;
                 String bild;
                 String dauer;
                 String urlThema;
@@ -339,7 +372,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                             //     long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
                             url = "http://cdn-storage" + url;
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, "http://www.br-online.de/podcast/", titel, url, "" /*urlRtmp*/, datum, zeit,
-                                    duration, beschreibung, bild, ""/* imageUrl*/, new String[]{""} /*Beschreibung*/);
+                                    duration, beschreibung, bild, ""/* imageUrl*/, new String[]{""});
                             addFilm(film);
                         }
                     }
