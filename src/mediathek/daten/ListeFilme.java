@@ -272,7 +272,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 Iterator<DatenFilm> it = this.iterator();
                 while (it.hasNext()) {
                     film = it.next();
-                    if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film)) {
+                    if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film, true /*länge nicht prüfen*/)) {
                         liste.add(film);
                     }
                 }
@@ -440,14 +440,21 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     }
 
     public void abosEintragen(DDaten ddaten) {
+        // Aboname in die Filmliste eintragen
         DatenFilm film;
         DatenAbo datenAbo;
         ListIterator<DatenFilm> iterator = this.listIterator(0);
         while (iterator.hasNext()) {
             film = iterator.next();
-            datenAbo = ddaten.listeAbo.getAboFuerFilm(film);
+            datenAbo = ddaten.listeAbo.getAboFuerFilm(film, false);
             if (datenAbo != null) {
                 film.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
+                // und jetzt noch die Filmlänge prüfen
+                datenAbo = ddaten.listeAbo.getAboFuerFilm(film, true);
+                if (datenAbo == null) {
+                    // dann ist der Film zu kurz
+                    film.arr[DatenFilm.FILM_ABO_NAME_NR] = film.arr[DatenFilm.FILM_ABO_NAME_NR] + " [zu kurz]";
+                }
             } else {
                 film.arr[DatenFilm.FILM_ABO_NAME_NR] = "";
             }

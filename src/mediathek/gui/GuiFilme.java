@@ -1319,7 +1319,7 @@ public class GuiFilme extends PanelVorlage {
             itemAboMitTitel = new JMenuItem("Abo mit Sender und Thema und Titel anlegen");
             itemAboFilter = new JMenuItem("Abo aus Filter anlegen");
             if (film != null) {
-                if ((ddaten.listeAbo.getAboFuerFilm(film)) != null) {
+                if ((ddaten.listeAbo.getAboFuerFilm(film, false /*die Länge nicht prüfen*/)) != null) {
                     //gibts schon, dann löschen
                     itemAbo.setEnabled(false);
                     itemAboMitTitel.setEnabled(false);
@@ -1551,7 +1551,7 @@ public class GuiFilme extends PanelVorlage {
                         DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
                         DatenAbo datenAbo;
                         if (film != null) {
-                            if ((datenAbo = ddaten.listeAbo.getAboFuerFilm(film)) != null) {
+                            if ((datenAbo = ddaten.listeAbo.getAboFuerFilm(film, false /*ohne Länge*/)) != null) {
                                 //gibts schon, dann löschen
                                 ddaten.listeAbo.aboLoeschen(datenAbo);
                             } else {

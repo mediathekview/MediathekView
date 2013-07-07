@@ -175,7 +175,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         ListIterator<DatenFilm> itFilm = Daten.listeFilme.listIterator();
         while (itFilm.hasNext()) {
             film = itFilm.next();
-            abo = ddaten.listeAbo.getAboFuerFilm(film);
+            abo = ddaten.listeAbo.getAboFuerFilm(film, true /*auch die Länge überprüfen*/);
             if (abo == null) {
                 continue;
             } else if (!abo.aboIstEingeschaltet()) {

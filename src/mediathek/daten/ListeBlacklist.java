@@ -193,7 +193,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                     ? new String[]{blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR]} : blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR].split(","),
                     Filter.isPattern(blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR])
                     ? new String[]{blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR]} : blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].split(","),
-                    new String[]{""}, 0, film)) {
+                    new String[]{""}, 0, film, true /*auch die Länge prüfen*/)) {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST_NR])) {
                     return true;
                 } else {

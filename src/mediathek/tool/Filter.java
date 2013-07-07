@@ -70,7 +70,7 @@ public class Filter {
 
     public static boolean filterAufFilmPruefen(String senderSuchen, String themaSuchen,
             String[] titelSuchen, String[] themaTitelSuchen, String[] irgendwoSuchen, int laengeMinutenSuchen,
-            DatenFilm film) {
+            DatenFilm film, boolean mitLaenge) {
         // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
         // senderSuchen exakt mit sender
         // themaSuchen exakt mit thema
@@ -90,7 +90,12 @@ public class Filter {
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_DESCRIPTION_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_KEYWORDS_NR])) {
-                            if (laengeMinutenSuchen == 0 || film.durationL == 0 || film.durationL > (laengeMinutenSuchen * 60)) {
+                            if (mitLaenge) {
+                                // die Länge soll mit gefrüft werden
+                                if (laengeMinutenSuchen == 0 || film.durationL == 0 || film.durationL > (laengeMinutenSuchen * 60)) {
+                                    return true;
+                                }
+                            } else {
                                 return true;
                             }
                         }

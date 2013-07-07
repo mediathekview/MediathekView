@@ -125,7 +125,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         return false;
     }
 
-    public DatenAbo getAboFuerFilm(DatenFilm film) {
+    public DatenAbo getAboFuerFilm(DatenFilm film, boolean laengePruefen) {
         DatenAbo datenAbo;
         ListIterator<DatenAbo> it = this.listIterator();
         while (it.hasNext()) {
@@ -135,7 +135,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                     Filter.isPattern(datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR]) ? new String[]{datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR]} : datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR].split(","),
                     Filter.isPattern(datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR]) ? new String[]{datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR]} : datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR].split(","),
                     datenAbo.mindestdauerMinuten,
-                    film)) {
+                    film, laengePruefen)) {
                 return datenAbo;
             }
         }

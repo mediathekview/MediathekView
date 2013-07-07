@@ -222,4 +222,27 @@ public class MediathekReader implements Runnable {
             }
         }
     }
+
+    long extractDuration(String duration) {
+        long durationInSeconds = 0;
+        if (duration.isEmpty()) {
+            return 0;
+        }
+        try {
+            if (duration.contains("min")) {
+                duration = duration.replace("min", "").trim();
+                durationInSeconds = Long.parseLong(duration) * 60;
+            } else {
+                String[] parts = duration.split(":");
+                long power = 1;
+                for (int i = parts.length - 1; i >= 0; i--) {
+                    durationInSeconds += Long.parseLong(parts[i]) * power;
+                    power *= 60;
+                }
+            }
+        } catch (Exception ex) {
+            return 0;
+        }
+        return durationInSeconds;
+    }
 }
