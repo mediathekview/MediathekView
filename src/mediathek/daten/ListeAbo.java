@@ -130,7 +130,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         ListIterator<DatenAbo> it = this.listIterator();
         while (it.hasNext()) {
             datenAbo = it.next();
-            if (Filter.filterAufAboPruefen(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR],
+            if (Filter.filterAufFilmPruefen(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR],
                     Filter.isPattern(datenAbo.arr[DatenAbo.ABO_TITEL_NR]) ? new String[]{datenAbo.arr[DatenAbo.ABO_TITEL_NR]} : datenAbo.arr[DatenAbo.ABO_TITEL_NR].split(","),
                     Filter.isPattern(datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR]) ? new String[]{datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR]} : datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR].split(","),
                     Filter.isPattern(datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR]) ? new String[]{datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR]} : datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR].split(","),
