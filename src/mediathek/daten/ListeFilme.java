@@ -272,7 +272,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 Iterator<DatenFilm> it = this.iterator();
                 while (it.hasNext()) {
                     film = it.next();
-                    if (Filter.filterAufAboPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film)) {
+                    if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film)) {
                         liste.add(film);
                     }
                 }

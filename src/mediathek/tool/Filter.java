@@ -36,12 +36,13 @@ public class Filter {
         String[] titelExistiert = aboExistiert.arr[DatenAbo.ABO_TITEL_NR].split(",");
         String[] themaTitelExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA_TITEL_NR].split(",");
         String[] irgendwoExistiert = aboExistiert.arr[DatenAbo.ABO_IRGENDWO_NR].split(",");
-        int laengeExistiert = aboExistiert.mindestdauerMinuten;
+        // Abos sollen sich nicht nur in der Länge unterscheiden
+        // int laengeExistiert = aboExistiert.mindestdauerMinuten;
         String senderPruefen = aboPruefen.arr[DatenAbo.ABO_SENDER_NR];
         String themaPruefen = aboPruefen.arr[DatenAbo.ABO_THEMA_NR];
         String titelPruefen = aboPruefen.arr[DatenAbo.ABO_TITEL_NR];
         String irgendwoPruefen = aboPruefen.arr[DatenAbo.ABO_IRGENDWO_NR];
-        int laengePruefen = aboPruefen.mindestdauerMinuten;
+        // int laengePruefen = aboPruefen.mindestdauerMinuten;
 
         if (senderExistiert.equals("") || senderPruefen.equalsIgnoreCase(senderExistiert)) {
             if (themaExistiert.equals("") || themaPruefen.equalsIgnoreCase(themaExistiert)) {
@@ -56,9 +57,9 @@ public class Filter {
                                 || pruefen(irgendwoExistiert, themaPruefen)
                                 || pruefen(irgendwoExistiert, titelPruefen)
                                 || pruefen(irgendwoExistiert, irgendwoPruefen)) {
-                            if (laengeExistiert == 0 || laengePruefen >= laengeExistiert) {
-                                return true;
-                            }
+                            //if (laengeExistiert == 0 || laengePruefen >= laengeExistiert) {
+                            return true;
+                            //}
                         }
                     }
                 }
@@ -67,7 +68,7 @@ public class Filter {
         return false;
     }
 
-    public static boolean filterAufAboPruefen(String senderSuchen, String themaSuchen,
+    public static boolean filterAufFilmPruefen(String senderSuchen, String themaSuchen,
             String[] titelSuchen, String[] themaTitelSuchen, String[] irgendwoSuchen, int laengeMinutenSuchen,
             DatenFilm film) {
         // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen

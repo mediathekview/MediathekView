@@ -126,13 +126,17 @@ public class MediathekBr extends MediathekReader implements Runnable {
                                     break;
                                 }
                                 String tmpUrl = seite.substring(pos1, pos2);
-                                if (tmpUrl.contains("\"large\"")) {
-                                    url_klein = url;
-                                }
-                                if (url.isEmpty() || tmpUrl.contains("\"xlarge\"")) {
+                                if (tmpUrl.contains("\"xlarge\"")) {
                                     url = tmpUrl;
+                                    continue;
                                 }
-                                if (!url.isEmpty() && !url_klein.isEmpty()) {
+                                if (tmpUrl.contains("\"large\"")) {
+                                    url_klein = tmpUrl;
+                                    if (url.isEmpty()) {
+                                        url = tmpUrl;
+                                    }
+                                }
+                                if (url.contains("\"xlarge\"") && url_klein.contains("\"large\"")) {
                                     break;
                                 }
                             }
