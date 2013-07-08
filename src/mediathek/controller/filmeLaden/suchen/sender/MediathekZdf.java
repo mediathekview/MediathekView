@@ -57,7 +57,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             // da sollte eigentlich nichts Neues sein
             addToList_Rubrik("http://www.zdf.de/ZDFmediathek/hauptnavigation/rubriken");
         }
-        // letzte Woche eingügen
+        // letzte Woche einfügen
         addThemenliste("http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-verpasst/day0", "http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-verpasst/day0", "");
         addThemenliste("http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-verpasst/day1", "http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-verpasst/day1", "");
         addThemenliste("http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-verpasst/day2", "http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-verpasst/day2", "");
@@ -239,124 +239,19 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                         Log.fehlerMeldung(-643269690, Log.FEHLER_ART_MREADER, "MediathekZdf.addFilme", "keine URL: " + url);
                     } else {
                         urlFilm = "http://www.zdf.de/ZDFmediathek/beitrag/video/" + urlFilm;
-                        filmHolen_neu(thema, titel, urlThema, urlFilm);
+                        DatenFilm f;
+                        if ((f = filmHolenId(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm)) == null) {
+                            // dann mit der herkömmlichen Methode versuchen
+                            Log.fehlerMeldung(-398012379, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "auf die alte Art: " + urlFilm);
+                            filmHolen(thema, titel, urlThema, urlFilm);
+                        } else {
+                            // dann wars gut
+                            addFilm(f);
+                        }
                     }
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(-796325800, Log.FEHLER_ART_MREADER, "MediathekZdf.addFilme", ex, url);
-            }
-        }
-
-        private void filmHolen_neu(String thema, String titel, String urlThema, String filmWebsite) {
-            //<teaserimage alt="Harald Lesch im Studio von Abenteuer Forschung" key="298x168">http://www.zdf.de/ZDFmediathek/contentblob/1909108/timg298x168blob/8081564</teaserimage>
-            //<detail>Möchten Sie wissen, was Sie in der nächsten Sendung von Abenteuer Forschung erwartet? Harald Lesch informiert Sie.</detail>
-            //<length>00:00:34.000</length>
-            //<airtime>02.07.2013 23:00</airtime>
-            final String BILD = "<teaserimage alt=\"";
-            final String BILD_ = "key=\"2";
-            final String BESCHREIBUNG = "<detail>";
-            final String LAENGE = "<length>";
-            final String DATUM = "<airtime>";
-            int pos1, pos2;
-            String id = "", bild = "", beschreibung = "", laenge = "", datum = "", zeit = "", url = "";
-            if ((pos1 = filmWebsite.indexOf("/ZDFmediathek/beitrag/video/")) != -1) {
-                pos1 += "/ZDFmediathek/beitrag/video/".length();
-                if ((pos2 = filmWebsite.indexOf("/", pos1)) != -1) {
-                    id = filmWebsite.substring(pos1, pos2);
-//                    System.out.println(id);
-                }
-            }
-            if (id.isEmpty()) {
-                Log.fehlerMeldung(-304509761, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "keine id: " + filmWebsite);
-                return;
-            }
-            meldung(filmWebsite);
-            String tmp = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?ak=web&id=" + id;
-            seite2 = getUrl.getUri_Utf(nameSenderMReader, tmp, seite2, "url: " + filmWebsite);
-            if ((pos1 = seite2.indexOf(BILD)) != -1) {
-                pos1 += BILD.length();
-                if ((pos1 = seite2.indexOf(BILD_, pos1)) != -1) {
-                    pos1 += BILD_.length();
-                    if ((pos2 = seite2.indexOf("<", pos1)) != -1) {
-                        bild = seite2.substring(pos1, pos2);
-                        if (bild.contains(">")) {
-                            bild = bild.substring(bild.indexOf(">") + 1);
-                        }
-                    }
-                }
-            }
-            if ((pos1 = seite2.indexOf(BESCHREIBUNG)) != -1) {
-                pos1 += BESCHREIBUNG.length();
-                if ((pos2 = seite2.indexOf("<", pos1)) != -1) {
-                    beschreibung = seite2.substring(pos1, pos2);
-                }
-            }
-            if ((pos1 = seite2.indexOf(LAENGE)) != -1) {
-                pos1 += LAENGE.length();
-                if ((pos2 = seite2.indexOf("<", pos1)) != -1) {
-                    laenge = seite2.substring(pos1, pos2);
-                    if (laenge.contains(".")) {
-                        laenge = laenge.substring(0, laenge.indexOf("."));
-                    }
-                }
-            }
-            if ((pos1 = seite2.indexOf(DATUM)) != -1) {
-                pos1 += DATUM.length();
-                if ((pos2 = seite2.indexOf("<", pos1)) != -1) {
-                    datum = seite2.substring(pos1, pos2);
-                    if (datum.contains(" ")) {
-                        zeit = datum.substring(datum.lastIndexOf(" ")).trim() + ":00";
-                        datum = datum.substring(0, datum.lastIndexOf(" ")).trim();
-                    }
-                }
-            }
-            // und noch die URL
-//            <formitaet basetype="h264_aac_mp4_http_na_na" isDownload="false">
-//                <quality>veryhigh</quality>
-//                <url>http://nrodl.zdf.de/none/zdf/13/05/130528_vorschau_afo_1596k_p13v9.mp4</url>
-//                <ratio>16:9</ratio>
-//                <height>480</height>
-//                <width>852</width>
-//                <videoBitrate>1500000</videoBitrate>
-//                <audioBitrate>96000</audioBitrate>
-//                <filesize>7190837</filesize>
-//                <facets>
-//                    <facet>progressive</facet>
-//                </facets>
-//            </formitaet>
-
-            final String URL_ANFANG = "<formitaet basetype=\"h264_aac_mp4_http_na_na\"";
-            final String URL_ENDE = "</formitaet>";
-            final String URL = "<url>";
-            int posEnde = 0;
-            while (true) {
-                if ((pos1 = seite2.indexOf(URL_ANFANG, posEnde)) == -1) {
-                    break;
-                }
-                pos1 += URL_ANFANG.length();
-                if ((posEnde = seite2.indexOf(URL_ENDE, pos1)) == -1) {
-                    break;
-                }
-                if ((pos1 = seite2.indexOf("<quality>veryhigh</quality>", pos1)) == -1) {
-                    continue;
-                }
-                if ((pos1 = seite2.indexOf(URL, pos1)) != -1) {
-                    pos1 += URL.length();
-                    if (pos1 > posEnde) {
-                        continue;
-                    }
-                    if ((pos2 = seite2.indexOf("<", pos1)) != -1) {
-                        url = seite2.substring(pos1, pos2);
-                        break;
-                    }
-                }
-            }
-            if (url.isEmpty()) {
-                Log.fehlerMeldung(-397002891, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "keine URL: " + filmWebsite);
-            } else {
-                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, "" /*urlRtmp*/, datum, zeit,
-                        extractDuration(laenge), beschreibung, bild, ""/* imageUrl*/, new String[]{""});
-                addFilm(film);
             }
         }
 
@@ -446,19 +341,19 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     if (pos1 != -1 && pos2 != -1) {
                         urlFilm = seite2.substring(pos1, pos2);
                     }
-                    if (urlFilm.equals("")) {
-                        Log.fehlerMeldung(-690048078, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen-1", "keine URL: " + urlFilm);
+                }
+                if (urlFilm.equals("")) {
+                    Log.fehlerMeldung(-690048078, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen-1", "keine URL: " + urlFilm);
+                } else {
+                    urlFilm = addUrl + urlFilm;
+                    if (urlFilm.endsWith("asx")) {
+                        //addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
+                        //flashHolen(thema, titel, urlThema, urlFilm, datum, zeit);
+                        flashHolen(thema, titel, filmWebsite, urlFilm, datum, zeit, durationInSeconds, description, imageUrl, keywords);
+                    } else if (urlFilm.endsWith("mov")) {
+                        quicktimeHolen(thema, titel, filmWebsite, urlFilm, datum, zeit, durationInSeconds, description, imageUrl);
                     } else {
-                        urlFilm = addUrl + urlFilm;
-                        if (urlFilm.endsWith("asx")) {
-                            //addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
-                            //flashHolen(thema, titel, urlThema, urlFilm, datum, zeit);
-                            flashHolen(thema, titel, filmWebsite, urlFilm, datum, zeit, durationInSeconds, description, imageUrl, keywords);
-                        } else if (urlFilm.endsWith("mov")) {
-                            quicktimeHolen(thema, titel, filmWebsite, urlFilm, datum, zeit, durationInSeconds, description, imageUrl);
-                        } else {
-                            Log.fehlerMeldung(-200480752, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen-2", "keine URL: " + urlFilm);
-                        }
+                        Log.fehlerMeldung(-200480752, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen-2", "keine URL: " + urlFilm);
                     }
                 }
             } catch (Exception ex) {
@@ -721,5 +616,157 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             Log.fehlerMeldung(-265847128, Log.FEHLER_ART_MREADER, "MediathekZdf.flash" + senderName, ex, urlFilm);
         }
         return ret;
+    }
+
+    public static DatenFilm filmHolenId(GetUrl getUrl, StringBuffer strBuffer, String sender, String thema, String titel, String urlThema, String filmWebsite) {
+        //<teaserimage alt="Harald Lesch im Studio von Abenteuer Forschung" key="298x168">http://www.zdf.de/ZDFmediathek/contentblob/1909108/timg298x168blob/8081564</teaserimage>
+        //<detail>Möchten Sie wissen, was Sie in der nächsten Sendung von Abenteuer Forschung erwartet? Harald Lesch informiert Sie.</detail>
+        //<length>00:00:34.000</length>
+        //<airtime>02.07.2013 23:00</airtime>
+        DatenFilm ret = null;
+        final String BILD = "<teaserimage alt=\"";
+        final String BILD_ = "key=\"2";
+        final String BESCHREIBUNG = "<detail>";
+        final String LAENGE = "<length>";
+        final String DATUM = "<airtime>";
+        final String THEMA = "<originChannelTitle>";
+        int pos1, pos2;
+        String id = "", bild = "", beschreibung = "", laenge = "", datum = "", zeit = "", url = "", urlKlein = "";
+        if ((pos1 = filmWebsite.indexOf("/ZDFmediathek/beitrag/video/")) != -1) {
+            pos1 += "/ZDFmediathek/beitrag/video/".length();
+            if ((pos2 = filmWebsite.indexOf("/", pos1)) != -1) {
+                id = filmWebsite.substring(pos1, pos2);
+//                    System.out.println(id);
+            }
+        }
+        if (id.isEmpty()) {
+            Log.fehlerMeldung(-304509761, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "keine id: " + filmWebsite);
+            return null;
+        }
+        String tmp = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?ak=web&id=" + id;
+        strBuffer = getUrl.getUri_Utf(sender, tmp, strBuffer, "url: " + filmWebsite);
+        if (strBuffer.length() == 0) {
+            Log.fehlerMeldung(-398745601, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "url: " + tmp);
+            return null;
+        }
+        if ((pos1 = strBuffer.indexOf(BILD)) != -1) {
+            pos1 += BILD.length();
+            if ((pos1 = strBuffer.indexOf(BILD_, pos1)) != -1) {
+                pos1 += BILD_.length();
+                if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
+                    bild = strBuffer.substring(pos1, pos2);
+                    if (bild.contains(">")) {
+                        bild = bild.substring(bild.indexOf(">") + 1);
+                    }
+                }
+            }
+        }
+        if ((pos1 = strBuffer.indexOf(BESCHREIBUNG)) != -1) {
+            pos1 += BESCHREIBUNG.length();
+            if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
+                beschreibung = strBuffer.substring(pos1, pos2);
+            }
+        }
+        if ((pos1 = strBuffer.indexOf(THEMA)) != -1) {
+            pos1 += THEMA.length();
+            if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
+                if (thema.isEmpty()) {
+                    thema = strBuffer.substring(pos1, pos2);
+                }
+            }
+        }
+        if ((pos1 = strBuffer.indexOf(LAENGE)) != -1) {
+            pos1 += LAENGE.length();
+            if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
+                laenge = strBuffer.substring(pos1, pos2);
+                if (laenge.contains(".")) {
+                    laenge = laenge.substring(0, laenge.indexOf("."));
+                }
+            }
+        }
+        if ((pos1 = strBuffer.indexOf(DATUM)) != -1) {
+            pos1 += DATUM.length();
+            if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
+                datum = strBuffer.substring(pos1, pos2);
+                if (datum.contains(" ")) {
+                    zeit = datum.substring(datum.lastIndexOf(" ")).trim() + ":00";
+                    datum = datum.substring(0, datum.lastIndexOf(" ")).trim();
+                }
+            }
+        }
+        // und noch die URL
+//            <formitaet basetype="h264_aac_mp4_http_na_na" isDownload="false">
+//                <quality>veryhigh</quality>
+//                <url>http://nrodl.zdf.de/none/zdf/13/05/130528_vorschau_afo_1596k_p13v9.mp4</url>
+//                <ratio>16:9</ratio>
+//                <height>480</height>
+//                <width>852</width>
+//                <videoBitrate>1500000</videoBitrate>
+//                <audioBitrate>96000</audioBitrate>
+//                <filesize>7190837</filesize>
+//                <facets>
+//                    <facet>progressive</facet>
+//                </facets>
+//            </formitaet>
+
+        final String URL_ANFANG = "<formitaet basetype=\"h264_aac_mp4_http_na_na\"";
+        final String URL_ENDE = "</formitaet>";
+        final String URL = "<url>";
+        int posAnfang = 0, posEnde = 0;
+        while (true) {
+            if ((posAnfang = strBuffer.indexOf(URL_ANFANG, posAnfang)) == -1) {
+                break;
+            }
+            posAnfang += URL_ANFANG.length();
+            if ((posEnde = strBuffer.indexOf(URL_ENDE, posAnfang)) == -1) {
+                break;
+            }
+            if ((pos1 = strBuffer.indexOf("<quality>high</quality>", posAnfang)) != -1) {
+                if (pos1 < posEnde) {
+                    if (!urlKlein.isEmpty() && !urlKlein.contains("metafilegenerator")) {
+                        continue;
+                    }
+                    if ((pos1 = strBuffer.indexOf(URL, posAnfang)) != -1) {
+                        pos1 += URL.length();
+                        if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
+                            if (pos2 < posEnde) {
+                                urlKlein = strBuffer.substring(pos1, pos2);
+                            }
+                        }
+                    }
+                }
+            }
+            if ((pos1 = strBuffer.indexOf("<quality>veryhigh</quality>", posAnfang)) != -1) {
+                if (pos1 < posEnde) {
+                    if (!url.isEmpty() && !url.contains("metafilegenerator")) {
+                        continue;
+                    }
+                    if ((pos1 = strBuffer.indexOf(URL, posAnfang)) != -1) {
+                        pos1 += URL.length();
+                        if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
+                            if (pos2 < posEnde) {
+                                url = strBuffer.substring(pos1, pos2);
+                            }
+                        }
+                    }
+                }
+            }
+            if (!url.isEmpty() && !url.isEmpty() && !url.contains("metafilegenerator") && !urlKlein.contains("metafilegenerator")) {
+                break;
+            }
+        }
+        if (url.isEmpty() && !urlKlein.isEmpty()) {
+            url = urlKlein;
+            urlKlein = "";
+        }
+        if (url.isEmpty()) {
+            Log.fehlerMeldung(-397002891, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "keine URL: " + filmWebsite);
+            return null;
+        } else {
+            DatenFilm film = new DatenFilm(sender, thema, filmWebsite, titel, url, "" /*urlRtmp*/, datum, zeit,
+                    extractDuration(laenge), beschreibung, bild, ""/* imageUrl*/, new String[]{""});
+            film.addKleineUrl(urlKlein, "");
+            return film;
+        }
     }
 }

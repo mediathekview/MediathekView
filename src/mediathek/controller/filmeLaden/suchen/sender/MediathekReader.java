@@ -223,7 +223,7 @@ public class MediathekReader implements Runnable {
         }
     }
 
-    long extractDuration(String duration) {
+    static long extractDuration(String duration) {
         long durationInSeconds = 0;
         if (duration.isEmpty()) {
             return 0;
