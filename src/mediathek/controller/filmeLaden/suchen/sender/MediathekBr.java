@@ -369,7 +369,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                             }
                         }
                         if (url.equals("")) {
-                            Log.fehlerMeldung(-978451398, Log.FEHLER_ART_MREADER, "MediathekBr.laden", "");
+                            Log.fehlerMeldung(-397512398, Log.FEHLER_ART_MREADER, "MediathekBr.laden", "");
                         } else {
                             // DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
                             //     String datum, String zeit,
