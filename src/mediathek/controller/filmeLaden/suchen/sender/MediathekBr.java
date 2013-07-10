@@ -250,7 +250,11 @@ public class MediathekBr extends MediathekReader implements Runnable {
                         //String urlRtmp = "--host " + host + "/" + app + " --playpath " + play;
                         String urlOrg = "rtmp://" + host + "/" + app + "/" + play;
                         String urlOrg_klein = "rtmp://" + host + "/" + app + "/" + play_klein;
-
+                        if (urlOrg.startsWith("rtmp://cp121360")) {
+                            // die gehen nicht mehr:
+                            // rtmp://cp121360.edgefcs.net/ondemand/mp4:konks/b7/konks/1372853103-b7konks_nc_201799986_106447.mp4
+                            continue;
+                        }
                         DatenFilm film = new DatenFilm(nameSenderMReader, thema, "http://www.br.de/mediathek/index.html", titel, urlOrg, urlRtmp, datum, zeit,
                                 0 /*duration*/, beschreibung, ""/*bild*/, ""/* imageUrl*/, new String[]{""});
                         //DatenFilm film = new DatenFilm(nameSenderMReader, thema, "http://www.br.de/mediathek/index.html", titel, urlOrg, urlRtmp, datum, zeit);
