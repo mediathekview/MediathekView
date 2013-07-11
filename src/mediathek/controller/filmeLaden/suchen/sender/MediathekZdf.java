@@ -20,6 +20,8 @@
 package mediathek.controller.filmeLaden.suchen.sender;
 
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
+import static mediathek.controller.filmeLaden.suchen.sender.MediathekReader.extractDuration;
+import mediathek.controller.io.AsxLesen;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
@@ -239,14 +241,16 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                         Log.fehlerMeldung(-643269690, Log.FEHLER_ART_MREADER, "MediathekZdf.addFilme", "keine URL: " + url);
                     } else {
                         urlFilm = "http://www.zdf.de/ZDFmediathek/beitrag/video/" + urlFilm;
-                        DatenFilm f;
-                        if ((f = filmHolenId(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm)) == null) {
+                        DatenFilm f[] = filmHolenId(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm);
+                        if (f == null) {
                             // dann mit der herkömmlichen Methode versuchen
                             Log.fehlerMeldung(-398012379, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "auf die alte Art: " + urlFilm);
                             filmHolen(thema, titel, urlThema, urlFilm);
                         } else {
                             // dann wars gut
-                            addFilm(f);
+                            for (DatenFilm film : f) {
+                                addFilm(film);
+                            }
                         }
                     }
                 }
@@ -618,12 +622,11 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         return ret;
     }
 
-    public static DatenFilm filmHolenId(GetUrl getUrl, StringBuffer strBuffer, String sender, String thema, String titel, String urlThema, String filmWebsite) {
+    public static DatenFilm[] filmHolenId(GetUrl getUrl, StringBuffer strBuffer, String sender, String thema, String titel, String urlThema, String filmWebsite) {
         //<teaserimage alt="Harald Lesch im Studio von Abenteuer Forschung" key="298x168">http://www.zdf.de/ZDFmediathek/contentblob/1909108/timg298x168blob/8081564</teaserimage>
         //<detail>Möchten Sie wissen, was Sie in der nächsten Sendung von Abenteuer Forschung erwartet? Harald Lesch informiert Sie.</detail>
         //<length>00:00:34.000</length>
         //<airtime>02.07.2013 23:00</airtime>
-        DatenFilm ret = null;
         final String BILD = "<teaserimage alt=\"";
         final String BILD_ = "key=\"2";
         final String BESCHREIBUNG = "<detail>";
@@ -631,7 +634,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         final String DATUM = "<airtime>";
         final String THEMA = "<originChannelTitle>";
         int pos1, pos2;
-        String id = "", bild = "", beschreibung = "", laenge = "", datum = "", zeit = "", url = "", urlKlein = "";
+        String id = "", bild = "", beschreibung = "", laenge = "", datum = "", zeit = "", url = "", urlKlein = "", urlHd = "";
         if ((pos1 = filmWebsite.indexOf("/ZDFmediathek/beitrag/video/")) != -1) {
             pos1 += "/ZDFmediathek/beitrag/video/".length();
             if ((pos2 = filmWebsite.indexOf("/", pos1)) != -1) {
@@ -710,6 +713,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
 //            </formitaet>
 
         final String URL_ANFANG = "<formitaet basetype=\"h264_aac_mp4_http_na_na\"";
+        final String URL_ANFANG_HD = "<formitaet basetype=\"wmv3_wma9_asf_mms_asx_http\"";
         final String URL_ENDE = "</formitaet>";
         final String URL = "<url>";
         int posAnfang = 0, posEnde = 0;
@@ -751,8 +755,34 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     }
                 }
             }
-            if (!url.isEmpty() && !url.isEmpty() && !url.contains("metafilegenerator") && !urlKlein.contains("metafilegenerator")) {
+//            if (!url.isEmpty() && !urlKlein.isEmpty() && !url.contains("metafilegenerator") && !urlKlein.contains("metafilegenerator")) {
+//                break;
+//            }
+        }
+        // und jetzt nochmal für HD
+        posAnfang = 0;
+        posEnde = 0;
+        while (true) {
+            if ((posAnfang = strBuffer.indexOf(URL_ANFANG_HD, posAnfang)) == -1) {
                 break;
+            }
+            posAnfang += URL_ANFANG_HD.length();
+            if ((posEnde = strBuffer.indexOf(URL_ENDE, posAnfang)) == -1) {
+                break;
+            }
+            if ((pos1 = strBuffer.indexOf("<quality>hd</quality>", posAnfang)) != -1) {
+                if (pos1 > posEnde) {
+                    break;
+                }
+                if ((pos1 = strBuffer.indexOf(URL, posAnfang)) != -1) {
+                    pos1 += URL.length();
+                    if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
+                        if (pos2 < posEnde) {
+                            urlHd = strBuffer.substring(pos1, pos2);
+                            break;
+                        }
+                    }
+                }
             }
         }
         if (url.isEmpty() && !urlKlein.isEmpty()) {
@@ -763,10 +793,24 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             Log.fehlerMeldung(-397002891, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "keine URL: " + filmWebsite);
             return null;
         } else {
+            DatenFilm ret[];
             DatenFilm film = new DatenFilm(sender, thema, filmWebsite, titel, url, "" /*urlRtmp*/, datum, zeit,
                     extractDuration(laenge), beschreibung, bild, ""/* imageUrl*/, new String[]{""});
             film.addKleineUrl(urlKlein, "");
-            return film;
+            if (!urlHd.isEmpty()) {
+                if (urlHd.endsWith("asx")) {
+                    urlHd = AsxLesen.lesen(urlHd);
+                }
+                DatenFilm filmHd = new DatenFilm(sender, "HD", filmWebsite, titel, urlHd, "" /*urlRtmp*/, datum, zeit,
+                        extractDuration(laenge), beschreibung, bild, ""/* imageUrl*/, new String[]{""});
+                ret = new DatenFilm[2];
+                ret[0] = film;
+                ret[1] = filmHd;
+            } else {
+                ret = new DatenFilm[1];
+                ret[0] = film;
+            }
+            return ret;
         }
     }
 }
