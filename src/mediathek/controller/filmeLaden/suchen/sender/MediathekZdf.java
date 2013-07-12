@@ -801,7 +801,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 if (urlHd.endsWith("asx")) {
                     urlHd = AsxLesen.lesen(urlHd);
                 }
-                DatenFilm filmHd = new DatenFilm(sender, "HD", filmWebsite, titel, urlHd, "" /*urlRtmp*/, datum, zeit,
+                DatenFilm filmHd = new DatenFilm(sender, thema, filmWebsite, titel + " HD", urlHd, "" /*urlRtmp*/, datum, zeit,
                         extractDuration(laenge), beschreibung, bild, ""/* imageUrl*/, new String[]{""});
                 ret = new DatenFilm[2];
                 ret[0] = film;
