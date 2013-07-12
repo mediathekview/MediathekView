@@ -146,6 +146,10 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                 }
 
             }
+            // erst mal auf den Start setzen
+            if ((pos = seite1.indexOf("<item>")) == -1) {
+                return;
+            }
             while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_TITEL, pos)) != -1) {
                 pos += MUSTER_TITEL.length();
                 ende = seite1.indexOf(MUSTER_TITEL, pos); // beginnt der nächste Film
@@ -223,35 +227,60 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                             link = seite1.substring(pos1, pos2);
                         }
                     }
-                    // =============================================================================
-                    // URL suchen
-                    pos1 = seite1.indexOf(MUSTER_URL, pos);
-                    if (pos1 != -1 && (ende == -1 || pos1 < ende)) {
-                        // asx
-                        pos1 += MUSTER_URL.length();
-                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                            url = seite1.substring(pos1, pos2);
-                        }
-                        if (!url.equals("") && url.endsWith("asx")) {
-                            url = url.replace("/300/", "/veryhigh/");
-                            flashHolen(thema, titel, link, url, datum, zeit, duration, description, imageUrl);
-                        }
-                    } else {
-                        // dann mit Quicktime-Link versuchen
-                        pos1 = seite1.indexOf(MUSTER_URL_QUICKTIME_1, pos);
-                        if (pos1 != -1 && (ende == -1 || pos1 < ende)) {
-                            pos1 += MUSTER_URL_QUICKTIME_1.length();
-                            if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                                url = seite1.substring(pos1, pos2);
-                            }
-                            if (!url.equals("") && url.endsWith("mov")) {
-                                url = "http://hstreaming.zdf.de/3sat/veryhigh" + url;
-                                quicktimeHolen(thema, titel, link, url, datum, zeit, duration, description, imageUrl);
+                    // Film über die ID suchen
+                    boolean ok = false;
+                    if (link.contains("?obj=")) {
+                        String id = link.substring(link.indexOf("?obj=") + "?obj=".length());
+                        if (id.isEmpty()) {
+                            Log.fehlerMeldung(-912690789, Log.FEHLER_ART_MREADER, "Mediathek3sat.laden", "keine id: " + url_rss);
+                        } else {
+                            id = "http://www.3sat.de/mediathek/xmlservice/web/beitragsDetails?ak=web&id=" + id;
+                            meldung(id);
+                            DatenFilm f[] = MediathekZdf.filmHolenId(getUrl, seite2, nameSenderMReader, thema, titel, link, id);
+                            if (f == null) {
+                                // dann mit der herkömmlichen Methode versuchen
+                                Log.fehlerMeldung(-13568978, Log.FEHLER_ART_MREADER, "Mediathek3sat.laden", "auf die alte Art: " + url_rss);
+                            } else {
+                                // dann wars gut
+                                for (DatenFilm film : f) {
+                                    addFilm(film);
+                                }
+                                ok = true;
                             }
                         }
                     }
-                    if (url.equals("")) {
-                        Log.fehlerMeldung(-976432589, Log.FEHLER_ART_MREADER, "Mediathek3Sat.addToList", new String[]{"keine URL:", titel, url_rss});
+                    // =============================================================================
+                    // URL suchen
+                    if (!ok) {
+                        // dann auf die herkömmliche Art
+                        pos1 = seite1.indexOf(MUSTER_URL, pos);
+                        if (pos1 != -1 && (ende == -1 || pos1 < ende)) {
+                            // asx
+                            pos1 += MUSTER_URL.length();
+                            if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                                url = seite1.substring(pos1, pos2);
+                            }
+                            if (!url.equals("") && url.endsWith("asx")) {
+                                url = url.replace("/300/", "/veryhigh/");
+                                flashHolen(thema, titel, link, url, datum, zeit, duration, description, imageUrl);
+                            }
+                        } else {
+                            // dann mit Quicktime-Link versuchen
+                            pos1 = seite1.indexOf(MUSTER_URL_QUICKTIME_1, pos);
+                            if (pos1 != -1 && (ende == -1 || pos1 < ende)) {
+                                pos1 += MUSTER_URL_QUICKTIME_1.length();
+                                if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                                    url = seite1.substring(pos1, pos2);
+                                }
+                                if (!url.equals("") && url.endsWith("mov")) {
+                                    url = "http://hstreaming.zdf.de/3sat/veryhigh" + url;
+                                    quicktimeHolen(thema, titel, link, url, datum, zeit, duration, description, imageUrl);
+                                }
+                            }
+                        }
+                        if (url.equals("")) {
+                            Log.fehlerMeldung(-976432589, Log.FEHLER_ART_MREADER, "Mediathek3Sat.addToList", new String[]{"keine URL:", titel, url_rss});
+                        }
                     }
                 } catch (Exception ex) {
                     Log.fehlerMeldung(-823694892, Log.FEHLER_ART_MREADER, "Mediathek3Sat.laden", ex);
