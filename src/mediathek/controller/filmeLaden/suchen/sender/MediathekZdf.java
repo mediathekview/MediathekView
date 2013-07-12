@@ -241,15 +241,30 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                         Log.fehlerMeldung(-643269690, Log.FEHLER_ART_MREADER, "MediathekZdf.addFilme", "keine URL: " + url);
                     } else {
                         urlFilm = "http://www.zdf.de/ZDFmediathek/beitrag/video/" + urlFilm;
-                        DatenFilm f[] = filmHolenId(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm);
-                        if (f == null) {
+                        String id = "";
+                        if ((pos1 = urlFilm.indexOf("/ZDFmediathek/beitrag/video/")) != -1) {
+                            pos1 += "/ZDFmediathek/beitrag/video/".length();
+                            if ((pos2 = urlFilm.indexOf("/", pos1)) != -1) {
+                                id = urlFilm.substring(pos1, pos2);
+                                // System.out.println(id);
+                            }
+                        }
+                        if (id.isEmpty()) {
+                            Log.fehlerMeldung(-304509761, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "keine id: " + urlFilm);
                             // dann mit der herkömmlichen Methode versuchen
-                            Log.fehlerMeldung(-398012379, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "auf die alte Art: " + urlFilm);
                             filmHolen(thema, titel, urlThema, urlFilm);
                         } else {
-                            // dann wars gut
-                            for (DatenFilm film : f) {
-                                addFilm(film);
+                            id = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?ak=web&id=" + id;
+                            DatenFilm f[] = filmHolenId(getUrl, seite2, nameSenderMReader, thema, titel, urlFilm, id);
+                            if (f == null) {
+                                // dann mit der herkömmlichen Methode versuchen
+                                Log.fehlerMeldung(-398012379, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "auf die alte Art: " + urlFilm);
+                                filmHolen(thema, titel, urlThema, urlFilm);
+                            } else {
+                                // dann wars gut
+                                for (DatenFilm film : f) {
+                                    addFilm(film);
+                                }
                             }
                         }
                     }
@@ -622,7 +637,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         return ret;
     }
 
-    public static DatenFilm[] filmHolenId(GetUrl getUrl, StringBuffer strBuffer, String sender, String thema, String titel, String urlThema, String filmWebsite) {
+    public static DatenFilm[] filmHolenId(GetUrl getUrl, StringBuffer strBuffer, String sender, String thema, String titel, String filmWebsite, String urlId) {
         //<teaserimage alt="Harald Lesch im Studio von Abenteuer Forschung" key="298x168">http://www.zdf.de/ZDFmediathek/contentblob/1909108/timg298x168blob/8081564</teaserimage>
         //<detail>Möchten Sie wissen, was Sie in der nächsten Sendung von Abenteuer Forschung erwartet? Harald Lesch informiert Sie.</detail>
         //<length>00:00:34.000</length>
@@ -634,22 +649,10 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         final String DATUM = "<airtime>";
         final String THEMA = "<originChannelTitle>";
         int pos1, pos2;
-        String id = "", bild = "", beschreibung = "", laenge = "", datum = "", zeit = "", url = "", urlKlein = "", urlHd = "";
-        if ((pos1 = filmWebsite.indexOf("/ZDFmediathek/beitrag/video/")) != -1) {
-            pos1 += "/ZDFmediathek/beitrag/video/".length();
-            if ((pos2 = filmWebsite.indexOf("/", pos1)) != -1) {
-                id = filmWebsite.substring(pos1, pos2);
-//                    System.out.println(id);
-            }
-        }
-        if (id.isEmpty()) {
-            Log.fehlerMeldung(-304509761, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "keine id: " + filmWebsite);
-            return null;
-        }
-        String tmp = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?ak=web&id=" + id;
-        strBuffer = getUrl.getUri_Utf(sender, tmp, strBuffer, "url: " + filmWebsite);
+        String bild = "", beschreibung = "", laenge = "", datum = "", zeit = "", url = "", urlKlein = "", urlHd = "";
+        strBuffer = getUrl.getUri_Utf(sender, urlId, strBuffer, "url: " + filmWebsite);
         if (strBuffer.length() == 0) {
-            Log.fehlerMeldung(-398745601, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "url: " + tmp);
+            Log.fehlerMeldung(-398745601, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "url: " + urlId);
             return null;
         }
         if ((pos1 = strBuffer.indexOf(BILD)) != -1) {
@@ -755,9 +758,6 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     }
                 }
             }
-//            if (!url.isEmpty() && !urlKlein.isEmpty() && !url.contains("metafilegenerator") && !urlKlein.contains("metafilegenerator")) {
-//                break;
-//            }
         }
         // und jetzt nochmal für HD
         posAnfang = 0;
