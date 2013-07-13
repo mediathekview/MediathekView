@@ -127,6 +127,36 @@ public class GuiFunktionen extends Funktionen {
         return r;
     }
 
+    public static String utf8(String ret) {
+        ret = ret.replace("\\u0026", "&");
+        ret = ret.replace("\\u003C", "<");
+        ret = ret.replace("\\u003c", "<");
+        ret = ret.replace("\\u003E", ">");
+        ret = ret.replace("\\u003e", ">");
+        ret = ret.replace("\\u00E4", "ä");
+        ret = ret.replace("\\u00e4", "ä");
+        ret = ret.replace("\\u00C4", "Ä");
+        ret = ret.replace("\\u00c4", "Ä");
+        ret = ret.replace("\\u00F6", "ö");
+        ret = ret.replace("\\u00f6", "ö");
+        ret = ret.replace("\\u00D6", "Ö");
+        ret = ret.replace("\\u00d6", "Ö");
+        ret = ret.replace("\\u00FC", "ü");
+        ret = ret.replace("\\u00fc", "ü");
+        ret = ret.replace("\\u00DC", "Ü");
+        ret = ret.replace("\\u00dc", "Ü");
+        ret = ret.replace("\\u00DF", "ß");
+        ret = ret.replace("\\u00df", "ß");
+        ret = ret.replace("\\u20AC", "€");
+        ret = ret.replace("\\u20ac", "€");
+        ret = ret.replace("\\u0024", "$");
+        ret = ret.replace("\\u00A3", "£");
+        ret = ret.replace("\\u00a3", "£");
+        ret = ret.replace("\\u00F3", "\u00f3");
+        ret = ret.replace("\\u00f3", "\u00f3");
+        return ret;
+    }
+
     public static String cleanUnicode(String ret, String sonst) {
         String r = "";
         char c;
@@ -282,7 +312,7 @@ public class GuiFunktionen extends Funktionen {
         if (ret.length() > 3) {
             if (ret.length() > 5) {
                 // dann ist was faul
-                ret="---";
+                ret = "---";
             }
             Log.fehlerMeldung(821397046, Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiSuffix", pfad);
         }
