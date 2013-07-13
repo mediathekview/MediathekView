@@ -207,7 +207,7 @@ public class DatenPset {
         //gibt den Zieldateinamen für den Film zurück
         DatenProg prog = this.getProgUrl(url);
         String ret = arr[PROGRAMMSET_ZIEL_DATEINAME_NR];
-        if ((checkDownloadDirekt(url) != Start.ART_DOWNLOAD) && prog != null) {
+        if (!checkDownloadDirekt(url) && prog != null) {
             // nur wenn kein direkter Download und ein passendes Programm
             if (!prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].equals("")) {
                 ret = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR];
@@ -258,17 +258,16 @@ public class DatenPset {
                 String.valueOf(farbe.getRed()) + "," + String.valueOf(farbe.getGreen()) + "," + String.valueOf(farbe.getBlue());
     }
 
-    public int checkDownloadDirekt(String url) {
-        int ret = Start.ART_PROGRAMM;
+    public boolean checkDownloadDirekt(String url) {
         //auf direkte prüfen, pref oder suf: wenn angegeben dann muss es stimmen
         if (!this.arr[PROGRAMMSET_PRAEFIX_DIREKT_NR].equals("")
                 || !this.arr[PROGRAMMSET_SUFFIX_DIREKT_NR].equals("")) {
             if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_PRAEFIX_DIREKT_NR], url, true)
                     && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_SUFFIX_DIREKT_NR], url, false)) {
-                ret = Start.ART_DOWNLOAD;
+                return true;
             }
         }
-        return ret;
+        return false;
     }
 
     @Override
