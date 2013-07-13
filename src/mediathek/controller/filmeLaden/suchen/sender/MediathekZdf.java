@@ -798,7 +798,10 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     extractDuration(laenge), beschreibung, bild, ""/* imageUrl*/, new String[]{""});
             film.addKleineUrl(urlKlein, "");
             if (!urlHd.isEmpty()) {
-                if (urlHd.endsWith("asx")) {
+                // dann erst mal versuchen aus der normalen URL zu bauen
+                if (url.endsWith("vh.mp4")) {
+                    urlHd = url.replace("vh.mp4", "hd.mp4");
+                } else if (urlHd.endsWith("asx")) {
                     urlHd = AsxLesen.lesen(urlHd);
                 }
                 DatenFilm filmHd = new DatenFilm(sender, thema, filmWebsite, titel + " HD", urlHd, "" /*urlRtmp*/, datum, zeit,
