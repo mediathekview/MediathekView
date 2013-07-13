@@ -24,8 +24,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.zip.ZipInputStream;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
+import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
@@ -34,6 +36,7 @@ import mediathek.tool.Log;
 public class MediathekBr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "BR";
+    private SimpleDateFormat sdfIn = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMANY);         // "date": "2013-07-06 13:00:00", 
 
     public MediathekBr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 500, startPrio);
@@ -41,7 +44,172 @@ public class MediathekBr extends MediathekReader implements Runnable {
 
     @Override
     void addToList() {
-        new Thread(new ThemaLaden()).start();
+        new Thread(new JsonLaden()).start();
+    }
+
+    private class JsonLaden implements Runnable {
+
+        @Override
+        public synchronized void run() {
+            meldungStart();
+            meldungAddMax(1);
+            meldungAddThread();
+            try {
+                jsonSuchen();
+            } catch (Exception ex) {
+                Log.fehlerMeldung(-203069877, Log.FEHLER_ART_MREADER, "MediathekBr.JsonLaden.run", ex, "");
+            }
+            meldungThreadUndFertig();
+        }
+    }
+
+    private void jsonSuchen() {
+        //"date": "2013-07-13 13:00:00", 
+        //"description": "Pflanzentricks - Wie erreicht eine Pflanze, was sie will?", 
+        //"duration": "25", 
+        //"image": "http://mediathek-video.br.de/listra/sendungsbilder/xenius_xl.jpg", 
+        //"title": "X:enius", 
+        //"videos": {
+        //"l": {
+        //  "bitrate": 700000, 
+        //  "url": "http://hbbtv.b7.br.gl-systemhaus.de/b7/konks/1373715065-b7konks_nc_203101728_107154.mp4"
+        //}, 
+        //"m": {
+        //  "bitrate": 200000, 
+        //  "url": "http://hbbtv.b7.br.gl-systemhaus.de/b7/konks/1373715063-b7konks_nc_203101728_107153.mp4"
+        //}, 
+        //"xl": {
+        //  "bitrate": 2000000, 
+        //  "url": "http://hbbtv.b7.br.gl-systemhaus.de/b7/konks/1373715066-b7konks_nc_203101728_107155.mp4"
+        //}
+        final String URL_JSON = "http://rd.gl-systemhaus.de/br/b7/nc/jsonp/latestarchive.json";
+        final String DATE = "\"date\": \"";
+        final String DESCRIPTION = "\"description\": \"";
+        final String DURATION = "\"duration\": \"";
+        final String IMAGE = "\"image\": \"";
+        final String THEMA = "\"title\": \"";
+        final String URL__ = "\"xl\":";
+        final String URL = "\"url\": \"";
+        final String URL_KLEIN__ = "\"m\":";
+        final String URL_KLEIN = "\"url\": \"";
+        String date, datum, zeit, thema, titel, description, duration, image, url, url_klein;
+        long dauer;
+        StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        GetUrl getUrl = new GetUrl(wartenSeiteLaden);
+        seite1 = getUrl.getUri(nameSenderMReader, URL_JSON, Konstanten.KODIERUNG_UTF, 3/*max Versuche*/, seite1, URL_JSON);
+        if (seite1.length() == 0) {
+            Log.fehlerMeldung(-302590789, Log.FEHLER_ART_MREADER, "MediathekBr.jsonSuchen", "Leere Seite: " + URL_JSON);
+            return;
+        }
+        int pos;
+        int pos1;
+        int pos2;
+        pos = 0;
+        while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(DATE, pos)) != -1) {
+            date = "";
+            datum = "";
+            zeit = "";
+            thema = "";
+            titel = "";
+            description = "";
+            duration = "";
+            image = "";
+            url = "";
+            url_klein = "";
+            dauer = 0;
+            try {
+                pos += DATE.length();
+                pos1 = pos;
+                if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                    date = seite1.substring(pos1, pos2);
+                    datum = convertDatum(date);
+                    zeit = convertZeit(date);
+                }
+                if ((pos1 = seite1.indexOf(DESCRIPTION, pos)) != -1) {
+                    pos1 += DESCRIPTION.length();
+                    if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                        description = seite1.substring(pos1, pos2);
+                        if (description.contains("-")) {
+                            titel = description.substring(0, description.indexOf("-")).trim();
+                            description = description.substring(description.indexOf("-")+1).trim();
+                        } else {
+                            titel = description;
+                            description = "";
+                        }
+                    }
+                }
+                if ((pos1 = seite1.indexOf(DURATION, pos)) != -1) {
+                    pos1 += DURATION.length();
+                    if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                        duration = seite1.substring(pos1, pos2);
+                        if (!duration.equals("")) {
+                            try {
+                                dauer = Long.parseLong(duration) * 60;
+                            } catch (Exception ex) {
+                                Log.fehlerMeldung(-304973047, Log.FEHLER_ART_MREADER, "MediathekBR.jsonSuchen", ex, "duration: " + duration);
+                            }
+                        }
+                    }
+                }
+                if ((pos1 = seite1.indexOf(THEMA, pos)) != -1) {
+                    pos1 += THEMA.length();
+                    if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                        thema = seite1.substring(pos1, pos2);
+                    }
+                }
+                if ((pos1 = seite1.indexOf(IMAGE, pos)) != -1) {
+                    pos1 += IMAGE.length();
+                    if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                        image = seite1.substring(pos1, pos2);
+                    }
+                }
+                if ((pos1 = seite1.indexOf(URL__, pos)) != -1) {
+                    if ((pos1 = seite1.indexOf(URL, pos1)) != -1) {
+                        pos1 += URL.length();
+                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                            url = seite1.substring(pos1, pos2);
+                        }
+                    }
+                }
+                if ((pos1 = seite1.indexOf(URL_KLEIN__, pos)) != -1) {
+                    if ((pos1 = seite1.indexOf(URL_KLEIN, pos1)) != -1) {
+                        pos1 += URL_KLEIN.length();
+                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
+                            url_klein = seite1.substring(pos1, pos2);
+                        }
+                    }
+                }
+                if (url.equals("")) {
+                    continue;
+                }
+                // public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
+                //   long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+                DatenFilm film = new DatenFilm(nameSenderMReader, thema, "http://www.br.de/mediathek/index.html", titel, url, datum, zeit,
+                        dauer, description, "", image, new String[]{});
+                film.addKleineUrl(url_klein, "");
+                addFilm(film);
+            } catch (Exception ex) {
+                Log.fehlerMeldung(-902483073, Log.FEHLER_ART_MREADER, "MediathekBR.jsonSuchen", ex, "");
+            }
+        }
+    }
+
+    private String convertDatum(String datum) {
+        try {
+            return new SimpleDateFormat("dd.MM.yyyy").format(sdfIn.parse(datum));
+        } catch (Exception ex) {
+            Log.fehlerMeldung(-963297249, Log.FEHLER_ART_MREADER, "MediathekBR.convertDatum", ex);
+        }
+        return "";
+    }
+
+    private String convertZeit(String datum) {
+        try {
+            return new SimpleDateFormat("HH:mm:ss").format(sdfIn.parse(datum));
+        } catch (Exception ex) {
+            Log.fehlerMeldung(-963297249, Log.FEHLER_ART_MREADER, "MediathekBR.convertDatum", ex);
+        }
+        return "";
     }
 
     private class ThemaLaden implements Runnable {
