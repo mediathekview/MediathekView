@@ -30,6 +30,7 @@ import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
@@ -127,11 +128,14 @@ public class MediathekBr extends MediathekReader implements Runnable {
                 }
                 if ((pos1 = seite1.indexOf(DESCRIPTION, pos)) != -1) {
                     pos1 += DESCRIPTION.length();
+                    final String TRENNER = " - ";
                     if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
                         description = seite1.substring(pos1, pos2);
-                        if (description.contains("-")) {
-                            titel = description.substring(0, description.indexOf("-")).trim();
-                            description = description.substring(description.indexOf("-")+1).trim();
+                        if (description.contains(TRENNER)) {
+                            titel = description.substring(0, description.indexOf(TRENNER)).trim();
+                            description = description.substring(description.indexOf(TRENNER) + TRENNER.length()).trim();
+                        } else if (description.length() > 25) {
+                            titel = description.substring(0, 25).trim() + "...";
                         } else {
                             titel = description;
                             description = "";
@@ -182,6 +186,9 @@ public class MediathekBr extends MediathekReader implements Runnable {
                 if (url.equals("")) {
                     continue;
                 }
+                thema = GuiFunktionen.utf8(thema);
+                titel = GuiFunktionen.utf8(titel);
+                description = GuiFunktionen.utf8(description);
                 // public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
                 //   long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
                 DatenFilm film = new DatenFilm(nameSenderMReader, thema, "http://www.br.de/mediathek/index.html", titel, url, datum, zeit,
