@@ -49,6 +49,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.jidesoft.utils.SystemInfo;
+import java.awt.Toolkit;
 import java.awt.Window;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -149,7 +150,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 }
             }
         }
-
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
         ddaten = new DDaten(pfad, true);
         ddaten.mediathekGui = this;
         Log.startMeldungen(this.getClass().getName());
