@@ -92,7 +92,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
         final String THEMA = "\"title\": \"";
         final String URL__ = "\"xl\":";
         final String URL = "\"url\": \"";
-        final String URL_KLEIN__ = "\"m\":";
+        final String URL_KLEIN__ = "\"l\":";
         final String URL_KLEIN = "\"url\": \"";
         String date, datum, zeit, thema, titel, description, duration, image, url, url_klein;
         long dauer;
