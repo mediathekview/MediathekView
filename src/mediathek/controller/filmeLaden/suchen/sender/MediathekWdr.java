@@ -51,7 +51,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         //Theman suchen
         listeThemen.clear();
         meldungStart();
-//////        addToList__("http://www1.wdr.de/mediathek/video/sendungen/abisz-a102.html");
+        addToList__("http://www1.wdr.de/mediathek/video/sendungen/abisz-a102.html");
         if (suchen.senderAllesLaden) {
             //TH Rockpalast hinzu
             String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
@@ -581,7 +581,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     }
                 }
             }
-
+            description = description.replace("Rockpalast, das Kult-Programm mit festem w&ouml;chentlichen\nSendeplatz und regelm&auml;&szlig;igen zus&auml;tzlichen\nRockn&auml;chten\" ", "");
             if ((pos1 = strSeite2.indexOf(MUSTER_THUMBNAIL)) != -1) {
                 pos1 += MUSTER_THUMBNAIL.length();
                 if ((pos2 = strSeite2.indexOf(MUSTER_THUMBNAIL_END, pos1)) != -1) {
