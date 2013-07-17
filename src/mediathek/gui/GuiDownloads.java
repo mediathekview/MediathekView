@@ -267,11 +267,21 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void downloadVorziehen() {
-        int row = tabelle.getSelectedRow();
-        if (row != -1) {
-            int delRow = tabelle.convertRowIndexToModel(row);
-            String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-            ddaten.listeDownloads.downloadVorziehen(url);
+        String[] urls;
+        ArrayList<String> arrayUrls = new ArrayList<String>();
+        ArrayList<DatenDownload> arrayDownload = new ArrayList<DatenDownload>();
+        // ==========================
+        // erst mal die URLs sammeln
+        int[] rows = tabelle.getSelectedRows();
+        urls = new String[rows.length];
+        if (rows.length >= 0) {
+            for (int i = 0; i < rows.length; i++) {
+                int row = tabelle.convertRowIndexToModel(rows[i]);
+                urls[i] = tabelle.getModel().getValueAt(row, DatenDownload.DOWNLOAD_URL_NR).toString();
+            }
+            for (String url : urls) {
+                ddaten.listeDownloads.downloadVorziehen(url);
+            }
             tabelleLaden();
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
