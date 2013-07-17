@@ -21,6 +21,8 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
@@ -57,6 +59,17 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
             listeThemen.addUrl(add);
         }
+        // Sendung verpasst, da sind einige die nicht in einer "Sendung" enthalten sind
+        // URLs nach dem Muster bauen:
+        // http://www1.wdr.de/mediathek/video/sendungverpasst/sendung-verpasst-alles100_tag-03062013.html
+        SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
+        String tag;
+        for (int i = 1; i < 14; ++i) {
+            final String URL = "http://www1.wdr.de/mediathek/video/sendungverpasst/sendung-verpasst-alles100_tag-";
+            tag = formatter.format(new Date().getTime() - (1000 * 60 * 60 * 24 * i));
+            String urlString = URL + tag + ".html";
+            listeThemen.addUrl(new String[]{urlString, ""});
+        }
         if (Daten.filmeLaden.getStop()) {
             meldungThreadUndFertig();
         } else if (listeThemen.size() == 0) {
@@ -76,16 +89,16 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         // http://www1.wdr.de/mediathek/video/sendungen/abisz-b100.html
         //Theman suchen
         final String MUSTER_URL = "<a href=\"/mediathek/video/sendungen/abisz-";
-        StringBuffer strSeite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        strSeite = getUrlIo.getUri_Iso(nameSenderMReader, ADRESSE, strSeite, "");
+        StringBuffer strSeite_ = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        strSeite_ = getUrlIo.getUri_Iso(nameSenderMReader, ADRESSE, strSeite_, "");
         int pos1 = 0;
         int pos2;
         String url;
         themenSeitenSuchen(ADRESSE); // ist die erste Seite: "a"
-        while (!Daten.filmeLaden.getStop() && (pos1 = strSeite.indexOf(MUSTER_URL, pos1)) != -1) {
+        while (!Daten.filmeLaden.getStop() && (pos1 = strSeite_.indexOf(MUSTER_URL, pos1)) != -1) {
             pos1 += MUSTER_URL.length();
-            if ((pos2 = strSeite.indexOf("\"", pos1)) != -1) {
-                url = strSeite.substring(pos1, pos2);
+            if ((pos2 = strSeite_.indexOf("\"", pos1)) != -1) {
+                url = strSeite_.substring(pos1, pos2);
                 if (url.equals("")) {
                     Log.fehlerMeldung(-995122047, Log.FEHLER_ART_MREADER, "MediathekWdr.addToList__", "keine URL");
                 } else {
@@ -236,7 +249,12 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             String datum = "";
             String thema = "";
             long duration = 0;
+            boolean verpasst = false;
             pos = 0;
+            if (strUrl.startsWith("http://www1.wdr.de/mediathek/video/sendungen/lokalzeit/uebersicht-lokalzeiten100_tag")) {
+                // brauchts nicht
+                return;
+            }
             strSeite2 = getUrl.getUri_Utf(nameSenderMReader, strUrl, strSeite2, "");
             meldung(strUrl);
             // Thema suchen
@@ -249,6 +267,9 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                     thema = thema.replace("- WDR MEDIATHEK", "").trim();
                 }
             }
+            if (thema.startsWith("Sendung verpasst ")) {
+                verpasst = true;
+            }
             // und jetzt die Beiträge
             if ((pos = strSeite2.indexOf(MUSTER_START_1)) == -1) {
                 if ((pos = strSeite2.indexOf(MUSTER_START_2)) == -1) {
@@ -258,8 +279,10 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             }
             if ((ende = strSeite2.indexOf("<ul class=\"pageCounterNavi\">", pos)) == -1) {
                 if ((ende = strSeite2.indexOf("<div id=\"socialBookmarks\">", pos)) == -1) {
-                    Log.fehlerMeldung(-646897321, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen", "keine Url" + strUrl);
-                    return;
+                    if ((ende = strSeite2.indexOf("<span>Hilfe zur Steuerung der \"Sendung verpasst\"")) == -1) {
+                        Log.fehlerMeldung(-646897321, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen", "keine Url" + strUrl);
+                        return;
+                    }
                 }
             }
             while (!Daten.filmeLaden.getStop() && (pos = strSeite2.indexOf(MUSTER_URL, pos)) != -1) {
@@ -276,6 +299,16 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                             pos1 += MUSTER_TITEL.length();
                             if ((pos2 = strSeite2.indexOf("<", pos1)) != -1) {
                                 titel = strSeite2.substring(pos1, pos2).trim();
+                                if (verpasst) {
+                                    thema = "";
+                                    // dann Thema aus dem Titel
+                                    if (titel.contains(":")) {
+                                        thema = titel.substring(0, titel.indexOf(":")).trim();
+                                        if (thema.contains(" - ")) {
+                                            thema = thema.substring(0, thema.indexOf(" - ")).trim();
+                                        }
+                                    }
+                                }
                                 // putzen
                                 titel = titel.replace("\n", "");
                                 if (titel.contains("-")) {
@@ -310,7 +343,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                             }
                         }
                         if (thema.equals("") || datum.equals("") || titel.equals("") || duration == 0) {
-                            Log.fehlerMeldung(-323569701, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen", strUrl);
+//                            Log.fehlerMeldung(-323569701, Log.FEHLER_ART_MREADER, "MediathekWdr.sendungsSeiteSuchen", strUrl);
                         }
                         //weiter gehts
                         addFilm1(thema, titel, url, duration, datum);
@@ -393,7 +426,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
 
 
             if (description.equals("") || image.equals("") || keywords.equals("")) {
-                Log.fehlerMeldung(-649830789, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilm1", new String[]{filmWebsite});
+//                Log.fehlerMeldung(-649830789, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilm1", new String[]{filmWebsite});
             }
             if (!url.equals("")) {
                 addFilm2(filmWebsite, thema, titel, "http://www1.wdr.de/mediathek/video/sendungen/" + url, dauer, datum, description, keywords, image);
