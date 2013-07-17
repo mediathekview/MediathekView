@@ -51,6 +51,10 @@ import javax.swing.event.DocumentListener;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.KeyEvent;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
@@ -210,6 +214,31 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR]));
             }
         });
+
+        this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK), "f");
+        this.getRootPane().getActionMap().put("f", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setFocusSuchfeld();
+            }
+        });
+        // für den Mac
+        this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-f");
+        this.getRootPane().getActionMap().put("mac-f", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setFocusSuchfeld();
+            }
+        });
+        setFocusSuchfeld();
+    }
+
+    private void setFocusSuchfeld() {
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_SUCHFELD_FOCUS_SETZEN, MediathekGui.class.getName());
+        if (!Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+            jTextFieldFilter.requestFocus();
+            jTextFieldFilter.setCaretPosition(0);
+        }
     }
 
     /**

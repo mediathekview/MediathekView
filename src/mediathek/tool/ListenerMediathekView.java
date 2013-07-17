@@ -47,6 +47,7 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR = 21;
     public static final int EREIGNIS_PANEL_FILTER_ANZEIGEN = 22;
     public static final int EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN = 23;
+    public static final int EREIGNIS_SUCHFELD_FOCUS_SETZEN = 24;
     public int ereignis = -1;
     public String klasse = "";
     private static EventListenerList listeners = new EventListenerList();

@@ -351,6 +351,15 @@ public class GuiFilme extends PanelVorlage {
                 panelBeschreibungSetzen();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_SUCHFELD_FOCUS_SETZEN, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+                    jTextFieldFilterThemaTitel.requestFocus();
+                    jTextFieldFilterThemaTitel.setCaretPosition(0);
+                }
+            }
+        });
     }
 
     private void panelBeschreibungSetzen() {
