@@ -21,7 +21,6 @@ package mediathek.controller.io.starter;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -36,6 +35,7 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVInputStream;
+import mediathek.tool.MVUrlDateiGroesse;
 import mediathek.tool.TModel;
 
 public class StarterClass {
@@ -407,7 +407,7 @@ public class StarterClass {
             try {
                 int len;
                 new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
-                long maxLen = laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                long maxLen = MVUrlDateiGroesse.laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 long downLen = 0;
                 input = new MVInputStream(new URL(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]).openStream());
                 byte[] buffer = new byte[1024];
@@ -472,22 +472,6 @@ public class StarterClass {
 //            // Sicherheitsabfrage, dann beenden
 //        }
 //    }
-    private long laenge(String url) {
-        long ret;
-        try {
-            URL u = new URL(url);
-            ret = u.openConnection().getContentLengthLong();
-        } catch (Exception ex) {
-            ret = -1;
-            Log.fehlerMeldung(643298301, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload.laenge", ex);
-        }
-        if (ret < 100) {
-            // dann wars nix
-            ret = -1;
-        }
-        return ret;
-    }
-
     private boolean pruefen(Start start) {
         //prüfen ob der Downoad geklappt hat und die Datei existiert und eine min. Grüße hat
         boolean ret = false;

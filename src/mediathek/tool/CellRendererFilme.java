@@ -22,6 +22,7 @@ package mediathek.tool;
 import java.awt.Component;
 import java.awt.Font;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.io.History;
 import mediathek.controller.io.starter.Start;
@@ -51,13 +52,22 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             setBackground(null);
             setForeground(null);
             setFont(null);
+            setHorizontalAlignment(SwingConstants.LEADING);
             super.getTableCellRendererComponent(
                     table, value, isSelected, hasFocus, row, column);
             int r = table.convertRowIndexToModel(row);
+            int c = table.convertColumnIndexToModel(column);
             String url = table.getModel().getValueAt(r, DatenFilm.FILM_URL_NR).toString();
             boolean live = table.getModel().getValueAt(r, DatenFilm.FILM_THEMA_NR).equals(ListeFilme.THEMA_LIVE);
             boolean start = false;
             Start s = ddaten.starterClass.getStartOrgUrl(url);
+            if (c == DatenFilm.FILM_GROESSE_NR || c == DatenFilm.FILM_DATUM_NR || c == DatenFilm.FILM_ZEIT_NR || c == DatenFilm.FILM_DURATION_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+            }
+            if (c == DatenFilm.FILM_GROESSE_NR) {
+                setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 10));
+                setHorizontalAlignment(SwingConstants.RIGHT);
+            }
             if (s != null) {
                 if (s.datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
                     start = true;
