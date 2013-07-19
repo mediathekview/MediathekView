@@ -27,6 +27,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.Log;
+import mediathek.tool.MVUrlDateiGroesse;
 
 public class MediathekReader implements Runnable {
 
@@ -116,6 +117,23 @@ public class MediathekReader implements Runnable {
     }
 
     boolean addFilm(DatenFilm film) {
+        long l = MVUrlDateiGroesse.laenge(film.arr[DatenFilm.FILM_URL_NR]);
+        String lae = "";
+        if (l > 0) {
+            meldung(film.arr[DatenFilm.FILM_URL_NR]);
+            // sonst kann ich mirs sparen
+            if (l > 1024 * 1024) {
+                lae = String.valueOf(l / (1024 * 1024));
+                while (lae.length() < 4) {
+                    lae = "0" + lae;
+                }
+                lae = lae.substring(0, lae.length() - 3) + "." + lae.substring(lae.length() - 3);
+                film.arr[DatenFilm.FILM_GROESSE_NR] = lae;
+            } else {
+                film.arr[DatenFilm.FILM_GROESSE_NR] = "<1";
+            }
+
+        }
         return suchen.listeFilmeNeu.addFilmVomSender(film);
     }
 

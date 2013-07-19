@@ -291,6 +291,7 @@ public final class JTableMed extends JTable {
                     } else if (i == DatenFilm.FILM_DATUM_NR
                             || i == DatenFilm.FILM_ZEIT_NR
                             || i == DatenFilm.FILM_SENDER_NR
+                            || i == DatenFilm.FILM_GROESSE_NR
                             || i == DatenFilm.FILM_DURATION_NR) {
                         breite[i] = 100;
                     } else if (i == DatenFilm.FILM_URL_NR) {
