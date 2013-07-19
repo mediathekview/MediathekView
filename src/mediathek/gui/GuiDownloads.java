@@ -137,7 +137,7 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads(ddaten));
         tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.DOWNLOAD_COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
-        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
+//        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
 //      ist jetzt im  Menü  
         //aendern
 //        ActionMap am = tabelle.getActionMap();
@@ -498,7 +498,9 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void tabelleProzentGeaendert() {
+        stopBeob = true;
         tabelle.fireTableDataChanged(true /*setSpalten*/);
+        stopBeob = false;
         setInfo();
     }
 
@@ -529,20 +531,34 @@ public class GuiDownloads extends PanelVorlage {
         ddaten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD, textLinks);
     }
 
+//    private void aktFilmSetzen() {
+//        DatenFilm aktFilm = new DatenFilm();
+//        int selectedTableRow = tabelle.getSelectedRow();
+//        if (selectedTableRow >= 0) {
+//            int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
+//            //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+//            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_FILM_NR_NR).toString());
+//            if (film != null) {
+//                aktFilm = film;
+//            }
+//        }
+//        filmInfoHud.updateCurrentFilm(aktFilm);
+//        // Beschreibung setzen
+//        panelBeschreibung.setAktFilm(aktFilm);
+//    }
     private void aktFilmSetzen() {
-        DatenFilm aktFilm = new DatenFilm();
-        int selectedTableRow = tabelle.getSelectedRow();
-        if (selectedTableRow >= 0) {
-            int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
-            //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
-            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_FILM_NR_NR).toString());
-            if (film != null) {
-                aktFilm = film;
+        if (this.isShowing()) {
+            DatenFilm aktFilm = null;
+            int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow >= 0) {
+                int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
+                //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                aktFilm = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_FILM_NR_NR).toString());
             }
+            filmInfoHud.updateCurrentFilm(aktFilm);
+            // Beschreibung setzen
+            panelBeschreibung.setAktFilm(aktFilm);
         }
-        filmInfoHud.updateCurrentFilm(aktFilm);
-        // Beschreibung setzen
-        panelBeschreibung.setAktFilm(aktFilm);
     }
 
     /**
@@ -680,16 +696,17 @@ public class GuiDownloads extends PanelVorlage {
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
-    private class BeobachterTableSelect implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                aktFilmSetzen();
-            }
-        }
-    }
-
+//    private class BeobachterTableSelect implements ListSelectionListener {
+//
+//        @Override
+//        public void valueChanged(ListSelectionEvent event) {
+////            if (!event.getValueIsAdjusting()) {
+////                if (!stopBeob) {
+////                    aktFilmSetzen();
+////                }
+////            }
+//        }
+//    }
     public class BeobMausTabelle extends MouseAdapter {
 
         private Point p;
@@ -700,6 +717,7 @@ public class GuiDownloads extends PanelVorlage {
         @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
+                aktFilmSetzen(); //da gibts keine Schwierigkeiten beim update des JProgressbar
                 if (arg0.getClickCount() > 1) {
                     downloadAendern();
                 }
@@ -708,6 +726,7 @@ public class GuiDownloads extends PanelVorlage {
 
         @Override
         public void mousePressed(MouseEvent arg0) {
+            aktFilmSetzen();
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
@@ -715,6 +734,7 @@ public class GuiDownloads extends PanelVorlage {
 
         @Override
         public void mouseReleased(MouseEvent arg0) {
+            aktFilmSetzen();
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }

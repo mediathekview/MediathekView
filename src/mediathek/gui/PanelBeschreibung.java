@@ -68,23 +68,29 @@ public class PanelBeschreibung extends javax.swing.JPanel {
     }
 
     public void setAktFilm(DatenFilm aktFilm) {
-        // Beschreibung setzen
-        jEditorPane.setText(
-                "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
-                + "<head>"
-                + "</head>"
-                + "<body>"
-                + "<b>" + aktFilm.arr[DatenFilm.FILM_TITEL_NR] + "</b><br />"
-                + aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR].replace("\n", "<br />")
-                + "</body>"
-                + "</html>");
-
-        if (aktFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
+        if (aktFilm == null) {
+            jEditorPane.setText("");
             jCheckBoxBeschreibung.setText("Beschreibung");
+            jXHyperlinkWebsite.setText("");
         } else {
-            jCheckBoxBeschreibung.setText("Beschreibung vom Sender: " + aktFilm.arr[DatenFilm.FILM_SENDER_NR]);
+            // Beschreibung setzen
+            jEditorPane.setText(
+                    "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
+                    + "<head>"
+                    + "</head>"
+                    + "<body>"
+                    + "<b>" + aktFilm.arr[DatenFilm.FILM_TITEL_NR] + "</b><br />"
+                    + aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR].replace("\n", "<br />")
+                    + "</body>"
+                    + "</html>");
+
+            if (aktFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
+                jCheckBoxBeschreibung.setText("Beschreibung");
+            } else {
+                jCheckBoxBeschreibung.setText("Beschreibung vom Sender: " + aktFilm.arr[DatenFilm.FILM_SENDER_NR]);
+            }
+            jXHyperlinkWebsite.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
         }
-        jXHyperlinkWebsite.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
     }
 
     /** This method is called from within the constructor to
