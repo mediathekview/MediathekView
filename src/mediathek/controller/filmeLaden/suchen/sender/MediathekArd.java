@@ -468,8 +468,8 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     if (!url1a.equals("")) {
                         url1b = url1a.substring(url1a.indexOf("/") + 1);
                         url1a = url1a.substring(0, url1a.indexOf("/"));
-                        url1a = url1a.replace(" ", "");
-                        url1b = url1b.replace(" ", "");
+//                        url1a = url1a.replace(" ", "");
+//                        url1b = url1b.replace(" ", "");
                         urlOrg = addsUrl(protokoll + url1a, url1b);
                     }
                     pos1 = pos2 + 1;
@@ -484,10 +484,14 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     } else {
                         if (pos1 > 1 && pos3 != -1) {
                             url = seite2.substring(pos1, pos3);
-                            url = url.replace(" ", "");
+//                            url = url.replace(" ", "");
                         }
                     }
                     urlOrg = addsUrl(urlOrg, url);
+                    //gibt immer wieder URLs mit Leerzeichen
+                    url1a = url1a.replace(" ", "");
+                    url1b = url1b.replace(" ", "");
+                    url = url.replace(" ", "");
                     urlRtmp = "--host " + url1a + " --app " + url1b + " --playpath " + url;
                     //flvstreamer --host vod.daserste.de --app ardfs --playpath mp4:videoportal/Film/c_100000/106579/format106899.f4v > bla.flv
                     //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
@@ -500,6 +504,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     }
                 }
             }
+            urlOrg = urlOrg.replace(" ", "");
             if (flash && !urlOrg.equals("") && !urlRtmp.equals("") || !flash && !urlOrg.equals("")) {
                 if (f.arr[DatenFilm.FILM_URL_NR].equals("")) {
                     // dann zuerst die normale URL füllen
