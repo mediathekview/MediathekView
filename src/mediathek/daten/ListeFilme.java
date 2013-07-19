@@ -88,16 +88,16 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         super.clear();
     }
 
-    @SuppressWarnings("empty-statement")
     public void check() {
         Iterator<DatenFilm> it = this.iterator();
-        String s1, s2;
-        int i = 0;
         DatenFilm film;
         while (it.hasNext()) {
             film = it.next();
             film.arr[DatenFilm.FILM_THEMA_NR] = GuiFunktionen.cleanUnicode(film.arr[DatenFilm.FILM_THEMA_NR], "!!!!!!!!!!!!!");
             film.arr[DatenFilm.FILM_TITEL_NR] = GuiFunktionen.cleanUnicode(film.arr[DatenFilm.FILM_TITEL_NR], "!!!!!!!!!!!!!");
+            if (film.arr[DatenFilm.FILM_URL_NR].contains(" ")) {
+                System.out.println(film.arr[DatenFilm.FILM_URL_NR]);
+            }
         }
     }
 
