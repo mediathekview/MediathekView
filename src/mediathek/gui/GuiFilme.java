@@ -1135,7 +1135,6 @@ public class GuiFilme extends PanelVorlage {
 
     private class BeobachterTableSelect implements ListSelectionListener {
 
-//        public int selectedModelRow = -1;
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (!event.getValueIsAdjusting()) {
@@ -1147,12 +1146,6 @@ public class GuiFilme extends PanelVorlage {
     public class BeobMausLaufendeProgramme extends MouseAdapter {
         //rechhte Maustaste im Rahmen um die Tabelle
 
-        //        @Override
-//        public void mouseClicked(MouseEvent arg0) {
-//            if (arg0.getButton() == MouseEvent.BUTTON3) {
-//                showMenu(arg0);
-//            }
-//        }
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {

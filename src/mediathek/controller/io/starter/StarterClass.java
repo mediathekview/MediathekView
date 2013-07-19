@@ -35,6 +35,7 @@ import mediathek.tool.Datum;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import mediathek.tool.MVInputStream;
 import mediathek.tool.TModel;
 
 public class StarterClass {
@@ -401,14 +402,14 @@ public class StarterClass {
         @Override
         public void run() {
             startmeldung(start);
-            InputStream input;
+            MVInputStream input;
             OutputStream destStream;
             try {
                 int len;
                 new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
                 long maxLen = laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 long downLen = 0;
-                input = new URL(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]).openStream();
+                input = new MVInputStream(new URL(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]).openStream());
                 byte[] buffer = new byte[1024];
                 long p, pp = 0;
                 destStream = new FileOutputStream(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
@@ -440,6 +441,7 @@ public class StarterClass {
                 }
                 input.close();
                 destStream.close();
+                Log.systemMeldung(input.toString());
             } catch (Exception ex) {
                 Log.fehlerMeldung(502039078, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload-1", ex);
             }

@@ -237,38 +237,53 @@ public class MVFilmInformation implements ChangeListener {
     }
 
     private void setAktFilm(boolean bild) {
-        for (int i = 0; i < txtArrCont.length; ++i) {
-            txtArrCont[i].setText(aktFilm.arr[i]);
-        }
-        txtArrCont[DatenFilm.FILM_DURATION_NR].setText(aktFilm.durationStr);
-        if (aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR].equals("")) {
-            // sonst müsste die Größe gesetzt werden
+        if (aktFilm == null) {
+            for (int i = 0; i < txtArrCont.length; ++i) {
+                txtArrCont[i].setText("");
+            }
             textAreaBeschreibung.setText(" ");
-        } else {
-            textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR]);
-        }
-        lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
-        lblUrlThemaField.setForeground(foreground);
-        // bei den Bildern wird nur eins gesetzt
-        lblUrlPicture.setText(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
-        lblUrlPicture.setForeground(foreground);
-        if (aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {
+            lblUrlThemaField.setText("");
+            lblUrlThemaField.setForeground(foreground);
+            // bei den Bildern wird nur eins gesetzt
+            lblUrlPicture.setText("");
+            lblUrlPicture.setForeground(foreground);
             // wenns kein Bild gibt brauchts auch nichts zum Anzeigen
             buttonBild.setVisible(false);
             viewImage.setImage(""); // zum löschen
         } else {
-            if (aktFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
-                buttonBild.setText("Bild laden");
-            } else {
-                buttonBild.setText("Bild vom Sender  " + aktFilm.arr[DatenFilm.FILM_SENDER_NR] + "  laden");
+            for (int i = 0; i < txtArrCont.length; ++i) {
+                txtArrCont[i].setText(aktFilm.arr[i]);
             }
-            buttonBild.setVisible(true);
-            if (bild) {
-                if (!aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {
-                    viewImage.setImage(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
-                }
+            txtArrCont[DatenFilm.FILM_DURATION_NR].setText(aktFilm.durationStr);
+            if (aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR].equals("")) {
+                // sonst müsste die Größe gesetzt werden
+                textAreaBeschreibung.setText(" ");
             } else {
+                textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR]);
+            }
+            lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
+            lblUrlThemaField.setForeground(foreground);
+            // bei den Bildern wird nur eins gesetzt
+            lblUrlPicture.setText(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
+            lblUrlPicture.setForeground(foreground);
+            if (aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {
+                // wenns kein Bild gibt brauchts auch nichts zum Anzeigen
+                buttonBild.setVisible(false);
                 viewImage.setImage(""); // zum löschen
+            } else {
+                if (aktFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
+                    buttonBild.setText("Bild laden");
+                } else {
+                    buttonBild.setText("Bild vom Sender  " + aktFilm.arr[DatenFilm.FILM_SENDER_NR] + "  laden");
+                }
+                buttonBild.setVisible(true);
+                if (bild) {
+                    if (!aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {
+                        viewImage.setImage(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
+                    }
+                } else {
+                    viewImage.setImage(""); // zum löschen
+                }
             }
         }
         dialog.repaint();
