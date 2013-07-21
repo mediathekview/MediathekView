@@ -238,7 +238,7 @@ public class IoXmlLesen {
                         } else if (parser.getLocalName().equals(DatenDownload.DOWNLOAD)) {
                             //Downloads
                             DatenDownload d = new DatenDownload();
-                            if (get(parser, event, DatenDownload.DOWNLOAD, DatenDownload.DOWNLOAD_COLUMN_NAMES, d.arr)) {
+                            if (get(parser, event, DatenDownload.DOWNLOAD, DatenDownload.DOWNLOAD_COLUMN_NAMES_, d.arr)) {
                                 ddaten.listeDownloads.add(d);
                             }
                         } else if (parser.getLocalName().equals(DatenBlacklist.BLACKLIST)) {

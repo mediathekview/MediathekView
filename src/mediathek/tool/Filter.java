@@ -92,7 +92,7 @@ public class Filter {
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_KEYWORDS_NR])) {
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden
-                                if (laengeMinutenSuchen == 0 || film.durationL == 0 || film.durationL > (laengeMinutenSuchen * 60)) {
+                                if (laengeMinutenSuchen == 0 || film.dauerL == 0 || film.dauerL > (laengeMinutenSuchen * 60)) {
                                     return true;
                                 }
                             } else {

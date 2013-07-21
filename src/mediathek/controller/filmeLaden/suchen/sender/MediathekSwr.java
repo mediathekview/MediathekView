@@ -295,7 +295,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                             }
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
 //                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, ""/*rtmpURL*/, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
                             addFilm(film);
                         } else {
                             Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.addFilme2-4", thema + " " + urlJson);
@@ -314,7 +314,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                                 url = url.replace(".m.mp4", ".l.mp4");
                                 // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                                 //DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
+                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, ""/*rtmpURL*/, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
                                 addFilm(film);
                             } else {
                                 Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.json-1", thema + " " + urlJson);
@@ -334,7 +334,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                                 url = url.replace(".s.mp4", ".m.mp4");
                                 // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
 //                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
+                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, ""/*rtmpURL*/, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
                                 addFilm(film);
                             } else {
                                 Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.json-1", thema + " " + urlJson);

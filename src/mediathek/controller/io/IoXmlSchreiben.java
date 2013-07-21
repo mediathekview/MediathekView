@@ -149,7 +149,7 @@ public class IoXmlSchreiben {
             d = iterator.next();
             if (!d.istAbo()) {
                 // Abos müssen neu angelegt werden
-                xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.DOWNLOAD_COLUMN_NAMES, d.arr);
+                xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.DOWNLOAD_COLUMN_NAMES_, d.arr);
             }
         }
     }

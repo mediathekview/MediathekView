@@ -298,7 +298,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
                             }
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                             // DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, urlWebsite, titel, url, datum, zeit, duration, description, thumbnail, image, keywords);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, urlWebsite, titel, url, ""/*rtmpURL*/, datum, zeit, duration, description, thumbnail, image, keywords);
                             addFilm(film);
                         } else {
                             Log.fehlerMeldung(-698325618, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme2", "keine URL" + url);

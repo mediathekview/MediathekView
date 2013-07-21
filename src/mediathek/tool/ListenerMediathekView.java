@@ -92,7 +92,7 @@ public class ListenerMediathekView implements EventListener {
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(698989743, Log.FEHLER_ART_PROG, "ListenerMediathekView.pingA", ex);
+            Log.fehlerMeldung(698989743, Log.FEHLER_ART_PROG, "ListenerMediathekView.pingen", ex);
         }
     }
 }
