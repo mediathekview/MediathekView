@@ -21,11 +21,13 @@ package mediathek.controller.io;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ListIterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
@@ -59,7 +61,7 @@ public class IoXmlFilmlisteSchreiben {
     // ##############################
     // private
     // ##############################
-    private void xmlSchreibenStart(String datei) throws Exception {
+    private void xmlSchreibenStart(String datei) throws IOException, XMLStreamException {
         File file = new File(datei);
         Log.systemMeldung("Start Schreiben nach: " + datei);
         outFactory = XMLOutputFactory.newInstance();
@@ -81,7 +83,7 @@ public class IoXmlFilmlisteSchreiben {
         writer.writeCharacters("\n");//neue Zeile
     }
 
-    private void xmlSchreibenFilmliste(ListeFilme listeFilme) {
+    private void xmlSchreibenFilmliste(ListeFilme listeFilme) throws XMLStreamException {
         //Filmliste Metadaten schreiben
         listeFilme.metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
         xmlSchreibenDaten(ListeFilme.FILMLISTE, ListeFilme.FILMLISTE_COLUMN_NAMES, listeFilme.metaDaten);
@@ -129,22 +131,18 @@ public class IoXmlFilmlisteSchreiben {
         }
     }
 
-    private void xmlSchreibenDaten(String xmlName, String[] xmlSpalten, String[] datenArray) {
+    private void xmlSchreibenDaten(String xmlName, String[] xmlSpalten, String[] datenArray) throws XMLStreamException {
         int xmlMax = datenArray.length;
-        try {
-            writer.writeStartElement(xmlName);
-            for (int i = 0; i < xmlMax; ++i) {
-                if (!datenArray[i].equals("")) {
-                    writer.writeStartElement(xmlSpalten[i]);
-                    writer.writeCharacters(datenArray[i]);
-                    writer.writeEndElement();
-                }
+        writer.writeStartElement(xmlName);
+        for (int i = 0; i < xmlMax; ++i) {
+            if (!datenArray[i].equals("")) {
+                writer.writeStartElement(xmlSpalten[i]);
+                writer.writeCharacters(datenArray[i]);
+                writer.writeEndElement();
             }
-            writer.writeEndElement();
-            writer.writeCharacters("\n");//neue Zeile
-        } catch (Exception ex) {
-            Log.fehlerMeldung(649703620, Log.FEHLER_ART_PROG, "IoXmlSchreiben.xmlSchreibenDaten", ex);
         }
+        writer.writeEndElement();
+        writer.writeCharacters("\n");//neue Zeile
     }
 
     private void xmlSchreibenEnde(String datei) throws Exception {

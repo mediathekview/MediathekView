@@ -30,6 +30,7 @@ import java.util.zip.ZipInputStream;
 import javax.swing.event.EventListenerList;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
@@ -47,6 +48,9 @@ public class IoXmlFilmlisteLesen {
     private EventListenerList listeners = new EventListenerList();
     private int max = 0;
     private int progress = 0;
+    private int event;
+    private int maxElem;
+    private int ii;
 
     public void addAdListener(ListenerFilmeLaden listener) {
         listeners.add(ListenerFilmeLaden.class, listener);
@@ -130,14 +134,14 @@ public class IoXmlFilmlisteLesen {
             ret = datenFilmlisteLesen(parser, datei, listeFilme);
         } catch (Exception ex) {
             ret = false;
-            Log.fehlerMeldung(468956200, Log.FEHLER_ART_PROG,"IoXmlLesen.importDatenFilm", ex, "von: " + datei);
+            Log.fehlerMeldung(468956200, Log.FEHLER_ART_PROG, "IoXmlLesen.importDatenFilm", ex, "von: " + datei);
         } finally {
             try {
                 if (inReader != null) {
                     inReader.close();
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(468983014, Log.FEHLER_ART_PROG,"IoXmlLesen.importDatenFilm", ex);
+                Log.fehlerMeldung(468983014, Log.FEHLER_ART_PROG, "IoXmlLesen.importDatenFilm", ex);
             }
         }
         this.notifyFertig(listeFilme);
@@ -147,99 +151,75 @@ public class IoXmlFilmlisteLesen {
     // ##############################
     // private
     // ##############################
-    private boolean datenFilmlisteLesen(XMLStreamReader parser, String text, ListeFilme listeFilme) {
+    private boolean datenFilmlisteLesen(XMLStreamReader parser, String text, ListeFilme listeFilme) throws XMLStreamException {
         boolean ret = true;
         int count = 0;
         DatenFilm datenFilm;
         DatenFilm datenFilmAlt = new DatenFilm();
-        try {
-            int event;
-            String filmTag = DatenFilm.FILME_;
-            String[] namen = DatenFilm.FILME_COLUMN_NAMES_;
-            while (!Daten.filmeLaden.getStop() && parser.hasNext()) {
-                event = parser.next();
-                //Filmeliste
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    if (parser.getLocalName().equals(ListeFilme.FILMLISTE)) {
-                        get(parser, ListeFilme.FILMLISTE, ListeFilme.FILMLISTE_COLUMN_NAMES, listeFilme.metaDaten);
-                        if (listeFilme.metaDaten[ListeFilme.FILMLISTE_VERSION_NR].startsWith("3")) {
-                            filmTag = DatenFilm.FILME_;
-                            namen = DatenFilm.FILME_COLUMN_NAMES_;
-                        } else {
-                            filmTag = DatenFilm.FILME;
-                            namen = DatenFilm.FILME_COLUMN_NAMES;
-                        }
-//                        int anz = 1;
-                        try {
-//                            anz = Integer.parseInt(listeFilme.metaDaten[ListeFilme.FILMLISTE_ANZAHL_NR]);
-                        } catch (Exception ex) {
-                    }
-                }
-                }
-                //FilmeInfos
-//                if (event == XMLStreamConstants.START_ELEMENT) {
-//                    if (parser.getLocalName().equals(ListeFilme.FILMLISTE_INFOS)) {
-//                        get(parser, event, ListeFilme.FILMLISTE_INFOS, ListeFilme.FILMLISTE_INFOS_COLUMN_NAMES, listeFilme.infos);
-//                    }
-//                }
-                //Filme
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    if (parser.getLocalName().equals(filmTag)) {
-                        datenFilm = new DatenFilm();
-                        if (get(parser, filmTag, namen, datenFilm.arr)) {
-                            if (datenFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
-                                datenFilm.arr[DatenFilm.FILM_SENDER_NR] = datenFilmAlt.arr[DatenFilm.FILM_SENDER_NR];
-                            }
-                            if (datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals("")) {
-                                datenFilm.arr[DatenFilm.FILM_THEMA_NR] = datenFilmAlt.arr[DatenFilm.FILM_THEMA_NR];
-                            }
-                            ++count;
-                            if (count > 500) {
-                                count = 0;
-                                this.notifyProgress(text);
-                            }
-                            listeFilme.addWithNr(datenFilm);
-                            datenFilmAlt = datenFilm;
-                        }
-                    }
+        int event_;
+        String filmTag = DatenFilm.FILME_;
+        String[] namen = DatenFilm.FILME_COLUMN_NAMES_;
+        while (!Daten.filmeLaden.getStop() && parser.hasNext()) {
+            event_ = parser.next();
+            //Filmeliste
+            if (event_ == XMLStreamConstants.START_ELEMENT) {
+                if (parser.getLocalName().equals(ListeFilme.FILMLISTE)) {
+                    get(parser, ListeFilme.FILMLISTE, ListeFilme.FILMLISTE_COLUMN_NAMES, listeFilme.metaDaten);
                 }
             }
-        } catch (Exception ex) {
-            Log.fehlerMeldung(698510057, Log.FEHLER_ART_PROG,"IoXml.datenLesenFilme", ex);
-            ret = false;
+            //Filme
+            if (event_ == XMLStreamConstants.START_ELEMENT) {
+                if (parser.getLocalName().equals(filmTag)) {
+                    datenFilm = new DatenFilm();
+                    get(parser, filmTag, namen, datenFilm.arr);
+                    if (datenFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
+                        datenFilm.arr[DatenFilm.FILM_SENDER_NR] = datenFilmAlt.arr[DatenFilm.FILM_SENDER_NR];
+                    }
+                    if (datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals("")) {
+                        datenFilm.arr[DatenFilm.FILM_THEMA_NR] = datenFilmAlt.arr[DatenFilm.FILM_THEMA_NR];
+                    }
+                    ++count;
+                    if (count > 500) {
+                        count = 0;
+                        this.notifyProgress(text);
+                    }
+                    listeFilme.addWithNr(datenFilm);
+                    datenFilmAlt = datenFilm;
+                }
+            }
         }
         return ret;
     }
 
-    private boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet) {
-        boolean ret = true;
-        int event;
-        int maxElem = strRet.length;
-//        for (int i = 0; i < maxElem; ++i) {
-//            strRet[i] = "";
-//        }
-        try {
-            while (parser.hasNext()) {
-                event = parser.next();
-                if (event == XMLStreamConstants.END_ELEMENT) {
-                    if (parser.getLocalName().equals(xmlElem)) {
-                        break;
+    private void get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet) throws XMLStreamException {
+        maxElem = strRet.length;
+        ii = 0;
+        outer:
+        while (parser.hasNext()) {
+            event = parser.next();
+            if (event == XMLStreamConstants.END_ELEMENT) {
+                if (parser.getLocalName().equals(xmlElem)) {
+                    break;
+                }
+            }
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                for (int i = ii; i < maxElem; ++i) {
+                    String s = parser.getLocalName();
+                    if (s.equals(xmlNames[i])) {
+                        strRet[i] = parser.getElementText();
+                        ii = ++i;
+                        continue outer;
                     }
                 }
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    for (int i = 0; i < maxElem; ++i) {
-                        if (parser.getLocalName().equals(xmlNames[i])) {
-                            strRet[i] = parser.getElementText();
-                            break;
-                        }
+                for (int i = 0; i < maxElem; ++i) {
+                    String s = parser.getLocalName();
+                    if (s.equals(xmlNames[i])) {
+                        strRet[i] = parser.getElementText();
+                        continue outer;
                     }
                 }
             }
-        } catch (Exception ex) {
-            ret = false;
-            Log.fehlerMeldung(702069349,Log.FEHLER_ART_PROG, "IoXmlLesen.get", ex);
         }
-        return ret;
     }
 
     private void notifyStart(int mmax) {

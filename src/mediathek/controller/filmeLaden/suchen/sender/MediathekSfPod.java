@@ -222,7 +222,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
                             } else {
                                 // public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
                                 //      long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
-                                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit,
+                                addFilm(new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, ""/*rtmpURL*/, datum, zeit,
                                         duration, description, "", image, keywords));
                             }
                         }

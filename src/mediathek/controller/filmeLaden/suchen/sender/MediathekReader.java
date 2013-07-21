@@ -118,22 +118,7 @@ public class MediathekReader implements Runnable {
 
     boolean addFilm(DatenFilm film) {
         long l = MVUrlDateiGroesse.laenge(film.arr[DatenFilm.FILM_URL_NR]);
-        String lae = "";
-        if (l > 0) {
-            meldung(film.arr[DatenFilm.FILM_URL_NR]);
-            // sonst kann ich mirs sparen
-            if (l > 1024 * 1024) {
-                lae = String.valueOf(l / (1024 * 1024));
-                while (lae.length() < 4) {
-                    lae = "0" + lae;
-                }
-                lae = lae.substring(0, lae.length() - 3) + "." + lae.substring(lae.length() - 3);
-                film.arr[DatenFilm.FILM_GROESSE_NR] = lae;
-            } else {
-                film.arr[DatenFilm.FILM_GROESSE_NR] = "<1";
-            }
-
-        }
+        film.arr[DatenFilm.FILM_GROESSE_NR] = String.valueOf(l);
         return suchen.listeFilmeNeu.addFilmVomSender(film);
     }
 
@@ -241,26 +226,26 @@ public class MediathekReader implements Runnable {
         }
     }
 
-    static long extractDuration(String duration) {
-        long durationInSeconds = 0;
-        if (duration.isEmpty()) {
+    static long extractDuration(String dauer) {
+        long dauerInSeconds = 0;
+        if (dauer.isEmpty()) {
             return 0;
         }
         try {
-            if (duration.contains("min")) {
-                duration = duration.replace("min", "").trim();
-                durationInSeconds = Long.parseLong(duration) * 60;
+            if (dauer.contains("min")) {
+                dauer = dauer.replace("min", "").trim();
+                dauerInSeconds = Long.parseLong(dauer) * 60;
             } else {
-                String[] parts = duration.split(":");
+                String[] parts = dauer.split(":");
                 long power = 1;
                 for (int i = parts.length - 1; i >= 0; i--) {
-                    durationInSeconds += Long.parseLong(parts[i]) * power;
+                    dauerInSeconds += Long.parseLong(parts[i]) * power;
                     power *= 60;
                 }
             }
         } catch (Exception ex) {
             return 0;
         }
-        return durationInSeconds;
+        return dauerInSeconds;
     }
 }

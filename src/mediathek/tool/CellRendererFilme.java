@@ -61,7 +61,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             boolean live = table.getModel().getValueAt(r, DatenFilm.FILM_THEMA_NR).equals(ListeFilme.THEMA_LIVE);
             boolean start = false;
             Start s = ddaten.starterClass.getStartOrgUrl(url);
-            if (c == DatenFilm.FILM_GROESSE_NR || c == DatenFilm.FILM_DATUM_NR || c == DatenFilm.FILM_ZEIT_NR || c == DatenFilm.FILM_DURATION_NR) {
+            if (c == DatenFilm.FILM_GROESSE_NR || c == DatenFilm.FILM_DATUM_NR || c == DatenFilm.FILM_ZEIT_NR || c == DatenFilm.FILM_DAUER_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
             if (c == DatenFilm.FILM_GROESSE_NR) {

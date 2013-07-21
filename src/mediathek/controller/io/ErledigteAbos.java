@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -161,6 +162,40 @@ public class ErledigteAbos {
                     writer.close();
                 } catch (Exception ex) {
                 }
+            }
+        }
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
+        return ret;
+    }
+
+    public synchronized boolean zeileSchreiben(ArrayList<String[]> list) {
+        boolean ret = false;
+        String text;
+        String zeit = DatumZeit.getHeute_dd_MM_yyyy();
+        String thema, titel, url;
+        OutputStreamWriter writer = null;
+        File f = new File(Daten.getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream(f, true));
+            for (String[] a : list) {
+                thema = a[0];
+                titel = a[1];
+                url = a[2];
+                listeErledigteAbos.add(url);
+                thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
+                titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
+                text = zeit + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
+                writer.write(text);
+                ret = true;
+            }
+//            writer.close();
+        } catch (Exception ex) {
+            ret = false;
+            Log.fehlerMeldung(945258023, Log.FEHLER_ART_PROG, "LogDownload.zeileSchreiben-1", ex);
+        } finally {
+            try {
+                writer.close();
+            } catch (Exception ex) {
             }
         }
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());

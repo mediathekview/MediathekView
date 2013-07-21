@@ -57,7 +57,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     @Override
     public boolean add(DatenDownload d) {
-        d.setWerte();
+        d.init();
         return super.add(d);
     }
 
@@ -151,7 +151,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                         if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                             object[i] = "";
                         } else if (i == DatenDownload.DOWNLOAD_DAUER_NR) {
-                            object[i] = datenDownload.durationStr;
+                            object[i] = datenDownload.dauerStr;
+                        } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
+                            object[i] = datenDownload.groesseStr;
                         } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                             object[i] = datenDownload.datumFilm;
                         } else {

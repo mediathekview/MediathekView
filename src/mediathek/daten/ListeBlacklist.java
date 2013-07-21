@@ -244,7 +244,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     private boolean checkFilmlaenge(DatenFilm film) {
         // true wenn der Film angezeigt werden kann!
         try {
-            if (filmlaengeSoll != 0 && film.durationL != 0 && filmlaengeSoll > film.durationL) {
+            if (filmlaengeSoll != 0 && film.dauerL != 0 && filmlaengeSoll > film.dauerL) {
                 return false;
             }
         } catch (Exception ex) {

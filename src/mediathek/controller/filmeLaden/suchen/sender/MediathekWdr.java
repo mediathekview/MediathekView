@@ -491,7 +491,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 // urlKlein = urlKlein.replace("http://mobile-ondemand.wdr.de/", "rtmp://gffstream.fcod.llnwd.net/a792/e2/mp4:");
                 //public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
                 //long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
-                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, datum, ""/* zeit */,
+                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, ""/* zeit */,
                         dauer, beschreibung, "", image, keyword);
                 film.addKleineUrl(urlKlein, "");
                 addFilm(film);
@@ -701,10 +701,10 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                             //DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""/* zeit */);
                             if (urlHd.isEmpty()) {
-                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, datum, ""/* zeit */, duration, description, thumnail, image, keywords);
+                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, ""/* zeit */, duration, description, thumnail, image, keywords);
                                 addFilm(film);
                             } else {
-                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlHd, datum, ""/* zeit */, duration, description, thumnail, image, keywords);
+                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlHd, ""/*rtmpURL*/, datum, ""/* zeit */, duration, description, thumnail, image, keywords);
                                 addFilm(film);
                                 film.addKleineUrl(url, "");
                             }

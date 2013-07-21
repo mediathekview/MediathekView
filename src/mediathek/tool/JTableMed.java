@@ -21,7 +21,9 @@ package mediathek.tool;
 
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
@@ -199,6 +201,7 @@ public final class JTableMed extends JTable {
 //                    }
 //                }
                 if (indexWertSelection != null) {
+                    this.selectionModel.setValueIsAdjusting(true);
                     for (String idx : indexWertSelection) {
                         int r = ((TModel) this.getModel()).getIdxRow(indexSpalte, idx);
                         if (r >= 0) {
@@ -207,6 +210,7 @@ public final class JTableMed extends JTable {
                             this.addRowSelectionInterval(r, r);
                         }
                     }
+                    this.selectionModel.setValueIsAdjusting(false);
                 }
                 indexWertSelection = null;
                 break;
@@ -216,11 +220,13 @@ public final class JTableMed extends JTable {
 //                }
                 if (selection != null) {
                     if (selection.length > 0) {
+                        this.selectionModel.setValueIsAdjusting(true);
                         for (int i = 0; i < selection.length; ++i) {
                             if (selection[i] < this.getRowCount()) {
                                 this.addRowSelectionInterval(selection[i], selection[i]);
                             }
                         }
+                        this.selectionModel.setValueIsAdjusting(false);
                     }
                 }
                 break;
@@ -292,7 +298,7 @@ public final class JTableMed extends JTable {
                             || i == DatenFilm.FILM_ZEIT_NR
                             || i == DatenFilm.FILM_SENDER_NR
                             || i == DatenFilm.FILM_GROESSE_NR
-                            || i == DatenFilm.FILM_DURATION_NR) {
+                            || i == DatenFilm.FILM_DAUER_NR) {
                         breite[i] = 100;
                     } else if (i == DatenFilm.FILM_URL_NR) {
                         breite[i] = 500;
@@ -312,6 +318,7 @@ public final class JTableMed extends JTable {
                         breite[i] = 150;
                     } else if (i == DatenDownload.DOWNLOAD_DATUM_NR
                             || i == DatenDownload.DOWNLOAD_ZEIT_NR
+                            || i == DatenDownload.DOWNLOAD_GROESSE_NR
                             || i == DatenDownload.DOWNLOAD_SENDER_NR
                             || i == DatenDownload.DOWNLOAD_PROGRESS_NR
                             || i == DatenDownload.DOWNLOAD_RESTZEIT_NR

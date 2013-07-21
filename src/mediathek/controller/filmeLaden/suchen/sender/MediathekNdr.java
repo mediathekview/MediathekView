@@ -312,7 +312,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                             }
                             //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel)
 //                            addFilm(new DatenFilm(nameSenderMReader, thema, strUrlThema, titel, url, datum, zeit));
-                            addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, datum, zeit, durationInSeconds, description, "", imageUrl, keywords));
+                            addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, zeit, durationInSeconds, description, "", imageUrl, keywords));
                         } else {
                             Log.fehlerMeldung(-623657941, Log.FEHLER_ART_MREADER, "MediathekNdr.FilmSuchen", "keine URL: " + filmWebsite);
                         }

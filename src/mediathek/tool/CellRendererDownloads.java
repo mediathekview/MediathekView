@@ -72,6 +72,13 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             if (s != null) {
                 setColor(this, s, isSelected);
             }
+            if (c == DatenDownload.DOWNLOAD_GROESSE_NR || c == DatenDownload.DOWNLOAD_DATUM_NR || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+            }
+            if (c == DatenDownload.DOWNLOAD_GROESSE_NR) {
+                setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 10));
+                setHorizontalAlignment(SwingConstants.RIGHT);
+            }
             if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
                 this.setText(download.getTextRestzeit(ddaten, s));
             } else if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {

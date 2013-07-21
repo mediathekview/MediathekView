@@ -57,14 +57,14 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final String FILM_ZEIT = "Zeit";
     public static final String FILM_ZEIT_ = "f";
     public static final int FILM_ZEIT_NR = 5;
-    public static final String FILM_DURATION = "Dauer";
-    public static final String FILM_DURATION_ = "m";
-    public static final int FILM_DURATION_NR = 6;
+    public static final String FILM_DAUER = "Dauer";
+    public static final String FILM_DAUER_ = "m";
+    public static final int FILM_DAUER_NR = 6;
     public static final String FILM_GROESSE = "Größe [MB]";
     public static final String FILM_GROESSE_ = "t";
     public static final int FILM_GROESSE_NR = 7;
-    public static final String FILM_DESCRIPTION = "Beschreibung";
-    public static final String FILM_DESCRIPTION_ = "n";
+    public static final String FILM_BESCHREIBUNG = "Beschreibung";
+    public static final String FILM_BESCHREIBUNG_ = "n";
     public static final int FILM_DESCRIPTION_NR = 8;
     public static final String FILM_KEYWORDS = "Keywords";
     public static final String FILM_KEYWORDS_ = "q";
@@ -94,54 +94,53 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final String FILM_URL_RTMP_KLEIN_ = "s";
     public static final int FILM_URL_RTMP_KLEIN_NR = 17;
     public static final int FILME_MAX_ELEM = 18;
-    public static final String[] FILME_COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT, FILM_DURATION, FILM_GROESSE,
-        FILM_DESCRIPTION, FILM_KEYWORDS, FILM_URL, FILM_WEBSEITE, FILM_ABO_NAME,
+    public static final String[] FILME_COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT, FILM_DAUER, FILM_GROESSE,
+        FILM_BESCHREIBUNG, FILM_KEYWORDS, FILM_URL, FILM_WEBSEITE, FILM_ABO_NAME,
         FILM_IMAGE_URL, FILM_URL_RTMP, FILM_URL_AUTH, FILM_URL_KLEIN, FILM_URL_RTMP_KLEIN};
-    public static final String[] FILME_COLUMN_NAMES_ = {FILM_NR_, FILM_SENDER_, FILM_THEMA_, FILM_TITEL_, FILM_DATUM_, FILM_ZEIT_, FILM_DURATION_, FILM_GROESSE_,
-        FILM_DESCRIPTION_, FILM_KEYWORDS_, FILM_URL_, FILM_WEBSEITE_, FILM_ABO_NAME_,
+    public static final String[] FILME_COLUMN_NAMES_ = {FILM_NR_, FILM_SENDER_, FILM_THEMA_, FILM_TITEL_, FILM_DATUM_, FILM_ZEIT_, FILM_DAUER_, FILM_GROESSE_,
+        FILM_BESCHREIBUNG_, FILM_KEYWORDS_, FILM_URL_, FILM_WEBSEITE_, FILM_ABO_NAME_,
         FILM_IMAGE_URL_, FILM_URL_RTMP_, FILM_URL_AUTH_, FILM_URL_KLEIN_, FILM_URL_RTMP_KLEIN_};
     public String[] arr;
     public Datum datumFilm = new Datum(0);
-    public String durationStr = "";
-    public long durationL = 0; // Sekunden
+    public String dauerStr = "";
+    public long dauerL = 0; // Sekunden
+    public String groesseStr = "";
+    public long groesseL = 0; // Dateigröße
 
     public DatenFilm() {
         makeArr();
     }
 
-    public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
-        this(ssender, tthema, urlThema, ttitel, uurl, datum, zeit, 0, "", "", "", new String[]{""});
-    }
-
-    public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
-            long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
-        makeArr();
-        arr[FILM_SENDER_NR] = ssender;
-        arr[FILM_THEMA_NR] = tthema;
-        arr[FILM_TITEL_NR] = ttitel;
-        arr[FILM_URL_NR] = uurl;
-        arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
-        arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
-        arr[FILM_WEBSEITE_NR] = filmWebsite;
-        arr[FILM_DURATION_NR] = "" + duration;
-        arr[FILM_DESCRIPTION_NR] = beschreibung(description, tthema, ttitel);
-        if (!imageUrl.equals("")) {
-            arr[FILM_IMAGE_URL_NR] = imageUrl;
-        } else {
-            arr[FILM_IMAGE_URL_NR] = thumbnailUrl;
-        }
-        arr[FILM_KEYWORDS_NR] = keywordsToString(keywords);
-        setWerte(duration);
-    }
-
-    public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlRtmp,
-            String datum, String zeit) {
-        this(ssender, tthema, urlThema, ttitel, uurl, uurlRtmp, datum, zeit, 0, "", "", "", new String[]{""});
-    }
-
+//    public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
+//        this(ssender, tthema, urlThema, ttitel, uurl, ""/*rtmpURL*/, datum, zeit, 0, "", "", "", new String[]{""});
+//    }
+//    public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
+//            long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+//        makeArr();
+//        arr[FILM_SENDER_NR] = ssender;
+//        arr[FILM_THEMA_NR] = tthema;
+//        arr[FILM_TITEL_NR] = ttitel;
+//        arr[FILM_URL_NR] = uurl;
+//        arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
+//        arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
+//        arr[FILM_WEBSEITE_NR] = filmWebsite;
+//        arr[FILM_DURATION_NR] = "" + duration;
+//        arr[FILM_DESCRIPTION_NR] = beschreibung(description, tthema, ttitel);
+//        if (!imageUrl.equals("")) {
+//            arr[FILM_IMAGE_URL_NR] = imageUrl;
+//        } else {
+//            arr[FILM_IMAGE_URL_NR] = thumbnailUrl;
+//        }
+//        arr[FILM_KEYWORDS_NR] = keywordsToString(keywords);
+//        setWerte(duration);
+//    }
+//    public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlRtmp,
+//            String datum, String zeit) {
+//        this(ssender, tthema, urlThema, ttitel, uurl, uurlRtmp, datum, zeit, 0, "", "", "", new String[]{""});
+//    }
     public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
             String datum, String zeit,
-            long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+            long dauer, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
         makeArr();
         arr[FILM_SENDER_NR] = ssender;
         arr[FILM_THEMA_NR] = tthema;
@@ -151,15 +150,22 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_WEBSEITE_NR] = filmWebsite;
         arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
-        arr[FILM_DURATION_NR] = "" + duration;
         arr[FILM_DESCRIPTION_NR] = beschreibung(description, tthema, ttitel);
+        // Bild eintragen
         if (!imageUrl.equals("")) {
             arr[FILM_IMAGE_URL_NR] = imageUrl;
         } else {
             arr[FILM_IMAGE_URL_NR] = thumbnailUrl;
         }
+        // Schlüsselwörter
         arr[FILM_KEYWORDS_NR] = keywordsToString(keywords);
-        setWerte(duration);
+        // Filmlänge
+        if (dauer <= 0 || dauer > 3600 * 5 /* Werte über 5 Stunden */) {
+            arr[FILM_DAUER_NR] = "0";
+        } else {
+            arr[FILM_DAUER_NR] = String.valueOf(dauer);
+        }
+//        init();
     }
 
     public boolean addKleineUrl(String url, String urlRtmp) {
@@ -362,6 +368,69 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return ret;
     }
 
+    public void init_() {
+        // Filmdauer
+        long l = Long.parseLong(this.arr[DatenFilm.FILM_DAUER_NR]);
+        dauerL = l;
+        if (l > 0) {
+            long hours = l / 3600;
+            l = l - (hours * 3600);
+            long min = l / 60;
+            l = l - (min * 60);
+            long seconds = l;
+            dauerStr = fuellen(2, String.valueOf(hours)) + ":" + fuellen(2, String.valueOf(min)) + ":" + fuellen(2, String.valueOf(seconds));
+        }
+        // Datum
+        datumFilm = DatumZeit.getDatumForObject(this);
+        // Dateigröße
+        if (this.arr[DatenFilm.FILM_GROESSE_NR].equals("")) {
+            this.arr[DatenFilm.FILM_GROESSE_NR] = "-1";
+        }
+        groesseL = Long.parseLong(this.arr[DatenFilm.FILM_GROESSE_NR]);
+        if (groesseL > 0) {
+            // sonst kann ich mirs sparen
+            if (groesseL > 1024 * 1024) {
+                groesseStr = String.valueOf(groesseL / (1024 * 1024));
+                groesseStr = fuellen(4, groesseStr);
+                groesseStr = groesseStr.substring(0, groesseStr.length() - 3) + "." + groesseStr.substring(groesseStr.length() - 3);
+            }
+        }
+    }
+
+    public void init() {
+        // Filmdauer
+        dauerL = Long.parseLong(this.arr[DatenFilm.FILM_DAUER_NR]);
+        if (dauerL > 0) {
+            String hours = String.valueOf(dauerL / 3600);
+            long l = dauerL % 3600;
+            String min = String.valueOf(l / 60);
+            String seconds = String.valueOf(l % 60);
+            dauerStr = fuellen(2, hours) + ":" + fuellen(2, min) + ":" + fuellen(2, seconds);
+        }
+        // Datum
+        datumFilm = DatumZeit.getDatumForObject(this);
+        // Dateigröße
+        if (this.arr[DatenFilm.FILM_GROESSE_NR].equals("")) {
+            this.arr[DatenFilm.FILM_GROESSE_NR] = "-1";
+        }
+        groesseL = Long.parseLong(this.arr[DatenFilm.FILM_GROESSE_NR]);
+        if (groesseL > 0) {
+            // sonst kann ich mirs sparen
+            if (groesseL > 1024 * 1024) {
+                groesseStr = String.valueOf(groesseL / (1024 * 1024));
+                groesseStr = fuellen(4, groesseStr);
+                groesseStr = groesseStr.substring(0, groesseStr.length() - 3) + "." + groesseStr.substring(groesseStr.length() - 3);
+            }
+        }
+    }
+
+    private String fuellen(int anz, String s) {
+        while (s.length() < anz) {
+            s = "0" + s;
+        }
+        return s;
+    }
+
     private void makeArr() {
         arr = new String[FILME_MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
@@ -369,38 +438,13 @@ public class DatenFilm implements Comparable<DatenFilm> {
         }
     }
 
-    final public void setWerte() {
-        if (this.arr[DatenFilm.FILM_DURATION_NR].equals("") || this.arr[DatenFilm.FILM_DURATION_NR].equals("0") || this.arr[DatenFilm.FILM_DURATION_NR].equals("-1")) {
-            setWerte(0);
-        } else {
-            setWerte(Long.parseLong(this.arr[DatenFilm.FILM_DURATION_NR]));
-        }
-    }
-
-    private void setWerte(long l) {
-        if (l <= 0 || l > 3600 * 5 /* Werte über 5 Stungen */) {
-            durationStr = "";
-            durationL = 0;
-        } else {
-            durationL = l;
-            long hours = l / 3600;
-            l = l - (hours * 3600);
-            long min = l / 60;
-            l = l - (min * 60);
-            long seconds = l;
-            durationStr = fuellen(String.valueOf(hours)) + ":" + fuellen(String.valueOf(min)) + ":" + fuellen(String.valueOf(seconds));
-        }
-        arr[FILM_DURATION_NR] = "" + durationL;
-        datumFilm = DatumZeit.getDatumForObject(this);
-    }
-
-    private String fuellen(String s) {
-        while (s.length() < 2) {
-            s = "0" + s;
-        }
-        return s;
-    }
-
+//    final public void setWerte() {
+//        if (this.arr[DatenFilm.FILM_DURATION_NR].equals("") || this.arr[DatenFilm.FILM_DURATION_NR].equals("0") || this.arr[DatenFilm.FILM_DURATION_NR].equals("-1")) {
+//            setWerte(0);
+//        } else {
+//            setWerte(Long.parseLong(this.arr[DatenFilm.FILM_DURATION_NR]));
+//        }
+//    }
     public static String checkDatum(String datum, String fehlermeldung) {
         //Datum max. 100 Tage in der Zukunft
         final long MAX = 1000L * 60L * 60L * 24L * 100L;

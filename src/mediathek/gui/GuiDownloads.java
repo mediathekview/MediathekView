@@ -137,7 +137,7 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads(ddaten));
         tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.DOWNLOAD_COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
-//        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
+        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
 //      ist jetzt im  Menü  
         //aendern
 //        ActionMap am = tabelle.getActionMap();
@@ -197,6 +197,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void ping() {
                 tabelle.fireTableDataChanged(true /*setSpalten*/);
+//                aktFilmSetzen();
                 setInfo();
             }
         });
@@ -351,6 +352,7 @@ public class GuiDownloads extends PanelVorlage {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
             ArrayList<String> arrayUrls = new ArrayList<String>();
+            ArrayList<String[]> arrayUrlsAbo = new ArrayList<String[]>();
             for (int i = 0; i < rows.length; ++i) {
                 arrayUrls.add(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(rows[i]), DatenDownload.DOWNLOAD_URL_NR).toString());
             }
@@ -359,14 +361,18 @@ public class GuiDownloads extends PanelVorlage {
                 if (dauerhaft) {
                     if (download.istAbo()) {
                         // ein Abo wird zusätzlich ins Logfile geschrieben
-                        ddaten.erledigteAbos.zeileSchreiben(download.arr[DatenDownload.DOWNLOAD_THEMA_NR],
-                                download.arr[DatenDownload.DOWNLOAD_TITEL_NR], download.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
+                        arrayUrlsAbo.add(new String[]{download.arr[DatenDownload.DOWNLOAD_THEMA_NR],
+                            download.arr[DatenDownload.DOWNLOAD_TITEL_NR],
+                            download.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]});
                     }
                     ddaten.listeDownloads.delDownloadByUrl(url);
                 } else {
                     // wenn nicht dauerhaft
                     download.zurueckstellen();
                 }
+            }
+            if (arrayUrlsAbo.size() > 0) {
+                ddaten.erledigteAbos.zeileSchreiben(arrayUrlsAbo);
             }
             ddaten.starterClass.filmLoeschen(arrayUrls);
             tabelleLaden();
@@ -696,17 +702,16 @@ public class GuiDownloads extends PanelVorlage {
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
-//    private class BeobachterTableSelect implements ListSelectionListener {
-//
-//        @Override
-//        public void valueChanged(ListSelectionEvent event) {
-////            if (!event.getValueIsAdjusting()) {
-////                if (!stopBeob) {
-////                    aktFilmSetzen();
-////                }
-////            }
-//        }
-//    }
+    private class BeobachterTableSelect implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            if (!event.getValueIsAdjusting()) {
+                aktFilmSetzen();
+            }
+        }
+    }
+
     public class BeobMausTabelle extends MouseAdapter {
 
         private Point p;
@@ -717,7 +722,7 @@ public class GuiDownloads extends PanelVorlage {
         @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
-                aktFilmSetzen(); //da gibts keine Schwierigkeiten beim update des JProgressbar
+//                aktFilmSetzen(); //da gibts keine Schwierigkeiten beim update des JProgressbar
                 if (arg0.getClickCount() > 1) {
                     downloadAendern();
                 }
@@ -726,7 +731,7 @@ public class GuiDownloads extends PanelVorlage {
 
         @Override
         public void mousePressed(MouseEvent arg0) {
-            aktFilmSetzen();
+//            aktFilmSetzen();
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
@@ -734,7 +739,7 @@ public class GuiDownloads extends PanelVorlage {
 
         @Override
         public void mouseReleased(MouseEvent arg0) {
-            aktFilmSetzen();
+//            aktFilmSetzen();
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }

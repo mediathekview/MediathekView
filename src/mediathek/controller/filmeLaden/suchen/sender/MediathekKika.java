@@ -100,7 +100,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-302025469,Log.FEHLER_ART_MREADER,  "MediathekKiKA.addToList",ex, "");
+                Log.fehlerMeldung(-302025469, Log.FEHLER_ART_MREADER, "MediathekKiKA.addToList", ex, "");
             }
         }
         if (Daten.filmeLaden.getStop()) {
@@ -161,10 +161,9 @@ public class MediathekKika extends MediathekReader implements Runnable {
             }
             if (!urlFilm.equals("")) {
                 meldung(urlFilm);
-                addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlFilm, "-r " + urlFilm + " --flashVer WIN11,4,402,265"/* urlRtmp */, datum/*datum*/, ""/*zeit*/));
+                addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlFilm, "-r " + urlFilm + " --flashVer WIN11,4,402,265"/* urlRtmp */,
+                        datum/*datum*/, ""/*zeit*/, 0, "", "", "", new String[]{""}));
             }
-
-
         }
     }
 }
