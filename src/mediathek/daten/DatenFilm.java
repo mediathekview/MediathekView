@@ -102,10 +102,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         FILM_IMAGE_URL_, FILM_URL_RTMP_, FILM_URL_AUTH_, FILM_URL_KLEIN_, FILM_URL_RTMP_KLEIN_};
     public String[] arr;
     public Datum datumFilm = new Datum(0);
-    public String dauerStr = "";
     public long dauerL = 0; // Sekunden
-    public String groesseStr = "";
-    public long groesseL = 0; // Dateigröße
 
     public DatenFilm() {
         makeArr();
@@ -140,7 +137,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
 //    }
     public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
             String datum, String zeit,
-            long dauer, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+            long dauerSekunden, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
         makeArr();
         arr[FILM_SENDER_NR] = ssender;
         arr[FILM_THEMA_NR] = tthema;
@@ -160,12 +157,15 @@ public class DatenFilm implements Comparable<DatenFilm> {
         // Schlüsselwörter
         arr[FILM_KEYWORDS_NR] = keywordsToString(keywords);
         // Filmlänge
-        if (dauer <= 0 || dauer > 3600 * 5 /* Werte über 5 Stunden */) {
-            arr[FILM_DAUER_NR] = "0";
+        if (dauerSekunden <= 0 || dauerSekunden > 3600 * 5 /* Werte über 5 Stunden */) {
+            arr[FILM_DAUER_NR] = "";
         } else {
-            arr[FILM_DAUER_NR] = String.valueOf(dauer);
+            String hours = String.valueOf(dauerSekunden / 3600);
+            dauerSekunden = dauerSekunden % 3600;
+            String min = String.valueOf(dauerSekunden / 60);
+            String seconds = String.valueOf(dauerSekunden % 60);
+            arr[FILM_DAUER_NR] = fuellen(2, hours) + ":" + fuellen(2, min) + ":" + fuellen(2, seconds);
         }
-//        init();
     }
 
     public boolean addKleineUrl(String url, String urlRtmp) {
@@ -368,60 +368,39 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return ret;
     }
 
-    public void init_() {
-        // Filmdauer
-        long l = Long.parseLong(this.arr[DatenFilm.FILM_DAUER_NR]);
-        dauerL = l;
-        if (l > 0) {
-            long hours = l / 3600;
-            l = l - (hours * 3600);
-            long min = l / 60;
-            l = l - (min * 60);
-            long seconds = l;
-            dauerStr = fuellen(2, String.valueOf(hours)) + ":" + fuellen(2, String.valueOf(min)) + ":" + fuellen(2, String.valueOf(seconds));
-        }
-        // Datum
-        datumFilm = DatumZeit.getDatumForObject(this);
-        // Dateigröße
-        if (this.arr[DatenFilm.FILM_GROESSE_NR].equals("")) {
-            this.arr[DatenFilm.FILM_GROESSE_NR] = "-1";
-        }
-        groesseL = Long.parseLong(this.arr[DatenFilm.FILM_GROESSE_NR]);
-        if (groesseL > 0) {
-            // sonst kann ich mirs sparen
-            if (groesseL > 1024 * 1024) {
-                groesseStr = String.valueOf(groesseL / (1024 * 1024));
-                groesseStr = fuellen(4, groesseStr);
-                groesseStr = groesseStr.substring(0, groesseStr.length() - 3) + "." + groesseStr.substring(groesseStr.length() - 3);
-            }
-        }
-    }
-
     public void init() {
         // Filmdauer
-        dauerL = Long.parseLong(this.arr[DatenFilm.FILM_DAUER_NR]);
-        if (dauerL > 0) {
-            String hours = String.valueOf(dauerL / 3600);
-            long l = dauerL % 3600;
-            String min = String.valueOf(l / 60);
-            String seconds = String.valueOf(l % 60);
-            dauerStr = fuellen(2, hours) + ":" + fuellen(2, min) + ":" + fuellen(2, seconds);
+        if (!this.arr[DatenFilm.FILM_DAUER_NR].contains(":") && !this.arr[DatenFilm.FILM_DAUER_NR].isEmpty()) {
+            // nur als Übergang bis die Liste umgestellt ist
+            long l = Long.parseLong(this.arr[DatenFilm.FILM_DAUER_NR]);
+            dauerL = l;
+            if (l > 0) {
+                long hours = l / 3600;
+                l = l - (hours * 3600);
+                long min = l / 60;
+                l = l - (min * 60);
+                long seconds = l;
+                this.arr[DatenFilm.FILM_DAUER_NR] = fuellen(2, String.valueOf(hours)) + ":" + fuellen(2, String.valueOf(min)) + ":" + fuellen(2, String.valueOf(seconds));
+            } else {
+                this.arr[DatenFilm.FILM_DAUER_NR] = "";
+            }
+        } else {
+            try {
+                dauerL = 0;
+                if (!this.arr[DatenFilm.FILM_DAUER_NR].equals("")) {
+                    String[] parts = this.arr[DatenFilm.FILM_DAUER_NR].split(":");
+                    long power = 1;
+                    for (int i = parts.length - 1; i >= 0; i--) {
+                        dauerL += Long.parseLong(parts[i]) * power;
+                        power *= 60;
+                    }
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(468912049, Log.FEHLER_ART_PROG, "DatenFilm.init", "Dauer: " + this.arr[DatenFilm.FILM_DAUER_NR]);
+            }
         }
         // Datum
         datumFilm = DatumZeit.getDatumForObject(this);
-        // Dateigröße
-        if (this.arr[DatenFilm.FILM_GROESSE_NR].equals("")) {
-            this.arr[DatenFilm.FILM_GROESSE_NR] = "-1";
-        }
-        groesseL = Long.parseLong(this.arr[DatenFilm.FILM_GROESSE_NR]);
-        if (groesseL > 0) {
-            // sonst kann ich mirs sparen
-            if (groesseL > 1024 * 1024) {
-                groesseStr = String.valueOf(groesseL / (1024 * 1024));
-                groesseStr = fuellen(4, groesseStr);
-                groesseStr = groesseStr.substring(0, groesseStr.length() - 3) + "." + groesseStr.substring(groesseStr.length() - 3);
-            }
-        }
     }
 
     private String fuellen(int anz, String s) {

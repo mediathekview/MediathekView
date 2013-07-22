@@ -145,19 +145,20 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
                 boolean istAbo = download.istAbo();
                 if (abos && istAbo || downloads && !istAbo) {
-                    DatenDownload datenDownload = download.getCopy();
+                    ////////// ??
+//                    DatenDownload datenDownload = download.getCopy();
                     object = new Object[DatenDownload.DOWNLOAD_MAX_ELEM];
                     for (int i = 0; i < DatenDownload.DOWNLOAD_MAX_ELEM; ++i) {
                         if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                             object[i] = "";
-                        } else if (i == DatenDownload.DOWNLOAD_DAUER_NR) {
-                            object[i] = datenDownload.dauerStr;
-                        } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
-                            object[i] = datenDownload.groesseStr;
+////                        } else if (i == DatenDownload.DOWNLOAD_DAUER_NR) {
+////                            object[i] = datenDownload.film.dauerStr;
+////                        } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
+////                            object[i] = datenDownload.film.groesseStr;
                         } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
-                            object[i] = datenDownload.datumFilm;
+                            object[i] = download.datumFilm;
                         } else {
-                            object[i] = datenDownload.arr[i];
+                            object[i] = download.arr[i];
                         }
                     }
                     tModel.addRow(object);

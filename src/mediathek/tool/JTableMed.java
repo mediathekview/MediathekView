@@ -21,9 +21,7 @@ package mediathek.tool;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
@@ -126,10 +124,6 @@ public final class JTableMed extends JTable {
                         upDown = DDaten.system[nrDatenSystem].substring(f3 + 1);
                     }
                 }
-
-////            b = DDaten.system[nrDatenSystem].substring(0, DDaten.system[nrDatenSystem].indexOf(FELDTRENNER));
-////            r = DDaten.system[nrDatenSystem].substring(DDaten.system[nrDatenSystem].indexOf(FELDTRENNER) + 1);
-////            s = DDaten.system[nrDatenSystem].substring(DDaten.system[nrDatenSystem].indexOf(FELDTRENNER) + 1);
                 if (!arrLesen(b, breite)) {
                     ok = false;
                 }
@@ -147,16 +141,14 @@ public final class JTableMed extends JTable {
                 setSpalten();
             } else {
                 resetTabelle();
-                // setSpalten wird im resetTabelle gemacht
             }
-            // und jetzt erst der Beobachter, damit Daten.system nicht vorher schon überschrieben wird
-            ///this.getColumnModel().addColumnModelListener(new BeobSpalten());
         } catch (Exception ex) {
             //vorsichtshalber
         }
     }
 
     public void fireTableDataChanged(boolean setSpalten) {
+//        this.selectionModel.setValueIsAdjusting(true);
         if (setSpalten) {
             getSelected();
         }
@@ -164,6 +156,7 @@ public final class JTableMed extends JTable {
         if (setSpalten) {
             setSelected();
         }
+//        this.selectionModel.setValueIsAdjusting(false);
     }
 
     public void getSelected() {
@@ -192,14 +185,6 @@ public final class JTableMed extends JTable {
             case TABELLE_TAB_FILME:
             case TABELLE_TAB_DOWNLOADS:
             case TABELLE_TAB_ABOS:
-//                if (!indexWertSel.equals("")) {
-//                    int r = ((TModel) this.getModel()).getIdxRow(indexSpalte, indexWertSel);
-//                    if (r >= 0) {
-//                        // ansonsten gibts die Zeile nicht mehr
-//                        r = this.convertRowIndexToView(r);
-//                        this.setRowSelectionInterval(r, r);
-//                    }
-//                }
                 if (indexWertSelection != null) {
                     this.selectionModel.setValueIsAdjusting(true);
                     for (String idx : indexWertSelection) {
@@ -215,9 +200,6 @@ public final class JTableMed extends JTable {
                 indexWertSelection = null;
                 break;
             case TABELLE_STANDARD:
-//                if (sel >= 0 && sel < this.getRowCount()) {
-//                    this.setRowSelectionInterval(sel, sel);
-//                }
                 if (selection != null) {
                     if (selection.length > 0) {
                         this.selectionModel.setValueIsAdjusting(true);

@@ -511,6 +511,7 @@ public class GuiFilme extends PanelVorlage {
                 listeInModellLaden();
                 setInfo();
                 tabelle.setSpalten();
+                aktFilmSetzen();
                 stopBeob = false;
             } else {
                 boolean themaNichtDa = false;
@@ -565,6 +566,7 @@ public class GuiFilme extends PanelVorlage {
                 }
                 setInfo();
                 tabelle.setSpalten();
+                aktFilmSetzen();
                 stopBeob = false;
                 //filtern
                 if (themaNichtDa) {
@@ -1137,7 +1139,7 @@ public class GuiFilme extends PanelVorlage {
 
         @Override
         public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
+            if (!event.getValueIsAdjusting() && !stopBeob) {
                 aktFilmSetzen();
             }
         }
