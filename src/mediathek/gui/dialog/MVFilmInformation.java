@@ -254,7 +254,6 @@ public class MVFilmInformation implements ChangeListener {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText(aktFilm.arr[i]);
             }
-            txtArrCont[DatenFilm.FILM_DAUER_NR].setText(aktFilm.dauerStr);
             if (aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR].equals("")) {
                 // sonst müsste die Größe gesetzt werden
                 textAreaBeschreibung.setText(" ");

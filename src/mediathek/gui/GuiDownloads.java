@@ -216,6 +216,7 @@ public class GuiDownloads extends PanelVorlage {
     private synchronized void tabelleLaden() {
         // nur Downloads die schon in der Liste sind werden geladen
         boolean abo, download;
+        stopBeob = true;
         tabelle.getSpalten();
         if (jRadioButtonAlles.isSelected()) {
             abo = true;
@@ -229,6 +230,8 @@ public class GuiDownloads extends PanelVorlage {
         }
         ddaten.listeDownloads.getModel((TModelDownload) tabelle.getModel(), abo, download);
         tabelle.setSpalten();
+        stopBeob = false;
+        aktFilmSetzen();
         setInfo();
     }
 
@@ -537,21 +540,6 @@ public class GuiDownloads extends PanelVorlage {
         ddaten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD, textLinks);
     }
 
-//    private void aktFilmSetzen() {
-//        DatenFilm aktFilm = new DatenFilm();
-//        int selectedTableRow = tabelle.getSelectedRow();
-//        if (selectedTableRow >= 0) {
-//            int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
-//            //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
-//            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_FILM_NR_NR).toString());
-//            if (film != null) {
-//                aktFilm = film;
-//            }
-//        }
-//        filmInfoHud.updateCurrentFilm(aktFilm);
-//        // Beschreibung setzen
-//        panelBeschreibung.setAktFilm(aktFilm);
-//    }
     private void aktFilmSetzen() {
         if (this.isShowing()) {
             DatenFilm aktFilm = null;
@@ -706,7 +694,7 @@ public class GuiDownloads extends PanelVorlage {
 
         @Override
         public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
+            if (!event.getValueIsAdjusting() ) {
                 aktFilmSetzen();
             }
         }

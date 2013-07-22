@@ -59,8 +59,8 @@ public class MediathekReader implements Runnable {
         startPrio = sstartPrio;
         if (Daten.debug) {
             //////////////
-////            maxThreadLaufen = 1;
-////            wartenSeiteLaden = 100;
+//            maxThreadLaufen = 1;
+//            wartenSeiteLaden = 100;
         }
     }
     //===================================
@@ -117,9 +117,25 @@ public class MediathekReader implements Runnable {
     }
 
     boolean addFilm(DatenFilm film) {
+        String groesseStr = "";
         long l = MVUrlDateiGroesse.laenge(film.arr[DatenFilm.FILM_URL_NR]);
-        film.arr[DatenFilm.FILM_GROESSE_NR] = String.valueOf(l);
+        if (l > 1024 * 1024) {
+            // größer als 1MB sonst kann ich mirs sparen
+            groesseStr = String.valueOf(l / (1024 * 1024));
+            groesseStr = fuellen(4, groesseStr);
+            groesseStr = groesseStr.substring(0, groesseStr.length() - 3) + "." + groesseStr.substring(groesseStr.length() - 3);
+        } else if (l > 0) {
+            groesseStr = "<1";
+        }
+        film.arr[DatenFilm.FILM_GROESSE_NR] = groesseStr;
         return suchen.listeFilmeNeu.addFilmVomSender(film);
+    }
+
+    private String fuellen(int anz, String s) {
+        while (s.length() < anz) {
+            s = "0" + s;
+        }
+        return s;
     }
 
     boolean istInListe(LinkedList<String[]> liste, String str, int nr) {

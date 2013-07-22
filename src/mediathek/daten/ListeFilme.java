@@ -451,12 +451,8 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 film = iterator.next();
                 object = new Object[DatenFilm.FILME_MAX_ELEM];
                 for (int m = 0; m < DatenFilm.FILME_MAX_ELEM; ++m) {
-                    if (m == DatenFilm.FILM_DAUER_NR) {
-                        object[m] = film.dauerStr;
-                    } else if (m == DatenFilm.FILM_DATUM_NR) {
+                    if (m == DatenFilm.FILM_DATUM_NR) {
                         object[m] = film.datumFilm;
-                    } else if (m == DatenFilm.FILM_GROESSE_NR) {
-                        object[m] = film.groesseStr;
                     } else {
                         object[m] = film.arr[m];
                     }
