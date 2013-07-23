@@ -157,6 +157,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 ////                            object[i] = datenDownload.film.groesseStr;
                         } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                             object[i] = download.datumFilm;
+                        } else if (DatenDownload.nichtAnzeigen(i)) {
+                            object[i] = "";
                         } else {
                             object[i] = download.arr[i];
                         }

@@ -166,7 +166,9 @@ public class MVFilmInformation implements ChangeListener {
         int zeile = 0;
         for (int i = 0; i < labelArrNames.length; ++i) {
             if (i == DatenFilm.FILM_URL_RTMP_NR
-                    || i == DatenFilm.FILM_URL_AUTH_NR) {
+                    || i == DatenFilm.FILM_URL_AUTH_NR
+                    || i == DatenFilm.FILM_URL_KLEIN_NR
+                    || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR) {
                 continue;
             }
             c.gridy = zeile;
@@ -207,7 +209,7 @@ public class MVFilmInformation implements ChangeListener {
         } else if (i == DatenFilm.FILM_IMAGE_URL_NR) {
             gridbag.setConstraints(lblUrlPicture, c);
             panel.add(lblUrlPicture);
-        } else if (i == DatenFilm.FILM_DESCRIPTION_NR) {
+        } else if (i == DatenFilm.FILM_BESCHREIBUNG_NR) {
             gridbag.setConstraints(textAreaBeschreibung, c);
             panel.add(textAreaBeschreibung);
         } else {
@@ -254,11 +256,11 @@ public class MVFilmInformation implements ChangeListener {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText(aktFilm.arr[i]);
             }
-            if (aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR].equals("")) {
+            if (aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals("")) {
                 // sonst müsste die Größe gesetzt werden
                 textAreaBeschreibung.setText(" ");
             } else {
-                textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR]);
+                textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR]);
             }
             lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
             lblUrlThemaField.setForeground(foreground);

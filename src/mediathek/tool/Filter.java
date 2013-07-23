@@ -88,7 +88,7 @@ public class Filter {
                         if (irgendwoSuchen.length == 0
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_THEMA_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL_NR])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_DESCRIPTION_NR])
+                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_KEYWORDS_NR])) {
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden

@@ -54,7 +54,7 @@ import mediathek.tool.Datum;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.JTableMed;
+import mediathek.tool.MVJTable;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
@@ -69,7 +69,7 @@ public class GuiDownloads extends PanelVorlage {
     public GuiDownloads(DDaten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
-        tabelle = new JTableMed(JTableMed.TABELLE_TAB_DOWNLOADS);
+        tabelle = new MVJTable(MVJTable.TABELLE_TAB_DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
         filmInfoHud = ddaten.filmInfoHud;
         panelBeschreibung = new PanelBeschreibung(ddaten);

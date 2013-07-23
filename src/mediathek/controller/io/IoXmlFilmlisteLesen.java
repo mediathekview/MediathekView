@@ -50,7 +50,7 @@ public class IoXmlFilmlisteLesen {
     private int progress = 0;
     private int event;
     private int maxElem;
-    private int ii;
+    private int ii, i;
 
     public void addAdListener(ListenerFilmeLaden listener) {
         listeners.add(ListenerFilmeLaden.class, listener);
@@ -72,6 +72,7 @@ public class IoXmlFilmlisteLesen {
         BZip2CompressorInputStream bZip2CompressorInputStream;
         int timeout = 10000; //10 Sekunden
         URLConnection conn;
+        File tmpFile = null;
         try {
             if (!istUrl) {
                 if (!new File(datei).exists()) {
@@ -80,10 +81,10 @@ public class IoXmlFilmlisteLesen {
             }
             if (istUrl && datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
                 // da wird eine temp-Datei benutzt
-                this.notifyStart(300);
+                this.notifyStart(200);
                 this.notifyProgress(datei);
             } else {
-                this.notifyStart(150);
+                this.notifyStart(100);
                 this.notifyProgress(datei);
             }
             if (!istUrl) {
@@ -103,18 +104,18 @@ public class IoXmlFilmlisteLesen {
                 conn.setReadTimeout(timeout);
                 conn.setRequestProperty("User-Agent", Daten.getUserAgent());
                 if (datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
-                    File tmpFile = File.createTempFile("mediathek", null);
-                    tmpFile.deleteOnExit();
+                    tmpFile = File.createTempFile("mediathek", null);
+                    //tmpFile.deleteOnExit();
                     BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
                     FileOutputStream fOut = new FileOutputStream(tmpFile);
-                    final byte[] buffer = new byte[1024];
+                    byte[] buffer = new byte[1024];
                     int n = 0;
                     int count = 0;
                     this.notifyProgress(datei);
                     while (!Daten.filmeLaden.getStop() && (n = in.read(buffer)) != -1) {
                         fOut.write(buffer, 0, n);
                         ++count;
-                        if (count > 50) {
+                        if (count > 85) {
                             this.notifyProgress(datei);
                             count = 0;
                         }
@@ -140,6 +141,9 @@ public class IoXmlFilmlisteLesen {
                 if (inReader != null) {
                     inReader.close();
                 }
+                if (tmpFile != null) {
+                    tmpFile.delete();
+                }
             } catch (Exception ex) {
                 Log.fehlerMeldung(468983014, Log.FEHLER_ART_PROG, "IoXmlLesen.importDatenFilm", ex);
             }
@@ -155,7 +159,8 @@ public class IoXmlFilmlisteLesen {
         boolean ret = true;
         int count = 0;
         DatenFilm datenFilm;
-        DatenFilm datenFilmAlt = new DatenFilm();
+        //      DatenFilm datenFilmAlt = new DatenFilm();
+        String sender = "", thema = "";
         int event_;
         String filmTag = DatenFilm.FILME_;
         String[] namen = DatenFilm.FILME_COLUMN_NAMES_;
@@ -173,18 +178,22 @@ public class IoXmlFilmlisteLesen {
                     datenFilm = new DatenFilm();
                     get(parser, filmTag, namen, datenFilm.arr);
                     if (datenFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
-                        datenFilm.arr[DatenFilm.FILM_SENDER_NR] = datenFilmAlt.arr[DatenFilm.FILM_SENDER_NR];
+                        datenFilm.arr[DatenFilm.FILM_SENDER_NR] = sender;
+                    } else {
+                        sender = datenFilm.arr[DatenFilm.FILM_SENDER_NR];
                     }
                     if (datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals("")) {
-                        datenFilm.arr[DatenFilm.FILM_THEMA_NR] = datenFilmAlt.arr[DatenFilm.FILM_THEMA_NR];
+                        datenFilm.arr[DatenFilm.FILM_THEMA_NR] = thema;
+                    } else {
+                        thema = datenFilm.arr[DatenFilm.FILM_THEMA_NR];
                     }
                     ++count;
-                    if (count > 500) {
+                    if (count > 780) {
                         count = 0;
                         this.notifyProgress(text);
                     }
                     listeFilme.addWithNr(datenFilm);
-                    datenFilmAlt = datenFilm;
+//                    datenFilmAlt = datenFilm;
                 }
             }
         }
@@ -203,17 +212,17 @@ public class IoXmlFilmlisteLesen {
                 }
             }
             if (event == XMLStreamConstants.START_ELEMENT) {
-                for (int i = ii; i < maxElem; ++i) {
-                    String s = parser.getLocalName();
-                    if (s.equals(xmlNames[i])) {
+                for (i = ii; i < maxElem; ++i) {
+                    // String s = parser.getLocalName();
+                    if (parser.getLocalName().equals(xmlNames[i])) {
                         strRet[i] = parser.getElementText();
                         ii = ++i;
                         continue outer;
                     }
                 }
-                for (int i = 0; i < maxElem; ++i) {
-                    String s = parser.getLocalName();
-                    if (s.equals(xmlNames[i])) {
+                for (i = 0; i < maxElem; ++i) {
+                    // String s = parser.getLocalName();
+                    if (parser.getLocalName().equals(xmlNames[i])) {
                         strRet[i] = parser.getElementText();
                         continue outer;
                     }

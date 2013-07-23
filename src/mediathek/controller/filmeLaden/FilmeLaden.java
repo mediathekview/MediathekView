@@ -192,6 +192,7 @@ public class FilmeLaden {
 
     private void undEnde(ListenerFilmeLadenEvent event, ListeFilme listeFilme) {
         istAmLaufen = false;
+        Daten.listeFilme.clear();
         if (listeFilme != null) {
             Daten.listeFilme = listeFilme;
         } else {
