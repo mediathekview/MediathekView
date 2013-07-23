@@ -51,7 +51,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.JTableMed;
+import mediathek.tool.MVJTable;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.TModel;
@@ -61,8 +61,8 @@ public class PanelPsetLang extends PanelVorlage {
     private int neuZaehler = 0;
     private String exportPfad = "";
     private ListePset listePset;
-    private JTableMed tabellePset;
-    private JTableMed tabelleProgramme;
+    private MVJTable tabellePset;
+    private MVJTable tabelleProgramme;
     private boolean modalHilfe = false;
     private final static Color COLOR_ABSPIELEN = new Color(160, 255, 160);
 
@@ -70,9 +70,9 @@ public class PanelPsetLang extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         modalHilfe = false;
-        tabellePset = new JTableMed(DatenPset.PROGRAMMSET_COLUMN_NAMES_);
+        tabellePset = new MVJTable(DatenPset.PROGRAMMSET_COLUMN_NAMES_);
         jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new JTableMed(DatenProg.PROGRAMM_COLUMN_NAMES_);
+        tabelleProgramme = new MVJTable(DatenProg.PROGRAMM_COLUMN_NAMES_);
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = ddaten.listePset;
         init();
@@ -82,9 +82,9 @@ public class PanelPsetLang extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         modalHilfe = true;
-        tabellePset = new JTableMed(DatenPset.PROGRAMMSET_COLUMN_NAMES_);
+        tabellePset = new MVJTable(DatenPset.PROGRAMMSET_COLUMN_NAMES_);
         jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new JTableMed(DatenProg.PROGRAMM_COLUMN_NAMES_);
+        tabelleProgramme = new MVJTable(DatenProg.PROGRAMM_COLUMN_NAMES_);
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = llistePset;
         init();
@@ -104,7 +104,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeAb.setIcon(GetIcon.getIcon("move_down_16.png"));
 
         //Programme
-        tabellePset.setAutoResizeMode(JTableMed.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+        tabellePset.setAutoResizeMode(MVJTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
             @Override
             public void ping() {

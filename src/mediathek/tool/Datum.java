@@ -24,6 +24,9 @@ import java.util.Date;
 
 public class Datum extends Date {
 
+    final static SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy");
+    final static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy.MM.dd");
+
     public Datum() {
         super();
     }
@@ -37,15 +40,15 @@ public class Datum extends Date {
         if (this.getTime() == 0) {
             return "";
         } else {
-            return new SimpleDateFormat("dd.MM.yyyy").format(this);
+            return sdf1.format(this);
         }
     }
 
     public String toStringR() {
         if (this.getTime() == 0) {
-            return new SimpleDateFormat("yyyy.MM.dd").format(new Date());
+            return sdf2.format(new Date());
         } else {
-            return new SimpleDateFormat("yyyy.MM.dd").format(this);
+            return sdf2.format(this);
         }
     }
 

@@ -34,7 +34,7 @@ import mediathek.daten.DatenFilm;
  *
  * @author emil
  */
-public final class JTableMed extends JTable {
+public final class MVJTable extends JTable {
 
     public static final String TABELLEN = "Tabellen";
     public static final int TABELLE_EIGENSCHAFTEN_MAX = 2; // Breite, Reihenfolge
@@ -60,7 +60,7 @@ public final class JTableMed extends JTable {
     int nrDatenSystem;
     int tabelle;
 
-    public JTableMed(int ttabelle) {
+    public MVJTable(int ttabelle) {
         tabelle = ttabelle;
         switch (tabelle) {
             case TABELLE_TAB_FILME:
@@ -88,7 +88,7 @@ public final class JTableMed extends JTable {
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
     }
 
-    public JTableMed(String[] sspaltenTabelle) {
+    public MVJTable(String[] sspaltenTabelle) {
         tabelle = TABELLE_STANDARD;
         spaltenTabelle = sspaltenTabelle;
         this.setModel(new TModel(new Object[][]{}, spaltenTabelle));
@@ -330,22 +330,16 @@ public final class JTableMed extends JTable {
         setSpalten();
     }
 
-    public void spaltenAusschalten() {
+    private void spaltenAusschalten() {
         for (int i = 0; i < spaltenTabelle.length; ++i) {
             switch (tabelle) {
                 case TABELLE_TAB_FILME:
-                    if (i == DatenFilm.FILM_URL_RTMP_NR
-                            || i == DatenFilm.FILM_URL_AUTH_NR
-                            || i == DatenFilm.FILM_WEBSEITE_NR) {
+                    if (DatenFilm.nichtAnzeigen(i)) {
                         breite[i] = 0;
                     }
                     break;
                 case TABELLE_TAB_DOWNLOADS:
-                    if (i == DatenDownload.DOWNLOAD_URL_AUTH_NR
-                            || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
-                            || i == DatenDownload.DOWNLOAD_ART_NR
-                            || i == DatenDownload.DOWNLOAD_QUELLE_NR
-                            || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR) {
+                    if (DatenDownload.nichtAnzeigen(i)) {
                         breite[i] = 0;
                     }
                     break;

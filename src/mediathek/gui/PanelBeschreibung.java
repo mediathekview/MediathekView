@@ -80,7 +80,7 @@ public class PanelBeschreibung extends javax.swing.JPanel {
                     + "</head>"
                     + "<body>"
                     + "<b>" + aktFilm.arr[DatenFilm.FILM_TITEL_NR] + "</b><br />"
-                    + aktFilm.arr[DatenFilm.FILM_DESCRIPTION_NR].replace("\n", "<br />")
+                    + aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].replace("\n", "<br />")
                     + "</body>"
                     + "</html>");
 

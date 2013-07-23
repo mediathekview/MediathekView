@@ -206,6 +206,27 @@ public class DatenDownload implements Comparable<DatenDownload> {
 //        return s;
 //    }
 
+    public static boolean nichtAnzeigen(int nr) {
+        if (DDaten.debug) {
+            return false;
+        }
+        if (nr == DatenDownload.DOWNLOAD_FILM_URL_NR
+                || nr == DatenDownload.DOWNLOAD_URL_RTMP_NR
+                || nr == DatenDownload.DOWNLOAD_URL_AUTH_NR
+                || nr == DatenDownload.DOWNLOAD_PROGRAMM_NR
+                || nr == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR
+                || nr == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR
+                || nr == DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR
+                || nr == DatenDownload.DOWNLOAD_ZIEL_PFAD_NR
+                || nr == DatenDownload.DOWNLOAD_ART_NR
+                || nr == DatenDownload.DOWNLOAD_QUELLE_NR
+                || nr == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public boolean istZurueckgestellt() {
         return arr[DOWNLOAD_ZURUECKGESTELLT_NR].equals(Boolean.TRUE.toString());
     }

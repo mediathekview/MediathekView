@@ -45,7 +45,7 @@ import mediathek.tool.TModelFilm;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 public class ListeFilme extends LinkedList<DatenFilm> {
-
+    
     public static final String THEMA_LIVE = "Livestream";
     //Tags Infos Filmliste, erste Zeile der .filme-Datei
     public static final String FILMLISTE = "Filmliste";
@@ -66,7 +66,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     //private TreeSet<String> ts = new TreeSet<String>();
     private TreeSet<String> ts = new TreeSet<String>(GermanStringSorter.getInstance());
     private final String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
-
+    
     public ListeFilme() {
         metaDaten = newMetaDaten();
     }
@@ -81,13 +81,15 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret;
     }
-
+    
     @Override
     public synchronized void clear() {
+        hashSetModelOfField.clear();
+        ts.clear();
         nr = 0;
         super.clear();
     }
-
+    
     public void check() {
         Iterator<DatenFilm> it = this.iterator();
         DatenFilm film;
@@ -100,7 +102,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             }
         }
     }
-
+    
     public void sort() {
         Collections.<DatenFilm>sort(this);
         // und jetzt noch die Nummerierung in Ordnung brinegen
@@ -110,13 +112,13 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             it.next().arr[DatenFilm.FILM_NR_NR] = getNr(i++);
         }
     }
-
+    
     public synchronized void setMeta(String[] mmeta) {
         for (int i = 0; i < FILMLISTE_MAX_ELEM; ++i) {
             metaDaten[i] = mmeta[i].toString();
         }
     }
-
+    
     public synchronized boolean addFilmVomSender(DatenFilm film) {
         // Filme die beim Sender gesucht wurden (und nur die) hier eintragen
         // nur für die MediathekReader
@@ -126,8 +128,8 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         film.arr[DatenFilm.FILM_THEMA_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_THEMA_NR].trim());
 
         // Beschreibung
-        film.arr[DatenFilm.FILM_DESCRIPTION_NR] = StringEscapeUtils.unescapeXml(film.arr[DatenFilm.FILM_DESCRIPTION_NR].trim());
-        film.arr[DatenFilm.FILM_DESCRIPTION_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_DESCRIPTION_NR].trim());
+        film.arr[DatenFilm.FILM_BESCHREIBUNG_NR] = StringEscapeUtils.unescapeXml(film.arr[DatenFilm.FILM_BESCHREIBUNG_NR].trim());
+        film.arr[DatenFilm.FILM_BESCHREIBUNG_NR] = StringEscapeUtils.unescapeHtml4(film.arr[DatenFilm.FILM_BESCHREIBUNG_NR].trim());
 
         // Titel
         film.arr[DatenFilm.FILM_TITEL_NR] = StringEscapeUtils.unescapeXml(film.arr[DatenFilm.FILM_TITEL_NR].trim());
@@ -144,7 +146,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return add(film);
     }
-
+    
     public synchronized void updateListe(ListeFilme liste, boolean index /* Vergleich über Index, sonst nur URL */) {
         // in eine vorhandene Liste soll eine andere Filmliste einsortiert werden
         // es werden nur Filme die noch nicht vorhanden sind, einsortiert
@@ -172,18 +174,18 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             }
         }
     }
-
+    
     @Override
     public boolean add(DatenFilm film) {
         film.init();
         return super.add(film);
     }
-
+    
     public synchronized boolean addWithNr(DatenFilm film) {
         film.arr[DatenFilm.FILM_NR_NR] = getNr(nr++);
         return add(film);
     }
-
+    
     private String getNr(int nr) {
         final int MAX_STELLEN = 5;
         final String FUELL_ZEICHEN = "0";
@@ -193,7 +195,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return str;
     }
-
+    
     public synchronized int countSender(String sender) {
         int ret = 0;
         ListIterator<DatenFilm> it = this.listIterator(0);
@@ -204,7 +206,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret;
     }
-
+    
     public synchronized void delSender(String sender) {
         // alle Filme VOM SENDER löschen
         DatenFilm film;
@@ -216,7 +218,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             }
         }
     }
-
+    
     public void liveStreamEintragen() {
         // Live-Stream eintragen
         //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
@@ -254,7 +256,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 MediathekKika.SENDER + " " + THEMA_LIVE,
                 "http://kikaplus.net/clients/kika/player/myplaylist.php?channel=1&programm=1&videoid=1", ""/*rtmpURL*/, ""/* datum */, ""/* zeit */, 0, "", "", "", new String[]{""}));
     }
-
+    
     public synchronized TModelFilm getModelTabFilme(DDaten ddaten, TModelFilm modelFilm__, String filterSender, String filterThema,
             String filterTitel, String filterThemaTitel, String filterIrgendwo, int laenge) {
         TModelFilm modelFilm = new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES);
@@ -307,53 +309,52 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return modelFilm;
     }
 
-    public synchronized String[] getModelOfField_(int feld, String filterString, int filterFeld) {
-        // erstellt ein StringArray mit den Daten des Feldes und filtert nach filterFeld
-        // ist für die Filterfelder im GuiFilme
-        // doppelte Einträge (bei der Groß- und Klienschribung) werden entfernt
-        String str;
-        String s;
-        listGetModelOfField.add("");
-        DatenFilm film;
-        Iterator<DatenFilm> it = this.iterator();
-        if (filterString.equals("")) {
-            //alle Werte dieses Feldes
-            while (it.hasNext()) {
-                str = it.next().arr[feld];
-                //hinzufügen
-                s = str.toLowerCase();
-                if (!hashSetModelOfField.contains(s)) {
-                    hashSetModelOfField.add(s);
-                    listGetModelOfField.add(str);
-                }
-            }
-        } else {
-            //Werte dieses Feldes, filtern nach filterString im FilterFeld
-            while (it.hasNext()) {
-                film = it.next();
-                str = film.arr[feld];
-                if (film.arr[filterFeld].equalsIgnoreCase(filterString)) {
-                    //hinzufügen
-                    s = str.toLowerCase();
-                    if (!hashSetModelOfField.contains(s)) {
-                        hashSetModelOfField.add(s);
-                        listGetModelOfField.add(str);
-                    }
-                }
-            }
-        }
-        hashSetModelOfField.clear();
-        GuiFunktionen.listeSort(listGetModelOfField);
-        String[] ret = new String[0];
-        ret = listGetModelOfField.toArray(ret);
-        listGetModelOfField.clear();
-        return ret;
-    }
-
+////    public synchronized String[] getModelOfField_(int feld, String filterString, int filterFeld) {
+////        // erstellt ein StringArray mit den Daten des Feldes und filtert nach filterFeld
+////        // ist für die Filterfelder im GuiFilme
+////        // doppelte Einträge (bei der Groß- und Klienschribung) werden entfernt
+////        String str;
+////        String s;
+////        listGetModelOfField.add("");
+////        DatenFilm film;
+////        Iterator<DatenFilm> it = this.iterator();
+////        if (filterString.equals("")) {
+////            //alle Werte dieses Feldes
+////            while (it.hasNext()) {
+////                str = it.next().arr[feld];
+////                //hinzufügen
+////                s = str.toLowerCase();
+////                if (!hashSetModelOfField.contains(s)) {
+////                    hashSetModelOfField.add(s);
+////                    listGetModelOfField.add(str);
+////                }
+////            }
+////        } else {
+////            //Werte dieses Feldes, filtern nach filterString im FilterFeld
+////            while (it.hasNext()) {
+////                film = it.next();
+////                str = film.arr[feld];
+////                if (film.arr[filterFeld].equalsIgnoreCase(filterString)) {
+////                    //hinzufügen
+////                    s = str.toLowerCase();
+////                    if (!hashSetModelOfField.contains(s)) {
+////                        hashSetModelOfField.add(s);
+////                        listGetModelOfField.add(str);
+////                    }
+////                }
+////            }
+////        }
+////        hashSetModelOfField.clear();
+////        GuiFunktionen.listeSort(listGetModelOfField);
+////        String[] ret = new String[0];
+////        ret = listGetModelOfField.toArray(ret);
+////        listGetModelOfField.clear();
+////        return ret;
+////    }
     public synchronized String[] getModelOfFieldThema(String sender) {
         // erstellt ein StringArray mit den Daten des Feldes und filtert nach filterFeld
         // ist für die Filterfelder im GuiFilme
-        // doppelte Einträge (bei der Groß- und Klienschribung) werden entfernt
+        // doppelte Einträge (bei der Groß- und Kleinschribung) werden entfernt
         String str, s;
         ts.add("");
         DatenFilm film;
@@ -389,7 +390,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         ts.clear();
         return a;
     }
-
+    
     public synchronized String[] getModelOfFieldSender() {
         // erstellt ein StringArray mit den Sendernamen
         String str;
@@ -410,7 +411,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         ts.clear();
         return a;
     }
-
+    
     public synchronized DatenFilm getFilmByUrl(String url) {
         // Problem wegen gleicher URLs
         DatenFilm ret = null;
@@ -424,7 +425,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret;
     }
-
+    
     public synchronized DatenFilm getFilmByNr(String nr) {
         DatenFilm ret = null;
         ListIterator<DatenFilm> it = this.listIterator(0);
@@ -453,6 +454,8 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 for (int m = 0; m < DatenFilm.FILME_MAX_ELEM; ++m) {
                     if (m == DatenFilm.FILM_DATUM_NR) {
                         object[m] = film.datumFilm;
+                    } else if (DatenFilm.nichtAnzeigen(m)) {
+                        object[m] = "";
                     } else {
                         object[m] = film.arr[m];
                     }
@@ -461,7 +464,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             }
         }
     }
-
+    
     public void abosEintragen(DDaten ddaten) {
         // Aboname in die Filmliste eintragen
         DatenFilm film;
@@ -483,7 +486,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             }
         }
     }
-
+    
     public String erstellt() {
         // Tag, Zeit in lokaler Zeit wann die Filmliste erstellt wurde
         String ret;
@@ -509,7 +512,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret;
     }
-
+    
     public int alterFilmlisteSek() {
         // Alter der Filmliste in Sekunden
         int ret = 0;
@@ -535,7 +538,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret;
     }
-
+    
     public boolean filmlisteZuAlt() {
         if (this.size() == 0) {
             return true;
@@ -543,7 +546,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         // Filmliste ist älter als: FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE
         return filmlisteIstAelter(FilmeLaden.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE);
     }
-
+    
     public boolean filmlisteIstAelter(int sekunden) {
         int ret = alterFilmlisteSek();
         if (ret != 0) {
@@ -551,7 +554,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
         return ret > sekunden;
     }
-
+    
     public void metaDatenSchreiben(boolean stop) {
         // FilmlisteMetaDaten
         metaDaten = ListeFilme.newMetaDaten();
@@ -565,12 +568,12 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         metaDaten[ListeFilme.FILMLISTE_VERSION_NR] = Konstanten.VERSION;
         metaDaten[ListeFilme.FILMLISTE_PRGRAMM_NR] = Funktionen.getProgVersionString() + " - Compiled: " + Funktionen.getCompileDate();
     }
-
+    
     private String getJetzt_ddMMyyyy_HHmm() {
         SimpleDateFormat formatter = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
         return formatter.format(new Date());
     }
-
+    
     private String getJetzt_ddMMyyyy_HHmm_gmt() {
         SimpleDateFormat formatter = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
         formatter.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));

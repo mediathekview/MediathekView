@@ -42,7 +42,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.CellRendererAbo;
 import mediathek.tool.Datum;
 import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.JTableMed;
+import mediathek.tool.MVJTable;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModelAbo;
 
@@ -51,7 +51,7 @@ public class GuiAbo extends PanelVorlage {
     public GuiAbo(DDaten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
-        tabelle = new JTableMed(JTableMed.TABELLE_TAB_ABOS);
+        tabelle = new MVJTable(MVJTable.TABELLE_TAB_ABOS);
         jScrollPane1.setViewportView(tabelle);
         initBeobachter();
         tabelleLaden();

@@ -65,7 +65,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final int FILM_GROESSE_NR = 7;
     public static final String FILM_BESCHREIBUNG = "Beschreibung";
     public static final String FILM_BESCHREIBUNG_ = "n";
-    public static final int FILM_DESCRIPTION_NR = 8;
+    public static final int FILM_BESCHREIBUNG_NR = 8;
     public static final String FILM_KEYWORDS = "Keywords";
     public static final String FILM_KEYWORDS_ = "q";
     public static final int FILM_KEYWORDS_NR = 9;
@@ -147,7 +147,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_WEBSEITE_NR] = filmWebsite;
         arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
-        arr[FILM_DESCRIPTION_NR] = beschreibung(description, tthema, ttitel);
+        arr[FILM_BESCHREIBUNG_NR] = beschreibung(description, tthema, ttitel);
         // Bild eintragen
         if (!imageUrl.equals("")) {
             arr[FILM_IMAGE_URL_NR] = imageUrl;
@@ -194,6 +194,24 @@ public class DatenFilm implements Comparable<DatenFilm> {
             }
         }
         return ret;
+    }
+
+    public static boolean nichtAnzeigen(int nr) {
+        if (DDaten.debug) {
+            return false;
+        }
+        if (nr == DatenFilm.FILM_BESCHREIBUNG_NR
+                || nr == DatenFilm.FILM_KEYWORDS_NR
+                || nr == DatenFilm.FILM_WEBSEITE_NR
+                || nr == DatenFilm.FILM_IMAGE_URL_NR
+                || nr == DatenFilm.FILM_URL_RTMP_NR
+                || nr == DatenFilm.FILM_URL_AUTH_NR
+                || nr == DatenFilm.FILM_URL_KLEIN_NR
+                || nr == DatenFilm.FILM_URL_RTMP_KLEIN_NR) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public String getUrlNormal() {
