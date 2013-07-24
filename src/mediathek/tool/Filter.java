@@ -92,7 +92,8 @@ public class Filter {
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_KEYWORDS_NR])) {
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden
-                                if (laengeMinutenSuchen == 0 || film.dauerL == 0 || film.dauerL > (laengeMinutenSuchen * 60)) {
+                                if (laengePruefen(laengeMinutenSuchen, film.dauerL)) {
+                                    //if (laengeMinutenSuchen == 0 || film.dauerL == 0 || film.dauerL > (laengeMinutenSuchen * 60)) {
                                     return true;
                                 }
                             } else {
@@ -104,6 +105,14 @@ public class Filter {
             }
         }
         return false;
+    }
+
+    public static boolean laengePruefen(int aboLaengeInMinuten, long filmLaenge) {
+        if (aboLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (aboLaengeInMinuten * 60)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private static boolean pruefen(String[] aboFilter, String im) {

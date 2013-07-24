@@ -169,8 +169,7 @@ public class GuiFilme extends PanelVorlage {
         jButtonBlacklist.setIcon(GetIcon.getIcon("blacklist_16.png"));
         jButtonFilterLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
         jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
-
-        checkBlacklist();
+        checkBlacklist(true);
         panelBeschreibungSetzen();
         jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
         jComboBoxZeitraum.setModel(new DefaultComboBoxModel<String>(COMBO_ZEIT));
@@ -187,7 +186,7 @@ public class GuiFilme extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 if (!stopBeob) {
                     Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(jComboBoxZeitraum.getSelectedIndex());
-                    checkBlacklist();
+                    checkBlacklist(false);
                     tabelleLaden();
                 }
             }
@@ -200,7 +199,8 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void fertig_(ListenerFilmeLadenEvent event) {
-                checkBlacklist();
+                DDaten.listeFilme.abosEintragen(ddaten);
+                checkBlacklist(true);
                 tabelleLaden();
                 beobMausTabelle.itemSenderLaden.setEnabled(true);
             }
@@ -314,14 +314,14 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                checkBlacklist();
+                checkBlacklist(false);
                 tabelleLaden();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                checkBlacklist();
+                checkBlacklist(false); // nur GuiDabug zum löschen aus der Filmliste
                 tabelleLaden();
             }
         });
@@ -335,7 +335,7 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                checkBlacklist();
+                checkBlacklist(true);
                 tabelleLaden();
             }
         });
@@ -369,7 +369,7 @@ public class GuiFilme extends PanelVorlage {
     private void panelFilterSetzen() {
         // Panel anzeigen und die Filmliste anpassen
         jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
-        checkBlacklist();
+        checkBlacklist(false);
         tabelleLaden();
     }
 
@@ -725,7 +725,7 @@ public class GuiFilme extends PanelVorlage {
         return textLinks;
     }
 
-    private void checkBlacklist() {
+    private void checkBlacklist(boolean abosEintragen) {
         if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
             // dann Filterpanel zum Bauen der Filmliste nehmen
             stopBeob = true;
@@ -741,10 +741,13 @@ public class GuiFilme extends PanelVorlage {
             Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = "0";
             stopBeob = false;
         }
+        if (abosEintragen) {
+            // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
+            // beim Ändern von Abos gemacht wird
+            DDaten.listeFilme.abosEintragen(ddaten);
+        }
         DDaten.listeFilmeNachBlackList = ddaten.listeBlacklist.filterListe(Daten.listeFilme);
         themenLaden();
-        // Abos eintragen
-        DDaten.listeFilmeNachBlackList.abosEintragen(ddaten);
     }
 
     /**
