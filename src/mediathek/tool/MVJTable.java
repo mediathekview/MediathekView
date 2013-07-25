@@ -138,6 +138,17 @@ public final class MVJTable extends JTable {
                 }
             }
             if (ok) {
+                switch (tabelle) {
+                    case TABELLE_TAB_FILME:
+                        DatenFilm.setSpalten(breite);
+                        break;
+                    case TABELLE_TAB_DOWNLOADS:
+                        break;
+                    case TABELLE_TAB_ABOS:
+                        break;
+                    case TABELLE_STANDARD:
+                        break;
+                }
                 setSpalten();
             } else {
                 resetTabelle();
@@ -240,6 +251,26 @@ public final class MVJTable extends JTable {
         setSelected();
         try {
             for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
+                switch (tabelle) {
+                    case TABELLE_TAB_FILME:
+                        if (DatenFilm.nichtAnzeigen(i)) {
+                            // geänderte Ansicht der Spalten abfragen
+                            breite[i] = 0;
+                        } else {
+                            if (breite[i] == 0) {
+                                breite[i] = 100; // damit sie auch zu sehen ist :)
+                            }
+                        }
+                        break;
+                    case TABELLE_TAB_DOWNLOADS:
+                        break;
+                    case TABELLE_TAB_ABOS:
+                        break;
+                    case TABELLE_STANDARD:
+                        break;
+                }
+            }
+            for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
                 if (breite[i] == 0) {
                     this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setMinWidth(0);
                     this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setPreferredWidth(0);
@@ -270,6 +301,7 @@ public final class MVJTable extends JTable {
         for (int i = 0; i < spaltenTabelle.length; ++i) {
             switch (tabelle) {
                 case TABELLE_TAB_FILME:
+                    DatenFilm.setSpalten(null);
                     reihe[i] = i;
                     breite[i] = 200;
                     if (i == DatenFilm.FILM_NR_NR) {
@@ -327,6 +359,17 @@ public final class MVJTable extends JTable {
         }
         this.setRowSorter(null);
         this.setAutoCreateRowSorter(true);
+        setSpalten();
+    }
+
+    public void setAnsichtSpalten(int spalte, boolean ein) {
+        if (ein) {
+            if (breite[spalte] == 0) {
+                breite[spalte] = 100;
+            }
+        } else {
+            breite[spalte] = 0;
+        }
         setSpalten();
     }
 

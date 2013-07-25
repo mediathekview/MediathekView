@@ -103,6 +103,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public String[] arr;
     public Datum datumFilm = new Datum(0);
     public long dauerL = 0; // Sekunden
+    private static boolean[] spaltenAnzeigen = null;
 
     public DatenFilm() {
         makeArr();
@@ -197,20 +198,37 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public static boolean nichtAnzeigen(int nr) {
+        if (spaltenAnzeigen == null) {
+            spaltenAnzeigen = new boolean[FILME_MAX_ELEM];
+            for (int i = 0; i < FILME_MAX_ELEM; ++i) {
+                if (i == DatenFilm.FILM_BESCHREIBUNG_NR
+                        || i == DatenFilm.FILM_KEYWORDS_NR
+                        || i == DatenFilm.FILM_WEBSEITE_NR
+                        || i == DatenFilm.FILM_IMAGE_URL_NR
+                        || i == DatenFilm.FILM_URL_RTMP_NR
+                        || i == DatenFilm.FILM_URL_AUTH_NR
+                        || i == DatenFilm.FILM_URL_KLEIN_NR
+                        || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR) {
+                    spaltenAnzeigen[i] = false;
+                } else {
+                    spaltenAnzeigen[i] = true;
+                }
+            }
+        }
         if (DDaten.debug) {
             return false;
-        }
-        if (nr == DatenFilm.FILM_BESCHREIBUNG_NR
-                || nr == DatenFilm.FILM_KEYWORDS_NR
-                || nr == DatenFilm.FILM_WEBSEITE_NR
-                || nr == DatenFilm.FILM_IMAGE_URL_NR
-                || nr == DatenFilm.FILM_URL_RTMP_NR
-                || nr == DatenFilm.FILM_URL_AUTH_NR
-                || nr == DatenFilm.FILM_URL_KLEIN_NR
-                || nr == DatenFilm.FILM_URL_RTMP_KLEIN_NR) {
-            return true;
         } else {
-            return false;
+            return !spaltenAnzeigen[nr];
+        }
+    }
+
+    public static void setSpalten(int[] nr) {
+        if (nr == null) {
+            spaltenAnzeigen = null;
+        } else {
+            for (int i = 0; i < FILME_MAX_ELEM; ++i) {
+                spaltenAnzeigen[i] = nr[i] > 0;
+            }
         }
     }
 
