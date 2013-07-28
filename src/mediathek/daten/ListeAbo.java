@@ -95,15 +95,18 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         DatenAbo datenAbo;
         model.setRowCount(0);
         ListIterator<DatenAbo> iterator = this.listIterator();
-        object = new Object[DatenAbo.ABO_MAX_ELEM];
+        object = new Object[DatenAbo.MAX_ELEM];
         while (iterator.hasNext()) {
             datenAbo = iterator.next();
             //object[i] = datenAbo.arr;
-            for (int m = 0; m < DatenAbo.ABO_MAX_ELEM; ++m) {
+            for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
                 if (m == DatenAbo.ABO_DOWN_DATUM_NR) {
                     object[m] = DatumZeit.getDatumForObject(datenAbo.arr[DatenAbo.ABO_DOWN_DATUM_NR]);
                 } else if (m == DatenAbo.ABO_EINGESCHALTET_NR) {
                     object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());
+                } else if (m != DatenAbo.ABO_NAME_NR && !DatenAbo.anzeigen(m)) {
+                    // Name immer füllen, egal ob angezeigt
+                    object[m] = "";
                 } else {
                     object[m] = datenAbo.arr[m];
                 }

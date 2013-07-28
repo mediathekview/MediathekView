@@ -260,12 +260,12 @@ public class ListeStarts extends LinkedList<Start> {
         Start start;
         if (this.size() > 0) {
             Iterator<Start> iterator = iterator();
-            int objLen = DatenDownload.DOWNLOAD_MAX_ELEM + 1;
+            int objLen = DatenDownload.MAX_ELEM + 1;
             object = new Object[objLen];
             while (iterator.hasNext()) {
                 start = iterator.next();
                 for (int k = 0; k < objLen; ++k) {
-                    if (k < DatenDownload.DOWNLOAD_MAX_ELEM) {
+                    if (k < DatenDownload.MAX_ELEM) {
                         object[k] = start.datenDownload.arr[k];
                     } else {
                         if (start.datenDownload.istAbo()) {
@@ -282,11 +282,11 @@ public class ListeStarts extends LinkedList<Start> {
     }
 
     public static TModel getEmptyModel() {
-        int max = DatenDownload.DOWNLOAD_MAX_ELEM + 1;
+        int max = DatenDownload.MAX_ELEM + 1;
         String[] titel = new String[max];
         for (int i = 0; i < max; ++i) {
-            if (i < DatenDownload.DOWNLOAD_MAX_ELEM) {
-                titel[i] = DatenDownload.DOWNLOAD_COLUMN_NAMES[i];
+            if (i < DatenDownload.MAX_ELEM) {
+                titel[i] = DatenDownload.COLUMN_NAMES[i];
             } else {
                 titel[i] = "Art";
             }

@@ -147,17 +147,14 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 if (abos && istAbo || downloads && !istAbo) {
                     ////////// ??
 //                    DatenDownload datenDownload = download.getCopy();
-                    object = new Object[DatenDownload.DOWNLOAD_MAX_ELEM];
-                    for (int i = 0; i < DatenDownload.DOWNLOAD_MAX_ELEM; ++i) {
+                    object = new Object[DatenDownload.MAX_ELEM];
+                    for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
                         if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                             object[i] = "";
-////                        } else if (i == DatenDownload.DOWNLOAD_DAUER_NR) {
-////                            object[i] = datenDownload.film.dauerStr;
-////                        } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
-////                            object[i] = datenDownload.film.groesseStr;
                         } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                             object[i] = download.datumFilm;
-                        } else if (DatenDownload.nichtAnzeigen(i)) {
+                        } else if (i != DatenDownload.DOWNLOAD_FILM_NR_NR && i != DatenDownload.DOWNLOAD_URL_NR && !DatenDownload.anzeigen(i)) {
+                            // Filmnr und URL immer füllen, egal ob angezeigt
                             object[i] = "";
                         } else {
                             object[i] = download.arr[i];

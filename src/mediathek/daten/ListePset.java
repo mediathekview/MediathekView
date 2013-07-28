@@ -264,15 +264,15 @@ public class ListePset extends LinkedList<DatenPset> {
         int i = 0;
         if (this.size() > 0) {
             ListIterator<DatenPset> iterator = this.listIterator(0);
-            object = new Object[this.size()][DatenPset.PROGRAMMSET_MAX_ELEM];
+            object = new Object[this.size()][DatenPset.MAX_ELEM];
             while (iterator.hasNext()) {
                 datenPset = iterator.next();
                 object[i] = datenPset.arr;
                 ++i;
             }
-            model = new TModel(object, DatenPset.PROGRAMMSET_COLUMN_NAMES_);
+            model = new TModel(object, DatenPset.COLUMN_NAMES);
         } else {
-            model = new TModel(new Object[0][DatenPset.PROGRAMMSET_MAX_ELEM], DatenPset.PROGRAMMSET_COLUMN_NAMES_);
+            model = new TModel(new Object[0][DatenPset.MAX_ELEM], DatenPset.COLUMN_NAMES);
         }
         return model;
     }

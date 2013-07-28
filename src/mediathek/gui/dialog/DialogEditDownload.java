@@ -77,16 +77,16 @@ public class DialogEditDownload extends javax.swing.JDialog {
     }
 
     private void setExtra() {
-        textfeldListe = new JTextField[DatenDownload.DOWNLOAD_MAX_ELEM];
-        labelListe = new JLabel[DatenDownload.DOWNLOAD_MAX_ELEM];
+        textfeldListe = new JTextField[DatenDownload.MAX_ELEM];
+        labelListe = new JLabel[DatenDownload.MAX_ELEM];
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 10, 10, 5);
         jPanelExtra.setLayout(gridbag);
         int zeile = 0;
-        for (int i = 0; i < DatenDownload.DOWNLOAD_MAX_ELEM; ++i) {
-            JLabel label = new JLabel("  " + DatenDownload.DOWNLOAD_COLUMN_NAMES[i] + ": ");
+        for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
+            JLabel label = new JLabel("  " + DatenDownload.COLUMN_NAMES[i] + ": ");
             labelListe[i] = label;
             JTextField textfeld = new JTextField();
             textfeld.setEditable(false);

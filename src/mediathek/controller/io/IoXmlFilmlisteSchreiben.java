@@ -109,18 +109,18 @@ public class IoXmlFilmlisteSchreiben {
             } else {
                 thema = datenFilm.arr[DatenFilm.FILM_THEMA_NR];
             }
-            xmlSchreibenDaten(DatenFilm.FILME_, DatenFilm.FILME_COLUMN_NAMES_, datenFilmSchreiben.getClean().arr);
+            xmlSchreibenDaten(DatenFilm.FILME_, DatenFilm.COLUMN_NAMES_, datenFilmSchreiben.getClean().arr);
         }
     }
 
     private void xmlSchreibenFeldInfo() {
-        int xmlMax = DatenFilm.FILME_COLUMN_NAMES.length;
+        int xmlMax = DatenFilm.COLUMN_NAMES.length;
         try {
             writer.writeStartElement(DatenFilm.FELD_INFO);
             writer.writeCharacters("\n");//neue Zeile
             for (int i = 0; i < xmlMax; ++i) {
-                writer.writeStartElement(DatenFilm.FILME_COLUMN_NAMES_[i]);
-                writer.writeCharacters(DatenFilm.FILME_COLUMN_NAMES[i]);
+                writer.writeStartElement(DatenFilm.COLUMN_NAMES_[i]);
+                writer.writeCharacters(DatenFilm.COLUMN_NAMES[i]);
                 writer.writeEndElement();
                 writer.writeCharacters("\n");//neue Zeile
             }

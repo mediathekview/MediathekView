@@ -258,7 +258,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
 
     public synchronized TModelFilm getModelTabFilme(DDaten ddaten, TModelFilm modelFilm__, String filterSender, String filterThema,
             String filterTitel, String filterThemaTitel, String filterIrgendwo, int laenge) {
-        TModelFilm modelFilm = new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES);
+        TModelFilm modelFilm = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
         if (this.size() != 0) {
             if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("") && filterIrgendwo.equals("") && laenge == 0) {
                 addObjectDataTabFilme(modelFilm);
@@ -448,7 +448,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     // private
     //===================================
     private void addObjectDataTabFilme(TModelFilm model) {
-        Object[] object;
         DatenFilm film;
         //DatenAbo datenAbo;
         if (this.size() > 0) {
@@ -461,11 +460,12 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     }
 
     private void addObjectDataTabFilme(TModelFilm model, DatenFilm film) {
-        Object[] object = new Object[DatenFilm.FILME_MAX_ELEM];
-        for (int m = 0; m < DatenFilm.FILME_MAX_ELEM; ++m) {
+        Object[] object = new Object[DatenFilm.MAX_ELEM];
+        for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
             if (m == DatenFilm.FILM_DATUM_NR) {
                 object[m] = film.datumFilm;
-            } else if (DatenFilm.nichtAnzeigen(m)) {
+            } else if (m != DatenFilm.FILM_URL_NR && m != DatenFilm.FILM_NR_NR && !DatenFilm.anzeigen(m)) {
+                // Url und Nr immer füllen, egal ob angezeigt
                 object[m] = "";
             } else {
                 object[m] = film.arr[m];

@@ -51,7 +51,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
             DatenPset datenPset = new DatenPset();
-            for (int i = 0; i < DatenPset.PROGRAMMSET_MAX_ELEM; ++i) {
+            for (int i = 0; i < DatenPset.MAX_ELEM; ++i) {
                 datenPset.arr[i] = table.getModel().getValueAt(r, i).toString();
             }
             if (c == DatenPset.PROGRAMMSET_NAME_NR) {

@@ -27,8 +27,8 @@ public class TModelAbo extends TModel {
 
     public TModelAbo(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
-        types = new Class[DatenAbo.ABO_MAX_ELEM];
-        for (int i = 0; i < DatenAbo.ABO_MAX_ELEM; ++i) {
+        types = new Class[DatenAbo.MAX_ELEM];
+        for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
             switch (i) {
                 case DatenAbo.ABO_DOWN_DATUM_NR:
                     types[i] = Datum.class;

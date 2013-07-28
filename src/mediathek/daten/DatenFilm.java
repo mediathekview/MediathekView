@@ -93,49 +93,22 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final String FILM_URL_RTMP_KLEIN = "UrlRTMP_Klein";
     public static final String FILM_URL_RTMP_KLEIN_ = "s";
     public static final int FILM_URL_RTMP_KLEIN_NR = 17;
-    public static final int FILME_MAX_ELEM = 18;
-    public static final String[] FILME_COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT, FILM_DAUER, FILM_GROESSE,
+    public static final int MAX_ELEM = 18;
+    public static final String[] COLUMN_NAMES = {FILM_NR, FILM_SENDER, FILM_THEMA, FILM_TITEL, FILM_DATUM, FILM_ZEIT, FILM_DAUER, FILM_GROESSE,
         FILM_BESCHREIBUNG, FILM_KEYWORDS, FILM_URL, FILM_WEBSEITE, FILM_ABO_NAME,
         FILM_IMAGE_URL, FILM_URL_RTMP, FILM_URL_AUTH, FILM_URL_KLEIN, FILM_URL_RTMP_KLEIN};
-    public static final String[] FILME_COLUMN_NAMES_ = {FILM_NR_, FILM_SENDER_, FILM_THEMA_, FILM_TITEL_, FILM_DATUM_, FILM_ZEIT_, FILM_DAUER_, FILM_GROESSE_,
+    public static final String[] COLUMN_NAMES_ = {FILM_NR_, FILM_SENDER_, FILM_THEMA_, FILM_TITEL_, FILM_DATUM_, FILM_ZEIT_, FILM_DAUER_, FILM_GROESSE_,
         FILM_BESCHREIBUNG_, FILM_KEYWORDS_, FILM_URL_, FILM_WEBSEITE_, FILM_ABO_NAME_,
         FILM_IMAGE_URL_, FILM_URL_RTMP_, FILM_URL_AUTH_, FILM_URL_KLEIN_, FILM_URL_RTMP_KLEIN_};
-    public String[] arr;
     public Datum datumFilm = new Datum(0);
     public long dauerL = 0; // Sekunden
-    private static boolean[] spaltenAnzeigen = null;
+    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
+    public String[] arr;
 
     public DatenFilm() {
         makeArr();
     }
 
-//    public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String datum, String zeit) {
-//        this(ssender, tthema, urlThema, ttitel, uurl, ""/*rtmpURL*/, datum, zeit, 0, "", "", "", new String[]{""});
-//    }
-//    public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
-//            long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
-//        makeArr();
-//        arr[FILM_SENDER_NR] = ssender;
-//        arr[FILM_THEMA_NR] = tthema;
-//        arr[FILM_TITEL_NR] = ttitel;
-//        arr[FILM_URL_NR] = uurl;
-//        arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
-//        arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
-//        arr[FILM_WEBSEITE_NR] = filmWebsite;
-//        arr[FILM_DURATION_NR] = "" + duration;
-//        arr[FILM_DESCRIPTION_NR] = beschreibung(description, tthema, ttitel);
-//        if (!imageUrl.equals("")) {
-//            arr[FILM_IMAGE_URL_NR] = imageUrl;
-//        } else {
-//            arr[FILM_IMAGE_URL_NR] = thumbnailUrl;
-//        }
-//        arr[FILM_KEYWORDS_NR] = keywordsToString(keywords);
-//        setWerte(duration);
-//    }
-//    public DatenFilm(String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlRtmp,
-//            String datum, String zeit) {
-//        this(ssender, tthema, urlThema, ttitel, uurl, uurlRtmp, datum, zeit, 0, "", "", "", new String[]{""});
-//    }
     public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
             String datum, String zeit,
             long dauerSekunden, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
@@ -197,38 +170,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return ret;
     }
 
-    public static boolean nichtAnzeigen(int nr) {
+    public static boolean anzeigen(int i) {
         if (spaltenAnzeigen == null) {
-            spaltenAnzeigen = new boolean[FILME_MAX_ELEM];
-            for (int i = 0; i < FILME_MAX_ELEM; ++i) {
-                if (i == DatenFilm.FILM_BESCHREIBUNG_NR
-                        || i == DatenFilm.FILM_KEYWORDS_NR
-                        || i == DatenFilm.FILM_WEBSEITE_NR
-                        || i == DatenFilm.FILM_IMAGE_URL_NR
-                        || i == DatenFilm.FILM_URL_RTMP_NR
-                        || i == DatenFilm.FILM_URL_AUTH_NR
-                        || i == DatenFilm.FILM_URL_KLEIN_NR
-                        || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR) {
-                    spaltenAnzeigen[i] = false;
-                } else {
-                    spaltenAnzeigen[i] = true;
-                }
-            }
-        }
-        if (DDaten.debug) {
-            return false;
+            return true;
         } else {
-            return !spaltenAnzeigen[nr];
-        }
-    }
-
-    public static void setSpalten(int[] nr) {
-        if (nr == null) {
-            spaltenAnzeigen = null;
-        } else {
-            for (int i = 0; i < FILME_MAX_ELEM; ++i) {
-                spaltenAnzeigen[i] = nr[i] > 0;
-            }
+            return spaltenAnzeigen[i];
         }
     }
 
@@ -447,7 +393,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     private void makeArr() {
-        arr = new String[FILME_MAX_ELEM];
+        arr = new String[MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }

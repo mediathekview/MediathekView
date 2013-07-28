@@ -121,10 +121,10 @@ public class IoXmlSchreiben {
         iterator = daten.listePset.listIterator();
         while (iterator.hasNext()) {
             datenPset = iterator.next();
-            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.PROGRAMMSET_COLUMN_NAMES, datenPset.arr);
+            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr);
             it = datenPset.getListeProg().listIterator();
             while (it.hasNext()) {
-                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, it.next().arr);
+                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, it.next().arr);
             }
         }
     }
@@ -132,10 +132,10 @@ public class IoXmlSchreiben {
     private void xmlSchreibenPset(DatenPset[] datenPset) {
         ListIterator<DatenProg> it;
         for (int i = 0; i < datenPset.length; ++i) {
-            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.PROGRAMMSET_COLUMN_NAMES, datenPset[i].arr);
+            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset[i].arr);
             it = datenPset[i].getListeProg().listIterator();
             while (it.hasNext()) {
-                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, it.next().arr);
+                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, it.next().arr);
             }
         }
     }
@@ -149,7 +149,7 @@ public class IoXmlSchreiben {
             d = iterator.next();
             if (!d.istAbo()) {
                 // Abos müssen neu angelegt werden
-                xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.DOWNLOAD_COLUMN_NAMES_, d.arr);
+                xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr);
             }
         }
     }
@@ -161,7 +161,7 @@ public class IoXmlSchreiben {
         iterator = daten.listeAbo.listIterator();
         while (iterator.hasNext()) {
             datenAbo = iterator.next();
-            xmlSchreibenDaten(DatenAbo.ABO, DatenAbo.ABO_COLUMN_NAMES, datenAbo.arr);
+            xmlSchreibenDaten(DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr);
         }
     }
 

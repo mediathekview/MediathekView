@@ -49,8 +49,8 @@ public class MVFilmInformation implements ChangeListener {
     private JXHyperlink lblUrlPicture;
     private JTextArea textAreaBeschreibung;
     private DDaten ddaten;
-    private JLabel[] labelArrNames = new JLabel[DatenFilm.FILME_MAX_ELEM];
-    private JTextField[] txtArrCont = new JTextField[DatenFilm.FILME_MAX_ELEM];
+    private JLabel[] labelArrNames = new JLabel[DatenFilm.MAX_ELEM];
+    private JTextField[] txtArrCont = new JTextField[DatenFilm.MAX_ELEM];
     private ViewImage viewImage = new ViewImage();
     private JButton buttonBild = new JButton("Bild laden");
     private Color foreground, background;
@@ -65,8 +65,8 @@ public class MVFilmInformation implements ChangeListener {
             dialog = new JDialog();
             dialog.setTitle("Filminformation");
 
-            for (int i = 0; i < DatenFilm.FILME_MAX_ELEM; ++i) {
-                labelArrNames[i] = new JLabel(DatenFilm.FILME_COLUMN_NAMES[i] + ":");
+            for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
+                labelArrNames[i] = new JLabel(DatenFilm.COLUMN_NAMES[i] + ":");
                 labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);
                 labelArrNames[i].setDoubleBuffered(true);
                 labelArrNames[i].setForeground(foreground);
@@ -89,8 +89,8 @@ public class MVFilmInformation implements ChangeListener {
             background = Color.BLACK;
             hud = new HudWindow("Filminformation", owner);
             hud.makeResizeable();
-            for (int i = 0; i < DatenFilm.FILME_MAX_ELEM; ++i) {
-                labelArrNames[i] = HudWidgetFactory.createHudLabel(DatenFilm.FILME_COLUMN_NAMES[i] + ":");
+            for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
+                labelArrNames[i] = HudWidgetFactory.createHudLabel(DatenFilm.COLUMN_NAMES[i] + ":");
                 labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);
                 labelArrNames[i].setDoubleBuffered(true);
                 txtArrCont[i] = HudWidgetFactory.createHudTextField("");
