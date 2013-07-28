@@ -39,6 +39,7 @@ import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.res.GetIcon;
+import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererAbo;
 import mediathek.tool.Datum;
 import mediathek.tool.HinweisKeineAuswahl;
@@ -96,7 +97,13 @@ public class GuiAbo extends PanelVorlage {
         tabelle.addMouseListener(new BeobMausTabelle1());
         tabelle.setDefaultRenderer(Object.class, new CellRendererAbo(ddaten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererAbo(ddaten));
-        tabelle.setModel(new TModelAbo(new Object[][]{}, DatenAbo.ABO_COLUMN_NAMES));
+        tabelle.setModel(new TModelAbo(new Object[][]{}, DatenAbo.COLUMN_NAMES));
+        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenAbo.COLUMN_NAMES, DatenAbo.spaltenAnzeigen) {
+            @Override
+            public void tabelleLaden_() {
+                tabelleLaden();
+            }
+        });
         //aendern
         ActionMap am = tabelle.getActionMap();
         am.put("aendern", new BeobAbstractAction());
@@ -345,20 +352,6 @@ public class GuiAbo extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemAendern);
-
-            //##Trenner##
-            jPopupMenu.addSeparator();
-            //##Trenner##
-
-            // Tabellenspalten zurücksetzen
-            JMenuItem item = new JMenuItem("Spaltenbreite zurücksetzen");
-            item.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    tabelle.resetTabelle();
-                }
-            });
-            jPopupMenu.add(item);
 
             //Menü anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());

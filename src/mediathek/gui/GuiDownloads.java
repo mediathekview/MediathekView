@@ -49,6 +49,7 @@ import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMpanel;
+import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererDownloads;
 import mediathek.tool.Datum;
 import mediathek.tool.GuiFunktionen;
@@ -135,9 +136,15 @@ public class GuiDownloads extends PanelVorlage {
         jRadioButtonDownloads.setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
         tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads(ddaten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads(ddaten));
-        tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.DOWNLOAD_COLUMN_NAMES));
+        tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
+        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenDownload.COLUMN_NAMES, DatenDownload.spaltenAnzeigen) {
+            @Override
+            public void tabelleLaden_() {
+                tabelleLaden();
+            }
+        });
 //      ist jetzt im  Menü  
         //aendern
 //        ActionMap am = tabelle.getActionMap();
@@ -546,8 +553,13 @@ public class GuiDownloads extends PanelVorlage {
             int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
                 int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
-                //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
-                aktFilm = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_FILM_NR_NR).toString());
+                DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                if (download.film == null) {
+                    // geladener Einmaldownload nach Programmstart
+                    download.film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                } else {
+                    aktFilm = download.film;
+                }
             }
             filmInfoHud.updateCurrentFilm(aktFilm);
             // Beschreibung setzen
@@ -694,7 +706,7 @@ public class GuiDownloads extends PanelVorlage {
 
         @Override
         public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting() ) {
+            if (!event.getValueIsAdjusting()) {
                 aktFilmSetzen();
             }
         }
@@ -913,18 +925,23 @@ public class GuiDownloads extends PanelVorlage {
                         if (gruppe != null) {
                             int selectedModelRow = tabelle.convertRowIndexToModel(nr);
                             String url = tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-                            String filmNr = tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_FILM_NR_NR).toString();
-                            DatenFilm film = Daten.listeFilme.getFilmByNr(filmNr);
-                            if (film != null) {
-                                DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
-                                DatenFilm filmDownload = film.getCopy();
+                            //String filmNr = tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_FILM_NR_NR).toString();
+                            DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
+                            //DatenFilm film = Daten.listeFilme.getFilmByNr(filmNr);
+                            if (download != null) {
+                                //DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
+                                if (download.film == null) {
+                                    // bei Einmaldownload nach Programmstart
+                                    download.film = Daten.listeFilme.getFilmByUrl(url);
+                                }
+                                DatenFilm filmDownload = download.film.getCopy();
                                 // und jetzt die tatsächlichen URLs des Downloads eintragen
                                 filmDownload.arr[DatenFilm.FILM_URL_NR] = download.arr[DatenDownload.DOWNLOAD_URL_NR];
                                 filmDownload.arr[DatenFilm.FILM_URL_RTMP_NR] = download.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR];
                                 filmDownload.arr[DatenFilm.FILM_URL_KLEIN_NR] = "";
                                 filmDownload.arr[DatenFilm.FILM_URL_RTMP_KLEIN_NR] = "";
                                 // in die History eintragen
-                                ddaten.history.add(film.getUrlNormal());
+                                //ddaten.history.add(film.getUrlNormal());
                                 // und starten
                                 ddaten.starterClass.urlStarten(gruppe, filmDownload);
                             }
@@ -949,16 +966,6 @@ public class GuiDownloads extends PanelVorlage {
             });
             jPopupMenu.add(itemInfo);
 
-            // Tabellenspalten zurücksetzen
-            JMenuItem item = new JMenuItem("Spaltenbreite zurücksetzen");
-            item.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    tabelle.resetTabelle();
-                }
-            });
-            jPopupMenu.add(item);
-            // 
             // ######################
             // Menü anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());

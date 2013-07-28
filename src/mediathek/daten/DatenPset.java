@@ -64,19 +64,20 @@ public class DatenPset {
     public static final int PROGRAMMSET_ADD_ON_NR = 14;
     public static final String PROGRAMMSET_BESCHREIBUNG = "Beschreibung";
     public static final int PROGRAMMSET_BESCHREIBUNG_NR = 15;
-    public static final int PROGRAMMSET_MAX_ELEM = 16;
-    public static final String[] PROGRAMMSET_COLUMN_NAMES = {PROGRAMMSET_NAME, PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
-        PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
-        PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
-        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_KLEINE_AUFLOESUNG, PROGRAMMSET_ADD_ON,
-        PROGRAMMSET_BESCHREIBUNG};
-    public static final String[] PROGRAMMSET_COLUMN_NAMES_ = {"Setname", PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
+    public static final int MAX_ELEM = 16;
+    public static final String[] COLUMN_NAMES = {"Setname", PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
         PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
         PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
         PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, "kleine Auflösung", PROGRAMMSET_ADD_ON,
         PROGRAMMSET_BESCHREIBUNG};
-    public String[] arr;
+    public static final String[] COLUMN_NAMES_ = {PROGRAMMSET_NAME, PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
+        PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
+        PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
+        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_KLEINE_AUFLOESUNG, PROGRAMMSET_ADD_ON,
+        PROGRAMMSET_BESCHREIBUNG};
     private ListeProg listeProg = new ListeProg();
+    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
+    public String[] arr;
 
     public DatenPset() {
         makeArray();
@@ -276,7 +277,7 @@ public class DatenPset {
         ret += "================================================" + Daten.LINE_SEPARATOR;
         ret += "| Programmset" + Daten.LINE_SEPARATOR;
         for (int i = 0; i < PROGRAMMSET_MAX_LAENGE_NR; ++i) {
-            ret += "| " + PROGRAMMSET_COLUMN_NAMES_[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+            ret += "| " + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
         }
         for (int i = 0; i < listeProg.size(); ++i) {
             ret += "|" + Daten.LINE_SEPARATOR;
@@ -290,7 +291,7 @@ public class DatenPset {
     //===================================
 
     private void makeArray() {
-        arr = new String[PROGRAMMSET_MAX_ELEM];
+        arr = new String[MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }

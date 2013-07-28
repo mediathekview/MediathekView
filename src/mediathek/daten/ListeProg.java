@@ -68,15 +68,15 @@ public class ListeProg extends LinkedList<DatenProg> {
         int i = 0;
         if (this.size() > 0) {
             ListIterator<DatenProg> iterator = this.listIterator(0);
-            object = new Object[this.size()][DatenProg.PROGRAMM_MAX_ELEM];
+            object = new Object[this.size()][DatenProg.MAX_ELEM];
             while (iterator.hasNext()) {
                 daten = iterator.next();
                 object[i] = daten.arr;
                 ++i;
             }
-            model = new TModel(object, DatenProg.PROGRAMM_COLUMN_NAMES_);
+            model = new TModel(object, DatenProg.COLUMN_NAMES);
         } else {
-            model = new TModel(new Object[0][DatenProg.PROGRAMM_MAX_ELEM], DatenProg.PROGRAMM_COLUMN_NAMES_);
+            model = new TModel(new Object[0][DatenProg.MAX_ELEM], DatenProg.COLUMN_NAMES);
         }
         return model;
     }

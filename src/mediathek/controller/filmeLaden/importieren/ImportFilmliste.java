@@ -25,13 +25,14 @@ import javax.swing.event.EventListenerList;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.IoXmlFilmlisteLesen;
+import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 
 public class ImportFilmliste {
 
-    public ListeFilme listeFilme;
+//    public ListeFilme listeFilme;
     public String[] filmlisteMetaDaten;
     private EventListenerList listeners = new EventListenerList();
     private IoXmlFilmlisteLesen ioXmlFilmlisteLesen = null;
@@ -63,7 +64,7 @@ public class ImportFilmliste {
                     if (urlLaden(updateUrl, true)) {
                         // hat geklappt, nix wie weiter
                         ret = true; // keine Fehlermeldung
-                        if (i < 4 && listeFilme.filmlisteIstAelter(5 * 60 * 60 /*sekunden*/)) {
+                        if (i < 4 && Daten.listeFilme.filmlisteIstAelter(5 * 60 * 60 /*sekunden*/)) {
                             Log.systemMeldung("Filmliste zu alt, neuer Versuch");
                         } else {
                             // 5 Versuche mit einer alten Liste sind genug
@@ -116,8 +117,8 @@ public class ImportFilmliste {
         try {
             if (!dateiUrl.equals("")) {
                 Log.systemMeldung("Filmliste laden von: " + dateiUrl);
-                listeFilme = new ListeFilme();
-                ret = ioXmlFilmlisteLesen.filmlisteLesen(dateiUrl, istUrl, listeFilme);
+//                listeFilme = new ListeFilme();
+                ret = ioXmlFilmlisteLesen.filmlisteLesen(dateiUrl, istUrl, Daten.listeFilme);
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(965412378, Log.FEHLER_ART_PROG, "ImportListe.urlLaden: ", ex);

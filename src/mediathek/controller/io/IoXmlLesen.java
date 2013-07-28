@@ -106,7 +106,7 @@ public class IoXmlLesen {
                     //String t = parser.getLocalName();
                     if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
                         datenPset = new DatenPset();
-                        if (!get(parser, event, DatenPset.PROGRAMMSET, DatenPset.PROGRAMMSET_COLUMN_NAMES, datenPset.arr, false)) {
+                        if (!get(parser, event, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false)) {
                             datenPset = null;
                         } else {
                             liste.add(datenPset);
@@ -114,7 +114,7 @@ public class IoXmlLesen {
                     } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
                         if (datenPset != null) {
                             DatenProg datenProg = new DatenProg();
-                            if (get(parser, event, DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, datenProg.arr, false)) {
+                            if (get(parser, event, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false)) {
                                 datenPset.addProg(datenProg);
                             }
                         }
@@ -154,7 +154,7 @@ public class IoXmlLesen {
                     //String t = parser.getLocalName();
                     if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
                         datenPset = new DatenPset();
-                        if (!get(parser, event, DatenPset.PROGRAMMSET, DatenPset.PROGRAMMSET_COLUMN_NAMES, datenPset.arr, false)) {
+                        if (!get(parser, event, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false)) {
                             datenPset = null;
                         } else {
                             liste.add(datenPset);
@@ -170,7 +170,7 @@ public class IoXmlLesen {
 //                    } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
                         if (datenPset != null) {
                             DatenProg datenProg = new DatenProg();
-                            if (get(parser, event, DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, datenProg.arr, false)) {
+                            if (get(parser, event, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false)) {
                                 datenPset.addProg(datenProg);
                             }
                         }
@@ -218,12 +218,12 @@ public class IoXmlLesen {
                         } else if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
                             //Programmgruppen
                             datenPset = new DatenPset();
-                            if (get(parser, event, DatenPset.PROGRAMMSET, DatenPset.PROGRAMMSET_COLUMN_NAMES, datenPset.arr)) {
+                            if (get(parser, event, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
                                 ddaten.listePset.add(datenPset);
                             }
                         } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
                             DatenProg datenProg = new DatenProg();
-                            if (get(parser, event, DatenProg.PROGRAMM, DatenProg.PROGRAMM_COLUMN_NAMES, datenProg.arr)) {
+                            if (get(parser, event, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr)) {
                                 if (datenPset != null) {
                                     datenPset.addProg(datenProg);
                                 }
@@ -232,13 +232,13 @@ public class IoXmlLesen {
                         } else if (parser.getLocalName().equals(DatenAbo.ABO)) {
                             //Abo
                             DatenAbo datenAbo = new DatenAbo();
-                            if (get(parser, event, DatenAbo.ABO, DatenAbo.ABO_COLUMN_NAMES, datenAbo.arr)) {
+                            if (get(parser, event, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
                                 ddaten.listeAbo.addAbo(datenAbo);
                             }
                         } else if (parser.getLocalName().equals(DatenDownload.DOWNLOAD)) {
                             //Downloads
                             DatenDownload d = new DatenDownload();
-                            if (get(parser, event, DatenDownload.DOWNLOAD, DatenDownload.DOWNLOAD_COLUMN_NAMES_, d.arr)) {
+                            if (get(parser, event, DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr)) {
                                 ddaten.listeDownloads.add(d);
                             }
                         } else if (parser.getLocalName().equals(DatenBlacklist.BLACKLIST)) {

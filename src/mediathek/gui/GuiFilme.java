@@ -38,7 +38,6 @@ import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.InputMap;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -72,6 +71,7 @@ import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
+import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererFilme;
 import mediathek.tool.Datum;
 import mediathek.tool.Filter;
@@ -196,6 +196,10 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void start_(ListenerFilmeLadenEvent event) {
                 beobMausTabelle.itemSenderLaden.setEnabled(false);
+                /////
+                Daten.listeFilme.clear();
+                DDaten.listeFilmeNachBlackList.clear();
+                tabelleLaden();
             }
 
             @Override
@@ -232,13 +236,18 @@ public class GuiFilme extends PanelVorlage {
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         im.put(enter, "film_starten");
 
-        tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.FILME_COLUMN_NAMES));
+        tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
         beobMausTabelle = new BeobMausTabelle();
         tabelle.addMouseListener(beobMausTabelle);
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         tabelle.setDefaultRenderer(Object.class, new CellRendererFilme(ddaten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererFilme(ddaten));
-        tabelle.getTableHeader().addMouseListener(new BeobTabelleHeader());
+        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen) {
+            @Override
+            public void tabelleLaden_() {
+                tabelleLaden();
+            }
+        });
         //beobachter Filter
         jToggleButtonLivestram.addActionListener(new ActionListener() {
             @Override
@@ -618,19 +627,21 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void aktFilmSetzen() {
-        DatenFilm aktFilm = new DatenFilm();
-        int selectedTableRow = tabelle.getSelectedRow();
-        if (selectedTableRow >= 0) {
-            int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
-            //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
-            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
-            if (film != null) {
-                aktFilm = film;
+        if (this.isShowing()) {
+            DatenFilm aktFilm = new DatenFilm();
+            int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow >= 0) {
+                int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
+                //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+                DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
+                if (film != null) {
+                    aktFilm = film;
+                }
             }
+            filmInfoHud.updateCurrentFilm(aktFilm);
+            // Beschreibung setzen
+            panelBeschreibung.setAktFilm(aktFilm);
         }
-        filmInfoHud.updateCurrentFilm(aktFilm);
-        // Beschreibung setzen
-        panelBeschreibung.setAktFilm(aktFilm);
     }
 
     private void playerStarten(DatenPset pSet) {
@@ -652,10 +663,11 @@ public class GuiFilme extends PanelVorlage {
 
     private void senderLaden() {
         //Mauskontext "Sender aktualisieren"
-        int selectedTableRow = tabelle.getSelectedRow();
-        if (selectedTableRow >= 0) {
-            int sel = tabelle.convertRowIndexToModel(selectedTableRow);
-            Daten.filmeLaden.updateSender(new String[]{tabelle.getModel().getValueAt(sel, DatenFilm.FILM_SENDER_NR).toString()}, Daten.listeFilme, false /* senderAllesLaden */);
+        int nr = tabelle.getSelectedRow();
+        if (nr >= 0) {
+            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_NR_NR).toString());
+            String send = film.arr[DatenFilm.FILM_SENDER_NR];
+            Daten.filmeLaden.updateSender(new String[]{send}, Daten.listeFilme, false /* senderAllesLaden */);
         }
     }
 
@@ -1409,15 +1421,6 @@ public class GuiFilme extends PanelVorlage {
             });
 
             jPopupMenu.add(item);
-            // Tabellenspalten zurücksetzen
-            item = new JMenuItem("Spaltenbreite zurücksetzen");
-            item.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    tabelle.resetTabelle();
-                }
-            });
-            jPopupMenu.add(item);
 
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
@@ -1463,8 +1466,9 @@ public class GuiFilme extends PanelVorlage {
                 int nr = tabelle.rowAtPoint(p);
                 if (nr >= 0) {
                     stopBeob = true;
-                    String thema = "";
-                    thema = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
+                    DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_NR_NR).toString());
+                    String thema = film.arr[DatenFilm.FILM_THEMA_NR];
+                    //thema = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
                     jComboBoxFilterThema.setSelectedIndex(0);
                     jComboBoxFilterThema.setSelectedItem(thema);
                     stopBeob = false;
@@ -1480,10 +1484,10 @@ public class GuiFilme extends PanelVorlage {
                 int nr = tabelle.rowAtPoint(p);
                 if (nr >= 0) {
                     stopBeob = true;
-                    String sender;
-                    sender = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_SENDER_NR).toString();
+                    DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_NR_NR).toString());
+                    String sen = film.arr[DatenFilm.FILM_SENDER_NR];
                     jComboBoxFilterSender.setSelectedIndex(0);
-                    jComboBoxFilterSender.setSelectedItem(sender);
+                    jComboBoxFilterSender.setSelectedItem(sen);
                     stopBeob = false;
                     tabelleLaden();
                 }
@@ -1497,10 +1501,11 @@ public class GuiFilme extends PanelVorlage {
                 int nr = tabelle.rowAtPoint(p);
                 if (nr >= 0) {
                     stopBeob = true;
-                    String sender = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_SENDER_NR).toString();
+                    DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_NR_NR).toString());
+                    String sen = film.arr[DatenFilm.FILM_SENDER_NR];
                     jComboBoxFilterSender.setSelectedIndex(0);
-                    jComboBoxFilterSender.setSelectedItem(sender);
-                    String thema = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
+                    jComboBoxFilterSender.setSelectedItem(sen);
+                    String thema = film.arr[DatenFilm.FILM_THEMA_NR];
                     jComboBoxFilterThema.setSelectedIndex(0);
                     jComboBoxFilterThema.setSelectedItem(thema);
                     stopBeob = false;
@@ -1516,14 +1521,15 @@ public class GuiFilme extends PanelVorlage {
                 int nr = tabelle.rowAtPoint(p);
                 if (nr >= 0) {
                     stopBeob = true;
-                    String sender = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_SENDER_NR).toString();
+                    DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_NR_NR).toString());
+                    String sen = film.arr[DatenFilm.FILM_SENDER_NR];
                     jComboBoxFilterSender.setSelectedIndex(0);
-                    jComboBoxFilterSender.setSelectedItem(sender);
-                    String thema = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
+                    jComboBoxFilterSender.setSelectedItem(sen);
+                    String thema = film.arr[DatenFilm.FILM_THEMA_NR];
                     jComboBoxFilterThema.setSelectedIndex(0);
                     jComboBoxFilterThema.setSelectedItem(thema);
-                    String titel = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_TITEL_NR).toString();
-                    jTextFieldFilterTitel.setText(titel);
+                    String tit = film.arr[DatenFilm.FILM_TITEL_NR];
+                    jTextFieldFilterTitel.setText(tit);
                     stopBeob = false;
                     tabelleLaden();
                 }
@@ -1589,14 +1595,13 @@ public class GuiFilme extends PanelVorlage {
                     int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {
                         stopBeob = true;
-                        //String filmSender = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_SENDER_NR).toString();
-                        String filmThema = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
-                        //String filmTitel = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_TITEL_NR).toString();
+                        DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_NR_NR).toString());
+                        String thema = film.arr[DatenFilm.FILM_THEMA_NR];
                         //neues Abo anlegen
                         //ddaten.listeAbo.addAbo(filmSender, filmThema, filmTitel);
                         ddaten.listeAbo.addAbo(jComboBoxFilterSender.getSelectedItem().toString(), jComboBoxFilterThema.getSelectedItem().toString(),
                                 jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(),
-                                jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue(), filmThema);
+                                jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue(), thema);
                         stopBeob = false;
                     }
                 }
@@ -1617,8 +1622,9 @@ public class GuiFilme extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 int nr = tabelle.rowAtPoint(p);
                 if (nr >= 0) {
-                    String th = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
-                    String se = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_SENDER_NR).toString();
+                    DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_NR_NR).toString());
+                    String th = film.arr[DatenFilm.FILM_THEMA_NR];
+                    String se = film.arr[DatenFilm.FILM_SENDER_NR];
                     if (!sender) {
                         ddaten.listeBlacklist.add(new DatenBlacklist("", th, "" /*Titel*/, "" /*Thema-Titel*/));
                     } else if (!thema) {
@@ -1662,60 +1668,6 @@ public class GuiFilme extends PanelVorlage {
             if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
                 tabelleLaden();
             }
-        }
-    }
-
-    public class BeobTabelleHeader extends MouseAdapter {
-        //rechhte Maustaste in der Tabelle
-
-        JCheckBoxMenuItem[] box = new JCheckBoxMenuItem[DatenFilm.FILME_MAX_ELEM];
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            JPopupMenu jPopupMenu = new JPopupMenu();
-
-            // Spalten ein-ausschalten
-            final int[] spalten = new int[DatenFilm.FILME_MAX_ELEM];
-            for (int i = 0; i < DatenFilm.FILME_MAX_ELEM; ++i) {
-                if (DatenFilm.nichtAnzeigen(i)) {
-                    spalten[i] = 0;
-                } else {
-                    spalten[i] = 1;
-                }
-                box[i] = new JCheckBoxMenuItem(DatenFilm.FILME_COLUMN_NAMES[i]);
-                box[i].setSelected(spalten[i] > 0);
-                box[i].addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        setSpalten();
-                    }
-                });
-                jPopupMenu.add(box[i]);
-            }
-            //anzeigen
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-
-        private void setSpalten() {
-            int[] boxI = new int[DatenFilm.FILME_MAX_ELEM];
-            for (int i = 0; i < boxI.length; ++i) {
-                boxI[i] = box[i].isSelected() ? 1 : 0;
-            }
-            DatenFilm.setSpalten(boxI);
-            tabelleLaden();
         }
     }
 }

@@ -103,32 +103,32 @@ public class IoXmlFilmlisteLesen {
                 conn.setConnectTimeout(timeout);
                 conn.setReadTimeout(timeout);
                 conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                if (datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
-                    tmpFile = File.createTempFile("mediathek", null);
-                    //tmpFile.deleteOnExit();
-                    BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-                    FileOutputStream fOut = new FileOutputStream(tmpFile);
-                    byte[] buffer = new byte[1024];
-                    int n = 0;
-                    int count = 0;
-                    this.notifyProgress(datei);
-                    while (!Daten.filmeLaden.getStop() && (n = in.read(buffer)) != -1) {
-                        fOut.write(buffer, 0, n);
-                        ++count;
-                        if (count > 85) {
-                            this.notifyProgress(datei);
-                            count = 0;
-                        }
+                tmpFile = File.createTempFile("mediathek", null);
+                //tmpFile.deleteOnExit();
+                BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
+                FileOutputStream fOut = new FileOutputStream(tmpFile);
+                byte[] buffer = new byte[1024];
+                int n = 0;
+                int count = 0;
+                this.notifyProgress(datei);
+                while (!Daten.filmeLaden.getStop() && (n = in.read(buffer)) != -1) {
+                    fOut.write(buffer, 0, n);
+                    ++count;
+                    if (count > 85) {
+                        this.notifyProgress(datei);
+                        count = 0;
                     }
-                    fOut.close();
-                    in.close();
+                }
+                fOut.close();
+                in.close();
+                if (datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
                     inReader = new InputStreamReader(new BZip2CompressorInputStream(new FileInputStream(tmpFile)), Konstanten.KODIERUNG_UTF);
                 } else if (datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
-                    ZipInputStream zipInputStream = new ZipInputStream(conn.getInputStream());
+                    ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(tmpFile));
                     zipInputStream.getNextEntry();
                     inReader = new InputStreamReader(zipInputStream, Konstanten.KODIERUNG_UTF);
                 } else {
-                    inReader = new InputStreamReader(conn.getInputStream(), Konstanten.KODIERUNG_UTF);
+                    inReader = new InputStreamReader(new FileInputStream(tmpFile), Konstanten.KODIERUNG_UTF);
                 }
             }
             parser = inFactory.createXMLStreamReader(inReader);
@@ -163,7 +163,7 @@ public class IoXmlFilmlisteLesen {
         String sender = "", thema = "";
         int event_;
         String filmTag = DatenFilm.FILME_;
-        String[] namen = DatenFilm.FILME_COLUMN_NAMES_;
+        String[] namen = DatenFilm.COLUMN_NAMES_;
         while (!Daten.filmeLaden.getStop() && parser.hasNext()) {
             event_ = parser.next();
             //Filmeliste

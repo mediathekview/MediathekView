@@ -89,26 +89,26 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 25;
     //
     public static final String DOWNLOAD = "Downlad";
-    public static final int DOWNLOAD_MAX_ELEM = 26;
-    public static final String[] DOWNLOAD_COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
+    public static final int MAX_ELEM = 26;
+    public static final String[] COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_GROESSE,
         DOWNLOAD_FILM_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT};
-    public static final String[] DOWNLOAD_COLUMN_NAMES_ = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
+    public static final String[] COLUMN_NAMES_ = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, "Groesse"/*DOWNLOAD_GROESSE*/,
         DOWNLOAD_FILM_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT};
-    public String[] arr;
     public Datum datumFilm = new Datum(0);
+    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
+    public String[] arr;
     public DatenFilm film = null;
 
     public DatenDownload() {
         makeArr();
-        film = new DatenFilm();
     }
 
     public DatenDownload(DatenPset pSet, DatenFilm ffilm, int quelle, DatenAbo abo, String name, String pfad) {
@@ -133,98 +133,21 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[DOWNLOAD_URL_RTMP_NR] = ffilm.getUrlFlvstreamer();
         }
         film = ffilm;
-////        dauerL = ffilm.dauerL;
-////        dauerStr = ffilm.dauerStr;
-////        groesseL = ffilm.groesseL;
-////        groesseStr = ffilm.groesseStr;
         aufrufBauen(pSet, ffilm, abo, name, pfad);
         init();
     }
 
-    public final void init() {
-////        // Filmdauer
-////        long l = Long.parseLong(arr[DOWNLOAD_DAUER_NR]);
-////        dauerL = l;
-////        if (l > 0) {
-////            long hours = l / 3600;
-////            l = l - (hours * 3600);
-////            long min = l / 60;
-////            l = l - (min * 60);
-////            long seconds = l;
-////            dauerStr = fuellen(2, String.valueOf(hours)) + ":" + fuellen(2, String.valueOf(min)) + ":" + fuellen(2, String.valueOf(seconds));
-////        }
-////        // Datum
-        datumFilm = DatumZeit.getDatumForObject(this);
-////        // Dateigröße
-////        if (arr[DOWNLOAD_GROESSE_NR].equals("")) {
-////            arr[DOWNLOAD_GROESSE_NR] = "-1";
-////        }
-////        groesseL = Long.parseLong(arr[DOWNLOAD_GROESSE_NR]);
-////        if (groesseL > 0) {
-////            // sonst kann ich mirs sparen
-////            if (groesseL > 1024 * 1024) {
-////                groesseStr = String.valueOf(groesseL / (1024 * 1024));
-////                groesseStr = fuellen(4, groesseStr);
-////                groesseStr = groesseStr.substring(0, groesseStr.length() - 3) + "." + groesseStr.substring(groesseStr.length() - 3);
-////            }
-////        }
-    }
-////    private String fuellen(int anz, String s) {
-////        while (s.length() < anz) {
-////            s = "0" + s;
-////        }
-////        return s;
-////    }
-//    final public void init() {
-//        if (this.arr[DOWNLOAD_DAUER_NR].equals("") || this.arr[DOWNLOAD_DAUER_NR].equals("0") || this.arr[DOWNLOAD_DAUER_NR].equals("-1")) {
-//            setWerte(0);
-//        } else {
-//            setWerte(Long.parseLong(this.arr[DOWNLOAD_DAUER_NR]));
-//        }
-//    }
-//
-//    private void setWerte(long l) {
-//        if (l <= 0 || l > 3600 * 5 /* Werte über 5 Stungen */) {
-//            dauerStr = "";
-//            dauerL = 0;
-//        } else {
-//            dauerL = l;
-//            long hours = l / 3600;
-//            l = l - (hours * 3600);
-//            long min = l / 60;
-//            l = l - (min * 60);
-//            long seconds = l;
-//            dauerStr = fuellen(String.valueOf(hours)) + ":" + fuellen(String.valueOf(min)) + ":" + fuellen(String.valueOf(seconds));
-//        }
-//        arr[DOWNLOAD_DAUER_NR] = "" + dauerL;
-//        datumFilm = DatumZeit.getDatumForObject(this);
-//    }
-//    private String fuellen(String s) {
-//        while (s.length() < 2) {
-//            s = "0" + s;
-//        }
-//        return s;
-//    }
-
-    public static boolean nichtAnzeigen(int nr) {
-        if (DDaten.debug) {
-            return false;
-        }
-        if (nr == DatenDownload.DOWNLOAD_FILM_URL_NR
-                || nr == DatenDownload.DOWNLOAD_URL_RTMP_NR
-                || nr == DatenDownload.DOWNLOAD_URL_AUTH_NR
-                || nr == DatenDownload.DOWNLOAD_PROGRAMM_NR
-                || nr == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR
-                || nr == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR
-                || nr == DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR
-                || nr == DatenDownload.DOWNLOAD_ZIEL_PFAD_NR
-                || nr == DatenDownload.DOWNLOAD_ART_NR
-                || nr == DatenDownload.DOWNLOAD_QUELLE_NR
-                || nr == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR) {
+    public static boolean anzeigen(int i) {
+        if (spaltenAnzeigen == null) {
             return true;
         } else {
-            return false;
+            return spaltenAnzeigen[i];
         }
+    }
+
+    public final void init() {
+        // Datum
+        datumFilm = DatumZeit.getDatumForObject(this);
     }
 
     public boolean istZurueckgestellt() {
@@ -257,13 +180,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         for (int i = 0; i < arr.length; ++i) {
             ret.arr[i] = new String(this.arr[i]);
         }
-        ret.film = this.film.getCopy();
         ret.datumFilm = this.datumFilm;
-////        ret.datumFilm = this.datumFilm;
-////        ret.dauerL = this.dauerL;
-////        ret.dauerStr = this.dauerStr;
-////        ret.groesseL = this.groesseL;
-////        ret.groesseStr = this.groesseStr;
         return ret;
     }
 
@@ -526,7 +443,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private void makeArr() {
-        arr = new String[DOWNLOAD_MAX_ELEM];
+        arr = new String[MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }

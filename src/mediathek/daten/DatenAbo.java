@@ -50,11 +50,13 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_DOWN_DATUM_NR = 10;
     public static final String ABO_PSET = "Programmset";
     public static final int ABO_PSET_NR = 11;
-    public static final int ABO_MAX_ELEM = 12;
-    public static final String[] ABO_COLUMN_NAMES = {ABO_NR, ABO_EINGESCHALTET, ABO_NAME, ABO_SENDER, ABO_THEMA, ABO_TITEL, ABO_THEMA_TITEL,
+    public static final int MAX_ELEM = 12;
+    public static final String[] COLUMN_NAMES = {ABO_NR, ABO_EINGESCHALTET, ABO_NAME, ABO_SENDER, ABO_THEMA, ABO_TITEL, ABO_THEMA_TITEL,
         ABO_IRGENDWO, ABO_MINDESTDAUER, ABO_ZIELPFAD, ABO_DOWN_DATUM, ABO_PSET};
-    public String[] arr;
+    public static final String[] COLUMN_NAMES_ = COLUMN_NAMES;
     public int mindestdauerMinuten = 0;
+    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
+    public String[] arr;
 
     public DatenAbo() {
         makeArr();
@@ -113,6 +115,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return false;
     }
 
+    public static boolean anzeigen(int i) {
+        if (spaltenAnzeigen == null) {
+            return true;
+        } else {
+            return spaltenAnzeigen[i];
+        }
+    }
+
     public boolean toggleAboEinAus() {
         // Abo EinAus wird geändert und der Zustand NACH der Änderung
         // wird zurückgegeben
@@ -147,7 +157,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     }
 
     private void makeArr() {
-        arr = new String[ABO_MAX_ELEM];
+        arr = new String[MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }

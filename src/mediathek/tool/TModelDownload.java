@@ -27,8 +27,8 @@ public class TModelDownload extends TModel {
 
     public TModelDownload(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
-        types = new Class<?>[DatenDownload.DOWNLOAD_MAX_ELEM];
-        for (int i = 0; i < DatenDownload.DOWNLOAD_MAX_ELEM; ++i) {
+        types = new Class<?>[DatenDownload.MAX_ELEM];
+        for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
             if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                 types[i] = Datum.class;
             } else {

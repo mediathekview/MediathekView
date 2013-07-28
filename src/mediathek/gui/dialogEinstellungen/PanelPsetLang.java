@@ -65,14 +65,14 @@ public class PanelPsetLang extends PanelVorlage {
     private MVJTable tabelleProgramme;
     private boolean modalHilfe = false;
     private final static Color COLOR_ABSPIELEN = new Color(160, 255, 160);
-
+    
     public PanelPsetLang(DDaten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         modalHilfe = false;
-        tabellePset = new MVJTable(DatenPset.PROGRAMMSET_COLUMN_NAMES_);
+        tabellePset = new MVJTable(MVJTable.TABELLE_TAB_PSET);
         jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new MVJTable(DatenProg.PROGRAMM_COLUMN_NAMES_);
+        tabelleProgramme = new MVJTable(MVJTable.TABELLE_TAB_PROG);
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = ddaten.listePset;
         init();
@@ -82,9 +82,9 @@ public class PanelPsetLang extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         modalHilfe = true;
-        tabellePset = new MVJTable(DatenPset.PROGRAMMSET_COLUMN_NAMES_);
+        tabellePset = new MVJTable(MVJTable.TABELLE_TAB_PSET);
         jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new MVJTable(DatenProg.PROGRAMM_COLUMN_NAMES_);
+        tabelleProgramme = new MVJTable(MVJTable.TABELLE_TAB_PROG);
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = llistePset;
         init();
@@ -342,7 +342,7 @@ public class PanelPsetLang extends PanelVorlage {
                 tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(0, 0, true));
             }
         } else {
-            tabelleProgramme.setModel(new TModel(new Object[0][DatenProg.PROGRAMM_MAX_ELEM], DatenProg.PROGRAMM_COLUMN_NAMES_));
+            tabelleProgramme.setModel(new TModel(new Object[0][DatenProg.MAX_ELEM], DatenProg.COLUMN_NAMES));
         }
         stopBeob = false;
         fillTextProgramme();

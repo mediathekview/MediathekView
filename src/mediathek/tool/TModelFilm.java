@@ -27,8 +27,8 @@ public class TModelFilm extends TModel {
 
     public TModelFilm(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
-        types = new Class[DatenFilm.FILME_MAX_ELEM];
-        for (int i = 0; i < DatenFilm.FILME_MAX_ELEM; ++i) {
+        types = new Class[DatenFilm.MAX_ELEM];
+        for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
             if (i != DatenFilm.FILM_DATUM_NR) {
                 types[i] = String.class;
             } else {

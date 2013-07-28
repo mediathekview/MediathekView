@@ -19,14 +19,18 @@
  */
 package mediathek.controller.filmeLaden;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import mediathek.controller.filmeLaden.importieren.ImportFilmliste;
 import mediathek.controller.filmeLaden.importieren.ListeDownloadUrlsFilmlisten;
 import mediathek.controller.filmeLaden.importieren.ListeFilmlistenServer;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
+import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Konstanten;
+import mediathek.tool.MVMessageDialog;
 
 public class FilmeLaden {
 
@@ -167,7 +171,7 @@ public class FilmeLaden {
         @Override
         public synchronized void fertig(ListenerFilmeLadenEvent event) {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
-            undEnde(event, filmeSuchen.listeFilmeNeu);
+            undEnde(event);
         }
     }
 
@@ -186,17 +190,20 @@ public class FilmeLaden {
         @Override
         public synchronized void fertig(ListenerFilmeLadenEvent event) {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
-            undEnde(event, filmeImportieren.listeFilme);
+            undEnde(event);
         }
     }
 
-    private void undEnde(ListenerFilmeLadenEvent event, ListeFilme listeFilme) {
+    private void undEnde(ListenerFilmeLadenEvent event) {
         istAmLaufen = false;
-        Daten.listeFilme.clear();
-        if (listeFilme != null) {
-            Daten.listeFilme = listeFilme;
-        } else {
-            Daten.listeFilme = new ListeFilme();
+//        Daten.listeFilme.clear();
+        if (Daten.listeFilme.isEmpty()) {
+//            Daten.listeFilme = listeFilme;
+//        } else {
+            MVMessageDialog.showMessageDialog(null, "Es konnte keine neue Filmliste geladen werden!\n"
+                    + "Die alte Liste wird wieder geladen.", "Filmliste laden", JOptionPane.INFORMATION_MESSAGE);
+            new IoXmlFilmlisteLesen().filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
+//            Daten.listeFilme = new ListeFilme();
         }
         notifyFertig(event);
     }

@@ -85,14 +85,14 @@ public class DialogEditAbo extends javax.swing.JDialog {
     }
 
     private void setExtra() {
-        textfeldListe = new JTextField[DatenAbo.ABO_MAX_ELEM];
+        textfeldListe = new JTextField[DatenAbo.MAX_ELEM];
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 10, 10, 5);
         jPanelExtra.setLayout(gridbag);
         int zeile = 0;
-        for (int i = 0; i < DatenAbo.ABO_MAX_ELEM; ++i) {
+        for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
             addExtraFeld(i, gridbag, c, jPanelExtra, aktAbo.arr);
             ++zeile;
             c.gridy = zeile;
@@ -106,10 +106,10 @@ public class DialogEditAbo extends javax.swing.JDialog {
         c.weightx = 0;
         JLabel label;
         if (i == DatenAbo.ABO_SENDER_NR || i == DatenAbo.ABO_THEMA_NR || i == DatenAbo.ABO_TITEL_NR || i == DatenAbo.ABO_THEMA_TITEL_NR || i == DatenAbo.ABO_IRGENDWO_NR) {
-            label = new JLabel("  " + DatenAbo.ABO_COLUMN_NAMES[i] + ": ");
+            label = new JLabel("  " + DatenAbo.COLUMN_NAMES[i] + ": ");
             label.setForeground(Color.BLUE);
         } else {
-            label = new JLabel(DatenAbo.ABO_COLUMN_NAMES[i] + ": ");
+            label = new JLabel(DatenAbo.COLUMN_NAMES[i] + ": ");
         }
         gridbag.setConstraints(label, c);
         panel.add(label);

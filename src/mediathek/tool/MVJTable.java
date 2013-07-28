@@ -29,6 +29,8 @@ import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
+import mediathek.daten.DatenProg;
+import mediathek.daten.DatenPset;
 
 /**
  *
@@ -37,12 +39,12 @@ import mediathek.daten.DatenFilm;
 public final class MVJTable extends JTable {
 
     public static final String TABELLEN = "Tabellen";
-    public static final int TABELLE_EIGENSCHAFTEN_MAX = 2; // Breite, Reihenfolge
-    public static final int TABELLEN_MAX = 3; // GuiFilme, GuiDownlaod, GuiAbo
     public static final int TABELLE_STANDARD = -1;
     public static final int TABELLE_TAB_FILME = 0;
     public static final int TABELLE_TAB_DOWNLOADS = 1;
     public static final int TABELLE_TAB_ABOS = 2;
+    public static final int TABELLE_TAB_PSET = 3;
+    public static final int TABELLE_TAB_PROG = 4;
     public static final String FELDTRENNER = "|";
     public static final String SORT_ASCENDING = "ASCENDING";
     public static final String SORT_DESCENDING = "DESCENDING";
@@ -53,47 +55,61 @@ public final class MVJTable extends JTable {
     private int sel = -1;
     private int[] selection;
     private String[] indexWertSelection = null;
+    private boolean[] spaltenAnzeigen;
     private String indexWertSel = null;
     private boolean stopBeob = false;
     //
-    String[] spaltenTabelle;
-    int nrDatenSystem;
+    int nrDatenSystem = 0;
     int tabelle;
+    String[] spaltenTitel;
+    int maxSpalten;
 
     public MVJTable(int ttabelle) {
         tabelle = ttabelle;
         switch (tabelle) {
             case TABELLE_TAB_FILME:
+                spaltenTitel = DatenFilm.COLUMN_NAMES;
+                maxSpalten = DatenFilm.MAX_ELEM;
+                spaltenAnzeigen = getSpaltenEinAus(DatenFilm.spaltenAnzeigen, DatenFilm.MAX_ELEM);
                 indexSpalte = 0; // Filmnummer
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR;
-                spaltenTabelle = DatenFilm.FILME_COLUMN_NAMES;
-                this.setModel(new TModelFilm(new Object[][]{}, spaltenTabelle));
+                this.setModel(new TModelFilm(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_DOWNLOADS:
+                spaltenTitel = DatenDownload.COLUMN_NAMES;
+                maxSpalten = DatenDownload.MAX_ELEM;
+                spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
                 indexSpalte = 1; // Filmnummer
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR;
-                spaltenTabelle = DatenDownload.DOWNLOAD_COLUMN_NAMES;
-                this.setModel(new TModelDownload(new Object[][]{}, spaltenTabelle));
+                this.setModel(new TModelDownload(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_ABOS:
+                spaltenTitel = DatenAbo.COLUMN_NAMES;
+                maxSpalten = DatenAbo.MAX_ELEM;
+                spaltenAnzeigen = getSpaltenEinAus(DatenAbo.spaltenAnzeigen, DatenAbo.MAX_ELEM);
                 indexSpalte = 0; // Abonummer
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR;
-                spaltenTabelle = DatenAbo.ABO_COLUMN_NAMES;
-                this.setModel(new TModelAbo(new Object[][]{}, spaltenTabelle));
+                this.setModel(new TModelAbo(new Object[][]{}, spaltenTitel));
+                break;
+            case TABELLE_TAB_PSET:
+                spaltenTitel = DatenPset.COLUMN_NAMES;
+                maxSpalten = DatenPset.MAX_ELEM;
+                spaltenAnzeigen = getSpaltenEinAus(DatenPset.spaltenAnzeigen, DatenPset.MAX_ELEM);
+                indexSpalte = 0;
+                nrDatenSystem = -1;
+                this.setModel(new TModel(new Object[][]{}, spaltenTitel));
+                break;
+            case TABELLE_TAB_PROG:
+                spaltenTitel = DatenProg.COLUMN_NAMES;
+                maxSpalten = DatenProg.MAX_ELEM;
+                spaltenAnzeigen = getSpaltenEinAus(DatenProg.spaltenAnzeigen, DatenProg.MAX_ELEM);
+                indexSpalte = 0;
+                nrDatenSystem = -1;
+                this.setModel(new TModel(new Object[][]{}, spaltenTitel));
                 break;
         }
-        breite = getArray(spaltenTabelle.length);
-        reihe = getArray(spaltenTabelle.length);
-        this.setAutoCreateRowSorter(true);
-        this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-    }
-
-    public MVJTable(String[] sspaltenTabelle) {
-        tabelle = TABELLE_STANDARD;
-        spaltenTabelle = sspaltenTabelle;
-        this.setModel(new TModel(new Object[][]{}, spaltenTabelle));
-        breite = getArray(spaltenTabelle.length);
-        reihe = getArray(spaltenTabelle.length);
+        breite = getArray(maxSpalten);
+        reihe = getArray(maxSpalten);
         this.setAutoCreateRowSorter(true);
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
     }
@@ -104,7 +120,7 @@ public final class MVJTable extends JTable {
         // mit den Standardwerten
         // erst die Breite, dann die Reihenfolge
         try {
-            if (tabelle == TABELLE_STANDARD) {
+            if (nrDatenSystem == -1) {
                 // wird nur für eingerichtete Tabellen gemacht
                 return;
             }
@@ -138,17 +154,7 @@ public final class MVJTable extends JTable {
                 }
             }
             if (ok) {
-                switch (tabelle) {
-                    case TABELLE_TAB_FILME:
-                        DatenFilm.setSpalten(breite);
-                        break;
-                    case TABELLE_TAB_DOWNLOADS:
-                        break;
-                    case TABELLE_TAB_ABOS:
-                        break;
-                    case TABELLE_STANDARD:
-                        break;
-                }
+                setSpaltenEinAus(breite, spaltenAnzeigen);
                 setSpalten();
             } else {
                 resetTabelle();
@@ -156,6 +162,24 @@ public final class MVJTable extends JTable {
         } catch (Exception ex) {
             //vorsichtshalber
         }
+    }
+
+    private boolean anzeigen(int i, boolean[] spaltenAnzeigen) {
+        return spaltenAnzeigen[i];
+    }
+
+    private void setSpaltenEinAus(int[] nr, boolean[] spaltenAnzeigen) {
+        for (int i = 0; i < spaltenAnzeigen.length; ++i) {
+            spaltenAnzeigen[i] = nr[i] > 0;
+        }
+    }
+
+    private boolean[] getSpaltenEinAus(boolean[] spaltenAnzeigen, int MAX_ELEM) {
+//        spaltenAnzeigen = new boolean[MAX_ELEM];
+        for (int i = 0; i < MAX_ELEM; ++i) {
+            spaltenAnzeigen[i] = true;
+        }
+        return spaltenAnzeigen;
     }
 
     public void fireTableDataChanged(boolean setSpalten) {
@@ -227,6 +251,31 @@ public final class MVJTable extends JTable {
         stopBeob = false;
     }
 
+    public void spaltenEinAus() {
+        for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
+            if (!anzeigen(i, spaltenAnzeigen)) {
+                // geänderte Ansicht der Spalten abfragen
+                breite[i] = 0;
+            } else {
+                if (breite[i] == 0) {
+                    breite[i] = 100; // damit sie auch zu sehen ist :)
+                }
+            }
+        }
+        for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
+            if (breite[i] == 0) {
+                this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setMinWidth(0);
+                this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setPreferredWidth(0);
+                this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setMaxWidth(0);
+            } else {
+                this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setMinWidth(10);
+                this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setMaxWidth(3000);
+                this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setPreferredWidth(breite[i]);
+            }
+        }
+//        this.validate();
+    }
+
     public void getSpalten() {
         // Einstellungen der Tabelle merken
         getSelected();
@@ -251,23 +300,13 @@ public final class MVJTable extends JTable {
         setSelected();
         try {
             for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
-                switch (tabelle) {
-                    case TABELLE_TAB_FILME:
-                        if (DatenFilm.nichtAnzeigen(i)) {
-                            // geänderte Ansicht der Spalten abfragen
-                            breite[i] = 0;
-                        } else {
-                            if (breite[i] == 0) {
-                                breite[i] = 100; // damit sie auch zu sehen ist :)
-                            }
-                        }
-                        break;
-                    case TABELLE_TAB_DOWNLOADS:
-                        break;
-                    case TABELLE_TAB_ABOS:
-                        break;
-                    case TABELLE_STANDARD:
-                        break;
+                if (!anzeigen(i, spaltenAnzeigen)) {
+                    // geänderte Ansicht der Spalten abfragen
+                    breite[i] = 0;
+                } else {
+                    if (breite[i] == 0) {
+                        breite[i] = 100; // damit sie auch zu sehen ist :)
+                    }
                 }
             }
             for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
@@ -277,8 +316,8 @@ public final class MVJTable extends JTable {
                     this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setMaxWidth(0);
                 } else {
                     this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setMinWidth(10);
-                    this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setPreferredWidth(breite[i]);
                     this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setMaxWidth(3000);
+                    this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setPreferredWidth(breite[i]);
                 }
             }
             for (int i = 0; i < reihe.length && i < this.getColumnCount(); ++i) {
@@ -298,10 +337,9 @@ public final class MVJTable extends JTable {
 
     public void resetTabelle() {
         // Standardwerte wetzen
-        for (int i = 0; i < spaltenTabelle.length; ++i) {
+        for (int i = 0; i < maxSpalten; ++i) {
             switch (tabelle) {
                 case TABELLE_TAB_FILME:
-                    DatenFilm.setSpalten(null);
                     reihe[i] = i;
                     breite[i] = 200;
                     if (i == DatenFilm.FILM_NR_NR) {
@@ -351,7 +389,7 @@ public final class MVJTable extends JTable {
                         breite[i] = 100;
                     }
                     break;
-                case TABELLE_STANDARD:
+                default:
                     break;
             }
             listeSortKeys = null;
@@ -359,30 +397,38 @@ public final class MVJTable extends JTable {
         }
         this.setRowSorter(null);
         this.setAutoCreateRowSorter(true);
-        setSpalten();
-    }
-
-    public void setAnsichtSpalten(int spalte, boolean ein) {
-        if (ein) {
-            if (breite[spalte] == 0) {
-                breite[spalte] = 100;
-            }
-        } else {
-            breite[spalte] = 0;
-        }
+        spaltenAusschalten();
+        setSpaltenEinAus(breite, spaltenAnzeigen);
         setSpalten();
     }
 
     private void spaltenAusschalten() {
-        for (int i = 0; i < spaltenTabelle.length; ++i) {
+        for (int i = 0; i < maxSpalten; ++i) {
             switch (tabelle) {
                 case TABELLE_TAB_FILME:
-                    if (DatenFilm.nichtAnzeigen(i)) {
+                    if (i == DatenFilm.FILM_BESCHREIBUNG_NR
+                            || i == DatenFilm.FILM_KEYWORDS_NR
+                            || i == DatenFilm.FILM_WEBSEITE_NR
+                            || i == DatenFilm.FILM_IMAGE_URL_NR
+                            || i == DatenFilm.FILM_URL_RTMP_NR
+                            || i == DatenFilm.FILM_URL_AUTH_NR
+                            || i == DatenFilm.FILM_URL_KLEIN_NR
+                            || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR) {
                         breite[i] = 0;
                     }
                     break;
                 case TABELLE_TAB_DOWNLOADS:
-                    if (DatenDownload.nichtAnzeigen(i)) {
+                    if (i == DatenDownload.DOWNLOAD_FILM_URL_NR
+                            || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
+                            || i == DatenDownload.DOWNLOAD_URL_AUTH_NR
+                            || i == DatenDownload.DOWNLOAD_PROGRAMM_NR
+                            || i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR
+                            || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR
+                            || i == DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR
+                            || i == DatenDownload.DOWNLOAD_ZIEL_PFAD_NR
+                            || i == DatenDownload.DOWNLOAD_ART_NR
+                            || i == DatenDownload.DOWNLOAD_QUELLE_NR
+                            || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR) {
                         breite[i] = 0;
                     }
                     break;
@@ -408,8 +454,8 @@ public final class MVJTable extends JTable {
         // Tabellendaten ind die Daten.system schreiben
         // erst die Breite, dann die Reihenfolge
         String b, r, s = "", upDown = "";
-        int reihe_[] = new int[spaltenTabelle.length];
-        int breite_[] = new int[spaltenTabelle.length];
+        int reihe_[] = new int[maxSpalten];
+        int breite_[] = new int[maxSpalten];
         for (int i = 0; i < reihe_.length && i < this.getModel().getColumnCount(); ++i) {
             reihe_[i] = this.convertColumnIndexToModel(i);
         }
@@ -443,11 +489,11 @@ public final class MVJTable extends JTable {
 
     private boolean arrLesen(String s, int[] arr) {
         String sub;
-        if (spaltenTabelle.length != countString(s)) {
+        if (maxSpalten != countString(s)) {
             // dann hat sich die Anzahl der Spalten der Tabelle geändert: Versionswechsel
             return false;
         } else {
-            for (int i = 0; i < spaltenTabelle.length; i++) {
+            for (int i = 0; i < maxSpalten; i++) {
                 if (!s.equals("")) {
                     if (s.contains(",")) {
                         sub = s.substring(0, s.indexOf(","));

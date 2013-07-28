@@ -24,7 +24,6 @@ import mediathek.tool.GuiFunktionenProgramme;
 public class DatenProg {
 
     public static final String PROGRAMM = "Programm";
-    public static final int PROGRAMM_MAX_ELEM = 7;
     public static final String PROGRAMM_NAME = "Programmname";
     public static final int PROGRAMM_NAME_NR = 0;
     public static final String PROGRAMM_ZIEL_DATEINAME = "Zieldateiname";
@@ -39,10 +38,12 @@ public class DatenProg {
     public static final int PROGRAMM_SUFFIX_NR = 5;
     public static final String PROGRAMM_RESTART = "Restart";
     public static final int PROGRAMM_RESTART_NR = 6;
-    public static final String[] PROGRAMM_COLUMN_NAMES = {PROGRAMM_NAME, PROGRAMM_ZIEL_DATEINAME, PROGRAMM_PROGRAMMPFAD,
+    public static final int MAX_ELEM = 7;
+    public static final String[] COLUMN_NAMES = {"Beschreibung", PROGRAMM_ZIEL_DATEINAME, PROGRAMM_PROGRAMMPFAD,
         PROGRAMM_SCHALTER, PROGRAMM_PRAEFIX, PROGRAMM_SUFFIX, PROGRAMM_RESTART};
-    public static final String[] PROGRAMM_COLUMN_NAMES_ = {"Beschreibung", PROGRAMM_ZIEL_DATEINAME, PROGRAMM_PROGRAMMPFAD,
+    public static final String[] COLUMN_NAMES_ = {PROGRAMM_NAME, PROGRAMM_ZIEL_DATEINAME, PROGRAMM_PROGRAMMPFAD,
         PROGRAMM_SCHALTER, PROGRAMM_PRAEFIX, PROGRAMM_SUFFIX, PROGRAMM_RESTART};
+    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
 
     public DatenProg() {
@@ -101,11 +102,11 @@ public class DatenProg {
     @Override
     public String toString() {
         String ret = "";
-        for (int i = 0; i < PROGRAMM_MAX_ELEM; ++i) {
+        for (int i = 0; i < MAX_ELEM; ++i) {
             if (i == 0) {
-                ret += "| ***|" + PROGRAMM_COLUMN_NAMES_[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+                ret += "| ***|" + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
             } else {
-                ret += "|    |" + PROGRAMM_COLUMN_NAMES_[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+                ret += "|    |" + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
             }
         }
         return ret;
@@ -115,7 +116,7 @@ public class DatenProg {
     // Private
     //===================================
     private void makeArr() {
-        arr = new String[PROGRAMM_MAX_ELEM];
+        arr = new String[MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }
