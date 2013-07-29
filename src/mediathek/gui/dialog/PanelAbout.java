@@ -76,13 +76,13 @@ public class PanelAbout extends PanelVorlage {
     private void speicherAnzeigen() {
         long totalMem = Runtime.getRuntime().totalMemory();
         jLabelSpeicher1.setText("Speicher der VM:");
-        jTextFieldSpeicher1.setText(totalMem / (1024L * 1024L) + " MB");
+        jTextFieldSpeicher1.setText(totalMem / (1024L * 1024L) + " MiB");
         long maxMem = Runtime.getRuntime().maxMemory();
         jLabelSpeicher2.setText("MaxSpeicher der VM:");
-        jTextFieldSpeicher2.setText(maxMem / (1024L * 1024L) + " MB");
+        jTextFieldSpeicher2.setText(maxMem / (1024L * 1024L) + " MiB");
         long freeMem = Runtime.getRuntime().freeMemory();
         jLabelSpeicher3.setText("Freier Speicher:");
-        jTextFieldSpeicher3.setText(freeMem / (1024L * 1024L) + " MB");
+        jTextFieldSpeicher3.setText(freeMem / (1024L * 1024L) + " MiB");
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

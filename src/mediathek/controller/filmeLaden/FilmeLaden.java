@@ -43,15 +43,15 @@ public class FilmeLaden {
     private boolean stop = false;
     private ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
 //    private ListeFilme listeFilmeNeu = null; //ist eine NEUE ungefilterte Liste, wird beim Laden NEU erstellt
-    private FilmeSuchenSender filmeSuchen;
+    private FilmeSuchenSender filmeSuchenSender;
     private ImportFilmliste filmeImportieren;
     private EventListenerList listeners = new EventListenerList();
     private boolean istAmLaufen = false;
 
     public FilmeLaden() {
-        filmeSuchen = new FilmeSuchenSender();
+        filmeSuchenSender = new FilmeSuchenSender();
         filmeImportieren = new ImportFilmliste();
-        filmeSuchen.addAdListener(new BeobLadenSuchen());
+        filmeSuchenSender.addAdListener(new BeobLadenSuchen());
         filmeImportieren.addAdListener(new BeobLadenImportieren());
     }
 
@@ -83,11 +83,11 @@ public class FilmeLaden {
 
     public void setAllesLaden(boolean alles) {
         // beim Sender laden: alles nicht nur ein Update
-        filmeSuchen.senderAllesLaden = alles;
+        filmeSuchenSender.senderAllesLaden = alles;
     }
 
     public boolean getAllesLaden() {
-        return filmeSuchen.senderAllesLaden;
+        return filmeSuchenSender.senderAllesLaden;
     }
 
     public synchronized void setStop() {
@@ -110,7 +110,7 @@ public class FilmeLaden {
     }
 
     public String[] getSenderNamen() {
-        return filmeSuchen.getNamenSenderFilmliste();
+        return filmeSuchenSender.getNamenSenderFilmliste();
     }
 
     // #########################################################
@@ -141,7 +141,7 @@ public class FilmeLaden {
             istAmLaufen = true;
             stop = false;
             listeFilmeAlt = llisteFilme;
-            filmeSuchen.filmeBeimSenderLaden(senderAllesLaden, filmlisteUpdate, listeFilmeAlt);
+            filmeSuchenSender.filmeBeimSenderLaden(senderAllesLaden, filmlisteUpdate, listeFilmeAlt);
         }
     }
 
@@ -152,7 +152,7 @@ public class FilmeLaden {
             istAmLaufen = true;
             stop = false;
             listeFilmeAlt = llisteFilme;
-            filmeSuchen.updateSender(sender, senderAllesLaden, llisteFilme);
+            filmeSuchenSender.updateSender(sender, senderAllesLaden, llisteFilme);
         }
     }
 
@@ -171,6 +171,7 @@ public class FilmeLaden {
         @Override
         public synchronized void fertig(ListenerFilmeLadenEvent event) {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
+            Daten.listeFilme =filmeSuchenSender.listeFilmeNeu;
             undEnde(event);
         }
     }
@@ -196,15 +197,7 @@ public class FilmeLaden {
 
     private void undEnde(ListenerFilmeLadenEvent event) {
         istAmLaufen = false;
-//        Daten.listeFilme.clear();
-        if (Daten.listeFilme.isEmpty()) {
-//            Daten.listeFilme = listeFilme;
-//        } else {
-            MVMessageDialog.showMessageDialog(null, "Es konnte keine neue Filmliste geladen werden!\n"
-                    + "Die alte Liste wird wieder geladen.", "Filmliste laden", JOptionPane.INFORMATION_MESSAGE);
-            new IoXmlFilmlisteLesen().filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
-//            Daten.listeFilme = new ListeFilme();
-        }
         notifyFertig(event);
     }
 }
+

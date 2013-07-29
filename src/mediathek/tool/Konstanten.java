@@ -46,14 +46,14 @@ public class Konstanten {
     public static final String XML_DATEI = "mediathek.xml";
     public static final String XML_DATEI_FILME = "filme.xml";
     // 
-    public static final int MIN_DATEI_GROESSE_FILM = 256 * 1024; //minimale Größe (256 kb) eines Films um nicht als Fehler zu gelten
+    public static final int MIN_DATEI_GROESSE_FILM = 256 * 1024; //minimale Größe (256 KiB) eines Films um nicht als Fehler zu gelten
     public static final String KODIERUNG_UTF = "UTF-8";
     public static final String KODIERUNG_ISO15 = "ISO-8859-15";
     public static final String XML_START = "Mediathek";
     public static final String LEITUNG_DSL1000 = "dsl1000";
     public static final String LEITUNG_DSL2000 = "dsl2000";
     public static final int MAX_SENDER_FILME_LADEN = 2;//es können maximal soviele Filme eines Senders/Servers gleichzeitig geladen werden
-    public static final int STRING_BUFFER_START_BUFFER = 10 * 1024 * 8; // 10kb
+    public static final int STRING_BUFFER_START_BUFFER = 10 * 1024 * 8; // 10 KiB
     // ################################
     // Tags System
     // ################################

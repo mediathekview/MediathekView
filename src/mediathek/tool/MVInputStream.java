@@ -96,8 +96,8 @@ public class MVInputStream extends InputStream {
     @Override
     public String toString() {
         return "Download: "
-                + "gelesen: " + (bytesGelesen > 0 ? bytesGelesen / 1024 : 0) + " kByte, "
-                + "Bandbreite: " + (getBandbreite() > 0 ? getBandbreite() / 1024 : 0) + " kByte/s "
+                + "gelesen: " + (bytesGelesen > 0 ? bytesGelesen / 1024 : 0) + " KiB, "
+                + "Bandbreite: " + (getBandbreite() > 0 ? getBandbreite() / 1024 : 0) + " KiB/s "
                 + ", Wartezeit: " + (gesamtVerpennt > 0 ? gesamtVerpennt / 1000 : 0) + " s";
     }
 }

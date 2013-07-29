@@ -83,11 +83,11 @@ public class Log {
         Log.systemMeldung("###########################################################");
         Log.systemMeldung("###########################################################");
         long totalMem = Runtime.getRuntime().totalMemory();
-        Log.systemMeldung("totalMemory: " + totalMem / (1024L * 1024L) + " MB");
+        Log.systemMeldung("totalMemory: " + totalMem / (1024L * 1024L) + " MiB");
         long maxMem = Runtime.getRuntime().maxMemory();
-        Log.systemMeldung("maxMemory: " + maxMem / (1024L * 1024L) + " MB");
+        Log.systemMeldung("maxMemory: " + maxMem / (1024L * 1024L) + " MiB");
         long freeMem = Runtime.getRuntime().freeMemory();
-        Log.systemMeldung("freeMemory: " + freeMem / (1024L * 1024L) + " MB");
+        Log.systemMeldung("freeMemory: " + freeMem / (1024L * 1024L) + " MiB");
         Log.systemMeldung("###########################################################");
         //Version
         Log.systemMeldung(Funktionen.getProgVersionString());
