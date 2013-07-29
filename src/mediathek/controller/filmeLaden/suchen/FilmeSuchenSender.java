@@ -279,14 +279,14 @@ public class FilmeSuchenSender {
             Log.systemMeldung("        Filme geladen: " + anzFilme);
             Log.systemMeldung("       Seiten geladen: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER));
             String groesse = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE) == 0) ? "<1" : Long.toString(GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE));
-            Log.systemMeldung(" Summe geladen[MByte]: " + groesse);
-            Log.systemMeldung("      Traffic [MByte]: " + GetUrl.getSummeMegaByte());
+            Log.systemMeldung("   Summe geladen[MiB]: " + groesse);
+            Log.systemMeldung("        Traffic [MiB]: " + GetUrl.getSummeMegaByte());
             if (sekunden <= 0) {
                 sekunden = 1;
             }
             // Durchschnittswerte ausgeben
             long kb = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE) * 1024) / sekunden;
-            Log.systemMeldung("     -> Rate[kByte/s]: " + (kb == 0 ? "<1" : kb));
+            Log.systemMeldung("     ->   Rate[KiB/s]: " + (kb == 0 ? "<1" : kb));
             Log.systemMeldung("     ->    Dauer[Min]: " + (sekunden / 60 == 0 ? "<1" : sekunden / 60));
             Log.systemMeldung("            ->  Start: " + sdf.format(startZeit));
             Log.systemMeldung("            ->   Ende: " + sdf.format(stopZeit));

@@ -60,7 +60,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final String FILM_DAUER = "Dauer";
     public static final String FILM_DAUER_ = "m";
     public static final int FILM_DAUER_NR = 6;
-    public static final String FILM_GROESSE = "Größe [MB]";
+    public static final String FILM_GROESSE = "Größe [GB]";
     public static final String FILM_GROESSE_ = "t";
     public static final int FILM_GROESSE_NR = 7;
     public static final String FILM_BESCHREIBUNG = "Beschreibung";
