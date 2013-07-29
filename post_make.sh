@@ -29,3 +29,4 @@ cp -r /mnt/daten/software/Mediathek/Mediathek/dist/* /mnt/daten/virtualbox/share
 cp -r /mnt/daten/software/Mediathek/Mediathek/dist/MediathekView.jar /mnt/daten/software/Mediathek/MediathekServer/libs/
 
 fi
+
