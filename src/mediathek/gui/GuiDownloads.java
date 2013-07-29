@@ -554,11 +554,14 @@ public class GuiDownloads extends PanelVorlage {
             if (selectedTableRow >= 0) {
                 int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
                 DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
-                if (download.film == null) {
-                    // geladener Einmaldownload nach Programmstart
-                    download.film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
-                } else {
-                    aktFilm = download.film;
+                if (download != null) {
+                    // wenn beim Löschen aufgerufen, ist der Download schon weg
+                    if (download.film == null) {
+                        // geladener Einmaldownload nach Programmstart
+                        download.film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                    } else {
+                        aktFilm = download.film;
+                    }
                 }
             }
             filmInfoHud.updateCurrentFilm(aktFilm);
