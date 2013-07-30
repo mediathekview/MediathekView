@@ -392,9 +392,9 @@ public final class MVJTable extends JTable {
                 default:
                     break;
             }
-            listeSortKeys = null;
-            this.getRowSorter().setSortKeys(null);
         }
+        listeSortKeys = null;
+        this.getRowSorter().setSortKeys(null);
         this.setRowSorter(null);
         this.setAutoCreateRowSorter(true);
         spaltenAusschalten();
@@ -437,12 +437,12 @@ public final class MVJTable extends JTable {
                 case TABELLE_STANDARD:
                     break;
             }
-            if (DDaten.debug) {
-                // dann wird nichts ausgeschaltet
-                if (breite[i] == 0) {
-                    breite[i] = 100;
-                }
-            }
+//            if (DDaten.debug) {
+//                // dann wird nichts ausgeschaltet
+//                if (breite[i] == 0) {
+//                    breite[i] = 100;
+//                }
+//            }
         }
     }
 
