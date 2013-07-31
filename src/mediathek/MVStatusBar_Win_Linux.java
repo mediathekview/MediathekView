@@ -136,7 +136,7 @@ public class MVStatusBar_Win_Linux extends MVStatusBar {
     private void setInfoRechts() {
         // Text rechts: alter/neuladenIn anzeigen
         String textRechts = "Filmliste erstellt: ";
-        textRechts += Daten.listeFilme.erstellt();
+        textRechts += Daten.listeFilme.genDate();
         textRechts += " Uhr  ";
         int sekunden = Daten.listeFilme.alterFilmlisteSek();
         if (sekunden != 0) {

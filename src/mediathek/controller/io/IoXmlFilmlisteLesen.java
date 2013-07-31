@@ -64,6 +64,13 @@ public class IoXmlFilmlisteLesen {
      * @return
      */
     public boolean filmlisteLesen(String datei, boolean istUrl, ListeFilme listeFilme) {
+        // wenn gewünscht, erst mal die alte Filmliste umbenenen
+        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILMLISTE_UMBENENNEN_NR])) {
+            if (!datei.equals(Daten.getDateiFilmliste())) {
+                // nur umbenennen wenn nicht die "eigene" Liste geladen wird
+                filmlisteUmbenennen();
+            }
+        }
         boolean ret = true;
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
@@ -152,9 +159,32 @@ public class IoXmlFilmlisteLesen {
         return ret;
     }
 
+    public void filmlisteUmbenennen() {
+        try {
+            if (Daten.listeFilme.isEmpty()) {
+                Log.fehlerMeldung(312126987, Log.FEHLER_ART_PROG, "IoXmlLesen.filmlisteUmbenennen", "Die Filmliste ist leer.");
+                return;
+            }
+            String src = Daten.getDateiFilmliste();
+            String dest = Daten.getBasisVerzeichnis(false) + Daten.listeFilme.genDateRev() + "__" + Konstanten.XML_DATEI_FILME;
+            if (src.equals(dest)) {
+                return;
+            }
+            File fileDest = new File(dest);
+            if (fileDest.exists()) {
+                Log.fehlerMeldung(302045970, Log.FEHLER_ART_PROG, "IoXmlLesen.filmlisteUmbenennen", "Es gibt schon eine Liste mit dem Datum.");
+                return;
+            }
+            File fileSrc = new File(src);
+            fileSrc.renameTo(fileDest);
+        } catch (Exception ex) {
+            Log.fehlerMeldung(978451206, Log.FEHLER_ART_PROG, "IoXmlLesen.filmlisteUmbenennen", ex);
+        }
+    }
     // ##############################
     // private
     // ##############################
+
     private boolean datenFilmlisteLesen(XMLStreamReader parser, String text, ListeFilme listeFilme) throws XMLStreamException {
         boolean ret = true;
         int count = 0;

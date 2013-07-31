@@ -66,6 +66,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     //private TreeSet<String> ts = new TreeSet<String>();
     private TreeSet<String> treeSet = new TreeSet<String>(GermanStringSorter.getInstance());
     private final String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
+    private final String DATUM_ZEIT_FORMAT_REV = "yyyy.MM.dd__HH:mm";
 
     public ListeFilme() {
         metaDaten = newMetaDaten();
@@ -495,7 +496,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
     }
 
-    public String erstellt() {
+    public String genDate() {
         // Tag, Zeit in lokaler Zeit wann die Filmliste erstellt wurde
         String ret;
         SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
@@ -515,6 +516,33 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 ret = metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR];
             } else {
                 SimpleDateFormat formatter = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
+                ret = formatter.format(filmDate);
+            }
+        }
+        return ret;
+    }
+
+    public String genDateRev() {
+        // Tag, Zeit in lokaler Zeit wann die Filmliste erstellt wurde
+        // in der Form yyyy.MM.dd__hh:mm
+        String ret;
+        SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
+        String date;
+        if (metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR].equals("")) {
+            // noch eine alte Filmliste
+            ret = metaDaten[ListeFilme.FILMLISTE_DATUM_NR];
+        } else {
+            date = metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR];
+            sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+            Date filmDate = null;
+            try {
+                filmDate = sdf.parse(date);
+            } catch (ParseException ex) {
+            }
+            if (filmDate == null) {
+                ret = metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR];
+            } else {
+                SimpleDateFormat formatter = new SimpleDateFormat(DATUM_ZEIT_FORMAT_REV);
                 ret = formatter.format(filmDate);
             }
         }

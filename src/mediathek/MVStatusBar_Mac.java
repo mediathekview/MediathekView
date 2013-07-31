@@ -109,7 +109,7 @@ public final class MVStatusBar_Mac extends MVStatusBar {
     private void setInfoRechts() {
         // Text rechts: alter/neuladenIn anzeigen
         String strText = "Filmliste erstellt: ";
-        strText += Daten.listeFilme.erstellt();
+        strText += Daten.listeFilme.genDate();
         strText += " Uhr  ";
 
         int sekunden = Daten.listeFilme.alterFilmlisteSek();
