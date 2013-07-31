@@ -120,6 +120,15 @@ public class Daten {
     }
 
     /**
+     * Liefert den Pfad zur Filmliste
+     *
+     * @return Den Pfad als String
+     */
+    public static String getDateiFilmliste() {
+        return getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME;
+    }
+
+    /**
      * Liefert das Verzeichnis der Programmeinstellungen
      *
      * @param anlegen Anlegen, oder nicht.
