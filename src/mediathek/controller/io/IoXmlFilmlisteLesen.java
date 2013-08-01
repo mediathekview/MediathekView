@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.ZipInputStream;
@@ -34,6 +35,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
+import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
@@ -49,11 +51,40 @@ public class IoXmlFilmlisteLesen {
     private int max = 0;
     private int progress = 0;
     private int event;
-    private int maxElem;
     private int ii, i;
 
     public void addAdListener(ListenerFilmeLaden listener) {
         listeners.add(ListenerFilmeLaden.class, listener);
+    }
+
+    public boolean standardFilmlisteLesen() {
+        // beim Programmstart, da wird die Daten.listeFilme nicht vorher gelöscht
+        this.notifyStart(100);
+        this.notifyProgress(Daten.getDateiFilmliste());
+        boolean ret = true;
+        XMLInputFactory inFactory = XMLInputFactory.newInstance();
+        inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+        XMLStreamReader parser;
+        InputStreamReader inReader = null;
+        // die Filmdatei ist jetzt entpackt und im Konfigordner gespeichert, dort jetzt lesen
+        try {
+            inReader = new InputStreamReader(new FileInputStream(Daten.getDateiFilmliste()), Konstanten.KODIERUNG_UTF);
+            parser = inFactory.createXMLStreamReader(inReader);
+            ret = datenFilmlisteLesen(parser, Daten.getDateiFilmliste(), Daten.listeFilme);
+        } catch (Exception ex) {
+            ret = false;
+            Log.fehlerMeldung(901739831, Log.FEHLER_ART_PROG, "IoXmlLesen.standardFilmlisteLesen", ex);
+        } finally {
+            try {
+                if (inReader != null) {
+                    inReader.close();
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(301029761, Log.FEHLER_ART_PROG, "IoXmlLesen.standardFilmlisteLesen", ex);
+            }
+        }
+        this.notifyFertig(Daten.listeFilme);
+        return ret;
     }
 
     /**
@@ -63,6 +94,152 @@ public class IoXmlFilmlisteLesen {
      * @param istDatei
      * @return
      */
+    public boolean filmlisteLesen(String datei, boolean istUrl) {
+        // die Datei erst mal an Ort und Stelle kopieren und evtl. entpacken
+        if (istUrl && datei.endsWith(GuiKonstanten.FORMAT_BZ2) || istUrl && datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+            // da wird eine temp-Datei benutzt
+            this.notifyStart(300);
+            this.notifyProgress(datei);
+        } else {
+            this.notifyStart(200);
+            this.notifyProgress(datei);
+        }
+        if (!datei.equals(Daten.getDateiFilmliste())) {
+            // macht nur Sinn, wenn nicht die eigene Liste gelesen werden soll!
+            if (!filmlisteEinlesen(datei, istUrl)) {
+                // dann wars das
+                return false;
+            }
+        }
+        boolean ret = true;
+        XMLInputFactory inFactory = XMLInputFactory.newInstance();
+        inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+        XMLStreamReader parser;
+        InputStreamReader inReader = null;
+        // die Filmdatei ist jetzt entpackt und im Konfigordner gespeichert, dort jetzt lesen
+        try {
+            inReader = new InputStreamReader(new FileInputStream(Daten.getDateiFilmliste()), Konstanten.KODIERUNG_UTF);
+            parser = inFactory.createXMLStreamReader(inReader);
+            ret = datenFilmlisteLesen(parser, datei, Daten.listeFilme);
+        } catch (Exception ex) {
+            ret = false;
+            Log.fehlerMeldung(468956200, Log.FEHLER_ART_PROG, "IoXmlLesen.importDatenFilm", ex, "von: " + datei);
+        } finally {
+            try {
+                if (inReader != null) {
+                    inReader.close();
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(468983014, Log.FEHLER_ART_PROG, "IoXmlLesen.importDatenFilm", ex);
+            }
+        }
+        this.notifyFertig(Daten.listeFilme);
+        return ret;
+    }
+
+    private boolean filmlisteEinlesen(String datei, boolean istUrl) {
+        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILMLISTE_UMBENENNEN_NR])) {
+            // wenn gewünscht, erst mal die alte Filmliste umbenenen
+            filmlisteUmbenennen();
+        }
+        boolean ret = true;
+        InputStreamReader inReader = null;
+        OutputStreamWriter fOutWriter = null;
+        BZip2CompressorInputStream bZip2CompressorInputStream;
+        int timeout = 10000; //10 Sekunden
+        URLConnection conn;
+        File tmpFile = null;
+        try {
+            if (!istUrl) {
+                // lokale Datei
+                if (!new File(datei).exists()) {
+                    return false;
+                }
+                if (datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
+                    bZip2CompressorInputStream = new BZip2CompressorInputStream(new FileInputStream(datei));
+                    inReader = new InputStreamReader(bZip2CompressorInputStream, Konstanten.KODIERUNG_UTF);
+                } else if (datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+                    ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(datei));
+                    zipInputStream.getNextEntry();
+                    inReader = new InputStreamReader(zipInputStream, Konstanten.KODIERUNG_UTF);
+                } else {
+                    inReader = new InputStreamReader(new FileInputStream(datei), Konstanten.KODIERUNG_UTF);
+                }
+            } else {
+                // aus dem Netzt
+                conn = new URL(datei).openConnection();
+                conn.setConnectTimeout(timeout);
+                conn.setReadTimeout(timeout);
+                conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+                if (datei.endsWith(GuiKonstanten.FORMAT_BZ2) || datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+                    // bei gezipten brauchen wir ein lokales Tempfile
+                    tmpFile = File.createTempFile("mediathek", null);
+                    //tmpFile.deleteOnExit();
+                    BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
+                    FileOutputStream fOut = new FileOutputStream(tmpFile);
+                    byte[] buffer = new byte[1024];
+                    int n = 0;
+                    int count = 0;
+                    this.notifyProgress(datei);
+                    while (!Daten.filmeLaden.getStop() && (n = in.read(buffer)) != -1) {
+                        fOut.write(buffer, 0, n);
+                        ++count;
+                        if (count > 88) {
+                            this.notifyProgress(datei);
+                            count = 0;
+                        }
+                    }
+                    try {
+                        fOut.close();
+                        in.close();
+                    } catch (Exception e) {
+                    }
+                    if (datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
+                        inReader = new InputStreamReader(new BZip2CompressorInputStream(new FileInputStream(tmpFile)), Konstanten.KODIERUNG_UTF);
+                    } else if (datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+                        ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(tmpFile));
+                        zipInputStream.getNextEntry();
+                        inReader = new InputStreamReader(zipInputStream, Konstanten.KODIERUNG_UTF);
+                    }
+                } else {
+                    inReader = new InputStreamReader(new FileInputStream(tmpFile), Konstanten.KODIERUNG_UTF);
+                }
+            }
+            // jetzt die Datei speichern
+            fOutWriter = new OutputStreamWriter(new FileOutputStream(Daten.getDateiFilmliste()), Konstanten.KODIERUNG_UTF);
+            char[] buffer = new char[1024];
+            int n = 0;
+            int count = 0;
+            this.notifyProgress(datei);
+            while (!Daten.filmeLaden.getStop() && (n = inReader.read(buffer)) != -1) {
+                fOutWriter.write(buffer, 0, n);
+                ++count;
+                if (count > 88) {
+                    this.notifyProgress(datei);
+                    count = 0;
+                }
+            }
+        } catch (Exception ex) {
+            ret = false;
+            Log.fehlerMeldung(649830178, Log.FEHLER_ART_PROG, "IoXmlLesen.importDatenFilm", ex, "von: " + datei);
+        } finally {
+            try {
+                if (fOutWriter != null) {
+                    fOutWriter.close();
+                }
+                if (inReader != null) {
+                    inReader.close();
+                }
+                if (tmpFile != null) {
+                    tmpFile.delete();
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(728396587, Log.FEHLER_ART_PROG, "IoXmlLesen.importDatenFilm", ex);
+            }
+        }
+        return ret;
+    }
+
     public boolean filmlisteLesen(String datei, boolean istUrl, ListeFilme listeFilme) {
         // wenn gewünscht, erst mal die alte Filmliste umbenenen
         if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILMLISTE_UMBENENNEN_NR])) {
@@ -121,7 +298,7 @@ public class IoXmlFilmlisteLesen {
                 while (!Daten.filmeLaden.getStop() && (n = in.read(buffer)) != -1) {
                     fOut.write(buffer, 0, n);
                     ++count;
-                    if (count > 85) {
+                    if (count > 88) {
                         this.notifyProgress(datei);
                         count = 0;
                     }
@@ -172,11 +349,13 @@ public class IoXmlFilmlisteLesen {
             }
             File fileDest = new File(dest);
             if (fileDest.exists()) {
-                Log.fehlerMeldung(302045970, Log.FEHLER_ART_PROG, "IoXmlLesen.filmlisteUmbenennen", "Es gibt schon eine Liste mit dem Datum.");
+                Log.systemMeldung(new String[]{"Filmliste umbenennen: ", "Es gibt schon eine Liste mit dem Datum."});
                 return;
             }
             File fileSrc = new File(src);
             fileSrc.renameTo(fileDest);
+            fileSrc = null;
+            fileDest = null;
         } catch (Exception ex) {
             Log.fehlerMeldung(978451206, Log.FEHLER_ART_PROG, "IoXmlLesen.filmlisteUmbenennen", ex);
         }
@@ -189,7 +368,6 @@ public class IoXmlFilmlisteLesen {
         boolean ret = true;
         int count = 0;
         DatenFilm datenFilm;
-        //      DatenFilm datenFilmAlt = new DatenFilm();
         String sender = "", thema = "";
         int event_;
         String filmTag = DatenFilm.FILME_;
@@ -199,14 +377,14 @@ public class IoXmlFilmlisteLesen {
             //Filmeliste
             if (event_ == XMLStreamConstants.START_ELEMENT) {
                 if (parser.getLocalName().equals(ListeFilme.FILMLISTE)) {
-                    get(parser, ListeFilme.FILMLISTE, ListeFilme.FILMLISTE_COLUMN_NAMES, listeFilme.metaDaten);
+                    get(parser, ListeFilme.FILMLISTE, ListeFilme.COLUMN_NAMES, listeFilme.metaDaten, ListeFilme.MAX_ELEM);
                 }
             }
             //Filme
             if (event_ == XMLStreamConstants.START_ELEMENT) {
                 if (parser.getLocalName().equals(filmTag)) {
                     datenFilm = new DatenFilm();
-                    get(parser, filmTag, namen, datenFilm.arr);
+                    get(parser, filmTag, namen, datenFilm.arr, DatenFilm.MAX_ELEM);
                     if (datenFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
                         datenFilm.arr[DatenFilm.FILM_SENDER_NR] = sender;
                     } else {
@@ -218,20 +396,18 @@ public class IoXmlFilmlisteLesen {
                         thema = datenFilm.arr[DatenFilm.FILM_THEMA_NR];
                     }
                     ++count;
-                    if (count > 780) {
+                    if (count > 790) {
                         count = 0;
                         this.notifyProgress(text);
                     }
                     listeFilme.addWithNr(datenFilm);
-//                    datenFilmAlt = datenFilm;
                 }
             }
         }
         return ret;
     }
 
-    private void get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet) throws XMLStreamException {
-        maxElem = strRet.length;
+    private void get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet, int maxElem) throws XMLStreamException {
         ii = 0;
         outer:
         while (parser.hasNext()) {

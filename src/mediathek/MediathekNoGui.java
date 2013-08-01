@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
+import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
@@ -125,7 +126,8 @@ public class MediathekNoGui implements Runnable {
             }
         });
         // laden was es schon gibt
-        Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
+        //Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
+        new IoXmlFilmlisteLesen().standardFilmlisteLesen();
         // das eigentliche Suchen der Filme bei den Sendern starten
         if (sender == null) {
             Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, senderAllesLaden, updateFilmliste);
@@ -176,7 +178,8 @@ public class MediathekNoGui implements Runnable {
             }
         });
         // laden was es schon gibt
-        Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
+        //Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
+        new IoXmlFilmlisteLesen().standardFilmlisteLesen();
         // das eigentliche Suchen der Filme bei den Sendern starten
         Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, senderAllesLaden, updateFilmliste);
     }
@@ -185,7 +188,7 @@ public class MediathekNoGui implements Runnable {
         if (!url.equals("")) {
             Log.systemMeldung("Filmliste importieren von: " + url);
             ListeFilme tmpListe = new ListeFilme();
-            Daten.ioXmlFilmlisteLesen.filmlisteLesen(url, GuiFunktionen.istUrl(url) /* istUrl */, tmpListe);
+            new IoXmlFilmlisteLesen().filmlisteLesen(url, GuiFunktionen.istUrl(url) /* istUrl */, tmpListe);
             Daten.listeFilme.updateListe(tmpListe, false /* nur URL vergleichen */);
             tmpListe.clear();
         }

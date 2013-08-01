@@ -87,15 +87,15 @@ public class ImportFilmliste {
     // Filme aus Datei laden
     // #######################################
     public void filmeImportierenDatei(String pfad, boolean istUrl) {
-        new Thread(new filmeImportierenDateiThread(pfad, istUrl)).start();
+        new Thread(new FilmeImportierenDateiThread(pfad, istUrl)).start();
     }
 
-    private class filmeImportierenDateiThread implements Runnable {
+    private class FilmeImportierenDateiThread implements Runnable {
 
         private String pfad;
         private boolean istUrl;
 
-        public filmeImportierenDateiThread(String ppfad, boolean iistUrl) {
+        public FilmeImportierenDateiThread(String ppfad, boolean iistUrl) {
             pfad = ppfad;
             istUrl = iistUrl;
         }
@@ -118,7 +118,7 @@ public class ImportFilmliste {
             if (!dateiUrl.equals("")) {
                 Log.systemMeldung("Filmliste laden von: " + dateiUrl);
 //                listeFilme = new ListeFilme();
-                ret = ioXmlFilmlisteLesen.filmlisteLesen(dateiUrl, istUrl, Daten.listeFilme);
+                ret = ioXmlFilmlisteLesen.filmlisteLesen(dateiUrl, istUrl);
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(965412378, Log.FEHLER_ART_PROG, "ImportListe.urlLaden: ", ex);
@@ -157,9 +157,6 @@ public class ImportFilmliste {
 
         @Override
         public synchronized void fertig(ListenerFilmeLadenEvent event) {
-//            for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-//                l.fertig(event);
-//            }
         }
     }
 }

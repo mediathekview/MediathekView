@@ -49,7 +49,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public static final String THEMA_LIVE = "Livestream";
     //Tags Infos Filmliste, erste Zeile der .filme-Datei
     public static final String FILMLISTE = "Filmliste";
-    public static final int FILMLISTE_MAX_ELEM = 4;
     public static final String FILMLISTE_DATUM = "Filmliste-Datum";
     public static final int FILMLISTE_DATUM_NR = 0;
     public static final String FILMLISTE_DATUM_GMT = "Filmliste-Datum-GMT";
@@ -58,7 +57,8 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     public static final int FILMLISTE_VERSION_NR = 2;
     public static final String FILMLISTE_PROGRAMM = "Filmliste-Programm";
     public static final int FILMLISTE_PRGRAMM_NR = 3;
-    public static final String[] FILMLISTE_COLUMN_NAMES = {FILMLISTE_DATUM, FILMLISTE_DATUM_GMT, FILMLISTE_VERSION, FILMLISTE_PROGRAMM};
+    public static final int MAX_ELEM = 4;
+    public static final String[] COLUMN_NAMES = {FILMLISTE_DATUM, FILMLISTE_DATUM_GMT, FILMLISTE_VERSION, FILMLISTE_PROGRAMM};
     private int nr = 0;
     public String[] metaDaten;
     private HashSet<String> hashSet = new HashSet<String>();
@@ -76,7 +76,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     // public
     //===================================
     public static String[] newMetaDaten() {
-        String[] ret = new String[FILMLISTE_MAX_ELEM];
+        String[] ret = new String[MAX_ELEM];
         for (int i = 0; i < ret.length; ++i) {
             ret[i] = "";
         }
@@ -115,7 +115,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     }
 
     public synchronized void setMeta(String[] mmeta) {
-        for (int i = 0; i < FILMLISTE_MAX_ELEM; ++i) {
+        for (int i = 0; i < MAX_ELEM; ++i) {
             metaDaten[i] = mmeta[i].toString();
         }
     }
@@ -182,9 +182,10 @@ public class ListeFilme extends LinkedList<DatenFilm> {
     }
 
     public synchronized boolean addWithNr(DatenFilm film) {
+        // hier nur beim Laden von der Filmliste
         film.arr[DatenFilm.FILM_NR_NR] = getNr(nr++);
         return addInit(film);
-    }
+        }
 
     private String getNr(int nr) {
         final int MAX_STELLEN = 5;

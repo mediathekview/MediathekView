@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import mediathek.MediathekGui;
 import mediathek.controller.io.ErledigteAbos;
 import mediathek.controller.io.History;
+import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.IoXmlSchreiben;
 import mediathek.controller.io.starter.StarterClass;
@@ -80,11 +81,11 @@ public final class DDaten extends Daten {
         starterClass = new StarterClass(this);
     }
 
-    @Override
     public void allesLaden() {
-        super.allesLaden();
         ioXmlLesen.datenLesen(this);
         history.laden();
+        // erst die Systemdaten, dann die Filmliste
+        new IoXmlFilmlisteLesen().standardFilmlisteLesen();
     }
 
     @Override
