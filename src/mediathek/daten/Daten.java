@@ -43,7 +43,6 @@ public class Daten {
     private static String basisverzeichnis = "";
     // zentrale Klassen
     public static FilmeLaden filmeLaden;
-    public static IoXmlFilmlisteLesen ioXmlFilmlisteLesen = null;
     public static ListeFilme listeFilme = null;
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
@@ -72,12 +71,12 @@ public class Daten {
         system[Konstanten.SYSTEM_BLACKLIST_FILMLAENGE_NR] = "0";
         system[Konstanten.SYSTEM_ICON_PFAD_NR] = Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss";
         Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = String.valueOf(0);
-//        Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.TRUE.toString();
+        Daten.system[Konstanten.SYSTEM_FILMLISTE_UMBENENNEN_NR] = Boolean.FALSE.toString();
+        //        Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.TRUE.toString();
         if (Daten.debug) {
             Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUS);
         }
         listeFilme = new ListeFilme();
-        ioXmlFilmlisteLesen = new IoXmlFilmlisteLesen();
         filmeLaden = new FilmeLaden();
     }
 
@@ -163,10 +162,6 @@ public class Daten {
             }
         }
         return ret;
-    }
-
-    public void allesLaden() {
-        ioXmlFilmlisteLesen.filmlisteLesen(getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, listeFilme);
     }
 
     public void allesSpeichern() {

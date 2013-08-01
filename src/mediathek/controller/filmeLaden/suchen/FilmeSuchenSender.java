@@ -182,11 +182,11 @@ public class FilmeSuchenSender {
             }
         }
         GuiFunktionen.listeSort(liste);
-        String[] ret = new String[liste.size()];
-        for (int i = 0; i < liste.size(); ++i) {
-            ret[i] = liste.get(i);
-        }
-        return ret;
+//        String[] ret = new String[liste.size()];
+//        for (int i = 0; i < liste.size(); ++i) {
+//            ret[i] = liste.get(i);
+//        }
+        return liste.toArray(new String[]{});
     }
 
     public synchronized void melden(String sender, int max, int progress, String text) {
