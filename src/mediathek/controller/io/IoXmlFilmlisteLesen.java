@@ -35,7 +35,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
@@ -57,10 +56,39 @@ public class IoXmlFilmlisteLesen {
         listeners.add(ListenerFilmeLaden.class, listener);
     }
 
+    /**
+     *
+     * @param datei
+     * @param istUrl
+     * @return
+     */
+    public boolean filmlisteLesen(String datei, boolean istUrl) {
+        // Filmliste an bel. Stelle lesen und als eigenen Liste speichern
+        // die Datei erst mal an Ort und Stelle kopieren und evtl. entpacken
+        if (istUrl && datei.endsWith(GuiKonstanten.FORMAT_BZ2) || istUrl && datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+            // da wird eine temp-Datei benutzt
+            this.notifyStart(300);
+            this.notifyProgress(datei);
+        } else {
+            this.notifyStart(200);
+            this.notifyProgress(datei);
+        }
+        if (!datei.equals(Daten.getDateiFilmliste())) {
+            // macht nur Sinn, wenn nicht die eigene Liste gelesen werden soll!
+            if (!filmlisteInStandardDateiSchreiben(datei, istUrl)) {
+                // dann wars das
+                this.notifyFertig(Daten.listeFilme);
+                return false;
+            }
+        }
+        // die Filmdatei ist jetzt entpackt und im Konfigordner gespeichert, dort jetzt lesen
+        boolean ret = standardFilmlisteLesen();
+        this.notifyFertig(Daten.listeFilme);
+        return ret;
+    }
+
     public boolean standardFilmlisteLesen() {
-        // beim Programmstart, da wird die Daten.listeFilme nicht vorher gelöscht
-        this.notifyStart(100);
-        this.notifyProgress(Daten.getDateiFilmliste());
+        // beim Programmstart, da wird die Filmlise Daten.listeFilme nicht vorher gelöscht
         boolean ret = true;
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
@@ -70,7 +98,7 @@ public class IoXmlFilmlisteLesen {
         try {
             inReader = new InputStreamReader(new FileInputStream(Daten.getDateiFilmliste()), Konstanten.KODIERUNG_UTF);
             parser = inFactory.createXMLStreamReader(inReader);
-            ret = datenFilmlisteLesen(parser, Daten.getDateiFilmliste(), Daten.listeFilme);
+            ret = filmlisteXmlLesen(parser, Daten.getDateiFilmliste(), Daten.listeFilme);
         } catch (Exception ex) {
             ret = false;
             Log.fehlerMeldung(901739831, Log.FEHLER_ART_PROG, "IoXmlLesen.standardFilmlisteLesen", ex);
@@ -83,61 +111,10 @@ public class IoXmlFilmlisteLesen {
                 Log.fehlerMeldung(301029761, Log.FEHLER_ART_PROG, "IoXmlLesen.standardFilmlisteLesen", ex);
             }
         }
-        this.notifyFertig(Daten.listeFilme);
         return ret;
     }
 
-    /**
-     *
-     * @param datei
-     * @param zip
-     * @param istDatei
-     * @return
-     */
-    public boolean filmlisteLesen(String datei, boolean istUrl) {
-        // die Datei erst mal an Ort und Stelle kopieren und evtl. entpacken
-        if (istUrl && datei.endsWith(GuiKonstanten.FORMAT_BZ2) || istUrl && datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
-            // da wird eine temp-Datei benutzt
-            this.notifyStart(300);
-            this.notifyProgress(datei);
-        } else {
-            this.notifyStart(200);
-            this.notifyProgress(datei);
-        }
-        if (!datei.equals(Daten.getDateiFilmliste())) {
-            // macht nur Sinn, wenn nicht die eigene Liste gelesen werden soll!
-            if (!filmlisteEinlesen(datei, istUrl)) {
-                // dann wars das
-                return false;
-            }
-        }
-        boolean ret = true;
-        XMLInputFactory inFactory = XMLInputFactory.newInstance();
-        inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-        XMLStreamReader parser;
-        InputStreamReader inReader = null;
-        // die Filmdatei ist jetzt entpackt und im Konfigordner gespeichert, dort jetzt lesen
-        try {
-            inReader = new InputStreamReader(new FileInputStream(Daten.getDateiFilmliste()), Konstanten.KODIERUNG_UTF);
-            parser = inFactory.createXMLStreamReader(inReader);
-            ret = datenFilmlisteLesen(parser, datei, Daten.listeFilme);
-        } catch (Exception ex) {
-            ret = false;
-            Log.fehlerMeldung(468956200, Log.FEHLER_ART_PROG, "IoXmlLesen.importDatenFilm", ex, "von: " + datei);
-        } finally {
-            try {
-                if (inReader != null) {
-                    inReader.close();
-                }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(468983014, Log.FEHLER_ART_PROG, "IoXmlLesen.importDatenFilm", ex);
-            }
-        }
-        this.notifyFertig(Daten.listeFilme);
-        return ret;
-    }
-
-    private boolean filmlisteEinlesen(String datei, boolean istUrl) {
+    private boolean filmlisteInStandardDateiSchreiben(String datei, boolean istUrl) {
         if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILMLISTE_UMBENENNEN_NR])) {
             // wenn gewünscht, erst mal die alte Filmliste umbenenen
             filmlisteUmbenennen();
@@ -240,14 +217,8 @@ public class IoXmlFilmlisteLesen {
         return ret;
     }
 
-    public boolean filmlisteLesen(String datei, boolean istUrl, ListeFilme listeFilme) {
-        // wenn gewünscht, erst mal die alte Filmliste umbenenen
-        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILMLISTE_UMBENENNEN_NR])) {
-            if (!datei.equals(Daten.getDateiFilmliste())) {
-                // nur umbenennen wenn nicht die "eigene" Liste geladen wird
-                filmlisteUmbenennen();
-            }
-        }
+    public boolean dateiInListeEinlesen(String datei, boolean istUrl, ListeFilme listeFilme) {
+        // die Filmliste "datei" wird in die List "listeFilme" eingelesen
         boolean ret = true;
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
@@ -262,14 +233,6 @@ public class IoXmlFilmlisteLesen {
                 if (!new File(datei).exists()) {
                     return false;
                 }
-            }
-            if (istUrl && datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
-                // da wird eine temp-Datei benutzt
-                this.notifyStart(200);
-                this.notifyProgress(datei);
-            } else {
-                this.notifyStart(100);
-                this.notifyProgress(datei);
             }
             if (!istUrl) {
                 if (datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
@@ -293,15 +256,9 @@ public class IoXmlFilmlisteLesen {
                 FileOutputStream fOut = new FileOutputStream(tmpFile);
                 byte[] buffer = new byte[1024];
                 int n = 0;
-                int count = 0;
                 this.notifyProgress(datei);
                 while (!Daten.filmeLaden.getStop() && (n = in.read(buffer)) != -1) {
                     fOut.write(buffer, 0, n);
-                    ++count;
-                    if (count > 88) {
-                        this.notifyProgress(datei);
-                        count = 0;
-                    }
                 }
                 fOut.close();
                 in.close();
@@ -316,7 +273,7 @@ public class IoXmlFilmlisteLesen {
                 }
             }
             parser = inFactory.createXMLStreamReader(inReader);
-            ret = datenFilmlisteLesen(parser, datei, listeFilme);
+            ret = filmlisteXmlLesen(parser, datei, listeFilme);
         } catch (Exception ex) {
             ret = false;
             Log.fehlerMeldung(468956200, Log.FEHLER_ART_PROG, "IoXmlLesen.importDatenFilm", ex, "von: " + datei);
@@ -332,25 +289,28 @@ public class IoXmlFilmlisteLesen {
                 Log.fehlerMeldung(468983014, Log.FEHLER_ART_PROG, "IoXmlLesen.importDatenFilm", ex);
             }
         }
-        this.notifyFertig(listeFilme);
         return ret;
     }
 
-    public void filmlisteUmbenennen() {
+    // ##############################
+    // private
+    // ##############################
+    private String filmlisteUmbenennen() {
+        String dest = "";
         try {
             if (Daten.listeFilme.isEmpty()) {
                 Log.fehlerMeldung(312126987, Log.FEHLER_ART_PROG, "IoXmlLesen.filmlisteUmbenennen", "Die Filmliste ist leer.");
-                return;
+                return "";
             }
             String src = Daten.getDateiFilmliste();
-            String dest = Daten.getBasisVerzeichnis(false) + Daten.listeFilme.genDateRev() + "__" + Konstanten.XML_DATEI_FILME;
+            dest = Daten.getBasisVerzeichnis(false) + Daten.listeFilme.genDateRev() + "__" + Konstanten.XML_DATEI_FILME;
             if (src.equals(dest)) {
-                return;
+                return "";
             }
             File fileDest = new File(dest);
             if (fileDest.exists()) {
                 Log.systemMeldung(new String[]{"Filmliste umbenennen: ", "Es gibt schon eine Liste mit dem Datum."});
-                return;
+                return "";
             }
             File fileSrc = new File(src);
             fileSrc.renameTo(fileDest);
@@ -359,12 +319,10 @@ public class IoXmlFilmlisteLesen {
         } catch (Exception ex) {
             Log.fehlerMeldung(978451206, Log.FEHLER_ART_PROG, "IoXmlLesen.filmlisteUmbenennen", ex);
         }
+        return dest;
     }
-    // ##############################
-    // private
-    // ##############################
 
-    private boolean datenFilmlisteLesen(XMLStreamReader parser, String text, ListeFilme listeFilme) throws XMLStreamException {
+    private boolean filmlisteXmlLesen(XMLStreamReader parser, String text, ListeFilme listeFilme) throws XMLStreamException {
         boolean ret = true;
         int count = 0;
         DatenFilm datenFilm;
