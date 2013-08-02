@@ -188,7 +188,7 @@ public class MediathekNoGui implements Runnable {
         if (!url.equals("")) {
             Log.systemMeldung("Filmliste importieren von: " + url);
             ListeFilme tmpListe = new ListeFilme();
-            new IoXmlFilmlisteLesen().filmlisteLesen(url, GuiFunktionen.istUrl(url) /* istUrl */, tmpListe);
+            new IoXmlFilmlisteLesen().dateiInListeEinlesen(url, GuiFunktionen.istUrl(url) /* istUrl */, tmpListe);
             Daten.listeFilme.updateListe(tmpListe, false /* nur URL vergleichen */);
             tmpListe.clear();
         }
