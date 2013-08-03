@@ -41,10 +41,13 @@ public class MediathekBr extends MediathekReader implements Runnable {
 
     @Override
     void addToList() {
-        new Thread(new JsonLaden()).start();
+        //new Thread(new ThemaLaden()).start();
+        Thread th = new Thread(new ThemaLaden());
+        th.setName(nameSenderMReader);
+        th.start();
     }
 
-    private class JsonLaden implements Runnable {
+    private class ThemaLaden implements Runnable {
 
         @Override
         public synchronized void run() {
@@ -548,7 +551,6 @@ public class MediathekBr extends MediathekReader implements Runnable {
 //            Log.fehlerMeldung(-963486054, Log.FEHLER_ART_MREADER, "MediathekBr.laden", ex, "");
 //        }
 //    }
-
     public String convertDatum(String datum) {
         //      <beginnPlan>2010-12-09T10:55:00</beginnPlan>
         try {

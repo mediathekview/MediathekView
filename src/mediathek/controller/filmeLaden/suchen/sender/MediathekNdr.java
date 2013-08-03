@@ -91,7 +91,10 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         } else {
             meldungAddMax(listeThemen.size());
             for (int t = 0; t < maxThreadLaufen; ++t) {
-                new Thread(new ThemaLaden()).start();
+                //new Thread(new ThemaLaden()).start();
+                Thread th = new Thread(new ThemaLaden());
+                th.setName(nameSenderMReader + t);
+                th.start();
             }
         }
     }

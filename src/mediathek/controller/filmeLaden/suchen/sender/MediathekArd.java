@@ -108,7 +108,10 @@ public class MediathekArd extends MediathekReader implements Runnable {
             meldungAddMax(listeThemen.size());
             listeSort(listeThemen, 1);
             for (int t = 0; t < maxThreadLaufen; ++t) {
-                new Thread(new ArdThemaLaden()).start();
+                //new Thread(new ThemaLaden()).start();
+                Thread th = new Thread(new ThemaLaden());
+                th.setName(nameSenderMReader + t);
+                th.start();
             }
         }
     }
@@ -125,11 +128,11 @@ public class MediathekArd extends MediathekReader implements Runnable {
         }
     }
 
-    private class ArdThemaLaden implements Runnable {
+    private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
 
-        public ArdThemaLaden() {
+        public ThemaLaden() {
         }
         private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         private StringBuffer seiteFehler = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
