@@ -76,7 +76,10 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
         } else {
             meldungAddMax(listeThemen.size());
             for (int t = 0; t < maxThreadLaufen; ++t) {
-                new Thread(new ArteThemaLaden()).start();
+                //new Thread(new ThemaLaden()).start();
+                Thread th = new Thread(new ThemaLaden());
+                th.setName(nameSenderMReader + t);
+                th.start();
             }
         }
     }
@@ -161,7 +164,7 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
         }
     }
 
-    class ArteThemaLaden implements Runnable {
+    class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
@@ -215,12 +218,14 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
     }
 
     void filmeLaden2(StringBuffer seite, String[] arr, String urlJson, String titel) {
-        String url = "";
+        String url = "", url1 = "", url2 = "";
+        String datum = "", zeit = "";
         String urlHttp = "";
         String beschreibung = "";
         String stichwoerter = "";
         long dauer = 0;
-        final String MUSTER_URL = "arte_vp_url=\"";
+        final String MUSTER_URL_1 = "\"bitrate\":1500,\"streamer\":\"";
+        final String MUSTER_URL_2 = "url\":\"";
         final String MUSTER_BESCHREIBUNG = "\"VDE\":\"";
         final String MUSTER_STICHWOERTER = "\"VTA\":[\"";
         final String MUSTER_URL_HTTP = "\"url\":\"http:";
@@ -245,26 +250,56 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
         if ((pos1 = seite.indexOf(MUSTER_URL_HTTP)) != -1) {
             pos1 += MUSTER_URL_HTTP.length();
             if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
-                urlHttp = seite.substring(pos1, pos2);
+                if (!(urlHttp = seite.substring(pos1, pos2)).isEmpty()) {
+                    urlHttp = "http:" + urlHttp;
+                }
             }
         }
-        if (!urlHttp.isEmpty()) {
-            try {
-                dauer = Long.parseLong(arr[3]) * 60;
-            } catch (Exception ex) {
-                dauer = 0;
+        if ((pos1 = seite.indexOf(MUSTER_URL_1)) != -1) {
+            pos1 += MUSTER_URL_1.length();
+            if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
+                url1 = seite.substring(pos1, pos2);
+                if ((pos1 = seite.indexOf(MUSTER_URL_2, pos2)) != -1) {
+                    pos1 += MUSTER_URL_2.length();
+                    if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
+                        url2 = seite.substring(pos1, pos2);
+                    }
+                }
             }
-            // Datum ändern
-            arr[4] = datumAendern(arr[4]);
+        }
+        try {
+            dauer = Long.parseLong(arr[3]) * 60;
+        } catch (Exception ex) {
+            dauer = 0;
+        }
+        // Datum ändern
+        arr[4] = datumAendern(arr[4]);
+        datum = convertDatum(arr[4]);
+        zeit = convertZeit(arr[4]);
+        if (!urlHttp.isEmpty()) {
             // arr = new String[]{url, bild, thema, dauer, datum, beschreibung};
             // DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
             //     String datum, String zeit,
             //     long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
-            DatenFilm film = new DatenFilm(nameSenderMReader, arr[2], arr[0], titel, "http:" + urlHttp, "" /*urlRtmp*/,
-                    convertDatum(arr[4]), convertZeit(arr[4]), dauer, beschreibung, arr[1], ""/* imageUrl*/, stichwoerter.split("\",\""));
+            DatenFilm film = new DatenFilm(nameSenderMReader, arr[2], arr[0], titel, urlHttp, "" /*urlRtmp*/,
+                    datum, zeit, dauer, beschreibung, arr[1], ""/* imageUrl*/, stichwoerter.split("\",\""));
 //            film.addKleineUrl(urlKlein, "");
 //            film.arr[DatenFilm.FILM_URL_AUTH_NR] = authurl;
             addFilm(film);
+        } else {
+            ////
+        }
+        if (!url1.isEmpty() && !url2.isEmpty()) {
+            url = url1 + "mp4:" + url2;
+            // arr = new String[]{url, bild, thema, dauer, datum, beschreibung};
+            // DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
+            //     String datum, String zeit,
+            //     long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+            DatenFilm film = new DatenFilm(nameSenderMReader, arr[2], arr[0], titel, url, "" /*urlRtmp*/,
+                    datum, zeit, dauer, beschreibung, arr[1], ""/* imageUrl*/, stichwoerter.split("\",\""));
+//            film.addKleineUrl(urlKlein, "");
+//            film.arr[DatenFilm.FILM_URL_AUTH_NR] = authurl;
+////////////////            addFilm(film);
         } else {
             ////
         }

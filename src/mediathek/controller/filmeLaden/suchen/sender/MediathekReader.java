@@ -119,15 +119,15 @@ public class MediathekReader implements Runnable {
     boolean addFilm(DatenFilm film) {
         // Anzeige der Größe in GB und deshalb: Faktor 1000
         String groesseStr = "";
-        long l = MVUrlDateiGroesse.laenge(film.arr[DatenFilm.FILM_URL_NR]);
-        if (l > 1000 * 1000) {
-            // größer als 1MB sonst kann ich mirs sparen
-            groesseStr = String.valueOf(l / (1000 * 1000));
-            groesseStr = fuellen(4, groesseStr);
-            groesseStr = groesseStr.substring(0, groesseStr.length() - 3) + "," + groesseStr.substring(groesseStr.length() - 3);
-        } else if (l > 0) {
-            groesseStr = "<1";
-        }
+////        long l = MVUrlDateiGroesse.laenge(film.arr[DatenFilm.FILM_URL_NR]);
+////        if (l > 1000 * 1000) {
+////            // größer als 1MB sonst kann ich mirs sparen
+////            groesseStr = String.valueOf(l / (1000 * 1000));
+////            groesseStr = fuellen(4, groesseStr);
+////            groesseStr = groesseStr.substring(0, groesseStr.length() - 3) + "," + groesseStr.substring(groesseStr.length() - 3);
+////        } else if (l > 0) {
+////            groesseStr = "<1";
+////        }
         film.arr[DatenFilm.FILM_GROESSE_NR] = groesseStr;
         return suchen.listeFilmeNeu.addFilmVomSender(film);
     }

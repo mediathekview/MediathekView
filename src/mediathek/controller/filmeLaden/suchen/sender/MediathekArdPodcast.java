@@ -97,12 +97,15 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
             meldungAddMax(listeThemen.size());
             listeSort(listeThemen, 1);
             for (int t = 0; t < maxThreadLaufen; ++t) {
-                new Thread(new ArdThemaLaden()).start();
+                //new Thread(new ThemaLaden()).start();
+                Thread th = new Thread(new ThemaLaden());
+                th.setName(nameSenderMReader + t);
+                th.start();
             }
         }
     }
 
-    private class ArdThemaLaden implements Runnable {
+    private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);

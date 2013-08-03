@@ -91,7 +91,10 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             meldungAddMax(listeThemen.size());
             //alles auswerten
             for (int t = 0; t < maxThreadLaufen; ++t) {
-                new Thread(new ZdfThemaLaden()).start();
+                //new Thread(new ThemaLaden()).start();
+                Thread th = new Thread(new ThemaLaden());
+                th.setName(nameSenderMReader + t);
+                th.start();
             }
         }
     }
@@ -180,7 +183,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         listeThemen.addUrl(add);
     }
 
-    private class ZdfThemaLaden implements Runnable {
+    private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);

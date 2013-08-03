@@ -76,7 +76,10 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
             listeThemen.add(0, add); // alle nachfolgenden Filme ersetzen Filme die bereits in der Liste sind
             meldungAddMax(listeThemen.size());
             for (int t = 0; t < maxThreadLaufen; ++t) {
-                new Thread(new ThemaLaden()).start();
+                //new Thread(new ThemaLaden()).start();
+                Thread th = new Thread(new ThemaLaden());
+                th.setName(nameSenderMReader + t);
+                th.start();
             }
 
         }

@@ -52,7 +52,10 @@ public class MediathekSwr extends MediathekReader implements Runnable {
         } else {
             meldungAddMax(listeThemen.size());
             for (int t = 0; t < maxThreadLaufen; ++t) {
-                new Thread(new SenderThemaLaden()).start();
+                //new Thread(new ThemaLaden()).start();
+                Thread th = new Thread(new ThemaLaden());
+                th.setName(nameSenderMReader + t);
+                th.start();
             }
         }
     }
@@ -97,13 +100,13 @@ public class MediathekSwr extends MediathekReader implements Runnable {
         }
     }
 
-    private class SenderThemaLaden implements Runnable {
+    private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         private StringBuffer strSeite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
         private StringBuffer strSeite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
 
-        public SenderThemaLaden() {
+        public ThemaLaden() {
         }
 
         @Override
