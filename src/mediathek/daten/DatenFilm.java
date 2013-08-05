@@ -352,22 +352,22 @@ public class DatenFilm implements Comparable<DatenFilm> {
 
     public void init() {
         // Filmdauer
-        if (!this.arr[DatenFilm.FILM_DAUER_NR].contains(":") && !this.arr[DatenFilm.FILM_DAUER_NR].isEmpty()) {
-            // nur als Übergang bis die Liste umgestellt ist
-            long l = Long.parseLong(this.arr[DatenFilm.FILM_DAUER_NR]);
-            dauerL = l;
-            if (l > 0) {
-                long hours = l / 3600;
-                l = l - (hours * 3600);
-                long min = l / 60;
-                l = l - (min * 60);
-                long seconds = l;
-                this.arr[DatenFilm.FILM_DAUER_NR] = fuellen(2, String.valueOf(hours)) + ":" + fuellen(2, String.valueOf(min)) + ":" + fuellen(2, String.valueOf(seconds));
+        try {
+            if (!this.arr[DatenFilm.FILM_DAUER_NR].contains(":") && !this.arr[DatenFilm.FILM_DAUER_NR].isEmpty()) {
+                // nur als Übergang bis die Liste umgestellt ist
+                long l = Long.parseLong(this.arr[DatenFilm.FILM_DAUER_NR]);
+                dauerL = l;
+                if (l > 0) {
+                    long hours = l / 3600;
+                    l = l - (hours * 3600);
+                    long min = l / 60;
+                    l = l - (min * 60);
+                    long seconds = l;
+                    this.arr[DatenFilm.FILM_DAUER_NR] = fuellen(2, String.valueOf(hours)) + ":" + fuellen(2, String.valueOf(min)) + ":" + fuellen(2, String.valueOf(seconds));
+                } else {
+                    this.arr[DatenFilm.FILM_DAUER_NR] = "";
+                }
             } else {
-                this.arr[DatenFilm.FILM_DAUER_NR] = "";
-            }
-        } else {
-            try {
                 dauerL = 0;
                 if (!this.arr[DatenFilm.FILM_DAUER_NR].equals("")) {
                     String[] parts = this.arr[DatenFilm.FILM_DAUER_NR].split(":");
@@ -377,9 +377,10 @@ public class DatenFilm implements Comparable<DatenFilm> {
                         power *= 60;
                     }
                 }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(468912049, Log.FEHLER_ART_PROG, "DatenFilm.init", "Dauer: " + this.arr[DatenFilm.FILM_DAUER_NR]);
             }
+        } catch (Exception ex) {
+            dauerL = 0;
+            Log.fehlerMeldung(468912049, Log.FEHLER_ART_PROG, "DatenFilm.init", "Dauer: " + this.arr[DatenFilm.FILM_DAUER_NR]);
         }
         // Datum
         datumFilm = DatumZeit.getDatumForObject(this);

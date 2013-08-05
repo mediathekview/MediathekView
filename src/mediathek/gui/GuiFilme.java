@@ -1625,6 +1625,8 @@ public class GuiFilme extends PanelVorlage {
                     DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_NR_NR).toString());
                     String th = film.arr[DatenFilm.FILM_THEMA_NR];
                     String se = film.arr[DatenFilm.FILM_SENDER_NR];
+                    // Blackliste für alle Fälle einschalten, notify kommt beim add()
+                    Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR] = Boolean.toString(false);
                     if (!sender) {
                         ddaten.listeBlacklist.add(new DatenBlacklist("", th, "" /*Titel*/, "" /*Thema-Titel*/));
                     } else if (!thema) {
