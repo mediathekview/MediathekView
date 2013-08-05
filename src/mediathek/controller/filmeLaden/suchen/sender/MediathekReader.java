@@ -88,7 +88,6 @@ public class MediathekReader implements Runnable {
 
     public boolean checkNameSenderFilmliste(String name) {
         // ist der Name der in der Tabelle Filme angezeigt wird
-        // ARTE hat hier 2 Namen: ARTE.DE, ARTE.FR
         return nameSenderMReader.equalsIgnoreCase(name);
     }
 
