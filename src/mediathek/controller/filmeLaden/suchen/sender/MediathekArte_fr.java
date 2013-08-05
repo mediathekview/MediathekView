@@ -19,8 +19,6 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 
 public class MediathekArte_fr extends MediathekArte_de implements Runnable {
@@ -34,20 +32,6 @@ public class MediathekArte_fr extends MediathekArte_de implements Runnable {
         super(ssearch, startPrio);
         nameSenderFilmliste = SENDER_ARTE_FR;
         nameSenderMReader = SENDER_ARTE_FR;
-        startUrl = "http://www.arte.tv/guide/fr/plus7.json?page=1&per_page=400&regions=default%2CEUR_DE_FR%2CDE_FR%2CSAT%2CALL";
-        // "vendredi 02 août à  8h30"
-        sdfIn = new SimpleDateFormat("EEEEddMMMHmm yyyy", Locale.FRANCE);
-    }
-
-    @Override
-    String datumAendern(String datum) {
-        // private static SimpleDateFormat sdfIn = new SimpleDateFormat("EEE, dd, MMM HH:mm", Locale.GERMANY);
-        // "vendredi 02 août à  8h30"
-        // "jeudi 01 août à 20h48"
-        // Freitag, 02. August um  5:00 Uhr
-        datum = datum.replace(" à", "");
-        datum = datum.substring(0, datum.length() - 3) + datum.substring(datum.length() - 2);
-        datum = datum.replace(" ", "");
-        return datum + jahr;
+        URL_ARTE = "http://www.arte.tv/papi/tvguide/epg/schedule/F/L3/";
     }
 }
