@@ -21,6 +21,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JPanel;
@@ -28,6 +29,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
+import mediathek.MediathekGui;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
@@ -74,6 +76,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         init();
         initTree();
         setSize();
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
         jButtonBeenden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

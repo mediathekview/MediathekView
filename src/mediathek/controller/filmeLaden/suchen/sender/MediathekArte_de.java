@@ -281,6 +281,14 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
             // DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
             //     String datum, String zeit,
             //     long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+            //
+            // Versuch
+            // http://artestras.vo.llnwxd.net/o35/nogeo/HBBTV/041477-002-A_EQ_1_VA-STA_00615745_MP4-1500_AMM-HBBTV.mp4
+            // http://artestrsmv.rd.llnwd.net/o35/nogeo/videothek/041477-002-A_HQ_1_VA-STA_00615744_MP4-1500_AMM-Reach.mp4
+//            urlHttp = urlHttp.replace("http://artestrsmv.rd.llnwd.net/o35/nogeo/videothek", "http://artestras.vo.llnwxd.net/o35/nogeo/HBBTV");
+//            urlHttp = urlHttp.replace("AMM-Reach.mp4", "AMM-HBBTV.mp4");
+
+
             DatenFilm film = new DatenFilm(nameSenderMReader, arr[2], arr[0], titel, urlHttp, "" /*urlRtmp*/,
                     datum, zeit, dauer, beschreibung, arr[1], ""/* imageUrl*/, stichwoerter.split("\",\""));
 //            film.addKleineUrl(urlKlein, "");

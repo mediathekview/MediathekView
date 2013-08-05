@@ -20,7 +20,8 @@ public class MVUrlDateiGroesse {
             //conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
             conn.setReadTimeout(TIMEOUT);
             conn.setConnectTimeout(TIMEOUT);
-            ret = conn.getContentLengthLong();
+            //ret = conn.getContentLengthLong(); gibts erst seit jdk 7
+            ret = conn.getContentLength();
             conn.disconnect();
         } catch (Exception ex) {
             ret = -1;
