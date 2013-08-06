@@ -7,8 +7,26 @@ public class MVUrlDateiGroesse {
 
     final static int TIMEOUT = 5000; // ms
 
+    public static String laengeString(String url) {
+        // liefert die Dateigröße einer URL in GBYTE!!
+        // Anzeige der Größe in GB und deshalb: Faktor 1000
+        String groesseStr = "";
+        long l = laenge(url);
+        if (l > 1000 * 1000) {
+            // größer als 1MB sonst kann ich mirs sparen
+            groesseStr = String.valueOf(l / (1000 * 1000));
+//            groesseStr = fuellen(4, groesseStr);
+            if (groesseStr.length() >= 4) {
+                groesseStr = groesseStr.substring(0, groesseStr.length() - 3) + "." + groesseStr.substring(groesseStr.length() - 3);
+            }
+        } else if (l > 0) {
+            groesseStr = "<1";
+        }
+        return groesseStr;
+    }
+
     public static long laenge(String url) {
-        // liefert die Dateigröße eine URL
+        // liefert die Dateigröße einer URL in BYTE!
         // oder -1
         long ret = -1;
         if (!url.toLowerCase().startsWith("http")) {
@@ -33,4 +51,10 @@ public class MVUrlDateiGroesse {
         }
         return ret;
     }
+//    private static String fuellen(int anz, String s) {
+//        while (s.length() < anz) {
+//            s = "0" + s;
+//        }
+//        return s;
+//    }
 }

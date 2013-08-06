@@ -193,7 +193,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
                 //   long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
                 DatenFilm film = new DatenFilm(nameSenderMReader, thema, "http://www.br.de/mediathek/index.html", titel, url, ""/*rtmpURL*/, datum, zeit,
                         dauer, description, "", image, new String[]{});
-                film.addKleineUrl(url_klein, "");
+                film.addUrlKlein(url_klein, "");
                 addFilm(film);
                 meldung(film.arr[DatenFilm.FILM_URL_NR]);
             } catch (Exception ex) {

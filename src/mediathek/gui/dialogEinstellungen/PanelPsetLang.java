@@ -65,7 +65,7 @@ public class PanelPsetLang extends PanelVorlage {
     private MVJTable tabelleProgramme;
     private boolean modalHilfe = false;
     private final static Color COLOR_ABSPIELEN = new Color(160, 255, 160);
-    
+
     public PanelPsetLang(DDaten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
@@ -216,16 +216,22 @@ public class PanelPsetLang extends PanelVorlage {
                 new DialogHilfe(null, modalHilfe, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PRGRAMME)).setVisible(true);
             }
         });
-        jRadioButtonKleineAufloesung.addActionListener(new ActionListener() {
+        jRadioButtonAufloesungKlein.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getPset().arr[DatenPset.PROGRAMMSET_KLEINE_AUFLOESUNG_NR] = Boolean.toString(jRadioButtonKleineAufloesung.isSelected());
+                setAufloesung();
             }
         });
-        jRadioButtonHoheAufloesung.addActionListener(new ActionListener() {
+        jRadioButtonAufloesungNormal.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getPset().arr[DatenPset.PROGRAMMSET_KLEINE_AUFLOESUNG_NR] = Boolean.toString(jRadioButtonKleineAufloesung.isSelected());
+                setAufloesung();
+            }
+        });
+        jRadioButtonAufloesungHD.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setAufloesung();
             }
         });
         jButtonPruefen.addActionListener(new BeobPuefen());
@@ -240,6 +246,18 @@ public class PanelPsetLang extends PanelVorlage {
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(0, 0, false));
         }
 
+    }
+
+    private void setAufloesung() {
+        if (jRadioButtonAufloesungNormal.isSelected()) {
+            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenPset.AUFLOESUNG_NORMAL;
+        }
+        if (jRadioButtonAufloesungHD.isSelected()) {
+            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenPset.AUFLOESUNG_HD;
+        }
+        if (jRadioButtonAufloesungKlein.isSelected()) {
+            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenPset.AUFLOESUNG_KLEIN;
+        }
     }
 
     private void tabellePset() {
@@ -317,8 +335,9 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxButton.setSelected(pSet.istButton());
             jCheckBoxAbo.setSelected(pSet.istAbo());
             jButtonAbspielen.setBackground(pSet.istAbspielen() ? COLOR_ABSPIELEN : null);
-            jRadioButtonHoheAufloesung.setSelected(!Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_KLEINE_AUFLOESUNG_NR]));
-            jRadioButtonKleineAufloesung.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_KLEINE_AUFLOESUNG_NR]));
+            jRadioButtonAufloesungNormal.setSelected(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_NORMAL));
+            jRadioButtonAufloesungKlein.setSelected(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_KLEIN));
+            jRadioButtonAufloesungHD.setSelected(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_HD));
 //            jButtonAbspielen.setForeground(pSet.istAbspielen() ? Color.BLACK : null);
 //            jButtonAbspielen.setEnabled(pSet.istAbspielen() ? false : true);
         } else {
@@ -582,8 +601,10 @@ public class PanelPsetLang extends PanelVorlage {
         jTextFieldGruppeDirektSuffix = new javax.swing.JTextField();
         jTextArea1 = new javax.swing.JTextArea();
         jPanel12 = new javax.swing.JPanel();
-        jRadioButtonHoheAufloesung = new javax.swing.JRadioButton();
-        jRadioButtonKleineAufloesung = new javax.swing.JRadioButton();
+        jRadioButtonAufloesungNormal = new javax.swing.JRadioButton();
+        jRadioButtonAufloesungKlein = new javax.swing.JRadioButton();
+        jRadioButtonAufloesungHD = new javax.swing.JRadioButton();
+        jLabel14 = new javax.swing.JLabel();
         jPanelProgramme = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTableProgramme = new javax.swing.JTable();
@@ -648,7 +669,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -795,7 +816,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(337, Short.MAX_VALUE))
+                .addContainerGap(339, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Aussehen", jPanel10);
@@ -890,7 +911,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(287, Short.MAX_VALUE))
+                .addContainerGap(289, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Speicherziel", jPanel9);
@@ -925,7 +946,7 @@ public class PanelPsetLang extends PanelVorlage {
                     .addComponent(jTextFieldGruppeDirektPraefix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
                     .addComponent(jTextFieldGruppeDirektSuffix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jTextArea1.setEditable(false);
@@ -937,12 +958,17 @@ public class PanelPsetLang extends PanelVorlage {
 
         jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder("Auflösung"));
 
-        buttonGroup1.add(jRadioButtonHoheAufloesung);
-        jRadioButtonHoheAufloesung.setSelected(true);
-        jRadioButtonHoheAufloesung.setText("Film in hoher Auflösung laden");
+        buttonGroup1.add(jRadioButtonAufloesungNormal);
+        jRadioButtonAufloesungNormal.setSelected(true);
+        jRadioButtonAufloesungNormal.setText("Film in hoher Auflösung laden");
 
-        buttonGroup1.add(jRadioButtonKleineAufloesung);
-        jRadioButtonKleineAufloesung.setText("Film in niedriger Auflösung laden");
+        buttonGroup1.add(jRadioButtonAufloesungKlein);
+        jRadioButtonAufloesungKlein.setText("Film in niedriger Auflösung laden");
+
+        buttonGroup1.add(jRadioButtonAufloesungHD);
+        jRadioButtonAufloesungHD.setText("Film in HD laden");
+
+        jLabel14.setText("Wenn es die Auflösung nicht gibt, wird die nächst kleinere genommen.");
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
@@ -951,17 +977,24 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButtonHoheAufloesung)
-                    .addComponent(jRadioButtonKleineAufloesung))
+                    .addComponent(jLabel14)
+                    .addComponent(jRadioButtonAufloesungNormal)
+                    .addComponent(jRadioButtonAufloesungKlein)
+                    .addComponent(jRadioButtonAufloesungHD))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
-                .addContainerGap(9, Short.MAX_VALUE)
-                .addComponent(jRadioButtonHoheAufloesung)
+                .addContainerGap()
+                .addComponent(jRadioButtonAufloesungHD)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButtonKleineAufloesung))
+                .addComponent(jRadioButtonAufloesungNormal)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jRadioButtonAufloesungKlein)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel14)
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
@@ -985,7 +1018,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(178, Short.MAX_VALUE))
+                .addContainerGap(114, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Download", jPanel11);
@@ -1155,7 +1188,7 @@ public class PanelPsetLang extends PanelVorlage {
             jPanelProgrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProgrammeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1218,7 +1251,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButtonGruppeAuf)
@@ -1290,6 +1323,7 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxThema;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
@@ -1300,8 +1334,9 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JPanel jPanelDetails;
     private javax.swing.JPanel jPanelProgramme;
-    private javax.swing.JRadioButton jRadioButtonHoheAufloesung;
-    private javax.swing.JRadioButton jRadioButtonKleineAufloesung;
+    private javax.swing.JRadioButton jRadioButtonAufloesungHD;
+    private javax.swing.JRadioButton jRadioButtonAufloesungKlein;
+    private javax.swing.JRadioButton jRadioButtonAufloesungNormal;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSpinner jSpinnerLaenge;

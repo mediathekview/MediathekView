@@ -23,13 +23,15 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
-import mediathek.controller.io.starter.Start;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 
 public class DatenPset {
 
+    public final static String AUFLOESUNG_NORMAL = "normal";
+    public final static String AUFLOESUNG_HD = "hd";
+    public final static String AUFLOESUNG_KLEIN = "klein";
     public static final String PROGRAMMSET = "Programmset";
     //Tags Programmgruppen
     public static final String PROGRAMMSET_NAME = "Name";
@@ -58,8 +60,8 @@ public class DatenPset {
     public static final int PROGRAMMSET_LAENGE_BESCHRAENKEN_NR = 11;
     public static final String PROGRAMMSET_MAX_LAENGE = "max-Laenge";
     public static final int PROGRAMMSET_MAX_LAENGE_NR = 12;
-    public static final String PROGRAMMSET_KLEINE_AUFLOESUNG = "kleine-Aufloesung";
-    public static final int PROGRAMMSET_KLEINE_AUFLOESUNG_NR = 13;
+    public static final String PROGRAMMSET_AUFLOESUNG = "Aufloesung";
+    public static final int PROGRAMMSET_AUFLOESUNG_NR = 13;
     public static final String PROGRAMMSET_ADD_ON = "AddOn";
     public static final int PROGRAMMSET_ADD_ON_NR = 14;
     public static final String PROGRAMMSET_BESCHREIBUNG = "Beschreibung";
@@ -68,12 +70,12 @@ public class DatenPset {
     public static final String[] COLUMN_NAMES = {"Setname", PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
         PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
         PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
-        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, "kleine Auflösung", PROGRAMMSET_ADD_ON,
+        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, "Auflösung", PROGRAMMSET_ADD_ON,
         PROGRAMMSET_BESCHREIBUNG};
     public static final String[] COLUMN_NAMES_ = {PROGRAMMSET_NAME, PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
         PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
         PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
-        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_KLEINE_AUFLOESUNG, PROGRAMMSET_ADD_ON,
+        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_AUFLOESUNG, PROGRAMMSET_ADD_ON,
         PROGRAMMSET_BESCHREIBUNG};
     private ListeProg listeProg = new ListeProg();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
@@ -101,11 +103,20 @@ public class DatenPset {
         return listeProg.get(i);
     }
 
-    public boolean kleineAufloesung() {
-        // liefert true wenn das Pset auf "kleine Auflösung" gesetzt ist
-        return Boolean.parseBoolean(arr[DatenPset.PROGRAMMSET_KLEINE_AUFLOESUNG_NR]);
-    }
-
+//    public boolean aufloesungIstKlein() {
+//        // liefert true wenn das Pset auf "kleine Auflösung" gesetzt ist
+//        return arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(AUFLOESUNG_KLEIN);
+//    }
+//
+//    public boolean aufloesungIstHD() {
+//        // liefert true wenn das Pset auf "HD Auflösung" gesetzt ist
+//        return arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(AUFLOESUNG_HD);
+//    }
+//
+//    public boolean aufloesungIstNormal() {
+//        // liefert true wenn das Pset auf "normale Auflösung" gesetzt ist
+//        return arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(AUFLOESUNG_NORMAL);
+//    }
     public boolean progsContainPath() {
         // ein Programmschalter mit "**"
         boolean ret = false;

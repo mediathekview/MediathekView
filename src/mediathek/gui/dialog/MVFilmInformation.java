@@ -167,6 +167,8 @@ public class MVFilmInformation implements ChangeListener {
         for (int i = 0; i < labelArrNames.length; ++i) {
             if (i == DatenFilm.FILM_URL_RTMP_NR
                     || i == DatenFilm.FILM_URL_AUTH_NR
+                    || i == DatenFilm.FILM_URL_HD_NR
+                    || i == DatenFilm.FILM_URL_RTMP_HD_NR
                     || i == DatenFilm.FILM_URL_KLEIN_NR
                     || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR) {
                 continue;

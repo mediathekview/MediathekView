@@ -516,7 +516,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     return false;
                 } else {
                     // als 2. URL einfügen
-                    f.addKleineUrl(urlOrg, urlRtmp);
+                    f.addUrlKlein(urlOrg, urlRtmp);
                     return true;
                 }
             }

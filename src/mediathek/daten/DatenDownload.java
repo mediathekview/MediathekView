@@ -111,7 +111,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         makeArr();
     }
 
-    public DatenDownload(DatenPset pSet, DatenFilm ffilm, int quelle, DatenAbo abo, String name, String pfad) {
+    public DatenDownload(DatenPset pSet, DatenFilm ffilm, int quelle, DatenAbo abo, String name, String pfad, String aufloesung) {
         makeArr();
         arr[DOWNLOAD_FILM_NR_NR] = ffilm.arr[DatenFilm.FILM_NR_NR];
         arr[DOWNLOAD_SENDER_NR] = ffilm.arr[DatenFilm.FILM_SENDER_NR];
@@ -123,15 +123,16 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZEIT_NR] = ffilm.arr[DatenFilm.FILM_ZEIT_NR];
         arr[DOWNLOAD_URL_RTMP_NR] = ffilm.arr[DatenFilm.FILM_URL_RTMP_NR];
         arr[DOWNLOAD_DAUER_NR] = ffilm.arr[DatenFilm.FILM_DAUER_NR];
-        arr[DOWNLOAD_GROESSE_NR] = ffilm.arr[DatenFilm.FILM_GROESSE_NR];
         arr[DOWNLOAD_QUELLE_NR] = String.valueOf(quelle);
-        if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_KLEINE_AUFLOESUNG_NR])) {
-            arr[DOWNLOAD_URL_NR] = ffilm.getUrlKleinNormal();
-            arr[DOWNLOAD_URL_RTMP_NR] = ffilm.getUrlKleinFlvstreamer();
+        if (aufloesung.isEmpty()) {
+            arr[DOWNLOAD_URL_NR] = ffilm.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]);
+            arr[DOWNLOAD_URL_RTMP_NR] = ffilm.getUrlRtmpFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]);
         } else {
-            arr[DOWNLOAD_URL_NR] = ffilm.getUrlNormal();
-            arr[DOWNLOAD_URL_RTMP_NR] = ffilm.getUrlFlvstreamer();
+            arr[DOWNLOAD_URL_NR] = ffilm.getUrlFuerAufloesung(aufloesung);
+            arr[DOWNLOAD_URL_RTMP_NR] = ffilm.getUrlRtmpFuerAufloesung(aufloesung);
         }
+        // und jetzt noch die Dateigröße für die entsp. URL
+        arr[DOWNLOAD_GROESSE_NR] = ffilm.getDateigroesse(arr[DOWNLOAD_URL_NR]);
         film = ffilm;
         aufrufBauen(pSet, ffilm, abo, name, pfad);
         init();
