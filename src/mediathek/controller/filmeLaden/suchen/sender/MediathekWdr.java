@@ -496,7 +496,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 //long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
                 DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, ""/* zeit */,
                         dauer, beschreibung, "", image, keyword);
-                film.addKleineUrl(urlKlein, "");
+                film.addUrlKlein(urlKlein, "");
                 addFilm(film);
             } else {
                 Log.fehlerMeldung(-978451239, Log.FEHLER_ART_MREADER, "MediathekWdr.addFilme2", new String[]{"keine Url: " + urlFilmSuchen, "UrlThema: " + filmWebsite});
@@ -709,7 +709,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                             } else {
                                 DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlHd, ""/*rtmpURL*/, datum, ""/* zeit */, duration, description, thumnail, image, keywords);
                                 addFilm(film);
-                                film.addKleineUrl(url, "");
+                                film.addUrlKlein(url, "");
                             }
                         }
                     }

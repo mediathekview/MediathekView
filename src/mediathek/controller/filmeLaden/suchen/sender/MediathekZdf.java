@@ -799,7 +799,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             DatenFilm ret[];
             DatenFilm film = new DatenFilm(sender, thema, filmWebsite, titel, url, "" /*urlRtmp*/, datum, zeit,
                     extractDuration(laenge), beschreibung, bild, ""/* imageUrl*/, new String[]{""});
-            film.addKleineUrl(urlKlein, "");
+            film.addUrlKlein(urlKlein, "");
             if (!urlHd.isEmpty()) {
                 // dann erst mal versuchen aus der normalen URL zu bauen
                 if (url.endsWith("vh.mp4")) {

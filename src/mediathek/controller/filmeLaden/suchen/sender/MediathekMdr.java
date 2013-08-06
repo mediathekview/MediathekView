@@ -454,7 +454,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                             //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
 //                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, rtmpUrl, datum, zeit);
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlMp4, ""/*rtmpUrl*/, datum, zeit, duration, description, thumbnailUrl, imageUrl, new String[]{});
-                            film.addKleineUrl(urlMp4_klein, "");
+                            film.addUrlKlein(urlMp4_klein, "");
                             addFilm(film);
                         } else {
                             //Log.debugMeldung("MDR: Film doppelt");

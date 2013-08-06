@@ -201,7 +201,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     if (!abo.arr[DatenAbo.ABO_PSET_NR].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR])) {
                         abo.arr[DatenAbo.ABO_PSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
                     }
-                    add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", ""));
+                    add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
                     gefunden = true;
                 }
             }
