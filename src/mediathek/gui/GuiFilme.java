@@ -197,8 +197,8 @@ public class GuiFilme extends PanelVorlage {
             public void start_(ListenerFilmeLadenEvent event) {
                 beobMausTabelle.itemSenderLaden.setEnabled(false);
                 /////
-                Daten.listeFilme.clear();
-                DDaten.listeFilmeNachBlackList.clear();
+                //Daten.listeFilme.clear();
+                //DDaten.listeFilmeNachBlackList.clear();
                 tabelleLaden();
             }
 
@@ -332,7 +332,7 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                checkBlacklist(false); // nur GuiDabug zum löschen aus der Filmliste
+                checkBlacklist(false); // nur GuiDebug zum löschen aus der Filmliste
                 tabelleLaden();
             }
         });

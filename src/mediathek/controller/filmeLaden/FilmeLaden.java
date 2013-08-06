@@ -24,9 +24,11 @@ import mediathek.controller.filmeLaden.importieren.ImportFilmliste;
 import mediathek.controller.filmeLaden.importieren.ListeDownloadUrlsFilmlisten;
 import mediathek.controller.filmeLaden.importieren.ListeFilmlistenServer;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
+import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListeFilme;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.ListenerMediathekView;
 
 public class FilmeLaden {
 
@@ -37,8 +39,8 @@ public class FilmeLaden {
     public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
     // private
     private boolean stop = false;
-    private ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
-//    private ListeFilme listeFilmeNeu = null; //ist eine NEUE ungefilterte Liste, wird beim Laden NEU erstellt
+    // private ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
+    // private ListeFilme listeFilmeNeu = null; //ist eine NEUE ungefilterte Liste, wird beim Laden NEU erstellt
     private FilmeSuchenSender filmeSuchenSender;
     private ImportFilmliste filmeImportieren;
     private EventListenerList listeners = new EventListenerList();
@@ -117,6 +119,9 @@ public class FilmeLaden {
             // nicht doppelt starten
             istAmLaufen = true;
             stop = false;
+            Daten.listeFilme.clear();
+            DDaten.listeFilmeNachBlackList.clear();
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, FilmeLaden.class.getSimpleName());
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 filmeImportieren.filmeImportierenAuto();
@@ -136,8 +141,8 @@ public class FilmeLaden {
             // nicht doppelt starten
             istAmLaufen = true;
             stop = false;
-            listeFilmeAlt = llisteFilme;
-            filmeSuchenSender.filmeBeimSenderLaden(senderAllesLaden, filmlisteUpdate, listeFilmeAlt);
+            //listeFilmeAlt = llisteFilme;
+            filmeSuchenSender.filmeBeimSenderLaden(senderAllesLaden, filmlisteUpdate, llisteFilme);
         }
     }
 
@@ -147,7 +152,7 @@ public class FilmeLaden {
             // nicht doppelt starten
             istAmLaufen = true;
             stop = false;
-            listeFilmeAlt = llisteFilme;
+            //listeFilmeAlt = llisteFilme;
             filmeSuchenSender.updateSender(sender, senderAllesLaden, llisteFilme);
         }
     }
@@ -167,7 +172,7 @@ public class FilmeLaden {
         @Override
         public synchronized void fertig(ListenerFilmeLadenEvent event) {
             // Ergebnisliste listeFilme eintragen -> Feierabend!
-            Daten.listeFilme =filmeSuchenSender.listeFilmeNeu;
+            Daten.listeFilme = filmeSuchenSender.listeFilmeNeu;
             undEnde(event);
         }
     }
@@ -196,4 +201,3 @@ public class FilmeLaden {
         notifyFertig(event);
     }
 }
-
