@@ -258,16 +258,14 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                             filmHolen(thema, titel, urlThema, urlFilm);
                         } else {
                             id = "http://www.zdf.de/ZDFmediathek/xmlservice/web/beitragsDetails?ak=web&id=" + id;
-                            DatenFilm f[] = filmHolenId(getUrl, seite2, nameSenderMReader, thema, titel, urlFilm, id);
-                            if (f == null) {
+                            DatenFilm film = filmHolenId(getUrl, seite2, nameSenderMReader, thema, titel, urlFilm, id);
+                            if (film == null) {
                                 // dann mit der herkömmlichen Methode versuchen
                                 Log.fehlerMeldung(-398012379, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "auf die alte Art: " + urlFilm);
                                 filmHolen(thema, titel, urlThema, urlFilm);
                             } else {
                                 // dann wars gut
-                                for (DatenFilm film : f) {
-                                    addFilm(film);
-                                }
+                                addFilm(film);
                             }
                         }
                     }
@@ -640,7 +638,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         return ret;
     }
 
-    public static DatenFilm[] filmHolenId(GetUrl getUrl, StringBuffer strBuffer, String sender, String thema, String titel, String filmWebsite, String urlId) {
+    public static DatenFilm filmHolenId(GetUrl getUrl, StringBuffer strBuffer, String sender, String thema, String titel, String filmWebsite, String urlId) {
         //<teaserimage alt="Harald Lesch im Studio von Abenteuer Forschung" key="298x168">http://www.zdf.de/ZDFmediathek/contentblob/1909108/timg298x168blob/8081564</teaserimage>
         //<detail>Möchten Sie wissen, was Sie in der nächsten Sendung von Abenteuer Forschung erwartet? Harald Lesch informiert Sie.</detail>
         //<length>00:00:34.000</length>
@@ -796,27 +794,27 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             Log.fehlerMeldung(-397002891, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "keine URL: " + filmWebsite);
             return null;
         } else {
-            DatenFilm ret[];
             DatenFilm film = new DatenFilm(sender, thema, filmWebsite, titel, url, "" /*urlRtmp*/, datum, zeit,
                     extractDuration(laenge), beschreibung, bild, ""/* imageUrl*/, new String[]{""});
             film.addUrlKlein(urlKlein, "");
-            if (!urlHd.isEmpty()) {
-                // dann erst mal versuchen aus der normalen URL zu bauen
-                if (url.endsWith("vh.mp4")) {
-                    urlHd = url.replace("vh.mp4", "hd.mp4");
-                } else if (urlHd.endsWith("asx")) {
-                    urlHd = AsxLesen.lesen(urlHd);
-                }
-                DatenFilm filmHd = new DatenFilm(sender, thema, filmWebsite, titel + " HD", urlHd, "" /*urlRtmp*/, datum, zeit,
-                        extractDuration(laenge), beschreibung, bild, ""/* imageUrl*/, new String[]{""});
-                ret = new DatenFilm[2];
-                ret[0] = film;
-                ret[1] = filmHd;
-            } else {
-                ret = new DatenFilm[1];
-                ret[0] = film;
-            }
-            return ret;
+            film.addUrlHd(urlHd, "");
+//            if (!urlHd.isEmpty()) {
+//                // dann erst mal versuchen aus der normalen URL zu bauen
+//                if (url.endsWith("vh.mp4")) {
+//                    urlHd = url.replace("vh.mp4", "hd.mp4");
+//                } else if (urlHd.endsWith("asx")) {
+//                    urlHd = AsxLesen.lesen(urlHd);
+//                }
+//                DatenFilm filmHd = new DatenFilm(sender, thema, filmWebsite, titel + " HD", urlHd, "" /*urlRtmp*/, datum, zeit,
+//                        extractDuration(laenge), beschreibung, bild, ""/* imageUrl*/, new String[]{""});
+//                ret = new DatenFilm[2];
+//                ret[0] = film;
+//                ret[1] = filmHd;
+//            } else {
+//                ret = new DatenFilm[1];
+//                ret[0] = film;
+//            }
+            return film;
         }
     }
 }
