@@ -239,15 +239,13 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                         } else {
                             id = "http://www.3sat.de/mediathek/xmlservice/web/beitragsDetails?ak=web&id=" + id;
                             meldung(id);
-                            DatenFilm f[] = MediathekZdf.filmHolenId(getUrl, seite2, nameSenderMReader, thema, titel, link, id);
-                            if (f == null) {
+                            DatenFilm film = MediathekZdf.filmHolenId(getUrl, seite2, nameSenderMReader, thema, titel, link, id);
+                            if (film == null) {
                                 // dann mit der herkömmlichen Methode versuchen
                                 Log.fehlerMeldung(-13568978, Log.FEHLER_ART_MREADER, "Mediathek3sat.laden", "auf die alte Art: " + url_rss);
                             } else {
                                 // dann wars gut
-                                for (DatenFilm film : f) {
-                                    addFilm(film);
-                                }
+                                addFilm(film);
                                 ok = true;
                             }
                         }

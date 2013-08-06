@@ -153,15 +153,15 @@ public class DatenFilm implements Comparable<DatenFilm> {
 
     public boolean addUrlKlein(String url, String urlRtmp) {
         boolean ret = true;
-        arr[FILM_URL_KLEIN_NR] = getKlein(arr[FILM_URL_NR], url);
-        arr[FILM_URL_RTMP_KLEIN_NR] = getKlein(arr[FILM_URL_RTMP_NR], urlRtmp);
+        arr[FILM_URL_KLEIN_NR] = url.isEmpty() ? "" : getKlein(arr[FILM_URL_NR], url);
+        arr[FILM_URL_RTMP_KLEIN_NR] = urlRtmp.isEmpty() ? "" : getKlein(arr[FILM_URL_RTMP_NR], urlRtmp);
         return ret;
     }
 
     public boolean addUrlHd(String url, String urlRtmp) {
         boolean ret = true;
-        arr[FILM_URL_HD_NR] = getKlein(arr[FILM_URL_NR], url);
-        arr[FILM_URL_RTMP_HD_NR] = getKlein(arr[FILM_URL_RTMP_NR], urlRtmp);
+        arr[FILM_URL_HD_NR] = url.isEmpty() ? "" : getKlein(arr[FILM_URL_NR], url);
+        arr[FILM_URL_RTMP_HD_NR] = urlRtmp.isEmpty() ? "" : getKlein(arr[FILM_URL_RTMP_NR], urlRtmp);
         return ret;
     }
 
