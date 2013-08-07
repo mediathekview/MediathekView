@@ -141,65 +141,67 @@ public class Konstanten {
     public static final int SYSTEM_FILTER_KEINE_ABO_NR = 37;
     public static final String SYSTEM_FILTER_KEINE_GESEHENE = "system-filter-gesehen";
     public static final int SYSTEM_FILTER_KEINE_GESEHENE_NR = 38;
+    public static final String SYSTEM_FILTER_NUR_HD = "system-filter-hd";
+    public static final int SYSTEM_FILTER_NUR_HD_NR = 39;
     // Programmpfade
     public static final String SYSTEM_PFAD_VLC = "pfad-vlc";
-    public static final int SYSTEM_PFAD_VLC_NR = 39;
+    public static final int SYSTEM_PFAD_VLC_NR = 40;
     public static final String SYSTEM_PFAD_FLVSTREAMER = "pfad-flvstreamer";
-    public static final int SYSTEM_PFAD_FLVSTREAMER_NR = 40;
+    public static final int SYSTEM_PFAD_FLVSTREAMER_NR = 41;
     public static final String SYSTEM_PFAD_MPLAYER = "pfad-mplayer";
-    public static final int SYSTEM_PFAD_MPLAYER_NR = 41;
+    public static final int SYSTEM_PFAD_MPLAYER_NR = 42;
     //#######################
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_FILME = "Eigenschaften-Tabellen-Filme";
-    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR = 42;
+    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR = 43;
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS = "Eigenschaften-Tabellen-Downloads";
-    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR = 43;
+    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR = 44;
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS = "Eigenschaften-Tabellen-Abos";
-    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR = 44;
+    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR = 45;
     //#######################
     public static final String SYSTEM_ABOS_SOFORT_SUCHEN = "Abos-sofort-suchen";
-    public static final int SYSTEM_ABOS_SOFORT_SUCHEN_NR = 45;
+    public static final int SYSTEM_ABOS_SOFORT_SUCHEN_NR = 46;
     public static final String SYSTEM_NUR_ASCII = "nur-Ascii-Zeichen";
-    public static final int SYSTEM_NUR_ASCII_NR = 46;
+    public static final int SYSTEM_NUR_ASCII_NR = 47;
     public static final String SYSTEM_UNICODE_AENDERN = "Unicode-aendern";
-    public static final int SYSTEM_UNICODE_AENDERN_NR = 47;
+    public static final int SYSTEM_UNICODE_AENDERN_NR = 48;
     public static final String SYSTEM_HINWEIS_NR_ANGEZEIGT = "Hinweis-Nr-angezeigt";
-    public static final int SYSTEM_HINWEIS_NR_ANGEZEIGT_NR = 48;
+    public static final int SYSTEM_HINWEIS_NR_ANGEZEIGT_NR = 49;
     public static final String SYSTEM_ORDNER_OEFFNEN = "Download-Ordner-oeffnen";
-    public static final int SYSTEM_ORDNER_OEFFNEN_NR = 49;
+    public static final int SYSTEM_ORDNER_OEFFNEN_NR = 50;
     public static final String SYSTEM_URL_OEFFNEN = "Programm-Url-oeffnen";
-    public static final int SYSTEM_URL_OEFFNEN_NR = 50;
+    public static final int SYSTEM_URL_OEFFNEN_NR = 51;
     public static final String SYSTEM_BLACKLIST_ZUKUNFT__NICHT_ANZEIGEN = "Blacklist-Zukunft-nicht-anzeigen";
-    public static final int SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR = 51;
+    public static final int SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR = 52;
     public static final String SYSTEM_BLACKLIST_AUCH_ABO = "Blacklist-auch-Abo";
-    public static final int SYSTEM_BLACKLIST_AUCH_ABO_NR = 52;
+    public static final int SYSTEM_BLACKLIST_AUCH_ABO_NR = 53;
     public static final String SYSTEM_BLACKLIST_AUSGESCHALTET = "Blacklist-ausgeschaltet";
-    public static final int SYSTEM_BLACKLIST_AUSGESCHALTET_NR = 53;
+    public static final int SYSTEM_BLACKLIST_AUSGESCHALTET_NR = 54;
     public static final String SYSTEM_BLACKLIST_IST_WHITELIST = "Blacklist-ist-Whitelist";
-    public static final int SYSTEM_BLACKLIST_IST_WHITELIST_NR = 54;
+    public static final int SYSTEM_BLACKLIST_IST_WHITELIST_NR = 55;
     public static final String SYSTEM_BLACKLIST_FILMLAENGE = "Blacklist-Filmlaenge";
-    public static final int SYSTEM_BLACKLIST_FILMLAENGE_NR = 55;
+    public static final int SYSTEM_BLACKLIST_FILMLAENGE_NR = 56;
     public static final String SYSTEM_VERSION_PROGRAMMSET = "Version-Programmset";
-    public static final int SYSTEM_VERSION_PROGRAMMSET_NR = 56;
+    public static final int SYSTEM_VERSION_PROGRAMMSET_NR = 57;
     public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN = "Meldungsfenster-Systemmeldungen";
-    public static final int SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN_NR = 57;
+    public static final int SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN_NR = 58;
     public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN = "Meldungsfenster-Fehlermeldungen";
-    public static final int SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN_NR = 58;
+    public static final int SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN_NR = 59;
     public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN = "Meldungsfenster-Playermeldungen";
-    public static final int SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN_NR = 59;
+    public static final int SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN_NR = 60;
     public static final String SYSTEM_ANSICHT_SET_LANG = "Ansicht-Set-lang";
-    public static final int SYSTEM_ANSICHT_SET_LANG_NR = 60;
+    public static final int SYSTEM_ANSICHT_SET_LANG_NR = 61;
     public static final String SYSTEM_ICON_STANARD = "Icon-Standard";
-    public static final int SYSTEM_ICON_STANDARD_NR = 61;
+    public static final int SYSTEM_ICON_STANDARD_NR = 62;
     public static final String SYSTEM_ICON_PFAD = "Icon-Pfad";
-    public static final int SYSTEM_ICON_PFAD_NR = 62;
+    public static final int SYSTEM_ICON_PFAD_NR = 63;
     public static final String SYSTEM_BREITE_MELDUNGEN = "breite-Meldungen";
-    public static final int SYSTEM_BREITE_MELDUNGEN_NR = 63;
+    public static final int SYSTEM_BREITE_MELDUNGEN_NR = 64;
     public static final String SYSTEM_BANDBREITE = "Bandbreite";
-    public static final int SYSTEM_BANDBREITE_KBYTE_NR = 64;
+    public static final int SYSTEM_BANDBREITE_KBYTE_NR = 65;
     public static final String SYSTEM_FILMLISTE_UMBENENNEN = "Filmliste-umbenennen";
-    public static final int SYSTEM_FILMLISTE_UMBENENNEN_NR = 65;
+    public static final int SYSTEM_FILMLISTE_UMBENENNEN_NR = 66;
     public static final String SYSTEM = "system";
-    public static final int SYSTEM_MAX_ELEM = 66;
+    public static final int SYSTEM_MAX_ELEM = 67;
     public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION,
         SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y, SYSTEM_POS_X, SYSTEM_POS_Y,
         SYSTEM_GROESSE_EINSTELLUNEN_X, SYSTEM_GROESSE_EINSTELLUNEN_Y, SYSTEM_POS_EINSTELLUNEN_X, SYSTEM_EINSTELLUNEN_POS_Y,
@@ -209,7 +211,7 @@ public class Konstanten {
         SYSTEM_MAX_DOWNLOAD, SYSTEM_LEITUNG_LOW,
         SYSTEM_SWR_LISTE, SYSTEM_PFAD_EXPORT_ABOS, SYSTEM_IMPORT_DATEI, SYSTEM_URL_FILMLISTEN, SYSTEM_IMPORT_URL_MANUELL,
         SYSTEM_EXPORT_DATEI, SYSTEM_WARTEN, SYSTEM_UDATE_SUCHEN, SYSTEM_UPDATE_DATUM, SYSTEM_IMPORT_ART_FILME,
-        SYSTEM_FILTER_TAGE, SYSTEM_FILTER_KEINE_ABO, SYSTEM_FILTER_KEINE_GESEHENE,
+        SYSTEM_FILTER_TAGE, SYSTEM_FILTER_KEINE_ABO, SYSTEM_FILTER_KEINE_GESEHENE, SYSTEM_FILTER_NUR_HD,
         SYSTEM_PFAD_VLC, SYSTEM_PFAD_FLVSTREAMER, SYSTEM_PFAD_MPLAYER,
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME, SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS, SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS,
         SYSTEM_ABOS_SOFORT_SUCHEN, SYSTEM_NUR_ASCII, SYSTEM_UNICODE_AENDERN, SYSTEM_HINWEIS_NR_ANGEZEIGT,

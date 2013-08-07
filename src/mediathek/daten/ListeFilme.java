@@ -185,7 +185,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         // hier nur beim Laden von der Filmliste
         film.arr[DatenFilm.FILM_NR_NR] = getNr(nr++);
         return addInit(film);
-        }
+    }
 
     private String getNr(int nr) {
         final int MAX_STELLEN = 5;
@@ -258,106 +258,81 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 "http://kikaplus.net/clients/kika/player/myplaylist.php?channel=1&programm=1&videoid=1", ""/*rtmpURL*/, ""/* datum */, ""/* zeit */, 0, "", "", "", new String[]{""}));
     }
 
-    public synchronized TModelFilm getModelTabFilme(DDaten ddaten, TModelFilm modelFilm__, String filterSender, String filterThema,
-            String filterTitel, String filterThemaTitel, String filterIrgendwo, int laenge) {
+    public synchronized TModelFilm getModelTabFilme(DDaten ddaten, TModelFilm modelFilm__,
+            String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
+            int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
+        // Model für die Tabelle Filme zusammenbauen
         TModelFilm modelFilm = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
-        if (this.size() != 0) {
-            if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("") && filterIrgendwo.equals("") && laenge == 0) {
-                addObjectDataTabFilme(modelFilm);
+        if (this.size() == 0) {
+            return modelFilm;
+        }
+        if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("") && filterIrgendwo.equals("") && laenge == 0
+                && keineAbos == false && kGesehen == false && nurHd == false && live == false) {
+            // wenn ganze Liste
+            addObjectDataTabFilme(modelFilm);
+        } else {
+            // Titel
+            String[] arrTitel;
+            if (Filter.isPattern(filterTitel)) {
+                arrTitel = new String[]{filterTitel};
             } else {
-                // Titel
-                String[] arrTitel;
-                if (Filter.isPattern(filterTitel)) {
-                    arrTitel = new String[]{filterTitel};
-                } else {
-                    arrTitel = filterTitel.split(",");
-                    for (int i = 0; i < arrTitel.length; ++i) {
-                        arrTitel[i] = arrTitel[i].trim();
+                arrTitel = filterTitel.split(",");
+                for (int i = 0; i < arrTitel.length; ++i) {
+                    arrTitel[i] = arrTitel[i].trim();
+                }
+            }
+            // ThemaTitel
+            String[] arrThemaTitel;
+            if (Filter.isPattern(filterThemaTitel)) {
+                arrThemaTitel = new String[]{filterThemaTitel};
+            } else {
+                arrThemaTitel = filterThemaTitel.split(",");
+                for (int i = 0; i < arrThemaTitel.length; ++i) {
+                    arrThemaTitel[i] = arrThemaTitel[i].trim();
+                }
+            }
+            // Irgendwo
+            String[] arrIrgendwo;
+            if (Filter.isPattern(filterIrgendwo)) {
+                arrIrgendwo = new String[]{filterIrgendwo};
+            } else {
+                arrIrgendwo = filterIrgendwo.split(",");
+                for (int i = 0; i < arrIrgendwo.length; ++i) {
+                    arrIrgendwo[i] = arrIrgendwo[i].trim();
+                }
+            }
+            DatenFilm film;
+            Iterator<DatenFilm> it = this.iterator();
+            while (it.hasNext()) {
+                film = it.next();
+                if (live) {
+                    if (!film.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE)) {
+                        continue;
                     }
                 }
-                // ThemaTitel
-                String[] arrThemaTitel;
-                if (Filter.isPattern(filterThemaTitel)) {
-                    arrThemaTitel = new String[]{filterThemaTitel};
-                } else {
-                    arrThemaTitel = filterThemaTitel.split(",");
-                    for (int i = 0; i < arrThemaTitel.length; ++i) {
-                        arrThemaTitel[i] = arrThemaTitel[i].trim();
+                if (nurHd) {
+                    if (film.arr[DatenFilm.FILM_URL_HD_NR].isEmpty()) {
+                        continue;
                     }
                 }
-                // Irgendwo
-                String[] arrIrgendwo;
-                if (Filter.isPattern(filterIrgendwo)) {
-                    arrIrgendwo = new String[]{filterIrgendwo};
-                } else {
-                    arrIrgendwo = filterIrgendwo.split(",");
-                    for (int i = 0; i < arrIrgendwo.length; ++i) {
-                        arrIrgendwo[i] = arrIrgendwo[i].trim();
+                if (keineAbos) {
+                    if (!film.arr[DatenFilm.FILM_ABO_NAME_NR].isEmpty()) {
+                        continue;
                     }
                 }
-//                ListeFilme liste = new ListeFilme();
-                DatenFilm film;
-                Iterator<DatenFilm> it = this.iterator();
-//                while (it.hasNext()) {
-//                    film = it.next();
-//                    if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film, true /*länge nicht prüfen*/)) {
-//                        liste.add(film);
-//                    }
-//                }
-//                liste.addObjectDataTabFilme(modelFilm);
-                while (it.hasNext()) {
-                    film = it.next();
-                    if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film, true /*länge nicht prüfen*/)) {
-                        addObjectDataTabFilme(modelFilm, film);
+                if (kGesehen) {
+                    if (ddaten.history.contains(film.arr[DatenFilm.FILM_URL_NR])) {
+                        continue;
                     }
+                }
+                if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film, true /*länge nicht prüfen*/)) {
+                    addObjectDataTabFilme(modelFilm, film);
                 }
             }
         }
         return modelFilm;
     }
 
-////    public synchronized String[] getModelOfField_(int feld, String filterString, int filterFeld) {
-////        // erstellt ein StringArray mit den Daten des Feldes und filtert nach filterFeld
-////        // ist für die Filterfelder im GuiFilme
-////        // doppelte Einträge (bei der Groß- und Klienschribung) werden entfernt
-////        String str;
-////        String s;
-////        listGetModelOfField.add("");
-////        DatenFilm film;
-////        Iterator<DatenFilm> it = this.iterator();
-////        if (filterString.equals("")) {
-////            //alle Werte dieses Feldes
-////            while (it.hasNext()) {
-////                str = it.next().arr[feld];
-////                //hinzufügen
-////                s = str.toLowerCase();
-////                if (!hashSetModelOfField.contains(s)) {
-////                    hashSetModelOfField.add(s);
-////                    listGetModelOfField.add(str);
-////                }
-////            }
-////        } else {
-////            //Werte dieses Feldes, filtern nach filterString im FilterFeld
-////            while (it.hasNext()) {
-////                film = it.next();
-////                str = film.arr[feld];
-////                if (film.arr[filterFeld].equalsIgnoreCase(filterString)) {
-////                    //hinzufügen
-////                    s = str.toLowerCase();
-////                    if (!hashSetModelOfField.contains(s)) {
-////                        hashSetModelOfField.add(s);
-////                        listGetModelOfField.add(str);
-////                    }
-////                }
-////            }
-////        }
-////        hashSetModelOfField.clear();
-////        GuiFunktionen.listeSort(listGetModelOfField);
-////        String[] ret = new String[0];
-////        ret = listGetModelOfField.toArray(ret);
-////        listGetModelOfField.clear();
-////        return ret;
-////    }
     public synchronized String[] getModelOfFieldThema(String sender) {
         // erstellt ein StringArray der Themen eines Senders oder wenn "sender" leer, aller Sender
         // ist für die Filterfelder im GuiFilme

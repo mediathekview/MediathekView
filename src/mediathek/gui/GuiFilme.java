@@ -177,6 +177,7 @@ public class GuiFilme extends PanelVorlage {
         try {
             jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
             jCheckBoxKeineGesehenen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR]));
+            jCheckBoxNurHd.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_NUR_HD_NR]));
             jComboBoxZeitraum.setSelectedIndex(Integer.parseInt(Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR]));
         } catch (Exception ex) {
             jComboBoxZeitraum.setSelectedIndex(6);
@@ -213,7 +214,7 @@ public class GuiFilme extends PanelVorlage {
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_SUCHEN)).setVisible(true);
+                new DialogHilfe(null, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
             }
         });
         jButtonBlacklist.addActionListener(new ActionListener() {
@@ -287,6 +288,7 @@ public class GuiFilme extends PanelVorlage {
         });
         jCheckBoxKeineAbos.addActionListener(new BeobFilter());
         jCheckBoxKeineGesehenen.addActionListener(new BeobFilter());
+        jCheckBoxNurHd.addActionListener(new BeobFilter());
         //restliche Filter
         jScrollPane1.addMouseListener(new BeobMausLaufendeProgramme());
         ddaten.mediathekGui.getStatusBar().getComponent().addMouseListener(new BeobMausLaufendeProgramme());
@@ -596,17 +598,19 @@ public class GuiFilme extends PanelVorlage {
             // normal mit den Filtern aus dem Filterpanel suchen
             m = DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), jComboBoxFilterSender.getSelectedItem().toString(),
                     jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(),
-                    jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue());
+                    jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue(),
+                    jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
             m = DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), "",
-                    "", "", ddaten.mediathekGui.getFilterToolBar(), "", 0);
+                    "", "", ddaten.mediathekGui.getFilterToolBar(), "", 0,
+                    false, false, false, false);
         }
-        if (m.getRowCount() > 0) {
-            if (jCheckBoxKeineGesehenen.isSelected() || jCheckBoxKeineAbos.isSelected() || jToggleButtonLivestram.isSelected()) {
-                m.filter(ddaten, jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jToggleButtonLivestram.isSelected());
-            }
-        }
+//        if (m.getRowCount() > 0) {
+//            if (jCheckBoxKeineGesehenen.isSelected() || jCheckBoxKeineAbos.isSelected() || jCheckBoxNurHd.isSelected() || jToggleButtonLivestram.isSelected()) {
+//                m.filter(ddaten, jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected());
+//            }
+//        }
         tabelle.setModel(m);
     }
     // ####################################
@@ -740,21 +744,22 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void checkBlacklist(boolean abosEintragen) {
-        if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
-            // dann Filterpanel zum Bauen der Filmliste nehmen
-            stopBeob = true;
-            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = Boolean.toString(jCheckBoxKeineAbos.isSelected());
-            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = Boolean.toString(jCheckBoxKeineGesehenen.isSelected());
-            Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(jComboBoxZeitraum.getSelectedIndex());
-            stopBeob = false;
-        } else {
-            // mit dem Filter in der Toolbar arbeiten
-            stopBeob = true;
-            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = Boolean.FALSE.toString();
-            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = Boolean.FALSE.toString();
-            Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = "0";
-            stopBeob = false;
-        }
+//        if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+//            // dann Filterpanel zum Bauen der Filmliste nehmen
+//            stopBeob = true;
+//            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = Boolean.toString(jCheckBoxKeineAbos.isSelected());
+//            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = Boolean.toString(jCheckBoxKeineGesehenen.isSelected());
+//            Daten.system[Konstanten.SYSTEM_FILTER_NUR_HD_NR] = Boolean.toString(jCheckBoxNurHd.isSelected());
+//            Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(jComboBoxZeitraum.getSelectedIndex());
+//            stopBeob = false;
+//        } else {
+//            // mit dem Filter in der Toolbar arbeiten
+//            stopBeob = true;
+//            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = Boolean.FALSE.toString();
+//            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = Boolean.FALSE.toString();
+//            Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = "0";
+//            stopBeob = false;
+//        }
         if (abosEintragen) {
             // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
             // beim Ändern von Abos gemacht wird
@@ -783,6 +788,7 @@ public class GuiFilme extends PanelVorlage {
         jToggleButtonLivestram = new javax.swing.JToggleButton();
         jButtonBlacklist = new javax.swing.JButton();
         jButtonHilfe = new javax.swing.JButton();
+        jCheckBoxNurHd = new javax.swing.JCheckBox();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox<String>();
@@ -828,6 +834,8 @@ public class GuiFilme extends PanelVorlage {
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
 
+        jCheckBoxNurHd.setText("nur HD");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -837,11 +845,13 @@ public class GuiFilme extends PanelVorlage {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxKeineGesehenen)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxKeineAbos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxNurHd)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addComponent(jToggleButtonLivestram)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonBlacklist)
@@ -861,7 +871,8 @@ public class GuiFilme extends PanelVorlage {
                         .addComponent(jLabel1)
                         .addComponent(jCheckBoxKeineGesehenen)
                         .addComponent(jCheckBoxKeineAbos)
-                        .addComponent(jToggleButtonLivestram)))
+                        .addComponent(jToggleButtonLivestram)
+                        .addComponent(jCheckBoxNurHd)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1086,6 +1097,7 @@ public class GuiFilme extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxFilter;
     private javax.swing.JCheckBox jCheckBoxKeineAbos;
     private javax.swing.JCheckBox jCheckBoxKeineGesehenen;
+    private javax.swing.JCheckBox jCheckBoxNurHd;
     private javax.swing.JCheckBox jCheckBoxProgamme;
     private javax.swing.JComboBox<String> jComboBoxFilterSender;
     private javax.swing.JComboBox<String> jComboBoxFilterThema;
@@ -1139,6 +1151,7 @@ public class GuiFilme extends PanelVorlage {
             if (!stopBeob) {
                 Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = String.valueOf(jCheckBoxKeineAbos.isSelected());
                 Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = String.valueOf(jCheckBoxKeineGesehenen.isSelected());
+                Daten.system[Konstanten.SYSTEM_FILTER_NUR_HD_NR] = String.valueOf(jCheckBoxNurHd.isSelected());
                 tabelleLaden();
             }
         }

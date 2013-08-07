@@ -133,11 +133,13 @@
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jComboBoxZeitraum" min="-2" pref="131" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jCheckBoxKeineGesehenen" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jCheckBoxKeineAbos" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="jCheckBoxNurHd" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="57" max="32767" attributes="0"/>
                           <Component id="jToggleButtonLivestram" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonBlacklist" min="-2" max="-2" attributes="0"/>
@@ -160,6 +162,7 @@
                                   <Component id="jCheckBoxKeineGesehenen" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jCheckBoxKeineAbos" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jToggleButtonLivestram" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxNurHd" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
@@ -216,6 +219,11 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/mediathek/res/help_16.png"/>
                     </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="jCheckBoxNurHd">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="nur HD"/>
                   </Properties>
                 </Component>
               </SubComponents>
