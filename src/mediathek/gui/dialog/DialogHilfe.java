@@ -19,8 +19,10 @@
  */
 package mediathek.gui.dialog;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.text.DefaultCaret;
 import mediathek.tool.EscBeenden;
 
 public class DialogHilfe extends javax.swing.JDialog {
@@ -35,6 +37,8 @@ public class DialogHilfe extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setTitle("Hilfe");
+        DefaultCaret caret = (DefaultCaret) jTextArea1.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         jTextArea1.setText(text);
         jButtonOk.addActionListener(new ActionListener() {
             @Override
@@ -51,7 +55,7 @@ public class DialogHilfe extends javax.swing.JDialog {
         };
     }
 
-   void beenden() {
+    void beenden() {
         this.dispose();
     }
 
@@ -69,10 +73,11 @@ public class DialogHilfe extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jTextArea1.setText("\n\n");
+        jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jScrollPane1.setViewportView(jTextArea1);
 
         jButtonOk.setText("OK");
@@ -85,14 +90,14 @@ public class DialogHilfe extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonOk)
                 .addContainerGap())

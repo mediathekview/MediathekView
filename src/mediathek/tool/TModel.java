@@ -83,13 +83,18 @@ public class TModel extends DefaultTableModel {
         }
     }
 
-    public void filter(DDaten daten, boolean keineAbos, boolean kGesehen, boolean live) {
+    public void filter(DDaten daten, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
         List zeile;
         ListIterator<List> it = this.getDataVector().listIterator();
         while (it.hasNext()) {
             zeile = it.next();
             if (live) {
                 if (!zeile.get(DatenFilm.FILM_THEMA_NR).equals(ListeFilme.THEMA_LIVE)) {
+                    it.remove();
+                    continue;
+                }
+            } else if (nurHd) {
+                if (zeile.get(DatenFilm.FILM_URL_HD_NR).toString().isEmpty()) {
                     it.remove();
                     continue;
                 }
