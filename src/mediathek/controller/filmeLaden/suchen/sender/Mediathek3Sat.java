@@ -135,7 +135,8 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
             String tmp;
             if ((pos = seite1.indexOf(MUSTER_TITEL, pos)) == -1) {
                 return;
-            } else {//für den HTML-Titel
+            } else {
+                //für den HTML-Titel
                 pos += MUSTER_TITEL.length();
                 pos1 = pos;
                 if (!urlAlle) {
@@ -251,9 +252,8 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                         }
                     }
                     // =============================================================================
-                    // URL suchen
+                    // URL dann auf die herkömmliche Art
                     if (!ok) {
-                        // dann auf die herkömmliche Art
                         pos1 = seite1.indexOf(MUSTER_URL, pos);
                         if (pos1 != -1 && (ende == -1 || pos1 < ende)) {
                             // asx
