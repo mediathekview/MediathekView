@@ -277,7 +277,6 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
         }
         // Datum ändern
         // arr = new String[]{urlJson, datum, zeit, titel, thema};
-
         datum = convertDatum(arr[1]);
         zeit = convertZeit(arr[2]);
         titel = arr[3];
@@ -285,16 +284,19 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
         if (!url.isEmpty()) {
             //    public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
             //         String datum, String zeit, long dauerSekunden, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
-
-            DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, "" /*urlRtmp*/,
-                    datum, zeit, dauer, beschreibung, bild, ""/* imageUrl*/, new String[]{});
-            if (!urlKlein.isEmpty()) {
-                film.addUrlKlein(urlKlein, "");
+            if (!url.endsWith("EXTRAIT.mp4")) {
+                // http://artestras.vo.llnwxd.net/o35/nogeo/HBBTV/042975-013-B_EXT_SQ_1_VA_00604871_MP4-2200_AMM-HBBTV_EXTRAIT.mp4
+                // sind nur Trailer
+                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, "" /*urlRtmp*/,
+                        datum, zeit, dauer, beschreibung, bild, ""/* imageUrl*/, new String[]{});
+                if (!urlKlein.isEmpty()) {
+                    film.addUrlKlein(urlKlein, "");
+                }
+                if (!urlHd.isEmpty()) {
+                    film.addUrlHd(urlHd, "");
+                }
+                addFilm(film);
             }
-            if (!urlHd.isEmpty()) {
-                film.addUrlHd(urlHd, "");
-            }
-            addFilm(film);
         } else if (!urlKlein.isEmpty()) {
             DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlKlein, "" /*urlRtmp*/,
                     datum, zeit, dauer, beschreibung, bild, ""/* imageUrl*/, new String[]{});
