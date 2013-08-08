@@ -27,6 +27,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 
 public class MediathekArte_de extends MediathekReader implements Runnable {
 
@@ -90,8 +91,8 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
     class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite2 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {
@@ -109,7 +110,7 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
         }
     }
 
-    private void addTheman(StringBuffer seite1, StringBuffer seite2, String startUrl) {
+    private void addTheman(MVStringBuilder seite1, MVStringBuilder seite2, String startUrl) {
         // Datum, Zeit: "BAD":"04/08/2013","BAT":"13:20"
         final String MUSTER_START = "{\"programId\":";
         final String MUSTER_URL_JSON = "\"videoStreamUrl\":\"";
@@ -185,7 +186,7 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
         }
     }
 
-    void filmeLaden(StringBuffer seite, String[] arr) {
+    void filmeLaden(MVStringBuilder seite, String[] arr) {
         // url_hd url, url_klein
         //{"version":"VOF","versionProg":"1","VFO":"HBBTV","VQU":"SQ","VMT":"mp4","VUR":"http://artestras.vo.llnwxd.net/o35/nogeo/HBBTV/042975-013-B_EXT_SQ_2_VOF_00604879_MP4-2200_AMM-HBBTV_EXTRAIT.mp4"},
         //{"version":"VOF","versionProg":"1","VFO":"HBBTV","VQU":"EQ","VMT":"mp4","VUR":"http://artestras.vo.llnwxd.net/o35/nogeo/HBBTV/042975-013-B_EXT_EQ_2_VOF_00604878_MP4-1500_AMM-HBBTV_EXTRAIT.mp4"},

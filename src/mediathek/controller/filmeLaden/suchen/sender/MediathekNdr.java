@@ -27,11 +27,12 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 
 public class MediathekNdr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "NDR";
-    private StringBuffer seiteAlle = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+    private MVStringBuilder seiteAlle = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
     public MediathekNdr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 4, /* urlWarten */ 500, startPrio);
@@ -46,7 +47,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
         final String MUSTER_URL1 = "<h5><a href=\"/mediathek/";
         listeThemen.clear();
         meldungStart();
-        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, ""/* meldung */);
         int pos = 0;
         int pos1;
@@ -148,8 +149,8 @@ public class MediathekNdr extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite2 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public synchronized void run() {
@@ -329,7 +330,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             }
         }
 
-        private String extractDescription(StringBuffer page) {
+        private String extractDescription(MVStringBuilder page) {
             String desc = extractString(page, "<meta property=\"og:description\" content=\"", "\"");
             if (desc == null) {
                 return "";
@@ -337,7 +338,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             return desc;
         }
 
-        private String[] extractKeywords(StringBuffer page) {
+        private String[] extractKeywords(MVStringBuilder page) {
             String keywords = extractString(page, "<meta name=\"keywords\"  lang=\"de\" content=\"", "\"");
             if (keywords == null) {
                 return new String[]{""};
@@ -349,7 +350,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             return k;
         }
 
-        private String extractImageURL(StringBuffer page) {
+        private String extractImageURL(MVStringBuilder page) {
             String image = extractString(page, "<meta property=\"og:image\" content=\"", "\"");
             if (image == null) {
                 return "";
@@ -357,7 +358,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             return image;
         }
 
-        private String extractString(StringBuffer source, String startMarker, String endMarker) {
+        private String extractString(MVStringBuilder source, String startMarker, String endMarker) {
             int start = source.indexOf(startMarker);
             if (start == -1) {
                 return null;

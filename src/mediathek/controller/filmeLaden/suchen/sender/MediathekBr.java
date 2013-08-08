@@ -29,6 +29,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 
 public class MediathekBr extends MediathekReader implements Runnable {
 
@@ -95,7 +96,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
         final String URL_KLEIN = "\"url\": \"";
         String date, datum, zeit, thema, titel, description, duration, image, url, url_klein;
         long dauer;
-        StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
         seite1 = getUrl.getUri(nameSenderMReader, URL_JSON, Konstanten.KODIERUNG_UTF, 3/*max Versuche*/, seite1, URL_JSON);
         if (seite1.length() == 0) {

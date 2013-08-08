@@ -26,12 +26,13 @@ import mediathek.daten.DatenFilm;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 
 public class MediathekSfPod extends MediathekReader implements Runnable {
 
     //public static final String SENDER = "SF.Podcast";
     public static final String SENDER = "SRF.Podcast";
-    private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+    private MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
     public MediathekSfPod(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
@@ -101,7 +102,7 @@ public class MediathekSfPod extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {

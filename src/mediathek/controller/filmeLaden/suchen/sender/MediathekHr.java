@@ -29,6 +29,7 @@ import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
+import mediathek.tool.MVStringBuilder;
 
 /**
  *
@@ -37,8 +38,8 @@ import mediathek.tool.Konstanten;
 public class MediathekHr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "HR";
-    private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-    private StringBuffer rubrikSeite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+    private MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+    private MVStringBuilder rubrikSeite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
     /**
      *
@@ -206,8 +207,8 @@ public class MediathekHr extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        //private StringBuffer seite2 = new StringBuffer();
+        private MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        //private MVStringBuilder seite2 = new MVStringBuilder();
 
         @Override
         public void run() {

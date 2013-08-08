@@ -26,6 +26,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 public class MediathekSwr extends MediathekReader implements Runnable {
@@ -67,7 +68,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
         //Theman suchen
         final String MUSTER_URL = "<a href=\"tvshow.htm?show=";
         final String MUSTER_THEMA = "title=\"";
-        StringBuffer strSeite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder strSeite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         strSeite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 2, strSeite, "");
         int pos = 0;
         int pos1;
@@ -103,8 +104,8 @@ public class MediathekSwr extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer strSeite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer strSeite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder strSeite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder strSeite2 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
         public ThemaLaden() {
         }
@@ -353,7 +354,7 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             }
         }
 
-        private String[] extractKeywords(StringBuffer strSeite2) {
+        private String[] extractKeywords(MVStringBuilder strSeite2) {
             // {"name":"entry_keywd","attr":{"val":"Fernsehserie"},"sub":[]}
             final String MUSTER_KEYWORD_START = "{\"name\":\"entry_keywd\",\"attr\":{\"val\":\"";
             final String MUSTER_KEYWORD_END = "\"},\"sub\":[]}";

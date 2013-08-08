@@ -27,6 +27,7 @@ import java.net.URLConnection;
 import mediathek.daten.Daten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 
 public class AsxLesen {
 
@@ -36,7 +37,7 @@ public class AsxLesen {
             return datei;
         }
         String url = datei;
-        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         String kodierung = Konstanten.KODIERUNG_UTF;
         int timeout = 20000; //10 Sekunden
         char[] zeichen = new char[1];
@@ -71,7 +72,7 @@ public class AsxLesen {
         return url;
     }
 
-    private static String getUrl(StringBuffer buff) {
+    private static String getUrl(MVStringBuilder buff) {
         String ret = "";
         final String URL = "href=\"";
         int pos1 = 0, pos2;

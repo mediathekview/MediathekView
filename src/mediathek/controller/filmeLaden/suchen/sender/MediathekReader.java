@@ -116,7 +116,9 @@ public class MediathekReader implements Runnable {
     }
 
     boolean addFilm(DatenFilm film) {
-        film.arr[DatenFilm.FILM_GROESSE_NR] = MVUrlDateiGroesse.laengeString(film.arr[DatenFilm.FILM_URL_NR]);
+        if (!Daten.STOP_DATEIGROESSE) { // nur zum debuggen damit es schneller geht!
+            film.arr[DatenFilm.FILM_GROESSE_NR] = MVUrlDateiGroesse.laengeString(film.arr[DatenFilm.FILM_URL_NR]);
+        }
         return suchen.listeFilmeNeu.addFilmVomSender(film);
     }
 
