@@ -180,31 +180,35 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             abo = ddaten.listeAbo.getAboFuerFilm(film, true /*auch die Länge überprüfen*/);
             if (abo == null) {
                 continue;
-            } else if (!abo.aboIstEingeschaltet()) {
+            }
+            if (!abo.aboIstEingeschaltet()) {
                 continue;
-            } else if (ddaten.erledigteAbos.urlPruefen(film.arr[DatenFilm.FILM_URL_NR])) {
+            }
+            if (ddaten.erledigteAbos.urlPruefen(film.arr[DatenFilm.FILM_URL_NR])) {
                 // ist schon im Logfile, weiter
                 continue;
-            } else if (checkListe(film.arr[DatenFilm.FILM_URL_NR])) {
+            }
+            if (checkListe(film.arr[DatenFilm.FILM_URL_NR])) {
                 // haben wir schon in der Downloadliste
                 continue;
-            } else if (checkBlack) {
+            }
+            if (checkBlack) {
                 if (!ddaten.listeBlacklist.checkBlackOkFilme_Downloads(film)) { // wenn Blacklist auch für Abos, dann ers mal da schauen
                     continue;
                 }
-            } else {
-                //diesen Film in die Downloadliste eintragen
-                abo.arr[DatenAbo.ABO_DOWN_DATUM_NR] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
-                //wenn nicht doppelt, dann in die Liste schreiben
-                DatenPset pSet = ddaten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET_NR]);
-                if (pSet != null) {
-                    if (!abo.arr[DatenAbo.ABO_PSET_NR].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR])) {
-                        abo.arr[DatenAbo.ABO_PSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
-                    }
-                    add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
-                    gefunden = true;
-                }
             }
+            //diesen Film in die Downloadliste eintragen
+            abo.arr[DatenAbo.ABO_DOWN_DATUM_NR] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+            //wenn nicht doppelt, dann in die Liste schreiben
+            DatenPset pSet = ddaten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET_NR]);
+            if (pSet != null) {
+                if (!abo.arr[DatenAbo.ABO_PSET_NR].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR])) {
+                    abo.arr[DatenAbo.ABO_PSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
+                }
+                add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
+                gefunden = true;
+            }
+
         } //while
         if (gefunden) {
             listeNummerieren();

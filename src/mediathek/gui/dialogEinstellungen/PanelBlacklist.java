@@ -79,6 +79,12 @@ public class PanelBlacklist extends PanelVorlage {
         jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
         jCheckBoxBlacklistEingeschaltet.setText(jCheckBoxBlacklistEingeschaltet.isSelected() ? "Blacklist eingeschaltet" : "Blacklist ausgeschaltet");
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]));
+        try {
+            jSliderMinuten.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_BLACKLIST_FILMLAENGE_NR]));
+        } catch (Exception ex) {
+            jSliderMinuten.setValue(0);
+            Daten.system[Konstanten.SYSTEM_BLACKLIST_FILMLAENGE_NR] = "0";
+        }
         setPanelBlacklist();
         tabelleLaden();
     }
