@@ -25,6 +25,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 
 /**
  *
@@ -53,7 +54,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
         final String MUSTER_URL = "?documentId=";
         final String MUSTER_THEMA = "{ \"titel\": \"";
         listeThemen.clear();
-        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         meldungStart();
         seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 5 /* versuche */, seite, "" /* Meldung */);
         if (seite.length() == 0) {
@@ -134,10 +135,10 @@ public class MediathekArd extends MediathekReader implements Runnable {
 
         public ThemaLaden() {
         }
-        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer seiteFehler = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer seiteWeiter = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seiteFehler = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seiteWeiter = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite2 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public synchronized void run() {
@@ -197,7 +198,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             }
         }
 
-        private boolean feedEinerSeiteSuchen(StringBuffer seite, String strUrlFeed, String thema) {
+        private boolean feedEinerSeiteSuchen(MVStringBuilder seite, String strUrlFeed, String thema) {
             //url: http://www.ardmediathek.de/ard/servlet/ajax-cache/3516962/view=list/documentId=443668/index.html
             //Feed eines Themas laden
             //<h3 class="mt-title"><a href="/ard/servlet/content/3517136?documentId=3743644"
@@ -528,7 +529,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             return listeThemen.pollFirst();
         }
 
-        private long extractDuration(StringBuffer page) {
+        private long extractDuration(MVStringBuilder page) {
             String duration = extractString(page, "<meta property=\"video:duration\" content=\"", "\"");
             if (duration == null) {
                 return 0;
@@ -540,7 +541,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             }
         }
 
-        private String extractDescription(StringBuffer page) {
+        private String extractDescription(MVStringBuilder page) {
             String desc = extractString(page, "<meta property=\"og:description\" content=\"", "\"");
             if (desc == null) {
                 return "";
@@ -548,7 +549,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             return desc;
         }
 
-        private String[] extractKeywords(StringBuffer page) {
+        private String[] extractKeywords(MVStringBuilder page) {
             String keywords = extractString(page, "<meta name=\"keywords\" content=\"", "\"");
             if (keywords == null) {
                 return new String[]{""};
@@ -557,15 +558,15 @@ public class MediathekArd extends MediathekReader implements Runnable {
             return keywords.split(", ");
         }
 
-        private String extractThumbnailURL(StringBuffer page) {
+        private String extractThumbnailURL(MVStringBuilder page) {
             return extractString(page, "<meta itemprop=\"thumbnailURL\" content=\"", "\"");
         }
 
-        private String extractImageURL(StringBuffer page) {
+        private String extractImageURL(MVStringBuilder page) {
             return extractString(page, "<meta property=\"og:image\" content=\"", "\"");
         }
 
-        private String extractString(StringBuffer source, String startMarker, String endMarker) {
+        private String extractString(MVStringBuilder source, String startMarker, String endMarker) {
             int start = source.indexOf(startMarker);
             if (start == -1) {
                 return null;

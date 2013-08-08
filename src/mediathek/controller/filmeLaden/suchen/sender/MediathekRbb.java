@@ -27,6 +27,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 
 public class MediathekRbb extends MediathekReader implements Runnable {
 
@@ -41,8 +42,8 @@ public class MediathekRbb extends MediathekReader implements Runnable {
     void addToList() {
         int pos1 = 0;
         int pos2;
-        StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder seite2 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         final String ADRESSE = "http://mediathek.rbb-online.de/fernsehen";
         final String ITEM_1 = "<a href=\"/rbb/servlet/ajax-cache/";
         final String ITEM_URL = "http://mediathek.rbb-online.de/rbb/servlet/ajax-cache/";
@@ -95,9 +96,9 @@ public class MediathekRbb extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer seite3 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite2 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite3 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {
@@ -222,7 +223,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
             }
         }
 
-        private long extractDuration(StringBuffer page) {
+        private long extractDuration(MVStringBuilder page) {
             String duration = extractString(page, "<meta property=\"video:duration\" content=\"", "\"");
             if (duration == null) {
                 return 0;
@@ -235,7 +236,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
             }
         }
 
-        private String extractDescription(StringBuffer page) {
+        private String extractDescription(MVStringBuilder page) {
             String desc = extractString(page, "<meta property=\"og:description\" content=\"", "\"");
             if (desc == null) {
                 return "";
@@ -244,7 +245,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
             return desc;
         }
 
-        private String[] extractKeywords(StringBuffer page) {
+        private String[] extractKeywords(MVStringBuilder page) {
             String keywords = extractString(page, "<meta name=\"keywords\" content=\"", "\"");
             if (keywords == null) {
                 return new String[]{""};
@@ -253,15 +254,15 @@ public class MediathekRbb extends MediathekReader implements Runnable {
             return keywords.split(", ");
         }
 
-        private String extractThumbnailURL(StringBuffer page) {
+        private String extractThumbnailURL(MVStringBuilder page) {
             return extractString(page, "<meta itemprop=\"thumbnailURL\" content=\"", "\"");
         }
 
-        private String extractImageURL(StringBuffer page) {
+        private String extractImageURL(MVStringBuilder page) {
             return extractString(page, " <meta property=\"og:image\" content=\"", "\"");
         }
 
-        private String extractString(StringBuffer source, String startMarker, String endMarker) {
+        private String extractString(MVStringBuilder source, String startMarker, String endMarker) {
             int start = source.indexOf(startMarker);
             if (start == -1) {
                 return null;

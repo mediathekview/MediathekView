@@ -29,12 +29,13 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 
 public class MediathekWdr extends MediathekReader implements Runnable {
 
     public static final String SENDER = "WDR";
     final String ROCKPALAST_URL = "http://www.wdr.de/tv/rockpalast/videos/uebersicht.jsp"; //TH
-    private StringBuffer strSeite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+    private MVStringBuilder strSeite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
     /**
      *
@@ -92,7 +93,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         // http://www1.wdr.de/mediathek/video/sendungen/abisz-b100.html
         //Theman suchen
         final String MUSTER_URL = "<a href=\"/mediathek/video/sendungen/abisz-";
-        StringBuffer strSeite_ = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder strSeite_ = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         strSeite_ = getUrlIo.getUri_Iso(nameSenderMReader, ADRESSE, strSeite_, "");
         int pos1 = 0;
         int pos2;
@@ -156,11 +157,11 @@ public class MediathekWdr extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer strSeite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer strSeite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer strSeite3 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer strSeite4 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer strVideoSeite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder strSeite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder strSeite2 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder strSeite3 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder strSeite4 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder strVideoSeite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {

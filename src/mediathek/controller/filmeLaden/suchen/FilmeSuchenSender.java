@@ -256,7 +256,7 @@ public class FilmeSuchenSender {
             listeFilmeNeu.sort();
             listeFilmeAlt = null; // brauchmer nicht mehr
             // FilmlisteMetaDaten
-            listeFilmeNeu.metaDatenSchreiben(!Daten.filmeLaden.getStop() /* löschen */);
+            listeFilmeNeu.metaDatenSchreiben();
             stopZeit = new Date(System.currentTimeMillis());
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

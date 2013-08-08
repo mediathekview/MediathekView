@@ -35,6 +35,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -65,7 +66,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
 
     @Override
     void addToList() {
-        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         listeThemen.clear();
         meldungStart();
         bearbeiteAdresse(TOPICURL, seite);
@@ -103,7 +104,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
     /**
      * @param adresse Starter-URL von dem aus Sendungen gefunden werden
      */
-    private void bearbeiteAdresse(String adresse, StringBuffer seite) {
+    private void bearbeiteAdresse(String adresse, MVStringBuilder seite) {
         //System.out.println("bearbeiteAdresse: " + adresse);
         final String MUSTER_URL1 = "<a href=\""; //TH
         final String MUSTER_URL2 = "/programs/";
@@ -171,7 +172,7 @@ public class MediathekOrf extends MediathekReader implements Runnable {
         if (adresse.equals(TOPICURL)) {
             final String MUSTERURL_MORE = "<a class=\"more\" href=\"";
             pos = 0;
-            StringBuffer s2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER); // zum Reduzieren der StringBuffer
+            MVStringBuilder s2 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER); // zum Reduzieren der MVStringBuilder
             while ((pos = seite.indexOf(MUSTERURL_MORE, pos)) != -1) {
                 try {
                     pos += MUSTERURL_MORE.length();
@@ -193,8 +194,8 @@ public class MediathekOrf extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        //private StringBuffer seiteAsx = new StringBuffer();
+        private MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        //private MVStringBuilder seiteAsx = new MVStringBuilder();
 
         @Override
         public synchronized void run() {

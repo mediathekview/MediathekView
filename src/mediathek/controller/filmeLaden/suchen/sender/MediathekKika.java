@@ -25,6 +25,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 public class MediathekKika extends MediathekReader implements Runnable {
@@ -45,7 +46,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
         final String MUSTER_THEMA = "<strong style=\"margin-left:10px;\">";
         final String MUSTER_DATUM = "title=\"Sendung vom ";
         listeThemen.clear();
-        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         meldungStart();
         seite = getUrlIo.getUri(nameSenderMReader, ADRESSE, Konstanten.KODIERUNG_UTF, 3, seite, "KiKA: Startseite");
         int pos = 0;
@@ -123,7 +124,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public synchronized void run() {

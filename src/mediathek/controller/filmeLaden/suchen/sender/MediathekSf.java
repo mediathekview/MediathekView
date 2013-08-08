@@ -26,6 +26,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 public class MediathekSf extends MediathekReader implements Runnable {
@@ -43,7 +44,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
         //<a class="sendung_name" href="/player/tv/sendung/1-gegen-100?id=6fd27ab0-d10f-450f-aaa9-836f1cac97bd">1 gegen 100</a>
         final String MUSTER = "sendung_name\" href=\"/player/tv";
         final String MUSTER_ID = "?id=";
-        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         listeThemen.clear();
         meldungStart();
         seite = getUrlIo.getUri_Utf(nameSenderMReader, "http://www.srf.ch/player/sendungen", seite, "");
@@ -94,9 +95,9 @@ public class MediathekSf extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer seite3 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite2 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite3 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {
@@ -342,7 +343,7 @@ public class MediathekSf extends MediathekReader implements Runnable {
             return url;
         }
 
-        private String[] extractKeywords(StringBuffer string) {
+        private String[] extractKeywords(MVStringBuilder string) {
             LinkedList<String> l = new LinkedList<String>();
 
             /*	"tags": {

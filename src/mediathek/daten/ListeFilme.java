@@ -567,7 +567,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return ret > sekunden;
     }
 
-    public void metaDatenSchreiben(boolean stop) {
+    public void metaDatenSchreiben() {
         // FilmlisteMetaDaten
         metaDaten = ListeFilme.newMetaDaten();
         if (!Daten.filmeLaden.getStop() /* löschen */) {

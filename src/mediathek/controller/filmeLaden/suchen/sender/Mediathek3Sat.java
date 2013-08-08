@@ -26,6 +26,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 
 public class Mediathek3Sat extends MediathekReader implements Runnable {
 
@@ -41,7 +42,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
         final String ADRESSE = "http://www.3sat.de/page/?source=/specials/133576/index.html";
         final String MUSTER_URL = "<a href=\"/mediaplayer/rss/mediathek";
         listeThemen.clear();
-        StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         meldungStart();
         //seite = new GetUrl(daten).getUriArd(ADRESSE, seite, "");
         seite = getUrlIo.getUri_Iso(nameSenderMReader, ADRESSE, seite, "");
@@ -88,8 +89,8 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite2 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public synchronized void run() {
@@ -163,8 +164,6 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                 zeit = "";
                 titel = "";
                 duration = 0;
-                description = "";
-                imageUrl = "";
                 try {
                     pos1 = pos;
                     if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
@@ -186,51 +185,7 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                             }
                         }
                     }
-                    if ((pos1 = seite1.indexOf(MUSTER_DESCRIPTION, pos)) != -1) {
-                        pos1 += MUSTER_DESCRIPTION.length();
-                        if ((pos2 = seite1.indexOf("</media:description>", pos1)) != -1) {
-                            description = seite1.substring(pos1, pos2);
-                        }
-                    }
-
-                    if ((pos1 = seite1.indexOf(MUSTER_DURATION, pos)) != -1) {
-                        pos1 += MUSTER_DURATION.length();
-                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                            try {
-                                duration = Long.parseLong(seite1.substring(pos1, pos2));
-                            } catch (Exception ex) {
-                                Log.fehlerMeldung(-363524108, Log.FEHLER_ART_MREADER, "Mediathek3Sat.addToList", "duration");
-                            }
-                        }
-                    }
-
-                    if ((pos1 = seite1.indexOf(MUSTER_IMAGE, pos)) != -1) {
-                        pos1 += MUSTER_IMAGE.length();
-                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                            imageUrl = seite1.substring(pos1, pos2);
-                        }
-                    }
-
-                    if ((pos1 = seite1.indexOf(MUSTER_DATUM, pos)) != -1) {
-                        pos1 += MUSTER_DATUM.length();
-                        if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
-                            //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
-                            tmp = seite1.substring(pos1, pos2);
-                            if (tmp.equals("")) {
-                                Log.fehlerMeldung(-987453983, Log.FEHLER_ART_MREADER, "Mediathek3Sat.addToList", "keine Datum");
-                            } else {
-                                datum = DatumZeit.convertDatum(tmp);
-                                zeit = DatumZeit.convertTime(tmp);
-                            }
-                        }
-                    }
-                    if ((pos1 = seite1.indexOf(MUSTER_LINK, pos)) != -1) {
-                        pos1 += MUSTER_LINK.length();
-                        if ((pos2 = seite1.indexOf("<", pos1)) != -1) {
-                            //<link>http://www.3sat.de/mediathek/?obj=20937</link>
-                            link = seite1.substring(pos1, pos2);
-                        }
-                    }
+                    link = seite1.extract(MUSTER_LINK, "<", pos);
                     // Film über die ID suchen
                     boolean ok = false;
                     if (link.contains("?obj=")) {
@@ -254,6 +209,21 @@ public class Mediathek3Sat extends MediathekReader implements Runnable {
                     // =============================================================================
                     // URL dann auf die herkömmliche Art
                     if (!ok) {
+                        tmp = seite1.extract(MUSTER_DURATION, "\"", pos);
+                        try {
+                            duration = Long.parseLong(tmp);
+                        } catch (Exception ex) {
+                            Log.fehlerMeldung(-363524108, Log.FEHLER_ART_MREADER, "Mediathek3Sat.addToList", "duration");
+                        }
+                        tmp = seite1.extract(MUSTER_DATUM, "<", pos);
+                        if (tmp.equals("")) {
+                            Log.fehlerMeldung(-987453983, Log.FEHLER_ART_MREADER, "Mediathek3Sat.addToList", "keine Datum");
+                        } else {
+                            datum = DatumZeit.convertDatum(tmp);
+                            zeit = DatumZeit.convertTime(tmp);
+                        }
+                        description = seite1.extract(MUSTER_DESCRIPTION, "</media:description>", pos);
+                        imageUrl = seite1.extract(MUSTER_IMAGE, "\"", pos);
                         pos1 = seite1.indexOf(MUSTER_URL, pos);
                         if (pos1 != -1 && (ende == -1 || pos1 < ende)) {
                             // asx

@@ -95,6 +95,12 @@ public class GuiDebug extends PanelVorlage {
                 }).start();
             }
         });
+        jCheckBoxDateiGroesse.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.STOP_DATEIGROESSE = jCheckBoxDateiGroesse.isSelected();
+            }
+        });
         jPanelSenderLaden.setLayout(new BorderLayout());
         jPanelSenderLaden.add(new PanelSenderLaden(ddaten, ddaten.mediathekGui));
         jPanelListen.setLayout(new BorderLayout());
@@ -168,6 +174,7 @@ public class GuiDebug extends PanelVorlage {
         jButtonFehler = new javax.swing.JButton();
         jButtonCheck = new javax.swing.JButton();
         jButtonAlleLaden = new javax.swing.JButton();
+        jCheckBoxDateiGroesse = new javax.swing.JCheckBox();
 
         jPanelSenderLaden.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender starten"));
 
@@ -179,7 +186,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLadenLayout.setVerticalGroup(
             jPanelSenderLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 514, Short.MAX_VALUE)
+            .addGap(0, 495, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -211,7 +218,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLayout.setVerticalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 514, Short.MAX_VALUE)
+            .addGap(0, 495, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -241,7 +248,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelListenLayout.setVerticalGroup(
             jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 537, Short.MAX_VALUE)
+            .addGap(0, 518, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -288,7 +295,7 @@ public class GuiDebug extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jButtonTasklist)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -308,23 +315,28 @@ public class GuiDebug extends PanelVorlage {
 
         jButtonAlleLaden.setText("alle S. laden");
 
+        jCheckBoxDateiGroesse.setText("Stop Dateigröße");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jToggleButtonAllesLaden)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonFilmlisteLoeschen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonAllesSpeichern)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonFehler)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonCheck)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonAlleLaden)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBoxDateiGroesse)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jToggleButtonAllesLaden)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonFilmlisteLoeschen)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonAllesSpeichern)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonFehler)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonCheck)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonAlleLaden)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -341,6 +353,8 @@ public class GuiDebug extends PanelVorlage {
                     .addComponent(jButtonFehler)
                     .addComponent(jButtonCheck)
                     .addComponent(jButtonAlleLaden))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxDateiGroesse)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -360,8 +374,8 @@ public class GuiDebug extends PanelVorlage {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTabbedPane1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -372,6 +386,7 @@ public class GuiDebug extends PanelVorlage {
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonTasklist;
+    private javax.swing.JCheckBox jCheckBoxDateiGroesse;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelListen;
     private javax.swing.JPanel jPanelSender;

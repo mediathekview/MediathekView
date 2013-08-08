@@ -36,6 +36,7 @@ import java.util.zip.InflaterInputStream;
 import mediathek.daten.Daten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 
 public class GetUrl {
 
@@ -97,15 +98,15 @@ public class GetUrl {
     //===================================
     // public
     //===================================
-    public StringBuffer getUri_Utf(String sender, String addr, StringBuffer seite, String meldung) {
+    public MVStringBuilder getUri_Utf(String sender, String addr, MVStringBuilder seite, String meldung) {
         return getUri(sender, addr, Konstanten.KODIERUNG_UTF, 1 /* versuche */, seite, meldung);
     }
 
-    public StringBuffer getUri_Iso(String sender, String addr, StringBuffer seite, String meldung) {
+    public MVStringBuilder getUri_Iso(String sender, String addr, MVStringBuilder seite, String meldung) {
         return getUri(sender, addr, Konstanten.KODIERUNG_ISO15, 1 /* versuche */, seite, meldung);
     }
 
-    public synchronized StringBuffer getUri(String sender, String addr, String kodierung, int maxVersuche, StringBuffer seite, String meldung) {
+    public synchronized MVStringBuilder getUri(String sender, String addr, String kodierung, int maxVersuche, MVStringBuilder seite, String meldung) {
         final int PAUSE = 1000;
 //        int aktTimeout = (maxVersuche > 1) ? timeout / 2 : timeout; // wenns mehrere Versuche gibt, dann der erste mit verkürztem Timeout
         int aktTimeout = timeout;
@@ -277,7 +278,7 @@ public class GetUrl {
         }
     }
 
-    private synchronized StringBuffer getUri(String sender, String addr, StringBuffer seite, String kodierung, int timeout, String meldung, int versuch, boolean lVersuch) {
+    private synchronized MVStringBuilder getUri(String sender, String addr, MVStringBuilder seite, String kodierung, int timeout, String meldung, int versuch, boolean lVersuch) {
         int timeo = timeout;
         boolean proxyB = false;
         char[] zeichen = new char[1];

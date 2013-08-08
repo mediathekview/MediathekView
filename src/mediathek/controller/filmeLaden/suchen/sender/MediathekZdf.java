@@ -19,20 +19,19 @@
  */
 package mediathek.controller.filmeLaden.suchen.sender;
 
-import com.sun.org.apache.bcel.internal.generic.RET;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import static mediathek.controller.filmeLaden.suchen.sender.MediathekReader.extractDuration;
-import mediathek.controller.io.AsxLesen;
 import mediathek.controller.io.GetUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVStringBuilder;
 
 public class MediathekZdf extends MediathekReader implements Runnable {
 
     public static final String SENDER = "ZDF";
-    private StringBuffer seite = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+    private MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
     private final int ANZAHL_ZDF_ALLE = 500;
     private final int ANZAHL_ZDF_MITTEL = 50;
     private final int ANZAHL_ZDF_UPDATE = 20;
@@ -104,7 +103,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         final String MUSTER_URL = "<p><b><a href=\"/ZDFmediathek/kanaluebersicht/aktuellste/";
         //GetUrl(int ttimeout, long wwartenBasis) {
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        StringBuffer seiteR = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        MVStringBuilder seiteR = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         seiteR = getUrl.getUri(nameSenderMReader, addr, Konstanten.KODIERUNG_UTF, 6 /* versuche */, seiteR, "" /* Meldung */);
         if (seiteR.length() == 0) {
             Log.fehlerMeldung(-774200364, Log.FEHLER_ART_MREADER, "MediathekZdf.addToList_addr", "Leere Seite für URL: " + addr);
@@ -187,8 +186,8 @@ public class MediathekZdf extends MediathekReader implements Runnable {
     private class ThemaLaden implements Runnable {
 
         GetUrl getUrl = new GetUrl(wartenSeiteLaden);
-        private StringBuffer seite1 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
-        private StringBuffer seite2 = new StringBuffer(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder seite2 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {
@@ -397,7 +396,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             return listeThemen.pollFirst();
         }
 
-        private long extractDurationZDF(StringBuffer page) {
+        private long extractDurationZDF(MVStringBuilder page) {
             long durationInSeconds = 0;
             String duration = extractString(page, "<p class=\"datum\">VIDEO, ", "</p>");
             if (duration == null) {
@@ -416,7 +415,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             return durationInSeconds;
         }
 
-        private String extractDescription(StringBuffer page) {
+        private String extractDescription(MVStringBuilder page) {
             String desc = extractString(page, "<meta name=\"description\" content=\"", "\"");
             if (desc == null) {
                 return "";
@@ -425,7 +424,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             return desc;
         }
 
-        private String[] extractKeywords(StringBuffer page) {
+        private String[] extractKeywords(MVStringBuilder page) {
             String keywords = extractString(page, "<meta name=\"keywords\" content=\"", "\"");
             if (keywords == null) {
                 return new String[]{""};
@@ -434,7 +433,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             return keywords.split("; ");
         }
 
-        private String extractImageURL(StringBuffer page) {
+        private String extractImageURL(MVStringBuilder page) {
             String imageUrl = extractString(page, "background-image: url(/ZDFmediathek", ")");
             if (imageUrl == null) {
                 return "";
@@ -443,7 +442,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             return "http://www.zdf.de/ZDFmediathek" + imageUrl;
         }
 
-        private String extractString(StringBuffer source, String startMarker, String endMarker) {
+        private String extractString(MVStringBuilder source, String startMarker, String endMarker) {
             int start = source.indexOf(startMarker);
             if (start == -1) {
                 return null;
@@ -460,8 +459,8 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         }
     }
 
-    //public static DatenFilm flash(GetUrl getUrl, StringBuffer seiteFlash, String senderName, String thema, String titel, String urlThema, String urlFilm, String datum, String zeit) {
-    public static DatenFilm flash(GetUrl getUrl, StringBuffer seiteFlash, String senderName, String thema, String titel,
+    //public static DatenFilm flash(GetUrl getUrl, MVStringBuilder seiteFlash, String senderName, String thema, String titel, String urlThema, String urlFilm, String datum, String zeit) {
+    public static DatenFilm flash(GetUrl getUrl, MVStringBuilder seiteFlash, String senderName, String thema, String titel,
             String filmWebsite, String urlFilm, String datum, String zeit, long durationInSeconds, String description,
             String imageUrl, String[] keywords) {
         //<param name="app" value="ondemand" />
@@ -589,7 +588,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         return ret;
     }
 
-    public static DatenFilm quicktime(GetUrl getUrl, StringBuffer seiteQuicktime, String senderName, String thema, String titel, String filmWebsite, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+    public static DatenFilm quicktime(GetUrl getUrl, MVStringBuilder seiteQuicktime, String senderName, String thema, String titel, String filmWebsite, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
         // RTSPtext
         // rtsp://a1966.v1252936.c125293.g.vq.akamaistream.net/7/1966/125293/v0001/mp4.od.origin.zdf.de.gl-systemhaus.de/none/3sat/13/06/130614_meyer_kuz_1596k_p13v9.mp4
         // 
@@ -631,12 +630,12 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         return ret;
     }
 
-    public static DatenFilm filmHolenId(GetUrl getUrl, StringBuffer strBuffer, String sender, String thema, String titel, String filmWebsite, String urlId) {
+    public static DatenFilm filmHolenId(GetUrl getUrl, MVStringBuilder strBuffer, String sender, String thema, String titel, String filmWebsite, String urlId) {
         //<teaserimage alt="Harald Lesch im Studio von Abenteuer Forschung" key="298x168">http://www.zdf.de/ZDFmediathek/contentblob/1909108/timg298x168blob/8081564</teaserimage>
         //<detail>Möchten Sie wissen, was Sie in der nächsten Sendung von Abenteuer Forschung erwartet? Harald Lesch informiert Sie.</detail>
         //<length>00:00:34.000</length>
         //<airtime>02.07.2013 23:00</airtime>
-        final String BILD = "<teaserimage alt=\"";
+        final String BILD = "<teaserimage";
         final String BILD_ = "key=\"2";
         final String BESCHREIBUNG = "<detail>";
         final String LAENGE = "<length>";
@@ -655,44 +654,29 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 pos1 += BILD_.length();
                 if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
                     bild = strBuffer.substring(pos1, pos2);
+                    String tmp = strBuffer.extract(BILD, BILD_, "<");
+                    if (!bild.equals(tmp)) {
+                        System.out.println("Scheisse");
+                    }
                     if (bild.contains(">")) {
                         bild = bild.substring(bild.indexOf(">") + 1);
                     }
                 }
             }
         }
-        if ((pos1 = strBuffer.indexOf(BESCHREIBUNG)) != -1) {
-            pos1 += BESCHREIBUNG.length();
-            if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
-                beschreibung = strBuffer.substring(pos1, pos2);
-            }
+
+        beschreibung = strBuffer.extract(BESCHREIBUNG, "<");
+        if (thema.isEmpty()) {
+            thema = strBuffer.extract(THEMA, "<");
         }
-        if ((pos1 = strBuffer.indexOf(THEMA)) != -1) {
-            pos1 += THEMA.length();
-            if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
-                if (thema.isEmpty()) {
-                    thema = strBuffer.substring(pos1, pos2);
-                }
-            }
+        laenge = strBuffer.extract(LAENGE, "<");
+        if (laenge.contains(".")) {
+            laenge = laenge.substring(0, laenge.indexOf("."));
         }
-        if ((pos1 = strBuffer.indexOf(LAENGE)) != -1) {
-            pos1 += LAENGE.length();
-            if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
-                laenge = strBuffer.substring(pos1, pos2);
-                if (laenge.contains(".")) {
-                    laenge = laenge.substring(0, laenge.indexOf("."));
-                }
-            }
-        }
-        if ((pos1 = strBuffer.indexOf(DATUM)) != -1) {
-            pos1 += DATUM.length();
-            if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
-                datum = strBuffer.substring(pos1, pos2);
-                if (datum.contains(" ")) {
-                    zeit = datum.substring(datum.lastIndexOf(" ")).trim() + ":00";
-                    datum = datum.substring(0, datum.lastIndexOf(" ")).trim();
-                }
-            }
+        datum = strBuffer.extract(DATUM, "<");
+        if (datum.contains(" ")) {
+            zeit = datum.substring(datum.lastIndexOf(" ")).trim() + ":00";
+            datum = datum.substring(0, datum.lastIndexOf(" ")).trim();
         }
         // erst mal URL in besserer Auflösung
         // <formitaet basetype="h264_aac_f4f_http_f4m_http" isDownload="false">
@@ -826,7 +810,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         }
     }
 
-    public static String f4mUrlHolen(GetUrl getUrl, String sender, StringBuffer strBuffer, String urlf4m) {
+    public static String f4mUrlHolen(GetUrl getUrl, String sender, MVStringBuilder strBuffer, String urlf4m) {
         //<manifest xmlns="http://ns.adobe.com/f4m/2.0">
         //    <baseURL>http://zdf_hdflash_none-f.akamaihd.net/z/</baseURL>
         //    <media href="mp4/none/3sat/13/07/130714_zkm_bonus_rundgang_museumscheck_736k_p11v11.mp4/manifest.f4m?hdcore" bitrate="680000"/>
