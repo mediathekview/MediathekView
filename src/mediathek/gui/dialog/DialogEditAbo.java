@@ -184,7 +184,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
     }
 
     private void check() {
-        aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR] = GuiFunktionen.replaceLeerDateiname(aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR], true /* pfadtrennerEntfernen */, true /* leerEntfernen */);
+        aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR] = GuiFunktionen.replaceLeerDateiname(aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR], true /* istDatei */, true /* leerEntfernen */);
         ok = true;
     }
 
