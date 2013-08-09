@@ -48,31 +48,28 @@ public class GuiFunktionen extends Funktionen {
         }
     }
 
-    public static String replaceLeerDateiname(String pfad, boolean pfadtrennerEntfernen, boolean leerEntfernen) {
+    public static String replaceLeerDateiname(String pfad, boolean istDatei, boolean leerEntfernen) {
+        // aus einem Pfadnamen/Dateinamen werden verbotene Zeichen entfernt
+        // "istDatei" kennzeichnet einen Dateinamen, sonst Pfadnamen
         // verbotene Zeichen entfernen
         // < > ? " : | \ / *
         String ret = pfad;
         boolean winPfad = false;
-        if (pfad.length() >= 2) {
+        if (!istDatei && pfad.length() >= 2) {
             if (pfad.charAt(1) == ':') {
-                // damit auch "d:" als Pfad geht
+                // damit auch "d:" und nicht nur "d:\" als Pfad geht
                 winPfad = true;
             }
-//            if (pfad.substring(1, 3).equals(":\\")) {
-//                winPfad = true;
-//            }
         }
-        if (pfadtrennerEntfernen) {
+        if (istDatei) {
             ret = ret.replace("\\", "-");
             ret = ret.replace("/", "-");
         } else {
-            String sl;
             if (File.separator.equals("\\")) {
-                sl = "/";
+                ret = ret.replace("/", "-");
             } else {
-                sl = "\\";
+                ret = ret.replace("\\", "-");
             }
-            ret = ret.replace(sl, "-");
         }
         if (leerEntfernen) {
             ret = ret.replace(" ", "_");
@@ -92,6 +89,7 @@ public class GuiFunktionen extends Funktionen {
         ret = ret.replace("|", "_");
         ret = getAscii(ret);
         if (winPfad) {
+            // c: wieder herstellen
             if (ret.length() >= 3) {
                 ret = ret.substring(0, 1) + ":" + ret.substring(2);
             } else if (ret.length() >= 2) {
