@@ -15,10 +15,10 @@ public class MVUrlDateiGroesse {
         if (l > 1000 * 1000) {
             // größer als 1MB sonst kann ich mirs sparen
             groesseStr = String.valueOf(l / (1000 * 1000));
-            if (groesseStr.length() >= 4) {
-                groesseStr = groesseStr.substring(0, groesseStr.length() - 3) + "." + groesseStr.substring(groesseStr.length() - 3);
-            }
-            groesseStr = fuellen(4, groesseStr);
+//            if (groesseStr.length() >= 4) {
+//                groesseStr = groesseStr.substring(0, groesseStr.length() - 3) + " " + groesseStr.substring(groesseStr.length() - 3);
+//            }
+//            groesseStr = fuellen(4, groesseStr);
         } else if (l > 0) {
             groesseStr = "<1";
         }

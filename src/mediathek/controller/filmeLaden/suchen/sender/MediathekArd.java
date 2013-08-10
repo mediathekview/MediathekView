@@ -431,7 +431,8 @@ public class MediathekArd extends MediathekReader implements Runnable {
                 }
             }
             if (f.arr[DatenFilm.FILM_URL_NR].equals("")) {
-                if (seite2.indexOf("Der Clip ist deshalb nur von 20 bis 6 Uhr verfügbar") == -1) {
+                if (seite2.indexOf("Der Clip ist deshalb nur von 20 bis 6 Uhr verfügbar") == -1
+                        && seite2.indexOf("Der Clip ist deshalb nur von 22 bis 6 Uhr verfügbar") == -1) {
                     Log.fehlerMeldung(-159873540, Log.FEHLER_ART_MREADER, "MediathekArd.filmLaden", "keine Url für: " + filmWebsite + " Flash: " + flash);
                 }
             } else {
