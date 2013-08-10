@@ -166,7 +166,7 @@ public class FilmeSuchenSender {
         Iterator<MediathekReader> it = mediathekListe.iterator();
         while (it.hasNext()) {
             MediathekReader reader = it.next();
-            if (reader.getNameSenderMreader().equals(nameSenderMreader)) {
+            if (reader.getNameSender().equals(nameSenderMreader)) {
                 return reader;
             }
         }
@@ -178,16 +178,9 @@ public class FilmeSuchenSender {
         LinkedList<String> liste = new LinkedList<String>();
         Iterator<MediathekReader> it = mediathekListe.iterator();
         while (it.hasNext()) {
-            String[] s = it.next().getNameSenderFilmliste();
-            for (int i = 0; i < s.length; ++i) {
-                liste.add(s[i]);
-            }
+            liste.add(it.next().getNameSender());
         }
         GuiFunktionen.listeSort(liste);
-//        String[] ret = new String[liste.size()];
-//        for (int i = 0; i < liste.size(); ++i) {
-//            ret[i] = liste.get(i);
-//        }
         return liste.toArray(new String[]{});
     }
 
@@ -222,14 +215,7 @@ public class FilmeSuchenSender {
             zeile = textLaenge(MAX_SENDER, run.sender);
             zeile += textLaenge(MAX1, "Laufzeit[Min.]: " + run.getLaufzeitMinuten());
             zeile += textLaenge(MAX1, "      Seiten: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER, run.sender));
-            String nameFilmliste[] = getMReaderNameSenderMreader(run.sender).getNameSenderFilmliste();
-            if (nameFilmliste.length == 1) {
-                zeile += "Filme: " + listeFilmeNeu.countSender(nameFilmliste[0]);
-            } else {
-                for (int i = 0; i < nameFilmliste.length; i++) {
-                    zeile += "Filme [" + nameFilmliste[i] + "]: " + listeFilmeNeu.countSender(nameFilmliste[i]) + "  ";
-                }
-            }
+            zeile += "Filme: " + listeFilmeNeu.countSender(getMReaderNameSenderMreader(run.sender).getNameSender());
             fertigMeldung.add(zeile);
             // Zeile 2
             zeile = textLaenge(MAX_SENDER, "");

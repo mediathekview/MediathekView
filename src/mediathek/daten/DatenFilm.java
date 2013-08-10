@@ -362,6 +362,9 @@ public class DatenFilm implements Comparable<DatenFilm> {
         if (s.startsWith(":")) {
             s = s.substring(1).trim();
         }
+        if (s.startsWith(",")) {
+            s = s.substring(1).trim();
+        }
         final int x = 250;
         if (s.length() > x) {
             return s.substring(0, x) + "\n.....";
