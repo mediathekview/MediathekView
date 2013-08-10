@@ -5,7 +5,7 @@ import java.net.URL;
 
 public class MVUrlDateiGroesse {
 
-    final static int TIMEOUT = 5000; // ms
+    final static int TIMEOUT = 2500; // ms
 
     public static String laengeString(String url) {
         // liefert die Dateigröße einer URL in GBYTE!!

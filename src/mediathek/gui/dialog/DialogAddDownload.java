@@ -48,21 +48,6 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private DDaten ddaten;
     private DatenFilm datenFilm;
     private Component parentComponent = null;
-    private boolean nameVomUserGeaendert = false;
-
-    public DialogAddDownload(java.awt.Frame parent, DDaten dd, DatenFilm film) {
-        super(parent, true);
-        parentComponent = parent;
-        initComponents();
-        ddaten = dd;
-        datenFilm = film;
-        this.setTitle("Film Speichern");
-        // Felder init
-        init();
-        if (parent != null) {
-            setLocationRelativeTo(parent);
-        }
-    }
 
     public DialogAddDownload(java.awt.Frame parent, DDaten dd, DatenFilm film, DatenPset ppSet) {
         super(parent, true);
@@ -131,6 +116,23 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jRadioButtonAufloesungHd.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty());
         jRadioButtonAufloesungKlein.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty());
         jRadioButtonAufloesungHoch.setSelected(true);
+        String mb;
+        if (jRadioButtonAufloesungHd.isEnabled()) {
+            mb = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(DatenPset.AUFLOESUNG_HD));
+            if (!mb.isEmpty()) {
+                jRadioButtonAufloesungHd.setText(jRadioButtonAufloesungHd.getText() + "   [ " + mb + " MB ]");
+            }
+        }
+        mb = datenFilm.getDateigroesse(datenFilm.arr[DatenFilm.FILM_URL_NR]);
+        if (!mb.isEmpty()) {
+            jRadioButtonAufloesungHoch.setText(jRadioButtonAufloesungHoch.getText() + "   [ " + mb + " MB ]");
+        }
+        if (jRadioButtonAufloesungKlein.isEnabled()) {
+            mb = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(DatenPset.AUFLOESUNG_KLEIN));
+            if (!mb.isEmpty()) {
+                jRadioButtonAufloesungKlein.setText(jRadioButtonAufloesungKlein.getText() + "   [ " + mb + " MB ]");
+            }
+        }
     }
 
     private void setName() {
