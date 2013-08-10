@@ -48,6 +48,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private DDaten ddaten;
     private DatenFilm datenFilm;
     private Component parentComponent = null;
+    private boolean nameVomUserGeaendert = false;
 
     public DialogAddDownload(java.awt.Frame parent, DDaten dd, DatenFilm film) {
         super(parent, true);
@@ -115,13 +116,16 @@ public class DialogAddDownload extends javax.swing.JDialog {
         if (pSet != null) {
             jComboBoxPgr.setSelectedItem(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
         }
-        setGruppe();
+        setName();
         if (ddaten.listePset.getListeSpeichern().size() == 1) {
             // macht dann keinen Sinn
             jComboBoxPgr.setEnabled(false);
         } else {
             jComboBoxPgr.addActionListener(new BeobComboProgramm());
         }
+        jRadioButtonAufloesungHd.addActionListener(new BeobComboProgramm());
+        jRadioButtonAufloesungKlein.addActionListener(new BeobComboProgramm());
+        jRadioButtonAufloesungHoch.addActionListener(new BeobComboProgramm());
         jTextFieldSender.setText(datenFilm.arr[DatenFilm.FILM_SENDER_NR]);
         jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL_NR]);
         jRadioButtonAufloesungHd.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty());
@@ -129,10 +133,11 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jRadioButtonAufloesungHoch.setSelected(true);
     }
 
-    private void setGruppe() {
+    private void setName() {
         pSet = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
         // beim ersten mal werden die Standardpfade gesucht
-        datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, "", "", "" /*Aufloesung*/);
+        // datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, "", "", "" /*Aufloesung*/);
+        datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, "", "", getAufloesung());
         if (datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR].equals("")) {
             jTextFieldName.setEnabled(false);
             jTextFieldPfad.setEnabled(false);
@@ -395,16 +400,16 @@ public class DialogAddDownload extends javax.swing.JDialog {
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jButtonBeenden)
                     .addComponent(jButtonAbbrechen)
@@ -435,7 +440,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            setGruppe();
+            setName();
         }
     }
 

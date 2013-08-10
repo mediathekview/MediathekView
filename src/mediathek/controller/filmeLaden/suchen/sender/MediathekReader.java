@@ -45,10 +45,6 @@ public class MediathekReader implements Runnable {
     GetUrl getUrlIo;
     FilmeSuchenSender suchen;
 
-    /**
-     *
-     * @param ddaten
-     */
     public MediathekReader(FilmeSuchenSender ssearch, String nameMreader, int ssenderMaxThread, int ssenderWartenSeiteLaden, int sstartPrio) {
         suchen = ssearch;
         wartenSeiteLaden = ssenderWartenSeiteLaden;
@@ -57,11 +53,6 @@ public class MediathekReader implements Runnable {
         nameSenderMReader = nameMreader;
         maxThreadLaufen = ssenderMaxThread;
         startPrio = sstartPrio;
-        if (Daten.debug) {
-            //////////////
-//            maxThreadLaufen = 1;
-//            wartenSeiteLaden = 100;
-        }
     }
     //===================================
     // public 
@@ -91,11 +82,7 @@ public class MediathekReader implements Runnable {
         return nameSenderMReader.equalsIgnoreCase(name);
     }
 
-    public String[] getNameSenderFilmliste() {
-        return new String[]{nameSenderFilmliste};
-    }
-
-    public String getNameSenderMreader() {
+    public String getNameSender() {
         return nameSenderMReader;
     }
 

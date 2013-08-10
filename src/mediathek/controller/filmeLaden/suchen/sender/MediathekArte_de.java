@@ -46,15 +46,6 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
     //===================================
     // public
     //===================================
-//    @Override
-//    public String[] getNameSenderFilmliste() {
-//        return new String[]{SENDER_ARTE_DE, SENDER_ARTE_FR};
-//    }
-//
-//    @Override
-//    public boolean checkNameSenderFilmliste(String name) {
-//        return SENDER_ARTE_DE.equalsIgnoreCase(name) || SENDER_ARTE_FR.equalsIgnoreCase(name) || SENDER_ARTE.equalsIgnoreCase(name);
-//    }
     @Override
     public void addToList() {
         meldungStart();
@@ -223,7 +214,7 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
         }
         if ((pos1 = seite.indexOf(MUSTER_BESCHREIBUNG)) != -1) {
             pos1 += MUSTER_BESCHREIBUNG.length();
-            if ((pos2 = seite.indexOf(",", pos1)) != -1) {
+            if ((pos2 = seite.indexOf("\",", pos1)) != -1) {
                 beschreibung = seite.substring(pos1, pos2);
                 if (!beschreibung.isEmpty() && beschreibung.endsWith("\"")) {
                     beschreibung = beschreibung.substring(0, beschreibung.length() - 2);
