@@ -107,6 +107,10 @@ public class GuiDownloads extends PanelVorlage {
         filmStartenWiederholenStoppen(alle, false /* starten */);
     }
 
+    public void wartendeStoppen() {
+        wartendeDownloadsStoppen();
+    }
+
     public void vorziehen() {
         downloadVorziehen();
     }
@@ -495,7 +499,7 @@ public class GuiDownloads extends PanelVorlage {
         }
     }
 
-    private void stopWartende() {
+    private void wartendeDownloadsStoppen() {
         // es werden alle noch nicht gestarteten Downloads gelöscht
         ArrayList<String> urls = new ArrayList<String>();
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
@@ -876,7 +880,7 @@ public class GuiDownloads extends PanelVorlage {
             itemWartendeStoppen.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    stopWartende();
+                    wartendeDownloadsStoppen();
                 }
             });
             JMenuItem itemAktualisieren = new JMenuItem("Liste der Downloads aktualisieren");

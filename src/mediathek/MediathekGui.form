@@ -105,6 +105,15 @@
                 <Property name="text" type="java.lang.String" value="alle Downloads starten"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadWartendeStoppen">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/player_stop_16.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="wartende stoppen"/>
+                <Property name="toolTipText" type="java.lang.String" value="wartende Downloads stoppen"/>
+              </Properties>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadAlleStoppen">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">

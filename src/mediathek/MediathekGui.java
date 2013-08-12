@@ -60,7 +60,6 @@ import javax.swing.UIManager;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.CheckUpdate;
-import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
@@ -329,6 +328,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jMenuItemDownloadStarten.setEnabled(true);
                 jMenuItemDownloadStoppen.setEnabled(true);
                 jMenuItemDownloadAlleStoppen.setEnabled(true);
+                jMenuItemDownloadWartendeStoppen.setEnabled(true);
                 jMenuItemDownloadsAktualisieren.setEnabled(true);
                 jMenuItemDownloadsAufraeumen.setEnabled(true);
                 jMenuItemDownloadsLoeschen.setEnabled(true);
@@ -407,6 +407,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemDownloadStarten.setEnabled(false);
         jMenuItemDownloadStoppen.setEnabled(false);
         jMenuItemDownloadAlleStoppen.setEnabled(false);
+        jMenuItemDownloadWartendeStoppen.setEnabled(false);
         jMenuItemDownloadAendern.setEnabled(false);
         jMenuItemDownloadsZurueckstellen.setEnabled(false);
         jMenuItemDownloadVorziehen.setEnabled(false);
@@ -511,6 +512,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemFilmAufzeichnen.setIcon(GetIcon.getIcon("player_rec_16.png"));
         jMenuItemDownloadsAlleStarten.setIcon(GetIcon.getIcon("alle_starten_16.png"));
         jMenuItemDownloadAlleStoppen.setIcon(GetIcon.getIcon("player_stop_16.png"));
+        jMenuItemDownloadWartendeStoppen.setIcon(GetIcon.getIcon("player_stop_16.png"));
         jMenuItemDownloadStarten.setIcon(GetIcon.getIcon("player_play_16.png"));
         jMenuItemDownloadStoppen.setIcon(GetIcon.getIcon("player_stop_16.png"));
         jMenuItemDownloadVorziehen.setIcon(GetIcon.getIcon("move_up_16.png"));
@@ -847,6 +849,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 ddaten.guiDownloads.stoppen(true /* alle */);
             }
         });
+        jMenuItemDownloadWartendeStoppen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ddaten.guiDownloads.wartendeStoppen();
+            }
+        });
         jMenuItemDownloadStoppen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1123,6 +1131,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
         jMenuDownload = new javax.swing.JMenu();
         jMenuItemDownloadsAlleStarten = new javax.swing.JMenuItem();
+        jMenuItemDownloadWartendeStoppen = new javax.swing.JMenuItem();
         jMenuItemDownloadAlleStoppen = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItemDownloadStarten = new javax.swing.JMenuItem();
@@ -1354,6 +1363,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemDownloadsAlleStarten.setText("alle Downloads starten");
         jMenuDownload.add(jMenuItemDownloadsAlleStarten);
 
+        jMenuItemDownloadWartendeStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png"))); // NOI18N
+        jMenuItemDownloadWartendeStoppen.setText("wartende stoppen");
+        jMenuItemDownloadWartendeStoppen.setToolTipText("wartende Downloads stoppen");
+        jMenuDownload.add(jMenuItemDownloadWartendeStoppen);
+
         jMenuItemDownloadAlleStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/player_stop_16.png"))); // NOI18N
         jMenuItemDownloadAlleStoppen.setText("alle stoppen");
         jMenuItemDownloadAlleStoppen.setToolTipText("alle Downloads stoppen");
@@ -1521,6 +1535,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JMenuItem jMenuItemDownloadStarten;
     private javax.swing.JMenuItem jMenuItemDownloadStoppen;
     private javax.swing.JMenuItem jMenuItemDownloadVorziehen;
+    private javax.swing.JMenuItem jMenuItemDownloadWartendeStoppen;
     private javax.swing.JMenuItem jMenuItemDownloadsAktualisieren;
     private javax.swing.JMenuItem jMenuItemDownloadsAlleStarten;
     private javax.swing.JMenuItem jMenuItemDownloadsAufraeumen;
