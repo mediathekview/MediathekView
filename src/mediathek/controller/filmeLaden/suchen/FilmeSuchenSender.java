@@ -205,7 +205,9 @@ public class FilmeSuchenSender {
     public void meldenFertig(String sender) {
         //wird ausgeführt wenn Sender beendet ist
         int MAX_SENDER = 15, MAX1 = 24, MAX2 = 30;
-        Log.systemMeldung("Fertig " + sender + ": " + DatumZeit.getJetzt_HH_MM_SS());
+        Log.systemMeldung("---------------------------------------------------------------------------------------------------");
+        Log.systemMeldung("Fertig " + sender + ": " + DatumZeit.getJetzt_HH_MM_SS() + ", Filme: " + listeFilmeNeu.countSender(sender));
+        Log.systemMeldung("---------------------------------------------------------------------------------------------------");
         RunSender run = listeSenderLaufen.senderFertig(sender);
         if (run != null) {
             // Zeile 1

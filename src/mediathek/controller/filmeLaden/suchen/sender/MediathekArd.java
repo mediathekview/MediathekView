@@ -43,7 +43,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
      * @param ddaten
      */
     public MediathekArd(FilmeSuchenSender ssearch, int startPrio) {
-        super(ssearch, /* name */ SENDER, /* threads */ 6, /* urlWarten */ 500, startPrio);
+        super(ssearch, /* name */ SENDER, /* threads */ 10, /* urlWarten */ 500, startPrio);
     }
 
     @Override
@@ -331,9 +331,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             // mediaCollection.addMediaStream(1, 2, "", "http://http-ras.wdr.de/CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460798.mp4", "default");
             // mediaCollection.addMediaStream(0, 1, "", "http://www.hr.gl-systemhaus.de/flash/fs/buchmesse2011/20111015_tilmankat.flv", "default");
 
-
             //flvstreamer --host vod.daserste.de --app ardfs --playpath mp4:videoportal/Film/c_100000/106579/format106899.f4v > bla.flv
-
 
             boolean flash;
             String protokoll = "";
@@ -357,41 +355,41 @@ public class MediathekArd extends MediathekReader implements Runnable {
             final String MUSTER_URL3a = "mediaCollection.addMediaStream(1, 3, \"\", \"http://";
             final String MUSTER_URL3b = "mediaCollection.addMediaStream(1, 2, \"\", \"http://";
             final String MUSTER_URL3c = "mediaCollection.addMediaStream(1, 1, \"\", \"http://";
-            final String MUSTER_URL3d = "mediaCollection.addMediaStream(1, 0, \"\", \"http://";
-            final String MUSTER_URL4a = "mediaCollection.addMediaStream(0, 1, \"\", \"http://";
+            final String MUSTER_URL3d = "mediaCollection.addMediaStream(0, 1, \"\", \"http://";
+            final String MUSTER_URL3e = "mediaCollection.addMediaStream(1, 0, \"\", \"http://";
             protokoll = "http://";
             flash = false;
             if ((pos1 = seite2.indexOf(MUSTER_URL3a)) != -1) {
                 pos1 += MUSTER_URL3a.length();
-                if (filmHolen(f, flash, pos1, protokoll)) {
+                if (filmHolen(f, flash, pos1, protokoll, true /*noch 2. suchen*/)) {
                     addFilm(f);
                     return true;
                 }
             }
             if ((pos1 = seite2.indexOf(MUSTER_URL3b)) != -1) {
                 pos1 += MUSTER_URL3b.length();
-                if (filmHolen(f, flash, pos1, protokoll)) {
+                if (filmHolen(f, flash, pos1, protokoll, true /*noch 2. suchen*/)) {
                     addFilm(f);
                     return true;
                 }
             }
             if ((pos1 = seite2.indexOf(MUSTER_URL3c)) != -1) {
                 pos1 += MUSTER_URL3c.length();
-                if (filmHolen(f, flash, pos1, protokoll)) {
+                if (filmHolen(f, flash, pos1, protokoll, false /*noch 2. suchen*/)) {
                     addFilm(f);
                     return true;
                 }
             }
             if ((pos1 = seite2.indexOf(MUSTER_URL3d)) != -1) {
                 pos1 += MUSTER_URL3d.length();
-                if (filmHolen(f, flash, pos1, protokoll)) {
+                if (filmHolen(f, flash, pos1, protokoll, false /*noch 2. suchen*/)) {
                     addFilm(f);
                     return true;
                 }
             }
-            if ((pos1 = seite2.indexOf(MUSTER_URL4a)) != -1) {
-                pos1 += MUSTER_URL4a.length();
-                if (filmHolen(f, flash, pos1, protokoll)) {
+            if ((pos1 = seite2.indexOf(MUSTER_URL3e)) != -1) {
+                pos1 += MUSTER_URL3e.length();
+                if (filmHolen(f, flash, pos1, protokoll, false /*noch 2. suchen*/)) {
                     addFilm(f);
                     return true;
                 }
@@ -404,28 +402,28 @@ public class MediathekArd extends MediathekReader implements Runnable {
             final String MUSTER_URL1d = "mediaCollection.addMediaStream(0, 0, \"rtmp";
             if ((pos1 = seite2.indexOf(MUSTER_URL1a)) != -1) {
                 pos1 += MUSTER_URL1a.length();
-                if (filmHolen(f, flash, pos1, protokoll)) {
+                if (filmHolen(f, flash, pos1, protokoll, true /*noch 2. suchen*/)) {
                     addFilm(f);
                     return true;
                 }
             }
             if ((pos1 = seite2.indexOf(MUSTER_URL1b)) != -1) {
                 pos1 += MUSTER_URL1b.length();
-                if (filmHolen(f, flash, pos1, protokoll)) {
+                if (filmHolen(f, flash, pos1, protokoll, true /*noch 2. suchen*/)) {
                     addFilm(f);
                     return true;
                 }
             }
             if ((pos1 = seite2.indexOf(MUSTER_URL1c)) != -1) {
                 pos1 += MUSTER_URL1c.length();
-                if (filmHolen(f, flash, pos1, protokoll)) {
+                if (filmHolen(f, flash, pos1, protokoll, false /*noch 2. suchen*/)) {
                     addFilm(f);
                     return true;
                 }
             }
             if ((pos1 = seite2.indexOf(MUSTER_URL1d)) != -1) {
                 pos1 += MUSTER_URL1d.length();
-                if (filmHolen(f, flash, pos1, protokoll)) {
+                if (filmHolen(f, flash, pos1, protokoll, false /*noch 2. suchen*/)) {
                     addFilm(f);
                     return true;
                 }
@@ -442,7 +440,7 @@ public class MediathekArd extends MediathekReader implements Runnable {
             return false;
         }
 
-        private boolean filmHolen(DatenFilm f, boolean flash, int pos1, String protokoll) {
+        private boolean filmHolen(DatenFilm f, boolean flash, int pos1, String protokoll, boolean zweitenSuchen) {
             // mediaCollection.addMediaStream(0, 2, "rtmp://gffstream.fcod.llnwd.net/a792/e2/", "mp4:CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460798.mp4", "limelight");
             // mediaCollection.addMediaStream(1, 0, "", "http://http-ras.wdr.de/CMS2010/mdb/14/148362/ichwillnichtlaengerschweigen_1460800.mp4", "default");
             int pos2, pos3;
@@ -497,7 +495,11 @@ public class MediathekArd extends MediathekReader implements Runnable {
                     // dann zuerst die normale URL füllen
                     f.arr[DatenFilm.FILM_URL_NR] = urlOrg;
                     f.arr[DatenFilm.FILM_URL_RTMP_NR] = urlRtmp;
-                    return false;
+                    if (zweitenSuchen) {
+                        return false;
+                    } else {
+                        return true;
+                    }
                 } else {
                     // als 2. URL einfügen
                     f.addUrlKlein(urlOrg, urlRtmp);

@@ -52,10 +52,10 @@ public class MVUrlDateiGroesse {
         return ret;
     }
 
-    private static String fuellen(int anz, String s) {
-        while (s.length() < anz) {
-            s = " " + s;
-        }
-        return s;
-    }
+//    private static String fuellen(int anz, String s) {
+//        while (s.length() < anz) {
+//            s = " " + s;
+//        }
+//        return s;
+//    }
 }
