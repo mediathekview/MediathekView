@@ -413,19 +413,21 @@ public class StarterClass {
                 long maxLen = MVUrlDateiGroesse.laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 long downLen = 0;
                 try {
+
                     int downloaded = 0;
                     URL url = new URL(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                     URLConnection connection = url.openConnection();
                     // HttpURLConnection connection = (HttpURLConnection) new URL(uurl).openConnection();
                     File file = new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-                    if (file.exists()) {
-                        downloaded = (int) file.length();
-                        connection.setRequestProperty("Range", "bytes=" + downloaded + "-");
-                        connection.connect();
-                    }
+//                    if (file.exists()) {
+//                        downloaded = (int) file.length();
+//                        connection.setRequestProperty("Range", "bytes=" + downloaded + "-");
+//                        connection.connect();
+//                    }
                     input = new MVInputStream(url.openStream());
                     BufferedInputStream srcBuffer = new BufferedInputStream(input);
-                    FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
+//                  FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
+                    FileOutputStream fos = new FileOutputStream(file);
                     BufferedOutputStream destBuffer = new BufferedOutputStream(fos, 1024);
                     byte[] buffer = new byte[1024];
                     long p, pp = 0;
