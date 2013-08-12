@@ -19,10 +19,13 @@
  */
 package mediathek.controller.io.starter;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -409,39 +412,54 @@ public class StarterClass {
                 new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
                 long maxLen = MVUrlDateiGroesse.laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 long downLen = 0;
-                input = new MVInputStream(new URL(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]).openStream());
-                byte[] buffer = new byte[1024];
-                long p, pp = 0;
-                destStream = new FileOutputStream(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-                while ((len = input.read(buffer)) != -1 && !start.stoppen) {
-                    downLen += len;
-                    if (maxLen > 0) {
-                        p = (downLen * (long) 1000) / maxLen;
-                        // p muss zwischen 1 und 999 liegen
-                        if (p == 0) {
-                            p = StarterClass.PROGRESS_GESTARTET;
-                        } else if (p >= 1000) {
-                            p = 999;
-                        }
-                        start.percent = (int) p;
-                        if (p != pp) {
-                            pp = p;
-                            // Restzeit ermitteln
-                            if (p > 5) {
-                                // sonst macht es noch keinen Sinn
-                                int diffZeit = start.startZeit.diffInSekunden();
-                                int restProzent = 1000 - (int) p;
-                                start.restSekunden = (diffZeit * restProzent / p);
+                try {
+                    int downloaded = 0;
+                    URL url = new URL(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                    URLConnection connection = url.openConnection();
+                    // HttpURLConnection connection = (HttpURLConnection) new URL(uurl).openConnection();
+                    File file = new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                    if (file.exists()) {
+                        downloaded = (int) file.length();
+                        connection.setRequestProperty("Range", "bytes=" + downloaded + "-");
+                        connection.connect();
+                    }
+                    input = new MVInputStream(url.openStream());
+                    BufferedInputStream srcBuffer = new BufferedInputStream(input);
+                    FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
+                    BufferedOutputStream destBuffer = new BufferedOutputStream(fos, 1024);
+                    byte[] buffer = new byte[1024];
+                    long p, pp = 0;
+                    while ((len = srcBuffer.read(buffer)) != -1 && !start.stoppen) {
+                        destBuffer.write(buffer, 0, len);
+                        downLen += len;
+                        if (maxLen > 0) {
+                            p = (downLen * (long) 1000) / maxLen;
+                            // p muss zwischen 1 und 999 liegen
+                            if (p == 0) {
+                                p = StarterClass.PROGRESS_GESTARTET;
+                            } else if (p >= 1000) {
+                                p = 999;
                             }
-                            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
-//                            start.datenDownload.statusMelden((int) p);
+                            start.percent = (int) p;
+                            if (p != pp) {
+                                pp = p;
+                                // Restzeit ermitteln
+                                if (p > 5) {
+                                    // sonst macht es noch keinen Sinn
+                                    int diffZeit = start.startZeit.diffInSekunden();
+                                    int restProzent = 1000 - (int) p;
+                                    start.restSekunden = (diffZeit * restProzent / p);
+                                }
+                                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+                            }
                         }
                     }
-                    destStream.write(buffer, 0, len);
+                    srcBuffer.close();
+                    destBuffer.close();
+                    Log.systemMeldung(input.toString());
+                } catch (Exception ex) {
+                    Log.fehlerMeldung(316598941, Log.FEHLER_ART_PROG, "StartetClass.leeresFileLoeschen", ex, "Fehler");
                 }
-                input.close();
-                destStream.close();
-                Log.systemMeldung(input.toString());
             } catch (Exception ex) {
                 Log.fehlerMeldung(502039078, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload-1", ex);
             }
@@ -462,7 +480,6 @@ public class StarterClass {
             start.restSekunden = -1;
             start.percent = PROGRESS_FERTIG;
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
-//            start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
     }

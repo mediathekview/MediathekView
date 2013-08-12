@@ -21,14 +21,11 @@ package mediathek.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URI;
 import java.net.URISyntaxException;
-import javax.swing.JEditorPane;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenFilm;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.UrlHyperlinkAction;
@@ -76,11 +73,10 @@ public class PanelBeschreibung extends javax.swing.JPanel {
             // Beschreibung setzen
             jEditorPane.setText(
                     "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
-                    + "<head>"
-                    + "</head>"
+                    + "<head><style type=\"text/css\">.sans { font-family: Verdana, Geneva, sans-serif;}</style></head>\n"
                     + "<body>"
-                    + "<b>" + aktFilm.arr[DatenFilm.FILM_TITEL_NR] + "</b><br />"
-                    + aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].replace("\n", "<br />")
+                    + "<span class=\"sans\"><b>" + aktFilm.arr[DatenFilm.FILM_TITEL_NR] + "</b><br /></span>"
+                    + "<span class=\"sans\">" + aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].replace("\n", "<br />") + "</span>"
                     + "</body>"
                     + "</html>");
 

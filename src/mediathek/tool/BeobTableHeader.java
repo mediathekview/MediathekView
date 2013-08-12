@@ -26,6 +26,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import mediathek.daten.Daten;
 
 public class BeobTableHeader extends MouseAdapter {
     //rechhte Maustaste in der Tabelle
@@ -58,7 +59,6 @@ public class BeobTableHeader extends MouseAdapter {
 
     private void showMenu(MouseEvent evt) {
         JPopupMenu jPopupMenu = new JPopupMenu();
-
         // Spalten ein-ausschalten
         for (int i = 0; i < columns.length; ++i) {
             box[i] = new JCheckBoxMenuItem(columns[i]);

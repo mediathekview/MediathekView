@@ -581,6 +581,7 @@ public class GuiFilme extends PanelVorlage {
                 tabelle.setSpalten();
                 aktFilmSetzen();
                 stopBeob = false;
+                /////////////Tabellenspalten ändern???
                 //filtern
                 if (themaNichtDa) {
                     // nochmal filtern anschieben
