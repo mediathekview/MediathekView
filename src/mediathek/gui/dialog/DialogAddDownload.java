@@ -72,8 +72,6 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private void init() {
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
         if (ddaten.listePset.getListeSpeichern().size() == 0) {
-            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen\" ein Programm zum Aufzeichnen festlegen.",
-                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
             // Satz mit x, war wohl nix
             ok = false;
             beenden();
