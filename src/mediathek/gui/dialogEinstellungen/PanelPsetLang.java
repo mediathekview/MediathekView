@@ -250,7 +250,7 @@ public class PanelPsetLang extends PanelVorlage {
 
     private void setAufloesung() {
         if (jRadioButtonAufloesungNormal.isSelected()) {
-            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenPset.AUFLOESUNG_NORMAL;
+            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenPset.AUFLOESUNG_HOCH;
         }
         if (jRadioButtonAufloesungHD.isSelected()) {
             getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenPset.AUFLOESUNG_HD;
@@ -335,7 +335,7 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxButton.setSelected(pSet.istButton());
             jCheckBoxAbo.setSelected(pSet.istAbo());
             jButtonAbspielen.setBackground(pSet.istAbspielen() ? COLOR_ABSPIELEN : null);
-            jRadioButtonAufloesungNormal.setSelected(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_NORMAL));
+            jRadioButtonAufloesungNormal.setSelected(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_HOCH));
             jRadioButtonAufloesungKlein.setSelected(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_KLEIN));
             jRadioButtonAufloesungHD.setSelected(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_HD));
 //            jButtonAbspielen.setForeground(pSet.istAbspielen() ? Color.BLACK : null);

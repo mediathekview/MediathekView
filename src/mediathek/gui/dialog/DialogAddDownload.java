@@ -72,7 +72,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private void init() {
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
         if (ddaten.listePset.getListeSpeichern().size() == 0) {
-            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen\" ein Programm zum Aufzeichnen festlegen.",
                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
             // Satz mit x, war wohl nix
             ok = false;
@@ -105,51 +105,22 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel<String>(ddaten.listePset.getListeSpeichern().getObjectDataCombo()));
         if (pSet != null) {
             jComboBoxPgr.setSelectedItem(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
+        } else {
+            pSet = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
         }
-        setName();
         if (ddaten.listePset.getListeSpeichern().size() == 1) {
             // macht dann keinen Sinn
             jComboBoxPgr.setEnabled(false);
         } else {
             jComboBoxPgr.addActionListener(new BeobComboProgramm());
         }
-        jRadioButtonAufloesungHd.addActionListener(new BeobComboProgramm());
-        jRadioButtonAufloesungKlein.addActionListener(new BeobComboProgramm());
-        jRadioButtonAufloesungHoch.addActionListener(new BeobComboProgramm());
         jTextFieldSender.setText(datenFilm.arr[DatenFilm.FILM_SENDER_NR]);
         jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL_NR]);
-        jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                checkPfadName();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                checkPfadName();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                checkPfadName();
-            }
-        });
-        jTextFieldPfad.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                checkPfadName();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                checkPfadName();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                checkPfadName();
-            }
-        });
+        jTextFieldName.getDocument().addDocumentListener(new BeobCheckNamen());
+        jTextFieldPfad.getDocument().addDocumentListener(new BeobCheckNamen());
+        jRadioButtonAufloesungHd.addActionListener(new BeobRadio());
+        jRadioButtonAufloesungKlein.addActionListener(new BeobRadio());
+        jRadioButtonAufloesungHoch.addActionListener(new BeobRadio());
         jRadioButtonAufloesungHd.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty());
         jRadioButtonAufloesungKlein.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty());
         jRadioButtonAufloesungHoch.setSelected(true);
@@ -170,23 +141,10 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 jRadioButtonAufloesungKlein.setText(jRadioButtonAufloesungKlein.getText() + "   [ " + mb + " MB ]");
             }
         }
+        setNameFilm();
     }
 
-    private void checkPfadName() {
-        if (!jTextFieldName.getText().equals(GuiFunktionen.replaceLeerDateiname(jTextFieldName.getText(), true/* istDatei */, true /* leerEntfernen */))) {
-            jTextFieldName.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
-        } else {
-            jTextFieldName.setBackground(Color.WHITE);
-        }
-        if (!jTextFieldPfad.getText().equals(GuiFunktionen.replaceLeerDateiname(jTextFieldPfad.getText(), false/* istDatei */, true /* leerEntfernen */))) {
-            jTextFieldPfad.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
-        } else {
-            jTextFieldPfad.setBackground(Color.WHITE);
-        }
-    }
-
-    private void setName() {
-        pSet = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
+    private void setNameFilm() {
         // beim ersten mal werden die Standardpfade gesucht
         // datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, "", "", "" /*Aufloesung*/);
         datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, "", "", getAufloesung());
@@ -202,6 +160,16 @@ public class DialogAddDownload extends javax.swing.JDialog {
             jButtonZiel.setEnabled(true);
             jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR]);
             jTextFieldPfad.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
+        }
+    }
+
+    private String getAufloesung() {
+        if (jRadioButtonAufloesungHd.isSelected()) {
+            return DatenPset.AUFLOESUNG_HD;
+        } else if (jRadioButtonAufloesungKlein.isSelected()) {
+            return DatenPset.AUFLOESUNG_KLEIN;
+        } else {
+            return DatenPset.AUFLOESUNG_HOCH;
         }
     }
 
@@ -238,16 +206,6 @@ public class DialogAddDownload extends javax.swing.JDialog {
             }
         }
         this.dispose();
-    }
-
-    private String getAufloesung() {
-        if (jRadioButtonAufloesungHd.isSelected()) {
-            return DatenPset.AUFLOESUNG_HD;
-        } else if (jRadioButtonAufloesungKlein.isSelected()) {
-            return DatenPset.AUFLOESUNG_KLEIN;
-        } else {
-            return DatenPset.AUFLOESUNG_NORMAL;
-        }
     }
 
     /** This method is called from within the constructor to
@@ -488,11 +446,58 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
 
+    private class BeobCheckNamen implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            checkPfadName();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            checkPfadName();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            checkPfadName();
+        }
+
+        private void checkPfadName() {
+            if (!jTextFieldName.getText().equals(GuiFunktionen.replaceLeerDateiname(jTextFieldName.getText(), true/* istDatei */, true /* leerEntfernen */))) {
+                jTextFieldName.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+            } else {
+                jTextFieldName.setBackground(Color.WHITE);
+            }
+            if (!jTextFieldPfad.getText().equals(GuiFunktionen.replaceLeerDateiname(jTextFieldPfad.getText(), false/* istDatei */, true /* leerEntfernen */))) {
+                jTextFieldPfad.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+            } else {
+                jTextFieldPfad.setBackground(Color.WHITE);
+            }
+        }
+    }
+
     private class BeobComboProgramm implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            setName();
+            pSet = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
+            if (!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_HD)) {
+                jRadioButtonAufloesungHd.setSelected(true);
+            } else if (!datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_KLEIN)) {
+                jRadioButtonAufloesungKlein.setSelected(true);
+            } else {
+                jRadioButtonAufloesungHoch.setSelected(true);
+            }
+            setNameFilm();
+        }
+    }
+
+    private class BeobRadio implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setNameFilm();
         }
     }
 
