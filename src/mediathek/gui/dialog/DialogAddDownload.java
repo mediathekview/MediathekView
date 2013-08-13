@@ -28,6 +28,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import com.jidesoft.utils.SystemInfo;
+import java.awt.Color;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
@@ -35,7 +38,9 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.GuiKonstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
@@ -113,6 +118,38 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jRadioButtonAufloesungHoch.addActionListener(new BeobComboProgramm());
         jTextFieldSender.setText(datenFilm.arr[DatenFilm.FILM_SENDER_NR]);
         jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL_NR]);
+        jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                checkPfadName();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                checkPfadName();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                checkPfadName();
+            }
+        });
+        jTextFieldPfad.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                checkPfadName();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                checkPfadName();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                checkPfadName();
+            }
+        });
         jRadioButtonAufloesungHd.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty());
         jRadioButtonAufloesungKlein.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty());
         jRadioButtonAufloesungHoch.setSelected(true);
@@ -132,6 +169,19 @@ public class DialogAddDownload extends javax.swing.JDialog {
             if (!mb.isEmpty()) {
                 jRadioButtonAufloesungKlein.setText(jRadioButtonAufloesungKlein.getText() + "   [ " + mb + " MB ]");
             }
+        }
+    }
+
+    private void checkPfadName() {
+        if (!jTextFieldName.getText().equals(GuiFunktionen.replaceLeerDateiname(jTextFieldName.getText(), true/* istDatei */, true /* leerEntfernen */))) {
+            jTextFieldName.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+        } else {
+            jTextFieldName.setBackground(Color.WHITE);
+        }
+        if (!jTextFieldPfad.getText().equals(GuiFunktionen.replaceLeerDateiname(jTextFieldPfad.getText(), false/* istDatei */, true /* leerEntfernen */))) {
+            jTextFieldPfad.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+        } else {
+            jTextFieldPfad.setBackground(Color.WHITE);
         }
     }
 

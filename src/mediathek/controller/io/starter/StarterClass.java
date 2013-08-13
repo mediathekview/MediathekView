@@ -416,7 +416,7 @@ public class StarterClass {
 
                     int downloaded = 0;
                     URL url = new URL(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                    URLConnection connection = url.openConnection();
+//                    URLConnection connection = url.openConnection();
                     // HttpURLConnection connection = (HttpURLConnection) new URL(uurl).openConnection();
                     File file = new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
 //                    if (file.exists()) {
