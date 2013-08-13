@@ -151,7 +151,7 @@ public class ListeStarts extends LinkedList<Start> {
         return ret;
     }
 
-    void buttonStartsPutzen() {
+    synchronized void buttonStartsPutzen() {
         // Starts durch Button die fertig sind, löschen
         boolean gefunden = false;
         Iterator<Start> it = iterator();

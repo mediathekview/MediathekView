@@ -420,7 +420,7 @@ public class GuiDownloads extends PanelVorlage {
         if (alle) {
             urls = new String[tabelle.getRowCount()];
             for (int i = 0; i < tabelle.getRowCount(); ++i) {
-                urls[i] = tabelle.getModel().getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString();
+                urls[i] = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_URL_NR).toString();
             }
         } else {
             int[] rows = tabelle.getSelectedRows();
