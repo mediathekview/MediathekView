@@ -423,7 +423,7 @@ public class GuiFilme extends PanelVorlage {
 
     private synchronized void filmSpeichern_(DatenPset pSet) {
         if (ddaten.listePset.getListeSpeichern().size() == 0) {
-            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen\" ein Programm zum Aufzeichnen festlegen.",
                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
             // Satz mit x, war wohl nix
         } else {
