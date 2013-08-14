@@ -114,6 +114,20 @@ public class GuiDebug extends PanelVorlage {
                 }
             }
         });
+        jButtonDoppelt.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.listeFilme.nurDoppelteAnzeigen(ddaten, false);
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+            }
+        });
+        jButtonDoppeltIndex.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.listeFilme.nurDoppelteAnzeigen(ddaten, true);
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+            }
+        });
     }
 
     private void addSender() {
@@ -175,6 +189,8 @@ public class GuiDebug extends PanelVorlage {
         jButtonCheck = new javax.swing.JButton();
         jButtonAlleLaden = new javax.swing.JButton();
         jCheckBoxDateiGroesse = new javax.swing.JCheckBox();
+        jButtonDoppelt = new javax.swing.JButton();
+        jButtonDoppeltIndex = new javax.swing.JButton();
 
         jPanelSenderLaden.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender starten"));
 
@@ -186,7 +202,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLadenLayout.setVerticalGroup(
             jPanelSenderLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 495, Short.MAX_VALUE)
+            .addGap(0, 484, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -218,7 +234,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLayout.setVerticalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 495, Short.MAX_VALUE)
+            .addGap(0, 484, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -248,7 +264,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelListenLayout.setVerticalGroup(
             jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 518, Short.MAX_VALUE)
+            .addGap(0, 508, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -295,7 +311,7 @@ public class GuiDebug extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jButtonTasklist)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -317,6 +333,10 @@ public class GuiDebug extends PanelVorlage {
 
         jCheckBoxDateiGroesse.setText("Stop Dateigröße");
 
+        jButtonDoppelt.setText("nur doppelte URLs");
+
+        jButtonDoppeltIndex.setText("nur doppelte URLs, index");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -324,7 +344,12 @@ public class GuiDebug extends PanelVorlage {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBoxDateiGroesse)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jCheckBoxDateiGroesse)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonDoppelt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonDoppeltIndex))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jToggleButtonAllesLaden)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -354,7 +379,10 @@ public class GuiDebug extends PanelVorlage {
                     .addComponent(jButtonCheck)
                     .addComponent(jButtonAlleLaden))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxDateiGroesse)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBoxDateiGroesse)
+                    .addComponent(jButtonDoppelt)
+                    .addComponent(jButtonDoppeltIndex))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -375,7 +403,7 @@ public class GuiDebug extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -383,6 +411,8 @@ public class GuiDebug extends PanelVorlage {
     private javax.swing.JButton jButtonAlleLaden;
     private javax.swing.JButton jButtonAllesSpeichern;
     private javax.swing.JButton jButtonCheck;
+    private javax.swing.JButton jButtonDoppelt;
+    private javax.swing.JButton jButtonDoppeltIndex;
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonTasklist;
