@@ -35,6 +35,7 @@ public class Main {
     public static final String STARTP_IMPORT_URL = "-i";
     public static final String STARTP_LOGFILE = "-log";
     public static final String STARTP_MAXIMIERT = "-M";
+    public static final String STARTP_SENDER_LOESCHEN = "-S";
 
     /*
      * Aufruf:

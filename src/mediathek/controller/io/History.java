@@ -47,7 +47,7 @@ public class History extends HashSet<String> {
         return ret;
     }
 
-    public void adds(String[] url) {
+    public void add(String[] url) {
         for (String s : url) {
             super.add(s);
         }

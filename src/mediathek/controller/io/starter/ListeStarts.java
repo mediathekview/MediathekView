@@ -62,7 +62,7 @@ public class ListeStarts extends LinkedList<Start> {
                     al.add(s.datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
                 }
             }
-            ddaten.history.adds(al.toArray(new String[]{}));
+            ddaten.history.add(al.toArray(new String[]{}));
         }
         notifyStartEvent();
     }

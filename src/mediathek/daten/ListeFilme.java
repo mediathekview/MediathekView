@@ -21,6 +21,7 @@ package mediathek.daten;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -174,6 +175,42 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 }
             }
         }
+        hashSet.clear();
+    }
+
+    public synchronized void nurDoppelteAnzeigen(DDaten ddaten, boolean index) {
+        // zum Debuggen: URLs die doppelt sind, in die History eintragen
+        // damit sie markiert werden
+        DatenFilm film;
+        HashSet<String> hashDoppelt = new HashSet<String>();
+        HashSet<String> hashSet = new HashSet<String>();
+        Iterator<DatenFilm> it = this.iterator();
+        while (it.hasNext()) {
+            film = it.next();
+            if (index) {
+                if (!hashSet.contains(film.getIndex())) {
+                    hashSet.add(film.getIndex());
+                } else {
+                    // dann ist er mind. doppelt in der Liste
+                    hashDoppelt.add(film.arr[DatenFilm.FILM_URL_NR]);
+                }
+            } else {
+                if (!hashSet.contains(film.arr[DatenFilm.FILM_URL_NR])) {
+                    hashSet.add(film.arr[DatenFilm.FILM_URL_NR]);
+                } else {
+                    // dann ist er mind. doppelt in der Liste
+                    hashDoppelt.add(film.arr[DatenFilm.FILM_URL_NR]);
+                }
+            }
+        }
+        it = this.iterator();
+        while (it.hasNext()) {
+            if (!hashDoppelt.contains(it.next().arr[DatenFilm.FILM_URL_NR])) {
+                it.remove();
+            }
+        }
+        hashSet.clear();
+        hashDoppelt.clear();
     }
 
     public boolean addInit(DatenFilm film) {

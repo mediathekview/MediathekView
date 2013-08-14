@@ -43,6 +43,7 @@ public class MediathekNoGui implements Runnable {
     private Daten daten;
     private boolean serverLaufen = false;
     private File logfile = null;
+    private String senderLoeschen = "";
 
     public MediathekNoGui(String ppfad, boolean ssenderAllesLaden, boolean uupdateFilmliste, String ooutput, String iimprtUrl, String uuserAgent, File log, boolean ddebug) {
         // NUR für den Start vom MediathekServer
@@ -87,6 +88,11 @@ public class MediathekNoGui implements Runnable {
                 if (ar[i].equalsIgnoreCase(Main.STARTP_USER_AGENT)) {
                     if (ar.length > i) {
                         userAgent = ar[i + 1];
+                    }
+                }
+                if (ar[i].equalsIgnoreCase(Main.STARTP_SENDER_LOESCHEN)) {
+                    if (ar.length > i) {
+                        senderLoeschen = ar[i + 1];
                     }
                 }
             }
@@ -180,6 +186,9 @@ public class MediathekNoGui implements Runnable {
         // laden was es schon gibt
         //Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
         new IoXmlFilmlisteLesen().standardFilmlisteLesen();
+        if (!senderLoeschen.isEmpty()) {
+            senderLoeschenUndExit();
+        }
         // das eigentliche Suchen der Filme bei den Sendern starten
         Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, senderAllesLaden, updateFilmliste);
     }
@@ -192,6 +201,19 @@ public class MediathekNoGui implements Runnable {
             Daten.listeFilme.updateListe(tmpListe, false /* nur URL vergleichen */);
             tmpListe.clear();
         }
+    }
+
+    private void senderLoeschenUndExit() {
+        // dann nur einen Sender löschen und dann wieder beenden
+        Log.systemMeldung("Sender: " + senderLoeschen + " löschen");
+        int anz1 = Daten.listeFilme.size();
+        Log.systemMeldung("Anzehl Filme vorher: " + anz1);
+        Daten.listeFilme.delSender(senderLoeschen);
+        int anz2 = Daten.listeFilme.size();
+        Log.systemMeldung("Anzehl Filme nachher: " + anz2);
+        Log.systemMeldung(" --> gelöscht: " + (anz1 - anz2));
+        new IoXmlFilmlisteSchreiben().filmeSchreiben(Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, Daten.listeFilme);
+        System.exit(0);
     }
 
     private void undTschuess(boolean exit) {
