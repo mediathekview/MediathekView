@@ -312,22 +312,18 @@ public class DatenFilm implements Comparable<DatenFilm> {
         if (arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
             //swr
             ret = url.replace(".l.mp4", ".m.mp4");
-//        } else if (arr[DOWNLOAD_SENDER_NR].equalsIgnoreCase(MediathekWdr.SENDER) && !arr[DOWNLOAD_THEMA_NR].equals("Rockpalast")) {
-//            //WDR
-//            ret = url.replace("-l.mp4", "-m.mp4");
-//            // funktioniert nur bei einem Teil (Thema: Rockpalast geht nie)
-        } else if (arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER) || arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
-            // ZDF und 3sat
-            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_51k_p7v9.mp4" system-bitrate="62000">
-            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_536k_p9v9.mp4" system-bitrate="700000">
-            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_1596k_p13v9.mp4" system-bitrate="1700000">
-            if (url.endsWith("vh.mp4")) {
-                ret = url.replace("vh.mp4", "h.mp4");
-            } else if (url.endsWith("1456k_p13v11.mp4")) {
-                ret = url.replace("1456k_p13v11.mp4", "436k_p9v11.mp4");
-            } else if (url.endsWith("1596k_p13v9.mp4")) {
-                ret = url.replace("1596k_p13v9.mp4", "536k_p9v9.mp4");
-            }
+//        } else if (arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER) || arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
+//            // ZDF und 3sat
+//            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_51k_p7v9.mp4" system-bitrate="62000">
+//            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_536k_p9v9.mp4" system-bitrate="700000">
+//            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_1596k_p13v9.mp4" system-bitrate="1700000">
+//            if (url.endsWith("vh.mp4")) {
+//                ret = url.replace("vh.mp4", "h.mp4");
+//            } else if (url.endsWith("1456k_p13v11.mp4")) {
+//                ret = url.replace("1456k_p13v11.mp4", "436k_p9v11.mp4");
+//            } else if (url.endsWith("1596k_p13v9.mp4")) {
+//                ret = url.replace("1596k_p13v9.mp4", "536k_p9v9.mp4");
+//            }
         } else if (arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(MediathekSf.SENDER)) {
             if (url.endsWith("_hq1.mp4")) {
                 ret = url.replace("_hq1.mp4", "_lq1.mp4");
@@ -470,13 +466,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
         }
     }
 
-//    final public void setWerte() {
-//        if (this.arr[DatenFilm.FILM_DURATION_NR].equals("") || this.arr[DatenFilm.FILM_DURATION_NR].equals("0") || this.arr[DatenFilm.FILM_DURATION_NR].equals("-1")) {
-//            setWerte(0);
-//        } else {
-//            setWerte(Long.parseLong(this.arr[DatenFilm.FILM_DURATION_NR]));
-//        }
-//    }
     public static String checkDatum(String datum, String fehlermeldung) {
         //Datum max. 100 Tage in der Zukunft
         final long MAX = 1000L * 60L * 60L * 24L * 100L;
