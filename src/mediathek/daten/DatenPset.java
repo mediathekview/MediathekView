@@ -29,7 +29,7 @@ import mediathek.tool.MVMessageDialog;
 
 public class DatenPset {
 
-    public final static String AUFLOESUNG_HOCH = "normal";
+    public final static String AUFLOESUNG_NORMAL = "normal";
     public final static String AUFLOESUNG_HD = "hd";
     public final static String AUFLOESUNG_KLEIN = "klein";
     public static final String PROGRAMMSET = "Programmset";

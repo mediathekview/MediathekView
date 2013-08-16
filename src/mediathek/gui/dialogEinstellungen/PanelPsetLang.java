@@ -250,7 +250,7 @@ public class PanelPsetLang extends PanelVorlage {
 
     private void setAufloesung() {
         if (jRadioButtonAufloesungNormal.isSelected()) {
-            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenPset.AUFLOESUNG_HOCH;
+            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenPset.AUFLOESUNG_NORMAL;
         }
         if (jRadioButtonAufloesungHD.isSelected()) {
             getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenPset.AUFLOESUNG_HD;
@@ -276,18 +276,7 @@ public class PanelPsetLang extends PanelVorlage {
 
     private void spaltenSetzen() {
         for (int i = 0; i < tabellePset.getColumnCount(); ++i) {
-            if (i == DatenPset.PROGRAMMSET_NAME_NR) {
-//                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(10);
-//                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(200);
-//                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(3000);
-//            } else if (i == DatenPset.PROGRAMMSET_IST_SPEICHERN_NR
-//                    || i == DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR
-//                    || i == DatenPset.PROGRAMMSET_IST_BUTTON_NR
-//                    || i == DatenPset.PROGRAMMSET_IST_ABO_NR) {
-//                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(10);
-//                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(60);
-//                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(3000);
-            } else {
+            if (i != DatenPset.PROGRAMMSET_NAME_NR) {
                 tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(0);
                 tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(0);
                 tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(0);
@@ -335,9 +324,13 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxButton.setSelected(pSet.istButton());
             jCheckBoxAbo.setSelected(pSet.istAbo());
             jButtonAbspielen.setBackground(pSet.istAbspielen() ? COLOR_ABSPIELEN : null);
-            jRadioButtonAufloesungNormal.setSelected(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_HOCH));
-            jRadioButtonAufloesungKlein.setSelected(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_KLEIN));
-            jRadioButtonAufloesungHD.setSelected(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_HD));
+            if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_HD)) {
+                jRadioButtonAufloesungHD.setSelected(true);
+            } else if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_KLEIN)) {
+                jRadioButtonAufloesungKlein.setSelected(true);
+            } else {
+                jRadioButtonAufloesungNormal.setSelected(true);
+            }
 //            jButtonAbspielen.setForeground(pSet.istAbspielen() ? Color.BLACK : null);
 //            jButtonAbspielen.setEnabled(pSet.istAbspielen() ? false : true);
         } else {
@@ -436,6 +429,8 @@ public class PanelPsetLang extends PanelVorlage {
         int row = tabellePset.getSelectedRow();
         if (row != -1) {
             ret = listePset.get(tabellePset.convertRowIndexToModel(row));
+        } else {
+            System.out.println("Mist");
         }
         return ret;
     }
@@ -669,7 +664,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -816,7 +811,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(339, Short.MAX_VALUE))
+                .addContainerGap(341, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Aussehen", jPanel10);
@@ -911,7 +906,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(289, Short.MAX_VALUE))
+                .addContainerGap(291, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Speicherziel", jPanel9);
@@ -1018,7 +1013,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(114, Short.MAX_VALUE))
+                .addContainerGap(116, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Download", jPanel11);
@@ -1188,7 +1183,7 @@ public class PanelPsetLang extends PanelVorlage {
             jPanelProgrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProgrammeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1251,7 +1246,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButtonGruppeAuf)

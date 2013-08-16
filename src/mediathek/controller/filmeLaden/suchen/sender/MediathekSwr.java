@@ -169,15 +169,21 @@ public class MediathekSwr extends MediathekReader implements Runnable {
             final String MUSTER_DATUM = "\"entry_pdatehd\":\"";
             final String MUSTER_DAUER = "\"entry_durat\":\"";
             final String MUSTER_ZEIT = "\"entry_pdateht\":\"";
-            final String MUSTER_URL_START = "rtmp://";
-            final String MUSTER_URL_1 = "\"entry_media\":\"";
-            final String MUSTER_URL_2 = "\"entry_media\",\"attr\":{\"val0\":\"h264\"";
-            final String MUSTER_URL_3 = "\"entry_media\",\"attr\":{\"val0\":\"flashmedia\"";
+            final String MUSTER_URL_START = "{\"name\":\"entry_media\"";
+            final String MUSTER_URL_1 = "\"entry_media\",\"attr\":{\"val0\":\"flashmedia\",\"val1\":\"\",\"val2\":\"http";
+            final String MUSTER_PROT_1 = "http";
+            final String MUSTER_URL_2 = "\"entry_media\",\"attr\":{\"val0\":\"h264\",\"val1\":\"3\",\"val2\":\"http";
+            final String MUSTER_PROT_2 = "http";
+            final String MUSTER_URL_3 = "\"entry_media\",\"attr\":{\"val0\":\"h264\",\"val1\":\"2\",\"val2\":\"rtmp";
+            final String MUSTER_PROT_3 = "rtmp";
+            final String MUSTER_URL_4 = "entry_media\",\"attr\":{\"val0\":\"flashmedia\",\"val1\":\"2\",\"val2\":\"rtmp";
+            final String MUSTER_PROT_4 = "rtmp";
+
             final String MUSTER_DESCRIPTION = "\"entry_descl\":\"";
             final String MUSTER_THUMBNAIL_URL = "\"entry_image_16_9\":\"";
-            int pos1;
+            int pos, pos1;
             int pos2;
-            String url;
+            String url = "", urlKlein = "";
             String titel = "";
             String datum = "";
             String zeit = "";
@@ -257,12 +263,6 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         }
                     }
                 }
-//                if ((pos1 = strSeite2.indexOf(MUSTER_DAUER)) != -1) {
-//                    pos1 += MUSTER_DAUER.length();
-//                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-//                        dauer = strSeite2.substring(pos1, pos2);
-//                    }
-//                }
                 if ((pos1 = strSeite2.indexOf(MUSTER_ZEIT)) != -1) {
                     pos1 += MUSTER_ZEIT.length();
                     if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
@@ -285,41 +285,26 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         }
                     }
                 }
-                url = "";
                 // entweder
-                if ((pos1 = strSeite2.indexOf(MUSTER_URL_1)) != -1) {
-                    pos1 += MUSTER_URL_1.length();
-                    if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-                        url = strSeite2.substring(pos1, pos2);
-                        if (!url.equals("")) {
-                            // hohe Auflösung
-                            if (url.startsWith("rtmp:")) {
-                                // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
-                                url = url.replace(".m.mp4", ".l.mp4");
-                            }
-                            // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-//                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, ""/*rtmpURL*/, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
-                            addFilm(film);
-                        } else {
-                            Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.addFilme2-4", thema + " " + urlJson);
-                        }
+                pos = 0;
+                while ((pos = strSeite2.indexOf(MUSTER_URL_START, pos)) != -1) {
+                    if (!url.isEmpty() && !urlKlein.isEmpty()) {
+                        break;
                     }
-                }
-                // oder
-                if (url.equals("") && (pos1 = strSeite2.indexOf(MUSTER_URL_2)) != -1) {
-                    pos1 += MUSTER_URL_2.length();
-                    if ((pos1 = strSeite2.indexOf(MUSTER_URL_START, pos1)) != -1) {
+                    pos += "{\"name\"".length();
+                    if ((pos1 = strSeite2.indexOf(MUSTER_URL_1, pos)) != -1) {
+                        pos1 += MUSTER_URL_1.length();
                         if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-                            url = strSeite2.substring(pos1, pos2);
-                            if (!url.equals("")) {
-                                // hohe Auflösung
-                                // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
-                                url = url.replace(".m.mp4", ".l.mp4");
-                                // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                                //DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, ""/*rtmpURL*/, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
-                                addFilm(film);
+                            tmp = strSeite2.substring(pos1, pos2);
+                            if (!tmp.isEmpty()) {
+                                tmp = MUSTER_PROT_1 + tmp;
+                                if (tmp.endsWith("m.mp4") && urlKlein.isEmpty()) {
+                                    urlKlein = tmp;
+                                }
+                                if (tmp.endsWith("l.mp4") && url.isEmpty()) {
+                                    url = tmp;
+                                }
+                                continue;
                             } else {
                                 Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.json-1", thema + " " + urlJson);
                             }
@@ -327,27 +312,101 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                     }
                 }
                 // oder
-                if (url.equals("") && (pos1 = strSeite2.indexOf(MUSTER_URL_3)) != -1) {
-                    pos1 += MUSTER_URL_3.length();
-                    if ((pos1 = strSeite2.indexOf(MUSTER_URL_START, pos1)) != -1) {
+                pos = 0;
+                while ((pos = strSeite2.indexOf(MUSTER_URL_START, pos)) != -1) {
+                    if (!url.isEmpty() && !urlKlein.isEmpty()) {
+                        break;
+                    }
+                    pos += "{\"name\"".length();
+                    if ((pos1 = strSeite2.indexOf(MUSTER_URL_2, pos)) != -1) {
+                        pos1 += MUSTER_URL_2.length();
                         if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
-                            url = strSeite2.substring(pos1, pos2);
-                            if (!url.equals("")) {
-                                // hohe Auflösung
-                                // rtmp://fc-ondemand.swr.de/a4332/e6/swr-fernsehen/2plusleif/2012/05/14/538821.l.mp4
-                                url = url.replace(".s.mp4", ".m.mp4");
-                                // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-//                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, ""/*rtmpURL*/, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
-                                addFilm(film);
+                            tmp = strSeite2.substring(pos1, pos2);
+                            if (!tmp.isEmpty()) {
+                                tmp = MUSTER_PROT_2 + tmp;
+                                if (tmp.endsWith("m.mp4") && urlKlein.isEmpty()) {
+                                    urlKlein = tmp;
+                                }
+                                if (tmp.endsWith("l.mp4") && url.isEmpty()) {
+                                    url = tmp;
+                                }
+                                continue;
                             } else {
                                 Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.json-1", thema + " " + urlJson);
                             }
                         }
                     }
                 }
-                if (url.equals("")) {
+                // oder
+                pos = 0;
+                while ((pos = strSeite2.indexOf(MUSTER_URL_START, pos)) != -1) {
+                    if (!url.isEmpty() && !urlKlein.isEmpty()) {
+                        break;
+                    }
+                    pos += "{\"name\"".length();
+                    if ((pos1 = strSeite2.indexOf(MUSTER_URL_3, pos)) != -1) {
+                        pos1 += MUSTER_URL_3.length();
+                        if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                            tmp = strSeite2.substring(pos1, pos2);
+                            if (!tmp.isEmpty()) {
+                                tmp = MUSTER_PROT_3 + tmp;
+                                if (tmp.endsWith("m.mp4") && urlKlein.isEmpty()) {
+                                    urlKlein = tmp;
+                                }
+                                if (tmp.endsWith("l.mp4") && url.isEmpty()) {
+                                    url = tmp;
+                                }
+                                continue;
+                            } else {
+                                Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.json-1", thema + " " + urlJson);
+                            }
+                        }
+                    }
+                }
+                // oder
+                pos = 0;
+                while ((pos = strSeite2.indexOf(MUSTER_URL_START, pos)) != -1) {
+                    if (!url.isEmpty() && !urlKlein.isEmpty()) {
+                        break;
+                    }
+                    pos += "{\"name\"".length();
+                    if ((pos1 = strSeite2.indexOf(MUSTER_URL_4, pos)) != -1) {
+                        pos1 += MUSTER_URL_4.length();
+                        if ((pos2 = strSeite2.indexOf("\"", pos1)) != -1) {
+                            tmp = strSeite2.substring(pos1, pos2);
+                            if (!tmp.isEmpty()) {
+                                tmp = MUSTER_PROT_4 + tmp;
+                                if (tmp.endsWith("m.mp4") && urlKlein.isEmpty()) {
+                                    urlKlein = tmp;
+                                }
+                                if (tmp.endsWith("l.mp4") && url.isEmpty()) {
+                                    url = tmp;
+                                }
+                                if (tmp.endsWith("m.flv") && urlKlein.isEmpty()) {
+                                    urlKlein = tmp;
+                                }
+                                if (tmp.endsWith("l.flv") && url.isEmpty()) {
+                                    url = tmp;
+                                }
+                                continue;
+                            } else {
+                                Log.fehlerMeldung(-468200690, Log.FEHLER_ART_MREADER, "MediathekSwr.json-1", thema + " " + urlJson);
+                            }
+                        }
+                    }
+                }
+                if (url.isEmpty() && urlKlein.isEmpty()) {
                     Log.fehlerMeldung(-203690478, Log.FEHLER_ART_MREADER, "MediathekSwr.jason-2", thema + " " + urlJson);
+                } else {
+                    if (url.isEmpty()) {
+                        url = urlKlein;
+                        urlKlein = "";
+                    }
+                    DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, ""/*rtmpURL*/, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
+                    if (!urlKlein.isEmpty()) {
+                        film.addUrlKlein(urlKlein, "");
+                    }
+                    addFilm(film);
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(-939584720, Log.FEHLER_ART_MREADER, "MediathekSwr.json-3", thema + " " + urlJson);

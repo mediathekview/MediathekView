@@ -167,7 +167,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         } else if (jRadioButtonAufloesungKlein.isSelected()) {
             return DatenPset.AUFLOESUNG_KLEIN;
         } else {
-            return DatenPset.AUFLOESUNG_HOCH;
+            return DatenPset.AUFLOESUNG_NORMAL;
         }
     }
 

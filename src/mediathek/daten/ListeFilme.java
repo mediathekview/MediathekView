@@ -509,6 +509,32 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
     }
 
+//    public void kleineUrlEintragen() {
+//        // für kleine URLs die nach einem Schema gebilget werden
+//        // müssen erst in die Liste als Url_klein eingetragen werden
+//        DatenFilm film;
+//        ListIterator<DatenFilm> iterator = this.listIterator(0);
+//        while (iterator.hasNext()) {
+//            film = iterator.next();
+//            if (film.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty()) {
+//                // dann nach Schema suchen
+//                film.arr[DatenFilm.FILM_URL_KLEIN_NR] = film.getUrlFuerAufloesung(DatenPset.AUFLOESUNG_KLEIN);
+//                if (film.arr[DatenFilm.FILM_URL_NR].equals(film.arr[DatenFilm.FILM_URL_KLEIN_NR])) {
+//                    //dann gibts keine kleine
+//                    film.arr[DatenFilm.FILM_URL_KLEIN_NR] = "";
+//                }
+//            }
+//            if (film.arr[DatenFilm.FILM_URL_RTMP_KLEIN_NR].isEmpty()) {
+//                // dann nach Schema suchen
+//                film.arr[DatenFilm.FILM_URL_RTMP_KLEIN_NR] = film.getUrlRtmpFuerAufloesung(DatenPset.AUFLOESUNG_KLEIN);
+//                if (film.arr[DatenFilm.FILM_URL_RTMP_KLEIN_NR].equals(film.arr[DatenFilm.FILM_URL_RTMP_NR])) {
+//                    //dann gibts keine kleine
+//                    film.arr[DatenFilm.FILM_URL_RTMP_KLEIN_NR] = "";
+//                }
+//            }
+//        }
+//    }
+
     public String genDate() {
         // Tag, Zeit in lokaler Zeit wann die Filmliste erstellt wurde
         String ret;
