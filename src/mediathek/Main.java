@@ -20,9 +20,7 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import javax.swing.JOptionPane;
-import javax.swing.RepaintManager;
 import mediathek.daten.Daten;
 import mediathek.tool.Log;
 import mediathek.tool.MVSingleInstance;
@@ -54,7 +52,7 @@ public class Main {
 
     private enum StartupMode {
 
-        NORMAL, AUTO, NOGUI
+        NORMAL, AUTO, NOGUI, SENDER_LOESCHEN
     }
 
     /**
@@ -72,6 +70,9 @@ public class Main {
                         if (s.equalsIgnoreCase("-auto")) {
                             state = StartupMode.AUTO;
                         }
+                        if (s.equalsIgnoreCase("-S")) {
+                            state = StartupMode.SENDER_LOESCHEN;
+                        }
                         if (s.equalsIgnoreCase("-noGui")) {
                             state = StartupMode.NOGUI;
                         }
@@ -84,9 +85,9 @@ public class Main {
                                     JOptionPane.showMessageDialog(null, "MediathekView is already running!");
                                     System.exit(1);
                                 }
+                                // use for debugging EDT violations
+                                // RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
                             }
-                            // use for debugging EDT violations
-                            RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
                         }
                         if (s.equalsIgnoreCase("-v")) {
                             Log.versionsMeldungen(this.getClass().getName());
@@ -97,6 +98,9 @@ public class Main {
                 switch (state) {
                     case AUTO:
                         new MediathekAuto(args).starten();
+                        break;
+                    case SENDER_LOESCHEN:
+                        new MediathekNoGui(args).senderLoeschenUndExit();
                         break;
                     case NOGUI:
                         new MediathekNoGui(args).starten();

@@ -149,54 +149,72 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return addInit(film);
     }
 
-    public synchronized void updateListe(ListeFilme liste, boolean index /* Vergleich über Index, sonst nur URL */) {
+    public synchronized void updateListe(ListeFilme listeEinsortieren, boolean index /* Vergleich über Index, sonst nur URL */) {
         // in eine vorhandene Liste soll eine andere Filmliste einsortiert werden
         // es werden nur Filme die noch nicht vorhanden sind, einsortiert
         DatenFilm film;
-        HashSet<String> hashSet = new HashSet<String>();
+        HashSet<String> hash = new HashSet<String>();
         Iterator<DatenFilm> it = this.iterator();
         while (it.hasNext()) {
             if (index) {
-                hashSet.add(it.next().getIndex());
+                hash.add(it.next().getIndex());
             } else {
-                hashSet.add(it.next().arr[DatenFilm.FILM_URL_NR]);
+                hash.add(it.next().arr[DatenFilm.FILM_URL_NR]);
             }
         }
-        it = liste.iterator();
+        it = listeEinsortieren.iterator();
         while (it.hasNext()) {
             film = it.next();
             if (index) {
-                if (!hashSet.contains(film.getIndex())) {
+                if (!hash.contains(film.getIndex())) {
                     addInit(film);
                 }
             } else {
-                if (!hashSet.contains(film.arr[DatenFilm.FILM_URL_NR])) {
+                if (!hash.contains(film.arr[DatenFilm.FILM_URL_NR])) {
                     addInit(film);
                 }
             }
         }
-        hashSet.clear();
+        hash.clear();
     }
 
+//    public synchronized boolean doppelteAnzeigen() {
+//        // zum Debuggen: URLs die doppelt sind, in die History eintragen
+//        // damit sie markiert werden
+//        DatenFilm film;
+//        HashSet<String> hash = new HashSet<String>();
+//        Iterator<DatenFilm> it = this.iterator();
+//        while (it.hasNext()) {
+//            film = it.next();
+//            if (!hash.contains(film.getIndex())) {
+//                hash.add(film.getIndex());
+//            } else {
+//                // dann ist er mind. doppelt in der Liste
+//                return true;
+//            }
+//        }
+//        hash.clear();
+//        return false;
+//    }
     public synchronized void nurDoppelteAnzeigen(DDaten ddaten, boolean index) {
         // zum Debuggen: URLs die doppelt sind, in die History eintragen
         // damit sie markiert werden
         DatenFilm film;
         HashSet<String> hashDoppelt = new HashSet<String>();
-        HashSet<String> hashSet = new HashSet<String>();
+        HashSet<String> hash = new HashSet<String>();
         Iterator<DatenFilm> it = this.iterator();
         while (it.hasNext()) {
             film = it.next();
             if (index) {
-                if (!hashSet.contains(film.getIndex())) {
-                    hashSet.add(film.getIndex());
+                if (!hash.contains(film.getIndex())) {
+                    hash.add(film.getIndex());
                 } else {
                     // dann ist er mind. doppelt in der Liste
                     hashDoppelt.add(film.arr[DatenFilm.FILM_URL_NR]);
                 }
             } else {
-                if (!hashSet.contains(film.arr[DatenFilm.FILM_URL_NR])) {
-                    hashSet.add(film.arr[DatenFilm.FILM_URL_NR]);
+                if (!hash.contains(film.arr[DatenFilm.FILM_URL_NR])) {
+                    hash.add(film.arr[DatenFilm.FILM_URL_NR]);
                 } else {
                     // dann ist er mind. doppelt in der Liste
                     hashDoppelt.add(film.arr[DatenFilm.FILM_URL_NR]);
@@ -209,7 +227,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 it.remove();
             }
         }
-        hashSet.clear();
+        hash.clear();
         hashDoppelt.clear();
     }
 
@@ -534,7 +552,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
 //            }
 //        }
 //    }
-
     public String genDate() {
         // Tag, Zeit in lokaler Zeit wann die Filmliste erstellt wurde
         String ret;

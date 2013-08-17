@@ -123,7 +123,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
             long dauerSekunden, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
         makeArr();
         arr[FILM_SENDER_NR] = ssender;
-        arr[FILM_THEMA_NR] = tthema;
+        arr[FILM_THEMA_NR] = tthema.isEmpty() ? ssender : tthema;
         arr[FILM_TITEL_NR] = ttitel;
         arr[FILM_URL_NR] = uurl;
         arr[FILM_URL_RTMP_NR] = uurlRtmp;

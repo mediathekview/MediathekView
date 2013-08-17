@@ -188,9 +188,10 @@ public class MediathekNoGui implements Runnable {
         new IoXmlFilmlisteLesen().standardFilmlisteLesen();
         if (!senderLoeschen.isEmpty()) {
             senderLoeschenUndExit();
+        } else {
+            // das eigentliche Suchen der Filme bei den Sendern starten
+            Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, senderAllesLaden, updateFilmliste);
         }
-        // das eigentliche Suchen der Filme bei den Sendern starten
-        Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, senderAllesLaden, updateFilmliste);
     }
 
     private void addImportListe(String url) {
@@ -203,7 +204,15 @@ public class MediathekNoGui implements Runnable {
         }
     }
 
-    private void senderLoeschenUndExit() {
+    public void senderLoeschenUndExit() {
+        daten = new Daten(pfad);
+        Daten.nogui = true;
+        // Infos schreiben
+        Log.startMeldungen(this.getClass().getName());
+        Log.systemMeldung("");
+        Log.systemMeldung("");
+        //Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
+        new IoXmlFilmlisteLesen().standardFilmlisteLesen();
         // dann nur einen Sender löschen und dann wieder beenden
         Log.systemMeldung("Sender: " + senderLoeschen + " löschen");
         int anz1 = Daten.listeFilme.size();
