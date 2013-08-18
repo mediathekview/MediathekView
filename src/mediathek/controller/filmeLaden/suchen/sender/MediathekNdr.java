@@ -84,7 +84,6 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                 Log.fehlerMeldung(-332945670, Log.FEHLER_ART_MREADER, "MediathekNdr.finden", ex);
             }
         }
-//        addTage();
         if (Daten.filmeLaden.getStop()) {
             meldungThreadUndFertig();
         } else if (listeThemen.size() == 0) {
@@ -131,19 +130,6 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             Log.fehlerMeldung(-643208979, Log.FEHLER_ART_MREADER, "MediathekNdr.feddEinerSeiteSuchen", strUrlFeed);
         }
         return ret;
-    }
-
-    private void addTage() {
-        // Seiten der Ansicht: "letzten Tage"
-        // http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_pageSize-24.xml
-        // http://www.ndr.de/mediathek/mediathek100-mediathek_page-1_medium-tv_pageSize-24.xml
-        String[] add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_medium-tv_pageSize-24.xml", ""};
-        listeThemen.addUrl(add);
-        int m = (suchen.senderAllesLaden ? 20 : 10);
-        for (int i = 0; i <= m; ++i) {
-            add = new String[]{"http://www.ndr.de/mediathek/mediathek100-mediathek_page-" + Integer.toString(i) + "_medium-tv_pageSize-24.xml", ""};
-            listeThemen.addUrl(add);
-        }
     }
 
     private class ThemaLaden implements Runnable {
@@ -229,7 +215,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                     // Die dauer des filmes kommt vor dem titel über welchen wir hier am
                     // iterieren sind. Wir müssen also rückwärts suchen. Die url kommt jeweils doppelt
                     // vor im dokument. Wir werdenden diese als marker zum zurückzu springen:
-    /*<a href="/fernsehen/sendungen/extra_3/videos/extra5349.html" title="Zum Video: Extra 3 vom 08.05.2013" >
+                    /*<a href="/fernsehen/sendungen/extra_3/videos/extra5349.html" title="Zum Video: Extra 3 vom 08.05.2013" >
                      <img width="376" height="212" src="/fernsehen/ehring255_v-zweispaltig.jpg" alt="Moderator Christian Ehring mit einem Schild mit der Aufschrift, wer das umdreht ist doof, in der Hand.  " title="Moderator Christian Ehring mit einem Schild mit der Aufschrift, wer das umdreht ist doof, in der Hand."  /><div class="overlay">
                      <div class="shiny_line">&nbsp;</div><div class="marker"></div>
                      <div class="inner">
@@ -264,7 +250,6 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                     if (thema.equals("")) {
                         thema = "NDR";
                     }
-//                    filmSuchen(strUrlFeed, thema, titel, "http://www.ndr.de/" + url, datum, zeit);
                     filmSuchen(strUrlFeed, thema, titel, "http://www.ndr.de/" + url, datum, zeit, durationInSeconds);
                     lastPos = pos;
                 }
@@ -273,7 +258,6 @@ public class MediathekNdr extends MediathekReader implements Runnable {
             }
         }
 
-//        void filmSuchen(String strUrlThema, String thema, String titel, String urlFilm, String datum, String zeit) {
         void filmSuchen(String strUrlThema, String thema, String titel, String filmWebsite, String datum, String zeit, long durationInSeconds) {
             //playlist: [
             //{
@@ -301,22 +285,17 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                         url = seite2.substring(pos1, pos2);
                         if (!url.equals("")) {
                             url = "http://" + url;
-//                            // rtmp bauen
-//                            if (url.contains("http://media.ndr.de/progressive")) {
-//                                tmp = url.replace("http://media.ndr.de/progressive", "rtmpt://cp160844.edgefcs.net/ondemand/mp4:flashmedia/streams/ndr");
-//                                if (tmp.contains("hi.mp4")) {
-//                                    tmp = tmp.replace("hi.mp4", "hq.mp4");
-//                                    url = tmp;
-//                                }
-//                            }
                             if (url.contains("http://media.ndr.de/progressive")) {
                                 if (url.contains("hi.mp4")) {
                                     url = url.replace("hi.mp4", "hq.mp4");
                                 }
                             }
-                            //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel)
-//                            addFilm(new DatenFilm(nameSenderMReader, thema, strUrlThema, titel, url, datum, zeit));
-                            addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, zeit, durationInSeconds, description, "", imageUrl, keywords));
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, zeit, durationInSeconds, description, "", imageUrl, keywords);
+                            if (url.contains(".hq.")) {
+                                String urlKlein = url.replace(".hq.", ".hi.");
+                                film.addUrlKlein(urlKlein, "");
+                            }
+                            addFilm(film);
                         } else {
                             Log.fehlerMeldung(-623657941, Log.FEHLER_ART_MREADER, "MediathekNdr.FilmSuchen", "keine URL: " + filmWebsite);
                         }

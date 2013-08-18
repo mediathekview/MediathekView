@@ -43,7 +43,6 @@ public class MediathekNoGui implements Runnable {
     private Daten daten;
     private boolean serverLaufen = false;
     private File logfile = null;
-    private String senderLoeschen = "";
 
     public MediathekNoGui(String ppfad, boolean ssenderAllesLaden, boolean uupdateFilmliste, String ooutput, String iimprtUrl, String uuserAgent, File log, boolean ddebug) {
         // NUR für den Start vom MediathekServer
@@ -88,11 +87,6 @@ public class MediathekNoGui implements Runnable {
                 if (ar[i].equalsIgnoreCase(Main.STARTP_USER_AGENT)) {
                     if (ar.length > i) {
                         userAgent = ar[i + 1];
-                    }
-                }
-                if (ar[i].equalsIgnoreCase(Main.STARTP_SENDER_LOESCHEN)) {
-                    if (ar.length > i) {
-                        senderLoeschen = ar[i + 1];
                     }
                 }
             }
@@ -186,12 +180,8 @@ public class MediathekNoGui implements Runnable {
         // laden was es schon gibt
         //Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
         new IoXmlFilmlisteLesen().standardFilmlisteLesen();
-        if (!senderLoeschen.isEmpty()) {
-            senderLoeschenUndExit();
-        } else {
-            // das eigentliche Suchen der Filme bei den Sendern starten
-            Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, senderAllesLaden, updateFilmliste);
-        }
+        // das eigentliche Suchen der Filme bei den Sendern starten
+        Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, senderAllesLaden, updateFilmliste);
     }
 
     private void addImportListe(String url) {
@@ -204,7 +194,7 @@ public class MediathekNoGui implements Runnable {
         }
     }
 
-    public void senderLoeschenUndExit() {
+    public void senderLoeschenUndExit(String senderLoeschen) {
         daten = new Daten(pfad);
         Daten.nogui = true;
         // Infos schreiben

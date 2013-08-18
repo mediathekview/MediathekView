@@ -39,8 +39,8 @@ import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekOrf;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekRbb;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekReader;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekSf;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekSfPod;
+import mediathek.controller.filmeLaden.suchen.sender.MediathekSrf;
+import mediathek.controller.filmeLaden.suchen.sender.MediathekSrfPod;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekSwr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekWdr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
@@ -90,8 +90,8 @@ public class FilmeSuchenSender {
         mediathekListe.add(new MediathekHr(this, 0));
         mediathekListe.add(new MediathekRbb(this, 1));
         mediathekListe.add(new MediathekBr(this, 0));
-        mediathekListe.add(new MediathekSf(this, 1));
-        mediathekListe.add(new MediathekSfPod(this, 0));
+        mediathekListe.add(new MediathekSrf(this, 1));
+        mediathekListe.add(new MediathekSrfPod(this, 0));
         mediathekListe.add(new MediathekOrf(this, 0));
     }
 

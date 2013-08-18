@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekSf;
+import mediathek.controller.filmeLaden.suchen.sender.MediathekSrf;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekSwr;
 import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
 import static mediathek.daten.DatenPset.AUFLOESUNG_HD;
@@ -237,7 +237,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
             } catch (Exception ex) {
             }
         }
-        return getUrlLow(arr[DatenFilm.FILM_URL_NR]);
+        return arr[DatenFilm.FILM_URL_NR];
     }
 
     private String getUrlNormalHd() {
@@ -281,7 +281,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         // es gibt keine kleine RTMP
         if (!arr[DatenFilm.FILM_URL_RTMP_NR].equals("")) {
             // dann gibts keine kleine
-            ret = getUrlLow(arr[DatenFilm.FILM_URL_RTMP_NR]);
+            ret = arr[DatenFilm.FILM_URL_RTMP_NR];
         } else {
             // dann gibts überhaupt nur die normalen URLs
             ret = getUrlNormalKlein();
@@ -307,38 +307,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return getUrlFlvstreamer();
     }
 
-    private String getUrlLow(String url) {
-        String ret = url;
-        if (arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(MediathekSwr.SENDER)) {
-            //swr
-            ret = url.replace(".l.mp4", ".m.mp4");
-//        } else if (arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(Mediathek3Sat.SENDER) || arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(MediathekZdf.SENDER)) {
-//            // ZDF und 3sat
-//            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_51k_p7v9.mp4" system-bitrate="62000">
-//            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_536k_p9v9.mp4" system-bitrate="700000">
-//            // <video dur="00:08:02" paramGroup="gl-vod-rtmp" src="mp4:zdf/12/09/120919_westerwelle_mom_1596k_p13v9.mp4" system-bitrate="1700000">
-//            if (url.endsWith("vh.mp4")) {
-//                ret = url.replace("vh.mp4", "h.mp4");
-//            } else if (url.endsWith("1456k_p13v11.mp4")) {
-//                ret = url.replace("1456k_p13v11.mp4", "436k_p9v11.mp4");
-//            } else if (url.endsWith("1596k_p13v9.mp4")) {
-//                ret = url.replace("1596k_p13v9.mp4", "536k_p9v9.mp4");
-//            }
-        } else if (arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(MediathekSf.SENDER)) {
-            if (url.endsWith("_hq1.mp4")) {
-                ret = url.replace("_hq1.mp4", "_lq1.mp4");
-            }
-        } else if (arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(MediathekNdr.SENDER)) {
-            //NDR
-            ret = url.replace(".hq.", ".hi.");
-        } else if ((url.startsWith("rtmpt://cp160844.edgefcs.net") || url.startsWith("--host cp160844.edgefcs.net")) && url.endsWith(".hq.mp4")) {
-            // für die NDR-Filme beim ARD
-            ret = url.replace(".hq.", ".hi.");
-        }
-        return ret;
-    }
-
-    private String beschreibung(String s, String thema, String titel) {
+     private String beschreibung(String s, String thema, String titel) {
         // die Beschreibung auf x Zeichen beschränken
         if (s.startsWith(titel)) {
             s = s.substring(titel.length()).trim();
