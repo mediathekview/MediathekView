@@ -33,7 +33,6 @@ public class Main {
     public static final String STARTP_IMPORT_URL = "-i";
     public static final String STARTP_LOGFILE = "-log";
     public static final String STARTP_MAXIMIERT = "-M";
-    public static final String STARTP_SENDER_LOESCHEN = "-S";
 
     /*
      * Aufruf:
@@ -52,7 +51,7 @@ public class Main {
 
     private enum StartupMode {
 
-        NORMAL, AUTO, NOGUI, SENDER_LOESCHEN
+        NORMAL, AUTO, NOGUI
     }
 
     /**
@@ -69,9 +68,6 @@ public class Main {
                     for (String s : args) {
                         if (s.equalsIgnoreCase("-auto")) {
                             state = StartupMode.AUTO;
-                        }
-                        if (s.equalsIgnoreCase("-S")) {
-                            state = StartupMode.SENDER_LOESCHEN;
                         }
                         if (s.equalsIgnoreCase("-noGui")) {
                             state = StartupMode.NOGUI;
@@ -98,9 +94,6 @@ public class Main {
                 switch (state) {
                     case AUTO:
                         new MediathekAuto(args).starten();
-                        break;
-                    case SENDER_LOESCHEN:
-                        new MediathekNoGui(args).senderLoeschenUndExit();
                         break;
                     case NOGUI:
                         new MediathekNoGui(args).starten();

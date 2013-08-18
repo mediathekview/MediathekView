@@ -28,13 +28,13 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.tool.MVStringBuilder;
 
-public class MediathekSfPod extends MediathekReader implements Runnable {
+public class MediathekSrfPod extends MediathekReader implements Runnable {
 
     //public static final String SENDER = "SF.Podcast";
     public static final String SENDER = "SRF.Podcast";
     private MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
-    public MediathekSfPod(FilmeSuchenSender ssearch, int startPrio) {
+    public MediathekSrfPod(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
     }
 

@@ -29,12 +29,12 @@ import mediathek.tool.Log;
 import mediathek.tool.MVStringBuilder;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-public class MediathekSf extends MediathekReader implements Runnable {
+public class MediathekSrf extends MediathekReader implements Runnable {
 
     public static final String SENDER = "SRF";
     private final int MAX_FILME_THEMA = 5;
 
-    public MediathekSf(FilmeSuchenSender ssearch, int startPrio) {
+    public MediathekSrf(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 1000, startPrio);
     }
 
@@ -303,6 +303,10 @@ public class MediathekSf extends MediathekReader implements Runnable {
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                             // DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
                             DatenFilm film = new DatenFilm(nameSenderMReader, thema, urlWebsite, titel, url, ""/*rtmpURL*/, datum, zeit, duration, description, thumbnail, image, keywords);
+                            if (url.endsWith("_hq1.mp4")) {
+                                String urlKlein = url.replace("_hq1.mp4", "_mq1.mp4");
+                                film.addUrlKlein(urlKlein, "");
+                            }
                             addFilm(film);
                         } else {
                             Log.fehlerMeldung(-698325618, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme2", "keine URL" + url);
