@@ -86,8 +86,10 @@ public class DatenPset {
     }
 
     public DatenPset(String name) {
+        // neue Pset sind immer gleich Button
         makeArray();
         arr[PROGRAMMSET_NAME_NR] = name;
+        arr[PROGRAMMSET_IST_BUTTON_NR] = Boolean.TRUE.toString();
     }
 
     // public
@@ -103,20 +105,6 @@ public class DatenPset {
         return listeProg.get(i);
     }
 
-//    public boolean aufloesungIstKlein() {
-//        // liefert true wenn das Pset auf "kleine Auflösung" gesetzt ist
-//        return arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(AUFLOESUNG_KLEIN);
-//    }
-//
-//    public boolean aufloesungIstHD() {
-//        // liefert true wenn das Pset auf "HD Auflösung" gesetzt ist
-//        return arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(AUFLOESUNG_HD);
-//    }
-//
-//    public boolean aufloesungIstNormal() {
-//        // liefert true wenn das Pset auf "normale Auflösung" gesetzt ist
-//        return arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(AUFLOESUNG_NORMAL);
-//    }
     public boolean progsContainPath() {
         // ein Programmschalter mit "**"
         boolean ret = false;

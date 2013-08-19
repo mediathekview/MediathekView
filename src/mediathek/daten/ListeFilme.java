@@ -21,7 +21,6 @@ package mediathek.daten;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -178,24 +177,6 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         hash.clear();
     }
 
-//    public synchronized boolean doppelteAnzeigen() {
-//        // zum Debuggen: URLs die doppelt sind, in die History eintragen
-//        // damit sie markiert werden
-//        DatenFilm film;
-//        HashSet<String> hash = new HashSet<String>();
-//        Iterator<DatenFilm> it = this.iterator();
-//        while (it.hasNext()) {
-//            film = it.next();
-//            if (!hash.contains(film.getIndex())) {
-//                hash.add(film.getIndex());
-//            } else {
-//                // dann ist er mind. doppelt in der Liste
-//                return true;
-//            }
-//        }
-//        hash.clear();
-//        return false;
-//    }
     public synchronized void nurDoppelteAnzeigen(DDaten ddaten, boolean index) {
         // zum Debuggen: URLs die doppelt sind, in die History eintragen
         // damit sie markiert werden

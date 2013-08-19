@@ -206,15 +206,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     /// tunen!
     public int getQuelle() {
-//        int ret = Start.QUELLE_ALLE;
-//        if (arr[DOWNLOAD_QUELLE_NR].equals(Start.QUELLE_ABO_STR)) {
-//            ret = Start.QUELLE_ABO;
-//        } else if (arr[DOWNLOAD_QUELLE_NR].equals(Start.QUELLE_BUTTON_STR)) {
-//            ret = Start.QUELLE_BUTTON;
-//        } else if (arr[DOWNLOAD_QUELLE_NR].equals(Start.QUELLE_DOWNLOAD_STR)) {
-//            ret = Start.QUELLE_DOWNLOAD;
-//        }
-//        return ret;
         try {
             return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);
         } catch (Exception ex) {
