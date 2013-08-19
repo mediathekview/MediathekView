@@ -562,8 +562,9 @@ public class GuiDownloads extends PanelVorlage {
                     // wenn beim Löschen aufgerufen, ist der Download schon weg
                     if (download.film == null) {
                         // geladener Einmaldownload nach Programmstart
-                        download.film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
-                    } else {
+                        download.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                    }
+                    if (download.film != null) {
                         aktFilm = download.film;
                     }
                 }
