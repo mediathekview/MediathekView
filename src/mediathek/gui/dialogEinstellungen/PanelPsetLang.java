@@ -429,8 +429,6 @@ public class PanelPsetLang extends PanelVorlage {
         int row = tabellePset.getSelectedRow();
         if (row != -1) {
             ret = listePset.get(tabellePset.convertRowIndexToModel(row));
-        } else {
-            System.out.println("Mist");
         }
         return ret;
     }

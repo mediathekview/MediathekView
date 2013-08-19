@@ -301,7 +301,6 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                         }
                     }
                 } else {
-                    // Mist!
                     Log.fehlerMeldung(-698970145, Log.FEHLER_ART_MREADER, "MediathekNdr.FilmSuchen", "keine Url: " + filmWebsite);
                 }
             } catch (Exception ex) {

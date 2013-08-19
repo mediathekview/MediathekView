@@ -139,7 +139,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 jRadioButtonAufloesungKlein.setText(jRadioButtonAufloesungKlein.getText() + "   [ " + mb + " MB ]");
             }
         }
-        setNameFilm();
+        setCombo();
     }
 
     private void setNameFilm() {
@@ -159,6 +159,19 @@ public class DialogAddDownload extends javax.swing.JDialog {
             jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR]);
             jTextFieldPfad.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
         }
+    }
+
+    private void setCombo() {
+        // stellt den Namen/Radios passend zum Combo ein
+        pSet = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
+        if (!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_HD)) {
+            jRadioButtonAufloesungHd.setSelected(true);
+        } else if (!datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_KLEIN)) {
+            jRadioButtonAufloesungKlein.setSelected(true);
+        } else {
+            jRadioButtonAufloesungHoch.setSelected(true);
+        }
+        setNameFilm();
     }
 
     private String getAufloesung() {
@@ -479,15 +492,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            pSet = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
-            if (!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_HD)) {
-                jRadioButtonAufloesungHd.setSelected(true);
-            } else if (!datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_KLEIN)) {
-                jRadioButtonAufloesungKlein.setSelected(true);
-            } else {
-                jRadioButtonAufloesungHoch.setSelected(true);
-            }
-            setNameFilm();
+            setCombo();
         }
     }
 

@@ -21,11 +21,6 @@ package mediathek.daten;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import mediathek.controller.filmeLaden.suchen.sender.Mediathek3Sat;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekNdr;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekSrf;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekSwr;
-import mediathek.controller.filmeLaden.suchen.sender.MediathekZdf;
 import static mediathek.daten.DatenPset.AUFLOESUNG_HD;
 import static mediathek.daten.DatenPset.AUFLOESUNG_KLEIN;
 import mediathek.tool.Datum;
