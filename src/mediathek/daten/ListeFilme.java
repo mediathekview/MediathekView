@@ -444,6 +444,27 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return ret;
     }
 
+    public synchronized DatenFilm getFilmByUrl_klein_hoch_hd(String url) {
+        // Problem wegen gleicher URLs
+        // wird versucht, einen Film mit einer kleinen/Hoher/HD-URL zu finden
+        DatenFilm ret = null;
+        ListIterator<DatenFilm> it = this.listIterator(0);
+        while (it.hasNext()) {
+            DatenFilm f = it.next();
+            if (f.arr[DatenFilm.FILM_URL_NR].equals(url)) {
+                ret = f;
+                break;
+            } else if (f.getUrlFuerAufloesung(DatenPset.AUFLOESUNG_HD).equals(url)) {
+                ret = f;
+                break;
+            } else if (f.getUrlFuerAufloesung(DatenPset.AUFLOESUNG_KLEIN).equals(url)) {
+                ret = f;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public synchronized DatenFilm getFilmByNr(String nr) {
         DatenFilm ret = null;
         ListIterator<DatenFilm> it = this.listIterator(0);
