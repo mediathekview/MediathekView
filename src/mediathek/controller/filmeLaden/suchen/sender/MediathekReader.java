@@ -109,6 +109,19 @@ public class MediathekReader implements Runnable {
         return suchen.listeFilmeNeu.addFilmVomSender(film);
     }
 
+    DatenFilm istInFilmListe(String sender, String thema, String titel) {
+        Iterator<DatenFilm> it = suchen.listeFilmeNeu.listIterator();
+        while (it.hasNext()) {
+            DatenFilm film = it.next();
+            if (film.arr[DatenFilm.FILM_SENDER_NR].equals(sender)
+                    && film.arr[DatenFilm.FILM_THEMA_NR].equalsIgnoreCase(thema)
+                    && film.arr[DatenFilm.FILM_TITEL_NR].equalsIgnoreCase(titel)) {
+                return film;
+            }
+        }
+        return null;
+    }
+
     boolean istInListe(LinkedList<String[]> liste, String str, int nr) {
         boolean ret = false;
         Iterator<String[]> it = liste.listIterator();

@@ -39,10 +39,12 @@ public class MediathekKika extends MediathekReader implements Runnable {
 
     @Override
     synchronized void meldungThreadUndFertig() {
-        --threads;
-        if (threads <= 0) {
+        if (threads <= 1) {
             // vorher noch laufen
             addToListHttp();
+        }
+        --threads;
+        if (threads <= 0) {
             //wird erst ausgeführt wenn alle Threads beendet sind
             suchen.meldenFertig(nameSenderMReader);
         } else {
