@@ -31,9 +31,24 @@ import org.apache.commons.lang3.StringEscapeUtils;
 public class MediathekKika extends MediathekReader implements Runnable {
 
     public static final String SENDER = "KiKA";
+    private MVStringBuilder seiteHttp = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
     public MediathekKika(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 500, startPrio);
+    }
+
+    @Override
+    synchronized void meldungThreadUndFertig() {
+        --threads;
+        if (threads <= 0) {
+            // vorher noch laufen
+            addToListHttp();
+            //wird erst ausgeführt wenn alle Threads beendet sind
+            suchen.meldenFertig(nameSenderMReader);
+        } else {
+            // läuft noch was
+            suchen.melden(nameSenderMReader, max, progress, "" /* text */);
+        }
     }
 
     @Override
@@ -143,12 +158,16 @@ public class MediathekKika extends MediathekReader implements Runnable {
 
         void laden(String filmWebsite, String thema, String titel, String datum) {
             //so.addVariable("pfad","rtmp://88.198.74.226/vod/mp4:1348908081-7b8b1356b478db154fdbf8bf6a01fc1f.mp4");
-            //so.addVariable("fullscreenPfad", "rtmp://88.198.74.226/vod/mp4:1348908081-7b8b1356b478db154fdbf8bf6a01fc1f-01.mp4");	
+            //so.addVariable("fullscreenPfad", "rtmp://88.198.74.226/vod/mp4:1348908081-7b8b1356b478db154fdbf8bf6a01fc1f-01.mp4");
+            //xajax.config.requestURI = "http://kikaplus.net/clients/kika/kikaplus/?programm=270&id=33172&ag=5";
             final String MUSTER_URL_1 = "so.addVariable(\"pfad\",\"";
             final String MUSTER_URL_2 = "so.addVariable(\"fullscreenPfad\", \"";
+            final String MUSTER_ID = "xajax.config.requestURI = \"";
             seite1 = getUrlIo.getUri(nameSenderMReader, filmWebsite, Konstanten.KODIERUNG_UTF, 1, seite1, thema + " " + titel);
             int pos1, pos2;
+            String id;
             String urlFilm = "";
+            id = seite1.extract(MUSTER_ID, "\"");
             if ((pos1 = seite1.indexOf(MUSTER_URL_2)) != -1) {
                 pos1 += MUSTER_URL_2.length();
                 if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
@@ -167,6 +186,96 @@ public class MediathekKika extends MediathekReader implements Runnable {
                 meldung(urlFilm);
                 addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlFilm, "-r " + urlFilm + " --flashVer WIN11,4,402,265"/* urlRtmp */,
                         datum/*datum*/, ""/*zeit*/, 0, "", "", "", new String[]{""}));
+            }
+        }
+    }
+
+    void addToListHttp() {
+        //http://www.kikaplus.net/clients/kika/kikaplus/hbbtv/index.php?cmd=az&age=3&page=all
+        //http://www.kikaplus.net/clients/kika/kikaplus/hbbtv/index.php?cmd=az&age=6&page=all
+        //http://www.kikaplus.net/clients/kika/kikaplus/hbbtv/index.php?cmd=az&age=10&page=all
+
+        final String ADRESSE_1 = "http://www.kikaplus.net/clients/kika/kikaplus/hbbtv/index.php?cmd=az&age=";
+        final String ADRESSE_2 = "&page=all";
+        final String MUSTER_START = "var programletterlist = {\"";
+        final String[] ALTER = {"3", "6", "10"};
+//        listeThemen.clear();
+        MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        meldungStart();
+        int pos1 = 0, pos2, start = 0, stop = 0;
+        String id = "", thema = "", url = "";
+        for (String alter : ALTER) {
+            seite = getUrlIo.getUri(nameSenderMReader, ADRESSE_1 + alter + ADRESSE_2, Konstanten.KODIERUNG_UTF, 3, seite, "KiKA: Startseite");
+            if ((start = seite.indexOf(MUSTER_START)) != -1) {
+                start += MUSTER_START.length();
+                pos1 = start;
+                if ((stop = seite.indexOf("}};", start)) != -1) {
+                    while ((pos1 = seite.indexOf("\"", pos1)) != -1) {
+                        thema = "";
+                        id = "";
+                        pos1 += 1;
+                        if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
+                            id = seite.substring(pos1, pos2);
+                            try {
+                                // Testen auf Zehl
+                                int z = Integer.parseInt(id);
+                            } catch (Exception ex) {
+                                continue;
+                            }
+                            ++pos2;
+                            if ((pos1 = seite.indexOf("\"", pos2)) != -1) {
+                                ++pos1;
+                                if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
+                                    thema = seite.substring(pos1, pos2);
+                                }
+                            }
+                            // http://www.kikaplus.net/clients/kika/kikaplus/hbbtv/index.php?cmd=program&id=165&age=10
+                            url = "http://www.kikaplus.net/clients/kika/kikaplus/hbbtv/index.php?cmd=program&id=" + id + "&age=" + alter;
+                            ladenHttp(url, thema, alter);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void ladenHttp(String filmWebsite, String thema, String alter) {
+        // erst die Nummer suchen
+        // >25420<4<165<23. Die b
+        // <http://www.kikaplus.net/clients/kika/mediathek/previewpic/1355302530-f80b463888fd4602d925b2ef2c861928 9.jpg<
+        final String MUSTER_BILD = "<http://www.";
+        seiteHttp = getUrlIo.getUri(nameSenderMReader, filmWebsite, Konstanten.KODIERUNG_UTF, 1, seiteHttp, thema);
+        String nummer, url, bild, urlFilm, titel;
+        nummer = seiteHttp.extract(">", "<");
+        bild = seiteHttp.extract(MUSTER_BILD, "<");
+        if (!bild.isEmpty()) {
+            bild = "http://www." + bild;
+        }
+        // die URL bauen:
+        // http://www.kikaplus.net/clients/kika/kikaplus/hbbtv/index.php?cmd=video&age=10&id=25420&page=az
+        if (!nummer.isEmpty()) {
+            url = "http://www.kikaplus.net/clients/kika/kikaplus/hbbtv/index.php?cmd=video&age=" + alter + "&id=" + nummer + "&page=az";
+            seiteHttp = getUrlIo.getUri(nameSenderMReader, url, Konstanten.KODIERUNG_UTF, 1, seiteHttp, thema);
+            final String MUSTER_URL = "var videofile = \"";
+            final String MUSTER_TITEL = "var videotitle = \"";
+            urlFilm = seiteHttp.extract(MUSTER_URL, "\"");
+            titel = seiteHttp.extract(MUSTER_TITEL, "\"");
+            if (!urlFilm.equals("")) {
+                meldung(urlFilm);
+                // DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
+                //     String datum, String zeit,
+                //     long dauerSekunden, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+                DatenFilm film = null;
+                if ((film = istInFilmListe(nameSenderMReader, thema, titel)) != null) {
+                    film.addUrlKlein(urlFilm, "");
+                } else {
+                    // dann gibs ihn noch nicht
+                    addFilm(new DatenFilm(nameSenderMReader, thema, "http://www.kika.de/fernsehen/mediathek/index.shtml", titel, urlFilm, ""/* urlRtmp */,
+                            ""/*datum*/, ""/*zeit*/,
+                            0, "", bild, "", new String[]{""}));
+                }
+            } else {
+                Log.fehlerMeldung(-915263078, Log.FEHLER_ART_MREADER, "MediathekKika", "keine URL: " + filmWebsite);
             }
         }
     }
