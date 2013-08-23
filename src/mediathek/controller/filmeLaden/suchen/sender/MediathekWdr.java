@@ -55,7 +55,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
         listeThemen.clear();
         meldungStart();
         addToList__("http://www1.wdr.de/mediathek/video/sendungen/abisz-a102.html");
-        if (suchen.senderAllesLaden) {
+        if (filmeSuchenSender.senderAllesLaden) {
             //TH Rockpalast hinzu
             String[] add = new String[]{ROCKPALAST_URL, "Rockpalast"};
             listeThemen.addUrl(add);
@@ -192,7 +192,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             meldung(strUrl);
             // Sendungen auf der Seite
             sendungsSeitenSuchen2(strUrl);
-            if (!suchen.senderAllesLaden) {
+            if (!filmeSuchenSender.senderAllesLaden) {
                 // dann wars das
                 return;
             }
@@ -681,7 +681,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 }
                 if (thema.equals("")) {
                     // dann gehts halt nicht
-                    thema = nameSenderFilmliste;
+                    thema = nameSenderMReader;
                 }
             }
             url = "";

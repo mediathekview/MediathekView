@@ -31,8 +31,7 @@ import mediathek.tool.MVUrlDateiGroesse;
 
 public class MediathekReader implements Runnable {
 
-    String nameSenderFilmliste = ""; // ist der Sendername in der Filmliste, bei ARTE gibt es da 2 Namen,
-    String nameSenderMReader = ""; // ist der Name, den der Mediathekreader hat, der ist eindeutig und meist identisch mit dem "nameSenderFilmliste"
+    String nameSenderMReader = ""; // ist der Name, den der Mediathekreader hat, der ist eindeutig
     int maxThreadLaufen = 4;
     long wartenSeiteLaden = 500;//ms, Basiswert zu dem dann der Faktor multipliziert wird
     //boolean senderOn = true;
@@ -43,13 +42,12 @@ public class MediathekReader implements Runnable {
     int startPrio = 1; // es gibt die Werte: 0->startet sofort, 1->später und 2->zuletzt
     LinkedListUrl listeThemen = new LinkedListUrl();
     GetUrl getUrlIo;
-    FilmeSuchenSender suchen;
+    FilmeSuchenSender filmeSuchenSender;
 
     public MediathekReader(FilmeSuchenSender ssearch, String nameMreader, int ssenderMaxThread, int ssenderWartenSeiteLaden, int sstartPrio) {
-        suchen = ssearch;
+        filmeSuchenSender = ssearch;
         wartenSeiteLaden = ssenderWartenSeiteLaden;
         getUrlIo = new GetUrl(ssenderWartenSeiteLaden);
-        nameSenderFilmliste = nameMreader; // ist meist gleich, wenn nicht muss er im MReader geändert werden
         nameSenderMReader = nameMreader;
         maxThreadLaufen = ssenderMaxThread;
         startPrio = sstartPrio;
@@ -86,6 +84,10 @@ public class MediathekReader implements Runnable {
         return nameSenderMReader;
     }
 
+    public void delSenderInAlterListe(String sender) {
+        filmeSuchenSender.senderInAlteListeLoeschen(sender);
+    }
+
     @Override
     public void run() {
         //alles laden
@@ -106,11 +108,11 @@ public class MediathekReader implements Runnable {
         if (!Daten.STOP_DATEIGROESSE) { // nur zum debuggen damit es schneller geht!
             film.arr[DatenFilm.FILM_GROESSE_NR] = MVUrlDateiGroesse.laengeString(film.arr[DatenFilm.FILM_URL_NR]);
         }
-        return suchen.listeFilmeNeu.addFilmVomSender(film);
+        return filmeSuchenSender.listeFilmeNeu.addFilmVomSender(film);
     }
 
     DatenFilm istInFilmListe(String sender, String thema, String titel) {
-        Iterator<DatenFilm> it = suchen.listeFilmeNeu.listIterator();
+        Iterator<DatenFilm> it = filmeSuchenSender.listeFilmeNeu.listIterator();
         while (it.hasNext()) {
             DatenFilm film = it.next();
             if (film.arr[DatenFilm.FILM_SENDER_NR].equals(sender)
@@ -150,36 +152,36 @@ public class MediathekReader implements Runnable {
     synchronized void meldungStart() {
         max = 0;
         progress = 0;
-        suchen.melden(nameSenderMReader, max, progress, "" /* text */);
+        filmeSuchenSender.melden(nameSenderMReader, max, progress, "" /* text */);
     }
 
     synchronized void meldungAddMax(int mmax) {
         max += mmax;
-        suchen.melden(nameSenderMReader, max, progress, "" /* text */);
+        filmeSuchenSender.melden(nameSenderMReader, max, progress, "" /* text */);
     }
 
     synchronized void meldungAddThread() {
         ++threads;
-        suchen.melden(nameSenderMReader, max, progress, "" /* text */);
+        filmeSuchenSender.melden(nameSenderMReader, max, progress, "" /* text */);
     }
 
     synchronized void meldungProgress(String text) {
         ++progress;
-        suchen.melden(nameSenderMReader, max, progress, text);
+        filmeSuchenSender.melden(nameSenderMReader, max, progress, text);
     }
 
     synchronized void meldung(String text) {
-        suchen.melden(nameSenderMReader, max, progress, text);
+        filmeSuchenSender.melden(nameSenderMReader, max, progress, text);
     }
 
     synchronized void meldungThreadUndFertig() {
         --threads;
         if (threads <= 0) {
             //wird erst ausgeführt wenn alle Threads beendet sind
-            suchen.meldenFertig(nameSenderMReader);
+            filmeSuchenSender.meldenFertig(nameSenderMReader);
         } else {
             // läuft noch was
-            suchen.melden(nameSenderMReader, max, progress, "" /* text */);
+            filmeSuchenSender.melden(nameSenderMReader, max, progress, "" /* text */);
         }
     }
 

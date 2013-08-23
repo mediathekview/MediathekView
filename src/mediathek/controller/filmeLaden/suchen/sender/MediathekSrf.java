@@ -152,7 +152,7 @@ public class MediathekSrf extends MediathekReader implements Runnable {
                 String zeit = "";
                 String titel;
                 String tmp;
-                while (!Daten.filmeLaden.getStop() && (suchen.senderAllesLaden || counter < MAX_FILME_THEMA) && (posItem1 = seite1.indexOf(MUSTER_ITEM_1, posItem1)) != -1) {
+                while (!Daten.filmeLaden.getStop() && (filmeSuchenSender.senderAllesLaden || counter < MAX_FILME_THEMA) && (posItem1 = seite1.indexOf(MUSTER_ITEM_1, posItem1)) != -1) {
                     posItem1 += MUSTER_ITEM_1.length();
 //                    posItem2 = seite1.indexOf(MUSTER_ITEM_2, posItem1);
                     ++counter;
