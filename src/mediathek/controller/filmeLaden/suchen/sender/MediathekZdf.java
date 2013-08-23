@@ -48,14 +48,14 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         // Liste von http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-a-bis-z/saz0 bis sat8 holen
         String addr = "http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-a-bis-z/saz";
         for (int i = 0; i <= 8; ++i) {
-            addToList_addr(addr + String.valueOf(i), suchen.senderAllesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE);
+            addToList_addr(addr + String.valueOf(i), filmeSuchenSender.senderAllesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE);
         }
         // Spartenkanäle einfügen
-        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209122", suchen.senderAllesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE); // zdf-neo
-        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209120", suchen.senderAllesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE); // zdf-info
-        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1317640", suchen.senderAllesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE); // zdf-kultur
+        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209122", filmeSuchenSender.senderAllesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE); // zdf-neo
+        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1209120", filmeSuchenSender.senderAllesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE); // zdf-info
+        addToList_addr("http://www.zdf.de/ZDFmediathek/senderstartseite/sst1/1317640", filmeSuchenSender.senderAllesLaden ? ANZAHL_ZDF_ALLE : ANZAHL_ZDF_UPDATE); // zdf-kultur
         //Rubriken einfügen
-        if (suchen.senderAllesLaden) {
+        if (filmeSuchenSender.senderAllesLaden) {
             // da sollte eigentlich nichts Neues sein
             addToList_Rubrik("http://www.zdf.de/ZDFmediathek/hauptnavigation/rubriken");
         }
@@ -69,7 +69,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
         addThemenliste("http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-verpasst/day6", "http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-verpasst/day6", "");
         addThemenliste("http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-verpasst/day7", "http://www.zdf.de/ZDFmediathek/hauptnavigation/sendung-verpasst/day7", "");
         // Spartenkanäle Übersicht
-        if (suchen.senderAllesLaden) {
+        if (filmeSuchenSender.senderAllesLaden) {
             addThemenliste("http://www.zdf.de/ZDFmediathek/senderstartseite/1209114", "http://www.zdf.de/ZDFmediathek/senderstartseite/1209114", ""); // ZDF
             addThemenliste("http://www.zdf.de/ZDFmediathek/senderstartseite/sst0/1209122?teaserListIndex=" + ANZAHL_ZDF_MITTEL,
                     "http://www.zdf.de/ZDFmediathek/senderstartseite/sst0/1209122?teaserListIndex=" + ANZAHL_ZDF_MITTEL, ""); // ZDF Neo
@@ -221,7 +221,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                 while (!Daten.filmeLaden.getStop() && (pos = seite1.indexOf(MUSTER_URL_1, pos)) != -1) {
                     ok = false;
                     ++anz;
-                    if (!suchen.senderAllesLaden) {
+                    if (!filmeSuchenSender.senderAllesLaden) {
                         if (anz > ANZAHL_ZDF_KURZ) {
                             // dann reichts
                             break;

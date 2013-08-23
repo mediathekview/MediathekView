@@ -72,7 +72,7 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                 }
                 String url_ = "http://www.ndr.de/mediathek/" + url;
                 String[] add = new String[]{url_, thema};
-                if (suchen.senderAllesLaden) {
+                if (filmeSuchenSender.senderAllesLaden) {
                     if (!alleSeiteSuchen(url_, thema)) {
                         // dann halt so versuchen
                         listeThemen.addUrl(add);

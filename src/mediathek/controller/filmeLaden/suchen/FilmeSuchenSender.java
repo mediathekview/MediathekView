@@ -161,6 +161,10 @@ public class FilmeSuchenSender {
         }
     }
 
+    public void senderInAlteListeLoeschen(String sender) {
+        listeFilmeAlt.delSender(sender);
+    }
+
     public MediathekReader getMReaderNameSenderMreader(String nameSenderMreader) {
         // liefert den MediathekReader mit dem Namen
         Iterator<MediathekReader> it = mediathekListe.iterator();

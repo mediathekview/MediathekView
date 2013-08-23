@@ -30,7 +30,6 @@ public class MediathekArte_fr extends MediathekArte_de implements Runnable {
      */
     public MediathekArte_fr(FilmeSuchenSender ssearch, int startPrio) {
         super(ssearch, startPrio);
-        nameSenderFilmliste = SENDER_ARTE_FR;
         nameSenderMReader = SENDER_ARTE_FR;
         URL_ARTE = "http://www.arte.tv/papi/tvguide/epg/schedule/F/L3/";
     }

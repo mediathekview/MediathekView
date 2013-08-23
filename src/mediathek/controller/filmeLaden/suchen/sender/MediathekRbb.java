@@ -133,7 +133,7 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                     rpos = 0;
                     int count = 0;
                     while ((rpos = seite2.indexOf("<link>", rpos)) != -1) {
-                        if (!suchen.senderAllesLaden) {
+                        if (!filmeSuchenSender.senderAllesLaden) {
                             // beim Update nur die neuesten Laden
                             ++count;
                             if (count > 10) {

@@ -39,14 +39,6 @@ public class MediathekKika extends MediathekReader implements Runnable {
         super(ssearch, /* name */ SENDER, /* threads */ 2, /* urlWarten */ 500, startPrio);
     }
 
-//    @Override
-//    synchronized void meldungThreadUndFertig() {
-//        if (threads <= 1) {
-//            // vorher noch laufen
-//            addToListHttp();
-//        }
-//        super.meldungThreadUndFertig();
-//    }
     @Override
     void addToList() {
         meldungStart();
@@ -57,6 +49,9 @@ public class MediathekKika extends MediathekReader implements Runnable {
         } else if (listeThemen.size() == 0 && listeThemenHttp.size() == 0) {
             meldungThreadUndFertig();
         } else {
+            // dann den Sender aus der alten Liste löschen
+            // URLs laufen nur begrenzte Zeit
+            delSenderInAlterListe(nameSenderMReader);
             listeSort(listeThemen, 1);
             listeSort(listeThemenHttp, 1);
             meldungAddMax(listeThemen.size() + listeThemenHttp.size());
