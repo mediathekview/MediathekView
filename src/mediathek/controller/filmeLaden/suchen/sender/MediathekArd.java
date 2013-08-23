@@ -488,6 +488,11 @@ public class MediathekArd extends MediathekReader implements Runnable {
                         urlOrg = protokoll + url;
                     }
                 }
+                if (urlOrg.contains(".csmil/master.m3u8")) {
+                    // m3uUrlHolen(GetUrl getUrl, String sender, MVStringBuilder strBuffer, String urlM3u) {
+                    urlOrg = m3uUrlHolen(getUrl, nameSenderMReader, seite2, urlOrg);
+//                    f.arr[DatenFilm.FILM_TITEL_NR] = f.arr[DatenFilm.FILM_TITEL_NR];
+                }
             }
             urlOrg = urlOrg.replace(" ", "");
             if (flash && !urlOrg.equals("") && !urlRtmp.equals("") || !flash && !urlOrg.equals("")) {
@@ -564,6 +569,37 @@ public class MediathekArd extends MediathekReader implements Runnable {
             }
 
             return source.substring(start, end);
+        }
+
+        private String m3uUrlHolen(GetUrl getUrl, String sender, MVStringBuilder strBuffer, String urlM3u) {
+            // #EXTM3U
+            // #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=208000,RESOLUTION=288x216,CODECS="avc1.66.30, mp4a.40.2"
+            // index_1_av.m3u8?e=b471643725c47acd
+            // #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=146000,RESOLUTION=192x144,CODECS="avc1.66.30, mp4a.40.2"
+            // index_0_av.m3u8?e=b471643725c47acd
+            // #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=883000,RESOLUTION=384x288,CODECS="avc1.77.30, mp4a.40.2"
+            // index_2_av.m3u8?e=b471643725c47acd
+            // #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=45000,CODECS="mp4a.40.2"
+            // index_0_a.m3u8?e=b471643725c47acd
+
+            // m3u-URL:
+            // http://cdn-vod-ios.br.de/i/mir-live/bw1XsLz.......A,B,.mp4.csmil/master.m3u8?__b__=200
+            final String URL = "index_2_av";
+            final String CSMIL = "csmil/";
+            String url = "";
+            if (urlM3u.contains(CSMIL)) {
+                url = urlM3u.substring(0, urlM3u.indexOf(CSMIL)) + CSMIL;
+            } else {
+                Log.fehlerMeldung(-730976432, Log.FEHLER_ART_MREADER, MediathekArd.class.getName() + ".m3uUrlHolen", "url: " + urlM3u);
+                return "";
+            }
+            strBuffer = getUrl.getUri_Utf(sender, urlM3u, strBuffer, "url: " + urlM3u);
+            if (strBuffer.length() == 0) {
+                Log.fehlerMeldung(-963215478, Log.FEHLER_ART_MREADER, MediathekArd.class.getName() + ".m3uUrlHolen", "url: " + urlM3u);
+                return "";
+            }
+            url = url + URL + strBuffer.extract(URL, "\n");
+            return url;
         }
     }
 }
