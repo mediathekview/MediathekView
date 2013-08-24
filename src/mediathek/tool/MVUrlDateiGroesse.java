@@ -8,8 +8,8 @@ public class MVUrlDateiGroesse {
     final static int TIMEOUT = 2500; // ms
 
     public static String laengeString(String url) {
-        // liefert die Dateigröße einer URL in GBYTE!!
-        // Anzeige der Größe in GB und deshalb: Faktor 1000
+        // liefert die Dateigröße einer URL in MB!!
+        // Anzeige der Größe in MB und deshalb: Faktor 1000
         String groesseStr = "";
         long l = laenge(url);
         if (l > 1000 * 1000) {
