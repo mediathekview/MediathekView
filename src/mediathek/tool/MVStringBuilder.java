@@ -78,6 +78,18 @@ public class MVStringBuilder {
         return "";
     }
 
+    public String extract(String musterStart, String musterEnde, int abPos, int stopPos) {
+        if ((pos1 = cont.indexOf(musterStart, abPos)) != -1) {
+            pos1 += musterStart.length();
+            if ((pos2 = cont.indexOf(musterEnde, pos1)) != -1) {
+                if (stopPos < 0 || pos2 < stopPos) {
+                    return cont.substring(pos1, pos2);
+                }
+            }
+        }
+        return "";
+    }
+
     public String extract(String musterStart1, String musterStart2, String musterEnde) {
         return extract(musterStart1, musterStart2, musterEnde, 0);
     }
