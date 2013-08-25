@@ -349,7 +349,8 @@ public class MediathekArd extends MediathekReader implements Runnable {
             String imageUrl = extractImageURL(seite2);
 
             int pos1;
-            DatenFilm f = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, ""/*urlOrg*/, ""/*urlRtmp*/, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
+            DatenFilm f = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, ""/*urlOrg*/, ""/*urlRtmp*/, datum, zeit, durationInSeconds, description,
+                    imageUrl.isEmpty() ? thumbnailUrl : imageUrl, keywords);
             // ###############################
             // reguläre Filme, kein Flash
             final String MUSTER_URL3a = "mediaCollection.addMediaStream(1, 3, \"\", \"http://";

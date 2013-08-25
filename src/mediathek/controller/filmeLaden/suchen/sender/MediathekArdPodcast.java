@@ -361,7 +361,8 @@ public class MediathekArdPodcast extends MediathekReader implements Runnable {
                 }
                 // public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
                 //  long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
-                addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, "", durationInSeconds, description, thumbnailUrl, imageUrl, keywords));
+                addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, "", durationInSeconds, description, 
+                          imageUrl.isEmpty() ? thumbnailUrl : imageUrl, keywords));
             }
         }
 

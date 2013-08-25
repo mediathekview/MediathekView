@@ -207,11 +207,11 @@ public class MediathekRbb extends MediathekReader implements Runnable {
                             } else if (urlMp4.isEmpty()) {
                                 // DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlOrg, urlRtmp, datum, ""/* zeit */);
                                 DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlOrg, urlRtmp,
-                                        datum, ""/* zeit */, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
+                                        datum, ""/* zeit */, durationInSeconds, description,   imageUrl.isEmpty() ? thumbnailUrl : imageUrl, keywords);
                                 addFilm(film);
                             } else {
                                 DatenFilm film = new DatenFilm(nameSenderMReader, thema, showurl, title, urlMp4, "" /*urlRtmp*/,
-                                        datum, ""/* zeit */, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
+                                        datum, ""/* zeit */, durationInSeconds, description,   imageUrl.isEmpty() ? thumbnailUrl : imageUrl, keywords);
                                 addFilm(film);
                             }
                         }

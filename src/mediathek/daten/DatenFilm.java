@@ -115,7 +115,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
 
     public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String uurlRtmp,
             String datum, String zeit,
-            long dauerSekunden, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
+            long dauerSekunden, String description, String imageUrl, String[] keywords) {
         makeArr();
         arr[FILM_SENDER_NR] = ssender;
         arr[FILM_THEMA_NR] = tthema.isEmpty() ? ssender : tthema;
@@ -126,12 +126,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         arr[FILM_DATUM_NR] = checkDatum(datum, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_ZEIT_NR] = checkZeit(arr[FILM_DATUM_NR], zeit, arr[FILM_SENDER_NR] + " " + arr[FILM_THEMA_NR] + " " + arr[FILM_TITEL_NR]);
         arr[FILM_BESCHREIBUNG_NR] = beschreibung(description, tthema, ttitel);
-        // Bild eintragen
-        if (!imageUrl.equals("")) {
-            arr[FILM_IMAGE_URL_NR] = imageUrl;
-        } else {
-            arr[FILM_IMAGE_URL_NR] = thumbnailUrl;
-        }
+        arr[FILM_IMAGE_URL_NR] = imageUrl;
         // Schlüsselwörter
         arr[FILM_KEYWORDS_NR] = keywordsToString(keywords);
         // Filmlänge
@@ -302,7 +297,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return getUrlFlvstreamer();
     }
 
-     private String beschreibung(String s, String thema, String titel) {
+    private String beschreibung(String s, String thema, String titel) {
         // die Beschreibung auf x Zeichen beschränken
         if (s.startsWith(titel)) {
             s = s.substring(titel.length()).trim();

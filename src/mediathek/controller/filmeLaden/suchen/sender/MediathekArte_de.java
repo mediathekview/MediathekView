@@ -279,7 +279,7 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
                 // http://artestras.vo.llnwxd.net/o35/nogeo/HBBTV/042975-013-B_EXT_SQ_1_VA_00604871_MP4-2200_AMM-HBBTV_EXTRAIT.mp4
                 // sind nur Trailer
                 DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, "" /*urlRtmp*/,
-                        datum, zeit, dauer, beschreibung, bild, ""/* imageUrl*/, new String[]{});
+                        datum, zeit, dauer, beschreibung, bild,  new String[]{});
                 if (!urlKlein.isEmpty()) {
                     film.addUrlKlein(urlKlein, "");
                 }
@@ -290,14 +290,14 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
             }
         } else if (!urlKlein.isEmpty()) {
             DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlKlein, "" /*urlRtmp*/,
-                    datum, zeit, dauer, beschreibung, bild, ""/* imageUrl*/, new String[]{});
+                    datum, zeit, dauer, beschreibung, bild,  new String[]{});
             if (!urlHd.isEmpty()) {
                 film.addUrlHd(urlHd, "");
             }
             addFilm(film);
         } else if (!urlHd.isEmpty()) {
             DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlHd, "" /*urlRtmp*/,
-                    datum, zeit, dauer, beschreibung, bild, ""/* imageUrl*/, new String[]{});
+                    datum, zeit, dauer, beschreibung, bild,  new String[]{});
             addFilm(film);
         } else {
             Log.fehlerMeldung(-963025874, Log.FEHLER_ART_MREADER, "MediathekArte_de.filmeLaden", "Keine URL: " + arr[0]);
