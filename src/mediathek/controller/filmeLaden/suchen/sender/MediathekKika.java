@@ -226,7 +226,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
             if (!urlFilm.equals("")) {
                 meldung(urlFilm);
                 addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlFilm, "-r " + urlFilm + " --flashVer WIN11,4,402,265"/* urlRtmp */,
-                        datum/*datum*/, ""/*zeit*/, 0, "", "", "", new String[]{""}));
+                        datum/*datum*/, ""/*zeit*/, 0, "",  "", new String[]{""}));
             } else {
                 Log.fehlerMeldung(-912036789, Log.FEHLER_ART_MREADER, "MediathekKika", "keine URL: " + filmWebsite);
             }
@@ -267,7 +267,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
                         // dann gibs ihn noch nicht
                         addFilm(new DatenFilm(nameSenderMReader, thema, "http://www.kika.de/fernsehen/mediathek/index.shtml", titel, urlFilm, ""/* urlRtmp */,
                                 ""/*datum*/, ""/*zeit*/,
-                                0, "", bild, "", new String[]{""}));
+                                0, "", bild, new String[]{""}));
                     }
                 } else {
                     Log.fehlerMeldung(-915263078, Log.FEHLER_ART_MREADER, "MediathekKika", "keine URL: " + filmWebsite);

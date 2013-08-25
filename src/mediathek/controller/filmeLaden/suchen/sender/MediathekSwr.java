@@ -402,7 +402,8 @@ public class MediathekSwr extends MediathekReader implements Runnable {
                         url = urlKlein;
                         urlKlein = "";
                     }
-                    DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, ""/*rtmpURL*/, datum, zeit, dauer, description, thumbnailUrl, "", keywords);
+                    DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, ""/*rtmpURL*/, datum, zeit, dauer, description,
+                            thumbnailUrl, keywords);
                     if (!urlKlein.isEmpty()) {
                         film.addUrlKlein(urlKlein, "");
                     }

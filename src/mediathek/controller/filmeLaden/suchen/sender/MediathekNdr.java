@@ -290,7 +290,8 @@ public class MediathekNdr extends MediathekReader implements Runnable {
                                     url = url.replace("hi.mp4", "hq.mp4");
                                 }
                             }
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, zeit, durationInSeconds, description, "", imageUrl, keywords);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, zeit, durationInSeconds, description, 
+                                     imageUrl, keywords);
                             if (url.contains(".hq.")) {
                                 String urlKlein = url.replace(".hq.", ".hi.");
                                 film.addUrlKlein(urlKlein, "");

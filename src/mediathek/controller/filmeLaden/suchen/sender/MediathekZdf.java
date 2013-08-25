@@ -580,7 +580,8 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             } else {
                 url = "rtmpt://" + host + "/" + app + "/" + url;
                 //ret = new DatenFilm(senderName, thema, urlThema, titel, url, ""/* urlRtmp */, datum, zeit);
-                ret = new DatenFilm(senderName, thema, filmWebsite, titel, url, ""/* urlRtmp */, datum, zeit, durationInSeconds, description, ""/*thumbnailUrl*/, imageUrl, keywords);
+                ret = new DatenFilm(senderName, thema, filmWebsite, titel, url, ""/* urlRtmp */, datum, zeit, durationInSeconds, description, 
+                         imageUrl, keywords);
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(-265847128, Log.FEHLER_ART_MREADER, "MediathekZdf.flash" + senderName, ex, urlFilm);
@@ -619,7 +620,8 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     pos1 += MUSTER_TAUSCH.length();
                     url = "http://rodl.zdf.de" + tmpUrl.substring(pos1);
                     //ret = new DatenFilm(senderName, thema, urlThema, titel, url, ""/* urlRtmp */, datum, zeit);
-                    ret = new DatenFilm(senderName, thema, filmWebsite, titel, url, ""/* urlRtmp */, datum, zeit, durationInSeconds, description, thumbnailUrl, imageUrl, keywords);
+                    ret = new DatenFilm(senderName, thema, filmWebsite, titel, url, ""/* urlRtmp */, datum, zeit, durationInSeconds, description, 
+                              imageUrl.isEmpty() ? thumbnailUrl : imageUrl, keywords);
                 } else {
                     Log.fehlerMeldung(-918596307, Log.FEHLER_ART_MREADER, "Mediathek3sat.quicktime", "url passt nicht: " + urlFilm);
                 }
@@ -803,7 +805,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             return null;
         } else {
             DatenFilm film = new DatenFilm(sender, thema, filmWebsite, titel, url, "" /*urlRtmp*/, datum, zeit,
-                    extractDuration(laenge), beschreibung, bild, ""/* imageUrl*/, new String[]{""});
+                    extractDuration(laenge), beschreibung, bild,  new String[]{""});
             film.addUrlKlein(urlKlein, "");
             film.addUrlHd(urlHd, "");
             return film;

@@ -496,7 +496,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                 //public DatenFilm(String ssender, String tthema, String filmWebsite, String ttitel, String uurl, String datum, String zeit,
                 //long duration, String description, String thumbnailUrl, String imageUrl, String[] keywords) {
                 DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, ""/* zeit */,
-                        dauer, beschreibung, "", image, keyword);
+                        dauer, beschreibung, image, keyword);
                 film.addUrlKlein(urlKlein, "");
                 addFilm(film);
             } else {
@@ -564,7 +564,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             String datum = "";
             long duration = 0;
             String description = "";
-            String thumnail = "";
+            String thumbnail = "";
             String image = "";
             String[] keywords = new String[]{};
 
@@ -622,7 +622,7 @@ public class MediathekWdr extends MediathekReader implements Runnable {
             if ((pos1 = strSeite2.indexOf(MUSTER_THUMBNAIL)) != -1) {
                 pos1 += MUSTER_THUMBNAIL.length();
                 if ((pos2 = strSeite2.indexOf(MUSTER_THUMBNAIL_END, pos1)) != -1) {
-                    thumnail = strSeite2.substring(pos1, pos2);
+                    thumbnail = strSeite2.substring(pos1, pos2);
                 }
             }
 
@@ -705,10 +705,12 @@ public class MediathekWdr extends MediathekReader implements Runnable {
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                             //DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, ""/* zeit */);
                             if (urlHd.isEmpty()) {
-                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, ""/* zeit */, duration, description, thumnail, image, keywords);
+                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, ""/*rtmpURL*/, datum, ""/* zeit */, duration, description,
+                                        image.isEmpty() ? thumbnail : image, keywords);
                                 addFilm(film);
                             } else {
-                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlHd, ""/*rtmpURL*/, datum, ""/* zeit */, duration, description, thumnail, image, keywords);
+                                DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlHd, ""/*rtmpURL*/, datum, ""/* zeit */, duration, description,
+                                        image.isEmpty() ? thumbnail : image, keywords);
                                 addFilm(film);
                                 film.addUrlKlein(url, "");
                             }

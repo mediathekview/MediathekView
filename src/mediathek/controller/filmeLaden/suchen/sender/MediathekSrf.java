@@ -302,7 +302,8 @@ public class MediathekSrf extends MediathekReader implements Runnable {
                             }
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                             // DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, urlWebsite, titel, url, ""/*rtmpURL*/, datum, zeit, duration, description, thumbnail, image, keywords);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, urlWebsite, titel, url, ""/*rtmpURL*/, datum, zeit, duration, description, 
+                                      image.isEmpty() ? thumbnail : image, keywords);
                             if (url.endsWith("_hq1.mp4")) {
                                 String urlKlein = url.replace("_hq1.mp4", "_mq1.mp4");
                                 film.addUrlKlein(urlKlein, "");
