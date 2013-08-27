@@ -98,7 +98,7 @@ public class GuiDebug extends PanelVorlage {
         jCheckBoxDateiGroesse.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.STOP_DATEIGROESSE = jCheckBoxDateiGroesse.isSelected();
+                //Daten.STOP_DATEIGROESSE = jCheckBoxDateiGroesse.isSelected();
             }
         });
         jPanelSenderLaden.setLayout(new BorderLayout());
@@ -332,6 +332,7 @@ public class GuiDebug extends PanelVorlage {
         jButtonAlleLaden.setText("alle S. laden");
 
         jCheckBoxDateiGroesse.setText("Stop Dateigröße");
+        jCheckBoxDateiGroesse.setEnabled(false);
 
         jButtonDoppelt.setText("nur doppelte URLs");
 

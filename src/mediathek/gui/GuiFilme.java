@@ -45,6 +45,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -112,9 +113,16 @@ public class GuiFilme extends PanelVorlage {
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
-//        if (Daten.debug) {
-//            startup();
-//        }
+                addListenerMediathekView();
+//        SwingUtilities.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                addListenerMediathekView();
+//            }
+//        });
+        //        if (Daten.debug) {
+        //            startup();
+        //        }
     }
 
 ////flexdock-1.2.3.jar
@@ -312,6 +320,9 @@ public class GuiFilme extends PanelVorlage {
                 panelVideoplayerSetzen();
             }
         });
+    }
+
+    private void addListenerMediathekView() {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {

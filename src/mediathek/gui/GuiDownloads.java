@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.MVStatusBar_Mac;
@@ -77,11 +78,18 @@ public class GuiDownloads extends PanelVorlage {
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
         init();
-        downloadsAktualisieren(); // die Tabelle wird dabei gleich geladen
         tabelle.initTabelle();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
+        addListenerMediathekView();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                // erst wenn das Programm geladen ist
+                downloadsAktualisieren(); // die Tabelle wird dabei gleich geladen
+            }
+        });
     }
     //===================================
     //public
@@ -149,19 +157,6 @@ public class GuiDownloads extends PanelVorlage {
                 tabelleLaden();
             }
         });
-//      ist jetzt im  Menü  
-        //aendern
-//        ActionMap am = tabelle.getActionMap();
-//        InputMap im = tabelle.getInputMap();
-//        //aendern
-//        am.put("aendern", new BeobAbstractActionAendern());
-//        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-//        im.put(enter, "aendern");
-//        //löschen
-//        am.put("loeschen", new BeobAbstractActionLoeschen());
-//        KeyStroke del = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
-//        im.put(del, "loeschen");
-//        //
         jRadioButtonAlles.addActionListener(new BeobAnzeige());
         jRadioButtonAbos.addActionListener(new BeobAnzeige());
         jRadioButtonDownloads.addActionListener(new BeobAnzeige());
@@ -172,18 +167,21 @@ public class GuiDownloads extends PanelVorlage {
                 tabelleLaden();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                tabelleProzentGeaendert();
-            }
-        });
         DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
             public void fertig_(ListenerFilmeLadenEvent event) {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
                     downloadsAktualisieren();
                 }
+            }
+        });
+    }
+
+    private void addListenerMediathekView() {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                tabelleProzentGeaendert();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
@@ -208,7 +206,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void ping() {
                 tabelle.fireTableDataChanged(true /*setSpalten*/);
-//                aktFilmSetzen();
+                // aktFilmSetzen();
                 setInfo();
             }
         });
@@ -253,6 +251,10 @@ public class GuiDownloads extends PanelVorlage {
         ddaten.listeDownloads.abosLoschenWennNochNichtGestartet();
         ddaten.listeDownloads.abosSuchen();
         tabelleLaden();
+        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR])) {
+            // und wenn gewollt auch gleich starten
+            filmStartenWiederholenStoppen(true /*alle*/, true /*starten*/);
+        }
     }
 
     private synchronized void downloadsAufraeumen() {
