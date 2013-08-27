@@ -120,6 +120,19 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         }
     }
 
+    public synchronized DatenFilm istInFilmListe(String sender, String thema, String titel) {
+        Iterator<DatenFilm> it = listIterator();
+        while (it.hasNext()) {
+            DatenFilm film = it.next();
+            if (film.arr[DatenFilm.FILM_SENDER_NR].equals(sender)
+                    && film.arr[DatenFilm.FILM_THEMA_NR].equalsIgnoreCase(thema)
+                    && film.arr[DatenFilm.FILM_TITEL_NR].equalsIgnoreCase(titel)) {
+                return film;
+            }
+        }
+        return null;
+    }
+
     public synchronized boolean addFilmVomSender(DatenFilm film) {
         // Filme die beim Sender gesucht wurden (und nur die) hier eintragen
         // nur für die MediathekReader

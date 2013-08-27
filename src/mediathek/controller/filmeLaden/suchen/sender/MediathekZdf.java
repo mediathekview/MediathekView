@@ -580,8 +580,8 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             } else {
                 url = "rtmpt://" + host + "/" + app + "/" + url;
                 //ret = new DatenFilm(senderName, thema, urlThema, titel, url, ""/* urlRtmp */, datum, zeit);
-                ret = new DatenFilm(senderName, thema, filmWebsite, titel, url, ""/* urlRtmp */, datum, zeit, durationInSeconds, description, 
-                         imageUrl, keywords);
+                ret = new DatenFilm(senderName, thema, filmWebsite, titel, url, ""/* urlRtmp */, datum, zeit, durationInSeconds, description,
+                        imageUrl, keywords);
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(-265847128, Log.FEHLER_ART_MREADER, "MediathekZdf.flash" + senderName, ex, urlFilm);
@@ -620,8 +620,8 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                     pos1 += MUSTER_TAUSCH.length();
                     url = "http://rodl.zdf.de" + tmpUrl.substring(pos1);
                     //ret = new DatenFilm(senderName, thema, urlThema, titel, url, ""/* urlRtmp */, datum, zeit);
-                    ret = new DatenFilm(senderName, thema, filmWebsite, titel, url, ""/* urlRtmp */, datum, zeit, durationInSeconds, description, 
-                              imageUrl.isEmpty() ? thumbnailUrl : imageUrl, keywords);
+                    ret = new DatenFilm(senderName, thema, filmWebsite, titel, url, ""/* urlRtmp */, datum, zeit, durationInSeconds, description,
+                            imageUrl.isEmpty() ? thumbnailUrl : imageUrl, keywords);
                 } else {
                     Log.fehlerMeldung(-918596307, Log.FEHLER_ART_MREADER, "Mediathek3sat.quicktime", "url passt nicht: " + urlFilm);
                 }
@@ -650,23 +650,10 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             Log.fehlerMeldung(-398745601, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "url: " + urlId);
             return null;
         }
-        if ((pos1 = strBuffer.indexOf(BILD)) != -1) {
-            pos1 += BILD.length();
-            if ((pos1 = strBuffer.indexOf(BILD_, pos1)) != -1) {
-                pos1 += BILD_.length();
-                if ((pos2 = strBuffer.indexOf("<", pos1)) != -1) {
-                    bild = strBuffer.substring(pos1, pos2);
-                    String tmp = strBuffer.extract(BILD, BILD_, "<");
-                    if (!bild.equals(tmp)) {
-                        System.out.println("Scheisse");
-                    }
-                    if (bild.contains(">")) {
-                        bild = bild.substring(bild.indexOf(">") + 1);
-                    }
-                }
-            }
+        bild = strBuffer.extract(BILD, BILD_, "<");
+        if (bild.contains(">")) {
+            bild = bild.substring(bild.indexOf(">") + 1);
         }
-
         beschreibung = strBuffer.extract(BESCHREIBUNG, "<");
         if (thema.isEmpty()) {
             thema = strBuffer.extract(THEMA, "<");
@@ -805,7 +792,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             return null;
         } else {
             DatenFilm film = new DatenFilm(sender, thema, filmWebsite, titel, url, "" /*urlRtmp*/, datum, zeit,
-                    extractDuration(laenge), beschreibung, bild,  new String[]{""});
+                    extractDuration(laenge), beschreibung, bild, new String[]{""});
             film.addUrlKlein(urlKlein, "");
             film.addUrlHd(urlHd, "");
             return film;

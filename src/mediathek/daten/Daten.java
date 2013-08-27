@@ -21,7 +21,6 @@ package mediathek.daten;
 
 import java.io.File;
 import mediathek.controller.filmeLaden.FilmeLaden;
-import mediathek.controller.io.IoXmlFilmlisteLesen;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiKonstanten;
@@ -39,7 +38,6 @@ public class Daten {
     public static boolean nogui = false; // Version ohne Gui
     public static boolean auto = false; // Version: MediathekAuto
     public static boolean RESET = false; // Programm auf Starteinstellungen zurücksetzen
-    public static boolean STOP_DATEIGROESSE = false; // beim Suchen der Filmliste die Dateigröße nicht ermitteln
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis = "";
     // zentrale Klassen
@@ -65,6 +63,7 @@ public class Daten {
         system[Konstanten.SYSTEM_VERSION_NR] = Konstanten.VERSION;
         system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR] = Boolean.TRUE.toString();
+        system[Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR] = Boolean.FALSE.toString();
         system[Konstanten.SYSTEM_UNICODE_AENDERN_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_ICON_STANDARD_NR] = Boolean.TRUE.toString();

@@ -203,7 +203,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
                     ladenHttp(link[0] /* url */, link[1] /* Thema */, link[2] /* alter */);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(-987452384, Log.FEHLER_ART_MREADER, "Mediathek3Sat.ThemaLaden.run", ex, "");
+                Log.fehlerMeldung(-915236791, Log.FEHLER_ART_MREADER, MediathekKika.class.getName() + ".ThemaLaden.run", ex, "");
             }
             meldungThreadUndFertig();
         }
@@ -226,7 +226,7 @@ public class MediathekKika extends MediathekReader implements Runnable {
             if (!urlFilm.equals("")) {
                 meldung(urlFilm);
                 addFilm(new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlFilm, "-r " + urlFilm + " --flashVer WIN11,4,402,265"/* urlRtmp */,
-                        datum/*datum*/, ""/*zeit*/, 0, "",  "", new String[]{""}));
+                        datum/*datum*/, ""/*zeit*/, 0, "", "", new String[]{""}));
             } else {
                 Log.fehlerMeldung(-912036789, Log.FEHLER_ART_MREADER, "MediathekKika", "keine URL: " + filmWebsite);
             }

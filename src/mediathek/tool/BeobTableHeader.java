@@ -26,7 +26,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import mediathek.daten.Daten;
 
 public class BeobTableHeader extends MouseAdapter {
     //rechhte Maustaste in der Tabelle
