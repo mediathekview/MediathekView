@@ -29,10 +29,12 @@ public class TModelFilm extends TModel {
         super(data, columnNames);
         types = new Class[DatenFilm.MAX_ELEM];
         for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
-            if (i != DatenFilm.FILM_DATUM_NR) {
-                types[i] = String.class;
-            } else {
+            if (i == DatenFilm.FILM_DATUM_NR) {
                 types[i] = Datum.class;
+            } else if (i == DatenFilm.FILM_GROESSE_NR) {
+                types[i] = MVLong.class;
+            } else {
+                types[i] = String.class;
             }
         }
     }

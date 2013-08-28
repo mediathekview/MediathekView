@@ -31,6 +31,8 @@ public class TModelDownload extends TModel {
         for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
             if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                 types[i] = Datum.class;
+            } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
+                types[i] = MVLong.class;
             } else {
                 types[i] = String.class;
             }
