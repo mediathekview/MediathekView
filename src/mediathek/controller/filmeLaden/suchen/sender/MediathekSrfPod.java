@@ -171,25 +171,36 @@ public class MediathekSrfPod extends MediathekReader implements Runnable {
                         pos5 += MUSTER_DURATION.length();
                         if ((pos2 = seite.indexOf("</", pos5)) != -1) {
                             String d = seite.substring(pos5, pos2);
-                            try {
-                                // unfortunately the duration tag can be empty :-(
-                                if (d.length() > 0) {
-                                    duration = Long.parseLong(d);
-                                } else {
+                            if (!d.isEmpty()) {
+                                try {
+                                    // 00:00:10
+                                    if (d.contains(":")) {
+                                        duration = 0;
+                                        String[] parts = d.split(":");
+                                        long power = 1;
+                                        for (int i = parts.length - 1; i >= 0; i--) {
+                                            duration += Long.parseLong(parts[i]) * power;
+                                            power *= 60;
+                                        }
+                                    } else {
+                                        // unfortunately the duration tag can be empty :-(
+                                        duration = Long.parseLong(d);
+                                    }
+                                } catch (Exception ex) {
+                                    Log.fehlerMeldung(-915263987, Log.FEHLER_ART_MREADER, "MediathekSfPod.addFilme", "d: " + d);
                                 }
-                            } catch (Exception ex) {
-                                Log.fehlerMeldung(-708096931, Log.FEHLER_ART_MREADER, "MediathekSfPod.addFilme", "d: " + (d == null ? " " : d));
                             }
                         }
                     }
-
+                    if (duration == 0) {
+                        Log.fehlerMeldung(-915159637, Log.FEHLER_ART_MREADER, "MediathekSfPod.addFilme", "keine Dauer");
+                    }
                     if ((pos5 = seite.indexOf(MUSTER_DESCRIPTION, pos)) != -1) {
                         pos5 += MUSTER_DESCRIPTION.length();
                         if ((pos2 = seite.indexOf("</", pos5)) != -1) {
                             description = seite.substring(pos5, pos2);
                         }
                     }
-
                     if ((pos5 = seite.indexOf(MUSTER_KEYWORDS, pos)) != -1) {
                         pos5 += MUSTER_KEYWORDS.length();
                         if ((pos2 = seite.indexOf("</", pos5)) != -1) {

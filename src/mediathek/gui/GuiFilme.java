@@ -114,12 +114,6 @@ public class GuiFilme extends PanelVorlage {
             tabelle.setRowSelectionInterval(0, 0);
         }
                 addListenerMediathekView();
-//        SwingUtilities.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                addListenerMediathekView();
-//            }
-//        });
         //        if (Daten.debug) {
         //            startup();
         //        }
