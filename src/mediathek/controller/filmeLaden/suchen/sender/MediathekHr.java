@@ -259,7 +259,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                     if ((pos1 = seite1.indexOf(MUSTER_DURATION, posItem1)) != -1) {
                         pos1 += MUSTER_DURATION.length();
                         if ((pos2 = seite1.indexOf(MUSTER_DURATION_END, pos1)) != -1) {
-                            String d = null;
+                            String d = "";
                             try {
                                 d = seite1.substring(pos1, pos2);
                                 if (!d.equals("")) {
@@ -272,7 +272,7 @@ public class MediathekHr extends MediathekReader implements Runnable {
                                     }
                                 }
                             } catch (Exception ex) {
-                                Log.fehlerMeldung(-708096931, Log.FEHLER_ART_MREADER, "MediathekHr.addFilm", "d: " + (d == null ? " " : d));
+                                Log.fehlerMeldung(-708096931, Log.FEHLER_ART_MREADER, "MediathekHr.addFilm", "d: " + d);
                             }
                         }
                     }
