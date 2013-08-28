@@ -511,6 +511,8 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
             if (m == DatenFilm.FILM_DATUM_NR) {
                 object[m] = film.datumFilm;
+            } else if (m == DatenFilm.FILM_GROESSE_NR) {
+                object[m] = film.dateigroesseL;
             } else if (m != DatenFilm.FILM_URL_NR && m != DatenFilm.FILM_NR_NR && !DatenFilm.anzeigen(m)) {
                 // Url und Nr immer füllen, egal ob angezeigt
                 object[m] = "";

@@ -298,12 +298,14 @@ public class MediathekSrf extends MediathekReader implements Runnable {
                                 if (!tmp.equals("")) {
                                     url = tmp;
                                     // thema = "--- test ----";
+                                } else {
+                                    Log.fehlerMeldung(-312136970, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme2", "keine URL" + url);
                                 }
                             }
                             // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
                             // DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, urlWebsite, titel, url, ""/*rtmpURL*/, datum, zeit, duration, description, 
-                                      image.isEmpty() ? thumbnail : image, keywords);
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, urlWebsite, titel, url, ""/*rtmpURL*/, datum, zeit, duration, description,
+                                    image.isEmpty() ? thumbnail : image, keywords);
                             if (url.endsWith("_hq1.mp4")) {
                                 String urlKlein = url.replace("_hq1.mp4", "_mq1.mp4");
                                 film.addUrlKlein(urlKlein, "");
@@ -319,14 +321,18 @@ public class MediathekSrf extends MediathekReader implements Runnable {
             }
         }
 
-        private String getUrlFrom_m3u8(String url_) {
+        private String getUrlFrom_m3u8(String m3u8Url) {
             // http://srfvod-vh.akamaihd.net/i/vod/chfilmszene/2012/12/chfilmszene_20121213_001157_web_h264_16zu9_,lq1,mq1,hq1,.mp4.csmil/index_0_av.m3u8?null=&e=ace6e3bb3f9f8597
             // rtmp://cp50792.edgefcs.net/ondemand/mp4:aka/vod/chfilmszene/2012/12/chfilmszene_20121213_001157_web_h264_16zu9_hq1.mp4
             String url = "";
             final String MUSTER_URL = "http://";
-            meldung(url_);
-            seite3 = getUrl.getUri_Utf(nameSenderMReader, url_, seite3, "");
+            meldung(m3u8Url);
+            seite3 = getUrl.getUri_Utf(nameSenderMReader, m3u8Url, seite3, "");
+            if (seite3.length() == 0) {
+                return "";
+            }
             try {
+                // Möglichkeit 1
                 int pos1;
                 int pos2;
                 if ((pos1 = seite3.indexOf(MUSTER_URL)) != -1) {
@@ -340,6 +346,19 @@ public class MediathekSrf extends MediathekReader implements Runnable {
                         if (url.equals("")) {
                             Log.fehlerMeldung(-362514789, Log.FEHLER_ART_MREADER, "MediathekSf.getUrlFrom_m3u8", "keine URL" + url);
                         }
+                    }
+                }
+                if (url.isEmpty()) {
+                    // Möglichkeit 2
+                    // http://hdvodsrforigin-f.akamaihd.net/i/vod/coverme/2013/07/coverme_20130708_205743_web_h264_16zu9_,lq1,mq1,hq1,.mp4.csmil/master.m3u8
+                    // index_2_av.m3u8?e=b471643725c47acd
+                    // m3u-URL:
+                    // http://cdn-vod-ios.br.de/i/mir-live/bw1XsLz.......A,B,.mp4.csmil/master.m3u8?__b__=200
+                    final String URL = "index_2_av";
+                    final String CSMIL = "csmil/";
+                    if (m3u8Url.contains(CSMIL)) {
+                        url = m3u8Url.substring(0, m3u8Url.indexOf(CSMIL)) + CSMIL;
+                        url = url + URL + seite3.extract(URL, "\n");
                     }
                 }
             } catch (Exception ex) {

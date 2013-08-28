@@ -28,6 +28,7 @@ import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVLong;
 import mediathek.tool.MVUrlDateiGroesse;
 
 public class DatenFilm implements Comparable<DatenFilm> {
@@ -106,6 +107,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         FILM_IMAGE_URL_, FILM_URL_RTMP_, FILM_URL_AUTH_, FILM_URL_KLEIN_, FILM_URL_RTMP_KLEIN_, FILM_URL_HD_, FILM_URL_RTMP_HD_};
     public Datum datumFilm = new Datum(0);
     public long dauerL = 0; // Sekunden
+    public MVLong dateigroesseL = new MVLong(0); // Dateigröße in MByte
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
 
@@ -376,6 +378,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public void init() {
+        // Dateigröße
+        dateigroesseL = new MVLong(arr[DatenFilm.FILM_GROESSE_NR]);
         // Filmdauer
         try {
             if (!this.arr[DatenFilm.FILM_DAUER_NR].contains(":") && !this.arr[DatenFilm.FILM_DAUER_NR].isEmpty()) {
