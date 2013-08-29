@@ -50,6 +50,7 @@ import mediathek.daten.ListeFilme;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
+import mediathek.tool.MVUrlDateiGroesse;
 
 public class FilmeSuchenSender {
 
@@ -57,7 +58,7 @@ public class FilmeSuchenSender {
     public boolean senderAllesLaden = false; // die Sender werden komplett geladen / nur die neuesten Filme geladen
     public boolean updateFilmliste = false; // die bestehende Filmliste wird upgedatet / es wird eine neue Filmlise gestartet
     public ListeFilme listeFilmeNeu; // neu angelegte Liste und da kommen die neu gesuchten Filme rein
-    private ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
+    public ListeFilme listeFilmeAlt = null; // ist nur eine Referenz auf die bestehende Liste und die bleibt unverändert!!!
     private EventListenerList listeners = new EventListenerList();
     private ListeRunSender listeSenderLaufen = new ListeRunSender();
     private LinkedList<String> fertigMeldung = new LinkedList<String>();
@@ -271,6 +272,7 @@ public class FilmeSuchenSender {
             Log.systemMeldung("==================================================================================================================");
             Log.systemMeldung("");
             Log.systemMeldung("        Filme geladen: " + anzFilme);
+            Log.systemMeldung("    Anz. Dateigroesse: " + MVUrlDateiGroesse.getZaehler());
             Log.systemMeldung("       Seiten geladen: " + GetUrl.getSeitenZaehler(GetUrl.LISTE_SEITEN_ZAEHLER));
             String groesse = (GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE) == 0) ? "<1" : Long.toString(GetUrl.getSeitenZaehler(GetUrl.LISTE_SUMME_BYTE));
             Log.systemMeldung("   Summe geladen[MiB]: " + groesse);
@@ -303,6 +305,7 @@ public class FilmeSuchenSender {
         listeFilmeAlt = alteListe;
         listeFilmeNeu = new ListeFilme();
         GetUrl.resetZaehler();
+        MVUrlDateiGroesse.resetZaehler();
         Log.systemMeldung("");
         Log.systemMeldung("=======================================");
         Log.systemMeldung("Start Filme laden:");

@@ -41,6 +41,7 @@ import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import mediathek.tool.MVUrlDateiGroesse;
 import mediathek.tool.TModelFilm;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -131,6 +132,24 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             }
         }
         return null;
+    }
+
+    public String getDateiGroesse(String url) {
+        // sucht in der Liste nach der URL und gibt die Dateigröße zurück
+        // oder versucht sie übers Web zu ermitteln
+        Iterator<DatenFilm> it = listIterator();
+        while (it.hasNext()) {
+            DatenFilm film = it.next();
+            if (film.arr[DatenFilm.FILM_URL_NR].equals(url)) {
+                if (!film.arr[DatenFilm.FILM_GROESSE_NR].isEmpty()) {
+                    return film.arr[DatenFilm.FILM_GROESSE_NR];
+                } else {
+                    return MVUrlDateiGroesse.laengeString(url);
+                }
+            }
+        }
+        // dann ist der Film nicht in der Liste
+        return MVUrlDateiGroesse.laengeString(url);
     }
 
     public synchronized boolean addFilmVomSender(DatenFilm film) {
