@@ -24,12 +24,14 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import javax.swing.JOptionPane;
 import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
@@ -38,6 +40,7 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVInputStream;
+import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVUrlDateiGroesse;
 import mediathek.tool.TModel;
 
@@ -410,25 +413,31 @@ public class StarterClass {
             try {
                 int len;
                 new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
+                /////////??
                 long maxLen = MVUrlDateiGroesse.laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 long downLen = 0;
+                BufferedInputStream srcBuffer = null;
+                BufferedOutputStream destBuffer = null;
+                HttpURLConnection conn = null;
                 try {
-
-                    int downloaded = 0;
                     URL url = new URL(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-//                    URLConnection connection = url.openConnection();
-                    // HttpURLConnection connection = (HttpURLConnection) new URL(uurl).openConnection();
+                    conn = (HttpURLConnection) url.openConnection();
                     File file = new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+//                    int downloaded = 0;
 //                    if (file.exists()) {
 //                        downloaded = (int) file.length();
 //                        connection.setRequestProperty("Range", "bytes=" + downloaded + "-");
 //                        connection.connect();
 //                    }
-                    input = new MVInputStream(url.openStream());
-                    BufferedInputStream srcBuffer = new BufferedInputStream(input);
 //                  FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
-                    FileOutputStream fos = new FileOutputStream(file);
-                    BufferedOutputStream destBuffer = new BufferedOutputStream(fos, 1024);
+                    conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+                    conn.connect();
+                    if (conn.getResponseCode() >= 400) {
+                        Log.fehlerMeldung(915236798, Log.FEHLER_ART_PROG, "StartetClass", "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
+                    }
+                    input = new MVInputStream(conn.getInputStream());
+                    srcBuffer = new BufferedInputStream(input);
+                    destBuffer = new BufferedOutputStream(new FileOutputStream(file), 1024);
                     byte[] buffer = new byte[1024];
                     long p, pp = 0;
                     while ((len = srcBuffer.read(buffer)) != -1 && !start.stoppen) {
@@ -456,11 +465,22 @@ public class StarterClass {
                             }
                         }
                     }
-                    srcBuffer.close();
-                    destBuffer.close();
                     Log.systemMeldung(input.toString());
                 } catch (Exception ex) {
                     Log.fehlerMeldung(316598941, Log.FEHLER_ART_PROG, "StartetClass.leeresFileLoeschen", ex, "Fehler");
+                } finally {
+                    try {
+                        if (srcBuffer != null) {
+                            srcBuffer.close();
+                        }
+                        if (destBuffer != null) {
+                            destBuffer.close();
+                        }
+                        if (conn != null) {
+                            conn.disconnect();
+                        }
+                    } catch (Exception e) {
+                    }
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(502039078, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload-1", ex);

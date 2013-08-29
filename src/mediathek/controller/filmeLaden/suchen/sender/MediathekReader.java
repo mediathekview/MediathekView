@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.controller.filmeLaden.suchen.FilmeSuchenSender;
 import mediathek.controller.io.GetUrl;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.Log;
@@ -106,7 +105,8 @@ public class MediathekReader implements Runnable {
 
     boolean addFilm(DatenFilm film) {
         if (film.arr[DatenFilm.FILM_GROESSE_NR].isEmpty()) {
-            film.arr[DatenFilm.FILM_GROESSE_NR] = MVUrlDateiGroesse.laengeString(film.arr[DatenFilm.FILM_URL_NR]);
+            //film.arr[DatenFilm.FILM_GROESSE_NR] = MVUrlDateiGroesse.laengeString(film.arr[DatenFilm.FILM_URL_NR]);
+            film.arr[DatenFilm.FILM_GROESSE_NR] = filmeSuchenSender.listeFilmeAlt.getDateiGroesse(film.arr[DatenFilm.FILM_URL_NR]);
         }
         return filmeSuchenSender.listeFilmeNeu.addFilmVomSender(film);
     }
