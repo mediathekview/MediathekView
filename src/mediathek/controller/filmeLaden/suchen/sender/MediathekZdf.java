@@ -267,7 +267,7 @@ public class MediathekZdf extends MediathekReader implements Runnable {
                         if (!ok) {
                             // dann mit der herkömmlichen Methode versuchen
                             Log.fehlerMeldung(-398012379, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", "auf die alte Art: " + urlFilm);
-                            filmHolen(thema, titel, urlThema, urlFilm);
+//                            filmHolen(thema, titel, urlThema, urlFilm);
                         }
                     }
                 }
@@ -276,122 +276,121 @@ public class MediathekZdf extends MediathekReader implements Runnable {
             }
         }
 
-        private void filmHolen(String thema, String titel, String urlThema, String filmWebsite) {
-            final String MUSTER_URL_1 = "<li>DSL 2000 <a href=\"http://wstreaming.zdf.de/zdf/veryhigh/";
-            final String MUSTER_URL_2 = "<li>DSL 2000 <a href=\"http://wgeostreaming.zdf.de/zdf/veryhigh/";
-            final String MUSTER_URL_QUICKTIME_1 = "<li>DSL 2000 <a href=\"http://hstreaming.zdf.de/zdf/veryhigh/";
-            final String MUSTER_URL_QUICKTIME_2 = "<li>DSL 2000 <a href=\"http://hgeostreaming.zdf.de/zdf/veryhigh/";
-            // <li>DSL 2000 <a href="http://hgeostreaming.zdf.de/zdf/veryhigh/13/06/130617_aidaverona_miz.mov" class="play" target="_blank">Abspielen</a></li>
-            // <li>DSL 2000 <a href="http://hstreaming.zdf.de/zdf/veryhigh/13/06/130612_hunde4_dok.mov" class="play" target="_blank">Abspielen</a></li>
-            final String MUSTER_TITEL_1 = "<title>";
-            final String MUSTER_TITEL_2 = "</title>";
-            final String MUSTER_DATUM_1 = "<p class=\"datum\">";
-            final String MUSTER_DATUM_2 = "</p>";
-            String urlFilm = "";
-            String datum = "";
-            String zeit = "";
-            int pos;
-            int pos1;
-            int pos2;
-            try {
-                meldung(filmWebsite);
-                seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "urlThema: " + urlThema);
-                long durationInSeconds = extractDurationZDF(seite2);
-                String description = extractDescription(seite2);
-                String[] keywords = extractKeywords(seite2);
-                String imageUrl = extractImageURL(seite2);
-                if (titel.equals("")) {
-                    //<title>Neu im Kino - &quot;Fair Game&quot; - ZDFneo - ZDFmediathek - ZDF Mediathek</title>
-                    //<title>Trinkwasser aus dem Eisberg - Abenteuer Wissen - ZDFmediathek - ZDF Mediathek</title>
-                    //<p class="datum">Abenteuer Wissen, 24.11.2010</p>
-                    pos1 = seite2.indexOf(MUSTER_TITEL_1, 0) + MUSTER_TITEL_1.length();
-                    pos2 = seite2.indexOf(MUSTER_TITEL_2, MUSTER_TITEL_1.length());
-                    if (pos1 != -1 && pos2 != -1) {
-                        titel = seite2.substring(pos1, pos2);
-                        titel = titel.replace("", " - ZDFmediathek - ZDF Mediathek");
-                        if (titel.contains("-")) {
-                            titel = titel.substring(titel.lastIndexOf("-"));
-                        }
-                    }
-                }
-                if ((pos1 = seite2.indexOf(MUSTER_DATUM_1, 0)) != -1) {
-                    if ((pos2 = seite2.indexOf(MUSTER_DATUM_2, pos1)) != -1) {
-                        pos1 += MUSTER_DATUM_1.length();
-                        datum = seite2.substring(pos1, pos2);
-                        if (datum.contains(",")) {
-                            if (thema.equals("")) {
-                                thema = datum.substring(0, datum.lastIndexOf(","));
-                            }
-                            datum = datum.substring(datum.lastIndexOf(",") + 1).trim();
-                            if (datum.contains(" ")) {
-                                zeit = datum.substring(datum.lastIndexOf(" ")).trim() + ":00";
-                                datum = datum.substring(0, datum.lastIndexOf(" ")).trim();
-                            }
-                        }
-                    }
-                }
-                pos = 0;
-                String muster = "";
-                String addUrl = "";
-                if (seite2.indexOf(MUSTER_URL_1) != -1) {
-                    muster = MUSTER_URL_1;
-                    addUrl = "http://wstreaming.zdf.de/zdf/veryhigh/";
-                } else if (seite2.indexOf(MUSTER_URL_2) != -1) {
-                    muster = MUSTER_URL_2;
-                    addUrl = "http://wgeostreaming.zdf.de/zdf/veryhigh/";
-                } else if (seite2.indexOf(MUSTER_URL_QUICKTIME_1) != -1) {
-                    muster = MUSTER_URL_QUICKTIME_1;
-                    addUrl = "http://hstreaming.zdf.de/zdf/veryhigh/";
-                } else if (seite2.indexOf(MUSTER_URL_QUICKTIME_2) != -1) {
-                    muster = MUSTER_URL_QUICKTIME_2;
-                    addUrl = "http://hgeostreaming.zdf.de/zdf/veryhigh/";
-                }
-                if (!muster.isEmpty() && !Daten.filmeLaden.getStop() && (pos = seite2.indexOf(muster, pos)) != -1) {
-                    pos += muster.length();
-                    pos1 = pos;
-                    pos2 = seite2.indexOf("\"", pos);
-                    if (pos1 != -1 && pos2 != -1) {
-                        urlFilm = seite2.substring(pos1, pos2);
-                    }
-                }
-                if (urlFilm.equals("")) {
-                    Log.fehlerMeldung(-690048078, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen-1", "keine URL: " + urlFilm);
-                } else {
-                    urlFilm = addUrl + urlFilm;
-                    if (urlFilm.endsWith("asx")) {
-                        //addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
-                        //flashHolen(thema, titel, urlThema, urlFilm, datum, zeit);
-                        flashHolen(thema, titel, filmWebsite, urlFilm, datum, zeit, durationInSeconds, description, imageUrl, keywords);
-                    } else if (urlFilm.endsWith("mov")) {
-                        quicktimeHolen(thema, titel, filmWebsite, urlFilm, datum, zeit, durationInSeconds, description, imageUrl);
-                    } else {
-                        Log.fehlerMeldung(-200480752, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen-2", "keine URL: " + urlFilm);
-                    }
-                }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(-860248073, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", ex, urlFilm);
-            }
-        }
-
-        //private void flashHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit) {
-        private void flashHolen(String thema, String titel, String filmWebsite, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String imageUrl, String[] keywords) {
-//            meldung(urlFilm);
-            //DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit);
-            DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, filmWebsite, urlFilm, datum, zeit, durationInSeconds, description, imageUrl, keywords);
-            if (f != null) {
-                addFilm(f);
-            }
-        }
-
-        private void quicktimeHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String imageUrl) {
-//            meldung(urlFilm);
-            //DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit);
-            DatenFilm f = quicktime(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit, durationInSeconds, description, "", imageUrl, new String[]{});
-            if (f != null) {
-                addFilm(f);
-            }
-        }
-
+//        private void filmHolen(String thema, String titel, String urlThema, String filmWebsite) {
+//            final String MUSTER_URL_1 = "<li>DSL 2000 <a href=\"http://wstreaming.zdf.de/zdf/veryhigh/";
+//            final String MUSTER_URL_2 = "<li>DSL 2000 <a href=\"http://wgeostreaming.zdf.de/zdf/veryhigh/";
+//            final String MUSTER_URL_QUICKTIME_1 = "<li>DSL 2000 <a href=\"http://hstreaming.zdf.de/zdf/veryhigh/";
+//            final String MUSTER_URL_QUICKTIME_2 = "<li>DSL 2000 <a href=\"http://hgeostreaming.zdf.de/zdf/veryhigh/";
+//            // <li>DSL 2000 <a href="http://hgeostreaming.zdf.de/zdf/veryhigh/13/06/130617_aidaverona_miz.mov" class="play" target="_blank">Abspielen</a></li>
+//            // <li>DSL 2000 <a href="http://hstreaming.zdf.de/zdf/veryhigh/13/06/130612_hunde4_dok.mov" class="play" target="_blank">Abspielen</a></li>
+//            final String MUSTER_TITEL_1 = "<title>";
+//            final String MUSTER_TITEL_2 = "</title>";
+//            final String MUSTER_DATUM_1 = "<p class=\"datum\">";
+//            final String MUSTER_DATUM_2 = "</p>";
+//            String urlFilm = "";
+//            String datum = "";
+//            String zeit = "";
+//            int pos;
+//            int pos1;
+//            int pos2;
+//            try {
+//                meldung(filmWebsite);
+//                seite2 = getUrl.getUri_Utf(nameSenderMReader, filmWebsite, seite2, "urlThema: " + urlThema);
+//                long durationInSeconds = extractDurationZDF(seite2);
+//                String description = extractDescription(seite2);
+//                String[] keywords = extractKeywords(seite2);
+//                String imageUrl = extractImageURL(seite2);
+//                if (titel.equals("")) {
+//                    //<title>Neu im Kino - &quot;Fair Game&quot; - ZDFneo - ZDFmediathek - ZDF Mediathek</title>
+//                    //<title>Trinkwasser aus dem Eisberg - Abenteuer Wissen - ZDFmediathek - ZDF Mediathek</title>
+//                    //<p class="datum">Abenteuer Wissen, 24.11.2010</p>
+//                    pos1 = seite2.indexOf(MUSTER_TITEL_1, 0) + MUSTER_TITEL_1.length();
+//                    pos2 = seite2.indexOf(MUSTER_TITEL_2, MUSTER_TITEL_1.length());
+//                    if (pos1 != -1 && pos2 != -1) {
+//                        titel = seite2.substring(pos1, pos2);
+//                        titel = titel.replace("", " - ZDFmediathek - ZDF Mediathek");
+//                        if (titel.contains("-")) {
+//                            titel = titel.substring(titel.lastIndexOf("-"));
+//                        }
+//                    }
+//                }
+//                if ((pos1 = seite2.indexOf(MUSTER_DATUM_1, 0)) != -1) {
+//                    if ((pos2 = seite2.indexOf(MUSTER_DATUM_2, pos1)) != -1) {
+//                        pos1 += MUSTER_DATUM_1.length();
+//                        datum = seite2.substring(pos1, pos2);
+//                        if (datum.contains(",")) {
+//                            if (thema.equals("")) {
+//                                thema = datum.substring(0, datum.lastIndexOf(","));
+//                            }
+//                            datum = datum.substring(datum.lastIndexOf(",") + 1).trim();
+//                            if (datum.contains(" ")) {
+//                                zeit = datum.substring(datum.lastIndexOf(" ")).trim() + ":00";
+//                                datum = datum.substring(0, datum.lastIndexOf(" ")).trim();
+//                            }
+//                        }
+//                    }
+//                }
+//                pos = 0;
+//                String muster = "";
+//                String addUrl = "";
+//                if (seite2.indexOf(MUSTER_URL_1) != -1) {
+//                    muster = MUSTER_URL_1;
+//                    addUrl = "http://wstreaming.zdf.de/zdf/veryhigh/";
+//                } else if (seite2.indexOf(MUSTER_URL_2) != -1) {
+//                    muster = MUSTER_URL_2;
+//                    addUrl = "http://wgeostreaming.zdf.de/zdf/veryhigh/";
+//                } else if (seite2.indexOf(MUSTER_URL_QUICKTIME_1) != -1) {
+//                    muster = MUSTER_URL_QUICKTIME_1;
+//                    addUrl = "http://hstreaming.zdf.de/zdf/veryhigh/";
+//                } else if (seite2.indexOf(MUSTER_URL_QUICKTIME_2) != -1) {
+//                    muster = MUSTER_URL_QUICKTIME_2;
+//                    addUrl = "http://hgeostreaming.zdf.de/zdf/veryhigh/";
+//                }
+//                if (!muster.isEmpty() && !Daten.filmeLaden.getStop() && (pos = seite2.indexOf(muster, pos)) != -1) {
+//                    pos += muster.length();
+//                    pos1 = pos;
+//                    pos2 = seite2.indexOf("\"", pos);
+//                    if (pos1 != -1 && pos2 != -1) {
+//                        urlFilm = seite2.substring(pos1, pos2);
+//                    }
+//                }
+//                if (urlFilm.equals("")) {
+//                    Log.fehlerMeldung(-690048078, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen-1", "keine URL: " + urlFilm);
+//                } else {
+//                    urlFilm = addUrl + urlFilm;
+//                    if (urlFilm.endsWith("asx")) {
+//                        //addFilm(new DatenFilm(nameSenderMReader, thema, urlThema, titel, url, url/* urlOrg */, ""/* urlRtmp */, datum, zeit));
+//                        //flashHolen(thema, titel, urlThema, urlFilm, datum, zeit);
+//                        flashHolen(thema, titel, filmWebsite, urlFilm, datum, zeit, durationInSeconds, description, imageUrl, keywords);
+//                    } else if (urlFilm.endsWith("mov")) {
+//                        quicktimeHolen(thema, titel, filmWebsite, urlFilm, datum, zeit, durationInSeconds, description, imageUrl);
+//                    } else {
+//                        Log.fehlerMeldung(-200480752, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen-2", "keine URL: " + urlFilm);
+//                    }
+//                }
+//            } catch (Exception ex) {
+//                Log.fehlerMeldung(-860248073, Log.FEHLER_ART_MREADER, "MediathekZdf.filmHolen", ex, urlFilm);
+//            }
+//        }
+//
+//        //private void flashHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit) {
+//        private void flashHolen(String thema, String titel, String filmWebsite, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String imageUrl, String[] keywords) {
+////            meldung(urlFilm);
+//            //DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit);
+//            DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, filmWebsite, urlFilm, datum, zeit, durationInSeconds, description, imageUrl, keywords);
+//            if (f != null) {
+//                addFilm(f);
+//            }
+//        }
+//
+//        private void quicktimeHolen(String thema, String titel, String urlThema, String urlFilm, String datum, String zeit, long durationInSeconds, String description, String imageUrl) {
+////            meldung(urlFilm);
+//            //DatenFilm f = MediathekZdf.flash(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit);
+//            DatenFilm f = quicktime(getUrl, seite2, nameSenderMReader, thema, titel, urlThema, urlFilm, datum, zeit, durationInSeconds, description, "", imageUrl, new String[]{});
+//            if (f != null) {
+//                addFilm(f);
+//            }
+//        }
         private synchronized String[] getListeThemen() {
             return listeThemen.pollFirst();
         }

@@ -134,7 +134,7 @@ public class ListeFilme extends LinkedList<DatenFilm> {
         return null;
     }
 
-    public String getDateiGroesse(String url) {
+    public String getDateiGroesse(String url, String sender) {
         // sucht in der Liste nach der URL und gibt die Dateigröße zurück
         // oder versucht sie übers Web zu ermitteln
         Iterator<DatenFilm> it = listIterator();
@@ -144,12 +144,12 @@ public class ListeFilme extends LinkedList<DatenFilm> {
                 if (!film.arr[DatenFilm.FILM_GROESSE_NR].isEmpty()) {
                     return film.arr[DatenFilm.FILM_GROESSE_NR];
                 } else {
-                    return MVUrlDateiGroesse.laengeString(url);
+                    return MVUrlDateiGroesse.laengeString(url, sender);
                 }
             }
         }
         // dann ist der Film nicht in der Liste
-        return MVUrlDateiGroesse.laengeString(url);
+        return MVUrlDateiGroesse.laengeString(url, sender);
     }
 
     public synchronized boolean addFilmVomSender(DatenFilm film) {

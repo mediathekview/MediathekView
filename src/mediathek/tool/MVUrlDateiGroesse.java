@@ -11,34 +11,65 @@ import mediathek.daten.Daten;
 public class MVUrlDateiGroesse {
 
     final static int TIMEOUT = 2500; // ms
-    private static int anz = 0;
+    //private static int anz = 0;
+    private static String[] sender;
+    private static int[] anz;
 
-    public static void resetZaehler() {
-        anz = 0;
+    public static void resetZaehler(String[] ssender) {
+        sender = ssender;
+        anz = new int[sender.length];
+        for (int i = 0; i < ssender.length; ++i) {
+            anz[i] = 0;
+        }
     }
 
-    public static int getZaehler() {
-        return anz;
+    public static int getZaehler(String ssender) {
+        for (int i = 0; i < sender.length; ++i) {
+            if (sender[i].equalsIgnoreCase(ssender)) {
+                return anz[i];
+            }
+        }
+        return 0;
     }
 
     public static String laengeString(String url) {
         // liefert die Dateigröße einer URL in MB!!
         // Anzeige der Größe in MB und deshalb: Faktor 1000
+        return laengeString(url, "");
+    }
+
+    public static String laengeString(String url, String ssender) {
+        // liefert die Dateigröße einer URL in MB!!
+        // Anzeige der Größe in MB und deshalb: Faktor 1000
         String groesseStr = "";
-        long l = laenge(url);
+        long l = laenge(url, ssender);
         if (l > 1000 * 1000) {
             // größer als 1MB sonst kann ich mirs sparen
             groesseStr = String.valueOf(l / (1000 * 1000));
         } else if (l > 0) {
-            groesseStr = "<1";
+            groesseStr = "1";
         }
         return groesseStr;
     }
 
     public static long laenge(String url) {
+        return laenge(url, "");
+    }
+
+    private static long laenge(String url, String ssender) {
         // liefert die Dateigröße einer URL in BYTE!
         // oder -1
-        ++anz;
+        if (!url.toLowerCase().startsWith("http")) {
+            return -1;
+        }
+        if (!ssender.isEmpty()) {
+            for (int i = 0; i < sender.length; ++i) {
+                if (sender[i].equalsIgnoreCase(ssender)) {
+                    ++anz[i];
+                    break;
+                }
+            }
+        }
         long ret = -1;
         if (!url.toLowerCase().startsWith("http")) {
             return ret;
@@ -49,9 +80,9 @@ public class MVUrlDateiGroesse {
             conn.setReadTimeout(TIMEOUT);
             conn.setConnectTimeout(TIMEOUT);
 //            if (conn.getResponseCode() < 400) {
-                //ret = conn.getContentLengthLong(); //gibts erst seit jdk 7
-                ret = conn.getContentLength();
-                conn.disconnect();
+            //ret = conn.getContentLengthLong(); //gibts erst seit jdk 7
+            ret = conn.getContentLength();
+            conn.disconnect();
 //            } else {
 //                // ein anderer Versuch
 //                try {

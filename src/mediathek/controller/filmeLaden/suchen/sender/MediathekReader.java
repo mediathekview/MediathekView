@@ -26,7 +26,6 @@ import mediathek.controller.io.GetUrl;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.Log;
-import mediathek.tool.MVUrlDateiGroesse;
 
 public class MediathekReader implements Runnable {
 
@@ -106,7 +105,7 @@ public class MediathekReader implements Runnable {
     boolean addFilm(DatenFilm film) {
         if (film.arr[DatenFilm.FILM_GROESSE_NR].isEmpty()) {
             //film.arr[DatenFilm.FILM_GROESSE_NR] = MVUrlDateiGroesse.laengeString(film.arr[DatenFilm.FILM_URL_NR]);
-            film.arr[DatenFilm.FILM_GROESSE_NR] = filmeSuchenSender.listeFilmeAlt.getDateiGroesse(film.arr[DatenFilm.FILM_URL_NR]);
+            film.arr[DatenFilm.FILM_GROESSE_NR] = filmeSuchenSender.listeFilmeAlt.getDateiGroesse(film.arr[DatenFilm.FILM_URL_NR], film.arr[DatenFilm.FILM_SENDER_NR]);
         }
         return filmeSuchenSender.listeFilmeNeu.addFilmVomSender(film);
     }

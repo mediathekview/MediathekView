@@ -172,7 +172,7 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
                 arr = new String[]{urlJson, datum, zeit, titel, thema};
                 filmeLaden(seite2, arr);
             } else {
-                Log.fehlerMeldung(-956230147, Log.FEHLER_ART_MREADER, "MediathekArte_de.addThemen", "Keine URL: " + startUrl + "**" + count);
+//                Log.fehlerMeldung(-956230147, Log.FEHLER_ART_MREADER, "MediathekArte_de.addThemen", "Keine URL: " + startUrl + "**" + count);
             }
         }
     }
