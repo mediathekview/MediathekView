@@ -108,7 +108,7 @@ public class FilmeLaden {
     }
 
     public String[] getSenderNamen() {
-        return filmeSuchenSender.getNamenSenderFilmliste();
+        return filmeSuchenSender.getNamenSender();
     }
 
     // #########################################################

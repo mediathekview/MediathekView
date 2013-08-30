@@ -379,7 +379,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
 
     public void init() {
         // Dateigröße
-        dateigroesseL = new MVLong(arr[DatenFilm.FILM_GROESSE_NR]);
+        dateigroesseL = new MVLong(this);
         // Filmdauer
         try {
             if (!this.arr[DatenFilm.FILM_DAUER_NR].contains(":") && !this.arr[DatenFilm.FILM_DAUER_NR].isEmpty()) {

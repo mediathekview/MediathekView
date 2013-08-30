@@ -29,7 +29,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import javax.swing.JOptionPane;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -40,7 +39,6 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVInputStream;
-import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVUrlDateiGroesse;
 import mediathek.tool.TModel;
 
