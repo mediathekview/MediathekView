@@ -35,7 +35,8 @@ import mediathek.tool.Log;
 public class MediathekNoGui implements Runnable {
 
     private String output = "";
-    private String importUrl = "";
+    private String importUrl__anhaengen = "";
+    private String importUrl__ersetzen = "";
     private String userAgent = "";
     private boolean senderAllesLaden = false;
     private boolean updateFilmliste = true;
@@ -44,13 +45,14 @@ public class MediathekNoGui implements Runnable {
     private boolean serverLaufen = false;
     private File logfile = null;
 
-    public MediathekNoGui(String ppfad, boolean ssenderAllesLaden, boolean uupdateFilmliste, String ooutput, String iimprtUrl, String uuserAgent, File log, boolean ddebug) {
+    public MediathekNoGui(String ppfad, boolean ssenderAllesLaden, boolean uupdateFilmliste, String ooutput, String iimprtUrlExtend, String iimprtUrlReplace, String uuserAgent, File log, boolean ddebug) {
         // NUR für den Start vom MediathekServer
         pfad = ppfad;
         senderAllesLaden = ssenderAllesLaden;
         updateFilmliste = uupdateFilmliste;
         output = ooutput;
-        importUrl = iimprtUrl;
+        importUrl__anhaengen = iimprtUrlExtend;
+        importUrl__ersetzen = iimprtUrlReplace;
         userAgent = uuserAgent;
         logfile = log;
         serverLaufen = true;
@@ -77,11 +79,6 @@ public class MediathekNoGui implements Runnable {
                 if (ar[i].equalsIgnoreCase(Main.STARTP_EXPORT_DATEI)) {
                     if (ar.length > i) {
                         output = ar[i + 1];
-                    }
-                }
-                if (ar[i].equalsIgnoreCase(Main.STARTP_IMPORT_URL)) {
-                    if (ar.length > i) {
-                        importUrl = ar[i + 1];
                     }
                 }
                 if (ar[i].equalsIgnoreCase(Main.STARTP_USER_AGENT)) {
@@ -116,7 +113,8 @@ public class MediathekNoGui implements Runnable {
         if (logfile != null) {
             Log.setLogFile(logfile);
         }
-        Log.systemMeldung("ImportUrl: " + importUrl);
+        Log.systemMeldung("ImportUrl anhaengen: " + importUrl__anhaengen);
+        Log.systemMeldung("ImportUrl ersetzen: " + importUrl__ersetzen);
         Log.systemMeldung("Outputfile: " + output);
         Log.systemMeldung("");
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
@@ -167,7 +165,6 @@ public class MediathekNoGui implements Runnable {
         } else {
             Log.systemMeldung("Programmstart: nur update laden");
         }
-        Log.systemMeldung("ImportUrl: " + importUrl);
         Log.systemMeldung("Outputfile: " + output);
         Log.systemMeldung("");
         Log.systemMeldung("");
@@ -182,16 +179,6 @@ public class MediathekNoGui implements Runnable {
         new IoXmlFilmlisteLesen().standardFilmlisteLesen();
         // das eigentliche Suchen der Filme bei den Sendern starten
         Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, senderAllesLaden, updateFilmliste);
-    }
-
-    private void addImportListe(String url) {
-        if (!url.equals("")) {
-            Log.systemMeldung("Filmliste importieren von: " + url);
-            ListeFilme tmpListe = new ListeFilme();
-            new IoXmlFilmlisteLesen().dateiInListeEinlesen(url, GuiFunktionen.istUrl(url) /* istUrl */, tmpListe);
-            Daten.listeFilme.updateListe(tmpListe, false /* nur URL vergleichen */);
-            tmpListe.clear();
-        }
     }
 
     public void senderLoeschenUndExit(String senderLoeschen) {
@@ -216,9 +203,23 @@ public class MediathekNoGui implements Runnable {
     }
 
     private void undTschuess(boolean exit) {
-        if (!importUrl.equals("")) {
-            // wenn eine ImportUrl angegeben, dann noch eine Liste importieren
-            addImportListe(importUrl);
+        if (!importUrl__anhaengen.equals("")) {
+            // wenn eine ImportUrl angegeben, dann die Filme die noch nicht drin sind anfügen
+            Log.systemMeldung("Filmliste importieren von: " + importUrl__anhaengen);
+            ListeFilme tmpListe = new ListeFilme();
+            new IoXmlFilmlisteLesen().dateiInListeEinlesen(importUrl__anhaengen, GuiFunktionen.istUrl(importUrl__anhaengen) /* istUrl */, tmpListe);
+            Daten.listeFilme.updateListe(tmpListe, false /* nur URL vergleichen */);
+            tmpListe.clear();
+        }
+        if (!importUrl__ersetzen.equals("")) {
+            // wenn eine ImportUrl angegeben, dann noch eine Liste importieren, Filme die es schon gibt
+            // werden ersetzt
+            Log.systemMeldung("Filmliste importieren von: " + importUrl__ersetzen);
+            ListeFilme tmpListe = new ListeFilme();
+            new IoXmlFilmlisteLesen().dateiInListeEinlesen(importUrl__ersetzen, GuiFunktionen.istUrl(importUrl__ersetzen) /* istUrl */, tmpListe);
+            tmpListe.updateListe(Daten.listeFilme, false /* nur URL vergleichen */);
+            Daten.listeFilme.clear();
+            Daten.listeFilme = tmpListe;
         }
         new IoXmlFilmlisteSchreiben().filmeSchreiben(Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, Daten.listeFilme);
         if (!output.equals("")) {
