@@ -332,12 +332,6 @@ public class IoXmlFilmlisteLesen {
         String[] namen = DatenFilm.COLUMN_NAMES_;
         while (!Daten.filmeLaden.getStop() && parser.hasNext()) {
             event_ = parser.next();
-            //Filmeliste
-            if (event_ == XMLStreamConstants.START_ELEMENT) {
-                if (parser.getLocalName().equals(ListeFilme.FILMLISTE)) {
-                    get(parser, ListeFilme.FILMLISTE, ListeFilme.COLUMN_NAMES, listeFilme.metaDaten, ListeFilme.MAX_ELEM);
-                }
-            }
             //Filme
             if (event_ == XMLStreamConstants.START_ELEMENT) {
                 if (parser.getLocalName().equals(filmTag)) {
@@ -359,6 +353,13 @@ public class IoXmlFilmlisteLesen {
                         this.notifyProgress(text);
                     }
                     listeFilme.addWithNr(datenFilm);
+                    continue;
+                }
+            }
+            //Filmeliste
+            if (event_ == XMLStreamConstants.START_ELEMENT) {
+                if (parser.getLocalName().equals(ListeFilme.FILMLISTE)) {
+                    get(parser, ListeFilme.FILMLISTE, ListeFilme.COLUMN_NAMES, listeFilme.metaDaten, ListeFilme.MAX_ELEM);
                 }
             }
         }
