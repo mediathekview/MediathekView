@@ -59,8 +59,9 @@ public class MVUrlDateiGroesse {
     private static long laenge(String url, String ssender) {
         // liefert die Dateigröße einer URL in BYTE!
         // oder -1
+        long ret = -1;
         if (!url.toLowerCase().startsWith("http")) {
-            return -1;
+            return ret;
         }
         if (!ssender.isEmpty()) {
             for (int i = 0; i < sender.length; ++i) {
@@ -69,10 +70,6 @@ public class MVUrlDateiGroesse {
                     break;
                 }
             }
-        }
-        long ret = -1;
-        if (!url.toLowerCase().startsWith("http")) {
-            return ret;
         }
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();

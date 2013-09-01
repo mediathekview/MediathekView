@@ -105,12 +105,6 @@ public class MediathekSrf extends MediathekReader implements Runnable {
                 meldungAddThread();
                 String link[];
                 while (!Daten.filmeLaden.getStop() && (link = listeThemen.getListeThemen()) != null) {
-////
-////                    if (Daten.debug) {
-////                        if (!link[1].startsWith("1")) {
-////                            continue;
-////                        }
-////                    }
                     meldungProgress(link[0] /* url */);
                     addFilme(link[1], link[0] /* url */);
                 }

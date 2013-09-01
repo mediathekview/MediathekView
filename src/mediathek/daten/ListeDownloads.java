@@ -161,8 +161,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
                 boolean istAbo = download.istAbo();
                 if (abos && istAbo || downloads && !istAbo) {
-                    ////////// ??
-//                    DatenDownload datenDownload = download.getCopy();
                     object = new Object[DatenDownload.MAX_ELEM];
                     for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
                         if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
