@@ -61,7 +61,7 @@ public class MVFilmInformation implements ChangeListener {
         if (Funktionen.getOs() == Funktionen.OS_LINUX) {
             foreground = Color.WHITE;
             background = Color.BLACK;
-            ///dialog = new JDialog(ddaten.mediathekGui);
+            //dialog = new JDialog(ddaten.mediathekGui);
             dialog = new JDialog();
             dialog.setTitle("Filminformation");
 
