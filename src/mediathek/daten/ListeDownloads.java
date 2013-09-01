@@ -32,7 +32,7 @@ import mediathek.tool.MVLong;
 import mediathek.tool.TModelDownload;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
-    
+
     private DDaten ddaten;
 
     /**
@@ -49,19 +49,19 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     public void sort() {
         Collections.<DatenDownload>sort(this);
     }
-    
+
     public boolean addMitNummer(DatenDownload e) {
         boolean ret = super.add(e);
         listeNummerieren();
         return ret;
     }
-    
+
     @Override
     public boolean add(DatenDownload d) {
         d.init();
         return super.add(d);
     }
-    
+
     public synchronized void zurueckgestellteWiederAktivieren() {
         DatenDownload d = null;
         ListIterator<DatenDownload> it = this.listIterator(0);
@@ -69,7 +69,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             it.next().arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.FALSE.toString();
         }
     }
-    
+
     public synchronized void listePutzen() {
         // beim Programmende fertige Downloads löschen
         boolean gefunden = false;
@@ -87,7 +87,22 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         ddaten.starterClass.aufraeumen();
     }
-    
+
+    public synchronized boolean nochNichtFertigeDownloads() {
+        // es wird nach noch nicht fertigen gestarteten Downloads gesucht
+        boolean gefunden = false;
+        LinkedList<Start> s = ddaten.starterClass.getStarts(Start.QUELLE_ALLE);
+        Iterator<Start> it = s.iterator();
+        while (it.hasNext()) {
+            Start start = it.next();
+            if (start.status < Start.STATUS_FERTIG) {
+                gefunden = true;
+                break;
+            }
+        }
+        return gefunden;
+    }
+
     public synchronized DatenDownload downloadVorziehen(String url) {
         DatenDownload d = null;
         Start s = ddaten.starterClass.urlVorziehen(url);
@@ -103,7 +118,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         listeNummerieren();
         return d;
     }
-    
+
     public synchronized DatenDownload getDownloadByUrl(String url) {
         DatenDownload ret = null;
         ListIterator<DatenDownload> it = this.listIterator(0);
@@ -116,7 +131,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         return ret;
     }
-    
+
     public synchronized boolean delDownloadByUrl(String url) {
         boolean ret = false;
         ListIterator<DatenDownload> it = this.listIterator(0);
@@ -132,7 +147,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         return ret;
     }
-    
+
     public synchronized void getModel(TModelDownload tModel, boolean abos, boolean downloads) {
         tModel.setRowCount(0);
         Object[] object;
@@ -172,7 +187,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
     }
-    
+
     public synchronized void abosSuchen() {
         // in der Filmliste nach passenden Filmen suchen und 
         // in die Liste der Downloads eintragen
@@ -215,13 +230,13 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
                 gefunden = true;
             }
-            
+
         } //while
         if (gefunden) {
             listeNummerieren();
         }
     }
-    
+
     public synchronized void abosLoschenWennNochNichtGestartet() {
         // es werden alle Abos (DIE NOCH NICHT GESTARTET SIND) aus der Liste gelöscht
         boolean gefunden = false;
@@ -241,7 +256,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             listeNummerieren();
         }
     }
-    
+
     public void listeNummerieren() {
         int i = 0;
         ListIterator<DatenDownload> it = listIterator();
@@ -253,7 +268,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             it.next().arr[DatenDownload.DOWNLOAD_NR_NR] = str;
         }
     }
-    
+
     private boolean checkListe(String url) {
         //prüfen, ob der Film schon in der Liste ist, (manche Filme sind in verschiedenen Themen)
         boolean ret = false;
