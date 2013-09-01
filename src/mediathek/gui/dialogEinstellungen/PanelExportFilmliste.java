@@ -73,6 +73,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 }
                 if (ret == JOptionPane.OK_OPTION) {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    updateUI();
                     new IoXmlFilmlisteSchreiben().filmeSchreiben(exporDatei, Daten.listeFilme);
                     if (!new File(exporDatei).exists()) {
                         MVMessageDialog.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);

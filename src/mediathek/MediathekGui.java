@@ -57,6 +57,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import mediathek.controller.filmeLaden.ListenerFilmeLaden;
 import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.CheckUpdate;
@@ -154,6 +155,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 }
             }
         }
+        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); // soll abgefangen werden
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
         ddaten = new DDaten(pfad, true);
         ddaten.mediathekGui = this;
@@ -1003,6 +1005,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     public void beenden() {
+        if (ddaten.listeDownloads.nochNichtFertigeDownloads()) {
+            // erst mal prüfen ob noch Downloads laufen
+            int ret = JOptionPane.showConfirmDialog(this, "Es laufen noch Downloads.", "Abbrechen?", JOptionPane.YES_NO_OPTION);
+            if (ret != JOptionPane.OK_OPTION) {
+                return;
+            }
+        }
         // Tabelleneinstellungen merken
         ddaten.guiFilme.tabelleSpeichern();
         ddaten.guiDownloads.tabelleSpeichern();
@@ -1173,7 +1182,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
