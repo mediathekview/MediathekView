@@ -41,8 +41,8 @@ public class PanelBeschreibung extends javax.swing.JPanel {
     public PanelBeschreibung(DDaten dd) {
         initComponents();
         ddaten = dd;
-        setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        jCheckBoxBeschreibung.setBackground(new java.awt.Color(204, 204, 204));
+        //setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        //jCheckBoxBeschreibung.setBackground(new java.awt.Color(204, 204, 204));
         jCheckBoxBeschreibung.setIcon(GetIcon.getIcon("close_15.png"));
         jCheckBoxBeschreibung.addActionListener(new ActionListener() {
             @Override
@@ -67,7 +67,7 @@ public class PanelBeschreibung extends javax.swing.JPanel {
     public void setAktFilm(DatenFilm aktFilm) {
         if (aktFilm == null) {
             jEditorPane.setText("");
-            jCheckBoxBeschreibung.setText("Beschreibung");
+//            jCheckBoxBeschreibung.setText("Beschreibung");
             jXHyperlinkWebsite.setText("");
         } else {
             // Beschreibung setzen
@@ -75,15 +75,16 @@ public class PanelBeschreibung extends javax.swing.JPanel {
                     "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
                     + "<head><style type=\"text/css\">.sans { font-family: Verdana, Geneva, sans-serif;}</style></head>\n"
                     + "<body>"
-                    + "<span class=\"sans\"><b>" + aktFilm.arr[DatenFilm.FILM_TITEL_NR] + "</b><br /></span>"
+                    + "<span class=\"sans\"><b>" + (aktFilm.arr[DatenFilm.FILM_SENDER_NR].isEmpty() ? "" : aktFilm.arr[DatenFilm.FILM_SENDER_NR] + "  -  ")
+                    + aktFilm.arr[DatenFilm.FILM_TITEL_NR] + "</b><br /></span>"
                     + "<span class=\"sans\">" + aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].replace("\n", "<br />") + "</span>"
                     + "</body>"
                     + "</html>");
 
             if (aktFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
-                jCheckBoxBeschreibung.setText("Beschreibung");
+//                jCheckBoxBeschreibung.setText("Beschreibung");
             } else {
-                jCheckBoxBeschreibung.setText("Beschreibung vom Sender: " + aktFilm.arr[DatenFilm.FILM_SENDER_NR]);
+//                jCheckBoxBeschreibung.setText("Beschreibung vom Sender: " + aktFilm.arr[DatenFilm.FILM_SENDER_NR]);
             }
             jXHyperlinkWebsite.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
         }
@@ -106,10 +107,11 @@ public class PanelBeschreibung extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jXHyperlinkWebsite = new org.jdesktop.swingx.JXHyperlink();
 
-        jCheckBoxBeschreibung.setText("Beschreibung");
-
         jLabel1.setText("zur Website:");
 
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+
+        jEditorPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
         jScrollPane2.setViewportView(jEditorPane);
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -123,23 +125,22 @@ public class PanelBeschreibung extends javax.swing.JPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, 0)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1)
-                .addContainerGap())
+                .addGap(18, 18, 18))
+            .addComponent(jScrollPane2)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -147,14 +148,17 @@ public class PanelBeschreibung extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jCheckBoxBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jCheckBoxBeschreibung)
+                .addGap(5, 5, 5)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(5, 5, 5))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jCheckBoxBeschreibung)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jCheckBoxBeschreibung)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(5, 5, 5)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
