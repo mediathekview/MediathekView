@@ -107,6 +107,8 @@ public class PanelBeschreibung extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jXHyperlinkWebsite = new org.jdesktop.swingx.JXHyperlink();
 
+        jCheckBoxBeschreibung.setToolTipText("Ausblenden");
+
         jLabel1.setText("zur Website:");
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -126,7 +128,6 @@ public class PanelBeschreibung extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1)
