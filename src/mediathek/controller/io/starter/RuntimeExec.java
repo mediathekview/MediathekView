@@ -58,18 +58,8 @@ public class RuntimeExec {
     //===================================
     // Public
     //===================================
-    /**
-     * Download starten
-     */
     public Process exec() {
         try {
-////            String p1 = prog.substring(0, prog.indexOf(" "));
-////            String p2 = prog.substring(prog.indexOf(" ") + 1);
-
-////            String[] arr = prog.split(" ");
-////            arr = split(prog);
-////            process = new ProcessBuilder(arr).start();
-
             process = Runtime.getRuntime().exec(prog);
             clearIn = new Thread(new ClearInOut(INPUT, process));
             clearOut = new Thread(new ClearInOut(ERROR, process));
@@ -87,38 +77,6 @@ public class RuntimeExec {
     //===================================
     // Private
     //===================================
-////        private String[] split(String s) {
-////            ArrayList<String> list = new ArrayList<String>();
-////            String p = "";
-////            boolean STUECK = false;
-////            for (int i = 0; i < s.length(); ++i) {
-////                String ss = s.substring(i, i + 1);
-////                if (STUECK) {
-////                    if (ss.equals("\"")) {
-////                        STUECK = false;
-////                        list.add(p);
-////                        p = "";
-////                    } else {
-////                        p += ss;
-////                    }
-////                } else {
-////                    if (!ss.equals(" ")) {
-////                        if (ss.equals("\"")) {
-////                            STUECK = true;
-////                            continue;
-////                        }
-////                        p += ss;
-////                    } else {
-////                        list.add(p);
-////                        p = "";
-////                    }
-////                }
-////            }
-////            if (!p.equals("")) {
-////                list.add(p);
-////            }
-////            return list.toArray(new String[]{});
-////        }
     private class ClearInOut implements Runnable {
 
         private int art;

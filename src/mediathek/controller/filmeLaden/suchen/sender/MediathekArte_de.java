@@ -186,7 +186,6 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
         String datum = "", zeit = "";
         String urlHd = "", urlKlein = "", url = "";
         String beschreibung = "";
-//        String stichwoerter = "";
         String bild = "";
         String filmWebsite = "";
         String dauerStr = "";
@@ -194,7 +193,6 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
         long dauer = 0;
         final String MUSTER_BILD = "programImage\":\"";
         final String MUSTER_BESCHREIBUNG = "\"VDE\":\"";
-        final String MUSTER_STICHWOERTER = "\"VTA\":[\"";
         final String MUSTER_FILM_WEBSITE = "\"VUP\":\"";
         final String MUSTER_URL_HD = "\"HBBTV\",\"VQU\":\"SQ\",\"VMT\":\"mp4\",\"VUR\":\"";
         final String MUSTER_URL = "HBBTV\",\"VQU\":\"EQ\",\"VMT\":\"mp4\",\"VUR\":\"";
@@ -221,13 +219,6 @@ public class MediathekArte_de extends MediathekReader implements Runnable {
                 }
             }
         }
-//        if ((pos1 = seite.indexOf(MUSTER_STICHWOERTER)) != -1) {
-//            pos1 += MUSTER_STICHWOERTER.length();
-//            if ((pos2 = seite.indexOf("\"", pos1)) != -1) {
-//                ///////
-//                stichwoerter = seite.substring(pos1, pos2);
-//            }
-//        }
         if ((pos1 = seite.indexOf(MUSTER_FILM_WEBSITE)) != -1) {
             pos1 += MUSTER_FILM_WEBSITE.length();
             if ((pos2 = seite.indexOf("\"", pos1)) != -1) {

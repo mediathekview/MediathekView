@@ -284,8 +284,6 @@ public class GuiDownloads extends PanelVorlage {
 
     private void downloadVorziehen() {
         String[] urls;
-        ArrayList<String> arrayUrls = new ArrayList<String>();
-        ArrayList<DatenDownload> arrayDownload = new ArrayList<DatenDownload>();
         // ==========================
         // erst mal die URLs sammeln
         int[] rows = tabelle.getSelectedRows();
@@ -457,7 +455,6 @@ public class GuiDownloads extends PanelVorlage {
                             continue;
                         }
                         arrayUrls.add(url);
-                        //ddaten.starterClass.filmLoeschen(url);
                         if (s.datenDownload.istAbo()) {
                             // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                             ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
@@ -473,14 +470,7 @@ public class GuiDownloads extends PanelVorlage {
                     if (s.status <= Start.STATUS_RUN) {
                         // löschen -> nur wenn noch läuft, sonst gibts nichts mehr zum löschen
                         arrayUrls.add(url);
-                        //ddaten.starterClass.filmLoeschen(url);
                     }
-////                    if (s.status > Start.STATUS_RUN) {
-////                        // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-////                        if (s.datenDownload.istAbo()) {
-////                            ddaten.erledigteAbos.urlAusLogfileLoeschen(url);
-////                        }
-////                    }
                     arrayDownload.add(download);
                 }
             }
@@ -494,9 +484,7 @@ public class GuiDownloads extends PanelVorlage {
             DatenDownload.starten(ddaten, arrayDownload);
         } else {
             //oder alle Downloads stoppen
-//            tabelleProzentGeaendert();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getName());
-//            DatenDownload.statusMelden(arrayDownload, DatenDownload.PROGRESS_NICHT_GESTARTET);
         }
     }
 
@@ -716,7 +704,6 @@ public class GuiDownloads extends PanelVorlage {
         @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
-//                aktFilmSetzen(); //da gibts keine Schwierigkeiten beim update des JProgressbar
                 if (arg0.getClickCount() > 1) {
                     downloadAendern();
                 }
@@ -725,7 +712,6 @@ public class GuiDownloads extends PanelVorlage {
 
         @Override
         public void mousePressed(MouseEvent arg0) {
-//            aktFilmSetzen();
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
@@ -733,7 +719,6 @@ public class GuiDownloads extends PanelVorlage {
 
         @Override
         public void mouseReleased(MouseEvent arg0) {
-//            aktFilmSetzen();
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
@@ -919,11 +904,8 @@ public class GuiDownloads extends PanelVorlage {
                         if (gruppe != null) {
                             int selectedModelRow = tabelle.convertRowIndexToModel(nr);
                             String url = tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-                            //String filmNr = tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_FILM_NR_NR).toString();
                             DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
-                            //DatenFilm film = Daten.listeFilme.getFilmByNr(filmNr);
                             if (download != null) {
-                                //DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
                                 if (download.film == null) {
                                     // bei Einmaldownload nach Programmstart
                                     download.film = Daten.listeFilme.getFilmByUrl(url);
@@ -934,8 +916,6 @@ public class GuiDownloads extends PanelVorlage {
                                 filmDownload.arr[DatenFilm.FILM_URL_RTMP_NR] = download.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR];
                                 filmDownload.arr[DatenFilm.FILM_URL_KLEIN_NR] = "";
                                 filmDownload.arr[DatenFilm.FILM_URL_RTMP_KLEIN_NR] = "";
-                                // in die History eintragen
-                                //ddaten.history.add(film.getUrlNormal());
                                 // und starten
                                 ddaten.starterClass.urlStarten(gruppe, filmDownload);
                             }
@@ -959,28 +939,12 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemInfo);
-
             // ######################
             // Menü anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
 
-//    private class BeobAbstractActionAendern extends AbstractAction {
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            downloadAendern();
-//        }
-//    }
-//
-//    private class BeobAbstractActionLoeschen extends AbstractAction {
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            downloadLoeschen(true);
-//        }
-//    }
     private class BeobAnzeige implements ActionListener {
 
         @Override

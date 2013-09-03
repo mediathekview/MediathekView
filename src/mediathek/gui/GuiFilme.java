@@ -118,7 +118,7 @@ public class GuiFilme extends PanelVorlage {
         //        }
     }
 
-////flexdock-1.2.3.jar
+//    // flexdock-1.2.3.jar
 //    private void startup() {
 //        // turn on floating support
 //        DockingManager.setFloatingEnabled(true);
@@ -198,9 +198,6 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void start_(ListenerFilmeLadenEvent event) {
                 beobMausTabelle.itemSenderLaden.setEnabled(false);
-                /////
-                //Daten.listeFilme.clear();
-                //DDaten.listeFilmeNachBlackList.clear();
                 tabelleLaden();
             }
 
