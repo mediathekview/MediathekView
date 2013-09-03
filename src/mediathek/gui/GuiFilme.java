@@ -830,7 +830,7 @@ public class GuiFilme extends PanelVorlage {
 
         jPanelFilter.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
-        jCheckBoxFilter.setToolTipText("Ausblenden");
+        jCheckBoxFilter.setToolTipText("Filter ausblenden");
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
@@ -1035,7 +1035,7 @@ public class GuiFilme extends PanelVorlage {
         jPanelExtra.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
         jCheckBoxProgamme.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
-        jCheckBoxProgamme.setToolTipText("Ausblenden");
+        jCheckBoxProgamme.setToolTipText("Buttons ausblenden");
 
         javax.swing.GroupLayout jPanelExtraInnenLayout = new javax.swing.GroupLayout(jPanelExtraInnen);
         jPanelExtraInnen.setLayout(jPanelExtraInnenLayout);

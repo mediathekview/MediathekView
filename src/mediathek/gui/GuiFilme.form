@@ -104,7 +104,7 @@
       <SubComponents>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxFilter">
           <Properties>
-            <Property name="toolTipText" type="java.lang.String" value="Ausblenden"/>
+            <Property name="toolTipText" type="java.lang.String" value="Filter ausblenden"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanel3">
@@ -506,7 +506,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Dialog" size="10" style="1"/>
             </Property>
-            <Property name="toolTipText" type="java.lang.String" value="Ausblenden"/>
+            <Property name="toolTipText" type="java.lang.String" value="Buttons ausblenden"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanelExtraInnen">

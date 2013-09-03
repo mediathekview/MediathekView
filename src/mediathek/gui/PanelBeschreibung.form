@@ -37,7 +37,7 @@
   <SubComponents>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxBeschreibung">
       <Properties>
-        <Property name="toolTipText" type="java.lang.String" value="Ausblenden"/>
+        <Property name="toolTipText" type="java.lang.String" value="Beschreibung ausblenden"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel1">
