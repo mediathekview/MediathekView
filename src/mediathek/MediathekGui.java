@@ -550,10 +550,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 getStatusBar().hideProgressIndicators();
                 jButtonFilmeLaden.setEnabled(true);
                 jMenuItemFilmlisteLaden.setEnabled(true);
-////                if (Daten.listeFilme.isEmpty()) {
-////                    MVMessageDialog.showMessageDialog(null, "Es konnte keine neue Filmliste geladen werden!", "Filmliste laden", JOptionPane.INFORMATION_MESSAGE);
-////                    //new IoXmlFilmlisteLesen().standardFilmlisteLesen();
-////                }
                 ddaten.allesSpeichern(); // damit nichts verlorengeht
             }
         });

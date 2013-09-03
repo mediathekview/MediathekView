@@ -19,17 +19,20 @@
  */
 
 
-    # Version 3.3.0
-    - Sender angepasst
+	# Version 3.3.0
     - Sortierreihenfolge der Tabellen wird gespeichert
     - Es kann ein eigenes Iconset verwendet werden
     - Über den Menüpunkt "Hilfe->Hilfe und Fragen.." können alle Einstellungen zurückgesetzt werden
-    - Neue Infos zu den Sendungen: Beschreibung, Bild, Sendungsdauer
-    - Die unterschiedliche Behandlung von Strings im "Titel" und "Thema/Titel" Feld wurde vereinheitlicht.
-    Soll jetzt nach mehreren Begriffen gesucht werden, müssen sie durch Komma getrennt werden, 
+    - Neue Infos zu den Sendungen: Beschreibung, Bild, Sendungsdauer, Dateigröße
+    - Die unterschiedliche Behandlung von Strings im Filter "Titel" und "Thema/Titel" wurde vereinheitlicht.
+    Soll jetzt nach mehreren Begriffen gesucht werden, müssen diese durch Komma getrennt werden, 
 	es ist also jetzt auch möglich nach Begriffen mit Leerzeichen zu suchen 
-	zB.: "hallo ich,tatort" sucht nach "hallo ich" oder "tatort". Es gibt jetzt auch einen Filter für die Sendungsdauer.
-    
+	- Es gibt jetzt auch einen Filter für die Sendungsdauer.
+	- Downloadbandreite kann in den Einstellungen begrenzt werden
+	- Das Ansehen/Speichern von Filmen in kleinerer Auflösung wurde vereinfacht
+	- Mit einem Rechtsklick auf den Tabellenkopf kann man Spalten ein- und ausblenden und die Tabelle wieder zurücksetzen.
+	- Startreihenfolge der Downloads kann man anpassen, die Downloads werden so gestartet wie sie in der Tabelle sortiert werden
+	
     # Version 3.2.1
     - Fehler bei der Blacklist
     - Probleme mit best. Java-Versionen

@@ -20,7 +20,6 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import com.sun.rowset.internal.Row;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FileDialog;

@@ -28,7 +28,7 @@ echo MediathekView Buildnummer: $relNr >> /mnt/daten/software/Mediathek/Mediathe
 # zip erstellen
 cd /mnt/daten/software/Mediathek/Mediathek/dist/
 datum=$(date +%Y.%m.%d )
-zip -r MediathekView_3.2.1_$datum.zip .
+zip -r MediathekView_3.3.0_$datum.zip .
 
 # Dateien ins share-Verzeichnis von VmWare kopieren
 cp -r /mnt/daten/software/Mediathek/Mediathek/dist/* /mnt/daten/virtualbox/share/aktMed

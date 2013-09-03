@@ -253,7 +253,6 @@ public class ListeStarts extends LinkedList<Start> {
         return 0;
     }
 
-    /// tunen!
     TModel getModelStarts(TModel model) {
         model.setRowCount(0);
         Object[] object;

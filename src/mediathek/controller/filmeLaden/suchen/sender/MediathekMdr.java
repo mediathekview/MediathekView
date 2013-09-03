@@ -304,7 +304,6 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                 while ((pos = seite4.indexOf(MUSTER_TITEL, pos)) != -1) {
                     pos += MUSTER_TITEL.length();
                     if ((posEnde = seite4.indexOf(MUSTER_ENDE, pos)) == -1) {
-                        //////??
                         Log.fehlerMeldung(-804142536, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", filmWebsite);
                         continue;
                     }
@@ -414,37 +413,7 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                                 urlMp4 = seite4.substring(pos1, pos2);
                             }
                         }
-//                        if ((pos1 = seite4.indexOf(MUSTER_URL_1, pos1)) != -1) {
-//                            pos1 += MUSTER_URL_1.length();
-//                            if ((pos2 = seite4.indexOf("<", pos1)) != -1) {
-//                                url1 = seite4.substring(pos1, pos2);
-//                            }
-//                        }
-//                        if ((pos1 = seite4.indexOf(MUSTER_URL_2, pos1)) != -1) {
-//                            pos1 += MUSTER_URL_2.length();
-//                            if ((pos2 = seite4.indexOf("<", pos1)) != -1) {
-//                                url2 = seite4.substring(pos1, pos2);
-//                            }
-//                        }
                     }// while
-//                    if (url1.equals("") || url2.equals("")) {
-//                        Log.fehlerMeldung(-326541230, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", new String[]{"keine URL: " + filmWebsite, "Thema: " + thema, " UrlFeed: " + strUrlFeed});
-//                    } else {
-//                        //<flashMediaServerApplicationURL>rtmp://x4100mp4dynonlc22033.f.o.f.lb.core-cdn.net/22033mdr/ondemand</flashMediaServerApplicationURL>
-//                        //<flashMediaServerURL>mp4:4100mp4dynonl/FCMS-1582b584-bb95-4fd2-94d8-389e10a4e1bd-8442e17c3177.mp4</flashMediaServerURL>
-//                        url = addsUrl(url1, url2);
-//                        rtmpUrl = "-r " + url1 + " -y " + url2;
-//                        if (!istInListe(thema, titel, datum, zeit)) {
-//                            addInListe(thema, titel, datum, zeit);
-//                            meldung(url);
-//                            //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
-////                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, rtmpUrl, datum, zeit);
-//                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, url, rtmpUrl, datum, zeit, duration, description, thumbnailUrl, imageUrl, new String[]{});
-//                            addFilm(film);
-//                        } else {
-//                            //Log.debugMeldung("MDR: Film doppelt");
-//                        }
-//                    }
                     if (urlMp4.equals("")) {
                         Log.fehlerMeldung(-326541230, Log.FEHLER_ART_MREADER, "MediathekMdr.addXml", new String[]{"keine URL: " + filmWebsite, "Thema: " + thema, " UrlFeed: " + strUrlFeed});
                     } else {
@@ -452,14 +421,10 @@ public class MediathekMdr extends MediathekReader implements Runnable {
                         //<flashMediaServerURL>mp4:4100mp4dynonl/FCMS-1582b584-bb95-4fd2-94d8-389e10a4e1bd-8442e17c3177.mp4</flashMediaServerURL>
                         if (!existiertSchon(thema, titel, datum, zeit)) {
                             meldung(urlMp4);
-                            //DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String uurlRtmp, String zziel)
-//                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, rtmpUrl, datum, zeit);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlMp4, ""/*rtmpUrl*/, datum, zeit, duration, description, 
-                                      imageUrl.isEmpty() ? thumbnailUrl : imageUrl, new String[]{});
+                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, filmWebsite, titel, urlMp4, ""/*rtmpUrl*/, datum, zeit, duration, description,
+                                    imageUrl.isEmpty() ? thumbnailUrl : imageUrl, new String[]{});
                             film.addUrlKlein(urlMp4_klein, "");
                             addFilm(film);
-                        } else {
-                            //Log.debugMeldung("MDR: Film doppelt");
                         }
                     }
                 }
