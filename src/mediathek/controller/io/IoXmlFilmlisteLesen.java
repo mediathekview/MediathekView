@@ -94,6 +94,8 @@ public class IoXmlFilmlisteLesen {
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
         XMLStreamReader parser;
         InputStreamReader inReader = null;
+        // zur Sicherheit wenn eine alte Liste geladen wird und dann das Laden wiederholt wird die Liste vor dem Laden löschen
+        Daten.listeFilme.clear();
         // die Filmdatei ist jetzt entpackt und im Konfigordner gespeichert, dort jetzt lesen
         try {
             inReader = new InputStreamReader(new FileInputStream(Daten.getDateiFilmliste()), Konstanten.KODIERUNG_UTF);

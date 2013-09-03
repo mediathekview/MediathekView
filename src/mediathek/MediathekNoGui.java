@@ -218,6 +218,8 @@ public class MediathekNoGui implements Runnable {
             ListeFilme tmpListe = new ListeFilme();
             new IoXmlFilmlisteLesen().dateiInListeEinlesen(importUrl__ersetzen, GuiFunktionen.istUrl(importUrl__ersetzen) /* istUrl */, tmpListe);
             tmpListe.updateListe(Daten.listeFilme, false /* nur URL vergleichen */);
+            tmpListe.metaDaten = Daten.listeFilme.metaDaten;
+            tmpListe.sort(); // jetzt sollte alles passen
             Daten.listeFilme.clear();
             Daten.listeFilme = tmpListe;
         }
