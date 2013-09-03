@@ -107,7 +107,7 @@ public class PanelBeschreibung extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jXHyperlinkWebsite = new org.jdesktop.swingx.JXHyperlink();
 
-        jCheckBoxBeschreibung.setToolTipText("Ausblenden");
+        jCheckBoxBeschreibung.setToolTipText("Beschreibung ausblenden");
 
         jLabel1.setText("zur Website:");
 
