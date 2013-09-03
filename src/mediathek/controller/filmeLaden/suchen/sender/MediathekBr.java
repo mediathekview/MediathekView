@@ -139,7 +139,7 @@ public class MediathekBr extends MediathekReader implements Runnable {
             Log.fehlerMeldung(-302590789, Log.FEHLER_ART_MREADER, "MediathekBr.jsonSuchen", "Leere Seite: " + URL_JSON);
             return;
         }
-        int pos;
+        int pos, posStop;
         int pos1;
         int pos2;
         pos = 0;
@@ -157,70 +157,40 @@ public class MediathekBr extends MediathekReader implements Runnable {
             dauer = 0;
             try {
                 pos += DATE.length();
+                posStop = seite1.indexOf(DATE, pos);
                 pos1 = pos;
                 if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
                     date = seite1.substring(pos1, pos2);
                     datum = convertDatumJson(date);
                     zeit = convertZeitJson(date);
                 }
-                if ((pos1 = seite1.indexOf(DESCRIPTION, pos)) != -1) {
-                    pos1 += DESCRIPTION.length();
-                    final String TRENNER = " - ";
-                    if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                        description = seite1.substring(pos1, pos2);
-                        if (description.contains(TRENNER)) {
-                            titel = description.substring(0, description.indexOf(TRENNER)).trim();
-                            description = description.substring(description.indexOf(TRENNER) + TRENNER.length()).trim();
-                        } else if (description.length() > 25) {
-                            titel = description.substring(0, 25).trim() + "...";
-                        } else {
-                            titel = description;
-                            description = "";
-                        }
+                description = seite1.extract(DESCRIPTION, "\"", pos, posStop);
+                final String TRENNER = " - ";
+                if (description.contains(TRENNER)) {
+                    titel = description.substring(0, description.indexOf(TRENNER)).trim();
+                    description = description.substring(description.indexOf(TRENNER) + TRENNER.length()).trim();
+                } else if (description.length() > 25) {
+                    titel = description.substring(0, 25).trim() + "...";
+                } else {
+                    titel = description;
+                    description = "";
+                }
+                duration = seite1.extract(DURATION, "\"", pos, posStop);
+                if (!duration.equals("")) {
+                    try {
+                        dauer = Long.parseLong(duration) * 60;
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(-304973047, Log.FEHLER_ART_MREADER, "MediathekBR.jsonSuchen", ex, "duration: " + duration);
                     }
                 }
-                if ((pos1 = seite1.indexOf(DURATION, pos)) != -1) {
-                    pos1 += DURATION.length();
-                    if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                        duration = seite1.substring(pos1, pos2);
-                        if (!duration.equals("")) {
-                            try {
-                                dauer = Long.parseLong(duration) * 60;
-                            } catch (Exception ex) {
-                                Log.fehlerMeldung(-304973047, Log.FEHLER_ART_MREADER, "MediathekBR.jsonSuchen", ex, "duration: " + duration);
-                            }
-                        }
-                    }
-                }
-                if ((pos1 = seite1.indexOf(THEMA, pos)) != -1) {
-                    pos1 += THEMA.length();
-                    if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                        thema = seite1.substring(pos1, pos2);
-                    }
-                }
-                if ((pos1 = seite1.indexOf(IMAGE, pos)) != -1) {
-                    pos1 += IMAGE.length();
-                    if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                        image = seite1.substring(pos1, pos2);
-                    }
-                }
-                if ((pos1 = seite1.indexOf(URL__, pos)) != -1) {
-                    if ((pos1 = seite1.indexOf(URL, pos1)) != -1) {
-                        pos1 += URL.length();
-                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                            url = seite1.substring(pos1, pos2);
-                        }
-                    }
-                }
-                if ((pos1 = seite1.indexOf(URL_KLEIN__, pos)) != -1) {
-                    if ((pos1 = seite1.indexOf(URL_KLEIN, pos1)) != -1) {
-                        pos1 += URL_KLEIN.length();
-                        if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                            url_klein = seite1.substring(pos1, pos2);
-                        }
-                    }
-                }
-                if (url.equals("")) {
+                thema = seite1.extract(THEMA, "\"", pos, posStop);
+                image = seite1.extract(IMAGE, "\"", pos, posStop);
+                url = seite1.extract(URL__, URL, "\"", pos, posStop);
+                url_klein = seite1.extract(URL_KLEIN__, URL_KLEIN, "\"", pos, posStop);
+                if (url.isEmpty() & !url_klein.isEmpty()) {
+                    url = url_klein;
+                    url_klein = "";
+                } else if (url.isEmpty()) {
                     continue;
                 }
                 thema = GuiFunktionen.utf8(thema);
