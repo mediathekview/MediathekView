@@ -28,10 +28,6 @@ import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 
 public class DatenPset {
-
-    public final static String AUFLOESUNG_NORMAL = "normal";
-    public final static String AUFLOESUNG_HD = "hd";
-    public final static String AUFLOESUNG_KLEIN = "klein";
     public static final String PROGRAMMSET = "Programmset";
     //Tags Programmgruppen
     public static final String PROGRAMMSET_NAME = "Name";

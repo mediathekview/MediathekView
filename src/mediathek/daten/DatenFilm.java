@@ -21,8 +21,6 @@ package mediathek.daten;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import static mediathek.daten.DatenPset.AUFLOESUNG_HD;
-import static mediathek.daten.DatenPset.AUFLOESUNG_KLEIN;
 import mediathek.tool.Datum;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
@@ -32,8 +30,11 @@ import mediathek.tool.MVLong;
 import mediathek.tool.MVUrlDateiGroesse;
 
 public class DatenFilm implements Comparable<DatenFilm> {
-    //Tags Filme
 
+    public static final String AUFLOESUNG_NORMAL = "normal";
+    public static final String AUFLOESUNG_HD = "hd";
+    public static final String AUFLOESUNG_KLEIN = "klein";
+    //Tags Filme
     public static final String FELD_INFO = "Feldinfo";
     public static final String FILME = "Filme";
     public static final String FILME_ = "X";

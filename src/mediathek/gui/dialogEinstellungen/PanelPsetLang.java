@@ -38,6 +38,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.daten.DDaten;
+import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -250,13 +251,13 @@ public class PanelPsetLang extends PanelVorlage {
 
     private void setAufloesung() {
         if (jRadioButtonAufloesungNormal.isSelected()) {
-            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenPset.AUFLOESUNG_NORMAL;
+            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenFilm.AUFLOESUNG_NORMAL;
         }
         if (jRadioButtonAufloesungHD.isSelected()) {
-            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenPset.AUFLOESUNG_HD;
+            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenFilm.AUFLOESUNG_HD;
         }
         if (jRadioButtonAufloesungKlein.isSelected()) {
-            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenPset.AUFLOESUNG_KLEIN;
+            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenFilm.AUFLOESUNG_KLEIN;
         }
     }
 
@@ -324,9 +325,9 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxButton.setSelected(pSet.istButton());
             jCheckBoxAbo.setSelected(pSet.istAbo());
             jButtonAbspielen.setBackground(pSet.istAbspielen() ? COLOR_ABSPIELEN : null);
-            if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_HD)) {
+            if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_HD)) {
                 jRadioButtonAufloesungHD.setSelected(true);
-            } else if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_KLEIN)) {
+            } else if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_KLEIN)) {
                 jRadioButtonAufloesungKlein.setSelected(true);
             } else {
                 jRadioButtonAufloesungNormal.setSelected(true);
