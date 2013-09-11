@@ -71,7 +71,7 @@ public final class MVJTable extends JTable {
                 spaltenTitel = DatenFilm.COLUMN_NAMES;
                 maxSpalten = DatenFilm.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenFilm.spaltenAnzeigen, DatenFilm.MAX_ELEM);
-                indexSpalte = 0; // Filmnummer
+                indexSpalte = DatenFilm.FILM_NR_NR;
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR;
                 this.setModel(new TModelFilm(new Object[][]{}, spaltenTitel));
                 break;
@@ -79,7 +79,8 @@ public final class MVJTable extends JTable {
                 spaltenTitel = DatenDownload.COLUMN_NAMES;
                 maxSpalten = DatenDownload.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
-                indexSpalte = 1; // Filmnummer
+                //indexSpalte = DatenDownload.DOWNLOAD_FILM_NR_NR;
+                indexSpalte = DatenDownload.DOWNLOAD_URL_NR;
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR;
                 this.setModel(new TModelDownload(new Object[][]{}, spaltenTitel));
                 break;
@@ -87,7 +88,7 @@ public final class MVJTable extends JTable {
                 spaltenTitel = DatenAbo.COLUMN_NAMES;
                 maxSpalten = DatenAbo.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenAbo.spaltenAnzeigen, DatenAbo.MAX_ELEM);
-                indexSpalte = 0; // Abonummer
+                indexSpalte = DatenAbo.ABO_NR_NR;
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR;
                 this.setModel(new TModelAbo(new Object[][]{}, spaltenTitel));
                 break;
