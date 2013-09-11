@@ -486,10 +486,10 @@ public class ListeFilme extends LinkedList<DatenFilm> {
             if (f.arr[DatenFilm.FILM_URL_NR].equals(url)) {
                 ret = f;
                 break;
-            } else if (f.getUrlFuerAufloesung(DatenPset.AUFLOESUNG_HD).equals(url)) {
+            } else if (f.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD).equals(url)) {
                 ret = f;
                 break;
-            } else if (f.getUrlFuerAufloesung(DatenPset.AUFLOESUNG_KLEIN).equals(url)) {
+            } else if (f.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN).equals(url)) {
                 ret = f;
                 break;
             }

@@ -124,7 +124,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jRadioButtonAufloesungHoch.setSelected(true);
         String mb;
         if (jRadioButtonAufloesungHd.isEnabled()) {
-            mb = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(DatenPset.AUFLOESUNG_HD));
+            mb = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
             if (!mb.isEmpty()) {
                 jRadioButtonAufloesungHd.setText(jRadioButtonAufloesungHd.getText() + "   [ " + mb + " MB ]");
             }
@@ -134,7 +134,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
             jRadioButtonAufloesungHoch.setText(jRadioButtonAufloesungHoch.getText() + "   [ " + mb + " MB ]");
         }
         if (jRadioButtonAufloesungKlein.isEnabled()) {
-            mb = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(DatenPset.AUFLOESUNG_KLEIN));
+            mb = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
             if (!mb.isEmpty()) {
                 jRadioButtonAufloesungKlein.setText(jRadioButtonAufloesungKlein.getText() + "   [ " + mb + " MB ]");
             }
@@ -164,9 +164,9 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private void setCombo() {
         // stellt den Namen/Radios passend zum Combo ein
         pSet = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
-        if (!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_HD)) {
+        if (!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_HD)) {
             jRadioButtonAufloesungHd.setSelected(true);
-        } else if (!datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenPset.AUFLOESUNG_KLEIN)) {
+        } else if (!datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_KLEIN)) {
             jRadioButtonAufloesungKlein.setSelected(true);
         } else {
             jRadioButtonAufloesungHoch.setSelected(true);
@@ -176,11 +176,11 @@ public class DialogAddDownload extends javax.swing.JDialog {
 
     private String getAufloesung() {
         if (jRadioButtonAufloesungHd.isSelected()) {
-            return DatenPset.AUFLOESUNG_HD;
+            return DatenFilm.AUFLOESUNG_HD;
         } else if (jRadioButtonAufloesungKlein.isSelected()) {
-            return DatenPset.AUFLOESUNG_KLEIN;
+            return DatenFilm.AUFLOESUNG_KLEIN;
         } else {
-            return DatenPset.AUFLOESUNG_NORMAL;
+            return DatenFilm.AUFLOESUNG_NORMAL;
         }
     }
 
