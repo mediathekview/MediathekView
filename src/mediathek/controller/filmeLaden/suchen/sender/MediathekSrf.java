@@ -98,6 +98,7 @@ public class MediathekSrf extends MediathekReader implements Runnable {
         private MVStringBuilder seite1 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         private MVStringBuilder seite2 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         private MVStringBuilder seite3 = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        private MVStringBuilder film_website = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
 
         @Override
         public void run() {
@@ -126,6 +127,7 @@ public class MediathekSrf extends MediathekReader implements Runnable {
             final String MUSTER_ITEM_1 = "<item>";
             final String MUSTER_ITEM_2 = "</item>";
             final String MUSTER_DATUM = "<title>";
+            final String BASE_URL_JSON = "http://srf.ch/webservice/cvis/segment/";
             meldung(strUrlFeed);
             seite1 = getUrl.getUri_Utf(nameSenderMReader, strUrlFeed, seite1, "");
 //            String s = seite.toString();
@@ -178,34 +180,14 @@ public class MediathekSrf extends MediathekReader implements Runnable {
                                     if (titel.equals("")) {
                                         titel = thema;
                                     }
-                                    addFilme2(thema, urlWebsite, "http://www.videoportal.sf.tv/cvis/segment/" + url + "/.json", titel, datum, zeit);
+                                    addFilme2(thema, urlWebsite, BASE_URL_JSON + url + "/.json", titel, datum, zeit);
                                 } else {
                                     Log.fehlerMeldung(-499556023, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme", "keine URL: " + strUrlFeed);
                                 }
                             }
                         }
                     } else {
-                        if ((pos1 = seite1.indexOf(MUSTER_URL, posItem1)) != -1) {
-                            pos1 += MUSTER_URL.length();
-                            if ((pos2 = seite1.indexOf("\"", pos1)) != -1) {
-                                url = seite1.substring(pos1, pos2);
-                                if (url.contains(MUSTER_ID)) {
-                                    urlWebsite = "http://www.srf.ch/player/tv" + url;
-                                    url = url.substring(url.indexOf(MUSTER_ID) + MUSTER_ID.length());
-                                    if (!url.equals("")) {
-                                        if ((pos1 = seite1.indexOf(MUSTER_TITEL, pos1)) != -1) {
-                                            pos1 += MUSTER_TITEL.length();
-                                            if ((pos2 = seite1.indexOf("&", pos1)) != -1) {
-                                                titel = seite1.substring(pos1, pos2);
-                                                addFilme2(thema, urlWebsite, "http://www.videoportal.sf.tv/cvis/segment/" + url + "/.json", titel, datum, zeit);
-                                            } else {
-                                                Log.fehlerMeldung(-499556023, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme", "keine URL: " + strUrlFeed);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        System.out.println("RelativeUrls");
                     }
                 }
             } catch (Exception ex) {
@@ -214,151 +196,239 @@ public class MediathekSrf extends MediathekReader implements Runnable {
         }
 
         private void addFilme2(String thema, String urlWebsite, String urlFilm, String titel, String datum, String zeit) {
-            // "description_title":"Panamericana: Vom Machu Piccu in Peru nach Bolivien (6\/7)"
-            // "description_title":"\u00abmyStory\u00bb \u2013 Mein Team (2\/4)",
-            final String MUSTER_URL = "\"url\":\""; //bis zum "
-            final String MUSTER_TITEL = "\"description_title\":\"";
-            final String MUSTER_DURATION = "\"mark_out\":";
-            //final String MUSTER_DESCRIPTION = "\"description_lead\":\"";
-            final String MUSTER_DESCRIPTION = "\"description\":\"";
-            final String MUSTER_ID = "\"segments\":[{\"id\":\"";
-            String t = "";
+
+
             meldung(urlFilm);
             seite2 = getUrl.getUri_Utf(nameSenderMReader, urlFilm, seite2, "");
             try {
-                int pos1;
-                int pos2;
 
-                long duration = 0;
-                String description = "";
-                String thumbnail = "";
-                String image = "";
-
-                if ((pos1 = seite2.indexOf(MUSTER_DURATION)) != -1) {
-                    pos1 += MUSTER_DURATION.length();
-                    if ((pos2 = seite2.indexOf(",", pos1)) != -1) {
-                        int pos3 = seite2.indexOf(".", pos1);
-                        if (pos3 != -1 && pos3 < pos2) {
-                            // we need to strip the . decimal divider
-                            pos2 = pos3;
-                        }
-                        try {
-                            String d = seite2.substring(pos1, pos2);
-                            if (!d.equals("")) {
-                                duration = Long.parseLong(d);
-                            }
-                        } catch (Exception ex) {
-                            Log.fehlerMeldung(-646490237, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme2", ex);
-                        }
-                    }
-                }
-
-                if ((pos1 = seite2.indexOf(MUSTER_DESCRIPTION)) != -1) {
-                    pos1 += MUSTER_DESCRIPTION.length();
-                    if ((pos2 = seite2.indexOf("\",", pos1)) != -1) {
-                        description = seite2.substring(pos1, pos2);
-                        description = StringEscapeUtils.unescapeJava(description).trim();
-                    }
-                }
-
-                if ((pos1 = seite2.indexOf(MUSTER_ID)) != -1) {
-                    pos1 += MUSTER_ID.length();
-                    if ((pos2 = seite2.indexOf("\",", pos1)) != -1) {
-                        String id = seite2.substring(pos1, pos2);
-                        thumbnail = "http://www.srf.ch/webservice/cvis/segment/thumbnail/" + id + "?width=150";
-                        image = "http://www.srf.ch/webservice/cvis/segment/thumbnail/" + id;
-                    }
-                }
 
                 String[] keywords = extractKeywords(seite2);
-                if ((pos1 = seite2.indexOf(MUSTER_TITEL)) != -1) {
-                    pos1 += MUSTER_TITEL.length();
-                    if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
-                        t = seite2.substring(pos1, pos2);
-                        t = StringEscapeUtils.unescapeJava(t).trim();
-                        if (!t.equals("")) {
-                            titel = t;
-                        }
-                    }
+                String thumbOrImage = extractThumbnail(seite2);
+                long duration = extractDuration(seite2);
+                String description = extractDescription(seite2);
+                String title = extractTitle(seite2);
+                String urlHd = extractHdUrl(seite2, urlWebsite);
+                String url_normal = extractUrl(seite2);
+                String url_small = extractSmallUrl(seite2);
+
+
+
+
+
+
+                urlHd = urlHd.isEmpty() ? getHdUrlFromM3u8(seite2) : urlHd;
+                url_normal = url_normal.isEmpty() ? getNormalUrlFromM3u8(seite2) : url_normal;
+                url_small = url_small.isEmpty() ? getSmallUrlFromM3u8(seite2) : url_small;
+
+                if (url_normal.isEmpty()) {
+                    Log.fehlerMeldung(-159873540, Log.FEHLER_ART_MREADER, "MediathekSRf.filmLaden", "keine NORMALE Url für: " + urlWebsite + " : " + url_normal);
                 }
-                if ((pos1 = seite2.indexOf(MUSTER_URL)) != -1) {
-                    pos1 += MUSTER_URL.length();
-                    if ((pos2 = seite2.indexOf("\"", pos1)) != -1) {
-                        String url = seite2.substring(pos1, pos2);
-                        if (!url.equals("")) {
-                            url = url.replace("\\", "");
-                            if (url.endsWith("m3u8")) {
-                                String tmp = getUrlFrom_m3u8(url);
-                                if (!tmp.equals("")) {
-                                    url = tmp;
-                                    // thema = "--- test ----";
-                                } else {
-                                    Log.fehlerMeldung(-312136970, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme2", "keine URL" + url);
-                                }
-                            }
-                            // DatenFilm(Daten ddaten, String ssender, String tthema, String urlThema, String ttitel, String uurl, String uurlorg, String zziel) {
-                            // DatenFilm film = new DatenFilm(nameSenderMReader, thema, strUrlFeed, titel, url, datum, zeit);
-                            DatenFilm film = new DatenFilm(nameSenderMReader, thema, urlWebsite, titel, url, ""/*rtmpURL*/, datum, zeit, duration, description,
-                                    image.isEmpty() ? thumbnail : image, keywords);
-                            if (url.endsWith("_hq1.mp4")) {
-                                String urlKlein = url.replace("_hq1.mp4", "_mq1.mp4");
-                                film.addUrlKlein(urlKlein, "");
-                            }
-                            addFilm(film);
-                        } else {
-                            Log.fehlerMeldung(-698325618, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme2", "keine URL" + url);
-                        }
-                    }
+
+                DatenFilm film = new DatenFilm(nameSenderMReader, thema, urlWebsite, title, url_normal, ""/*rtmpURL*/, datum, zeit, duration, description,
+                        thumbOrImage, keywords);
+
+                if (!url_small.isEmpty()) {
+                    film.addUrlKlein(url_small, "");
+                } else {
+                    Log.fehlerMeldung(-159873540, Log.FEHLER_ART_MREADER, "MediathekArd.SRF", "keine kleine Url für: " + urlWebsite + " : " + url_normal);
                 }
+                if (!urlHd.isEmpty()) {
+                    film.addUrlHd(urlHd, "");
+                }
+                addFilm(film);
             } catch (Exception ex) {
                 Log.fehlerMeldung(-556320087, Log.FEHLER_ART_MREADER, "MediathekSf.addFilme2", ex);
             }
         }
 
-        private String getUrlFrom_m3u8(String m3u8Url) {
-            // http://srfvod-vh.akamaihd.net/i/vod/chfilmszene/2012/12/chfilmszene_20121213_001157_web_h264_16zu9_,lq1,mq1,hq1,.mp4.csmil/index_0_av.m3u8?null=&e=ace6e3bb3f9f8597
-            // rtmp://cp50792.edgefcs.net/ondemand/mp4:aka/vod/chfilmszene/2012/12/chfilmszene_20121213_001157_web_h264_16zu9_hq1.mp4
+        private String getSmallUrlFromM3u8(MVStringBuilder page) {
+            final String PATTERN_QUALITY_100 = "\"quality\":\"100\",";
+            final String PATTERN_RESOLUTION = "RESOLUTION=320x180";
+            final String INDEX_2 = "index_0_av.m3u8";
+
+            final String PATTERN_URL = "\"url\":\"";
+            final String PATTERN_URL_END = "\"";
+
+
+            String m3u8Url = normalizeJsonUrl(subString(PATTERN_QUALITY_100, PATTERN_URL, PATTERN_URL_END, page));
+            if (m3u8Url.isEmpty()) {
+                return m3u8Url;
+            }
+            return getUrlFromM3u8(m3u8Url, PATTERN_RESOLUTION, INDEX_2);
+        }
+
+        private String getNormalUrlFromM3u8(MVStringBuilder page) {
+            final String PATTERN_QUALITY_100 = "\"quality\":\"100\",";
+            final String PATTERN_RESOLUTION = "RESOLUTION=640x360";
+            final String INDEX_2 = "index_2_av.m3u8";
+
+            final String PATTERN_URL = "\"url\":\"";
+            final String PATTERN_URL_END = "\"";
+
+
+            String m3u8Url = normalizeJsonUrl(subString(PATTERN_QUALITY_100, PATTERN_URL, PATTERN_URL_END, page));
+            if (m3u8Url.isEmpty()) {
+                return m3u8Url;
+            }
+            return getUrlFromM3u8(m3u8Url, PATTERN_RESOLUTION, INDEX_2);
+        }
+
+        private String getHdUrlFromM3u8(MVStringBuilder page) {
+            final String PATTERN_QUALITY_200 = "\"quality\":\"200\",";
+            final String PATTERN_RESOLUTION = "RESOLUTION=1280x720";
+            final String PATTERN_URL = "\"url\":\"";
+            final String PATTERN_URL_END = "\"";
+
+            final String INDEX_5 = "index_5_av.m3u8";
+
+
+            String m3u8Url = normalizeJsonUrl(subString(PATTERN_QUALITY_200, PATTERN_URL, PATTERN_URL_END, page));
+            if (m3u8Url.isEmpty()) {
+                return m3u8Url;
+            }
+
+            return getUrlFromM3u8(m3u8Url, PATTERN_RESOLUTION, INDEX_5);
+
+        }
+
+        private String getUrlFromM3u8(String m3u8Url, String resolutionPattern, String qualityIndex) {
+            final String PATTERN_URL = "http://";
+            final String PATTERN_URL_END = "?null";
+
+            final String CSMIL = "csmil/";
+            String playlist = "";
             String url = "";
-            final String MUSTER_URL = "http://";
-            meldung(m3u8Url);
             seite3 = getUrl.getUri_Utf(nameSenderMReader, m3u8Url, seite3, "");
-            if (seite3.length() == 0) {
-                return "";
-            }
-            try {
-                // Möglichkeit 1
-                int pos1;
-                int pos2;
-                if ((pos1 = seite3.indexOf(MUSTER_URL)) != -1) {
-                    pos1 += MUSTER_URL.length();
-                    if ((pos2 = seite3.indexOf("?", pos1)) != -1) {
-                        url = seite3.substring(pos1, pos2);
-                        url = url.substring(url.indexOf("/vod/"));
-                        url = "rtmp://cp50792.edgefcs.net/ondemand/mp4:aka" + url;
-                        url = url.substring(0, url.indexOf("h264"));
-                        url = url + "h264_16zu9_hq1.mp4";
-                        if (url.equals("")) {
-                            Log.fehlerMeldung(-362514789, Log.FEHLER_ART_MREADER, "MediathekSf.getUrlFrom_m3u8", "keine URL" + url);
+            if (seite3.length() != 0) {
+                playlist = subString(resolutionPattern, PATTERN_URL, PATTERN_URL_END, seite3);
+                if (playlist.isEmpty()) {
+                    if (seite3.indexOf(qualityIndex) != -1) {
+                        if (m3u8Url.contains(CSMIL)) {
+                            url = m3u8Url.substring(0, m3u8Url.indexOf(CSMIL)) + CSMIL + qualityIndex;
+                            if (url.contains(PATTERN_URL)) {
+                                return url;
+                            }
+                        } else {
+                            url = PATTERN_URL + url;
                         }
+                        return url;
                     }
+
+                } else {
+                    playlist = PATTERN_URL + playlist;
                 }
-                if (url.isEmpty()) {
-                    // Möglichkeit 2
-                    // http://hdvodsrforigin-f.akamaihd.net/i/vod/coverme/2013/07/coverme_20130708_205743_web_h264_16zu9_,lq1,mq1,hq1,.mp4.csmil/master.m3u8
-                    // index_2_av.m3u8?e=b471643725c47acd
-                    // m3u-URL:
-                    // http://cdn-vod-ios.br.de/i/mir-live/bw1XsLz.......A,B,.mp4.csmil/master.m3u8?__b__=200
-                    final String URL = "index_2_av";
-                    final String CSMIL = "csmil/";
-                    if (m3u8Url.contains(CSMIL)) {
-                        url = m3u8Url.substring(0, m3u8Url.indexOf(CSMIL)) + CSMIL;
-                        url = url + URL + seite3.extract(URL, "\n");
-                    }
-                }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(-827485890, Log.FEHLER_ART_MREADER, "MediathekSf.getUrlFrom_m3u8", ex);
+
+            } else {
+                Log.fehlerMeldung(-362514789, Log.FEHLER_ART_MREADER, "MediathekSf.getUrlFromm3u8", "keine Seite gefunden" + m3u8Url);
             }
-            return url;
+
+            return playlist;
+        }
+
+        private String extractHdUrl(MVStringBuilder page, String urlWebsite) {
+
+            final String PATTERN_HD_WIDTH = "\"frame_width\":1280";
+            final String PATTERN_QUALITY_200 = "\"quality\":\"200\",";
+
+            final String PATTERN_DL_URL_START = "button_download_img offset\" href=\"";
+            final String PATTERN_DL_URL_END = "\"";
+            if ((page.indexOf(PATTERN_HD_WIDTH) != -1) || page.indexOf(PATTERN_QUALITY_200) != -1) {
+                film_website = getUrl.getUri_Utf(nameSenderMReader, urlWebsite, film_website, "");
+
+                String dlUrl = subString(PATTERN_DL_URL_START, PATTERN_DL_URL_END, film_website);
+                return dlUrl;
+            }
+            return "";
+        }
+
+        private String extractUrl(MVStringBuilder page) {
+            final String PATTERN_WIDTH_640 = "\"frame_width\":640";
+
+            final String PATTERN_URL = "\"url\":\"";
+            final String PATTERN_URL_END = "\"";
+
+            return normalizeJsonUrl(subString(PATTERN_WIDTH_640, PATTERN_URL, PATTERN_URL_END, page));
+        }
+
+        private String extractSmallUrl(MVStringBuilder page) {
+            final String PATTERN_WIDTH_320 = "\"frame_width\":320";
+            final String PATTERN_WIDTH_384 = "\"frame_width\":384";
+            final String PATTERN_URL = "\"url\":\"";
+            final String PATTERN_URL_END = "\"";
+
+            String url = subString(PATTERN_WIDTH_320, PATTERN_URL, PATTERN_URL_END, page);
+            if (url.isEmpty()) {
+                url = subString(PATTERN_WIDTH_384, PATTERN_URL, PATTERN_URL_END, page);
+            }
+            return normalizeJsonUrl(url);
+        }
+
+        private long extractDuration(MVStringBuilder page) {
+            int pos1, pos2;
+            long duration = 0;
+            final String PATTERN_DURATION = "\"mark_out\":";
+
+            if ((pos1 = page.indexOf(PATTERN_DURATION)) != -1) {
+                pos1 += PATTERN_DURATION.length();
+                if ((pos2 = page.indexOf(",", pos1)) != -1) {
+                    int pos3 = page.indexOf(".", pos1);
+                    if (pos3 != -1 && pos3 < pos2) {
+                        // we need to strip the . decimal divider
+                        pos2 = pos3;
+                    }
+                    try {
+                        String d = page.substring(pos1, pos2);
+                        if (!d.isEmpty()) {
+                            duration = Long.parseLong(d);
+                        }
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(-646490237, Log.FEHLER_ART_MREADER, "MediathekSf.extractDuration", ex);
+                    }
+                }
+            }
+            return duration;
+        }
+
+        private String extractThumbnail(MVStringBuilder page) {
+
+
+            final String PATTERN_ID = "\"id\":\"";
+            final String PATTERN_ID_END = "\",";
+
+
+            String id = subString(PATTERN_ID, PATTERN_ID_END, page);
+            String thumbnail = "http://www.srf.ch/webservice/cvis/segment/thumbnail/" + id + "?width=150";
+
+
+            return thumbnail;
+        }
+
+        private String extractDescription(MVStringBuilder page) {
+            final String PATTERN_DESCRIPTION = "\"description_lead\":\"";
+            final String PATTERN_DESC_END = "\",";
+            final String PATTERN_DESC_ALTERNATIVE = "\"description\":\"";
+
+
+
+            String description = subString(PATTERN_DESCRIPTION, PATTERN_DESC_END, page);
+            if (description.isEmpty()) {
+                description = subString(PATTERN_DESC_ALTERNATIVE, PATTERN_DESC_END, page);
+            }
+
+
+
+            return StringEscapeUtils.unescapeJava(description).trim();
+        }
+
+        private String extractTitle(MVStringBuilder page) {
+
+
+            final String PATTERN_TITLE = "\"description_title\":\"";
+            final String PATTERN_TITLE_END = "\",";
+
+            String title = subString(PATTERN_TITLE, PATTERN_TITLE_END, page);
+            return StringEscapeUtils.unescapeJava(title).trim();
         }
 
         private String[] extractKeywords(MVStringBuilder string) {
@@ -401,6 +471,41 @@ public class MediathekSrf extends MediathekReader implements Runnable {
                 }
             }
             return l.toArray(new String[l.size()]);
+        }
+
+        private String subString(String searchPattern, String patternStart, String patternEnd, MVStringBuilder page) {
+            int posSearch, pos1, pos2;
+            String extracted = "";
+            if ((posSearch = page.indexOf(searchPattern)) != -1) {
+                if ((pos1 = page.indexOf(patternStart, posSearch)) != -1) {
+                    pos1 += patternStart.length();
+
+                    if ((pos2 = page.indexOf(patternEnd, pos1)) != -1) {
+                        extracted = page.substring(pos1, pos2);
+
+                    }
+                }
+            }
+            return extracted;
+        }
+
+        private String subString(String patternStart, String patternEnd, MVStringBuilder page) {
+            int pos1, pos2;
+            String extracted = "";
+            if ((pos1 = page.indexOf(patternStart)) != -1) {
+                pos1 += patternStart.length();
+                if ((pos2 = page.indexOf(patternEnd, pos1)) != -1) {
+                    extracted = page.substring(pos1, pos2);
+                }
+            }
+            return extracted;
+        }
+
+        private String normalizeJsonUrl(String jsonurl) {
+            final String SEARCH_PATTERN = "\\/";
+            final String REPLACE_PATTERN = "/";
+
+            return jsonurl.replace(SEARCH_PATTERN, REPLACE_PATTERN);
         }
     }
 }
