@@ -24,9 +24,9 @@
     </Programm>
     <Programm>
         <Programmname>VLC</Programmname>
-        <Zieldateiname>%t-%T-%N.asf</Zieldateiname>
+        <Zieldateiname>%t-%T-%N.ts</Zieldateiname>
         <Programmpfad>PFAD_VLC</Programmpfad>
-        <Programmschalter>%f :sout=#standard{access=file,mux=asf,dst=**} -I dummy --play-and-exit</Programmschalter>
+        <Programmschalter>%f :sout=#standard{access=file,mux=ts,dst=**} -I dummy --play-and-exit</Programmschalter>
     </Programm>
 
     <Programmset>
