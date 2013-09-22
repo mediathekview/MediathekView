@@ -128,6 +128,12 @@ public class GuiDebug extends PanelVorlage {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
             }
         });
+        jButtonGc.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.gc();
+            }
+        });
     }
 
     private void addSender() {
@@ -191,6 +197,7 @@ public class GuiDebug extends PanelVorlage {
         jCheckBoxDateiGroesse = new javax.swing.JCheckBox();
         jButtonDoppelt = new javax.swing.JButton();
         jButtonDoppeltIndex = new javax.swing.JButton();
+        jButtonGc = new javax.swing.JButton();
 
         jPanelSenderLaden.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender starten"));
 
@@ -338,6 +345,8 @@ public class GuiDebug extends PanelVorlage {
 
         jButtonDoppeltIndex.setText("nur doppelte URLs, index");
 
+        jButtonGc.setText("Gc");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -350,7 +359,9 @@ public class GuiDebug extends PanelVorlage {
                         .addGap(18, 18, 18)
                         .addComponent(jButtonDoppelt)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonDoppeltIndex))
+                        .addComponent(jButtonDoppeltIndex)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonGc))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jToggleButtonAllesLaden)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -383,7 +394,8 @@ public class GuiDebug extends PanelVorlage {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBoxDateiGroesse)
                     .addComponent(jButtonDoppelt)
-                    .addComponent(jButtonDoppeltIndex))
+                    .addComponent(jButtonDoppeltIndex)
+                    .addComponent(jButtonGc))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -416,6 +428,7 @@ public class GuiDebug extends PanelVorlage {
     private javax.swing.JButton jButtonDoppeltIndex;
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
+    private javax.swing.JButton jButtonGc;
     private javax.swing.JButton jButtonTasklist;
     private javax.swing.JCheckBox jCheckBoxDateiGroesse;
     private javax.swing.JPanel jPanel5;

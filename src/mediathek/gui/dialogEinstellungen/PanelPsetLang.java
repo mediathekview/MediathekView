@@ -455,8 +455,9 @@ public class PanelPsetLang extends PanelVorlage {
     private void setAufAb(boolean auf) {
         int row = tabellePset.getSelectedRow();
         if (row != -1) {
-            int neu = listePset.auf(row, auf);
-            tabellePset();
+            int neu = listePset.auf(tabellePset.convertRowIndexToModel(row), auf);
+            neu = tabellePset.convertRowIndexToView(neu);
+//            tabellePset();
             tabellePset.setRowSelectionInterval(neu, neu);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(neu, 0, false));
             notifyPset();
@@ -1420,7 +1421,7 @@ public class PanelPsetLang extends PanelVorlage {
                     int row = tabellePset.getSelectedRow();
                     if (row != -1) {
                         datenPset = listePset.get(tabellePset.convertRowIndexToModel(row));
-                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), row, DatenPset.PROGRAMMSET_NAME_NR);
+                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), tabellePset.convertRowIndexToModel(row), DatenPset.PROGRAMMSET_NAME_NR);
                         jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME_NR]);
                     }
                 }
@@ -1571,7 +1572,7 @@ public class PanelPsetLang extends PanelVorlage {
                         datenPset.arr[nr] = textArea.getText();
                     }
                     if (nr == DatenPset.PROGRAMMSET_NAME_NR) {
-                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), row, DatenPset.PROGRAMMSET_NAME_NR);
+                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), tabellePset.convertRowIndexToModel(row), DatenPset.PROGRAMMSET_NAME_NR);
                         jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME_NR]);
                     }
                     notifyPset();
