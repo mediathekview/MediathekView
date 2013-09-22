@@ -309,6 +309,8 @@
                           <Component id="jButtonDoppelt" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonDoppeltIndex" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButtonGc" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="jToggleButtonAllesLaden" linkSize="1" min="-2" max="-2" attributes="0"/>
@@ -345,6 +347,7 @@
                       <Component id="jCheckBoxDateiGroesse" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonDoppelt" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonDoppeltIndex" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonGc" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -396,6 +399,11 @@
         <Component class="javax.swing.JButton" name="jButtonDoppeltIndex">
           <Properties>
             <Property name="text" type="java.lang.String" value="nur doppelte URLs, index"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonGc">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Gc"/>
           </Properties>
         </Component>
       </SubComponents>
