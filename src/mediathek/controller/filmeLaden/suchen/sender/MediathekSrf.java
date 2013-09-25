@@ -218,8 +218,12 @@ public class MediathekSrf extends MediathekReader implements Runnable {
 
 
                 urlHd = urlHd.isEmpty() ? getHdUrlFromM3u8(seite2) : urlHd;
-                url_normal = url_normal.isEmpty() ? getNormalUrlFromM3u8(seite2) : url_normal;
-                url_small = url_small.isEmpty() ? getSmallUrlFromM3u8(seite2) : url_small;
+//                url_normal = url_normal.isEmpty() ? getNormalUrlFromM3u8(seite2) : url_normal;
+//                url_small = url_small.isEmpty() ? getSmallUrlFromM3u8(seite2) : url_small;
+
+                //For HD films, normal or small RTMP urls don't work
+                url_normal = (isHdAvailable(seite2) || url_normal.isEmpty()) ? getNormalUrlFromM3u8(seite2) : url_normal;
+                url_small = (isHdAvailable(seite2) || url_small.isEmpty()) ? getSmallUrlFromM3u8(seite2) : url_small;
 
                 if (url_normal.isEmpty()) {
                     Log.fehlerMeldung(-159873540, Log.FEHLER_ART_MREADER, "MediathekSRf.filmLaden", "keine NORMALE Url für: " + urlWebsite + " : " + url_normal);
@@ -328,18 +332,30 @@ public class MediathekSrf extends MediathekReader implements Runnable {
 
         private String extractHdUrl(MVStringBuilder page, String urlWebsite) {
 
-            final String PATTERN_HD_WIDTH = "\"frame_width\":1280";
-            final String PATTERN_QUALITY_200 = "\"quality\":\"200\",";
+//            final String PATTERN_HD_WIDTH = "\"frame_width\":1280";
+//            final String PATTERN_QUALITY_200 = "\"quality\":\"200\",";
 
             final String PATTERN_DL_URL_START = "button_download_img offset\" href=\"";
             final String PATTERN_DL_URL_END = "\"";
-            if ((page.indexOf(PATTERN_HD_WIDTH) != -1) || page.indexOf(PATTERN_QUALITY_200) != -1) {
+
+            if (isHdAvailable(page)) {
                 film_website = getUrl.getUri_Utf(nameSenderMReader, urlWebsite, film_website, "");
 
                 String dlUrl = subString(PATTERN_DL_URL_START, PATTERN_DL_URL_END, film_website);
                 return dlUrl;
             }
             return "";
+        }
+
+        private boolean isHdAvailable(MVStringBuilder page) {
+            final String PATTERN_HD_WIDTH = "\"frame_width\":1280";
+            final String PATTERN_QUALITY_200 = "\"quality\":\"200\",";
+
+            if ((page.indexOf(PATTERN_HD_WIDTH) != -1) || page.indexOf(PATTERN_QUALITY_200) != -1) {
+                return true;
+            }
+
+            return false;
         }
 
         private String extractUrl(MVStringBuilder page) {
@@ -357,11 +373,18 @@ public class MediathekSrf extends MediathekReader implements Runnable {
             final String PATTERN_URL = "\"url\":\"";
             final String PATTERN_URL_END = "\"";
 
+//            String url = subString(PATTERN_WIDTH_320, PATTERN_URL, PATTERN_URL_END, page);
+//            if (url.isEmpty()) {
+//                url = subString(PATTERN_WIDTH_384, PATTERN_URL, PATTERN_URL_END, page);
+//            }
+//            return normalizeJsonUrl(url);
+
             String url = subString(PATTERN_WIDTH_320, PATTERN_URL, PATTERN_URL_END, page);
             if (url.isEmpty()) {
                 url = subString(PATTERN_WIDTH_384, PATTERN_URL, PATTERN_URL_END, page);
             }
             return normalizeJsonUrl(url);
+
         }
 
         private long extractDuration(MVStringBuilder page) {
