@@ -21,7 +21,6 @@ package mediathek.controller.filmeLaden.suchen;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -69,7 +68,7 @@ public class FilmeSuchenSender {
     private ArrayList<String> runde2 = new ArrayList<String>();
     private ArrayList<String> runde3 = new ArrayList<String>();
     private String[] titel1 = {"Sender       ", "[min]", "Seiten", "Filme", "Fehler", "FVersuche", "FZeit[s]"};
-    private String[] titel3 = {"Sender       ", "Geladen[MB]", "Nix", "Deflaet", "Gzip", "AnzGroesse"};
+    private String[] titel3 = {"Sender       ", "Geladen[MB]", "Nix", "Deflaet", "Gzip", "AnzGroesse", "Anz-403", "Anz-Proxy"};
     private final String TRENNER = " | ";
     private final String TTRENNER = " || ";
 
@@ -231,6 +230,8 @@ public class FilmeSuchenSender {
             zeile += textLaenge(titel3[3].length(), ladeart[1]) + TRENNER;
             zeile += textLaenge(titel3[4].length(), ladeart[2]) + TRENNER;
             zeile += textLaenge(titel3[5].length(), String.valueOf(MVUrlDateiGroesse.getZaehler(run.sender))) + TRENNER;
+            zeile += textLaenge(titel3[6].length(), String.valueOf(MVUrlDateiGroesse.getZaehler403(run.sender))) + TRENNER;
+            zeile += textLaenge(titel3[7].length(), String.valueOf(MVUrlDateiGroesse.getZaehlerProxy(run.sender))) + TRENNER;
             runde3.add(zeile);
         }
         if (!listeSenderLaufen.listeFertig()) {
@@ -268,7 +269,7 @@ public class FilmeSuchenSender {
         Log.systemMeldung("");
         Log.systemMeldung("");
         // Zeile 3 =============================================
-        zeile = titel3[0] + TTRENNER + titel3[1] + TRENNER + titel3[2] + TRENNER + titel3[3] + TRENNER + titel3[4] + TRENNER + titel3[5];
+        zeile = titel3[0] + TTRENNER + titel3[1] + TRENNER + titel3[2] + TRENNER + titel3[3] + TRENNER + titel3[4] + TRENNER + titel3[5] + TRENNER + titel3[6] + TRENNER + titel3[7];
         Log.systemMeldung(zeile);
         Log.systemMeldung("---------------------------------------------------------------------------------");
         for (String s : runde3) {

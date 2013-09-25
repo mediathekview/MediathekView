@@ -44,6 +44,8 @@ public class Daten {
     public static FilmeLaden filmeLaden;
     public static ListeFilme listeFilme = null;
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static String proxyUrl = "";
+    public static int proxyPort = -1;
 
     public Daten(String pfad) {
         basisverzeichnis = pfad;

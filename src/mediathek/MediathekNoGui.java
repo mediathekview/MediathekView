@@ -45,7 +45,10 @@ public class MediathekNoGui implements Runnable {
     private boolean serverLaufen = false;
     private File logfile = null;
 
-    public MediathekNoGui(String ppfad, boolean ssenderAllesLaden, boolean uupdateFilmliste, String ooutput, String iimprtUrlExtend, String iimprtUrlReplace, String uuserAgent, File log, boolean ddebug) {
+    public MediathekNoGui(String ppfad, boolean ssenderAllesLaden, boolean uupdateFilmliste, String ooutput,
+            String iimprtUrlExtend, String iimprtUrlReplace, String uuserAgent, File log,
+            String proxyUrl, int proxyPort,
+            boolean ddebug) {
         // NUR für den Start vom MediathekServer
         pfad = ppfad;
         senderAllesLaden = ssenderAllesLaden;
@@ -55,6 +58,8 @@ public class MediathekNoGui implements Runnable {
         importUrl__ersetzen = iimprtUrlReplace;
         userAgent = uuserAgent;
         logfile = log;
+        Daten.proxyUrl = proxyUrl;
+        Daten.proxyPort = proxyPort;
         serverLaufen = true;
         if (ddebug) {
             Daten.debug = ddebug;
