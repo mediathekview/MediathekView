@@ -38,7 +38,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
-import com.explodingpixels.util.PlatformUtils;
 import com.explodingpixels.widgets.WindowDragger;
 import com.explodingpixels.widgets.WindowUtils;
 import com.jidesoft.utils.SystemInfo;
@@ -109,7 +108,7 @@ public class HudWindow {
         fDialog.setUndecorated(true);
         fDialog.getRootPane().setOpaque(false);
         
-        WindowUtils.makeWindowNonOpaque(fDialog);
+        WindowUtils.makeWindowTransparent(fDialog);
         // for Java 5 on platforms other than Mac (those that don't support transparency), it looks
         // nicer to use a black background rather than the default (usually white).
         fDialog.getRootPane().setBackground(Color.BLACK);

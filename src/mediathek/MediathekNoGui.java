@@ -121,6 +121,8 @@ public class MediathekNoGui implements Runnable {
         Log.systemMeldung("ImportUrl anhaengen: " + importUrl__anhaengen);
         Log.systemMeldung("ImportUrl ersetzen: " + importUrl__ersetzen);
         Log.systemMeldung("Outputfile: " + output);
+        Log.systemMeldung("ProxyUrl: " + Daten.proxyUrl);
+        Log.systemMeldung("ProxyPort: " + Daten.proxyPort);
         Log.systemMeldung("");
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override

@@ -12,9 +12,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
-import com.explodingpixels.util.PlatformUtils;
 import com.jidesoft.utils.SystemInfo;
-import com.sun.awt.AWTUtilities;
 
 /**
  * Utility methods for dealing with {@link Window}s.
@@ -22,9 +20,8 @@ import com.sun.awt.AWTUtilities;
 public class WindowUtils {
 
     /**
-     * Try's to make the given {@link Window} non-opqaue (transparent) across
-     * platforms and JREs. This method is not guaranteed to succeed, and will
-     * fail silently if the given {@code Window} cannot be made non-opaque.
+     * Try's to make the given {@link Window} transparent across
+     * platforms and JREs.
      * <p/>
      * This method is useful, for example, when creating a HUD style window that
      * is semi-transparent, and thus doesn't want the window background to be
@@ -33,47 +30,17 @@ public class WindowUtils {
      * @param window
      * the {@code Window} to make non-opaque.
      */
-    public static void makeWindowNonOpaque(Window window) {
-        // on the mac, simply setting the window's background color to be fully
-        // transparent makes the window non-opaque.
-        //TODO AWTUtilities calls have been made public in JDK7, see http://docs.oracle.com/javase/tutorial/uiswing/misc/trans_shaped_windows.html
-        boolean isPerPixelTranslucencySupported = AWTUtilities.isTranslucencySupported(AWTUtilities.Translucency.PERPIXEL_TRANSLUCENT);
+    public static void makeWindowTransparent(Window window) {
+        final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        final GraphicsDevice gd = ge.getDefaultScreenDevice();
+        final boolean isPerPixelTranslucencySupported = gd.isWindowTranslucencySupported(GraphicsDevice.WindowTranslucency.PERPIXEL_TRANSLUCENT);
 
-        //if per-pixel transparency is not supported, leave window opaque (non-transparent)
+
         if (isPerPixelTranslucencySupported) {
             window.setBackground(new Color(0, 0, 0, 0));
         } else {
+            //if per-pixel transparency is not supported, leave window non-transparent
             window.setBackground(Color.BLACK); //just to be sure..
-        }
-        // on non-mac platforms, try to use the facilities of Java 6 update 10.
-        //if not supported it will fail silently
-        if (!SystemInfo.isMacOSX() && isPerPixelTranslucencySupported) {
-            quietlyTryToMakeWindowNonOqaque(window);
-        }
-    }
-
-    /**
-     * Trys to invoke
-     * {@code com.sun.awt.AWTUtilities.setWindowOpaque(window,false)} on the
-     * given {@link Window}. This will only work when running with JRE 6 update
-     * 10 or higher. This method will silently fail if the method cannot be
-     * invoked.
-     *
-     * @param window
-     * the {@code Window} to try and make non-opaque.
-     */
-    private static void quietlyTryToMakeWindowNonOqaque(Window window) {
-        //TODO remove reflection
-        try {
-            @SuppressWarnings("rawtypes")
-            Class clazz = Class.forName("com.sun.awt.AWTUtilities");
-
-            @SuppressWarnings("unchecked")
-            Method method = clazz.getMethod("setWindowOpaque",
-                    java.awt.Window.class, Boolean.TYPE);
-            method.invoke(clazz, window, false);
-        } catch (Exception e) {
-            // silently ignore this exception.
         }
     }
 
@@ -92,7 +59,7 @@ public class WindowUtils {
     @Deprecated
     public static WindowFocusListener createAndInstallRepaintWindowFocusListener(
             Window window) {
-        WindowFocusListener windowFocusListener = new WindowFocusListener() {
+        final WindowFocusListener windowFocusListener = new WindowFocusListener() {
             public void windowGainedFocus(WindowEvent e) {
                 e.getWindow().repaint();
             }
@@ -117,7 +84,7 @@ public class WindowUtils {
      * {@code Window} is currently active.
      */
     public static boolean isParentWindowFocused(Component component) {
-        Window window = SwingUtilities.getWindowAncestor(component);
+        final Window window = SwingUtilities.getWindowAncestor(component);
         return window != null && window.isFocused();
     }
 
@@ -135,7 +102,7 @@ public class WindowUtils {
      */
     public static void installWeakWindowFocusListener(JComponent component,
             WindowFocusListener focusListener) {
-        AncestorListener ancestorListener = createAncestorListener(component,
+        final AncestorListener ancestorListener = createAncestorListener(component,
                 focusListener);
         component.addAncestorListener(ancestorListener);
     }
@@ -154,8 +121,8 @@ public class WindowUtils {
     public static void installJComponentRepainterOnWindowFocusChanged(
             JComponent component) {
         // TODO check to see if the component already has an ancestor.
-        WindowFocusListener windowListener = createRepaintWindowListener(component);
-        AncestorListener ancestorListener = createAncestorListener(component,
+        final WindowFocusListener windowListener = createRepaintWindowListener(component);
+        final AncestorListener ancestorListener = createAncestorListener(component,
                 windowListener);
         component.addAncestorListener(ancestorListener);
     }
@@ -171,9 +138,7 @@ public class WindowUtils {
                 component);
         return new AncestorListener() {
             public void ancestorAdded(AncestorEvent event) {
-                // TODO if the WeakReference's object is null, remove the
-                // WeakReference as an
-                // TODO AncestorListener.
+                // TODO if the WeakReference's object is null, remove the WeakReference as an AncestorListener.
                 final Window window = weakReference.get() == null ? null
                         : SwingUtilities.getWindowAncestor(weakReference.get());
                 if (window != null) {

@@ -2,7 +2,6 @@ package com.explodingpixels.macwidgets;
 
 import javax.swing.JRootPane;
 
-import com.explodingpixels.util.PlatformUtils;
 import com.jidesoft.utils.SystemInfo;
 
 /**
