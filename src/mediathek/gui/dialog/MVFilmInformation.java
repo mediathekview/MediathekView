@@ -58,53 +58,54 @@ public class MVFilmInformation implements ChangeListener {
 
     public MVFilmInformation(Frame owner, JTabbedPane tabbedPane, DDaten ddaten) {
         this.ddaten = ddaten;
-        if (Funktionen.getOs() == Funktionen.OS_LINUX) {
-            foreground = Color.WHITE;
-            background = Color.BLACK;
-            //dialog = new JDialog(ddaten.mediathekGui);
-            dialog = new JDialog();
-            dialog.setTitle("Filminformation");
-
-            for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
-                labelArrNames[i] = new JLabel(DatenFilm.COLUMN_NAMES[i] + ":");
-                labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);
-                labelArrNames[i].setDoubleBuffered(true);
-                labelArrNames[i].setForeground(foreground);
-                labelArrNames[i].setBackground(background);
-
-                txtArrCont[i] = new JTextField("");
-                txtArrCont[i].setEditable(false);
-                txtArrCont[i].setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-                txtArrCont[i].setDoubleBuffered(true);
-                txtArrCont[i].setForeground(foreground);
-                txtArrCont[i].setBackground(background);
-            }
-            JComponent content = setLable();
-            content.setBackground(background);
-            content.setForeground(foreground);
-            dialog.add(content);
-            dialog.repaint();
-        } else {
-            foreground = Color.WHITE;
-            background = Color.BLACK;
-            hud = new HudWindow("Filminformation", owner);
-            hud.makeResizeable();
-            for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
-                labelArrNames[i] = HudWidgetFactory.createHudLabel(DatenFilm.COLUMN_NAMES[i] + ":");
-                labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);
-                labelArrNames[i].setDoubleBuffered(true);
-                txtArrCont[i] = HudWidgetFactory.createHudTextField("");
-                txtArrCont[i].setEditable(false);
-                txtArrCont[i].setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-                txtArrCont[i].setDoubleBuffered(true);
-            }
-            JComponent content = setLable();
-            content.setDoubleBuffered(true);
-            //prevents flickering in JDK7, JDK6 is still buggy :(
-            content.setOpaque(false);
-            hud.setContentPane(content);
-            dialog = hud.getJDialog();
+        ///
+//        if (Funktionen.getOs() == Funktionen.OS_LINUX) {
+//            foreground = Color.WHITE;
+//            background = Color.BLACK;
+//            //dialog = new JDialog(ddaten.mediathekGui);
+//            dialog = new JDialog();
+//            dialog.setTitle("Filminformation");
+//
+//            for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
+//                labelArrNames[i] = new JLabel(DatenFilm.COLUMN_NAMES[i] + ":");
+//                labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);
+//                labelArrNames[i].setDoubleBuffered(true);
+//                labelArrNames[i].setForeground(foreground);
+//                labelArrNames[i].setBackground(background);
+//
+//                txtArrCont[i] = new JTextField("");
+//                txtArrCont[i].setEditable(false);
+//                txtArrCont[i].setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+//                txtArrCont[i].setDoubleBuffered(true);
+//                txtArrCont[i].setForeground(foreground);
+//                txtArrCont[i].setBackground(background);
+//            }
+//            JComponent content = setLable();
+//            content.setBackground(background);
+//            content.setForeground(foreground);
+//            dialog.add(content);
+//            dialog.repaint();
+//        } else {
+        foreground = Color.WHITE;
+        background = Color.BLACK;
+        hud = new HudWindow("Filminformation", owner);
+        hud.makeResizeable();
+        for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
+            labelArrNames[i] = HudWidgetFactory.createHudLabel(DatenFilm.COLUMN_NAMES[i] + ":");
+            labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);
+            labelArrNames[i].setDoubleBuffered(true);
+            txtArrCont[i] = HudWidgetFactory.createHudTextField("");
+            txtArrCont[i].setEditable(false);
+            txtArrCont[i].setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            txtArrCont[i].setDoubleBuffered(true);
         }
+        JComponent content = setLable();
+        content.setDoubleBuffered(true);
+        //prevents flickering in JDK7, JDK6 is still buggy :(
+        content.setOpaque(false);
+        hud.setContentPane(content);
+        dialog = hud.getJDialog();
+//        }
         viewImage.setDoubleBuffered(true);
         buttonBild.setOpaque(false);
         buttonBild.setBackground(background);

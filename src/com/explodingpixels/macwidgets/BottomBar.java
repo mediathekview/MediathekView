@@ -18,7 +18,6 @@ import com.explodingpixels.border.FocusStateMatteBorder;
 import com.explodingpixels.painter.FocusStatePainter;
 import com.explodingpixels.painter.GradientPainter;
 import com.explodingpixels.painter.MacWidgetsPainter;
-import com.explodingpixels.util.PlatformUtils;
 import com.explodingpixels.widgets.WindowDragger;
 import com.explodingpixels.widgets.WindowUtils;
 
@@ -50,12 +49,6 @@ public class BottomBar {
 	protected static final Color INACTIVE_TOP_COLOR = new Color(0xe9e9e9);
 	protected static final Color INACTIVE_BOTTOM_COLOR = new Color(0xd8d8d8);
 	protected static final Color BORDER_HIGHLIGHT_COLOR = new Color(255, 255, 255, 100);
-
-	protected static final Color LEOPARD_ACTIVE_TOP_COLOR = new Color(0xbbbbbb);
-	protected static final Color LEOPARD_ACTIVE_BOTTOM_COLOR = new Color(0x969696);
-	protected static final Color LEOPARD_INACTIVE_TOP_COLOR = new Color(0xe3e3e3);
-	protected static final Color LEOPARD_INACTIVE_BOTTOM_COLOR = new Color(0xcfcfcf);
-	protected static final Color LEOPARD_BORDER_HIGHLIGHT_COLOR = new Color(255, 255, 255, 110);
 
 	/**
 	 * Creates a {@code BottomBar} of the given size.
@@ -194,8 +187,7 @@ public class BottomBar {
 	// Private methods. ///////////////////////////////////////////////////////////////////////////
 
 	private void createAndInstallBackgroundPainter() {
-		fBottomBar.setBackgroundPainter(PlatformUtils.isLeopard()
-				? createLeopardPainter() : createDefaultPainter());
+		fBottomBar.setBackgroundPainter(createDefaultPainter());
 	}
 
 	private void createAndInstallBorder() {
@@ -223,16 +215,8 @@ public class BottomBar {
 		return new FocusStatePainter(focusedPainter, focusedPainter, unfocusedPainter);
 	}
 
-	private static MacWidgetsPainter<Component> createLeopardPainter() {
-		MacWidgetsPainter<Component> focusedPainter = new GradientPainter(
-				LEOPARD_ACTIVE_TOP_COLOR, LEOPARD_ACTIVE_BOTTOM_COLOR);
-		MacWidgetsPainter<Component> unfocusedPainter = new GradientPainter(
-				LEOPARD_INACTIVE_TOP_COLOR, LEOPARD_INACTIVE_BOTTOM_COLOR);
-		return new FocusStatePainter(focusedPainter, focusedPainter, unfocusedPainter);
-	}
-
 	private static Color getBorderHighlightColor() {
-		return PlatformUtils.isLeopard() ? LEOPARD_BORDER_HIGHLIGHT_COLOR : BORDER_HIGHLIGHT_COLOR;
+		return BORDER_HIGHLIGHT_COLOR;
 	}
 	
 	   
