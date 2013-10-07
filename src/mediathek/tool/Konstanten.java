@@ -41,8 +41,6 @@ public class Konstanten {
     public static final String VERZEICNHISS_ICONS = "Icons"; // Unterverzeichnis im Programmverzeichnis in dem die Iconsets liegen
     public static final String VERZEICNHISS_DOWNLOADS = PROGRAMMNAME; // Standard wenn nichts angeben, Verzeichnis wird im Homeverzeichnis angelegt
     public static final String VERZEICHNISS_EINSTELLUNGEN = ".mediathek3"; // im Homeverzeichnis
-    public static final String LOG_DATEI_DOWNLOAD_ABOS = "downloadAbos.txt";
-    public static final String LOG_DATEI_HISTORY = "history.txt";
     public static final String XML_DATEI = "mediathek.xml";
     public static final String XML_DATEI_FILME = "filme.xml";
     // 

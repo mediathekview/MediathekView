@@ -19,23 +19,19 @@
  */
 package mediathek.daten;
 
-import java.io.File;
-import javax.swing.JOptionPane;
 import mediathek.MediathekGui;
-import mediathek.controller.io.ErledigteAbos;
-import mediathek.controller.io.History;
-import mediathek.controller.io.IoXmlFilmlisteLesen;
-import mediathek.controller.io.IoXmlLesen;
-import mediathek.controller.io.IoXmlSchreiben;
+import mediathek.controller.io.*;
 import mediathek.controller.io.starter.StarterClass;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.DatumZeit;
-import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
+
+import javax.swing.*;
+import java.io.File;
 
 /**
  * Diese Klasse enthält zusätzliche Konstanten, Systemeinstellungen und alles was wichtig ist für
@@ -66,25 +62,56 @@ public final class DDaten extends Daten {
     public boolean nachDownloadShutDown = false;
     public MVFilmInformation filmInfoHud = null;
 
-    public DDaten(String basis, boolean gui) {
+    /**
+     * Update the {@link java.awt.SplashScreen} only if we have a Swing UI.
+     * @param text The displayed text on the splash graphics.
+     */
+    private void updateSplashScreen(String text)
+    {
+        if (mediathekGui != null) {
+            mediathekGui.updateSplashScreenText(text);
+        }
+    }
+
+    public DDaten(String basis, MediathekGui gui) {
         super(basis);
+        mediathekGui = gui;
+
+        updateSplashScreen("Lade Blacklist...");
         listeFilmeNachBlackList = new ListeFilme();
         listeBlacklist = new ListeBlacklist();
+
+        updateSplashScreen("Lade Programmsets...");
         listePset = new ListePset();
+
+        updateSplashScreen("Lade Abos...");
         listeAbo = new ListeAbo(this);
+
+        updateSplashScreen("Lade Downloads...");
         listeDownloads = new ListeDownloads(this);
-        erledigteAbos = new ErledigteAbos(this);
+
+        updateSplashScreen("Lade erledigte Abos...");
+        erledigteAbos = new ErledigteAbos();
+
         //initialisieren
+        updateSplashScreen("Lade Filmliste...");
         ioXmlLesen = new IoXmlLesen();
         ioXmlSchreiben = new IoXmlSchreiben();
-        history = new History(getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_HISTORY);
+
+        history = new History();
+
         starterClass = new StarterClass(this);
     }
 
     public void allesLaden() {
+        updateSplashScreen("Lade Konfigurationsdaten...");
         ioXmlLesen.datenLesen(this);
+
+        updateSplashScreen("Lade History...");
         history.laden();
+
         // erst die Systemdaten, dann die Filmliste
+        updateSplashScreen("Lade Filmliste...");
         new IoXmlFilmlisteLesen().standardFilmlisteLesen();
     }
 
@@ -95,7 +122,7 @@ public final class DDaten extends Daten {
         if (Daten.RESET) {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
             // dazu wird den Ordner mit den Einstellungen umbenannt
-            String dir1 = DDaten.getBasisVerzeichnis();
+            String dir1 = getBasisVerzeichnis();
             if (dir1.endsWith(File.separator)) {
                 dir1 = dir1.substring(0, dir1.length() - 1);
             }

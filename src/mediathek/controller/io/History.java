@@ -18,26 +18,26 @@
  */
 package mediathek.controller.io;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Iterator;
+
+import mediathek.daten.Daten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class History extends HashSet<String> {
+    private Path historyFilePath = null;
 
-    private String datei = "";
-
-    public History(String history_datei) {
-        datei = history_datei;
+    public History() {
+        try {
+            historyFilePath = getHistoryFilePath();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -61,52 +61,59 @@ public class History extends HashSet<String> {
         return ret;
     }
 
+    /**
+     * Get the Path to the history file
+     * @return Path object to history file
+     */
+    private Path getHistoryFilePath() throws IOException {
+        Path historyFilePath = null;
+        historyFilePath = Daten.getSettingsDirectory().resolve("history.txt");
+
+        return historyFilePath;
+    }
+
     public void laden() {
         clear();
-        File file = new File(datei);
-        if (!file.exists()) {
+
+        if (Files.notExists(historyFilePath))
             return;
-        }
-        try {
-            FileInputStream fstream = new FileInputStream(datei);
-            DataInputStream in = new DataInputStream(fstream);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new DataInputStream(Files.newInputStream(historyFilePath))))) {
             String strLine;
             while ((strLine = br.readLine()) != null) {
                 super.add(strLine);
             }
-            //Close the input stream
-            in.close();
+
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
-        } catch (Exception e) {//Catch exception if any
+        } catch (Exception e) {
             System.err.println("Fehler: " + e);
             Log.fehlerMeldung(303049876, Log.FEHLER_ART_PROG, History.class.getName(), e);
         }
     }
 
     public void speichern() {
-        try {
-            FileOutputStream fstream = new FileOutputStream(datei);
-            DataOutputStream out = new DataOutputStream(fstream);
-            BufferedWriter br = new BufferedWriter(new OutputStreamWriter(out));
-            for (String h : this) {
+        try (BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(historyFilePath)))))
+        {
+            for (String h : this)
                 br.write(h + "\n");
-            }
+
             br.flush();
-            out.close();
         } catch (Exception e) {//Catch exception if any
             Log.fehlerMeldung(978786563, Log.FEHLER_ART_PROG, History.class.getName(), e);
         }
     }
 
-    public void loschen() {
+    public void loeschen() {
         this.clear();
-        File file = new File(datei);
-        if (!file.exists()) {
+
+        if (Files.notExists(historyFilePath))
             return;
+
+        try {
+            Files.delete(historyFilePath);
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
+        } catch (IOException ignored) {
         }
-        file.delete();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
     }
 
     public Object[][] getObjectData() {

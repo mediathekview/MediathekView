@@ -19,9 +19,7 @@
  */
 package mediathek;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Frame;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -49,8 +47,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Toolkit;
-import java.awt.Window;
+
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -127,8 +124,59 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     public String getFilterToolBar() {
         return jTextFieldFilter.getText();
     }
+    private SplashScreen splash = null;
+    private Graphics2D splashScreenContext = null;
+    private int how_many_steps = 0; //currently 12
+
+    /** Update the {@link java.awt.SplashScreen} with the given text
+     *
+     * @param text The text which is to be displayed.
+     */
+    public void updateSplashScreenText(final String text) {
+        //bail out when we don´ have a splash screen...
+        if (splashScreenContext == null) {
+            return;
+        }
+
+        final int y = 430;
+        final int x = 120;
+        final int width = 300;
+        how_many_steps++;
+//        System.out.println("HOW_MANY_STEPS: " + how_many_steps);
+
+        splashScreenContext.setComposite(AlphaComposite.Clear);
+        splashScreenContext.fillRect(x, (y - 10), 300, 40);
+        splashScreenContext.setPaintMode();
+        //paint the text string...
+        splashScreenContext.setColor(Color.WHITE);
+        splashScreenContext.drawString(text, x, y + 2);
+        // paint the full progress indicator...
+        splashScreenContext.setColor(Color.BLUE);
+        splashScreenContext.fillRect(x, y - 15, width, 5);
+        //paint how much is done...
+        splashScreenContext.setColor(Color.GREEN);
+        splashScreenContext.fillRect(x, y - 15, (int) (how_many_steps * 25), 5);
+        splash.update();
+    }
+
+    /**
+     * Initialize the Splash Screen variables.
+     */
+    private void initializeSplashScreen() {
+        try {
+            splash = SplashScreen.getSplashScreen();
+            if (splash != null) {
+                splashScreenContext = splash.createGraphics();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
     public MediathekGui(String[] ar) {
+        initializeSplashScreen();
+
+        updateSplashScreenText("Speicher prüfen...");
         //we must check if we were started with enough memory, do it as early as possible
         checkMemoryRequirements();
 
@@ -157,8 +205,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); // soll abgefangen werden
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
-        ddaten = new DDaten(pfad, true);
-        ddaten.mediathekGui = this;
+
+        updateSplashScreenText("Anwendungsdaten laden...");
+        ddaten = new DDaten(pfad, this);
+
         Log.startMeldungen(this.getClass().getName());
 
         createStatusBar();
@@ -173,6 +223,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             new DialogStarteinstellungen(null, true, ddaten).setVisible(true);
         }
 
+        //updateSplashScreenText("GUI Initialisieren..."); macht Probleme beim ersten Start: DialogStarteinstellungen
         setOrgTitel();
         setLookAndFeel();
         //GuiFunktionen.setLook(this);

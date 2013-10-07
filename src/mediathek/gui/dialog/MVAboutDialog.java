@@ -26,8 +26,10 @@ import java.awt.Dialog.ModalityType;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -133,10 +135,9 @@ public class MVAboutDialog extends JDialog {
             setupVersionString();
             setupJavaInformation();
             // Programmpfade
-            lblSettingsFilePath.setText(Daten.getBasisVerzeichnis(false)
-                    + Konstanten.XML_DATEI);
-            lblFilmlistPath.setText(Daten.getBasisVerzeichnis(false)
-                    + Konstanten.XML_DATEI_FILME);
+            final Path settingsDirPath = Daten.getSettingsDirectory();
+            lblSettingsFilePath.setText(settingsDirPath.toAbsolutePath() + File.separator + Konstanten.XML_DATEI);
+            lblFilmlistPath.setText(settingsDirPath.toAbsolutePath() + File.separator + Konstanten.XML_DATEI_FILME);
 
             // auf dem Mac brauchen wir den Schließen Button nicht..
             if (isRunningOnMac) {
