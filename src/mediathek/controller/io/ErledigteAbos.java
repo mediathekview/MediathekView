@@ -19,34 +19,26 @@
  */
 package mediathek.controller.io;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
 public class ErledigteAbos {
-
-    private DDaten ddaten;
     private final String TRENNER = "  |###|  ";
     private final String PAUSE = " |#| ";
     private HashSet<String> listeErledigteAbos;
     private LinkedList<String> listeErledigteAbos_ = new LinkedList<String>();
 
-    public ErledigteAbos(DDaten d) {
-        ddaten = d;
+    public ErledigteAbos() {
         listeErledigteAbos = new HashSet<String>() {
             @Override
             public boolean add(String e) {
@@ -63,19 +55,16 @@ public class ErledigteAbos {
         listeBauen();
     }
 
-    public synchronized boolean alleLoeschen() {
-        boolean ret = false;
+    public synchronized void alleLoeschen() {
         listeErledigteAbos.clear();
-        File f = new File(Daten.getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
-        if (f != null) {
-            if (f.exists()) {
-                ret = f.delete();
-            } else {
-                ret = true;
-            }
+        try {
+            Path downloadAboFilePath = Daten.getDownloadAboFilePath();
+            if (Files.exists(downloadAboFilePath))
+                Files.delete(downloadAboFilePath);
+        } catch (IOException ignored) {
         }
+
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
-        return ret;
     }
 
     public synchronized boolean urlAusLogfileLoeschen(String urlFilm) {
@@ -83,59 +72,32 @@ public class ErledigteAbos {
         //wenn die URL im Logfiel ist, dann true zurück
         String zeile;
         boolean gefunden = false;
-        LinkedList<String> liste = new LinkedList<String>();
-        LineNumberReader in = null;
-        try {
-            File file = new File(Daten.getBasisVerzeichnis(false) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
-            if (!file.exists()) {
-                // beim Programmstart ist die Datei noch nicht da
-                gefunden = false;
-                return false;
-            }
-            in = new LineNumberReader(new InputStreamReader(new FileInputStream(file)));
+        LinkedList<String> liste = new LinkedList<>();
+
+        //Use Automatic Resource Management
+        try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(Daten.getDownloadAboFilePath())))){
             while ((zeile = in.readLine()) != null) {
                 if (getUrlAusZeile(zeile).equals(urlFilm)) {
                     gefunden = true; //nur dann muss das Logfile auch geschrieben werden
-                } else {
+                } else
                     liste.add(zeile);
-                }
             }
-            in.close();
         } catch (Exception ex) {
             Log.fehlerMeldung(281006874, Log.FEHLER_ART_PROG, "LogDownload.urlAusLogfileLoeschen-1", ex);
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (Exception ex) {
-            }
         }
+
         //und jetzt wieder schreiben, wenn nötig
         if (gefunden) {
-            File f = new File(Daten.getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
-            if (f != null) {
-                OutputStreamWriter writer = null;
-                try {
-                    writer = new OutputStreamWriter(new FileOutputStream(f, false));
-                    Iterator<String> it = liste.iterator();
-                    while (it.hasNext()) {
-                        writer.write(it.next() + "\n");
-                    }
-                    writer.close();
+                try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(Daten.getDownloadAboFilePath()))) {
+                    for (String entry : liste)
+                        writer.write(entry + "\n");
                 } catch (Exception ex) {
                     Log.fehlerMeldung(566277080, Log.FEHLER_ART_PROG, "LogDownload.urlAusLogfileLoeschen-3", ex);
-                } finally {
-                    try {
-                        writer.close();
-                    } catch (Exception ex) {
-                        Log.fehlerMeldung(256648801, Log.FEHLER_ART_PROG, "LogDownload.urlAusLogfileLoeschen-4", ex);
-                    }
                 }
             }
             listeErledigteAbos.clear();
             listeBauen();
-        }
+
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         return gefunden;
     }
@@ -144,26 +106,19 @@ public class ErledigteAbos {
         boolean ret = false;
         String text;
         listeErledigteAbos.add(url);
-        File f = new File(Daten.getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
-        if (f != null) {
-            OutputStreamWriter writer = null;
-            try {
-                writer = new OutputStreamWriter(new FileOutputStream(f, true));
-                thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
-                titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
-                text = DatumZeit.getHeute_dd_MM_yyyy() + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
-                writer.write(text);
-                writer.close();
-                ret = true;
-            } catch (Exception ex) {
-                Log.fehlerMeldung(945258023, Log.FEHLER_ART_PROG, "LogDownload.zeileSchreiben-1", ex);
-            } finally {
-                try {
-                    writer.close();
-                } catch (Exception ex) {
-                }
-            }
+
+        //Automatic Resource Management
+        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(Daten.getDownloadAboFilePath()))) {
+            thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
+            titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
+            text = DatumZeit.getHeute_dd_MM_yyyy() + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
+            writer.write(text);
+
+            ret = true;
+        } catch (Exception ex) {
+            Log.fehlerMeldung(945258023, Log.FEHLER_ART_PROG, "LogDownload.zeileSchreiben-1", ex);
         }
+
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         return ret;
     }
@@ -173,10 +128,8 @@ public class ErledigteAbos {
         String text;
         String zeit = DatumZeit.getHeute_dd_MM_yyyy();
         String thema, titel, url;
-        OutputStreamWriter writer = null;
-        File f = new File(Daten.getBasisVerzeichnis(true) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
-        try {
-            writer = new OutputStreamWriter(new FileOutputStream(f, true));
+
+        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(Daten.getDownloadAboFilePath()))) {
             for (String[] a : list) {
                 thema = a[0];
                 titel = a[1];
@@ -188,16 +141,11 @@ public class ErledigteAbos {
                 writer.write(text);
                 ret = true;
             }
-//            writer.close();
         } catch (Exception ex) {
             ret = false;
             Log.fehlerMeldung(945258023, Log.FEHLER_ART_PROG, "LogDownload.zeileSchreiben-1", ex);
-        } finally {
-            try {
-                writer.close();
-            } catch (Exception ex) {
-            }
         }
+
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
         return ret;
     }
@@ -224,27 +172,16 @@ public class ErledigteAbos {
     // ==============================
     private void listeBauen() {
         //LinkedList mit den URLs aus dem Logfile bauen
-        LineNumberReader in = null;
-        File datei = null;
-        try {
-            datei = new File(Daten.getBasisVerzeichnis(false) + Konstanten.LOG_DATEI_DOWNLOAD_ABOS);
-            if (datei.exists()) {
-                in = new LineNumberReader(new InputStreamReader(new FileInputStream(datei)));
-                String zeile;
-                while ((zeile = in.readLine()) != null) {
-                    listeErledigteAbos.add(getUrlAusZeile(zeile));
-                }
-            }
+        Path downloadAboFilePath = Daten.getDownloadAboFilePath();
+        //use Automatic Resource Management
+        try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(downloadAboFilePath))))
+        {
+            String zeile;
+            while ((zeile = in.readLine()) != null)
+                listeErledigteAbos.add(getUrlAusZeile(zeile));
         } catch (Exception ex) {
+            //FIXME assign new error code!
             Log.fehlerMeldung(203632125, Log.FEHLER_ART_PROG, ErledigteAbos.class.getName(), ex);
-        } finally {
-            try {
-                if (datei.exists()) {
-                    in.close();
-                }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(898743697, Log.FEHLER_ART_PROG, ErledigteAbos.class.getName(), ex);
-            }
         }
     }
 
@@ -257,7 +194,8 @@ public class ErledigteAbos {
 
     private String getUrlAusZeile(String zeile) {
         String url = "";
-        int a1 = 0;
+        int a1;
+
         try {
             if (zeile.contains(TRENNER)) {
                 //neues Logfile-Format

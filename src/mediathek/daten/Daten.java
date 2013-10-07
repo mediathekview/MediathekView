@@ -20,6 +20,11 @@
 package mediathek.daten;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import mediathek.controller.filmeLaden.FilmeLaden;
 import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.tool.Funktionen;
@@ -115,6 +120,7 @@ public class Daten {
      *
      * @return Den Verzeichnispfad als String.
      */
+    @Deprecated
     public static String getBasisVerzeichnis() {
         // liefert das Verzeichnis der Programmeinstellungen
         return getBasisVerzeichnis(false);
@@ -135,6 +141,7 @@ public class Daten {
      * @param anlegen Anlegen, oder nicht.
      * @return Den Verzeichnispfad als String.
      */
+    @Deprecated
     public static String getBasisVerzeichnis(boolean anlegen) {
         return getBasisVerzeichnis(basisverzeichnis, anlegen);
     }
@@ -146,6 +153,7 @@ public class Daten {
      * @param anlegen Anlegen, oder nicht.
      * @return Den Verzeichnispfad als String
      */
+    @Deprecated
     private static String getBasisVerzeichnis(String basis, boolean anlegen) {
         String ret;
         if (basis.equals("")) {
@@ -168,5 +176,63 @@ public class Daten {
 
     public void allesSpeichern() {
         new IoXmlFilmlisteSchreiben().filmeSchreiben(getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, listeFilme);
+    }
+
+    /**
+     * Return the location of the settings directory.
+     * If it does not exist, create one.
+     * @return Path to the settings directory
+     * @throws IOException
+     */
+    public static Path getSettingsDirectory() throws IOException {
+        final String baseDirectoryString = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNISS_EINSTELLUNGEN + File.separator;
+
+        Path baseDirectoryPath = Paths.get(baseDirectoryString);
+
+        if (Files.notExists(baseDirectoryPath))
+            Files.createDirectory(baseDirectoryPath);
+
+        return baseDirectoryPath;
+    }
+
+    /**
+     * Return the Path object to the downloadAbo file
+     * @return Path object to downloadAbo file
+     */
+    public static Path getDownloadAboFilePath() {
+        Path aboFilePath = null;
+        try {
+            aboFilePath = getSettingsDirectory().resolve("downloadAbos.txt");
+            if (Files.notExists(aboFilePath))
+                aboFilePath = Files.createFile(aboFilePath);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return aboFilePath;
+    }
+
+
+    /**
+     * Return the downloadAbos.txt File location.
+     * If the file does not exist, it will be created.
+     * @return the DownloadAbo File
+     */
+    public static File getDownloadAboFile() {
+        File aboFile = null;
+        try {
+            Path aboFilePath = getSettingsDirectory().resolve("downloadAbos.txt");
+            if (Files.notExists(aboFilePath))
+                aboFilePath = Files.createFile(aboFilePath);
+
+            aboFile = aboFilePath.toFile();
+        }
+        catch (IOException ex)
+        {
+            //FIXME assign new error code!
+            Log.fehlerMeldung(898736548, Log.FEHLER_ART_PROG, "Daten.getDownloadAboFile", new String[]{"Kann den Ordner zum Speichern der Daten nicht anlegen!",
+                    "Daten.getDownloadAboFile"});
+        }
+        return aboFile;
     }
 }

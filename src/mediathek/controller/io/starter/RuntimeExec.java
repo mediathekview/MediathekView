@@ -60,6 +60,7 @@ public class RuntimeExec {
     //===================================
     public Process exec() {
         try {
+            //process = new ProcessBuilder(prog).start();
             process = Runtime.getRuntime().exec(prog);
             clearIn = new Thread(new ClearInOut(INPUT, process));
             clearOut = new Thread(new ClearInOut(ERROR, process));

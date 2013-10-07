@@ -49,7 +49,7 @@ public class MediathekAuto {
     }
 
     public void starten() {
-        ddaten = new DDaten(pfad, false);
+        ddaten = new DDaten(pfad,null);
         Daten.auto = true;
         Log.startMeldungen(this.getClass().getName());
         if (IoXmlLesen.einstellungenExistieren()) {

@@ -70,7 +70,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         jButtonLoeschen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ddaten.history.loschen();
+                ddaten.history.loeschen();
             }
         });
         jTable1.setModel(new TModel(ddaten.history.getObjectData(), new String[]{"Url"}));
