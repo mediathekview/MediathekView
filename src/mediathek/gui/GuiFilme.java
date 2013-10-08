@@ -115,34 +115,8 @@ public class GuiFilme extends PanelVorlage {
             tabelle.setRowSelectionInterval(0, 0);
         }
         addListenerMediathekView();
-        //        if (Daten.debug) {
-        //            startup();
-        //        }
     }
 
-//    // flexdock-1.2.3.jar
-//    private void startup() {
-//        // turn on floating support
-//        DockingManager.setFloatingEnabled(true);
-//        jPanelFilter.removeAll();
-//        jPanelFilter.setLayout(new BorderLayout());
-//
-//        Viewport viewport = new Viewport();
-//        jPanelFilter.add(viewport, BorderLayout.CENTER);
-//
-//        View viewFilter = createView("Filterpanel", "Filter", jPanelFilterInnen);
-//        viewport.dock(viewFilter);
-//        jPanelFilter.updateUI();
-//        updateUI();
-//    }
-//    private View createView(String id, String text, JPanel panel) {
-//        View view = new View(id, text);
-//        view.addAction(View.CLOSE_ACTION);
-//        view.addAction(View.PIN_ACTION);
-//        view.setTerritoryBlocked(View.CENTER_REGION, true);
-//        view.setContentPane(new JScrollPane(panel));
-//        return view;
-//    }
     //===================================
     // Public
     //===================================
@@ -200,7 +174,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void start(MSearchListenerFilmeLadenEvent event) {
                 beobMausTabelle.itemSenderLaden.setEnabled(false);
-                ((TModelFilm) tabelle.getModel()).setRowCount(0);
+                tabelleLaden();
             }
 
             @Override
@@ -595,7 +569,6 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void listeInModellLaden() {
-//        TModelFilm m;
         if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
             // normal mit den Filtern aus dem Filterpanel suchen
             MViewListeFilme.getModelTabFilme(DDaten.listeFilmeNachBlackList, ddaten, tabelle, jComboBoxFilterSender.getSelectedItem().toString(),
@@ -608,12 +581,6 @@ public class GuiFilme extends PanelVorlage {
                     "", "", ddaten.mediathekGui.getFilterToolBar(), "", 0,
                     false, false, false, false);
         }
-//        if (m.getRowCount() > 0) {
-//            if (jCheckBoxKeineGesehenen.isSelected() || jCheckBoxKeineAbos.isSelected() || jCheckBoxNurHd.isSelected() || jToggleButtonLivestram.isSelected()) {
-//                m.filter(ddaten, jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected());
-//            }
-//        }
-////        tabelle.setModel(m);
     }
     // ####################################
     // Ende Tabelle asynchron füllen
@@ -622,8 +589,8 @@ public class GuiFilme extends PanelVorlage {
     private void filterLoeschen() {
         stopBeob = true;
         //ComboModels neu aufbauen
-        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<String>(sender));
-        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen("")));
+        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
+        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
         jTextFieldFilterTitel.setText("");
         jTextFieldFilterThemaTitel.setText("");
         jTextFieldFilterIrgendwo.setText("");
@@ -657,7 +624,12 @@ public class GuiFilme extends PanelVorlage {
         if (selectedTableRow >= 0) {
             int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
             //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
-            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
+            String nr = tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString();
+            if (nr == null) {
+                // Tabelle noch nicht ganz geladen
+                return null;
+            }
+            DatenFilm film = Daten.listeFilme.getFilmByNr(nr);
             return film;
         }
         return null;

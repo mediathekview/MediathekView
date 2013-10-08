@@ -19,7 +19,6 @@
  */
 package mediathek;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -47,6 +46,17 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.jidesoft.utils.SystemInfo;
+import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.SplashScreen;
+import java.awt.Toolkit;
+import java.awt.Window;
 
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
