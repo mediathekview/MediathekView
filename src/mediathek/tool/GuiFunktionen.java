@@ -303,7 +303,8 @@ public class GuiFunktionen extends Funktionen {
     }
 
     public static String getDateiSuffix(String pfad) {
-        //Suffix einer URL extrahieren
+        // Suffix einer URL extrahieren
+        // "http://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd"
         String ret = "";
         if (pfad != null) {
             if (!pfad.equals("") && pfad.contains(".")) {
@@ -313,11 +314,12 @@ public class GuiFunktionen extends Funktionen {
         if (ret.equals("")) {
             Log.fehlerMeldung(969871236, Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiSuffix", pfad);
         }
-        if (ret.length() > 3) {
-            if (ret.length() > 5) {
-                // dann ist was faul
-                ret = "---";
-            }
+        if (ret.contains("?")) {
+            ret = ret.substring(0, ret.indexOf("?"));
+        }
+        if (ret.length() > 5) {
+            // dann ist was faul
+            ret = "---";
             Log.fehlerMeldung(821397046, Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiSuffix", pfad);
         }
         return ret;

@@ -167,12 +167,6 @@ public final class MVJTable extends JTable {
         }
     }
 
-//    @Override
-//    public TModel getModel() {
-//        return  super.getModel();
-//
-//    }
-
     private boolean anzeigen(int i, boolean[] spaltenAnzeigen) {
         return spaltenAnzeigen[i];
     }
