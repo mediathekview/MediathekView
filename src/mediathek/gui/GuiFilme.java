@@ -53,15 +53,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.MVStatusBar_Mac;
 import mediathek.MediathekGui;
-import mediathek.controller.filmeLaden.ListenerFilmeLaden;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenBlacklist;
 import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
@@ -82,7 +79,12 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MViewListeFilme;
+import mediathek.tool.TModel;
 import mediathek.tool.TModelFilm;
+import msearch.daten.DatenFilm;
+import msearch.filmeSuchen.MSearchListenerFilmeLaden;
+import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 public class GuiFilme extends PanelVorlage {
 
@@ -112,7 +114,7 @@ public class GuiFilme extends PanelVorlage {
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
-                addListenerMediathekView();
+        addListenerMediathekView();
         //        if (Daten.debug) {
         //            startup();
         //        }
@@ -194,16 +196,15 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         });
-        DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        DDaten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
-            public void start_(ListenerFilmeLadenEvent event) {
+            public void start(MSearchListenerFilmeLadenEvent event) {
                 beobMausTabelle.itemSenderLaden.setEnabled(false);
-                tabelleLaden();
+                ((TModelFilm) tabelle.getModel()).setRowCount(0);
             }
 
             @Override
-            public void fertig_(ListenerFilmeLadenEvent event) {
-                DDaten.listeFilme.abosEintragen(ddaten);
+            public void fertig(MSearchListenerFilmeLadenEvent event) {
                 checkBlacklist(true);
                 tabelleLaden();
                 beobMausTabelle.itemSenderLaden.setEnabled(true);
@@ -389,11 +390,11 @@ public class GuiFilme extends PanelVorlage {
 
     private void themenLaden() {
         // der erste Sender ist ""
-        sender = DDaten.listeFilmeNachBlackList.getModelOfFieldSender();
+        sender = MViewListeFilme.getModelOfFieldSender(DDaten.listeFilmeNachBlackList);
         //für den Sender "" sind alle Themen im themenPerSender[0]
         themenPerSender = new String[sender.length][];
         for (int i = 0; i < sender.length; ++i) {
-            themenPerSender[i] = DDaten.listeFilmeNachBlackList.getModelOfFieldThema(sender[i]);
+            themenPerSender[i] = MViewListeFilme.getModelOfFieldThema(DDaten.listeFilmeNachBlackList, sender[i]);
         }
         //alleThemen = DDaten.listeFilmeNachBlackList.getModelOfFieldThema("");
     }
@@ -594,16 +595,16 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void listeInModellLaden() {
-        TModelFilm m;
+//        TModelFilm m;
         if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
             // normal mit den Filtern aus dem Filterpanel suchen
-            m = DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), jComboBoxFilterSender.getSelectedItem().toString(),
+            MViewListeFilme.getModelTabFilme(DDaten.listeFilmeNachBlackList, ddaten, tabelle, jComboBoxFilterSender.getSelectedItem().toString(),
                     jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(),
                     jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue(),
                     jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
-            m = DDaten.listeFilmeNachBlackList.getModelTabFilme(ddaten, (TModelFilm) tabelle.getModel(), "",
+            MViewListeFilme.getModelTabFilme(DDaten.listeFilmeNachBlackList, ddaten, tabelle, "",
                     "", "", ddaten.mediathekGui.getFilterToolBar(), "", 0,
                     false, false, false, false);
         }
@@ -612,7 +613,7 @@ public class GuiFilme extends PanelVorlage {
 //                m.filter(ddaten, jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected());
 //            }
 //        }
-        tabelle.setModel(m);
+////        tabelle.setModel(m);
     }
     // ####################################
     // Ende Tabelle asynchron füllen
@@ -638,7 +639,8 @@ public class GuiFilme extends PanelVorlage {
             if (selectedTableRow >= 0) {
                 int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
                 //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
-                DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
+                //DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
+                DatenFilm film = getSelFilm();
                 if (film != null) {
                     aktFilm = film;
                 }
@@ -647,6 +649,18 @@ public class GuiFilme extends PanelVorlage {
             // Beschreibung setzen
             panelBeschreibung.setAktFilm(aktFilm);
         }
+    }
+
+    ///
+    private DatenFilm getSelFilm() {
+        int selectedTableRow = tabelle.getSelectedRow();
+        if (selectedTableRow >= 0) {
+            int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
+            //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
+            return film;
+        }
+        return null;
     }
 
     private void playerStarten(DatenPset pSet) {
@@ -745,28 +759,12 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void checkBlacklist(boolean abosEintragen) {
-//        if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
-//            // dann Filterpanel zum Bauen der Filmliste nehmen
-//            stopBeob = true;
-//            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = Boolean.toString(jCheckBoxKeineAbos.isSelected());
-//            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = Boolean.toString(jCheckBoxKeineGesehenen.isSelected());
-//            Daten.system[Konstanten.SYSTEM_FILTER_NUR_HD_NR] = Boolean.toString(jCheckBoxNurHd.isSelected());
-//            Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(jComboBoxZeitraum.getSelectedIndex());
-//            stopBeob = false;
-//        } else {
-//            // mit dem Filter in der Toolbar arbeiten
-//            stopBeob = true;
-//            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = Boolean.FALSE.toString();
-//            Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = Boolean.FALSE.toString();
-//            Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = "0";
-//            stopBeob = false;
-//        }
         if (abosEintragen) {
             // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
             // beim Ändern von Abos gemacht wird
-            DDaten.listeFilme.abosEintragen(ddaten);
+            MViewListeFilme.abosEintragen(DDaten.listeFilme, ddaten);
         }
-        DDaten.listeFilmeNachBlackList = ddaten.listeBlacklist.filterListe(Daten.listeFilme);
+        ddaten.listeBlacklist.filterListe(Daten.listeFilme, DDaten.listeFilmeNachBlackList);
         themenLaden();
     }
 
@@ -1018,14 +1016,7 @@ public class GuiFilme extends PanelVorlage {
         );
 
         jTable1.setAutoCreateRowSorter(true);
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null}
-            },
-            new String [] {
-                "Title 1"
-            }
-        ));
+        jTable1.setModel(new TModel());
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
 

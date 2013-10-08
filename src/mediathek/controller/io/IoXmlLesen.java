@@ -30,9 +30,6 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.controller.filmeLaden.importieren.DatenFilmlistenServer;
-import mediathek.controller.filmeLaden.importieren.DatenUrlFilmliste;
-import mediathek.controller.filmeLaden.importieren.FilmlistenSuchen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
@@ -45,6 +42,9 @@ import mediathek.daten.ListePset;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import msearch.filmeLaden.DatenFilmlistenServer;
+import msearch.filmeLaden.DatenUrlFilmliste;
+import msearch.filmeLaden.MSearchFilmlistenSuchen;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 public class IoXmlLesen {
@@ -248,10 +248,10 @@ public class IoXmlLesen {
                             if (get(parser, event, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
                                 blacklist.add(datenBlacklist);
                             }
-                        } else if (parser.getLocalName().equals(FilmlistenSuchen.FILM_UPDATE_SERVER)) {
+                        } else if (parser.getLocalName().equals(MSearchFilmlistenSuchen.FILM_UPDATE_SERVER)) {
                             //Urls Filmlisten
                             DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
-                            if (get(parser, event, FilmlistenSuchen.FILM_UPDATE_SERVER, FilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
+                            if (get(parser, event, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
                                 DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).addWithCheck(datenUrlFilmliste);
                             }
                         } else if (parser.getLocalName().equals(DatenFilmlistenServer.FILM_LISTEN_SERVER)) {

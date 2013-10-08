@@ -27,8 +27,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.io.History;
 import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
-import mediathek.daten.DatenFilm;
-import mediathek.daten.ListeFilme;
+import msearch.daten.DatenFilm;
+import msearch.daten.ListeFilme;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
 

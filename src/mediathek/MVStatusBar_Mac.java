@@ -3,20 +3,19 @@ package mediathek;
 import com.explodingpixels.macwidgets.BottomBar;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.daten.Daten;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.EnumMap;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
+import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 /**
  * User: crystalpalace1977
@@ -80,7 +79,7 @@ public final class MVStatusBar_Mac extends MVStatusBar {
     }
 
     @Override
-    public void updateProgressBar(ListenerFilmeLadenEvent event) {
+    public void updateProgressBar(MSearchListenerFilmeLadenEvent event) {
         stopTimer = true;
         if (!progress.isVisible()) {
             progress.setVisible(true);

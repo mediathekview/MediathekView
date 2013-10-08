@@ -21,14 +21,14 @@ package mediathek;
 
 import java.io.File;
 import java.util.ListIterator;
-import mediathek.controller.filmeLaden.ListenerFilmeLaden;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.Log;
+import msearch.filmeSuchen.MSearchListenerFilmeLaden;
+import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 public class MediathekAuto {
 
@@ -54,7 +54,12 @@ public class MediathekAuto {
         Log.startMeldungen(this.getClass().getName());
         if (IoXmlLesen.einstellungenExistieren()) {
             ddaten.allesLaden();
-            DDaten.filmeLaden.addAdListener(new BeobachterLadenFilme());
+            DDaten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
+                @Override
+                public void fertig(MSearchListenerFilmeLadenEvent event) {
+                    filmeLaden();
+                }
+            });
             if (Daten.listeFilme.filmlisteZuAlt()) {
                 Log.systemMeldung("Neue Filmliste laden");
                 DDaten.filmeLaden.importFilmliste("");
@@ -108,11 +113,4 @@ public class MediathekAuto {
         System.exit(0);
     }
 
-    private class BeobachterLadenFilme extends ListenerFilmeLaden {
-
-        @Override
-        public void fertig(ListenerFilmeLadenEvent event) {
-            filmeLaden();
-        }
-    }
 }

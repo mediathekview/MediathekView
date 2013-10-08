@@ -23,7 +23,7 @@ import java.awt.Color;
 import java.util.regex.Pattern;
 import javax.swing.JTextField;
 import mediathek.daten.DatenAbo;
-import mediathek.daten.DatenFilm;
+import msearch.daten.DatenFilm;
 
 public class Filter {
 

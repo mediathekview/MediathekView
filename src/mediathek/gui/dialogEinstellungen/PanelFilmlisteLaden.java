@@ -34,8 +34,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 
 import com.jidesoft.utils.SystemInfo;
-import mediathek.controller.filmeLaden.importieren.DatenUrlFilmliste;
-import mediathek.controller.filmeLaden.importieren.FilmlistenSuchen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
@@ -46,6 +44,8 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.TModel;
+import msearch.filmeLaden.DatenUrlFilmliste;
+import msearch.filmeLaden.MSearchFilmlistenSuchen;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
 
@@ -117,14 +117,13 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        TModel model = new TModel(DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).getTableObjectData(), FilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE);
-        jTable1.setModel(model);
+        jTable1.setModel(new TModel(DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).getTableObjectData(), MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
-            if (i == FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR) {
+            if (i == MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(10);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(350);
-            } else if (!Daten.debug && i == FilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR) {
+            } else if (!Daten.debug && i == MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(0);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(0);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(0);
@@ -142,13 +141,13 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         int selectedTableRow = jTable1.getSelectedRow();
         if (selectedTableRow >= 0) {
             datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten(false).getDatenUrlFilmliste(jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow),
-                    FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR).toString());
+                    MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR).toString());
         }
         if (datenUrlFilmliste != null) {
             //jRadioButtonUpdateAus.setSelected(true);
             //daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(Konstanten.UPDATE_FILME_AUS);
-            jTextFieldUrl.setText(datenUrlFilmliste.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR]);
-            Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR] = datenUrlFilmliste.arr[FilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR];
+            jTextFieldUrl.setText(datenUrlFilmliste.arr[MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR]);
+            Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR] = datenUrlFilmliste.arr[MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR];
             if (doppel) {
                 // dann wars ein Doppelklick, gleich laden
                 Daten.filmeLaden.importFilmliste(Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
@@ -223,17 +222,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+        jTable1.setModel(new TModel());
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
 
@@ -288,7 +277,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     .addComponent(jLabel2)
                     .addComponent(jButtonUpdate))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

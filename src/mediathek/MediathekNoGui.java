@@ -22,15 +22,14 @@ package mediathek;
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
-import mediathek.controller.filmeLaden.ListenerFilmeLaden;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
-import mediathek.controller.io.IoXmlFilmlisteLesen;
-import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.Daten;
-import mediathek.daten.ListeFilme;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import msearch.daten.ListeFilme;
+import msearch.filmeSuchen.MSearchListenerFilmeLaden;
+import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
+import msearch.io.MSearchIoXmlFilmlisteLesen;
+import msearch.io.MSearchIoXmlFilmlisteSchreiben;
 
 public class MediathekNoGui implements Runnable {
 
@@ -124,15 +123,14 @@ public class MediathekNoGui implements Runnable {
         Log.systemMeldung("ProxyUrl: " + Daten.proxyUrl);
         Log.systemMeldung("ProxyPort: " + Daten.proxyPort);
         Log.systemMeldung("");
-        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
+            public void fertig(MSearchListenerFilmeLadenEvent event) {
                 serverLaufen = false;
             }
         });
         // laden was es schon gibt
-        //Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
-        new IoXmlFilmlisteLesen().standardFilmlisteLesen();
+        new MSearchIoXmlFilmlisteLesen().filmlisteLesen(Daten.getDateiFilmliste(), Daten.listeFilme);
         // das eigentliche Suchen der Filme bei den Sendern starten
         if (sender == null) {
             Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, senderAllesLaden, updateFilmliste);
@@ -175,15 +173,14 @@ public class MediathekNoGui implements Runnable {
         Log.systemMeldung("Outputfile: " + output);
         Log.systemMeldung("");
         Log.systemMeldung("");
-        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
+            public void fertig(MSearchListenerFilmeLadenEvent event) {
                 undTschuess(true /* exit */);
             }
         });
         // laden was es schon gibt
-        //Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
-        new IoXmlFilmlisteLesen().standardFilmlisteLesen();
+        new MSearchIoXmlFilmlisteLesen().filmlisteLesen(Daten.getDateiFilmliste(), Daten.listeFilme);
         // das eigentliche Suchen der Filme bei den Sendern starten
         Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, senderAllesLaden, updateFilmliste);
     }
@@ -195,8 +192,7 @@ public class MediathekNoGui implements Runnable {
         Log.startMeldungen(this.getClass().getName());
         Log.systemMeldung("");
         Log.systemMeldung("");
-        //Daten.ioXmlFilmlisteLesen.filmlisteLesen(Daten.getBasisVerzeichnis() + Konstanten.XML_DATEI_FILME, false /* istUrl */, Daten.listeFilme);
-        new IoXmlFilmlisteLesen().standardFilmlisteLesen();
+        new MSearchIoXmlFilmlisteLesen().filmlisteLesen(Daten.getDateiFilmliste(), Daten.listeFilme);
         // dann nur einen Sender löschen und dann wieder beenden
         Log.systemMeldung("Sender: " + senderLoeschen + " löschen");
         int anz1 = Daten.listeFilme.size();
@@ -205,7 +201,7 @@ public class MediathekNoGui implements Runnable {
         int anz2 = Daten.listeFilme.size();
         Log.systemMeldung("Anzehl Filme nachher: " + anz2);
         Log.systemMeldung(" --> gelöscht: " + (anz1 - anz2));
-        new IoXmlFilmlisteSchreiben().filmeSchreiben(Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, Daten.listeFilme);
+        new MSearchIoXmlFilmlisteSchreiben().filmeSchreiben(Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, Daten.listeFilme);
         System.exit(0);
     }
 
@@ -214,7 +210,7 @@ public class MediathekNoGui implements Runnable {
             // wenn eine ImportUrl angegeben, dann die Filme die noch nicht drin sind anfügen
             Log.systemMeldung("Filmliste importieren von: " + importUrl__anhaengen);
             ListeFilme tmpListe = new ListeFilme();
-            new IoXmlFilmlisteLesen().dateiInListeEinlesen(importUrl__anhaengen, GuiFunktionen.istUrl(importUrl__anhaengen) /* istUrl */, tmpListe);
+            new MSearchIoXmlFilmlisteLesen().filmlisteLesen(importUrl__anhaengen, tmpListe);
             Daten.listeFilme.updateListe(tmpListe, false /* nur URL vergleichen */);
             tmpListe.clear();
         }
@@ -223,14 +219,14 @@ public class MediathekNoGui implements Runnable {
             // werden ersetzt
             Log.systemMeldung("Filmliste importieren von: " + importUrl__ersetzen);
             ListeFilme tmpListe = new ListeFilme();
-            new IoXmlFilmlisteLesen().dateiInListeEinlesen(importUrl__ersetzen, GuiFunktionen.istUrl(importUrl__ersetzen) /* istUrl */, tmpListe);
+            new MSearchIoXmlFilmlisteLesen().filmlisteLesen(importUrl__ersetzen, tmpListe);
             tmpListe.updateListe(Daten.listeFilme, false /* nur URL vergleichen */);
             tmpListe.metaDaten = Daten.listeFilme.metaDaten;
             tmpListe.sort(); // jetzt sollte alles passen
             Daten.listeFilme.clear();
             Daten.listeFilme = tmpListe;
         }
-        new IoXmlFilmlisteSchreiben().filmeSchreiben(Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, Daten.listeFilme);
+        new MSearchIoXmlFilmlisteSchreiben().filmeSchreiben(Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, Daten.listeFilme);
         if (!output.equals("")) {
             LinkedList<String> out = new LinkedList<String>();
             String tmp;
@@ -249,7 +245,7 @@ public class MediathekNoGui implements Runnable {
             Iterator<String> it = out.iterator();
             while (it.hasNext()) {
                 //datei schreiben
-                new IoXmlFilmlisteSchreiben().filmeSchreiben(it.next(), Daten.listeFilme);
+                new MSearchIoXmlFilmlisteSchreiben().filmeSchreiben(it.next(), Daten.listeFilme);
             }
         }
         Log.printEndeMeldung();

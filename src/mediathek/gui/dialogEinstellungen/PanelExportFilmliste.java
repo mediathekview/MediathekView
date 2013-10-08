@@ -31,7 +31,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.jidesoft.utils.SystemInfo;
-import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
@@ -39,6 +38,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
+import msearch.io.MSearchIoXmlFilmlisteSchreiben;
 
 public class PanelExportFilmliste extends PanelVorlage {
 
@@ -74,7 +74,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 if (ret == JOptionPane.OK_OPTION) {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     updateUI();
-                    new IoXmlFilmlisteSchreiben().filmeSchreiben(exporDatei, Daten.listeFilme);
+                    new MSearchIoXmlFilmlisteSchreiben().filmeSchreiben(exporDatei, Daten.listeFilme);
                     if (!new File(exporDatei).exists()) {
                         MVMessageDialog.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }

@@ -28,9 +28,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import mediathek.controller.filmeLaden.importieren.DatenFilmlistenServer;
-import mediathek.controller.filmeLaden.importieren.DatenUrlFilmliste;
-import mediathek.controller.filmeLaden.importieren.FilmlistenSuchen;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
@@ -41,6 +38,9 @@ import mediathek.daten.DatenPset;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import msearch.filmeLaden.DatenFilmlistenServer;
+import msearch.filmeLaden.DatenUrlFilmliste;
+import msearch.filmeLaden.MSearchFilmlistenSuchen;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 public class IoXmlSchreiben {
@@ -182,7 +182,7 @@ public class IoXmlSchreiben {
         iterator = DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).iterator();
         while (iterator.hasNext()) {
             datenUrlFilmliste = iterator.next();
-            xmlSchreibenDaten(FilmlistenSuchen.FILM_UPDATE_SERVER, FilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr);
+            xmlSchreibenDaten(MSearchFilmlistenSuchen.FILM_UPDATE_SERVER, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr);
         }
         Iterator<DatenFilmlistenServer> it;
         it = DDaten.filmeLaden.getListeFilmlistnServer().iterator();

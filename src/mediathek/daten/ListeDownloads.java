@@ -30,6 +30,7 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVLong;
 import mediathek.tool.TModelDownload;
+import msearch.daten.DatenFilm;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
 

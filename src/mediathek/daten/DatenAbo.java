@@ -21,6 +21,7 @@ package mediathek.daten;
 
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
+import msearch.daten.DatenFilm;
 
 public class DatenAbo implements Comparable<DatenAbo> {
     //Tags Abo

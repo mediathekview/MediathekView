@@ -34,7 +34,6 @@ import javax.swing.event.DocumentListener;
 import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
@@ -44,6 +43,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
+import msearch.daten.DatenFilm;
 
 public class DialogAddDownload extends javax.swing.JDialog {
 

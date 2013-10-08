@@ -19,7 +19,8 @@
  */
 package mediathek.tool;
 
-import mediathek.daten.DatenFilm;
+import msearch.daten.DatenFilm;
+
 
 public class MVLong implements Comparable<MVLong> {
 
