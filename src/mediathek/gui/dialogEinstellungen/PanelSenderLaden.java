@@ -29,14 +29,14 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.controller.filmeLaden.ListenerFilmeLaden;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
+import msearch.filmeSuchen.MSearchListenerFilmeLaden;
+import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 public class PanelSenderLaden extends PanelVorlage {
 
@@ -72,9 +72,9 @@ public class PanelSenderLaden extends PanelVorlage {
             }
         });
         addSender();
-        DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        DDaten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
-            public void progress_(ListenerFilmeLadenEvent event) {
+            public void progress(MSearchListenerFilmeLadenEvent event) {
                 if (event.max == 0) {
                     jProgressBar1.setIndeterminate(true);
                     jProgressBar1.setMaximum(0);
@@ -92,7 +92,7 @@ public class PanelSenderLaden extends PanelVorlage {
             }
 
             @Override
-            public void fertig_(ListenerFilmeLadenEvent event) {
+            public void fertig(MSearchListenerFilmeLadenEvent event) {
                 jProgressBar1.setIndeterminate(false);
                 jProgressBar1.setMaximum(0);
                 jProgressBar1.setMinimum(0);
@@ -277,7 +277,7 @@ public class PanelSenderLaden extends PanelVorlage {
             for (JButton aButtonSender : buttonSender) {
                 aButtonSender.setEnabled(false);
             }
-            Daten.filmeLaden.updateSender(new String[]{sender}, Daten.listeFilme, Daten.debug ? DDaten.filmeLaden.getAllesLaden() : false /* senderAllesLaden */);
+            Daten.filmeLaden.updateSender(new String[]{sender}, Daten.listeFilme, false /* senderAllesLaden */);
         }
     }
 

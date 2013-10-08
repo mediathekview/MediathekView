@@ -25,8 +25,8 @@ import java.util.ListIterator;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import mediathek.daten.DDaten;
-import mediathek.daten.DatenFilm;
-import mediathek.daten.ListeFilme;
+import msearch.daten.DatenFilm;
+import msearch.daten.ListeFilme;
 
 public class TModel extends DefaultTableModel {
 

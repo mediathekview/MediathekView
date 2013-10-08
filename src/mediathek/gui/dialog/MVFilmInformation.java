@@ -15,7 +15,6 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import mediathek.daten.DatenFilm;
 import org.jdesktop.swingx.JXHyperlink;
 
 import java.net.URISyntaxException;
@@ -34,9 +33,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.DDaten;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.Funktionen;
 import mediathek.tool.Log;
 import mediathek.tool.UrlHyperlinkAction;
+import msearch.daten.DatenFilm;
 
 /**
  * Display the current film information in a Apple-style HUD window.

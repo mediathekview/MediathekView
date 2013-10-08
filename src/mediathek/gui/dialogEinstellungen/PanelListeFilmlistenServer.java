@@ -31,7 +31,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.jidesoft.utils.SystemInfo;
-import mediathek.controller.filmeLaden.importieren.DatenFilmlistenServer;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
@@ -40,6 +39,7 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.TModel;
+import msearch.filmeLaden.DatenFilmlistenServer;
 
 public class PanelListeFilmlistenServer extends PanelVorlage {
 
@@ -78,8 +78,7 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        TModel model = new TModel(DDaten.filmeLaden.getListeFilmlistnServer().getTableObjectData(), DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES_ANZEIGE);
-        jTable1.setModel(model);
+        jTable1.setModel(new TModel(DDaten.filmeLaden.getListeFilmlistnServer().getTableObjectData(), DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES_ANZEIGE));
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
             jTable1.getColumnModel().getColumn(i).setMinWidth(10);
             jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);
@@ -122,17 +121,7 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+        jTable1.setModel(new TModel());
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
 

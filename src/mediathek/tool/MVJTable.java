@@ -28,16 +28,16 @@ import javax.swing.SortOrder;
 import mediathek.daten.DDaten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
+import msearch.daten.DatenFilm;
 
 /**
  *
  * @author emil
  */
 public final class MVJTable extends JTable {
-    
+
     public static final String TABELLEN = "Tabellen";
     public static final int TABELLE_STANDARD = -1;
     public static final int TABELLE_TAB_FILME = 0;
@@ -63,7 +63,7 @@ public final class MVJTable extends JTable {
     int tabelle;
     String[] spaltenTitel;
     int maxSpalten;
-    
+
     public MVJTable(int ttabelle) {
         tabelle = ttabelle;
         this.setAutoCreateRowSorter(true);
@@ -116,7 +116,7 @@ public final class MVJTable extends JTable {
         breite = getArray(maxSpalten);
         reihe = getArray(maxSpalten);
     }
-    
+
     public void initTabelle() {
         // Tabelle das erste Mal initialisieren,
         // mit den gespeicherten Daten oder
@@ -151,7 +151,7 @@ public final class MVJTable extends JTable {
                 }
                 SortKey sk = sortKeyLesen(s, upDown);
                 if (sk != null) {
-                    LinkedList<SortKey> listSortKeys_ = new LinkedList<SortKey>();
+                    LinkedList<SortKey> listSortKeys_ = new LinkedList<>();
                     listSortKeys_.add(sk);
                     this.getRowSorter().setSortKeys(listSortKeys_);
                 }
@@ -166,17 +166,23 @@ public final class MVJTable extends JTable {
             //vorsichtshalber
         }
     }
-    
+
+//    @Override
+//    public TModel getModel() {
+//        return  super.getModel();
+//
+//    }
+
     private boolean anzeigen(int i, boolean[] spaltenAnzeigen) {
         return spaltenAnzeigen[i];
     }
-    
+
     private void setSpaltenEinAus(int[] nr, boolean[] spaltenAnzeigen) {
         for (int i = 0; i < spaltenAnzeigen.length; ++i) {
             spaltenAnzeigen[i] = nr[i] > 0;
         }
     }
-    
+
     private boolean[] getSpaltenEinAus(boolean[] spaltenAnzeigen, int MAX_ELEM) {
 //        spaltenAnzeigen = new boolean[MAX_ELEM];
         for (int i = 0; i < MAX_ELEM; ++i) {
@@ -184,7 +190,7 @@ public final class MVJTable extends JTable {
         }
         return spaltenAnzeigen;
     }
-    
+
     public void fireTableDataChanged(boolean setSpalten) {
 //        this.selectionModel.setValueIsAdjusting(true);
         if (setSpalten) {
@@ -196,7 +202,7 @@ public final class MVJTable extends JTable {
         }
 //        this.selectionModel.setValueIsAdjusting(false);
     }
-    
+
     public void getSelected() {
         // Einstellungen der Tabelle merken
         sel = this.getSelectedRow();
@@ -215,7 +221,7 @@ public final class MVJTable extends JTable {
             }
         }
     }
-    
+
     public void setSelected() {
         // gemerkte Einstellungen der Tabelle wieder setzten
         stopBeob = true;
@@ -253,7 +259,7 @@ public final class MVJTable extends JTable {
         }
         stopBeob = false;
     }
-    
+
     public void spaltenEinAus() {
         for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
             if (!anzeigen(i, spaltenAnzeigen)) {
@@ -278,7 +284,7 @@ public final class MVJTable extends JTable {
         }
 //        this.validate();
     }
-    
+
     public void getSpalten() {
         // Einstellungen der Tabelle merken
         getSelected();
@@ -295,7 +301,7 @@ public final class MVJTable extends JTable {
             listeSortKeys = null;
         }
     }
-    
+
     public void setSpalten() {
         // gemerkte Einstellungen der Tabelle wieder setzten
         stopBeob = true;
@@ -337,7 +343,7 @@ public final class MVJTable extends JTable {
         }
         stopBeob = false;
     }
-    
+
     public void resetTabelle() {
         // Standardwerte wetzen
         for (int i = 0; i < maxSpalten; ++i) {
@@ -404,7 +410,7 @@ public final class MVJTable extends JTable {
         setSpaltenEinAus(breite, spaltenAnzeigen);
         setSpalten();
     }
-    
+
     private void spaltenAusschalten() {
         for (int i = 0; i < maxSpalten; ++i) {
             switch (tabelle) {
@@ -450,7 +456,7 @@ public final class MVJTable extends JTable {
 //            }
         }
     }
-    
+
     public void tabelleNachDatenSchreiben() {
         if (tabelle == TABELLE_STANDARD) {
             // wird nur für eingerichtet Tabellen gemacht
@@ -483,7 +489,7 @@ public final class MVJTable extends JTable {
         }
         DDaten.system[nrDatenSystem] = b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown;
     }
-    
+
     private int[] getArray(int anzahl) {
         int[] arr = new int[anzahl];
         for (int i = 0; i < arr.length; ++i) {
@@ -491,7 +497,7 @@ public final class MVJTable extends JTable {
         }
         return arr;
     }
-    
+
     private boolean arrLesen(String s, int[] arr) {
         String sub;
         if (maxSpalten != countString(s)) {
@@ -517,7 +523,7 @@ public final class MVJTable extends JTable {
         }
         return true;
     }
-    
+
     private SortKey sortKeyLesen(String s, String upDown) {
         SortKey sk;
         int sp;
@@ -533,7 +539,7 @@ public final class MVJTable extends JTable {
         }
         return sk;
     }
-    
+
     private int countString(String s) {
         int ret = 0;
         for (int i = 0; i < s.length(); ++i) {

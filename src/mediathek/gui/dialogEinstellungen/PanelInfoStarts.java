@@ -24,12 +24,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.controller.io.starter.ListeStarts;
 import mediathek.daten.DDaten;
-import mediathek.daten.DatenFilm;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.CellRendererFilme;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
+import msearch.daten.DatenFilm;
 
 public class PanelInfoStarts extends PanelVorlage {
 
@@ -75,7 +75,7 @@ public class PanelInfoStarts extends PanelVorlage {
     private void initComponents() {
 
         jButtonAuffrischen = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -83,17 +83,7 @@ public class PanelInfoStarts extends PanelVorlage {
         jButtonAuffrischen.setText("Auffrischen");
 
         jTable1.setAutoCreateRowSorter(true);
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+        jTable1.setModel(new TModel());
         jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -121,7 +111,6 @@ public class PanelInfoStarts extends PanelVorlage {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAuffrischen;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 

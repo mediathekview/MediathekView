@@ -36,6 +36,7 @@ import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.gui.dialogEinstellungen.PanelSenderLaden;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import msearch.daten.MSearchConfig;
 
 public class GuiDebug extends PanelVorlage {
 
@@ -56,7 +57,7 @@ public class GuiDebug extends PanelVorlage {
         jToggleButtonAllesLaden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.filmeLaden.setAllesLaden(jToggleButtonAllesLaden.isSelected());
+                MSearchConfig.senderAllesLaden = jToggleButtonAllesLaden.isSelected();
             }
         });
         jButtonAllesSpeichern.addActionListener(new ActionListener() {
@@ -117,14 +118,14 @@ public class GuiDebug extends PanelVorlage {
         jButtonDoppelt.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.listeFilme.nurDoppelteAnzeigen(ddaten, false);
+                Daten.listeFilme.nurDoppelteAnzeigen(false);
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
             }
         });
         jButtonDoppeltIndex.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.listeFilme.nurDoppelteAnzeigen(ddaten, true);
+                Daten.listeFilme.nurDoppelteAnzeigen(true);
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
             }
         });

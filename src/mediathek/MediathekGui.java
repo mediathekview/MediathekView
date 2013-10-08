@@ -55,8 +55,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import mediathek.controller.filmeLaden.ListenerFilmeLaden;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.CheckUpdate;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.DDaten;
@@ -83,6 +81,8 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
+import msearch.filmeSuchen.MSearchListenerFilmeLaden;
+import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 import org.jdesktop.swingx.JXSearchField;
 import org.simplericity.macify.eawt.Application;
 import org.simplericity.macify.eawt.ApplicationEvent;
@@ -124,9 +124,18 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     public String getFilterToolBar() {
         return jTextFieldFilter.getText();
     }
+    /**
+     * The JVM {@link java.awt.SplashScreen} storage
+     */
     private SplashScreen splash = null;
+    /**
+     * Store the splash screen {@link Graphics2D} context here for reuse
+     */
     private Graphics2D splashScreenContext = null;
-    private int how_many_steps = 0; //currently 12
+    /**
+     * helper variable to calculate splash screen progress
+     */
+    private int splashScreenProgress = 0; //currently 10
 
     /** Update the {@link java.awt.SplashScreen} with the given text
      *
@@ -141,13 +150,18 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         final int y = 430;
         final int x = 120;
         final int width = 300;
-        how_many_steps++;
-//        System.out.println("HOW_MANY_STEPS: " + how_many_steps);
+        splashScreenProgress++;
+        //System.out.println("HOW_MANY_STEPS: " + splashScreenProgress);
 
+        splashScreenContext.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        //clear the drawing area...
         splashScreenContext.setComposite(AlphaComposite.Clear);
         splashScreenContext.fillRect(x, (y - 10), 300, 40);
         splashScreenContext.setPaintMode();
         //paint the text string...
+        splashScreenContext.setFont(new Font("SansSerif", Font.BOLD, 12));
         splashScreenContext.setColor(Color.WHITE);
         splashScreenContext.drawString(text, x, y + 2);
         // paint the full progress indicator...
@@ -155,7 +169,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         splashScreenContext.fillRect(x, y - 15, width, 5);
         //paint how much is done...
         splashScreenContext.setColor(Color.GREEN);
-        splashScreenContext.fillRect(x, y - 15, (int) (how_many_steps * 25), 5);
+        splashScreenContext.fillRect(x, y - 15, (int) (splashScreenProgress * 30), 5);
         splash.update();
     }
 
@@ -176,7 +190,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     public MediathekGui(String[] ar) {
         initializeSplashScreen();
 
-        updateSplashScreenText("Speicher prüfen...");
         //we must check if we were started with enough memory, do it as early as possible
         checkMemoryRequirements();
 
@@ -218,12 +231,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         if (IoXmlLesen.einstellungenExistieren()) {
             // gibt schon Programmeinstellungen, dann damit starten
             ddaten.allesLaden();
+            updateSplashScreenText("GUI Initialisieren...");
         } else {
             // erster Start
             new DialogStarteinstellungen(null, true, ddaten).setVisible(true);
         }
 
-        //updateSplashScreenText("GUI Initialisieren..."); macht Probleme beim ersten Start: DialogStarteinstellungen
         setOrgTitel();
         setLookAndFeel();
         //GuiFunktionen.setLook(this);
@@ -583,21 +596,21 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         initMenue();
         initToolBar();
         initSearchField();
-        DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        DDaten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
-            public void start_(ListenerFilmeLadenEvent event) {
+            public void start(MSearchListenerFilmeLadenEvent event) {
                 //ddaten.infoPanel.setProgress();
                 jButtonFilmeLaden.setEnabled(false);
                 jMenuItemFilmlisteLaden.setEnabled(false);
             }
 
             @Override
-            public void progress_(ListenerFilmeLadenEvent event) {
+            public void progress(MSearchListenerFilmeLadenEvent event) {
                 getStatusBar().updateProgressBar(event);
             }
 
             @Override
-            public void fertig_(ListenerFilmeLadenEvent event) {
+            public void fertig(MSearchListenerFilmeLadenEvent event) {
                 getStatusBar().hideProgressIndicators();
                 jButtonFilmeLaden.setEnabled(true);
                 jMenuItemFilmlisteLaden.setEnabled(true);

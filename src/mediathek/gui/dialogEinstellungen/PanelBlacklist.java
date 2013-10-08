@@ -45,6 +45,7 @@ import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MViewListeFilme;
 import mediathek.tool.TModel;
 
 public class PanelBlacklist extends PanelVorlage {
@@ -242,7 +243,7 @@ public class PanelBlacklist extends PanelVorlage {
         //für den Sender "" sind alle Themen im themenPerSender[0]
         themenPerSender = new String[sender.length][];
         for (int i = 0; i < sender.length; ++i) {
-            themenPerSender[i] = DDaten.listeFilme.getModelOfFieldThema(sender[i]);
+            themenPerSender[i] = MViewListeFilme.getModelOfFieldThema(DDaten.listeFilme, sender[i]);
         }
     }
 

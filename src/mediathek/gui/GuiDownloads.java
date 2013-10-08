@@ -37,19 +37,15 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.MVStatusBar_Mac;
 import mediathek.MediathekGui;
-import mediathek.controller.filmeLaden.ListenerFilmeLaden;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.controller.io.starter.Start;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.res.GetIcon;
-import mediathek.tool.BeobMpanel;
 import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererDownloads;
 import mediathek.tool.Datum;
@@ -62,6 +58,9 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelDownload;
+import msearch.daten.DatenFilm;
+import msearch.filmeSuchen.MSearchListenerFilmeLaden;
+import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 public class GuiDownloads extends PanelVorlage {
 
@@ -166,9 +165,9 @@ public class GuiDownloads extends PanelVorlage {
                 tabelleLaden();
             }
         });
-        DDaten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        DDaten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
-            public void fertig_(ListenerFilmeLadenEvent event) {
+            public void fertig(MSearchListenerFilmeLadenEvent event) {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
                     downloadsAktualisieren();
                 }

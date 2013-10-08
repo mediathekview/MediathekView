@@ -21,7 +21,7 @@ package mediathek;
 
 import java.util.EnumMap;
 import javax.swing.JComponent;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
+import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 /**
  *
@@ -48,7 +48,7 @@ public class MVStatusBar extends javax.swing.JPanel {
         NONE, FILME, DOWNLOAD, ABO
     };
 
-    public void updateProgressBar(ListenerFilmeLadenEvent event) {
+    public void updateProgressBar(MSearchListenerFilmeLadenEvent event) {
     }
 
     public JComponent getComponent() {

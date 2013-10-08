@@ -23,13 +23,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenFilm;
 
 public class DatumZeit {
-
-    private static SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
-    private static SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
 
     public static String getJetzt_ddMMyyyy_HHmm() {
         Date today;
@@ -176,39 +171,4 @@ public class DatumZeit {
         return tmp;
     }
 
-    public static Datum getDatumForObject(DatenFilm film) {
-//        SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
-//        SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
-        Datum tmp = new Datum(0);
-        if (!film.arr[DatenFilm.FILM_DATUM_NR].equals("")) {
-            try {
-                if (!film.arr[DatenFilm.FILM_ZEIT_NR].equals("")) {
-                    tmp.setTime(sdf_datum_zeit.parse(film.arr[DatenFilm.FILM_DATUM_NR] + film.arr[DatenFilm.FILM_ZEIT_NR]).getTime());
-                } else {
-                    tmp.setTime(sdf_datum.parse(film.arr[DatenFilm.FILM_DATUM_NR]).getTime());
-                }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(649897321, Log.FEHLER_ART_PROG, "DatumZeit.getDatumForObject", ex,
-                        new String[]{"Datum: " + film.arr[DatenFilm.FILM_DATUM_NR], "Zeit: " + film.arr[DatenFilm.FILM_ZEIT_NR]});
-            }
-        }
-        return tmp;
-    }
-
-    public static Datum getDatumForObject(DatenDownload datenDownload) {
-        Datum tmp = new Datum(0);
-        if (!datenDownload.arr[DatenDownload.DOWNLOAD_DATUM_NR].equals("")) {
-            try {
-                if (!datenDownload.arr[DatenDownload.DOWNLOAD_ZEIT_NR].equals("")) {
-                    tmp.setTime(sdf_datum_zeit.parse(datenDownload.arr[DatenDownload.DOWNLOAD_DATUM_NR] + datenDownload.arr[DatenDownload.DOWNLOAD_ZEIT_NR]).getTime());
-                } else {
-                    tmp.setTime(sdf_datum.parse(datenDownload.arr[DatenDownload.DOWNLOAD_DATUM_NR]).getTime());
-                }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(649897321, Log.FEHLER_ART_PROG, "DatumZeit.getDatumForObject", ex,
-                        new String[]{"Datum: " + datenDownload.arr[DatenDownload.DOWNLOAD_DATUM_NR], "Zeit: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZEIT_NR]});
-            }
-        }
-        return tmp;
-    }
 }

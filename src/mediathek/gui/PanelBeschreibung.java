@@ -23,12 +23,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
 import mediathek.daten.DDaten;
-import mediathek.daten.DatenFilm;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.UrlHyperlinkAction;
+import msearch.daten.DatenFilm;
 
 /**
  *

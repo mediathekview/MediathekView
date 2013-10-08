@@ -26,11 +26,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import mediathek.controller.filmeLaden.FilmeLaden;
-import mediathek.controller.io.IoXmlFilmlisteSchreiben;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
+import msearch.daten.ListeFilme;
+import msearch.io.MSearchIoXmlFilmlisteSchreiben;
 
 public class Daten {
     // Konstanten, Systemeinstellungen und alles was wichtig ist für
@@ -175,7 +176,7 @@ public class Daten {
     }
 
     public void allesSpeichern() {
-        new IoXmlFilmlisteSchreiben().filmeSchreiben(getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, listeFilme);
+        new MSearchIoXmlFilmlisteSchreiben().filmeSchreiben(getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, listeFilme);
     }
 
     /**

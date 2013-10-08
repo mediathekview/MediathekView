@@ -29,6 +29,8 @@ import mediathek.tool.Filter;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import msearch.daten.DatenFilm;
+import msearch.daten.ListeFilme;
 
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     //Tags Blacklist
@@ -115,10 +117,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         return object;
     }
 
-    public ListeFilme filterListe(ListeFilme listeFilme) {
+    public void filterListe(ListeFilme listeFilme, ListeFilme listeRet) {
         setFilter();
-        ListeFilme listeRet = new ListeFilme();
         if (listeFilme != null) {
+            listeRet.clear();
             DatenFilm film;
             listeRet.setMeta(listeFilme.metaDaten);
             Iterator<DatenFilm> it = listeFilme.iterator();
@@ -129,7 +131,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 }
             }
         }
-        return listeRet;
     }
 
     public boolean checkBlackOkFilme_Downloads(DatenFilm film) {

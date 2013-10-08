@@ -20,6 +20,7 @@
 package mediathek.daten;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import mediathek.controller.io.AsxLesen;
@@ -31,10 +32,13 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import msearch.daten.DatenFilm;
 
 public class DatenDownload implements Comparable<DatenDownload> {
     //
 
+    private static SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
+    private static SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
     public static final String DOWNLOAD_NR = "Nr";
     public static final int DOWNLOAD_NR_NR = 0;
     public static final String DOWNLOAD_FILM_NR = "Filmnr";
@@ -148,7 +152,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public final void init() {
         // Datum
-        datumFilm = DatumZeit.getDatumForObject(this);
+        datumFilm = getDatumForObject();
     }
 
     public boolean istZurueckgestellt() {
@@ -440,5 +444,22 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[i] = "";
         }
         arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.FALSE.toString();
+    }
+
+    public Datum getDatumForObject() {
+        Datum tmp = new Datum(0);
+        if (!arr[DatenDownload.DOWNLOAD_DATUM_NR].equals("")) {
+            try {
+                if (!arr[DatenDownload.DOWNLOAD_ZEIT_NR].equals("")) {
+                    tmp.setTime(sdf_datum_zeit.parse(arr[DatenDownload.DOWNLOAD_DATUM_NR] + arr[DatenDownload.DOWNLOAD_ZEIT_NR]).getTime());
+                } else {
+                    tmp.setTime(sdf_datum.parse(arr[DatenDownload.DOWNLOAD_DATUM_NR]).getTime());
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(649897321, Log.FEHLER_ART_PROG, "DatumZeit.getDatumForObject", ex,
+                        new String[]{"Datum: " + arr[DatenDownload.DOWNLOAD_DATUM_NR], "Zeit: " + arr[DatenDownload.DOWNLOAD_ZEIT_NR]});
+            }
+        }
+        return tmp;
     }
 }

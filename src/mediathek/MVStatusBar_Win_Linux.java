@@ -23,18 +23,16 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
-import mediathek.controller.filmeLaden.ListenerFilmeLadenEvent;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
+import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 /**
  *
@@ -105,7 +103,7 @@ public class MVStatusBar_Win_Linux extends MVStatusBar {
     }
 
     @Override
-    public void updateProgressBar(ListenerFilmeLadenEvent event) {
+    public void updateProgressBar(MSearchListenerFilmeLadenEvent event) {
         stopTimer = true;
         jProgressBar1.setVisible(true);
         jButtonStop.setVisible(true);

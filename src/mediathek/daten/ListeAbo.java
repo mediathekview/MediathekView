@@ -29,6 +29,7 @@ import mediathek.tool.Filter;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
+import msearch.daten.DatenFilm;
 
 public class ListeAbo extends LinkedList<DatenAbo> {
 
