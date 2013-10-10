@@ -21,7 +21,6 @@ package mediathek.tool;
 
 import msearch.daten.DatenFilm;
 
-
 public class MVLong implements Comparable<MVLong> {
 
     Long l = 0L;
@@ -29,23 +28,20 @@ public class MVLong implements Comparable<MVLong> {
 
     public MVLong(long ll) {
         l = new Long(ll);
-        s = l.toString();
+        if (l != 0) {
+            s = l.toString();
+        }
+    }
+
+    public MVLong(String s) {
+        setString(s);
     }
 
     public MVLong(DatenFilm film) {
         if (film.arr[DatenFilm.FILM_GROESSE_NR].equals("<1")) {
             film.arr[DatenFilm.FILM_GROESSE_NR] = "1";
         }
-        try {
-            if (!film.arr[DatenFilm.FILM_GROESSE_NR].isEmpty()) {
-                l = new Long(Long.valueOf(film.arr[DatenFilm.FILM_GROESSE_NR]));
-                s = film.arr[DatenFilm.FILM_GROESSE_NR];
-            }
-        } catch (Exception ex) {
-            Log.fehlerMeldung(649891025, Log.FEHLER_ART_MREADER, MVLong.class.getName(), ex, "String: " + film.arr[DatenFilm.FILM_GROESSE_NR]);
-            l = 0L;
-            s = "";
-        }
+        setString(film.arr[DatenFilm.FILM_GROESSE_NR]);
     }
 
     @Override
@@ -56,5 +52,18 @@ public class MVLong implements Comparable<MVLong> {
     @Override
     public int compareTo(MVLong ll) {
         return (l.compareTo(ll.l));
+    }
+
+    private void setString(String ss) {
+        if (!ss.isEmpty()) {
+            try {
+                l = Long.valueOf(ss);
+                s = l.toString();
+            } catch (Exception ex) {
+                Log.fehlerMeldung(978745320, Log.FEHLER_ART_MREADER, MVLong.class.getName(), ex, "String: " + ss);
+                l = 0L;
+                s = "";
+            }
+        }
     }
 }

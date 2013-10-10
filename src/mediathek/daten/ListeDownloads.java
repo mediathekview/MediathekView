@@ -172,7 +172,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                             if (download.film != null) {
                                 object[i] = download.film.dateigroesseL;
                             } else {
-                                object[i] = new MVLong(0);
+                                object[i] = new MVLong(download.arr[DatenDownload.DOWNLOAD_GROESSE_NR]);
                             }
                         } else if (i != DatenDownload.DOWNLOAD_FILM_NR_NR && i != DatenDownload.DOWNLOAD_URL_NR && !DatenDownload.anzeigen(i)) {
                             // Filmnr und URL immer füllen, egal ob angezeigt
