@@ -57,7 +57,8 @@ public class PanelAbout extends PanelVorlage {
         jTextFieldProgrammpfad.setText(Funktionen.getPathJar());
         try {
             final Path settingsDirectoryPath = Daten.getSettingsDirectory();
-            jTextFieldEinstellungen.setText(settingsDirectoryPath.toAbsolutePath() + File.separator + Konstanten.XML_DATEI);
+            final Path xmlFilePath = Daten.getMediathekXmlFilePath();
+            jTextFieldEinstellungen.setText(xmlFilePath.toAbsolutePath().toString());
             jTextFieldFilme.setText(settingsDirectoryPath.toAbsolutePath() + File.separator + Konstanten.XML_DATEI_FILME);
             jXHyperlinkWebsite.setText(Konstanten.ADRESSE_WEBSITE);
             jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_WEBSITE));

@@ -202,4 +202,19 @@ public class Daten {
 
         return baseDirectoryPath;
     }
+
+    /**
+     * Return the path to "mediathek.xml"
+     * @return
+     */
+    public static Path getMediathekXmlFilePath()
+    {
+        Path xmlFilePath = null;
+        try {
+            xmlFilePath = Daten.getSettingsDirectory().resolve("mediathek.xml");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return xmlFilePath;
+    }
 }

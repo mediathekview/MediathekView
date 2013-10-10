@@ -136,7 +136,8 @@ public class MVAboutDialog extends JDialog {
             setupJavaInformation();
             // Programmpfade
             final Path settingsDirPath = Daten.getSettingsDirectory();
-            lblSettingsFilePath.setText(settingsDirPath.toAbsolutePath() + File.separator + Konstanten.XML_DATEI);
+            final Path xmlFilePath = Daten.getMediathekXmlFilePath();
+            lblSettingsFilePath.setText(xmlFilePath.toAbsolutePath().toString());
             lblFilmlistPath.setText(settingsDirPath.toAbsolutePath() + File.separator + Konstanten.XML_DATEI_FILME);
 
             // auf dem Mac brauchen wir den Schließen Button nicht..

@@ -68,7 +68,7 @@ public class FilmeLaden {
             @Override
             public synchronized void fertig(MSearchListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
-                ///Daten.listeFilme = filmeSuchenSender.listeFilmeNeu;
+                Daten.listeFilme = mSearchFilmeSuchen.listeFilmeNeu;
                 undEnde(event);
             }
         });

@@ -19,16 +19,15 @@
  */
 package mediathek.controller.io;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
@@ -49,7 +48,6 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 
 public class IoXmlLesen {
 
-    ZipOutputStream zipOutputStream = null;
     BZip2CompressorOutputStream bZip2CompressorOutputStream = null;
 
     public void datenLesen(DDaten daten) {
@@ -57,15 +55,8 @@ public class IoXmlLesen {
     }
 
     public static boolean einstellungenExistieren() {
-        try {
-            String datei;
-            datei = Daten.getBasisVerzeichnis(false) + Konstanten.XML_DATEI;
-            if (new File(datei).exists()) {
-                return true;
-            }
-        } catch (Exception ex) {
-        }
-        return false;
+        Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        return Files.exists(xmlFilePath);
     }
 
     public static ListePset importPset(DDaten dd, String dateiUrl, boolean log) {
@@ -106,7 +97,7 @@ public class IoXmlLesen {
                     //String t = parser.getLocalName();
                     if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
                         datenPset = new DatenPset();
-                        if (!get(parser, event, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false)) {
+                        if (!get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false)) {
                             datenPset = null;
                         } else {
                             liste.add(datenPset);
@@ -114,7 +105,7 @@ public class IoXmlLesen {
                     } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
                         if (datenPset != null) {
                             DatenProg datenProg = new DatenProg();
-                            if (get(parser, event, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false)) {
+                            if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false)) {
                                 datenPset.addProg(datenProg);
                             }
                         }
@@ -128,7 +119,7 @@ public class IoXmlLesen {
             }
             return null;
         }
-        if (liste.size() == 0) {
+        if (liste.isEmpty()) {
             return null;
         } else {
             // damit die Variablen ersetzt werden
@@ -139,7 +130,7 @@ public class IoXmlLesen {
     }
 
     public static ListePset importPsetText(DDaten dd, String text, boolean log) {
-        DatenPset datenPset = null;
+        DatenPset datenPset;
         ListePset liste = new ListePset();
         try {
             int event;
@@ -154,7 +145,7 @@ public class IoXmlLesen {
                     //String t = parser.getLocalName();
                     if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
                         datenPset = new DatenPset();
-                        if (!get(parser, event, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false)) {
+                        if (!get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false)) {
                             datenPset = null;
                         } else {
                             liste.add(datenPset);
@@ -170,7 +161,7 @@ public class IoXmlLesen {
 //                    } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
                         if (datenPset != null) {
                             DatenProg datenProg = new DatenProg();
-                            if (get(parser, event, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false)) {
+                            if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false)) {
                                 datenPset.addProg(datenProg);
                             }
                         }
@@ -183,7 +174,7 @@ public class IoXmlLesen {
             }
             return null;
         }
-        if (liste.size() == 0) {
+        if (liste.isEmpty()) {
             return null;
         } else {
             ListePset ll = new ListePset();
@@ -196,18 +187,15 @@ public class IoXmlLesen {
     // private
     // ##############################
     private void xmlDatenLesen(DDaten ddaten) {
-        try {
-            String datei;
-            datei = Daten.getBasisVerzeichnis(false) + Konstanten.XML_DATEI;
-            if (new File(datei).exists()) {
-                //nur wenn die Datei schon existiert
-                int event;
-                XMLInputFactory inFactory = XMLInputFactory.newInstance();
-                inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-                XMLStreamReader parser;
-                DatenPset datenPset = null;
-                InputStreamReader in = new InputStreamReader(new FileInputStream(datei), Konstanten.KODIERUNG_UTF);
-                parser = inFactory.createXMLStreamReader(in);
+        Path xmlFilePath = null;
+        xmlFilePath = Daten.getMediathekXmlFilePath();
+        if (Files.exists(xmlFilePath)) {
+            int event;
+            XMLInputFactory inFactory = XMLInputFactory.newInstance();
+            inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+            DatenPset datenPset = null;
+            try (InputStreamReader in = new InputStreamReader(Files.newInputStream(xmlFilePath), Konstanten.KODIERUNG_UTF)){
+                XMLStreamReader parser = inFactory.createXMLStreamReader(in);
                 while (parser.hasNext()) {
                     event = parser.next();
                     if (event == XMLStreamConstants.START_ELEMENT) {
@@ -263,22 +251,22 @@ public class IoXmlLesen {
                         }
                     }
                 }
-                in.close();
+                parser.close();
+            } catch (XMLStreamException | IOException ex) {
+                Log.fehlerMeldung(392840096, Log.FEHLER_ART_PROG, "IoXml.xmlDatenLesen", ex);
             }
-        } catch (Exception ex) {
-            Log.fehlerMeldung(392840096, Log.FEHLER_ART_PROG, "IoXml.xmlDatenLesen", ex);
-        } finally {
             ddaten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
             DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).sort();
         }
     }
 
+
     private static boolean get(XMLStreamReader parser, int event, String xmlElem, String[] xmlNames, String[] strRet) {
-        return get(parser, event, xmlElem, xmlNames, strRet, true);
+        return get(parser, xmlElem, xmlNames, strRet, true);
     }
 
-    private static boolean get(XMLStreamReader parser, int event, String xmlElem, String[] xmlNames, String[] strRet, boolean log) {
+    private static boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet, boolean log) {
         boolean ret = true;
         int maxElem = strRet.length;
         for (int i = 0; i < maxElem; ++i) {
@@ -289,7 +277,7 @@ public class IoXmlLesen {
         }
         try {
             while (parser.hasNext()) {
-                event = parser.next();
+                int event = parser.next();
                 if (event == XMLStreamConstants.END_ELEMENT) {
                     if (parser.getLocalName().equals(xmlElem)) {
                         break;
