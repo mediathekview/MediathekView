@@ -21,12 +21,15 @@ package mediathek.controller.io;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
@@ -45,7 +48,6 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 
 public class IoXmlSchreiben {
 
-    private XMLOutputFactory outFactory;
     private XMLStreamWriter writer;
     private OutputStreamWriter out = null;
     ZipOutputStream zipOutputStream = null;
@@ -62,7 +64,7 @@ public class IoXmlSchreiben {
     public synchronized void exportPset(DatenPset[] pSet, String datei) {
         try {
             Log.systemMeldung("Pset exportieren");
-            xmlSchreibenStart(datei);
+            xmlSchreibenStart();
             xmlSchreibenPset(pSet);
             xmlSchreibenEnde(datei);
         } catch (Exception ex) {
@@ -76,7 +78,7 @@ public class IoXmlSchreiben {
     private void xmlDatenSchreiben(DDaten daten) {
         try {
             Log.systemMeldung("Daten Schreiben");
-            xmlSchreibenStart(Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI);
+            xmlSchreibenStart();
             //System schreibem
             xmlSchreibenDaten(Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, DDaten.system);
             //Senderliste
@@ -84,21 +86,22 @@ public class IoXmlSchreiben {
             xmlSchreibenDownloads(daten);
             xmlSchreibenAbo(daten);
             xmlSchreibenBlackList(daten);
-            xmlSchreibenFilmUpdateServer(daten);
+            xmlSchreibenFilmUpdateServer();
             xmlSchreibenEnde();
         } catch (Exception ex) {
             Log.fehlerMeldung(656328109, Log.FEHLER_ART_PROG, "IoXml.xmlDatenSchreiben", ex);
         }
     }
 
-    private void xmlSchreibenStart(String datei) throws Exception {
-        File file = new File(datei);
-        Log.systemMeldung("Start Schreiben nach: " + datei);
-        outFactory = XMLOutputFactory.newInstance();
-        if (datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
+    private void xmlSchreibenStart() throws IOException,XMLStreamException {
+        Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        File file = xmlFilePath.toFile();
+        Log.systemMeldung("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
+        XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
+        if (xmlFilePath.toAbsolutePath().endsWith(GuiKonstanten.FORMAT_BZ2)) {
             bZip2CompressorOutputStream = new BZip2CompressorOutputStream(new FileOutputStream(file), 2);
             out = new OutputStreamWriter(bZip2CompressorOutputStream, Konstanten.KODIERUNG_UTF);
-        } else if (datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+        } else if (xmlFilePath.toAbsolutePath().endsWith(GuiKonstanten.FORMAT_ZIP)) {
             zipOutputStream = new ZipOutputStream(new FileOutputStream(file));
             ZipEntry entry = new ZipEntry(Konstanten.XML_DATEI_FILME);
             zipOutputStream.putNextEntry(entry);
@@ -107,7 +110,7 @@ public class IoXmlSchreiben {
             out = new OutputStreamWriter(new FileOutputStream(file), Konstanten.KODIERUNG_UTF);
         }
         writer = outFactory.createXMLStreamWriter(out);
-        writer.writeStartDocument("UTF-8", "1.0");
+        writer.writeStartDocument(Konstanten.KODIERUNG_UTF, "1.0");
         writer.writeCharacters("\n");//neue Zeile
         writer.writeStartElement(Konstanten.XML_START);
         writer.writeCharacters("\n");//neue Zeile
@@ -129,11 +132,11 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void xmlSchreibenPset(DatenPset[] datenPset) {
+    private void xmlSchreibenPset(DatenPset[] psetArray) {
         ListIterator<DatenProg> it;
-        for (int i = 0; i < datenPset.length; ++i) {
-            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset[i].arr);
-            it = datenPset[i].getListeProg().listIterator();
+        for (DatenPset pset : psetArray) {
+            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, pset.arr);
+            it = pset.getListeProg().listIterator();
             while (it.hasNext()) {
                 xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, it.next().arr);
             }
@@ -142,7 +145,7 @@ public class IoXmlSchreiben {
 
     private void xmlSchreibenDownloads(DDaten daten) {
         Iterator<DatenDownload> iterator;
-        //Abo schreibem
+        //Abo schreiben
         DatenDownload d;
         iterator = daten.listeDownloads.iterator();
         while (iterator.hasNext()) {
@@ -175,7 +178,7 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void xmlSchreibenFilmUpdateServer(DDaten daten) {
+    private void xmlSchreibenFilmUpdateServer() {
         Iterator<DatenUrlFilmliste> iterator;
         //FilmUpdate schreibem
         DatenUrlFilmliste datenUrlFilmliste;

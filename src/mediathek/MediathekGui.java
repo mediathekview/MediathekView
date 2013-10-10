@@ -160,6 +160,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         final int y = 430;
         final int x = 120;
         final int width = 300;
+        final int maxSteps = 11; // KEEP THIS CURRENT!
+
         splashScreenProgress++;
         //System.out.println("HOW_MANY_STEPS: " + splashScreenProgress);
 
@@ -168,7 +170,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         //clear the drawing area...
         splashScreenContext.setComposite(AlphaComposite.Clear);
-        splashScreenContext.fillRect(x, (y - 10), 300, 40);
+        splashScreenContext.fillRect(x, (y - 10), width, 40);
         splashScreenContext.setPaintMode();
         //paint the text string...
         splashScreenContext.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -179,7 +181,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         splashScreenContext.fillRect(x, y - 15, width, 5);
         //paint how much is done...
         splashScreenContext.setColor(Color.GREEN);
-        splashScreenContext.fillRect(x, y - 15, (int) (splashScreenProgress * 30), 5);
+        splashScreenContext.fillRect(x, y - 15, (int) (splashScreenProgress * (width / maxSteps)), 5);
         splash.update();
     }
 
