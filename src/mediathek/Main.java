@@ -29,8 +29,6 @@ public class Main {
 
     public static final String STARTP_ALLES = "-alles";
     public static final String STARTP_USER_AGENT = "-agent";
-    public static final String STARTP_EXPORT_DATEI = "-o";
-    public static final String STARTP_IMPORT_URL = "-i";
     public static final String STARTP_LOGFILE = "-log";
     public static final String STARTP_MAXIMIERT = "-M";
 
@@ -51,7 +49,7 @@ public class Main {
 
     private enum StartupMode {
 
-        NORMAL, AUTO, NOGUI
+        NORMAL, AUTO
     }
 
     /**
@@ -68,9 +66,6 @@ public class Main {
                     for (String s : args) {
                         if (s.equalsIgnoreCase("-auto")) {
                             state = StartupMode.AUTO;
-                        }
-                        if (s.equalsIgnoreCase("-noGui")) {
-                            state = StartupMode.NOGUI;
                         }
                         if (s.equalsIgnoreCase("-d")) {
                             Daten.debug = true;
@@ -94,9 +89,6 @@ public class Main {
                 switch (state) {
                     case AUTO:
                         new MediathekAuto(args).starten();
-                        break;
-                    case NOGUI:
-                        new MediathekNoGui(args).starten();
                         break;
                     default:
                         new MediathekGui(args).setVisible(true);
