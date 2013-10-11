@@ -36,6 +36,7 @@ import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.gui.dialogEinstellungen.PanelSenderLaden;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import mediathek.tool.MVNotification;
 import msearch.daten.MSearchConfig;
 
 public class GuiDebug extends PanelVorlage {
@@ -135,6 +136,22 @@ public class GuiDebug extends PanelVorlage {
                 System.gc();
             }
         });
+        jButtonNotify.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MVNotification.addNotification("Titel", "<html>"
+                        + "<head>"
+                        + "</head>"
+                        + "<body>"
+                        + "<p>"
+                        + "<b>Autoren:</b><br />"
+                        + "Xaver W. (W.Xaver [at] googlemail [dot] com)<br />"
+                        + "Christian F. (crystalpalace1977 [at] googlemail [dot] com)"
+                        + "</p>"
+                        + "</body>"
+                        + "</html>");
+            }
+        });
     }
 
     private void addSender() {
@@ -199,6 +216,7 @@ public class GuiDebug extends PanelVorlage {
         jButtonDoppelt = new javax.swing.JButton();
         jButtonDoppeltIndex = new javax.swing.JButton();
         jButtonGc = new javax.swing.JButton();
+        jButtonNotify = new javax.swing.JButton();
 
         jPanelSenderLaden.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender starten"));
 
@@ -210,7 +228,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLadenLayout.setVerticalGroup(
             jPanelSenderLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 484, Short.MAX_VALUE)
+            .addGap(0, 485, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -242,7 +260,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLayout.setVerticalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 484, Short.MAX_VALUE)
+            .addGap(0, 485, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -272,7 +290,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelListenLayout.setVerticalGroup(
             jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 508, Short.MAX_VALUE)
+            .addGap(0, 509, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -319,7 +337,7 @@ public class GuiDebug extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jButtonTasklist)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -348,6 +366,8 @@ public class GuiDebug extends PanelVorlage {
 
         jButtonGc.setText("Gc");
 
+        jButtonNotify.setText("Notify");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -362,7 +382,9 @@ public class GuiDebug extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonDoppeltIndex)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonGc))
+                        .addComponent(jButtonGc)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonNotify))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jToggleButtonAllesLaden)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -396,7 +418,8 @@ public class GuiDebug extends PanelVorlage {
                     .addComponent(jCheckBoxDateiGroesse)
                     .addComponent(jButtonDoppelt)
                     .addComponent(jButtonDoppeltIndex)
-                    .addComponent(jButtonGc))
+                    .addComponent(jButtonGc)
+                    .addComponent(jButtonNotify))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -430,6 +453,7 @@ public class GuiDebug extends PanelVorlage {
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonGc;
+    private javax.swing.JButton jButtonNotify;
     private javax.swing.JButton jButtonTasklist;
     private javax.swing.JCheckBox jCheckBoxDateiGroesse;
     private javax.swing.JPanel jPanel5;

@@ -80,6 +80,7 @@ public class Daten {
         system[Konstanten.SYSTEM_ICON_PFAD_NR] = Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss";
         Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = String.valueOf(0);
         Daten.system[Konstanten.SYSTEM_FILMLISTE_UMBENENNEN_NR] = Boolean.FALSE.toString();
+        Daten.system[Konstanten.SYSTEM_NOTIFICATION_NR] = Boolean.TRUE.toString();
         //        Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.TRUE.toString();
         if (Daten.debug) {
             Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUS);
@@ -205,10 +206,10 @@ public class Daten {
 
     /**
      * Return the path to "mediathek.xml"
+     *
      * @return
      */
-    public static Path getMediathekXmlFilePath()
-    {
+    public static Path getMediathekXmlFilePath() {
         Path xmlFilePath = null;
         try {
             xmlFilePath = Daten.getSettingsDirectory().resolve("mediathek.xml");
