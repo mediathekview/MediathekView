@@ -19,19 +19,18 @@
  */
 package mediathek.controller.io;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import javax.swing.JOptionPane;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogZiel;
-import mediathek.tool.DatumZeit;
-import mediathek.tool.Funktionen;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Log;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
+
+import javax.swing.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ProgrammLog {
 
@@ -41,104 +40,89 @@ public class ProgrammLog {
         if (!dialog.ok) {
             return;
         }
-        File f = new File(dialog.ziel);
-        if (f == null) {
+
+        Path logFilePath = Paths.get(dialog.ziel);
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(logFilePath)))) {
+            // Programminfos
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.write("Erstellt: " + DatumZeit.getJetzt_ddMMyyyy_HHmm());
+            bw.newLine();
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.newLine();
+            bw.write(Funktionen.getProgVersionString());
+            bw.newLine();
+            bw.write("Compiled: " + Funktionen.getCompileDate());
+            bw.newLine();
+            bw.write("=====================================================");
+            bw.newLine();
+            bw.write("Java");
+            bw.newLine();
+            String[] java = Funktionen.getJavaVersion();
+            for (String ja : java) {
+                bw.write(ja);
+                bw.newLine();
+            }
+            bw.write("=====================================================");
+            bw.newLine();
+            bw.write("Betriebssystem: " + System.getProperty("os.name"));
+            bw.newLine();
+            bw.write("Bs-Version:     " + System.getProperty("os.version"));
+            bw.newLine();
+            bw.write("Bs-Architektur: " + System.getProperty("os.arch"));
+            bw.newLine();
+            bw.newLine();
+            bw.write("Programmpfad: " + Funktionen.getPathJar());
+            bw.newLine();
+            bw.write("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory());
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            //
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.write("## Programmsets ##################################");
+            bw.newLine();
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.newLine();
+            for (int i = 0; i < ddaten.listePset.size(); ++i) {
+                bw.write(ddaten.listePset.get(i).toString());
+                bw.newLine();
+            }
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            //
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.write("## Systemmeldungen ##################################");
+            bw.newLine();
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.newLine();
+            bw.write(Log.textSystem.toString());
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            //
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.write("## Programmausgabe ##################################");
+            bw.newLine();
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.newLine();
+            bw.write(Log.textProgramm.toString());
+            bw.newLine();
+            bw.flush();
+        } catch (Exception ex) {
+            Log.fehlerMeldung(319865493, Log.FEHLER_ART_PROG, "ProgrammLog.zeileSchreiben-1", ex);
             MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                     "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
-        } else {
-            BufferedWriter bw = null;
-            try {
-                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
-                // Programminfos
-                bw.write("#####################################################");
-                bw.newLine();
-                bw.write("Erstellt: " + DatumZeit.getJetzt_ddMMyyyy_HHmm());
-                bw.newLine();
-                bw.write("#####################################################");
-                bw.newLine();
-                bw.newLine();
-                bw.write(Funktionen.getProgVersionString());
-                bw.newLine();
-                bw.write("Compiled: " + Funktionen.getCompileDate());
-                bw.newLine();
-                bw.write("=====================================================");
-                bw.newLine();
-                bw.write("Java");
-                bw.newLine();
-                String[] java = Funktionen.getJavaVersion();
-                for (String ja : java) {
-                    bw.write(ja);
-                    bw.newLine();
-                }
-                bw.write("=====================================================");
-                bw.newLine();
-                bw.write("Betriebssystem: " + System.getProperty("os.name"));
-                if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-                    if (System.getenv("ProgramFiles(x86)") != null) {
-                        // dann 64Bit
-                        bw.write("[64Bit]");
-                    } else {
-                        bw.write("[32Bit]");
-                    }
-                }
-                bw.newLine();
-                bw.write("Programmpfad: " + Funktionen.getPathJar());
-                bw.newLine();
-                bw.write("Verzeichnis Einstellungen: " + Daten.getBasisVerzeichnis());
-                bw.newLine();
-                bw.newLine();
-                bw.newLine();
-                //
-                bw.write("#####################################################");
-                bw.newLine();
-                bw.write("## Programmsets ##################################");
-                bw.newLine();
-                bw.write("#####################################################");
-                bw.newLine();
-                bw.newLine();
-                for (int i = 0; i < ddaten.listePset.size(); ++i) {
-                    bw.write(ddaten.listePset.get(i).toString());
-                    bw.newLine();
-                }
-                bw.newLine();
-                bw.newLine();
-                bw.newLine();
-                bw.newLine();
-                //
-                bw.write("#####################################################");
-                bw.newLine();
-                bw.write("## Systemmeldungen ##################################");
-                bw.newLine();
-                bw.write("#####################################################");
-                bw.newLine();
-                bw.newLine();
-                bw.write(Log.textSystem.toString());
-                bw.newLine();
-                bw.newLine();
-                bw.newLine();
-                bw.newLine();
-                //
-                bw.write("#####################################################");
-                bw.newLine();
-                bw.write("## Programmausgabe ##################################");
-                bw.newLine();
-                bw.write("#####################################################");
-                bw.newLine();
-                bw.newLine();
-                bw.write(Log.textProgramm.toString());
-                bw.newLine();
-                bw.flush();
-                bw.close();
-            } catch (Exception ex) {
-                Log.fehlerMeldung(319865493, Log.FEHLER_ART_PROG, "ProgrammLog.zeileSchreiben-1", ex);
-                MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
-                        "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
-            } finally {
-                try {
-                    bw.close();
-                } catch (Exception ex) {
-                }
-            }
         }
     }
 }

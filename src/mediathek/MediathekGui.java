@@ -329,23 +329,16 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             //if we have the old values, reset to System LAF
             if (laf.equals("") || laf.length() == 1) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                SwingUtilities.updateComponentTreeUI(this);
-                for (Frame f : Frame.getFrames()) {
-                    SwingUtilities.updateComponentTreeUI(f);
-                    for (Window w : f.getOwnedWindows()) {
-                        SwingUtilities.updateComponentTreeUI(w);
-                    }
-                }
             } else {
                 //otherwise set the requested UI
                 laf = DDaten.system[Konstanten.SYSTEM_LOOK_NR];
                 UIManager.setLookAndFeel(laf);
-                SwingUtilities.updateComponentTreeUI(this);
-                for (Frame f : Frame.getFrames()) {
-                    SwingUtilities.updateComponentTreeUI(f);
-                    for (Window w : f.getOwnedWindows()) {
-                        SwingUtilities.updateComponentTreeUI(w);
-                    }
+            }
+            SwingUtilities.updateComponentTreeUI(this);
+            for (Frame f : Frame.getFrames()) {
+                SwingUtilities.updateComponentTreeUI(f);
+                for (Window w : f.getOwnedWindows()) {
+                    SwingUtilities.updateComponentTreeUI(w);
                 }
             }
         } catch (Exception ignored) {
