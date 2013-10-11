@@ -38,7 +38,7 @@ public class MViewListeFilme {
             int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
         // Model für die Tabelle Filme zusammenbauen
 //        ((TModel) table.getModel()).setRowCount(0);
-        if (listeFilme.size() == 0) {
+        if (listeFilme.isEmpty()) {
             // wenn die Liste leer ist, dann Tschüss
             table.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
             return;
@@ -47,7 +47,7 @@ public class MViewListeFilme {
         TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
 //        tModel.setRowCount(listeFilme.size());
         if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("") && filterIrgendwo.equals("") && laenge == 0
-                && keineAbos == false && kGesehen == false && nurHd == false && live == false) {
+                && !keineAbos && !kGesehen && !nurHd && !live) {
             // wenn ganze Liste
             addObjectDataTabFilme(listeFilme, tModel);
         } else {
@@ -81,11 +81,7 @@ public class MViewListeFilme {
                     arrIrgendwo[i] = arrIrgendwo[i].trim();
                 }
             }
-            DatenFilm film;
-            int row = 0;
-            Iterator<DatenFilm> it = listeFilme.iterator();
-            while (it.hasNext()) {
-                film = it.next();
+            for (DatenFilm film : listeFilme) {
                 if (live) {
                     if (!film.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE)) {
                         continue;
@@ -107,7 +103,7 @@ public class MViewListeFilme {
                     }
                 }
                 if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film, true /*länge nicht prüfen*/)) {
-                    addObjectDataTabFilme(tModel, film, row++);
+                    addObjectDataTabFilme(tModel, film);
                 }
             }
         }
@@ -154,15 +150,17 @@ public class MViewListeFilme {
         return a;
     }
 
+    /** Erstellt ein StringArray mit den Sendernamen.
+     *
+     * @param listeFilme
+     * @return StringArray der Sendernamen
+     */
     public static synchronized String[] getModelOfFieldSender(ListeFilme listeFilme) {
-        // erstellt ein StringArray mit den Sendernamen
-        String str;
         treeSet.add("");
-        Iterator<DatenFilm> it = listeFilme.iterator();
         // Sendernamen gibts nur in einer Schreibweise
-        int max = DDaten.filmeLaden.getSenderNamen().length; // gibt nur so viele
-        while (it.hasNext()) {
-            str = it.next().arr[DatenFilm.FILM_SENDER_NR];
+        final int max = DDaten.filmeLaden.getSenderNamen().length; // gibt nur so viele
+        for (DatenFilm film : listeFilme) {
+            String str = film.arr[DatenFilm.FILM_SENDER_NR];
             if (!treeSet.contains(str)) {
                 treeSet.add(str);
                 if (treeSet.size() > max) { // eins mehr wegen Leerzeile
@@ -179,19 +177,14 @@ public class MViewListeFilme {
     // private
     //===================================
     private static void addObjectDataTabFilme(ListeFilme listefilme, TModel tModel) {
-        DatenFilm film;
-        int row = 0;
-        if (listefilme.size() > 0) {
-            Iterator<DatenFilm> iterator = listefilme.iterator();
-            while (iterator.hasNext()) {
-                film = iterator.next();
-                addObjectDataTabFilme(tModel, film, row);
-                ++row;
+        if (!listefilme.isEmpty()) {
+            for (DatenFilm film : listefilme) {
+                addObjectDataTabFilme(tModel, film);
             }
         }
     }
 
-    private static void addObjectDataTabFilme(TModel tModel, DatenFilm film, int row) {
+    private static void addObjectDataTabFilme(TModel tModel, DatenFilm film) {
         Object[] object = new Object[DatenFilm.MAX_ELEM];
         for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
             if (m == DatenFilm.FILM_DATUM_NR) {

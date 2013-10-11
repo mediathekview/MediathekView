@@ -38,6 +38,7 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVInputStream;
+import mediathek.tool.MVNotification;
 import mediathek.tool.MVUrlDateiGroesse;
 import mediathek.tool.TModel;
 import msearch.daten.DatenFilm;
@@ -604,5 +605,8 @@ public class StarterClass {
             text.add("Programmaufruf: " + start.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
         }
         Log.systemMeldung(text.toArray(new String[]{}));
+        if (!start.stoppen) {
+            MVNotification.addNotification(start.datenDownload, start.status != Start.STATUS_ERR);
+        }
     }
 }

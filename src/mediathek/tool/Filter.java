@@ -22,6 +22,8 @@ package mediathek.tool;
 import java.awt.Color;
 import java.util.regex.Pattern;
 import javax.swing.JTextField;
+
+import com.jidesoft.utils.SystemInfo;
 import mediathek.daten.DatenAbo;
 import msearch.daten.DatenFilm;
 
@@ -108,11 +110,7 @@ public class Filter {
     }
 
     public static boolean laengePruefen(int aboLaengeInMinuten, long filmLaenge) {
-        if (aboLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (aboLaengeInMinuten * 60)) {
-            return true;
-        } else {
-            return false;
-        }
+        return aboLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (aboLaengeInMinuten * 60);
     }
 
     private static boolean pruefen(String[] aboFilter, String im) {
@@ -132,11 +130,7 @@ public class Filter {
     }
 
     private static boolean textPruefen(String filter, String imFilm) {
-        if (imFilm.toLowerCase().contains(filter.toLowerCase())) {
-            return true;
-        } else {
-            return false;
-        }
+        return imFilm.toLowerCase().contains(filter.toLowerCase());
     }
 
     public static boolean isPattern(String textSuchen) {
@@ -173,6 +167,12 @@ public class Filter {
     }
 
     public static void checkPattern2(JTextField tf) {
+        //on the Mac and Windows, we are using (more or less) the native search fields, this won´t work
+        if (SystemInfo.isMacOSX() || SystemInfo.isWindows())
+        {
+           return;
+        }
+
         // Schriftfarbe ändern wenn eine RegEx
         String text = tf.getText();
         if (Filter.isPattern(text)) {

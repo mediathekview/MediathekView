@@ -74,6 +74,12 @@ public class PanelEinstellungen extends PanelVorlage {
                 init();
             }
         });
+        jCheckBoxNotification.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_NOTIFICATION_NR] = Boolean.toString(jCheckBoxNotification.isSelected());
+            }
+        });
         jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
         jButtonSuchen.addActionListener(new BeobSuchen(false));
         jButtonInfos.addActionListener(new BeobSuchen(true));
@@ -87,6 +93,7 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void init() {
+        jCheckBoxNotification.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_NOTIFICATION_NR]));
         jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR]));
         jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR]));
         // UserAgent
@@ -211,11 +218,14 @@ public class PanelEinstellungen extends PanelVorlage {
 
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         buttonGroup2 = new javax.swing.ButtonGroup();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBox2 = new javax.swing.JCheckBox();
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jSpinnerDownload = new javax.swing.JSpinner();
         jCheckBoxEchtzeit = new javax.swing.JCheckBox();
         jButtonHilfeAnzahl = new javax.swing.JButton();
+        jCheckBoxNotification = new javax.swing.JCheckBox();
         javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
         jCheckBoxSuchen = new javax.swing.JCheckBox();
         jButtonSuchen = new javax.swing.JButton();
@@ -232,6 +242,10 @@ public class PanelEinstellungen extends PanelVorlage {
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
 
+        jCheckBox1.setText("jCheckBox1");
+
+        jCheckBox2.setText("jCheckBox2");
+
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jLabel3.setText("Download(s) gleichzeitig Laden");
@@ -242,6 +256,8 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jButtonHilfeAnzahl.setText("Hilfe");
 
+        jCheckBoxNotification.setText("Programmbenachrichtigunen anzeigen");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -249,6 +265,7 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBoxNotification)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -263,7 +280,9 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jCheckBoxEchtzeit)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxNotification)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -305,7 +324,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jButtonSuchen)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonInfos)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Look and Feel:"));
@@ -324,7 +343,7 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jComboBoxLook, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Icons"));
@@ -359,7 +378,7 @@ public class PanelEinstellungen extends PanelVorlage {
                     .addComponent(jButtonRefresh))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Bandbreite für Downloads"));
@@ -403,7 +422,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -425,7 +444,7 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -433,7 +452,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -442,7 +461,10 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JButton jButtonInfos;
     private javax.swing.JButton jButtonRefresh;
     private javax.swing.JButton jButtonSuchen;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
+    private javax.swing.JCheckBox jCheckBoxNotification;
     private javax.swing.JCheckBox jCheckBoxSuchen;
     private javax.swing.JComboBox<String> jComboBoxIcons;
     private javax.swing.JComboBox<String> jComboBoxLook;

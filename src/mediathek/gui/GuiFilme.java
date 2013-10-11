@@ -578,7 +578,7 @@ public class GuiFilme extends PanelVorlage {
         } else {
             // jetzt nur den Filter aus der Toolbar
             MViewListeFilme.getModelTabFilme(DDaten.listeFilmeNachBlackList, ddaten, tabelle, "",
-                    "", "", ddaten.mediathekGui.getFilterToolBar(), "", 0,
+                     "", "", ddaten.mediathekGui.getFilterTextFromSearchField(), "", 0,
                     false, false, false, false);
         }
     }
