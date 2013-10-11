@@ -19,10 +19,8 @@
  */
 package mediathek.controller.io;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -52,8 +50,10 @@ public class IoXmlSchreiben {
     private OutputStreamWriter out = null;
     ZipOutputStream zipOutputStream = null;
     BZip2CompressorOutputStream bZip2CompressorOutputStream = null;
+    private Path xmlFilePath = null;
 
     public IoXmlSchreiben() {
+        xmlFilePath = Daten.getMediathekXmlFilePath();
     }
 
     public synchronized void datenSchreiben(DDaten daten) {
@@ -66,7 +66,7 @@ public class IoXmlSchreiben {
             Log.systemMeldung("Pset exportieren");
             xmlSchreibenStart();
             xmlSchreibenPset(pSet);
-            xmlSchreibenEnde(datei);
+            xmlSchreibenEnde();
         } catch (Exception ex) {
             Log.fehlerMeldung(392846204, Log.FEHLER_ART_PROG, "IoXmlSchreiben.exportPset", ex, "nach: " + datei);
         }
@@ -94,21 +94,21 @@ public class IoXmlSchreiben {
     }
 
     private void xmlSchreibenStart() throws IOException,XMLStreamException {
-        Path xmlFilePath = Daten.getMediathekXmlFilePath();
-        File file = xmlFilePath.toFile();
         Log.systemMeldung("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
-        XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
-        if (xmlFilePath.toAbsolutePath().endsWith(GuiKonstanten.FORMAT_BZ2)) {
-            bZip2CompressorOutputStream = new BZip2CompressorOutputStream(new FileOutputStream(file), 2);
+        final OutputStream outputStream = Files.newOutputStream(xmlFilePath);
+        if (xmlFilePath.endsWith(GuiKonstanten.FORMAT_BZ2)) {
+            bZip2CompressorOutputStream = new BZip2CompressorOutputStream(outputStream, 2);
             out = new OutputStreamWriter(bZip2CompressorOutputStream, Konstanten.KODIERUNG_UTF);
-        } else if (xmlFilePath.toAbsolutePath().endsWith(GuiKonstanten.FORMAT_ZIP)) {
-            zipOutputStream = new ZipOutputStream(new FileOutputStream(file));
+        } else if (xmlFilePath.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+            zipOutputStream = new ZipOutputStream(outputStream);
             ZipEntry entry = new ZipEntry(Konstanten.XML_DATEI_FILME);
             zipOutputStream.putNextEntry(entry);
             out = new OutputStreamWriter(zipOutputStream, Konstanten.KODIERUNG_UTF);
         } else {
-            out = new OutputStreamWriter(new FileOutputStream(file), Konstanten.KODIERUNG_UTF);
+            out = new OutputStreamWriter(outputStream, Konstanten.KODIERUNG_UTF);
         }
+
+        XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
         writer = outFactory.createXMLStreamWriter(out);
         writer.writeStartDocument(Konstanten.KODIERUNG_UTF, "1.0");
         writer.writeCharacters("\n");//neue Zeile
@@ -214,18 +214,15 @@ public class IoXmlSchreiben {
     }
 
     private void xmlSchreibenEnde() throws Exception {
-        xmlSchreibenEnde("");
-    }
-
-    private void xmlSchreibenEnde(String datei) throws Exception {
         writer.writeEndElement();
         writer.writeEndDocument();
         writer.flush();
-        if (datei.endsWith(GuiKonstanten.FORMAT_BZ2)) {
+
+        if (xmlFilePath.endsWith(GuiKonstanten.FORMAT_BZ2)) {
             writer.close();
             out.close();
             bZip2CompressorOutputStream.close();
-        } else if (datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+        } else if (xmlFilePath.endsWith(GuiKonstanten.FORMAT_ZIP)) {
             zipOutputStream.closeEntry();
             writer.close();
             out.close();
