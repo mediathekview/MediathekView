@@ -167,12 +167,6 @@ public class Filter {
     }
 
     public static void checkPattern2(JTextField tf) {
-        //on the Mac and Windows, we are using (more or less) the native search fields, this won´t work
-        if (SystemInfo.isMacOSX() || SystemInfo.isWindows())
-        {
-           return;
-        }
-
         // Schriftfarbe ändern wenn eine RegEx
         String text = tf.getText();
         if (Filter.isPattern(text)) {
