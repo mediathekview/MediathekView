@@ -4,12 +4,22 @@
  */
 package mediathek.tool;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.net.URL;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
+import mediathek.res.GetIcon;
+import net.sf.jcarrierpigeon.Notification;
+import net.sf.jcarrierpigeon.NotificationQueue;
 import net.sf.jcarrierpigeon.WindowPosition;
-import net.sf.jtelegraph.Telegraph;
-import net.sf.jtelegraph.TelegraphQueue;
-import net.sf.jtelegraph.TelegraphType;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.painter.GlossPainter;
 
 /**
  *
@@ -46,9 +56,36 @@ public class MVNotification {
                 meldung += s + "<br />";
             }
             meldung += "</p></body></html>";
-            Telegraph telegraph = new Telegraph(titel, meldung, fehler ? TelegraphType.MEDIATHEK_VIEW : TelegraphType.MEDIATHEK_VIEW_ERROR, WindowPosition.BOTTOMRIGHT, 6000);
-            TelegraphQueue queue = new TelegraphQueue();
-            queue.add(telegraph);
+//            Telegraph telegraph = new Telegraph(titel, meldung, fehler ? TelegraphType.MEDIATHEK_VIEW : TelegraphType.MEDIATHEK_VIEW_ERROR, WindowPosition.BOTTOMRIGHT, 6000);
+//            TelegraphQueue queue = new TelegraphQueue();
+//            queue.add(telegraph);
+
+            JFrame messageFrame = new JFrame();
+            messageFrame.setUndecorated(true);
+            messageFrame.setLayout(new BorderLayout());
+            JXPanel panel = new JXPanel();
+            panel.setBackground(Color.BLACK);
+
+            Color whiteTransparant = new Color(1.0f, 1.0f, 1.0f, 0.3f);
+            GlossPainter gp = new GlossPainter(whiteTransparant, GlossPainter.GlossPosition.TOP);
+            panel.setBackgroundPainter(gp);
+
+            messageFrame.setContentPane(panel);
+
+            JLabel iconLabel = new JLabel(GetIcon.getIcon(fehler ? "mv-notification.png" : "mv-notification-fehler.png"));
+            iconLabel.setVerticalAlignment(SwingConstants.TOP);
+            messageFrame.getContentPane().add(iconLabel, BorderLayout.WEST);
+            JXLabel meldungsLabel = new JXLabel(meldung);
+            meldungsLabel.setForeground(Color.WHITE);
+            // set the background painter
+
+            messageFrame.getContentPane().add(meldungsLabel, BorderLayout.CENTER);
+            messageFrame.pack();
+
+            Notification notification = new Notification(messageFrame, WindowPosition.BOTTOMRIGHT, 50, 50, 6000);
+            NotificationQueue q = new NotificationQueue();
+            q.add(notification);
+
         }
     }
 }

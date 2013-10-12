@@ -511,29 +511,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 ddaten.guiFilme.filtern();
             }
         });
-        jTextFieldFilter.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            private void tus() {
-                Filter.checkPattern2(jTextFieldFilter);
-                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
-                    ddaten.guiFilme.filtern();
-                }
-            }
-        });
         //looks like you need to explicitly set this on Linux...
         jTextFieldFilter.setInstantSearchDelay(150);
     }
