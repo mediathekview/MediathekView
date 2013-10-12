@@ -6,11 +6,10 @@ then
 
 # Dateien ins dist-Verzeichnis kopieren
 cp -r /mnt/daten/software/Mediathek/Mediathek/bin/* /mnt/daten/software/Mediathek/Mediathek/dist
-#cp /mnt/daten/software/Mediathek/Mediathek/bin/Anleitung/Anleitung.pdf /mnt/daten/software/Mediathek/Mediathek/dist
+cp -r /mnt/daten/software/Mediathek/Mediathek/dist/lib/* /mnt/daten/software/Mediathek/Mediathek/libs
 
 # für Netbeans nochmal
 cp -r /mnt/daten/software/Mediathek/Mediathek/bin/* /mnt/daten/software/Mediathek/Mediathek/build
-#cp /mnt/daten/software/Mediathek/Mediathek/bin/Anleitung/Anleitung.pdf /mnt/daten/software/Mediathek/Mediathek/build
 
 # Aufräumen
 rm /mnt/daten/software/Mediathek/Mediathek/dist/README.TXT
