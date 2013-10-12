@@ -37,7 +37,7 @@ import com.explodingpixels.widgets.WindowUtils;
  */
 public class BottomBar {
 
-	protected final TriAreaComponent fBottomBar = new TriAreaComponent(5);
+	protected final TriAreaComponent fBottomBar = new TriAreaComponent(5,false);
 
 	protected JSplitPane fSplitPane;
 
@@ -60,7 +60,7 @@ public class BottomBar {
 		createAndInstallBackgroundPainter();
 		createAndInstallBorder();
 
-		fBottomBar.forceOuterAreasToHaveTheSameWidth();
+//		fBottomBar.forceOuterAreasToHaveTheSameWidth();
 
 		// TODO use the actual border insets instead of the hard-coded value 2.
 		// calculate the height of the bottom bar. this includes adding two pixels to incorporate

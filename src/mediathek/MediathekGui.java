@@ -100,7 +100,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         } else {
             statusBar = new MVStatusBar_Win_Linux(ddaten);
         }
-        jPanelInfo.add(statusBar.getComponent(), BorderLayout.PAGE_START);
+        jPanelInfo.add(statusBar.getComponent(), BorderLayout.CENTER);
     }
 
     public MVStatusBar getStatusBar() {
