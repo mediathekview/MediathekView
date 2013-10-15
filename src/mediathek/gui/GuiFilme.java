@@ -647,7 +647,7 @@ public class GuiFilme extends PanelVorlage {
             // mit dem flvstreamer immer nur einen Filme starten
             int selectedModelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
             //DatenFilm datenFilm = DDaten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
-            DatenFilm datenFilm = DDaten.listeFilmeNachBlackList.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
+            DatenFilm datenFilm = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
             ddaten.starterClass.urlStarten(pSet, datenFilm);
         }
     }
