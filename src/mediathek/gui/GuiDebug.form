@@ -102,7 +102,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="486" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="440" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -164,7 +164,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="486" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="440" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -215,7 +215,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="509" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="464" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -253,7 +253,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonTasklist" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="478" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="433" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -300,7 +300,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
@@ -327,6 +327,19 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonAlleLaden" min="-2" max="-2" attributes="0"/>
                       </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="jButtonCvsSchreiben" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButtonCvsLesen" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButtonListeSchreiben" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButtonListeLesen" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButtonJsonSchreiben" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButtonjSonLesen" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -352,7 +365,16 @@
                       <Component id="jButtonGc" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonNotify" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jButtonCvsSchreiben" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonCvsLesen" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonListeSchreiben" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonListeLesen" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonJsonSchreiben" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonjSonLesen" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="27" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -412,6 +434,36 @@
         <Component class="javax.swing.JButton" name="jButtonNotify">
           <Properties>
             <Property name="text" type="java.lang.String" value="Notify"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonCvsSchreiben">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="cvs-schreiben"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonCvsLesen">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="cvs-lesen"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonListeSchreiben">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="ListeSchreiben"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonListeLesen">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="ListeLesen"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonJsonSchreiben">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jSon schreiben"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonjSonLesen">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jSon lesen"/>
           </Properties>
         </Component>
       </SubComponents>

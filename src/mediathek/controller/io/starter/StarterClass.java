@@ -23,7 +23,9 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -424,21 +426,29 @@ public class StarterClass {
 //                    int downloaded = 0;
 //                    if (file.exists()) {
 //                        downloaded = (int) file.length();
-//                        connection.setRequestProperty("Range", "bytes=" + downloaded + "-");
-//                        connection.connect();
+//                        conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
+//                        conn.connect();
+//                    } else {
+                        conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+                        conn.connect();
 //                    }
-//                  FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
-                    conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                    conn.connect();
+//                    RandomAccessFile outFile = new RandomAccessFile(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR], "rw");
+//                    if (downloaded > 0) {
+//                        outFile.seek(downloaded);
+//                    }
                     if (conn.getResponseCode() >= 400) {
                         Log.fehlerMeldung(915236798, Log.FEHLER_ART_PROG, "StartetClass", "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
                     }
                     input = new MVInputStream(conn.getInputStream());
                     srcBuffer = new BufferedInputStream(input);
+//                    FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
+//                    destBuffer = new BufferedOutputStream(fos, 1024);
                     destBuffer = new BufferedOutputStream(new FileOutputStream(file), 1024);
                     byte[] buffer = new byte[1024];
                     long p, pp = 0;
                     while ((len = srcBuffer.read(buffer)) != -1 && !start.stoppen) {
+//                        outFile.write(buffer, downloaded, len);
+//                        downloaded += len;
                         destBuffer.write(buffer, 0, len);
                         downLen += len;
                         if (maxLen > 0) {
