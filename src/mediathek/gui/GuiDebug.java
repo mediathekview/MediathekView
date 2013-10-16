@@ -299,6 +299,53 @@ public class GuiDebug extends PanelVorlage {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDebug.class.getSimpleName());
             }
         });
+        jButtonKryoSchreiben.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.listeFilme.cleanCvs();
+                Date startZeit = null;
+                Date stopZeit = null;
+                startZeit = new Date(System.currentTimeMillis());
+
+                new MSearchIoXmlFilmlisteSchreiben().filmeSchreibenKryo(Daten.getDateiFilmliste() + "_kryo", Daten.listeFilme);
+
+                stopZeit = new Date(System.currentTimeMillis());
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                int sekunden;
+                try {
+                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
+                } catch (Exception ex) {
+                    sekunden = -1;
+                }
+                System.out.println("======================================");
+                System.out.println("     ->    Dauer[ms]: " + sekunden);
+                System.out.println("======================================");
+            }
+        });
+        jButtonKryoLesen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Date startZeit = null;
+                Date stopZeit = null;
+                Daten.listeFilme.clear();
+                startZeit = new Date(System.currentTimeMillis());
+
+                Daten.listeFilme = new MSearchIoXmlFilmlisteLesen().filmlisteLesenKryo(Daten.getDateiFilmliste() + "_kryo");
+
+                stopZeit = new Date(System.currentTimeMillis());
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                int sekunden;
+                try {
+                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
+                } catch (Exception ex) {
+                    sekunden = -1;
+                }
+                System.out.println("======================================");
+                System.out.println("     ->    Dauer[ms]: " + sekunden);
+                System.out.println("======================================");
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDebug.class.getSimpleName());
+            }
+        });
     }
 
     private void addSender() {
@@ -370,6 +417,8 @@ public class GuiDebug extends PanelVorlage {
         jButtonListeLesen = new javax.swing.JButton();
         jButtonJsonSchreiben = new javax.swing.JButton();
         jButtonjSonLesen = new javax.swing.JButton();
+        jButtonKryoSchreiben = new javax.swing.JButton();
+        jButtonKryoLesen = new javax.swing.JButton();
 
         jPanelSenderLaden.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender starten"));
 
@@ -381,7 +430,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLadenLayout.setVerticalGroup(
             jPanelSenderLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 440, Short.MAX_VALUE)
+            .addGap(0, 441, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -413,7 +462,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLayout.setVerticalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 440, Short.MAX_VALUE)
+            .addGap(0, 441, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -533,6 +582,10 @@ public class GuiDebug extends PanelVorlage {
 
         jButtonjSonLesen.setText("jSon lesen");
 
+        jButtonKryoSchreiben.setText("kryo schreiben");
+
+        jButtonKryoLesen.setText("kryo lesen");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -573,7 +626,11 @@ public class GuiDebug extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonJsonSchreiben)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonjSonLesen)))
+                        .addComponent(jButtonjSonLesen))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jButtonKryoSchreiben)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonKryoLesen)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -605,7 +662,11 @@ public class GuiDebug extends PanelVorlage {
                     .addComponent(jButtonListeLesen)
                     .addComponent(jButtonJsonSchreiben)
                     .addComponent(jButtonjSonLesen))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonKryoSchreiben)
+                    .addComponent(jButtonKryoLesen))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -641,6 +702,8 @@ public class GuiDebug extends PanelVorlage {
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonGc;
     private javax.swing.JButton jButtonJsonSchreiben;
+    private javax.swing.JButton jButtonKryoLesen;
+    private javax.swing.JButton jButtonKryoSchreiben;
     private javax.swing.JButton jButtonListeLesen;
     private javax.swing.JButton jButtonListeSchreiben;
     private javax.swing.JButton jButtonNotify;
