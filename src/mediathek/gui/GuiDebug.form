@@ -102,7 +102,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="442" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="443" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -164,7 +164,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="442" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="443" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -215,7 +215,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="465" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="466" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -253,7 +253,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonTasklist" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="434" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="435" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -328,10 +328,6 @@
                           <Component id="jButtonAlleLaden" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jButtonCvsSchreiben" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButtonCvsLesen" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonListeSchreiben" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonListeLesen" min="-2" max="-2" attributes="0"/>
@@ -339,11 +335,6 @@
                           <Component id="jButtonJsonSchreiben" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonjSonLesen" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="jButtonKryoSchreiben" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButtonKryoLesen" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
@@ -372,17 +363,10 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButtonCvsSchreiben" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonCvsLesen" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonListeSchreiben" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonListeLesen" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonJsonSchreiben" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonjSonLesen" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButtonKryoSchreiben" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonKryoLesen" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -446,16 +430,6 @@
             <Property name="text" type="java.lang.String" value="Notify"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonCvsSchreiben">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="cvs-schreiben"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonCvsLesen">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="cvs-lesen"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JButton" name="jButtonListeSchreiben">
           <Properties>
             <Property name="text" type="java.lang.String" value="ListeSchreiben"/>
@@ -474,16 +448,6 @@
         <Component class="javax.swing.JButton" name="jButtonjSonLesen">
           <Properties>
             <Property name="text" type="java.lang.String" value="jSon lesen"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonKryoSchreiben">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="kryo schreiben"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonKryoLesen">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="kryo lesen"/>
           </Properties>
         </Component>
       </SubComponents>

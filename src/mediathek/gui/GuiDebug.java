@@ -156,53 +156,6 @@ public class GuiDebug extends PanelVorlage {
                         + "</html>");
             }
         });
-        jButtonCvsSchreiben.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.listeFilme.cleanCvs();
-                Date startZeit = null;
-                Date stopZeit = null;
-                startZeit = new Date(System.currentTimeMillis());
-
-                new MSearchIoXmlFilmlisteSchreiben().filmeSchreibenCvs(Daten.getDateiFilmliste() + "_cvs", Daten.listeFilme);
-
-                stopZeit = new Date(System.currentTimeMillis());
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-                int sekunden;
-                try {
-                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-                } catch (Exception ex) {
-                    sekunden = -1;
-                }
-                System.out.println("======================================");
-                System.out.println("     ->    Dauer[ms]: " + sekunden);
-                System.out.println("======================================");
-            }
-        });
-        jButtonCvsLesen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Date startZeit = null;
-                Date stopZeit = null;
-                Daten.listeFilme.clear();
-                startZeit = new Date(System.currentTimeMillis());
-
-                new MSearchIoXmlFilmlisteLesen().filmlisteLesenCvs(Daten.getDateiFilmliste() + "_cvs", Daten.listeFilme);
-
-                stopZeit = new Date(System.currentTimeMillis());
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-                int sekunden;
-                try {
-                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-                } catch (Exception ex) {
-                    sekunden = -1;
-                }
-                System.out.println("======================================");
-                System.out.println("     ->    Dauer[ms]: " + sekunden);
-                System.out.println("======================================");
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDebug.class.getSimpleName());
-            }
-        });
         jButtonListeSchreiben.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -253,24 +206,34 @@ public class GuiDebug extends PanelVorlage {
         jButtonJsonSchreiben.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.listeFilme.cleanCvs();
                 Date startZeit = null;
                 Date stopZeit = null;
-                startZeit = new Date(System.currentTimeMillis());
-
-                new MSearchIoXmlFilmlisteSchreiben().filmeSchreibenJson(Daten.getDateiFilmliste() + "_json", Daten.listeFilme);
-
-                stopZeit = new Date(System.currentTimeMillis());
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
                 int sekunden;
+                startZeit = new Date(System.currentTimeMillis());
+                new MSearchIoXmlFilmlisteSchreiben().filmeSchreibenJson(Daten.getDateiFilmliste() + "_json", Daten.listeFilme);
+                stopZeit = new Date(System.currentTimeMillis());
                 try {
                     sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
                 } catch (Exception ex) {
                     sekunden = -1;
                 }
                 System.out.println("======================================");
+                System.out.println(" normal");
                 System.out.println("     ->    Dauer[ms]: " + sekunden);
                 System.out.println("======================================");
+//                startZeit = new Date(System.currentTimeMillis());
+//                new MSearchIoXmlFilmlisteSchreiben().filmeSchreibenJson(Daten.getDateiFilmliste() + "_json.bz2", Daten.listeFilme);
+//                stopZeit = new Date(System.currentTimeMillis());
+//                try {
+//                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
+//                } catch (Exception ex) {
+//                    sekunden = -1;
+//                }
+//                System.out.println("======================================");
+//                System.out.println(" bz2 ");
+//                System.out.println("     ->    Dauer[ms]: " + sekunden);
+//                System.out.println("======================================");
             }
         });
         jButtonjSonLesen.addActionListener(new ActionListener() {
@@ -278,70 +241,37 @@ public class GuiDebug extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 Date startZeit = null;
                 Date stopZeit = null;
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                int sekunden;
+
                 Daten.listeFilme.clear();
                 startZeit = new Date(System.currentTimeMillis());
-
                 new MSearchIoXmlFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste() + "_json", Daten.listeFilme);
-
                 stopZeit = new Date(System.currentTimeMillis());
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-                int sekunden;
                 try {
                     sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
                 } catch (Exception ex) {
                     sekunden = -1;
                 }
                 System.out.println("======================================");
+                System.out.println(" normal ");
                 System.out.println("     ->    Dauer[ms]: " + sekunden);
                 System.out.println("======================================");
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDebug.class.getSimpleName());
-            }
-        });
-        jButtonKryoSchreiben.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.listeFilme.cleanCvs();
-                Date startZeit = null;
-                Date stopZeit = null;
-                startZeit = new Date(System.currentTimeMillis());
 
-                new MSearchIoXmlFilmlisteSchreiben().filmeSchreibenKryo(Daten.getDateiFilmliste() + "_kryo", Daten.listeFilme);
-
-                stopZeit = new Date(System.currentTimeMillis());
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-                int sekunden;
-                try {
-                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-                } catch (Exception ex) {
-                    sekunden = -1;
-                }
-                System.out.println("======================================");
-                System.out.println("     ->    Dauer[ms]: " + sekunden);
-                System.out.println("======================================");
-            }
-        });
-        jButtonKryoLesen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Date startZeit = null;
-                Date stopZeit = null;
-                Daten.listeFilme.clear();
-                startZeit = new Date(System.currentTimeMillis());
-
-                Daten.listeFilme = new MSearchIoXmlFilmlisteLesen().filmlisteLesenKryo(Daten.getDateiFilmliste() + "_kryo");
-
-                stopZeit = new Date(System.currentTimeMillis());
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-                int sekunden;
-                try {
-                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-                } catch (Exception ex) {
-                    sekunden = -1;
-                }
-                System.out.println("======================================");
-                System.out.println("     ->    Dauer[ms]: " + sekunden);
-                System.out.println("======================================");
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDebug.class.getSimpleName());
+//                Daten.listeFilme.clear();
+//                startZeit = new Date(System.currentTimeMillis());
+//                new MSearchIoXmlFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste() + "_json.bz2", Daten.listeFilme);
+//                stopZeit = new Date(System.currentTimeMillis());
+//                try {
+//                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
+//                } catch (Exception ex) {
+//                    sekunden = -1;
+//                }
+//                System.out.println("======================================");
+//                System.out.println(" bz2 ");
+//                System.out.println("     ->    Dauer[ms]: " + sekunden);
+//                System.out.println("======================================");
+//                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDebug.class.getSimpleName());
             }
         });
     }
@@ -409,14 +339,10 @@ public class GuiDebug extends PanelVorlage {
         jButtonDoppeltIndex = new javax.swing.JButton();
         jButtonGc = new javax.swing.JButton();
         jButtonNotify = new javax.swing.JButton();
-        jButtonCvsSchreiben = new javax.swing.JButton();
-        jButtonCvsLesen = new javax.swing.JButton();
         jButtonListeSchreiben = new javax.swing.JButton();
         jButtonListeLesen = new javax.swing.JButton();
         jButtonJsonSchreiben = new javax.swing.JButton();
         jButtonjSonLesen = new javax.swing.JButton();
-        jButtonKryoSchreiben = new javax.swing.JButton();
-        jButtonKryoLesen = new javax.swing.JButton();
 
         jPanelSenderLaden.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender starten"));
 
@@ -428,7 +354,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLadenLayout.setVerticalGroup(
             jPanelSenderLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 442, Short.MAX_VALUE)
+            .addGap(0, 443, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -460,7 +386,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLayout.setVerticalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 442, Short.MAX_VALUE)
+            .addGap(0, 443, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -490,7 +416,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelListenLayout.setVerticalGroup(
             jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 465, Short.MAX_VALUE)
+            .addGap(0, 466, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -537,7 +463,7 @@ public class GuiDebug extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jButtonTasklist)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -568,10 +494,6 @@ public class GuiDebug extends PanelVorlage {
 
         jButtonNotify.setText("Notify");
 
-        jButtonCvsSchreiben.setText("cvs-schreiben");
-
-        jButtonCvsLesen.setText("cvs-lesen");
-
         jButtonListeSchreiben.setText("ListeSchreiben");
 
         jButtonListeLesen.setText("ListeLesen");
@@ -579,10 +501,6 @@ public class GuiDebug extends PanelVorlage {
         jButtonJsonSchreiben.setText("jSon schreiben");
 
         jButtonjSonLesen.setText("jSon lesen");
-
-        jButtonKryoSchreiben.setText("kryo schreiben");
-
-        jButtonKryoLesen.setText("kryo lesen");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -614,21 +532,13 @@ public class GuiDebug extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonAlleLaden))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jButtonCvsSchreiben)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonCvsLesen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonListeSchreiben)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonListeLesen)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonJsonSchreiben)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonjSonLesen))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jButtonKryoSchreiben)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonKryoLesen)))
+                        .addComponent(jButtonjSonLesen)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -654,16 +564,10 @@ public class GuiDebug extends PanelVorlage {
                     .addComponent(jButtonNotify))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonCvsSchreiben)
-                    .addComponent(jButtonCvsLesen)
                     .addComponent(jButtonListeSchreiben)
                     .addComponent(jButtonListeLesen)
                     .addComponent(jButtonJsonSchreiben)
                     .addComponent(jButtonjSonLesen))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonKryoSchreiben)
-                    .addComponent(jButtonKryoLesen))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -692,16 +596,12 @@ public class GuiDebug extends PanelVorlage {
     private javax.swing.JButton jButtonAlleLaden;
     private javax.swing.JButton jButtonAllesSpeichern;
     private javax.swing.JButton jButtonCheck;
-    private javax.swing.JButton jButtonCvsLesen;
-    private javax.swing.JButton jButtonCvsSchreiben;
     private javax.swing.JButton jButtonDoppelt;
     private javax.swing.JButton jButtonDoppeltIndex;
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonGc;
     private javax.swing.JButton jButtonJsonSchreiben;
-    private javax.swing.JButton jButtonKryoLesen;
-    private javax.swing.JButton jButtonKryoSchreiben;
     private javax.swing.JButton jButtonListeLesen;
     private javax.swing.JButton jButtonListeSchreiben;
     private javax.swing.JButton jButtonNotify;
