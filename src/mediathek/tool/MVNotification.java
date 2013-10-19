@@ -82,7 +82,7 @@ public class MVNotification {
             messageFrame.getContentPane().add(meldungsLabel, BorderLayout.CENTER);
             messageFrame.pack();
 
-            Notification notification = new Notification(messageFrame, WindowPosition.BOTTOMRIGHT, 50, 50, 6000);
+            Notification notification = new Notification(messageFrame, WindowPosition.BOTTOMRIGHT, 20, 20, 6000);
             NotificationQueue q = new NotificationQueue();
             q.add(notification);
 

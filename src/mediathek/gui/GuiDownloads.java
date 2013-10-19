@@ -35,6 +35,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import com.jidesoft.utils.SystemInfo;
 import mediathek.MVStatusBar_Mac;
 import mediathek.MediathekGui;
 import mediathek.controller.io.starter.Start;
@@ -363,10 +365,10 @@ public class GuiDownloads extends PanelVorlage {
     private void downloadLoeschen(boolean dauerhaft) {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
-            ArrayList<String> arrayUrls = new ArrayList<String>();
+            ArrayList<String> arrayUrls = new ArrayList<>();
             ArrayList<String[]> arrayUrlsAbo = new ArrayList<String[]>();
-            for (int i = 0; i < rows.length; ++i) {
-                arrayUrls.add(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(rows[i]), DatenDownload.DOWNLOAD_URL_NR).toString());
+            for (int row : rows) {
+                arrayUrls.add(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_URL_NR).toString());
             }
             for (String url : arrayUrls) {
                 DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
@@ -383,7 +385,7 @@ public class GuiDownloads extends PanelVorlage {
                     download.zurueckstellen();
                 }
             }
-            if (arrayUrlsAbo.size() > 0) {
+            if (!arrayUrlsAbo.isEmpty()) {
                 ddaten.erledigteAbos.zeileSchreiben(arrayUrlsAbo);
             }
             ddaten.starterClass.filmLoeschen(arrayUrls);
@@ -411,8 +413,8 @@ public class GuiDownloads extends PanelVorlage {
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // bei !starten wird der Film gestoppt
         String[] urls;
-        ArrayList<String> arrayUrls = new ArrayList<String>();
-        ArrayList<DatenDownload> arrayDownload = new ArrayList<DatenDownload>();
+        ArrayList<String> arrayUrls = new ArrayList<>();
+        ArrayList<DatenDownload> arrayDownload = new ArrayList<>();
         // ==========================
         // erst mal die URLs sammeln
         if (alle) {
@@ -489,7 +491,7 @@ public class GuiDownloads extends PanelVorlage {
 
     private void wartendeDownloadsStoppen() {
         // es werden alle noch nicht gestarteten Downloads gelöscht
-        ArrayList<String> urls = new ArrayList<String>();
+        ArrayList<String> urls = new ArrayList<>();
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
             int delRow = tabelle.convertRowIndexToModel(i);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
@@ -919,8 +921,13 @@ public class GuiDownloads extends PanelVorlage {
                                 ddaten.starterClass.urlStarten(gruppe, filmDownload);
                             }
                         } else {
-                            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Abspielen festlegen.",
-                                    "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+                            String menuPath;
+                            if (SystemInfo.isMacOSX())
+                                menuPath = "MediathekView->Einstellungen…->Aufzeichnen und Abspielen";
+                            else
+                                menuPath = "Datei->Einstellungen->Aufzeichnen und Abspielen";
+                            MVMessageDialog.showMessageDialog(parentComponent, "Bitte legen Sie im Menü \""+ menuPath + "\" ein Programm zum Abspielen fest.",
+                                    "Kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }
