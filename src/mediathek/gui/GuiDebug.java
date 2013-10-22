@@ -36,12 +36,13 @@ import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.gui.dialogEinstellungen.PanelSenderLaden;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVNotification;
 import msearch.daten.MSearchConfig;
-import msearch.io.MSearchIoXmlFilmlisteLesen;
-import msearch.io.MSearchIoXmlFilmlisteSchreiben;
+import msearch.io.MSearchFilmlisteLesen;
+import msearch.io.MSearchFilmlisteSchreiben;
 
 public class GuiDebug extends PanelVorlage {
 
@@ -159,12 +160,11 @@ public class GuiDebug extends PanelVorlage {
         jButtonListeSchreiben.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.listeFilme.cleanCvs();
                 Date startZeit = null;
                 Date stopZeit = null;
                 startZeit = new Date(System.currentTimeMillis());
 
-                new MSearchIoXmlFilmlisteSchreiben().filmeSchreiben(Daten.getDateiFilmliste(), Daten.listeFilme);
+                new MSearchFilmlisteSchreiben().filmlisteSchreibenXml(Daten.getDateiFilmliste(), Daten.listeFilme);
 
                 stopZeit = new Date(System.currentTimeMillis());
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -187,7 +187,7 @@ public class GuiDebug extends PanelVorlage {
                 Daten.listeFilme.clear();
                 startZeit = new Date(System.currentTimeMillis());
 
-                new MSearchIoXmlFilmlisteLesen().filmlisteLesen(Daten.getDateiFilmliste(), Daten.listeFilme);
+                new MSearchFilmlisteLesen().filmlisteLesenXml(Daten.getDateiFilmliste(), Daten.listeFilme);
 
                 stopZeit = new Date(System.currentTimeMillis());
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -211,7 +211,7 @@ public class GuiDebug extends PanelVorlage {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
                 int sekunden;
                 startZeit = new Date(System.currentTimeMillis());
-                new MSearchIoXmlFilmlisteSchreiben().filmeSchreibenJson(Daten.getDateiFilmliste() + "_json", Daten.listeFilme);
+                new MSearchFilmlisteSchreiben().filmlisteSchreibenJson(Daten.getDateiFilmliste() + ".json", Daten.listeFilme);
                 stopZeit = new Date(System.currentTimeMillis());
                 try {
                     sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
@@ -222,18 +222,18 @@ public class GuiDebug extends PanelVorlage {
                 System.out.println(" normal");
                 System.out.println("     ->    Dauer[ms]: " + sekunden);
                 System.out.println("======================================");
-//                startZeit = new Date(System.currentTimeMillis());
-//                new MSearchIoXmlFilmlisteSchreiben().filmeSchreibenJson(Daten.getDateiFilmliste() + "_json.bz2", Daten.listeFilme);
-//                stopZeit = new Date(System.currentTimeMillis());
-//                try {
-//                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-//                } catch (Exception ex) {
-//                    sekunden = -1;
-//                }
-//                System.out.println("======================================");
-//                System.out.println(" bz2 ");
-//                System.out.println("     ->    Dauer[ms]: " + sekunden);
-//                System.out.println("======================================");
+                startZeit = new Date(System.currentTimeMillis());
+                new MSearchFilmlisteSchreiben().filmlisteSchreibenJson(Daten.getDateiFilmliste() + "_json.bz2", Daten.listeFilme);
+                stopZeit = new Date(System.currentTimeMillis());
+                try {
+                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
+                } catch (Exception ex) {
+                    sekunden = -1;
+                }
+                System.out.println("======================================");
+                System.out.println(" bz2 ");
+                System.out.println("     ->    Dauer[ms]: " + sekunden);
+                System.out.println("======================================");
             }
         });
         jButtonjSonLesen.addActionListener(new ActionListener() {
@@ -246,7 +246,23 @@ public class GuiDebug extends PanelVorlage {
 
                 Daten.listeFilme.clear();
                 startZeit = new Date(System.currentTimeMillis());
-                new MSearchIoXmlFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste() + "_json", Daten.listeFilme);
+                //http://176.28.8.161/mediathek1/filme_json.zip
+                //new MSearchFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste() + "_json", "", Daten.listeFilme);
+                new MSearchFilmlisteLesen().filmlisteLesenJson("http://176.28.8.161/mediathek1/filme_json.bz2", Daten.getDateiFilmliste() + "_json---", Daten.listeFilme);
+                stopZeit = new Date(System.currentTimeMillis());
+                try {
+                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
+                } catch (Exception ex) {
+                    sekunden = -1;
+                }
+                System.out.println("======================================");
+                System.out.println(" web ");
+                System.out.println("     ->    Dauer[ms]: " + sekunden);
+                System.out.println("======================================");
+
+                Daten.listeFilme.clear();
+                startZeit = new Date(System.currentTimeMillis());
+                new MSearchFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste() + ".json", Daten.getDateiFilmliste() + "_json---", Daten.listeFilme);
                 stopZeit = new Date(System.currentTimeMillis());
                 try {
                     sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
@@ -258,20 +274,20 @@ public class GuiDebug extends PanelVorlage {
                 System.out.println("     ->    Dauer[ms]: " + sekunden);
                 System.out.println("======================================");
 
-//                Daten.listeFilme.clear();
-//                startZeit = new Date(System.currentTimeMillis());
-//                new MSearchIoXmlFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste() + "_json.bz2", Daten.listeFilme);
-//                stopZeit = new Date(System.currentTimeMillis());
-//                try {
-//                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-//                } catch (Exception ex) {
-//                    sekunden = -1;
-//                }
-//                System.out.println("======================================");
-//                System.out.println(" bz2 ");
-//                System.out.println("     ->    Dauer[ms]: " + sekunden);
-//                System.out.println("======================================");
-//                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDebug.class.getSimpleName());
+                Daten.listeFilme.clear();
+                startZeit = new Date(System.currentTimeMillis());
+                new MSearchFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste() + "_json.bz2", Daten.getDateiFilmliste() + "_json---", Daten.listeFilme);
+                stopZeit = new Date(System.currentTimeMillis());
+                try {
+                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
+                } catch (Exception ex) {
+                    sekunden = -1;
+                }
+                System.out.println("======================================");
+                System.out.println(" bz2 ");
+                System.out.println("     ->    Dauer[ms]: " + sekunden);
+                System.out.println("======================================");
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDebug.class.getSimpleName());
             }
         });
     }

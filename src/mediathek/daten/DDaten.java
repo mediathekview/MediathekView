@@ -33,7 +33,7 @@ import mediathek.tool.MVMessageDialog;
 import javax.swing.*;
 import java.io.File;
 import msearch.daten.ListeFilme;
-import msearch.io.MSearchIoXmlFilmlisteLesen;
+import msearch.io.MSearchFilmlisteLesen;
 
 /**
  * Diese Klasse enthält zusätzliche Konstanten, Systemeinstellungen und alles was wichtig ist für
@@ -114,7 +114,7 @@ public final class DDaten extends Daten {
 
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
-        new MSearchIoXmlFilmlisteLesen().filmlisteLesen(Daten.getDateiFilmliste(), Daten.listeFilme);
+        new MSearchFilmlisteLesen().filmlisteLesenXml(Daten.getDateiFilmliste(), Daten.listeFilme);
     }
 
     @Override

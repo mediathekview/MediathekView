@@ -102,7 +102,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="443" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="444" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -164,7 +164,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="443" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="444" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -215,7 +215,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="466" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="467" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -253,7 +253,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonTasklist" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="435" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="436" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
