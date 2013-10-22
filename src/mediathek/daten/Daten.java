@@ -31,7 +31,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import msearch.daten.ListeFilme;
-import msearch.io.MSearchIoXmlFilmlisteSchreiben;
+import msearch.io.MSearchFilmlisteSchreiben;
 
 public class Daten {
     // Konstanten, Systemeinstellungen und alles was wichtig ist für
@@ -177,7 +177,7 @@ public class Daten {
     }
 
     public void allesSpeichern() {
-        new MSearchIoXmlFilmlisteSchreiben().filmeSchreiben(getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, listeFilme);
+        new MSearchFilmlisteSchreiben().filmlisteSchreibenXml(getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, listeFilme);
     }
 
     /**
