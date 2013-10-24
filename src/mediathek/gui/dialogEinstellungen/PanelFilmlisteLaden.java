@@ -165,7 +165,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 //        jTable1.setEnabled(manuell);
 //        jButtonDateiAuswaehlen.setEnabled(manuell);
 //        jButtonFilmeLaden.setEnabled(manuell);
-        Color COLOR_AKTIV = new Color(160, 255, 160);
+        Color COLOR_AKTIV = new Color(205, 255, 191);
         if (manuell) {
             jTextAreaManuell.setBackground(COLOR_AKTIV);
             jTextAreaAuto.setBackground(null);

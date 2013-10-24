@@ -51,9 +51,9 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.MVJTable;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import mediathek.tool.MVJTable;
 import mediathek.tool.TModel;
 import msearch.daten.DatenFilm;
 
@@ -65,7 +65,7 @@ public class PanelPsetLang extends PanelVorlage {
     private MVJTable tabellePset;
     private MVJTable tabelleProgramme;
     private boolean modalHilfe = false;
-    private final static Color COLOR_ABSPIELEN = new Color(160, 255, 160);
+    private final static Color COLOR_ABSPIELEN = new Color(205, 255, 191);
 
     public PanelPsetLang(DDaten d, Component parentComponent) {
         super(d, parentComponent);
