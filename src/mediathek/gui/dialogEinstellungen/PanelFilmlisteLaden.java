@@ -19,6 +19,8 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import com.jidesoft.utils.SystemInfo;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.FileDialog;
@@ -32,8 +34,6 @@ import javax.swing.JFileChooser;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
-
-import com.jidesoft.utils.SystemInfo;
 import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
@@ -160,11 +160,19 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void setPanelTabelle(boolean manuell) {
-        jButtonUpdate.setEnabled(manuell);
-        jTextFieldUrl.setEnabled(manuell);
-        jTable1.setEnabled(manuell);
-        jButtonDateiAuswaehlen.setEnabled(manuell);
-        jButtonFilmeLaden.setEnabled(manuell);
+//        jButtonUpdate.setEnabled(manuell);
+//        jTextFieldUrl.setEnabled(manuell);
+//        jTable1.setEnabled(manuell);
+//        jButtonDateiAuswaehlen.setEnabled(manuell);
+//        jButtonFilmeLaden.setEnabled(manuell);
+        Color COLOR_AKTIV = new Color(160, 255, 160);
+        if (manuell) {
+            jTextAreaManuell.setBackground(COLOR_AKTIV);
+            jTextAreaAuto.setBackground(null);
+        } else {
+            jTextAreaManuell.setBackground(null);
+            jTextAreaAuto.setBackground(COLOR_AKTIV);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -178,7 +186,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
-        javax.swing.JTextArea jTextArea1 = new javax.swing.JTextArea();
+        jTextAreaAuto = new javax.swing.JTextArea();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -189,18 +197,18 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jButtonDateiAuswaehlen = new javax.swing.JButton();
         jButtonFilmeLaden = new javax.swing.JButton();
         javax.swing.JScrollPane jScrollPane3 = new javax.swing.JScrollPane();
-        javax.swing.JTextArea jTextArea2 = new javax.swing.JTextArea();
+        jTextAreaManuell = new javax.swing.JTextArea();
         jRadioButtonAuto = new javax.swing.JRadioButton();
         jRadioButtonUpdateAus = new javax.swing.JRadioButton();
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Die Filmliste automatisch laden"));
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(3);
-        jTextArea1.setText("Die Filmliste wird beim Programmstart automatisch geladen (wenn sie\nälter als 3h ist). Zusätzlich kann sie über den Button \"Neue Filmliste laden\"\ngeladen werden.");
-        jTextArea1.setMargin(new java.awt.Insets(4, 4, 4, 4));
-        jScrollPane2.setViewportView(jTextArea1);
+        jTextAreaAuto.setEditable(false);
+        jTextAreaAuto.setColumns(20);
+        jTextAreaAuto.setRows(3);
+        jTextAreaAuto.setText("Die Filmliste wird beim Programmstart automatisch geladen (wenn sie\nälter als 3h ist). Zusätzlich kann sie über den Button \"Neue Filmliste laden\"\ngeladen werden.");
+        jTextAreaAuto.setMargin(new java.awt.Insets(4, 4, 4, 4));
+        jScrollPane2.setViewportView(jTextAreaAuto);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -236,12 +244,12 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jButtonFilmeLaden.setText("Filme jetzt laden");
 
-        jTextArea2.setEditable(false);
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(3);
-        jTextArea2.setText("Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\"\ngeladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum\nLaden ausgewählt werden.");
-        jTextArea2.setMargin(new java.awt.Insets(4, 4, 4, 4));
-        jScrollPane3.setViewportView(jTextArea2);
+        jTextAreaManuell.setEditable(false);
+        jTextAreaManuell.setColumns(20);
+        jTextAreaManuell.setRows(3);
+        jTextAreaManuell.setText("Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\"\ngeladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum\nLaden ausgewählt werden.");
+        jTextAreaManuell.setMargin(new java.awt.Insets(4, 4, 4, 4));
+        jScrollPane3.setViewportView(jTextAreaManuell);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -277,7 +285,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     .addComponent(jLabel2)
                     .addComponent(jButtonUpdate))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -332,6 +340,8 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private javax.swing.JRadioButton jRadioButtonAuto;
     private javax.swing.JRadioButton jRadioButtonUpdateAus;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextArea jTextAreaAuto;
+    private javax.swing.JTextArea jTextAreaManuell;
     private javax.swing.JTextField jTextFieldUrl;
     // End of variables declaration//GEN-END:variables
 
