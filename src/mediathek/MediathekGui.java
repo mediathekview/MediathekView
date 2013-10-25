@@ -649,14 +649,18 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             @Override
             public void mousePressed(MouseEvent arg0) {
                 if (arg0.isPopupTrigger()) {
-                    filmeLaden(true);
+                    if (jButtonFilmeLaden.isEnabled()) {
+                        filmeLaden(true);
+                    }
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent arg0) {
                 if (arg0.isPopupTrigger()) {
-                    filmeLaden(true);
+                    if (jButtonFilmeLaden.isEnabled()) {
+                        filmeLaden(true);
+                    }
                 }
             }
         });
