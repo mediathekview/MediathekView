@@ -22,13 +22,10 @@ package mediathek.gui.dialog;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Date;
 import mediathek.Main;
-import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
@@ -56,17 +53,16 @@ public class PanelAbout extends PanelVorlage {
         }
         jTextFieldProgrammpfad.setText(Funktionen.getPathJar());
         try {
-            final Path settingsDirectoryPath = Daten.getSettingsDirectory();
             final Path xmlFilePath = Daten.getMediathekXmlFilePath();
             jTextFieldEinstellungen.setText(xmlFilePath.toAbsolutePath().toString());
-            jTextFieldFilme.setText(settingsDirectoryPath.toAbsolutePath() + File.separator + Konstanten.XML_DATEI_FILME);
+            jTextFieldFilme.setText(Daten.getDateiFilmliste());
             jXHyperlinkWebsite.setText(Konstanten.ADRESSE_WEBSITE);
             jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_WEBSITE));
             jXHyperlinkAnleitung.setText(Konstanten.ADRESSE_ANLEITUNG);
             jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_ANLEITUNG));
             jXHyperlinkForum.setText(Konstanten.ADRESSE_FORUM);
             jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_FORUM));
-        } catch (URISyntaxException | IOException ignored) {
+        } catch (URISyntaxException ignored) {
         }
         jButtonUpdate.setIcon(GetIcon.getIcon("view-refresh_16.png"));
         jButtonUpdate.addActionListener(new ActionListener() {

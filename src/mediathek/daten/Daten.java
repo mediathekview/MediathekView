@@ -47,14 +47,12 @@ import msearch.io.MSearchFilmlisteLesen;
 import msearch.io.MSearchFilmlisteSchreiben;
 
 public class Daten {
-    // Konstanten, Systemeinstellungen und alles was wichtig ist für
-    // alle Versionen: MediathekGui, MediathekAuto, MediathekNoGui
+    // Konstanten, Systemeinstellungen und alles was wichtig
 
     //alle Programmeinstellungen
     public static String[] system = new String[Konstanten.SYSTEM_MAX_ELEM];
     // flags
     public static boolean debug = false; // Debugmodus
-    public static boolean nogui = false; // Version ohne Gui
     public static boolean auto = false; // Version: MediathekAuto
     public static boolean RESET = false; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
@@ -65,7 +63,6 @@ public class Daten {
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     public static String proxyUrl = "";
     public static int proxyPort = -1;
-
     public static ListeFilme listeFilmeNachBlackList = null;
     public ListeBlacklist listeBlacklist = null;
     public ListePset listePset = null;
@@ -85,13 +82,7 @@ public class Daten {
     // für die Tabellen
     public boolean nachDownloadShutDown = false;
     public MVFilmInformation filmInfoHud = null;
-    
-    
-    
-    public Daten(String pfad) {
-        basisverzeichnis = pfad;
-        init();
-    }
+
     public Daten(String basis, MediathekGui gui) {
         basisverzeichnis = basis;
         init();
@@ -153,6 +144,7 @@ public class Daten {
         listeFilme = new ListeFilme();
         filmeLaden = new FilmeLaden();
     }
+
     /**
      * Update the {@link java.awt.SplashScreen} only if we have a Swing UI.
      *
@@ -163,7 +155,6 @@ public class Daten {
             mediathekGui.updateSplashScreenText(text);
         }
     }
-
 
     public static void setUserAgentAuto() {
         // Useragent wird vom Programm verwaltet
@@ -194,62 +185,12 @@ public class Daten {
     }
 
     /**
-     * Liefert das Verzeichnis der Programmeinstellungen
-     *
-     * @return Den Verzeichnispfad als String.
-     */
-    @Deprecated
-    public static String getBasisVerzeichnis() {
-        // liefert das Verzeichnis der Programmeinstellungen
-        return getBasisVerzeichnis(false);
-    }
-
-    /**
      * Liefert den Pfad zur Filmliste
      *
      * @return Den Pfad als String
      */
     public static String getDateiFilmliste() {
-        return getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME;
-    }
-
-    /**
-     * Liefert das Verzeichnis der Programmeinstellungen
-     *
-     * @param anlegen Anlegen, oder nicht.
-     * @return Den Verzeichnispfad als String.
-     */
-    @Deprecated
-    public static String getBasisVerzeichnis(boolean anlegen) {
-        return getBasisVerzeichnis(basisverzeichnis, anlegen);
-    }
-
-    /**
-     * Liefert das Verzeichnis der Programme
-     *
-     * @param basis Der Ordner, in dem die Einstellungen liegen
-     * @param anlegen Anlegen, oder nicht.
-     * @return Den Verzeichnispfad als String
-     */
-    @Deprecated
-    private static String getBasisVerzeichnis(String basis, boolean anlegen) {
-        String ret;
-        if (basis.equals("")) {
-            ret = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNISS_EINSTELLUNGEN + File.separator;
-        } else {
-            ret = basis;
-        }
-        if (anlegen) {
-            File basisF = new File(ret);
-            if (!basisF.exists()) {
-                if (!basisF.mkdirs()) {
-                    Log.fehlerMeldung(898736548, Log.FEHLER_ART_PROG, "Daten.getBasisVerzeichnis", new String[]{"Kann den Ordner zum Speichern der Daten nicht anlegen!",
-                        "Daten.getBasisVerzeichnis"});
-                }
-
-            }
-        }
-        return ret;
+        return getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
     }
 
     /**
@@ -276,6 +217,14 @@ public class Daten {
         return baseDirectoryPath;
     }
 
+    public static String getSettingsDirectory_String() {
+        try {
+            return getSettingsDirectory().toString();
+        } catch (Exception ex) {
+        }
+        return "";
+    }
+
     /**
      * Return the path to "mediathek.xml"
      *
@@ -290,6 +239,7 @@ public class Daten {
         }
         return xmlFilePath;
     }
+
     public void allesLaden() {
         updateSplashScreen("Lade Konfigurationsdaten...");
         ioXmlLesen.datenLesen(this);
@@ -303,16 +253,15 @@ public class Daten {
     }
 
     public static void filmlisteSpeichern() {
-        new MSearchFilmlisteSchreiben().filmlisteSchreibenJson(getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, listeFilme);
+        new MSearchFilmlisteSchreiben().filmlisteSchreibenJson(getDateiFilmliste(), listeFilme);
     }
 
     public void allesSpeichern() {
-//        super.allesSpeichern();
         ioXmlSchreiben.datenSchreiben(this);
         if (Daten.RESET) {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
             // dazu wird den Ordner mit den Einstellungen umbenannt
-            String dir1 = getBasisVerzeichnis();
+            String dir1 = getSettingsDirectory_String();
             if (dir1.endsWith(File.separator)) {
                 dir1 = dir1.substring(0, dir1.length() - 1);
             }
@@ -328,10 +277,10 @@ public class Daten {
                 }
                 Log.systemMeldung("Die Einstellungen konnten nicht zurückgesetzt werden.");
                 MVMessageDialog.showMessageDialog(this.mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
-                        + "Es wird versucht die Einstellungen beim Beenden zu löschen.\n"
-                        + "Sollte auch das nicht klappen,\n"
-                        + "finden Sie im Forum weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
-                new File(dir1).deleteOnExit();
+                        + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
+                        + getSettingsDirectory_String() + "\n"
+                        + "von Hand löschen und dann das Programm wieder starten.\n\n"
+                        + "Im Forum finden Sie weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
                 Log.fehlerMeldung(465690123, Log.FEHLER_ART_PROG, Daten.class.getName(), e);
             }

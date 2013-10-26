@@ -105,7 +105,7 @@ public class Log {
     public static synchronized void startMeldungen(String classname) {
         versionsMeldungen(classname);
         Log.systemMeldung("Programmpfad: " + Funktionen.getPathJar());
-        Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getBasisVerzeichnis());
+        Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
         Log.systemMeldung("Useragent: " + Daten.getUserAgent());
         Log.systemMeldung("###########################################################");
         Log.systemMeldung("");
