@@ -22,7 +22,6 @@ package mediathek.controller.filmeLaden;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import mediathek.daten.Daten;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import msearch.daten.ListeFilme;
@@ -116,10 +115,10 @@ public class FilmeLaden {
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, FilmeLaden.class.getSimpleName());
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
-                mSearchImportFilmliste.filmeImportierenAuto(Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, Daten.listeFilme);
+                mSearchImportFilmliste.filmeImportierenAuto(Daten.getDateiFilmliste(), Daten.listeFilme);
             } else {
                 // Filme als Liste importieren, feste URL/Datei
-                mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, Daten.listeFilme);
+                mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.getDateiFilmliste(), Daten.listeFilme);
             }
         }
     }
