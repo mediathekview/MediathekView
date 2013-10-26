@@ -30,7 +30,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import mediathek.MediathekGui;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.PanelAbout;
@@ -40,7 +40,7 @@ import mediathek.tool.Log;
 
 public class DialogEinstellungen extends javax.swing.JFrame {
 
-    DDaten ddaten;
+    Daten ddaten;
     public boolean ok = false;
     private PanelEinstellungen panelEinstellungen;
     private PanelEinstellungenErweitert panelEinstellungenErweitert;
@@ -69,7 +69,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
      * @param d
      * @param gguiFilme
      */
-    public DialogEinstellungen(java.awt.Frame parent, DDaten d) {
+    public DialogEinstellungen(java.awt.Frame parent, Daten d) {
         initComponents();
         setTitle("Einstellungen");
         ddaten = d;
@@ -208,7 +208,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         treeNodeSystem.add(treeNodeLogdatei);
         DefaultMutableTreeNode treeNodeSystemmeldungen = new DefaultMutableTreeNode(NAME_systemmeldungen);
         treeNodeSystem.add(treeNodeSystemmeldungen);
-        if (DDaten.debug) {
+        if (Daten.debug) {
             DefaultMutableTreeNode treeNodeFehlermeldungen = new DefaultMutableTreeNode(NAME_fehlermeldungen);
             treeNodeSystem.add(treeNodeFehlermeldungen);
         }

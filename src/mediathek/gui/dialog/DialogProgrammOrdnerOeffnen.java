@@ -28,7 +28,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import com.jidesoft.utils.SystemInfo;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
@@ -40,7 +40,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
     public boolean ok = false;
     public String ziel;
     private Component parentComponent = null;
-    private DDaten ddaten = null;
+    private Daten ddaten = null;
 
     /**
      *
@@ -50,7 +50,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
      * @param zziel
      * * @param titel
      */
-    public DialogProgrammOrdnerOeffnen(java.awt.Frame parent, DDaten dd, boolean modal, String zziel, String titel, String text) {
+    public DialogProgrammOrdnerOeffnen(java.awt.Frame parent, Daten dd, boolean modal, String zziel, String titel, String text) {
         super(parent, modal);
         parentComponent = parent;
         ddaten = dd;

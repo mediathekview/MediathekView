@@ -34,13 +34,13 @@ import msearch.daten.DatenFilm;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
 
-    private DDaten ddaten;
+    private Daten ddaten;
 
     /**
      *
      * @param ddaten
      */
-    public ListeDownloads(DDaten ddaten) {
+    public ListeDownloads(Daten ddaten) {
         this.ddaten = ddaten;
     }
 

@@ -22,7 +22,7 @@ package mediathek.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.Konstanten;
@@ -36,9 +36,9 @@ import msearch.daten.DatenFilm;
  */
 public class PanelBeschreibung extends javax.swing.JPanel {
 
-    DDaten ddaten;
+    Daten ddaten;
 
-    public PanelBeschreibung(DDaten dd) {
+    public PanelBeschreibung(Daten dd) {
         initComponents();
         ddaten = dd;
         //setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -47,7 +47,7 @@ public class PanelBeschreibung extends javax.swing.JPanel {
         jCheckBoxBeschreibung.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DDaten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR] = Boolean.FALSE.toString();
+                Daten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR] = Boolean.FALSE.toString();
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, PanelBeschreibung.class.getSimpleName());
             }
         });

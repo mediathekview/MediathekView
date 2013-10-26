@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
@@ -32,9 +33,9 @@ import mediathek.tool.TModel;
 
 public class ListeStarts extends LinkedList<Start> {
 
-    DDaten ddaten;
+    Daten ddaten;
 
-    public ListeStarts(DDaten d) {
+    public ListeStarts(Daten d) {
         super();
         ddaten = d;
     }
@@ -174,7 +175,7 @@ public class ListeStarts extends LinkedList<Start> {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
         Start ret = null;
-        if (size() >= 0 && getDown() < Integer.parseInt(DDaten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR])) {
+        if (size() >= 0 && getDown() < Integer.parseInt(Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR])) {
             Start s = naechsterStart();
             if (s != null) {
                 if (s.status == Start.STATUS_INIT) {

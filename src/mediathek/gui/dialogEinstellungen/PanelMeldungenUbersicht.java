@@ -23,12 +23,12 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.controller.io.ProgrammLog;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 
 public class PanelMeldungenUbersicht extends PanelVorlage {
 
-    public PanelMeldungenUbersicht(DDaten d, Component parentComponent) {
+    public PanelMeldungenUbersicht(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         jButtonLog.addActionListener(new ActionListener() {

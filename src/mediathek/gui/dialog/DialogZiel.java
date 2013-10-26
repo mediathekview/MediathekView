@@ -28,7 +28,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import com.jidesoft.utils.SystemInfo;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
@@ -39,7 +39,7 @@ public class DialogZiel extends javax.swing.JDialog {
     public boolean ok = false;
     public String ziel;
     private Component parentComponent = null;
-    private DDaten ddaten = null;
+    private Daten ddaten = null;
 
     /**
      *
@@ -49,7 +49,7 @@ public class DialogZiel extends javax.swing.JDialog {
      * @param ziel
      * @param titel
      */
-    public DialogZiel(java.awt.Frame parent, DDaten dd, boolean modal, String ziel, String titel) {
+    public DialogZiel(java.awt.Frame parent, Daten dd, boolean modal, String ziel, String titel) {
         super(parent, modal);
         parentComponent = parent;
         ddaten = dd;

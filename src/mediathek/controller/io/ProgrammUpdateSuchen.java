@@ -30,7 +30,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogHinweisUpdate;
 import mediathek.tool.DatumZeit;
@@ -53,11 +52,11 @@ public class ProgrammUpdateSuchen {
     private boolean hinweis;
     private boolean hinweiseAlleAnzeigen;
     private boolean neueVersion = false;
-    private DDaten ddaten;
+    private Daten daten;
 
-    public boolean checkVersion(DDaten dd, boolean aanzeigen, boolean hhinweis, boolean hhinweiseAlleAnzeigen) {
+    public boolean checkVersion(Daten dd, boolean aanzeigen, boolean hhinweis, boolean hhinweiseAlleAnzeigen) {
         // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
-        ddaten = dd;
+        daten = dd;
         anzeigen = aanzeigen;
         hinweis = hhinweis;
         hinweiseAlleAnzeigen = hhinweiseAlleAnzeigen;
@@ -80,8 +79,8 @@ public class ProgrammUpdateSuchen {
                         Daten.system[Konstanten.SYSTEM_UPDATE_DATUM_NR] = DatumZeit.getHeute_yyyyMMdd();
                         if (checkObNeueVersion(version, Konstanten.VERSION)) {
                             neueVersion = true;
-                            // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, DDaten ddaten) {
-                            new DialogHinweisUpdate(null, true, ddaten, "Eine neue Version liegt vor",
+                            // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, Daten ddaten) {
+                            new DialogHinweisUpdate(null, true, daten, "Eine neue Version liegt vor",
                                     "   ==================================================\n"
                                     + "   Neue Version:\n" + "   " + version + "\n\n"
                                     + "   ==================================================\n"
@@ -90,13 +89,13 @@ public class ProgrammUpdateSuchen {
                                     + "   URL:\n"
                                     + "   " + downloadUrlProgramm + "\n\n").setVisible(true);
                         } else {
-                            DialogHinweisUpdate dialog = new DialogHinweisUpdate(null, true, ddaten, "Update suchen", "Alles aktuell!");
+                            DialogHinweisUpdate dialog = new DialogHinweisUpdate(null, true, daten, "Update suchen", "Alles aktuell!");
                             if (anzeigen) {
                                 dialog.setVisible(true);
                             }
                         }
                     } else {
-                        new DialogHinweisUpdate(null, true, ddaten, "Fehler bei der Versionsprüfung!", "Es ist ein Fehler aufgetreten!" + "\n\n" + "").setVisible(true);
+                        new DialogHinweisUpdate(null, true, daten, "Fehler bei der Versionsprüfung!", "Es ist ein Fehler aufgetreten!" + "\n\n" + "").setVisible(true);
                     }
                 }
             });
@@ -111,10 +110,10 @@ public class ProgrammUpdateSuchen {
             try {
                 StringBuilder text = new StringBuilder();
                 int angezeigt = 0;
-                if (DDaten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR].equals("")) {
-                    DDaten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR] = Integer.toString(-1);
+                if (Daten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR].equals("")) {
+                    Daten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR] = Integer.toString(-1);
                 } else {
-                    angezeigt = Integer.parseInt(DDaten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR]);
+                    angezeigt = Integer.parseInt(Daten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR]);
                 }
                 for (int i = 0; i < listInfos.size(); ++i) {
                     String[] h = listInfos.get(i);
@@ -126,15 +125,15 @@ public class ProgrammUpdateSuchen {
                     }
                 }
                 if (text.length() > 0) {
-                    new DialogHinweisUpdate(null, true, ddaten, "Infos", text.toString()).setVisible(true);
-                    DDaten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR] = Integer.toString(listInfos.size());
+                    new DialogHinweisUpdate(null, true, daten, "Infos", text.toString()).setVisible(true);
+                    Daten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR] = Integer.toString(listInfos.size());
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(693298731, Log.FEHLER_ART_PROG, "ProgrammUpdateSuchen.checkVersion", ex);
             }
         } else if (alleAnzeigen) {
             // dann wenigstens einen Hinweis, dass es keine gibt
-            new DialogHinweisUpdate(null, true, ddaten, "Infos", "keine vorhanden").setVisible(true);
+            new DialogHinweisUpdate(null, true, daten, "Infos", "keine vorhanden").setVisible(true);
         }
     }
 

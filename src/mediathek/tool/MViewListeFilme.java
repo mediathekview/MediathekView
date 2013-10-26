@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.TreeSet;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
@@ -33,7 +33,7 @@ public class MViewListeFilme {
     public static HashSet<String> hashSet = new HashSet<>();
     public static TreeSet<String> treeSet = new TreeSet<>(msearch.tool.GermanStringSorter.getInstance());
 
-    public static synchronized void getModelTabFilme(ListeFilme listeFilme, DDaten ddaten, MVJTable table,
+    public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVJTable table,
             String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
             int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
         // Model für die Tabelle Filme zusammenbauen
@@ -158,7 +158,7 @@ public class MViewListeFilme {
     public static synchronized String[] getModelOfFieldSender(ListeFilme listeFilme) {
         treeSet.add("");
         // Sendernamen gibts nur in einer Schreibweise
-        final int max = DDaten.filmeLaden.getSenderNamen().length; // gibt nur so viele
+        final int max = Daten.filmeLaden.getSenderNamen().length; // gibt nur so viele
         for (DatenFilm film : listeFilme) {
             String str = film.arr[DatenFilm.FILM_SENDER_NR];
             if (!treeSet.contains(str)) {
@@ -215,7 +215,7 @@ public class MViewListeFilme {
 ////        }
     }
 
-    public static void abosEintragen(ListeFilme listeFilme, DDaten ddaten) {
+    public static void abosEintragen(ListeFilme listeFilme, Daten ddaten) {
         // Aboname in die Filmliste eintragen
         DatenFilm film;
         DatenAbo datenAbo;

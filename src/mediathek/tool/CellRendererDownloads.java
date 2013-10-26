@@ -33,15 +33,15 @@ import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.io.starter.Start;
 import mediathek.controller.io.starter.StarterClass;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 
 public class CellRendererDownloads extends DefaultTableCellRenderer {
 
-    private DDaten ddaten;
+    private Daten ddaten;
 
-    public CellRendererDownloads(DDaten d) {
+    public CellRendererDownloads(Daten d) {
         ddaten = d;
     }
 

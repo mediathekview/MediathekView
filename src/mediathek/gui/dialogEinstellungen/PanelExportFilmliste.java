@@ -31,7 +31,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.jidesoft.utils.SystemInfo;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
@@ -44,7 +44,7 @@ public class PanelExportFilmliste extends PanelVorlage {
 
     public String ziel;
 
-    public PanelExportFilmliste(DDaten d, Component parent) {
+    public PanelExportFilmliste(Daten d, Component parent) {
         super(d, parent);
         initComponents();
         init();

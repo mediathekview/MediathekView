@@ -151,7 +151,7 @@ public class DatenPset {
         }
     }
 
-    public void setAbspielen(DDaten ddaten) {
+    public void setAbspielen(Daten ddaten) {
         Iterator<DatenPset> it = ddaten.listePset.iterator();
         while (it.hasNext()) {
             DatenPset datenPset = it.next();
@@ -232,7 +232,7 @@ public class DatenPset {
         return ret;
     }
 
-    public Color getFarbe(DDaten daten) {
+    public Color getFarbe(Daten daten) {
         Color ret = null;
         String r, g, b;
         if (!arr[PROGRAMMSET_FARBE_NR].equals("")) {

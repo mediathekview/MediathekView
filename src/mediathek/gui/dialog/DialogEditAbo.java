@@ -36,7 +36,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenPset;
 import mediathek.tool.EscBeenden;
@@ -44,7 +44,7 @@ import mediathek.tool.GuiFunktionen;
 
 public class DialogEditAbo extends javax.swing.JDialog {
 
-    private DDaten ddaten;
+    private Daten ddaten;
     private DatenAbo aktAbo;
     private JTextField[] textfeldListe;
     private JComboBox<String> comboboxProgramm = new JComboBox<String>();
@@ -54,13 +54,13 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private JLabel labelDauer = new JLabel("0");
     public boolean ok = false;
 
-    public DialogEditAbo(java.awt.Frame parent, boolean modal, DDaten d, DatenAbo aktA) {
+    public DialogEditAbo(java.awt.Frame parent, boolean modal, Daten d, DatenAbo aktA) {
         super(parent, modal);
         initComponents();
         ddaten = d;
         aktAbo = aktA;
         comboboxProgramm.setModel(new javax.swing.DefaultComboBoxModel<String>(ddaten.listePset.getListeAbo().getObjectDataCombo()));
-        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<String>(GuiFunktionen.addLeerListe(DDaten.filmeLaden.getSenderNamen())));
+        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<String>(GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen())));
         jButtonBeenden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

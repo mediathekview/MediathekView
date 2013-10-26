@@ -28,7 +28,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Date;
 import mediathek.Main;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
@@ -44,7 +44,7 @@ public class PanelAbout extends PanelVorlage {
      * @param dd
      * @param parentComponent
      */
-    public PanelAbout(DDaten dd, Component parentComponent) {
+    public PanelAbout(Daten dd, Component parentComponent) {
         super(dd, parentComponent);
         initComponents();
         //init

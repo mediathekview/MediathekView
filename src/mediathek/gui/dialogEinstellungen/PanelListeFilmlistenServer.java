@@ -31,7 +31,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.jidesoft.utils.SystemInfo;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
@@ -43,7 +43,7 @@ import msearch.filmeLaden.DatenFilmlistenServer;
 
 public class PanelListeFilmlistenServer extends PanelVorlage {
 
-    public PanelListeFilmlistenServer(DDaten d, Component parentComponent) {
+    public PanelListeFilmlistenServer(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         init();
@@ -78,7 +78,7 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        jTable1.setModel(new TModel(DDaten.filmeLaden.getListeFilmlistnServer().getTableObjectData(), DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES_ANZEIGE));
+        jTable1.setModel(new TModel(Daten.filmeLaden.getListeFilmlistnServer().getTableObjectData(), DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES_ANZEIGE));
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
             jTable1.getColumnModel().getColumn(i).setMinWidth(10);
             jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);

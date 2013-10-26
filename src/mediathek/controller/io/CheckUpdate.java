@@ -19,7 +19,6 @@
  */
 package mediathek.controller.io;
 
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.tool.DatumZeit;
@@ -30,10 +29,10 @@ import mediathek.tool.Log;
 
 public class CheckUpdate {
 
-    private DDaten ddaten;
+    private Daten daten;
 
-    public CheckUpdate(DDaten dd) {
-        ddaten = dd;
+    public CheckUpdate(Daten dd) {
+        daten = dd;
     }
 
     public void suchen() {
@@ -48,12 +47,12 @@ public class CheckUpdate {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR])) {
                     if (!Daten.system[Konstanten.SYSTEM_UPDATE_DATUM_NR].equals(DatumZeit.getHeute_yyyyMMdd())) {
                         final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
-                        if (pgrUpdate.checkVersion(ddaten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
+                        if (pgrUpdate.checkVersion(daten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
                             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
                         } else {
                             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
                         }
-                        ListePsetVorlagen.getNeuVersionStandarset(ddaten, Funktionen.getOsString());
+                        ListePsetVorlagen.getNeuVersionStandarset(daten, Funktionen.getOsString());
                         try {
                             this.wait(10 * 1000); // 10 Sekunden den Titel anzeigen
                         } catch (Exception ignored) {

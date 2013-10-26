@@ -37,7 +37,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -67,7 +67,7 @@ public class PanelPsetLang extends PanelVorlage {
     private boolean modalHilfe = false;
     private final static Color COLOR_ABSPIELEN = new Color(205, 255, 191);
 
-    public PanelPsetLang(DDaten d, Component parentComponent) {
+    public PanelPsetLang(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         modalHilfe = false;
@@ -79,7 +79,7 @@ public class PanelPsetLang extends PanelVorlage {
         init();
     }
 
-    public PanelPsetLang(DDaten d, Component parentComponent, ListePset llistePset) {
+    public PanelPsetLang(Daten d, Component parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
         modalHilfe = true;

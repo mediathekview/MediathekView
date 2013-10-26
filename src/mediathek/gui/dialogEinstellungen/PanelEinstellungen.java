@@ -33,7 +33,7 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.io.ProgrammUpdateSuchen;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
@@ -47,7 +47,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
     private final String ICONSET_STANDARD = "Standard";
 
-    public PanelEinstellungen(DDaten d, Component parentComponent) {
+    public PanelEinstellungen(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         jButtonInfos.setIcon(GetIcon.getIcon("icons_refresh_16.png"));

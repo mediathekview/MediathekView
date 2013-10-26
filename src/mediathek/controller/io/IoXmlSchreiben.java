@@ -29,7 +29,6 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenBlacklist;
@@ -56,7 +55,7 @@ public class IoXmlSchreiben {
         xmlFilePath = Daten.getMediathekXmlFilePath();
     }
 
-    public synchronized void datenSchreiben(DDaten daten) {
+    public synchronized void datenSchreiben(Daten daten) {
         xmlDatenSchreiben(daten);
         daten.history.speichern();
     }
@@ -75,12 +74,12 @@ public class IoXmlSchreiben {
     // ##############################
     // private
     // ##############################
-    private void xmlDatenSchreiben(DDaten daten) {
+    private void xmlDatenSchreiben(Daten daten) {
         try {
             Log.systemMeldung("Daten Schreiben");
             xmlSchreibenStart();
             //System schreibem
-            xmlSchreibenDaten(Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, DDaten.system);
+            xmlSchreibenDaten(Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system);
             //Senderliste
             xmlSchreibenProg(daten);
             xmlSchreibenDownloads(daten);
@@ -116,7 +115,7 @@ public class IoXmlSchreiben {
         writer.writeCharacters("\n");//neue Zeile
     }
 
-    private void xmlSchreibenProg(DDaten daten) {
+    private void xmlSchreibenProg(Daten daten) {
         ListIterator<DatenPset> iterator;
         //Proggruppen schreiben
         DatenPset datenPset;
@@ -143,7 +142,7 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void xmlSchreibenDownloads(DDaten daten) {
+    private void xmlSchreibenDownloads(Daten daten) {
         Iterator<DatenDownload> iterator;
         //Abo schreiben
         DatenDownload d;
@@ -157,7 +156,7 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void xmlSchreibenAbo(DDaten daten) {
+    private void xmlSchreibenAbo(Daten daten) {
         ListIterator<DatenAbo> iterator;
         //Abo schreibem
         DatenAbo datenAbo;
@@ -168,7 +167,7 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void xmlSchreibenBlackList(DDaten daten) {
+    private void xmlSchreibenBlackList(Daten daten) {
         Iterator<DatenBlacklist> it = daten.listeBlacklist.iterator();
         //Blacklist schreibem
         DatenBlacklist blacklist;
@@ -182,13 +181,13 @@ public class IoXmlSchreiben {
         Iterator<DatenUrlFilmliste> iterator;
         //FilmUpdate schreibem
         DatenUrlFilmliste datenUrlFilmliste;
-        iterator = DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).iterator();
+        iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten(false).iterator();
         while (iterator.hasNext()) {
             datenUrlFilmliste = iterator.next();
             xmlSchreibenDaten(MSearchFilmlistenSuchen.FILM_UPDATE_SERVER, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr);
         }
         Iterator<DatenFilmlistenServer> it;
-        it = DDaten.filmeLaden.getListeFilmlistnServer().iterator();
+        it = Daten.filmeLaden.getListeFilmlistnServer().iterator();
         while (it.hasNext()) {
             DatenFilmlistenServer f = it.next();
             xmlSchreibenDaten(DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, f.arr);

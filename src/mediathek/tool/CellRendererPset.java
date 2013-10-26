@@ -22,14 +22,14 @@ package mediathek.tool;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenPset;
 
 public class CellRendererPset extends DefaultTableCellRenderer {
 
-    DDaten daten;
+    Daten daten;
 
-    public CellRendererPset(DDaten d) {
+    public CellRendererPset(Daten d) {
         daten = d;
     }
 

@@ -24,7 +24,7 @@ import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 
 public class GuiFunktionen extends Funktionen {
@@ -37,12 +37,12 @@ public class GuiFunktionen extends Funktionen {
 //        System.setProperty("proxySet", "true");
 //        System.setProperty("http.proxyHost", "127.0.0.1");
 //        System.setProperty("http.proxyPort", "3128");
-        if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_HTTP_PROXY_ON_NR])) {
+        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_HTTP_PROXY_ON_NR])) {
             System.setProperty("proxySet", "true");
-            System.setProperty("http.proxyHost", DDaten.system[Konstanten.SYSTEM_HTTP_PROXY_SERVER_NR]);
-            System.setProperty("http.proxyPort", DDaten.system[Konstanten.SYSTEM_HTTP_PROXY_PORT_NR]);
-            System.setProperty("http.proxyUser", DDaten.system[Konstanten.SYSTEM_HTTP_PROXY_USER_NR]);
-            System.setProperty("http.proxyPassword", DDaten.system[Konstanten.SYSTEM_HTTP_PROXY_PWD_NR]);
+            System.setProperty("http.proxyHost", Daten.system[Konstanten.SYSTEM_HTTP_PROXY_SERVER_NR]);
+            System.setProperty("http.proxyPort", Daten.system[Konstanten.SYSTEM_HTTP_PROXY_PORT_NR]);
+            System.setProperty("http.proxyUser", Daten.system[Konstanten.SYSTEM_HTTP_PROXY_USER_NR]);
+            System.setProperty("http.proxyPassword", Daten.system[Konstanten.SYSTEM_HTTP_PROXY_PWD_NR]);
         } else {
             System.setProperty("proxySet", "false");
         }
@@ -374,7 +374,7 @@ public class GuiFunktionen extends Funktionen {
     public static int getImportArtFilme() {
         int ret;
         try {
-            ret = Integer.parseInt(DDaten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR]);
+            ret = Integer.parseInt(Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR]);
         } catch (Exception ex) {
             Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO);
             ret = GuiKonstanten.UPDATE_FILME_AUTO;

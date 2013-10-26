@@ -124,18 +124,18 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         return true;
     }
 
-    public static void getNeuVersionStandarset(DDaten ddaten, String bs) {
+    public static void getNeuVersionStandarset(Daten ddaten, String bs) {
         ListePset lp = getStandarset(ddaten, bs);
         SwingUtilities.invokeLater(new GetNeuVersion(ddaten, bs, lp));
     }
 
     private static class GetNeuVersion implements Runnable {
 
-        DDaten ddaten;
+        Daten ddaten;
         String bs;
         ListePset lp;
 
-        public GetNeuVersion(DDaten dd, String bbs, ListePset llp) {
+        public GetNeuVersion(Daten dd, String bbs, ListePset llp) {
             ddaten = dd;
             bs = bbs;
             lp = llp;
@@ -197,7 +197,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
     }
 
-    public static ListePset getStandarset(DDaten ddaten, String bs) {
+    public static ListePset getStandarset(Daten ddaten, String bs) {
         ListePset pSet = null;
         String[] vorlage = null;
         ListePsetVorlagen lv = new ListePsetVorlagen();
@@ -224,7 +224,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         return pSet;
     }
 
-    private static ListePset getStandardprogramme(DDaten ddaten) {
+    private static ListePset getStandardprogramme(Daten ddaten) {
         // liefert das Standard Programmset für das entsprechende BS
         ListePset pSet;
         InputStream datei;

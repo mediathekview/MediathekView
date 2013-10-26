@@ -35,7 +35,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import mediathek.MVStatusBar_Mac;
 import mediathek.MediathekGui;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.res.GetIcon;
@@ -49,7 +49,7 @@ import mediathek.tool.TModelAbo;
 
 public class GuiAbo extends PanelVorlage {
 
-    public GuiAbo(DDaten d, Component parentComponent) {
+    public GuiAbo(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         tabelle = new MVJTable(MVJTable.TABELLE_TAB_ABOS);

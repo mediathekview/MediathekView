@@ -54,7 +54,7 @@ import javax.swing.event.ListSelectionListener;
 import mediathek.MVStatusBar_Mac;
 import mediathek.MediathekGui;
 import mediathek.controller.io.starter.Start;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenBlacklist;
@@ -98,7 +98,7 @@ public class GuiFilme extends PanelVorlage {
     //private String[] alleThemen;
     private PanelBeschreibung panelBeschreibung;
 
-    public GuiFilme(DDaten d, Component parentComponent) {
+    public GuiFilme(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         tabelle = new MVJTable(MVJTable.TABELLE_TAB_FILME);
@@ -149,7 +149,7 @@ public class GuiFilme extends PanelVorlage {
         jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
         checkBlacklist(true);
         panelBeschreibungSetzen();
-        jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+        jPanelFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
         jComboBoxZeitraum.setModel(new DefaultComboBoxModel<String>(COMBO_ZEIT));
         try {
             jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
@@ -170,7 +170,7 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         });
-        DDaten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public void start(MSearchListenerFilmeLadenEvent event) {
                 beobMausTabelle.itemSenderLaden.setEnabled(false);
@@ -271,7 +271,7 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxFilter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.FALSE.toString();
+                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.FALSE.toString();
                 ddaten.mediathekGui.filterAnzeigen(true);
                 panelFilterSetzen();
             }
@@ -280,7 +280,7 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxProgamme.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DDaten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR] = Boolean.FALSE.toString();
+                Daten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR] = Boolean.FALSE.toString();
                 ddaten.mediathekGui.videoplayerAnzeigen(true);
                 panelVideoplayerSetzen();
             }
@@ -343,7 +343,7 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_SUCHFELD_FOCUS_SETZEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
                     jTextFieldFilterThemaTitel.requestFocus();
                     jTextFieldFilterThemaTitel.setCaretPosition(0);
                 }
@@ -352,25 +352,25 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void panelBeschreibungSetzen() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR]));
+        jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR]));
     }
 
     private void panelFilterSetzen() {
         // Panel anzeigen und die Filmliste anpassen
-        jPanelFilter.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+        jPanelFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
         checkBlacklist(false);
         tabelleLaden();
     }
 
     private void themenLaden() {
         // der erste Sender ist ""
-        sender = MViewListeFilme.getModelOfFieldSender(DDaten.listeFilmeNachBlackList);
+        sender = MViewListeFilme.getModelOfFieldSender(Daten.listeFilmeNachBlackList);
         //für den Sender "" sind alle Themen im themenPerSender[0]
         themenPerSender = new String[sender.length][];
         for (int i = 0; i < sender.length; ++i) {
-            themenPerSender[i] = MViewListeFilme.getModelOfFieldThema(DDaten.listeFilmeNachBlackList, sender[i]);
+            themenPerSender[i] = MViewListeFilme.getModelOfFieldThema(Daten.listeFilmeNachBlackList, sender[i]);
         }
-        //alleThemen = DDaten.listeFilmeNachBlackList.getModelOfFieldThema("");
+        //alleThemen = Daten.listeFilmeNachBlackList.getModelOfFieldThema("");
     }
 
     private String[] getThemen(String ssender) {
@@ -410,8 +410,8 @@ public class GuiFilme extends PanelVorlage {
             } else {
                 for (int selRow : selRows) {
                     selRow = tabelle.convertRowIndexToModel(selRow);
-                    // film = DDaten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
-                    film = DDaten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_NR_NR).toString());
+                    // film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
+                    film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_NR_NR).toString());
                     DialogAddDownload dialog = new DialogAddDownload(ddaten.mediathekGui, ddaten, film, pSet);
                     dialog.setVisible(true);
                 }
@@ -493,7 +493,7 @@ public class GuiFilme extends PanelVorlage {
 
     private synchronized void tabelleLaden() {
         try {
-            if (!Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+            if (!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
                 // Filtern mit dem Filter in der Toolbar
                 stopBeob = true;
                 tabelle.getSpalten();
@@ -510,9 +510,9 @@ public class GuiFilme extends PanelVorlage {
                 String filterSender = jComboBoxFilterSender.getSelectedItem().toString();
                 boolean themaOpen = jComboBoxFilterThema.isPopupVisible();
                 boolean senderOpen = jComboBoxFilterSender.isPopupVisible();
-                if (DDaten.listeFilmeNachBlackList.isEmpty()) {
-                    //jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(DDaten.listeFilmeNachBlackList.getModelOfFieldSender()));
-                    //jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(DDaten.listeFilmeNachBlackList.getModelOfFieldThema("")));
+                if (Daten.listeFilmeNachBlackList.isEmpty()) {
+                    //jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(Daten.listeFilmeNachBlackList.getModelOfFieldSender()));
+                    //jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(Daten.listeFilmeNachBlackList.getModelOfFieldThema("")));
                     jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<String>(sender));
                     jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen("")));
                     jComboBoxFilterSender.setSelectedIndex(0);
@@ -569,15 +569,15 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void listeInModellLaden() {
-        if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
             // normal mit den Filtern aus dem Filterpanel suchen
-            MViewListeFilme.getModelTabFilme(DDaten.listeFilmeNachBlackList, ddaten, tabelle, jComboBoxFilterSender.getSelectedItem().toString(),
+            MViewListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, ddaten, tabelle, jComboBoxFilterSender.getSelectedItem().toString(),
                     jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(),
                     jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue(),
                     jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
-            MViewListeFilme.getModelTabFilme(DDaten.listeFilmeNachBlackList, ddaten, tabelle, "",
+            MViewListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, ddaten, tabelle, "",
                      "", "", ddaten.mediathekGui.getFilterTextFromSearchField(), "", 0,
                     false, false, false, false);
         }
@@ -646,7 +646,7 @@ public class GuiFilme extends PanelVorlage {
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
             int selectedModelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
-            //DatenFilm datenFilm = DDaten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+            //DatenFilm datenFilm = Daten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
             DatenFilm datenFilm = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
             ddaten.starterClass.urlStarten(pSet, datenFilm);
         }
@@ -734,9 +734,9 @@ public class GuiFilme extends PanelVorlage {
         if (abosEintragen) {
             // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
             // beim Ändern von Abos gemacht wird
-            MViewListeFilme.abosEintragen(DDaten.listeFilme, ddaten);
+            MViewListeFilme.abosEintragen(Daten.listeFilme, ddaten);
         }
-        ddaten.listeBlacklist.filterListe(Daten.listeFilme, DDaten.listeFilmeNachBlackList);
+        ddaten.listeBlacklist.filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
         themenLaden();
     }
 
@@ -1314,7 +1314,7 @@ public class GuiFilme extends PanelVorlage {
             //##Trenner##
             jPopupMenu.addSeparator();
             //##Trenner##
-            if (Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+            if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
                 // nur dann ist das Filterpanel sichtbar
                 JMenu submenueFilter = new JMenu("Filter");
                 jPopupMenu.add(submenueFilter);

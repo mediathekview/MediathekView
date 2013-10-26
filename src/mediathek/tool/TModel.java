@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.ListIterator;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 
@@ -83,7 +83,7 @@ public class TModel extends DefaultTableModel {
         }
     }
 
-    public void filter(DDaten daten, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
+    public void filter(Daten daten, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
         List zeile;
         ListIterator<List> it = this.getDataVector().listIterator();
         while (it.hasNext()) {
@@ -117,7 +117,7 @@ public class TModel extends DefaultTableModel {
         }
     }
 
-    public String[] getModelOfField(DDaten daten, int feld, boolean leer) {
+    public String[] getModelOfField(Daten daten, int feld, boolean leer) {
         /* erstellt ein StringArray mit den Daten des Feldes
          * leer: immer ein leeres Feld am Anfang */
         LinkedList<String> list = new LinkedList<String>();
