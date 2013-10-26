@@ -31,7 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Log;
 import mediathek.tool.UrlHyperlinkAction;
@@ -47,7 +47,7 @@ public class MVFilmInformation implements ChangeListener {
     private JXHyperlink lblUrlThemaField;
     private JXHyperlink lblUrlPicture;
     private JTextArea textAreaBeschreibung;
-    private DDaten ddaten;
+    private Daten ddaten;
     private JLabel[] labelArrNames = new JLabel[DatenFilm.MAX_ELEM];
     private JTextField[] txtArrCont = new JTextField[DatenFilm.MAX_ELEM];
     private ViewImage viewImage = new ViewImage();
@@ -55,7 +55,7 @@ public class MVFilmInformation implements ChangeListener {
     private Color foreground, background;
     private DatenFilm aktFilm = new DatenFilm();
 
-    public MVFilmInformation(Frame owner, JTabbedPane tabbedPane, DDaten ddaten) {
+    public MVFilmInformation(Frame owner, JTabbedPane tabbedPane, Daten ddaten) {
         this.ddaten = ddaten;
         ///
 //        if (Funktionen.getOs() == Funktionen.OS_LINUX) {

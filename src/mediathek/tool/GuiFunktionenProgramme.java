@@ -33,7 +33,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.swing.JOptionPane;
 import mediathek.controller.io.starter.RuntimeExec;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
@@ -171,7 +171,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return pfadScript;
     }
 
-    public static String getPfadMplayer(DDaten dd) {
+    public static String getPfadMplayer(Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR].equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(dd, false /* vlc */, false /* flvstreamer */, true /* mplayer */), "Pfade Standardprogramme").setVisible(true);
@@ -179,7 +179,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR];
     }
 
-    public static String getPfadVlc(DDaten dd) {
+    public static String getPfadVlc(Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(dd, true /* vlc */, false /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
@@ -187,7 +187,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR];
     }
 
-    public static String getPfadFlv(DDaten dd) {
+    public static String getPfadFlv(Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(dd, false /* vlc */, true /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
@@ -195,7 +195,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
     }
 
-    public static boolean addVorlagen(PanelVorlage parent, DDaten ddaten, ListePset pSet, boolean auto) {
+    public static boolean addVorlagen(PanelVorlage parent, Daten ddaten, ListePset pSet, boolean auto) {
         // Standardgruppen laden
         if (pSet != null) {
             parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -395,7 +395,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return ret;
     }
 
-    public static boolean programmePruefen(DDaten daten) {
+    public static boolean programmePruefen(Daten daten) {
         // prüfen ob die eingestellten Programmsets passen
         final String PIPE = "| ";
         final String LEER = "      ";

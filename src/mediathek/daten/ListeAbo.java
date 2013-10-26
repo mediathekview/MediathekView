@@ -33,9 +33,9 @@ import msearch.daten.DatenFilm;
 
 public class ListeAbo extends LinkedList<DatenAbo> {
 
-    DDaten daten;
+    Daten daten;
 
-    public ListeAbo(DDaten ddaten) {
+    public ListeAbo(Daten ddaten) {
         daten = ddaten;
     }
     private int nr = 0;

@@ -23,7 +23,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.controller.io.starter.ListeStarts;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.CellRendererFilme;
@@ -40,7 +40,7 @@ public class PanelInfoStarts extends PanelVorlage {
      *
      * @param d
      */
-    public PanelInfoStarts(DDaten d, Component parentComponent) {
+    public PanelInfoStarts(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {

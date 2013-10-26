@@ -23,15 +23,12 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
@@ -52,7 +49,7 @@ public class StarterClass {
     public static final int PROGRESS_WARTEN = 0;
     public static final int PROGRESS_GESTARTET = 1;
     public static final int PROGRESS_FERTIG = 1000;
-    private DDaten ddaten;
+    private Daten daten;
     private ListeStarts listeStarts;
     private Starten starten = null;
     private boolean pause = false;
@@ -60,8 +57,8 @@ public class StarterClass {
     //===================================
     // Public
     //===================================
-    public StarterClass(DDaten d) {
-        ddaten = d;
+    public StarterClass(Daten d) {
+        daten = d;
         init();
     }
 
@@ -172,7 +169,7 @@ public class StarterClass {
     // ===================================
 
     private void init() {
-        listeStarts = new ListeStarts(ddaten);
+        listeStarts = new ListeStarts(daten);
         starten = new Starten();
         Thread startenThread = new Thread(starten);
         startenThread.setDaemon(true);
@@ -532,7 +529,7 @@ public class StarterClass {
             Log.fehlerMeldung(696510258, Log.FEHLER_ART_PROG, "StartetClass.pruefen-3", "Download fehlgeschlagen: 99,5% wurden nicht erreicht" + start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else {
             if (start.datenDownload.istAbo()) {
-                ddaten.erledigteAbos.zeileSchreiben(start.datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
+                daten.erledigteAbos.zeileSchreiben(start.datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
                         start.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
                         start.datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
             }

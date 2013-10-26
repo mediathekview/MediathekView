@@ -32,7 +32,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenBlacklist;
@@ -53,7 +53,7 @@ public class IoXmlLesen {
 
     BZip2CompressorOutputStream bZip2CompressorOutputStream = null;
 
-    public void datenLesen(DDaten daten) {
+    public void datenLesen(Daten daten) {
         xmlDatenLesen(daten);
     }
 
@@ -62,7 +62,7 @@ public class IoXmlLesen {
         return Files.exists(xmlFilePath);
     }
 
-    public static ListePset importPset(DDaten dd, String dateiUrl, boolean log) {
+    public static ListePset importPset(Daten dd, String dateiUrl, boolean log) {
         int timeout = 10000; //10 Sekunden
         try {
             if (GuiFunktionen.istUrl(dateiUrl)) {
@@ -83,7 +83,7 @@ public class IoXmlLesen {
         }
     }
 
-    public static ListePset importPset(DDaten dd, InputStream inStream, boolean log) {
+    public static ListePset importPset(Daten dd, InputStream inStream, boolean log) {
         DatenPset datenPset = null;
         ListePset liste = new ListePset();
         try {
@@ -132,7 +132,7 @@ public class IoXmlLesen {
         }
     }
 
-    public static ListePset importPsetText(DDaten dd, String text, boolean log) {
+    public static ListePset importPsetText(Daten dd, String text, boolean log) {
         DatenPset datenPset;
         ListePset liste = new ListePset();
         try {
@@ -189,7 +189,7 @@ public class IoXmlLesen {
     // ##############################
     // private
     // ##############################
-    private void xmlDatenLesen(DDaten ddaten) {
+    private void xmlDatenLesen(Daten ddaten) {
         Path xmlFilePath = null;
         xmlFilePath = Daten.getMediathekXmlFilePath();
         if (Files.exists(xmlFilePath)) {
@@ -205,7 +205,7 @@ public class IoXmlLesen {
                         //String t = parser.getLocalName();
                         if (parser.getLocalName().equals(Konstanten.SYSTEM)) {
                             //System
-                            get(parser, event, Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, DDaten.system);
+                            get(parser, event, Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system);
                         } else if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
                             //Programmgruppen
                             datenPset = new DatenPset();
@@ -243,13 +243,13 @@ public class IoXmlLesen {
                             //Urls Filmlisten
                             DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
                             if (get(parser, event, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
-                                DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).addWithCheck(datenUrlFilmliste);
+                                Daten.filmeLaden.getDownloadUrlsFilmlisten(false).addWithCheck(datenUrlFilmliste);
                             }
                         } else if (parser.getLocalName().equals(DatenFilmlistenServer.FILM_LISTEN_SERVER)) {
                             //Filmlisteserver
                             DatenFilmlistenServer datenFilmlistenServer = new DatenFilmlistenServer();
                             if (get(parser, event, DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, datenFilmlistenServer.arr)) {
-                                DDaten.filmeLaden.getListeFilmlistnServer().add(datenFilmlistenServer);
+                                Daten.filmeLaden.getListeFilmlistnServer().add(datenFilmlistenServer);
                             }
                         }
                     }
@@ -260,7 +260,7 @@ public class IoXmlLesen {
             }
             ddaten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
-            DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).sort();
+            Daten.filmeLaden.getDownloadUrlsFilmlisten(false).sort();
         }
     }
 

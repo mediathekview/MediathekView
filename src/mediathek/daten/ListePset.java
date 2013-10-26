@@ -190,7 +190,7 @@ public class ListePset extends LinkedList<DatenPset> {
         return ret;
     }
 
-    public boolean addVorlage(DDaten dd, ListePset liste) {
+    public boolean addVorlage(Daten dd, ListePset liste) {
         boolean ret = true;
         Iterator<DatenPset> it = liste.iterator();
         while (it.hasNext()) {
@@ -203,7 +203,7 @@ public class ListePset extends LinkedList<DatenPset> {
         return ret;
     }
 
-    private boolean addVorlage(DDaten dd, DatenPset pSet) {
+    private boolean addVorlage(Daten dd, DatenPset pSet) {
         pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
         String mplayer = "";
         String vlc = "";

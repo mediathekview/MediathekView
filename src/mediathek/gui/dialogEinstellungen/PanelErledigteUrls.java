@@ -27,7 +27,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
@@ -36,7 +36,7 @@ public class PanelErledigteUrls extends PanelVorlage {
 
     private boolean abo;
 
-    public PanelErledigteUrls(DDaten d, Component parentComponent) {
+    public PanelErledigteUrls(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         jTable1.addMouseListener(new BeobMausTabelle());

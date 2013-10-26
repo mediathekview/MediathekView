@@ -21,7 +21,7 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
@@ -29,7 +29,7 @@ import mediathek.tool.UrlHyperlinkAction;
 public class DialogHinweisUpdate extends javax.swing.JDialog {
     
     private String text = "";
-    private DDaten ddaten;
+    private Daten ddaten;
 
     /**
      *
@@ -39,7 +39,7 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
      * @param dialogTitel
      * @param ttext
      */
-    public DialogHinweisUpdate(java.awt.Frame parent, boolean modal, DDaten dd, String dialogTitel, String ttext) {
+    public DialogHinweisUpdate(java.awt.Frame parent, boolean modal, Daten dd, String dialogTitel, String ttext) {
         super(parent, modal);
         ddaten = dd;
         text = ttext;

@@ -23,7 +23,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.daten.ListePsetVorlagen;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
@@ -35,7 +35,7 @@ import mediathek.tool.Konstanten;
 
 public class DialogStarteinstellungen extends javax.swing.JDialog {
 
-    DDaten ddaten;
+    Daten ddaten;
     private final int STAT_START = 1;
     private final int STAT_PFAD = 2;
     private final int STAT_PSET = 3;
@@ -43,7 +43,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private int status = STAT_START;
     private Component parentComponent;
 
-    public DialogStarteinstellungen(java.awt.Frame parent, boolean modal, DDaten dd) {
+    public DialogStarteinstellungen(java.awt.Frame parent, boolean modal, Daten dd) {
         super(parent, modal);
         parentComponent = parent;
         initComponents();

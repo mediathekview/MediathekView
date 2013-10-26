@@ -24,7 +24,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.text.DefaultCaret;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.Konstanten;
@@ -41,7 +41,7 @@ public class PanelMeldungen extends PanelVorlage {
     private Color cGruen = new Color(0, 153, 51);
     private Color cRot = new Color(255, 0, 0);
 
-    public PanelMeldungen(DDaten d, Component parentComponent, StringBuffer ttext, int llogArt, String header) {
+    public PanelMeldungen(Daten d, Component parentComponent, StringBuffer ttext, int llogArt, String header) {
         super(d, parentComponent);
         PANEL_NR_MAX++;
         panelNr = PANEL_NR_MAX;

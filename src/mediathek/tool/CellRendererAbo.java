@@ -24,15 +24,15 @@ import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.res.GetIcon;
 
 public class CellRendererAbo extends DefaultTableCellRenderer {
 
-    DDaten daten;
+    Daten daten;
 
-    public CellRendererAbo(DDaten d) {
+    public CellRendererAbo(Daten d) {
         daten = d;
     }
 

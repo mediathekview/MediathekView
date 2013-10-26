@@ -30,7 +30,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.jidesoft.utils.SystemInfo;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
@@ -44,7 +44,7 @@ import mediathek.tool.MVMessageDialog;
 
 public class PanelEinstellungenErweitert extends PanelVorlage {
 
-    public PanelEinstellungenErweitert(DDaten d, Component parentComponent) {
+    public PanelEinstellungenErweitert(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         jButtonProgrammDateimanager.setIcon(GetIcon.getIcon("fileopen_16.png"));

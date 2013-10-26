@@ -25,7 +25,7 @@ import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
 import javax.swing.JOptionPane;
 import mediathek.controller.io.ProgrammLog;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
@@ -42,7 +42,7 @@ public class PanelHilfe extends PanelVorlage {
      * @param dd
      * @param parentComponent
      */
-    public PanelHilfe(DDaten dd, Component p) {
+    public PanelHilfe(Daten dd, Component p) {
         super(dd, p);
         initComponents();
         jButtonHilfeReset.setIcon(GetIcon.getIcon("help_16.png"));

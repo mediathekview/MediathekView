@@ -32,7 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
@@ -47,9 +47,9 @@ public class PanelProgrammPfade extends JPanel {
 
     public JDialog dialog = null;
     private boolean vlc, flvstreamer, mplayer;
-    private DDaten ddaten;
+    private Daten ddaten;
 
-    public PanelProgrammPfade(DDaten dd, boolean vvlc, boolean fflvstreamer, boolean mmplayer) {
+    public PanelProgrammPfade(Daten dd, boolean vvlc, boolean fflvstreamer, boolean mmplayer) {
         initComponents();
         ddaten = dd;
         vlc = vvlc;

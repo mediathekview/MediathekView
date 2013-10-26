@@ -26,16 +26,16 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.io.History;
 import mediathek.controller.io.starter.Start;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
 
-    private DDaten ddaten;
+    private Daten ddaten;
     private History history = null;
 
-    public CellRendererFilme(DDaten d) {
+    public CellRendererFilme(Daten d) {
         ddaten = d;
         history = ddaten.history;
     }

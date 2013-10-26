@@ -20,12 +20,12 @@
 package mediathek.gui;
 
 import java.awt.Component;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.tool.MVJTable;
 
 public class PanelVorlage extends javax.swing.JPanel {
 
-    public DDaten ddaten;
+    public Daten ddaten;
     public boolean stopBeob = false;
     public Component parentComponent = null;
     MVJTable tabelle = null;
@@ -35,7 +35,7 @@ public class PanelVorlage extends javax.swing.JPanel {
      * @param d
      * @param pparentComponent
      */
-    public PanelVorlage(DDaten d, Component pparentComponent) {
+    public PanelVorlage(Daten d, Component pparentComponent) {
         ddaten = d;
         parentComponent = pparentComponent;
         addComponentListener(new java.awt.event.ComponentAdapter() {

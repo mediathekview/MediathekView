@@ -22,7 +22,7 @@ package mediathek.gui.dialogEinstellungen;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.tool.EscBeenden;
 
@@ -30,10 +30,10 @@ public class DialogImportPset extends javax.swing.JDialog {
 
     public boolean ok = false;
     private ListePset liste;
-    private DDaten ddaten;
+    private Daten ddaten;
     private Component parentComponent;
 
-    public DialogImportPset(java.awt.Frame parent, boolean modal, DDaten dd, ListePset lliste) {
+    public DialogImportPset(java.awt.Frame parent, boolean modal, Daten dd, ListePset lliste) {
         super(parent, modal);
         parentComponent = parent;
         initComponents();

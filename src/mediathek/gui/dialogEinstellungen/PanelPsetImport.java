@@ -36,7 +36,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.controller.io.IoXmlLesen;
 import mediathek.daten.ListePsetVorlagen;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
@@ -53,7 +53,7 @@ public class PanelPsetImport extends PanelVorlage {
     ListePsetVorlagen listeVorlagen = new ListePsetVorlagen();
     PanelVorlage me;
 
-    public PanelPsetImport(DDaten d, Component parentComponent) {
+    public PanelPsetImport(Daten d, Component parentComponent) {
         super(d, parentComponent);
         me = this;
         initComponents();

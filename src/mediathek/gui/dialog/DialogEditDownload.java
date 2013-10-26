@@ -32,7 +32,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.controller.io.starter.Start;
 import mediathek.controller.io.starter.StarterClass;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
 
@@ -42,11 +42,11 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private JTextField[] textfeldListe;
     private JLabel[] labelListe;
     private JCheckBox jCheckBox = new JCheckBox(DatenDownload.DOWNLOAD_PROGRAMM_RESTART);
-    private DDaten ddaten;
+    private Daten ddaten;
     private Start start = null;
     public boolean ok = false;
 
-    public DialogEditDownload(java.awt.Frame parent, boolean modal, DDaten dd, DatenDownload ddownload) {
+    public DialogEditDownload(java.awt.Frame parent, boolean modal, Daten dd, DatenDownload ddownload) {
         super(parent, modal);
         initComponents();
         download = ddownload;

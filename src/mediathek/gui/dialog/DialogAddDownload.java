@@ -32,7 +32,7 @@ import java.awt.Color;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.controller.io.starter.Start;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.res.GetIcon;
@@ -50,11 +50,11 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private DatenPset pSet = null;
     private boolean ok = false;
     private DatenDownload datenDownload = null;
-    private DDaten ddaten;
+    private Daten ddaten;
     private DatenFilm datenFilm;
     private Component parentComponent = null;
 
-    public DialogAddDownload(java.awt.Frame parent, DDaten dd, DatenFilm film, DatenPset ppSet) {
+    public DialogAddDownload(java.awt.Frame parent, Daten dd, DatenFilm film, DatenPset ppSet) {
         super(parent, true);
         parentComponent = parent;
         initComponents();

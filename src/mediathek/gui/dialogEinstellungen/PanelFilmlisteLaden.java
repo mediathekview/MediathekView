@@ -34,7 +34,7 @@ import javax.swing.JFileChooser;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
@@ -51,14 +51,14 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
     private JDialog dialog = null;
 
-    public PanelFilmlisteLaden(DDaten d, Component parentComponent, JDialog ddialog) {
+    public PanelFilmlisteLaden(Daten d, Component parentComponent, JDialog ddialog) {
         super(d, parentComponent);
         dialog = ddialog;
         initComponents();
         init();
     }
 
-    public PanelFilmlisteLaden(DDaten d, Component parentComponent) {
+    public PanelFilmlisteLaden(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         init();
@@ -108,7 +108,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
     private void updateSuchen() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        DDaten.filmeLaden.getDownloadUrlsFilmlisten(true); // Liste neu laden und eine URL auswählen
+        Daten.filmeLaden.getDownloadUrlsFilmlisten(true); // Liste neu laden und eine URL auswählen
         stopBeob = true;
         jTextFieldUrl.setText(Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
         tabelleLaden();
@@ -117,7 +117,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        jTable1.setModel(new TModel(DDaten.filmeLaden.getDownloadUrlsFilmlisten(false).getTableObjectData(), MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
+        jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten(false).getTableObjectData(), MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
             if (i == MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(10);

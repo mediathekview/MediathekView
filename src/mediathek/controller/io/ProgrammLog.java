@@ -19,7 +19,6 @@
  */
 package mediathek.controller.io;
 
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.tool.*;
@@ -34,7 +33,7 @@ import java.nio.file.Paths;
 
 public class ProgrammLog {
 
-    public static void LogDateiSchreiben(DDaten ddaten) {
+    public static void LogDateiSchreiben(Daten ddaten) {
         DialogZiel dialog = new DialogZiel(ddaten.mediathekGui, ddaten, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
         dialog.setVisible(true);
         if (!dialog.ok) {

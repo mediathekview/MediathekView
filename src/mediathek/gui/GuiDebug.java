@@ -32,7 +32,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import mediathek.MediathekGui;
 import mediathek.controller.io.starter.RuntimeExec;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.gui.dialogEinstellungen.PanelSenderLaden;
@@ -49,7 +49,7 @@ public class GuiDebug extends PanelVorlage {
     private JButton[] buttonSender;
     private String[] sender;
 
-    public GuiDebug(DDaten d, Component parentComponent) {
+    public GuiDebug(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         ddaten = d;
@@ -643,7 +643,7 @@ public class GuiDebug extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            DDaten.listeFilme.delSender(sender);
+            Daten.listeFilme.delSender(sender);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
         }
     }

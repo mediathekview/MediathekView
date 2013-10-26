@@ -27,7 +27,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
@@ -42,16 +41,16 @@ public class MVStatusBar_Win_Linux extends MVStatusBar {
 
     private ImageIcon backImage1 = GetIcon.getIcon("Statusbar1.png");
     private ImageIcon backImage2 = GetIcon.getIcon("Statusbar2.png");
-    private DDaten ddaten;
+    private Daten daten;
 
-    public MVStatusBar_Win_Linux(DDaten dd) {
-        ddaten = dd;
+    public MVStatusBar_Win_Linux(Daten dd) {
+        daten = dd;
         initComponents();
         init();
     }
 
     private void init() {
-        ddaten.mediathekGui.addWindowListener(new WindowAdapter() {
+        daten.mediathekGui.addWindowListener(new WindowAdapter() {
             @Override
             public void windowActivated(WindowEvent e) {
                 updateUI();
@@ -82,7 +81,7 @@ public class MVStatusBar_Win_Linux extends MVStatusBar {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (ddaten.mediathekGui.isActive()) {
+        if (daten.mediathekGui.isActive()) {
             g.drawImage(backImage1.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
         } else {
             g.drawImage(backImage2.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);

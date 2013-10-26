@@ -25,7 +25,7 @@ import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
@@ -129,18 +129,18 @@ public final class MVJTable extends JTable {
             }
             String b = "", r = "", s = "", upDown = "";
             boolean ok = false;
-            if (!DDaten.system[nrDatenSystem].equals("")) {
+            if (!Daten.system[nrDatenSystem].equals("")) {
                 ok = true;
                 int f1, f2, f3;
-                String d = DDaten.system[nrDatenSystem];
-                if ((f1 = DDaten.system[nrDatenSystem].indexOf(FELDTRENNER)) != -1) {
-                    b = DDaten.system[nrDatenSystem].substring(0, f1);
-                    if ((f2 = DDaten.system[nrDatenSystem].indexOf(FELDTRENNER, f1 + 1)) != -1) {
-                        r = DDaten.system[nrDatenSystem].substring(f1 + 1, f2);
+                String d = Daten.system[nrDatenSystem];
+                if ((f1 = Daten.system[nrDatenSystem].indexOf(FELDTRENNER)) != -1) {
+                    b = Daten.system[nrDatenSystem].substring(0, f1);
+                    if ((f2 = Daten.system[nrDatenSystem].indexOf(FELDTRENNER, f1 + 1)) != -1) {
+                        r = Daten.system[nrDatenSystem].substring(f1 + 1, f2);
                     }
-                    if ((f3 = DDaten.system[nrDatenSystem].indexOf(FELDTRENNER, f2 + 1)) != -1) {
-                        s = DDaten.system[nrDatenSystem].substring(f2 + 1, f3);
-                        upDown = DDaten.system[nrDatenSystem].substring(f3 + 1);
+                    if ((f3 = Daten.system[nrDatenSystem].indexOf(FELDTRENNER, f2 + 1)) != -1) {
+                        s = Daten.system[nrDatenSystem].substring(f2 + 1, f3);
+                        upDown = Daten.system[nrDatenSystem].substring(f3 + 1);
                     }
                 }
                 if (!arrLesen(b, breite)) {
@@ -442,7 +442,7 @@ public final class MVJTable extends JTable {
                 case TABELLE_STANDARD:
                     break;
             }
-//            if (DDaten.debug) {
+//            if (Daten.debug) {
 //                // dann wird nichts ausgeschaltet
 //                if (breite[i] == 0) {
 //                    breite[i] = 100;
@@ -481,7 +481,7 @@ public final class MVJTable extends JTable {
                 upDown = sk.getSortOrder().equals(SortOrder.ASCENDING) ? SORT_ASCENDING : SORT_DESCENDING;
             }
         }
-        DDaten.system[nrDatenSystem] = b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown;
+        Daten.system[nrDatenSystem] = b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown;
     }
 
     private int[] getArray(int anzahl) {

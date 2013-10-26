@@ -40,7 +40,7 @@ import com.jidesoft.utils.SystemInfo;
 import mediathek.MVStatusBar_Mac;
 import mediathek.MediathekGui;
 import mediathek.controller.io.starter.Start;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
@@ -69,7 +69,7 @@ public class GuiDownloads extends PanelVorlage {
     private MVFilmInformation filmInfoHud;
     private PanelBeschreibung panelBeschreibung;
 
-    public GuiDownloads(DDaten d, Component parentComponent) {
+    public GuiDownloads(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         tabelle = new MVJTable(MVJTable.TABELLE_TAB_DOWNLOADS);
@@ -167,7 +167,7 @@ public class GuiDownloads extends PanelVorlage {
                 tabelleLaden();
             }
         });
-        DDaten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public void fertig(MSearchListenerFilmeLadenEvent event) {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
@@ -219,7 +219,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void panelBeschreibungSetzen() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(DDaten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR]));
+        jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR]));
     }
 
     private synchronized void tabelleLaden() {

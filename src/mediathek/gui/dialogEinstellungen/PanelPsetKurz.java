@@ -41,7 +41,7 @@ import javax.swing.event.ListSelectionListener;
 
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Dimension;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -58,7 +58,7 @@ public class PanelPsetKurz extends PanelVorlage {
     private DatenPset pSet = null;
     private ListePset listePset;
 
-    public PanelPsetKurz(DDaten d, Component parentComponent, ListePset llistePset) {
+    public PanelPsetKurz(Daten d, Component parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));

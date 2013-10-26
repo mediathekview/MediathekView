@@ -21,16 +21,16 @@ package mediathek.controller.filmeLaden;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
-import mediathek.daten.DDaten;
 import mediathek.daten.Daten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
-import msearch.filmeSuchen.MSearchFilmeSuchen;
 import msearch.daten.ListeFilme;
 import msearch.daten.MSearchConfig;
 import msearch.filmeLaden.ListeDownloadUrlsFilmlisten;
 import msearch.filmeLaden.ListeFilmlistenServer;
 import msearch.filmeLaden.MSearchImportFilmliste;
+import msearch.filmeSuchen.MSearchFilmeSuchen;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
@@ -87,6 +87,7 @@ public class FilmeLaden {
             @Override
             public synchronized void fertig(MSearchListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
+                Daten.filmlisteSpeichern();
                 undEnde(event);
             }
         });
@@ -105,19 +106,20 @@ public class FilmeLaden {
     // Filme als Liste importieren
     // #########################################################
     public void importFilmliste(String dateiUrl) {
+        // damit wird die filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
             Daten.listeFilme.clear();
-            DDaten.listeFilmeNachBlackList.clear();
+            Daten.listeFilmeNachBlackList.clear();
             System.gc();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, FilmeLaden.class.getSimpleName());
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
-                mSearchImportFilmliste.filmeImportierenAuto(Daten.listeFilme);
+                mSearchImportFilmliste.filmeImportierenAuto(Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, Daten.listeFilme);
             } else {
                 // Filme als Liste importieren, feste URL/Datei
-                mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.listeFilme);
+                mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.getBasisVerzeichnis(true) + Konstanten.XML_DATEI_FILME, Daten.listeFilme);
             }
         }
     }
@@ -147,11 +149,11 @@ public class FilmeLaden {
     }
 
     public ListeFilmlistenServer getListeFilmlistnServer() {
-        return mSearchImportFilmliste.getListeFilmlistnServer();
+        return mSearchImportFilmliste.getListe_FilmlistenServer();
     }
 
     public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten(boolean update) {
-        return mSearchImportFilmliste.getDownloadUrlsFilmlisten(update);
+        return mSearchImportFilmliste.getDownloadUrls_Filmlisten(update);
     }
 
     private void undEnde(MSearchListenerFilmeLadenEvent event) {

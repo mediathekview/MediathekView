@@ -22,7 +22,7 @@ package mediathek.gui.dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
@@ -31,7 +31,7 @@ public class DialogOkCancel extends javax.swing.JDialog {
 
     public boolean ok = false;
     public boolean morgen = true;
-    private DDaten ddaten;
+    private Daten ddaten;
 
     /**
      *
@@ -41,7 +41,7 @@ public class DialogOkCancel extends javax.swing.JDialog {
      * @param titel
      * @param text
      */
-    public DialogOkCancel(java.awt.Frame parent, DDaten dd, boolean modal, String titel, String text) {
+    public DialogOkCancel(java.awt.Frame parent, Daten dd, boolean modal, String titel, String text) {
         super(parent, modal);
         ddaten = dd;
         initComponents();

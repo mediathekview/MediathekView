@@ -163,13 +163,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.TRUE.toString();
     }
 
-    public void starten(DDaten ddaten) {
+    public void starten(Daten ddaten) {
         // Start erstellen und zur Liste hinzufügen
         ddaten.starterClass.addStart(new Start(this));
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
     }
 
-    public static void starten(DDaten ddaten, ArrayList<DatenDownload> ad) {
+    public static void starten(Daten ddaten, ArrayList<DatenDownload> ad) {
         // Start erstellen und zur Liste hinzufügen
         ArrayList<Start> al = new ArrayList<Start>();
         for (DatenDownload d : ad) {
@@ -225,12 +225,12 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART_NR]);
     }
 
-    public String getTextRestzeit(DDaten ddaten) {
+    public String getTextRestzeit(Daten ddaten) {
         Start s = ddaten.starterClass.getStart(arr[DatenDownload.DOWNLOAD_URL_NR]);
         return getTextRestzeit(ddaten, s);
     }
 
-    public String getTextRestzeit(DDaten ddaten, Start s) {
+    public String getTextRestzeit(Daten ddaten, Start s) {
         String ret = "";
         if (s != null) {
             if (s.restSekunden > 0) {

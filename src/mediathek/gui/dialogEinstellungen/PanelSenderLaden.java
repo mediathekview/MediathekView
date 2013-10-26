@@ -29,7 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
@@ -43,7 +43,7 @@ public class PanelSenderLaden extends PanelVorlage {
     private JButton[] buttonSender;
     private String[] sender;
 
-    public PanelSenderLaden(DDaten d, Component parentComponent) {
+    public PanelSenderLaden(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
         jButtonStop.setIcon(GetIcon.getIcon("stop_16.png"));
@@ -72,7 +72,7 @@ public class PanelSenderLaden extends PanelVorlage {
             }
         });
         addSender();
-        DDaten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public void progress(MSearchListenerFilmeLadenEvent event) {
                 if (event.max == 0) {

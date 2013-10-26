@@ -34,7 +34,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.daten.DDaten;
+import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenBlacklist;
 import mediathek.file.GetFile;
@@ -58,7 +58,7 @@ public class PanelBlacklist extends PanelVorlage {
     private Color cGruen = new Color(0, 153, 51);
     private Color cRot = new Color(255, 0, 0);
 
-    public PanelBlacklist(DDaten d, Component parentComponent, String nname) {
+    public PanelBlacklist(Daten d, Component parentComponent, String nname) {
         super(d, parentComponent);
         initComponents();
         name = nname;
@@ -238,12 +238,12 @@ public class PanelBlacklist extends PanelVorlage {
 
     private void initCombo() {
         // der erste Sender ist ""
-        sender = GuiFunktionen.addLeerListe(DDaten.filmeLaden.getSenderNamen());
+        sender = GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen());
         jComboBoxSender.setModel(new javax.swing.DefaultComboBoxModel<String>(sender));
         //für den Sender "" sind alle Themen im themenPerSender[0]
         themenPerSender = new String[sender.length][];
         for (int i = 0; i < sender.length; ++i) {
-            themenPerSender[i] = MViewListeFilme.getModelOfFieldThema(DDaten.listeFilme, sender[i]);
+            themenPerSender[i] = MViewListeFilme.getModelOfFieldThema(Daten.listeFilme, sender[i]);
         }
     }
 
