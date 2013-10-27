@@ -31,7 +31,7 @@ import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import mediathek.MediathekGui;
-import mediathek.controller.io.starter.RuntimeExec;
+import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;

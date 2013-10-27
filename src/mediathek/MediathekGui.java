@@ -61,9 +61,8 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.controller.io.CheckUpdate;
-import mediathek.controller.io.IoXmlLesen;
-import mediathek.daten.Daten;
+import mediathek.controller.CheckUpdate;
+import mediathek.controller.IoXmlLesen;
 import mediathek.daten.Daten;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDebug;
@@ -80,6 +79,7 @@ import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.res.GetIcon;
+import mediathek.tool.Duration;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
@@ -105,6 +105,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     JPanel jPanelAnzahl = new JPanel();
     JSplitPane splitPane = null;
     private MVStatusBar statusBar;
+    private Duration duration = new Duration();
 
     public enum UIButtonState {
 
@@ -228,6 +229,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
 
         updateSplashScreenText("Anwendungsdaten laden...");
+        duration.ping("Daten");
         daten = new Daten(pfad, this);
 
         Log.startMeldungen(this.getClass().getName());
@@ -236,6 +238,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         //create the Film Information HUD
         daten.filmInfoHud = new MVFilmInformation(this, jTabbedPane, daten);
+        duration.ping("Daten");
         if (IoXmlLesen.einstellungenExistieren()) {
             // gibt schon Programmeinstellungen, dann damit starten
             daten.allesLaden();
@@ -244,6 +247,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             // erster Start
             new DialogStarteinstellungen(null, true, daten).setVisible(true);
         }
+        duration.ping("alles laden");
 
         setOrgTitel();
         setLookAndFeel();
@@ -305,6 +309,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
         setFocusSuchfeld();
+        duration.ping("Gui");
     }
 
     private void setFocusSuchfeld() {

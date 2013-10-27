@@ -53,7 +53,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.MVStatusBar_Mac;
 import mediathek.MediathekGui;
-import mediathek.controller.io.starter.Start;
+import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;

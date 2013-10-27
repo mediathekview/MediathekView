@@ -17,11 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.controller.filmeLaden;
+package mediathek.controller;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import mediathek.daten.Daten;
+import mediathek.tool.Duration;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import msearch.daten.ListeFilme;
@@ -40,6 +41,7 @@ public class FilmeLaden {
     public static final int UPDATE_FILME_URL = 1; // manuell laden, Url automatisch wählen
     public static final int UPDATE_FILME_AUTO = 2; // beim Start, immer mal wieder, + Url auto
     public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
+    private Duration duration = new Duration();
 
     private static enum ListenerMelden {
 
@@ -86,7 +88,8 @@ public class FilmeLaden {
             @Override
             public synchronized void fertig(MSearchListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
-                Daten.filmlisteSpeichern();
+                duration.stop("Filme laden, ende");
+                //Daten.filmlisteSpeichern();
                 undEnde(event);
             }
         });
@@ -106,6 +109,7 @@ public class FilmeLaden {
     // #########################################################
     public void importFilmliste(String dateiUrl) {
         // damit wird die filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
+        duration.start("Filme laden, start");
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;

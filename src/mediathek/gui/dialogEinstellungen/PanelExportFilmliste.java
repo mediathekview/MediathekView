@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.FileDialog;
@@ -29,12 +30,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import com.jidesoft.utils.SystemInfo;
-import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
+import mediathek.tool.Duration;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
@@ -74,7 +73,10 @@ public class PanelExportFilmliste extends PanelVorlage {
                 if (ret == JOptionPane.OK_OPTION) {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     updateUI();
-                    new MSearchFilmlisteSchreiben().filmlisteSchreibenXml(exporDatei, Daten.listeFilme);
+                    Duration duration = new Duration();
+                    duration.start("Filmliste schreiben: " + exporDatei);
+                    new MSearchFilmlisteSchreiben().filmlisteSchreibenJson(exporDatei, Daten.listeFilme);
+                    duration.stop("fertig");
                     if (!new File(exporDatei).exists()) {
                         MVMessageDialog.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }

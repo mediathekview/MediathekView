@@ -35,7 +35,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import mediathek.daten.Daten;
-import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
@@ -65,16 +64,16 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void init() {
-        jButtonUpdate.setIcon(GetIcon.getIcon("view-refresh_16.png"));
+        jButtonListeFilmlisten.setIcon(GetIcon.getIcon("view-refresh_16.png"));
         jButtonDateiAuswaehlen.setIcon(GetIcon.getIcon("fileopen_16.png"));
         initRadio();
         tabelleLaden();
-        jButtonUpdate.addActionListener(new BeobSuchen());
+        jButtonListeFilmlisten.addActionListener(new BeobListeFilmlisten());
         jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
         jButtonFilmeLaden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.filmeLaden.importFilmliste(Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
+                Daten.filmeLaden.importFilmliste(jTextFieldUrl.getText());
             }
         });
         jRadioButtonUpdateAus.addActionListener(new BeobOption());
@@ -106,11 +105,10 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         setPanelTabelle(jRadioButtonUpdateAus.isSelected());
     }
 
-    private void updateSuchen() {
+    private void listeFilmlistenSuchen() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         Daten.filmeLaden.getDownloadUrlsFilmlisten(true); // Liste neu laden und eine URL auswählen
         stopBeob = true;
-        jTextFieldUrl.setText(Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
         tabelleLaden();
         stopBeob = false;
         this.setCursor(Cursor.getDefaultCursor());
@@ -147,10 +145,9 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             //jRadioButtonUpdateAus.setSelected(true);
             //daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(Konstanten.UPDATE_FILME_AUS);
             jTextFieldUrl.setText(datenUrlFilmliste.arr[MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR]);
-            Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR] = datenUrlFilmliste.arr[MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR];
             if (doppel) {
                 // dann wars ein Doppelklick, gleich laden
-                Daten.filmeLaden.importFilmliste(Daten.system[Konstanten.SYSTEM_IMPORT_URL_MANUELL_NR]);
+                Daten.filmeLaden.importFilmliste(jTextFieldUrl.getText());
             }
         }
         stopBeob = false;
@@ -191,7 +188,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        jButtonUpdate = new javax.swing.JButton();
+        jButtonListeFilmlisten = new javax.swing.JButton();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jTextFieldUrl = new javax.swing.JTextField();
         jButtonDateiAuswaehlen = new javax.swing.JButton();
@@ -236,7 +233,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jLabel2.setText("Liste der Downloadserver (URL's) aktualisieren:");
 
-        jButtonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png"))); // NOI18N
+        jButtonListeFilmlisten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png"))); // NOI18N
 
         jLabel1.setText("URL/Datei:");
 
@@ -271,7 +268,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonUpdate))
+                                .addComponent(jButtonListeFilmlisten))
                             .addComponent(jButtonFilmeLaden, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addComponent(jScrollPane3))
                 .addContainerGap())
@@ -283,9 +280,9 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel2)
-                    .addComponent(jButtonUpdate))
+                    .addComponent(jButtonListeFilmlisten))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -336,7 +333,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDateiAuswaehlen;
     private javax.swing.JButton jButtonFilmeLaden;
-    private javax.swing.JButton jButtonUpdate;
+    private javax.swing.JButton jButtonListeFilmlisten;
     private javax.swing.JRadioButton jRadioButtonAuto;
     private javax.swing.JRadioButton jRadioButtonUpdateAus;
     private javax.swing.JTable jTable1;
@@ -345,11 +342,11 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private javax.swing.JTextField jTextFieldUrl;
     // End of variables declaration//GEN-END:variables
 
-    private class BeobSuchen implements ActionListener {
+    private class BeobListeFilmlisten implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            updateSuchen();
+            listeFilmlistenSuchen();
         }
     }
 

@@ -21,8 +21,8 @@ package mediathek;
 
 import java.io.File;
 import java.util.ListIterator;
-import mediathek.controller.io.IoXmlLesen;
-import mediathek.controller.io.starter.Start;
+import mediathek.controller.IoXmlLesen;
+import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.Log;

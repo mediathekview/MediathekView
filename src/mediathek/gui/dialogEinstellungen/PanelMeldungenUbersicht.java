@@ -22,7 +22,7 @@ package mediathek.gui.dialogEinstellungen;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.controller.io.ProgrammLog;
+import mediathek.controller.ProgrammLog;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 

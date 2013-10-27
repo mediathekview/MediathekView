@@ -32,7 +32,7 @@ import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.swing.JOptionPane;
-import mediathek.controller.io.starter.RuntimeExec;
+import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
