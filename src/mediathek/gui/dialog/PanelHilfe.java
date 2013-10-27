@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
 import javax.swing.JOptionPane;
-import mediathek.controller.io.ProgrammLog;
+import mediathek.controller.ProgrammLog;
 import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;

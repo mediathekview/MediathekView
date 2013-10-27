@@ -163,7 +163,7 @@
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jButtonUpdate" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButtonListeFilmlisten" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="jButtonFilmeLaden" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -181,10 +181,10 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="jLabel2" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonUpdate" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonListeFilmlisten" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="218" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="220" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jTextFieldUrl" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -233,7 +233,7 @@
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonUpdate">
+        <Component class="javax.swing.JButton" name="jButtonListeFilmlisten">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mediathek/res/view-refresh_16.png"/>

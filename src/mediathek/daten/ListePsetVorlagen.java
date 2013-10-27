@@ -28,7 +28,7 @@ import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.controller.io.IoXmlLesen;
+import mediathek.controller.IoXmlLesen;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogOkCancel;
 import mediathek.tool.Funktionen;

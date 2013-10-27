@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.controller.io;
+package mediathek.tool;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,9 +25,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import mediathek.daten.Daten;
-import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
-import mediathek.tool.MVStringBuilder;
 
 public class AsxLesen {
 
@@ -37,7 +34,7 @@ public class AsxLesen {
             return datei;
         }
         String url = datei;
-        MVStringBuilder seite = new MVStringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        StringBuilder seite = new StringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
         String kodierung = Konstanten.KODIERUNG_UTF;
         int timeout = 20000; //10 Sekunden
         char[] zeichen = new char[1];
@@ -72,7 +69,7 @@ public class AsxLesen {
         return url;
     }
 
-    private static String getUrl(MVStringBuilder buff) {
+    private static String getUrl(StringBuilder buff) {
         String ret = "";
         final String URL = "href=\"";
         int pos1 = 0, pos2;
