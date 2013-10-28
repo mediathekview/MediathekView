@@ -276,7 +276,7 @@ public final class MVJTable extends JTable {
                 this.getColumnModel().getColumn(this.convertColumnIndexToView(i)).setPreferredWidth(breite[i]);
             }
         }
-//        this.validate();
+        this.validate();
     }
 
     public void getSpalten() {

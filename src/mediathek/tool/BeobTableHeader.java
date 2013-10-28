@@ -39,7 +39,6 @@ public class BeobTableHeader extends MouseAdapter {
         this.tabelle = tabelle;
         this.columns = columns;
         spaltenAnzeigen = spalten;
-        box = new JCheckBoxMenuItem[this.columns.length];
     }
 
     @Override
@@ -59,6 +58,7 @@ public class BeobTableHeader extends MouseAdapter {
     private void showMenu(MouseEvent evt) {
         JPopupMenu jPopupMenu = new JPopupMenu();
         // Spalten ein-ausschalten
+        box = new JCheckBoxMenuItem[this.columns.length];
         for (int i = 0; i < columns.length; ++i) {
             box[i] = new JCheckBoxMenuItem(columns[i]);
             box[i].setSelected(anzeigen(i));
