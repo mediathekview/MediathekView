@@ -34,7 +34,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.ProgrammUpdateSuchen;
 import mediathek.daten.Daten;
-import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
@@ -256,7 +255,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jButtonHilfeAnzahl.setText("Hilfe");
 
-        jCheckBoxNotification.setText("Programmbenachrichtigunen anzeigen");
+        jCheckBoxNotification.setText("Benachrichtigungen anzeigen");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -452,7 +451,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
