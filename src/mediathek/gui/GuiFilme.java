@@ -55,7 +55,6 @@ import mediathek.MVStatusBar_Mac;
 import mediathek.MediathekGui;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenBlacklist;
 import mediathek.daten.DatenDownload;
@@ -74,10 +73,10 @@ import mediathek.tool.Datum;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.MVJTable;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import mediathek.tool.MVJTable;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MViewListeFilme;
 import mediathek.tool.TModel;
@@ -604,7 +603,7 @@ public class GuiFilme extends PanelVorlage {
             DatenFilm aktFilm = new DatenFilm();
             int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
-                int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
+                //int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
                 //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
                 //DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
                 DatenFilm film = getSelFilm();
