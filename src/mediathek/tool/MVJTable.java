@@ -331,7 +331,7 @@ public final class MVJTable extends JTable {
                     this.getRowSorter().setSortKeys(listeSortKeys);
                 }
             }
-//            this.validate();
+            this.validate();
         } catch (Exception ex) {
             Log.fehlerMeldung(965001463, Log.FEHLER_ART_PROG, "JTableMed.setSpalten", ex);
         }
