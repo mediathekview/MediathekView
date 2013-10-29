@@ -47,7 +47,7 @@ public class PanelSenderLaden extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         jButtonStop.setIcon(GetIcon.getIcon("stop_16.png"));
-        ddaten = d;
+        daten = d;
         init();
         jSpinnerWarten.addChangeListener(new BeobSpinnerWarten());
     }

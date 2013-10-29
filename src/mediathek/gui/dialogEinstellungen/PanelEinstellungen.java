@@ -50,7 +50,7 @@ public class PanelEinstellungen extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         jButtonInfos.setIcon(GetIcon.getIcon("icons_refresh_16.png"));
-        ddaten = d;
+        daten = d;
         init();
         jCheckBoxEchtzeit.addActionListener(new BeobCheckBox());
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
@@ -155,7 +155,7 @@ public class PanelEinstellungen extends PanelVorlage {
                     //and now switch it...
                     try {
                         UIManager.setLookAndFeel(lafClass);
-                        SwingUtilities.updateComponentTreeUI(ddaten.mediathekGui);
+                        SwingUtilities.updateComponentTreeUI(daten.mediathekGui);
                         for (Frame f : Frame.getFrames()) {
                             SwingUtilities.updateComponentTreeUI(f);
                             for (Window w : f.getOwnedWindows()) {
@@ -513,7 +513,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            new ProgrammUpdateSuchen().checkVersion(ddaten, !infos /* bei aktuell anzeigen */, infos /* Hinweis */, true /* hinweiseAlleAnzeigen */);
+            new ProgrammUpdateSuchen().checkVersion(daten, !infos /* bei aktuell anzeigen */, infos /* Hinweis */, true /* hinweiseAlleAnzeigen */);
         }
     }
 

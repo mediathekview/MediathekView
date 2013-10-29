@@ -23,7 +23,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import mediathek.daten.Daten;
 import mediathek.tool.Duration;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import msearch.daten.ListeFilme;
 import msearch.daten.MSearchConfig;
@@ -116,7 +115,7 @@ public class FilmeLaden {
             Daten.listeFilme.clear();
             Daten.listeFilmeNachBlackList.clear();
             System.gc();
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, FilmeLaden.class.getSimpleName());
+//            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, FilmeLaden.class.getSimpleName());
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 mSearchImportFilmliste.filmeImportierenAuto(Daten.getDateiFilmliste(), Daten.listeFilme);

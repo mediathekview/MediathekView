@@ -35,7 +35,7 @@ public class PanelEinstellungenNetz extends PanelVorlage {
     public PanelEinstellungenNetz(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
-        ddaten = d;
+        daten = d;
         //proxy
         jCheckBoxProxy.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_HTTP_PROXY_ON_NR]));
         jCheckBoxProxy.addActionListener(new BeobProxy());

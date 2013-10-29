@@ -34,7 +34,7 @@ public class PanelMeldungenUbersicht extends PanelVorlage {
         jButtonLog.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ProgrammLog.LogDateiSchreiben(ddaten);
+                ProgrammLog.LogDateiSchreiben(daten);
             }
         });
     }

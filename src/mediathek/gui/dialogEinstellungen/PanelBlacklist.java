@@ -35,7 +35,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.daten.Daten;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenBlacklist;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
@@ -67,6 +66,12 @@ public class PanelBlacklist extends PanelVorlage {
         init_();
         init();
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name) {
+            @Override
+            public void ping() {
+                init_();
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name) {
             @Override
             public void ping() {
                 init_();
@@ -119,10 +124,9 @@ public class PanelBlacklist extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_BLACKLIST_AUCH_ABO_NR] = Boolean.toString(jCheckBoxAbo.isSelected());
-                // bei den Abos/Downloads melden
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, name);
+                // bei den Downloads melden
                 // damit die Änderungen im Eigenschaftendialog auch übernommen werden
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name);
             }
         });
         jCheckBoxBlacklistEingeschaltet.addActionListener(new ActionListener() {
@@ -143,7 +147,7 @@ public class PanelBlacklist extends PanelVorlage {
                 String ti = jTextFieldTitel.getText().trim();
                 String thti = jTextFieldThemaTitel.getText().trim();
                 if (!se.equals("") || !th.equals("") || !ti.equals("") || !thti.equals("")) {
-                    ddaten.listeBlacklist.add(new DatenBlacklist(se, th, ti, thti));
+                    daten.listeBlacklist.add(new DatenBlacklist(se, th, ti, thti));
                     tabelleLaden();
                 }
             }
@@ -160,7 +164,7 @@ public class PanelBlacklist extends PanelVorlage {
                     if (selectedTableRow >= 0) {
                         int row = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
                         String delNr = jTableBlacklist.getModel().getValueAt(row, DatenBlacklist.BLACKLIST_NR_NR).toString();
-                        DatenBlacklist bl = ddaten.listeBlacklist.get(delNr);
+                        DatenBlacklist bl = daten.listeBlacklist.get(delNr);
                         bl.arr[DatenBlacklist.BLACKLIST_SENDER_NR] = se;
                         bl.arr[DatenBlacklist.BLACKLIST_THEMA_NR] = th;
                         bl.arr[DatenBlacklist.BLACKLIST_TITEL_NR] = ti;
@@ -182,7 +186,7 @@ public class PanelBlacklist extends PanelVorlage {
         jButtonTabelleLoeschen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ddaten.listeBlacklist.clear();
+                daten.listeBlacklist.clear();
                 tabelleLaden();
             }
         });
@@ -248,7 +252,7 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        jTableBlacklist.setModel(new TModel(ddaten.listeBlacklist.getObjectData(), DatenBlacklist.BLACKLIST_COLUMN_NAMES_ANZEIGE));
+        jTableBlacklist.setModel(new TModel(daten.listeBlacklist.getObjectData(), DatenBlacklist.BLACKLIST_COLUMN_NAMES_ANZEIGE));
     }
 
     private void setPanelBlacklist() {
@@ -272,7 +276,7 @@ public class PanelBlacklist extends PanelVorlage {
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR_NR).toString();
-            bl = ddaten.listeBlacklist.get(delNr);
+            bl = daten.listeBlacklist.get(delNr);
         }
         if (bl != null) {
             jComboBoxSender.setSelectedItem(bl.arr[DatenBlacklist.BLACKLIST_SENDER_NR]);
@@ -288,7 +292,7 @@ public class PanelBlacklist extends PanelVorlage {
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR_NR).toString();
-            ret = ddaten.listeBlacklist.remove(delNr);
+            ret = daten.listeBlacklist.remove(delNr);
             tabelleLaden();
         }
         return ret;

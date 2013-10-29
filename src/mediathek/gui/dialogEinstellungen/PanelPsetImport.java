@@ -115,7 +115,7 @@ public class PanelPsetImport extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
-                GuiFunktionenProgramme.addVorlagen(me, ddaten, ListePsetVorlagen.getStandarset(ddaten, Funktionen.getOsString()), false /* auto */);
+                GuiFunktionenProgramme.addVorlagen(me, daten, ListePsetVorlagen.getStandarset(daten, Funktionen.getOsString()), false /* auto */);
             }
         });
         setHyperLink(""); // zum löschen
@@ -123,14 +123,14 @@ public class PanelPsetImport extends PanelVorlage {
 
     private void importDatei(String datei) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ListePset pSet = IoXmlLesen.importPset(ddaten, datei, true);
+        ListePset pSet = IoXmlLesen.importPset(daten, datei, true);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        GuiFunktionenProgramme.addVorlagen(me, ddaten, pSet, false /* auto */);
+        GuiFunktionenProgramme.addVorlagen(me, daten, pSet, false /* auto */);
     }
 
     private void importText() {
-        ListePset pSet = IoXmlLesen.importPsetText(ddaten, jTextAreaImport.getText(), true);
-        GuiFunktionenProgramme.addVorlagen(me, ddaten, pSet, false /* auto */);
+        ListePset pSet = IoXmlLesen.importPsetText(daten, jTextAreaImport.getText(), true);
+        GuiFunktionenProgramme.addVorlagen(me, daten, pSet, false /* auto */);
     }
 
     private void tabelleLaden() {
@@ -166,7 +166,7 @@ public class PanelPsetImport extends PanelVorlage {
             jLabel8.setVisible(true);
             jXHyperlinkInfos.setVisible(true);
             try {
-                jXHyperlinkInfos.setAction(new UrlHyperlinkAction(ddaten, url));
+                jXHyperlinkInfos.setAction(new UrlHyperlinkAction(daten, url));
             } catch (URISyntaxException ignored) {
             }
         } else {
@@ -544,7 +544,7 @@ public class PanelPsetImport extends PanelVorlage {
             if (jTextFieldDatei.getText().equals("")) {
                 jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
             } else {
-                if (IoXmlLesen.importPset(ddaten, jTextFieldDatei.getText(), false) != null) {
+                if (IoXmlLesen.importPset(daten, jTextFieldDatei.getText(), false) != null) {
                     jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
                 } else {
                     jTextFieldDatei.setBackground(new Color(255, 200, 200));
@@ -575,7 +575,7 @@ public class PanelPsetImport extends PanelVorlage {
             if (jTextAreaImport.getText().equals("")) {
                 jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
             } else {
-                if (IoXmlLesen.importPsetText(ddaten, jTextAreaImport.getText(), false) != null) {
+                if (IoXmlLesen.importPsetText(daten, jTextAreaImport.getText(), false) != null) {
                     jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
                     jButtonImportText.setEnabled(true);
                 } else {
@@ -592,7 +592,7 @@ public class PanelPsetImport extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Programmset auswählen");
+                FileDialog chooser = new FileDialog(daten.mediathekGui, "Programmset auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
