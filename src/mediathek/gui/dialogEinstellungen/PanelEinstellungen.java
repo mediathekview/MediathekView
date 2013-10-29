@@ -118,6 +118,8 @@ public class PanelEinstellungen extends PanelVorlage {
                 int b = jSliderBandbreite.getValue();
                 jLabelBandbreite.setText(b + " kByte/s");
                 Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = String.valueOf(b);
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
+
             }
         });
     }

@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.daten.Daten;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
@@ -184,6 +183,18 @@ public class ListeStarts extends LinkedList<Start> {
             }
         }
         return ret;
+    }
+
+    synchronized void setBanbreite() {
+        Start s;
+        Iterator<Start> it = iterator();
+        //erster Versuch, Start mit einem anderen Sender
+        while (it.hasNext()) {
+            s = it.next();
+            if (s.mVInputStream != null) {
+                s.mVInputStream.setBandbreite();
+            }
+        }
     }
 
     void delStart(ArrayList<String> url) {

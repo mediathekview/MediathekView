@@ -30,8 +30,8 @@ import mediathek.daten.Daten;
 public class MVInputStream extends InputStream {
 
     private final InputStream iStream;
-    private long maxBytePerSec = 0;
-    private final long startZeit = System.currentTimeMillis();
+    private static long maxBytePerSec = 0;
+    private long startZeit = System.currentTimeMillis();
     private long bytesGelesen = 0;
     private long gesamtVerpennt = 0;
     private static final long warten_ms = 50;
@@ -44,6 +44,12 @@ public class MVInputStream extends InputStream {
             maxBytePerSec = 0;
             Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = "0";
         }
+    }
+
+    public void setBandbreite() {
+        maxBytePerSec = Long.parseLong(Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR]) * 1024;
+        startZeit = System.currentTimeMillis();
+        bytesGelesen = 0;
     }
 
     @Override
