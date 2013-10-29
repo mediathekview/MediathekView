@@ -1290,7 +1290,7 @@ public class GuiFilme extends PanelVorlage {
             JPopupMenu jPopupMenu = new JPopupMenu();
 
             //Thema laden
-            JMenuItem item = new JMenuItem("Film starten");
+            JMenuItem item = new JMenuItem("Film abspielen");
             item.setIcon(GetIcon.getIcon("player_play_16.png"));
             item.addActionListener(new ActionListener() {
                 @Override
