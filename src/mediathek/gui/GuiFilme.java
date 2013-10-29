@@ -103,10 +103,10 @@ public class GuiFilme extends PanelVorlage {
         tabelle = new MVJTable(MVJTable.TABELLE_TAB_FILME);
         jScrollPane1.setViewportView(tabelle);
         panelVideoplayerSetzen();
-        panelBeschreibung = new PanelBeschreibung(ddaten);
+        panelBeschreibung = new PanelBeschreibung(daten);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
-        filmInfoHud = ddaten.filmInfoHud;
+        filmInfoHud = daten.filmInfoHud;
         init(); //alles einrichten, Beobachter anhängen
         tabelleLaden(); //Filme laden
         tabelle.initTabelle();
@@ -122,8 +122,8 @@ public class GuiFilme extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        ddaten.mediathekGui.setToolbar(MediathekGui.UIButtonState.FILME);
-        ddaten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.FILME);
+        daten.mediathekGui.setToolbar(MediathekGui.UIButtonState.FILME);
+        daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.FILME);
         aktFilmSetzen();
     }
 
@@ -192,8 +192,8 @@ public class GuiFilme extends PanelVorlage {
         jButtonBlacklist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogLeer dialog = new DialogLeer(ddaten.mediathekGui, true);
-                dialog.init("Blacklist", new PanelBlacklist(ddaten, ddaten.mediathekGui, PanelBlacklist.class.getName() + "_2"));
+                DialogLeer dialog = new DialogLeer(daten.mediathekGui, true);
+                dialog.init("Blacklist", new PanelBlacklist(daten, daten.mediathekGui, PanelBlacklist.class.getName() + "_2"));
                 dialog.setVisible(true);
             }
         });
@@ -213,8 +213,8 @@ public class GuiFilme extends PanelVorlage {
         beobMausTabelle = new BeobMausTabelle();
         tabelle.addMouseListener(beobMausTabelle);
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
-        tabelle.setDefaultRenderer(Object.class, new CellRendererFilme(ddaten));
-        tabelle.setDefaultRenderer(Datum.class, new CellRendererFilme(ddaten));
+        tabelle.setDefaultRenderer(Object.class, new CellRendererFilme(daten));
+        tabelle.setDefaultRenderer(Datum.class, new CellRendererFilme(daten));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen) {
             @Override
             public void tabelleLaden_() {
@@ -263,7 +263,7 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxNurHd.addActionListener(new BeobFilter());
         //restliche Filter
         jScrollPane1.addMouseListener(new BeobMausLaufendeProgramme());
-        ddaten.mediathekGui.getStatusBar().getComponent().addMouseListener(new BeobMausLaufendeProgramme());
+        daten.mediathekGui.getStatusBar().getComponent().addMouseListener(new BeobMausLaufendeProgramme());
         // Filter erst mal ausblenden
         //jCheckBoxFilter.addActionListener(new BeobMpanel(jCheckBoxFilter, jPanelFilter, "Filter"));
         jCheckBoxFilter.setIcon(GetIcon.getIcon("close_15.png"));
@@ -271,7 +271,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.FALSE.toString();
-                ddaten.mediathekGui.filterAnzeigen(true);
+                daten.mediathekGui.filterAnzeigen(true);
                 panelFilterSetzen();
             }
         });
@@ -280,7 +280,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR] = Boolean.FALSE.toString();
-                ddaten.mediathekGui.videoplayerAnzeigen(true);
+                daten.mediathekGui.videoplayerAnzeigen(true);
                 panelVideoplayerSetzen();
             }
         });
@@ -323,7 +323,7 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                checkBlacklist(true);
+                //checkBlacklist(true);
                 tabelleLaden();
             }
         });
@@ -383,7 +383,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void filmAbspielen_() {
-        DatenPset pset = ddaten.listePset.getPsetAbspielen();
+        DatenPset pset = daten.listePset.getPsetAbspielen();
         if (pset != null) {
             playerStarten(pset);
         } else {
@@ -397,7 +397,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void filmSpeichern_(DatenPset pSet) {
-        if (ddaten.listePset.getListeSpeichern().size() == 0) {
+        if (daten.listePset.getListeSpeichern().size() == 0) {
             MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen\" ein Programm zum Aufzeichnen festlegen.",
                     "fehlende Einstellungen zum Speichern!", JOptionPane.INFORMATION_MESSAGE);
             // Satz mit x, war wohl nix
@@ -411,7 +411,7 @@ public class GuiFilme extends PanelVorlage {
                     selRow = tabelle.convertRowIndexToModel(selRow);
                     // film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
                     film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_NR_NR).toString());
-                    DialogAddDownload dialog = new DialogAddDownload(ddaten.mediathekGui, ddaten, film, pSet);
+                    DialogAddDownload dialog = new DialogAddDownload(daten.mediathekGui, daten, film, pSet);
                     dialog.setVisible(true);
                 }
             }
@@ -429,7 +429,7 @@ public class GuiFilme extends PanelVorlage {
         // sonst ein Button
         jPanelExtraInnen.removeAll();
         jPanelExtraInnen.updateUI();
-        ListePset listeButton = ddaten.listePset.getListeButton();
+        ListePset listeButton = daten.listePset.getListeButton();
         int maxSpalten = 4; //Anzahl der Spalten der Schalter
         buttonArray = new JButton[listeButton.size()];
         GridBagLayout gridbag = new GridBagLayout();
@@ -468,7 +468,7 @@ public class GuiFilme extends PanelVorlage {
         c.gridy = zeile;
         if (liste.get(i).isLable()) {
             JLabel label = new JLabel(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME_NR]);
-            Color col = liste.get(i).getFarbe(ddaten);
+            Color col = liste.get(i).getFarbe(daten);
             if (col != null) {
                 label.setForeground(col);
             }
@@ -478,7 +478,7 @@ public class GuiFilme extends PanelVorlage {
         } else {
             button = new JButton(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME_NR]);
             button.addActionListener(new BeobOpen(liste.get(i)));
-            Color col = liste.get(i).getFarbe(ddaten);
+            Color col = liste.get(i).getFarbe(daten);
             if (col != null) {
                 button.setBackground(col);
             }
@@ -570,14 +570,14 @@ public class GuiFilme extends PanelVorlage {
     private synchronized void listeInModellLaden() {
         if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
             // normal mit den Filtern aus dem Filterpanel suchen
-            MViewListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, ddaten, tabelle, jComboBoxFilterSender.getSelectedItem().toString(),
+            MViewListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle, jComboBoxFilterSender.getSelectedItem().toString(),
                     jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(),
                     jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue(),
                     jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
-            MViewListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, ddaten, tabelle, "",
-                     "", "", ddaten.mediathekGui.getFilterTextFromSearchField(), "", 0,
+            MViewListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle, "",
+                    "", "", daten.mediathekGui.getFilterTextFromSearchField(), "", 0,
                     false, false, false, false);
         }
     }
@@ -647,7 +647,7 @@ public class GuiFilme extends PanelVorlage {
             int selectedModelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
             //DatenFilm datenFilm = Daten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
             DatenFilm datenFilm = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
-            ddaten.starterClass.urlStarten(pSet, datenFilm);
+            daten.starterClass.urlStarten(pSet, datenFilm);
         }
     }
 
@@ -667,9 +667,9 @@ public class GuiFilme extends PanelVorlage {
         boolean open = false;
         int gesamt = Daten.listeFilme.size();
         int anzListe = tabelle.getModel().getRowCount();
-        int runs = ddaten.starterClass.getStarts(Start.QUELLE_BUTTON).size();
-        int laufen = ddaten.starterClass.getDownloadsLaufen();
-        int warten = ddaten.starterClass.getDownloadsWarten();
+        int runs = daten.starterClass.getStarts(Start.QUELLE_BUTTON).size();
+        int laufen = daten.starterClass.getDownloadsLaufen();
+        int warten = daten.starterClass.getDownloadsWarten();
         // Anzahl der Filme
         if (gesamt == anzListe) {
             if (anzListe == 1) {
@@ -717,7 +717,7 @@ public class GuiFilme extends PanelVorlage {
             textLinks += ")";
         }
         // Infopanel setzen
-        ddaten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.FILME, textLinks);
+        daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.FILME, textLinks);
     }
 
     private String ifOpen(boolean open, String textLinks) {
@@ -733,9 +733,9 @@ public class GuiFilme extends PanelVorlage {
         if (abosEintragen) {
             // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
             // beim Ändern von Abos gemacht wird
-            MViewListeFilme.abosEintragen(Daten.listeFilme, ddaten);
+            MViewListeFilme.abosEintragen(Daten.listeFilme, daten);
         }
-        ddaten.listeBlacklist.filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
+        daten.listeBlacklist.filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
         themenLaden();
     }
 
@@ -1190,7 +1190,7 @@ public class GuiFilme extends PanelVorlage {
         }
 
         private void showMenu(MouseEvent evt) {
-            LinkedList<Start> liste = ddaten.starterClass.getStarts(Start.QUELLE_BUTTON);
+            LinkedList<Start> liste = daten.starterClass.getStarts(Start.QUELLE_BUTTON);
             if (liste.size() > 0) {
                 JPopupMenu jPopupMenu = new JPopupMenu();
                 JMenuItem item;
@@ -1217,7 +1217,7 @@ public class GuiFilme extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (start != null) {
-                        ddaten.starterClass.filmLoeschen(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                        daten.starterClass.filmLoeschen(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                     }
                 } catch (Exception ex) {
                     System.err.println("GuiFilme.BeobProgramm: " + ex);
@@ -1350,7 +1350,7 @@ public class GuiFilme extends PanelVorlage {
             itemAboMitTitel = new JMenuItem("Abo mit Sender und Thema und Titel anlegen");
             itemAboFilter = new JMenuItem("Abo aus Filter anlegen");
             if (film != null) {
-                if ((ddaten.listeAbo.getAboFuerFilm(film, false /*die Länge nicht prüfen*/)) != null) {
+                if ((daten.listeAbo.getAboFuerFilm_schnell(film, false /*die Länge nicht prüfen*/)) != null) {
                     //gibts schon, dann löschen
                     itemAbo.setEnabled(false);
                     itemAboMitTitel.setEnabled(false);
@@ -1372,13 +1372,13 @@ public class GuiFilme extends PanelVorlage {
             //Programme einblenden
             JMenu submenue = new JMenu("Film mit Programm starten:");
             jPopupMenu.add(submenue);
-            ListePset liste = ddaten.listePset.getListeButton();
+            ListePset liste = daten.listePset.getListeButton();
             for (DatenPset pset : liste) {
                 if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME_NR].equals("")) {
                     // ein "leeres" Pset, Platzhalter
                     continue;
                 }
-                Color col = pset.getFarbe(ddaten);
+                Color col = pset.getFarbe(daten);
                 item = new JMenuItem(pset.arr[DatenPset.PROGRAMMSET_NAME_NR]);
                 if (pset.getListeProg().isEmpty()) {
                     if (col != null) {
@@ -1564,7 +1564,7 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (ddaten.listePset.getListeAbo().size() == 0) {
+                if (daten.listePset.getListeAbo().size() == 0) {
                     MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                             "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                 } else {
@@ -1576,15 +1576,15 @@ public class GuiFilme extends PanelVorlage {
                         DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
                         DatenAbo datenAbo;
                         if (film != null) {
-                            if ((datenAbo = ddaten.listeAbo.getAboFuerFilm(film, false /*ohne Länge*/)) != null) {
+                            if ((datenAbo = daten.listeAbo.getAboFuerFilm_schnell(film, false /*ohne Länge*/)) != null) {
                                 //gibts schon, dann löschen
-                                ddaten.listeAbo.aboLoeschen(datenAbo);
+                                daten.listeAbo.aboLoeschen(datenAbo);
                             } else {
                                 //neues Abo anlegen
                                 if (mitTitel) {
-                                    ddaten.listeAbo.addAbo(film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR]);
+                                    daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR]);
                                 } else {
-                                    ddaten.listeAbo.addAbo(film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], "");
+                                    daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], "");
                                 }
                             }
                         }
@@ -1598,7 +1598,7 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (ddaten.listePset.getListeAbo().size() == 0) {
+                if (daten.listePset.getListeAbo().size() == 0) {
                     MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                             "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                 } else {
@@ -1609,7 +1609,7 @@ public class GuiFilme extends PanelVorlage {
                         String thema = film.arr[DatenFilm.FILM_THEMA_NR];
                         //neues Abo anlegen
                         //ddaten.listeAbo.addAbo(filmSender, filmThema, filmTitel);
-                        ddaten.listeAbo.addAbo(jComboBoxFilterSender.getSelectedItem().toString(), jComboBoxFilterThema.getSelectedItem().toString(),
+                        daten.listeAbo.addAbo(jComboBoxFilterSender.getSelectedItem().toString(), jComboBoxFilterThema.getSelectedItem().toString(),
                                 jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(),
                                 jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue(), thema);
                         stopBeob = false;
@@ -1638,11 +1638,11 @@ public class GuiFilme extends PanelVorlage {
                     // Blackliste für alle Fälle einschalten, notify kommt beim add()
                     Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR] = Boolean.toString(false);
                     if (!sender) {
-                        ddaten.listeBlacklist.add(new DatenBlacklist("", th, "" /*Titel*/, "" /*Thema-Titel*/));
+                        daten.listeBlacklist.add(new DatenBlacklist("", th, "" /*Titel*/, "" /*Thema-Titel*/));
                     } else if (!thema) {
-                        ddaten.listeBlacklist.add(new DatenBlacklist(se, "", "" /*Titel*/, "" /*Thema-Titel*/));
+                        daten.listeBlacklist.add(new DatenBlacklist(se, "", "" /*Titel*/, "" /*Thema-Titel*/));
                     } else {
-                        ddaten.listeBlacklist.add(new DatenBlacklist(se, th, "" /*Titel*/, "" /*Thema-Titel*/));
+                        daten.listeBlacklist.add(new DatenBlacklist(se, th, "" /*Titel*/, "" /*Thema-Titel*/));
                     }
                 }
             }

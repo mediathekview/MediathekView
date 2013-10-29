@@ -75,7 +75,7 @@ public class PanelPsetLang extends PanelVorlage {
         jScrollPane3.setViewportView(tabellePset);
         tabelleProgramme = new MVJTable(MVJTable.TABELLE_TAB_PROG);
         jScrollPane1.setViewportView(tabelleProgramme);
-        listePset = ddaten.listePset;
+        listePset = daten.listePset;
         init();
     }
 
@@ -142,7 +142,7 @@ public class PanelPsetLang extends PanelVorlage {
                 jButtonAbspielen.setBackground(COLOR_ABSPIELEN);
 //                jButtonAbspielen.setEnabled(false);
 //                jButtonAbspielen.setForeground(Color.BLACK);
-                getPset().setAbspielen(ddaten);
+                getPset().setAbspielen(daten);
                 nurtabellePset();
                 notifyPset();
             }
@@ -237,8 +237,8 @@ public class PanelPsetLang extends PanelVorlage {
         });
         jButtonPruefen.addActionListener(new BeobPuefen());
         tabelleProgramme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
-        tabelleProgramme.setDefaultRenderer(Object.class, new CellRendererProgramme(ddaten));
-        tabellePset.setDefaultRenderer(Object.class, new CellRendererPset(ddaten));
+        tabelleProgramme.setDefaultRenderer(Object.class, new CellRendererProgramme(daten));
+        tabellePset.setDefaultRenderer(Object.class, new CellRendererPset(daten));
         tabellePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
         tabellePset();
 //        spaltenSetzen();
@@ -511,13 +511,13 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
             String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR] + ".xml";
-            DialogZiel dialogZiel = new DialogZiel(null, ddaten, true, exportPfad, GuiFunktionen.replaceLeerDateiname(name, true /* istDatei */, false /* leerEntfernen */));
+            DialogZiel dialogZiel = new DialogZiel(null, daten, true, exportPfad, GuiFunktionen.replaceLeerDateiname(name, true /* istDatei */, false /* leerEntfernen */));
             dialogZiel.setVisible(true);
             if (dialogZiel.ok) {
                 if (dialogZiel.ziel.contains(File.separator)) {
                     exportPfad = dialogZiel.ziel.substring(0, dialogZiel.ziel.lastIndexOf(File.separator));
                 }
-                ddaten.ioXmlSchreiben.exportPset(liste.toArray(new DatenPset[0]), dialogZiel.ziel);
+                daten.ioXmlSchreiben.exportPset(liste.toArray(new DatenPset[0]), dialogZiel.ziel);
             }
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
@@ -1421,7 +1421,7 @@ public class PanelPsetLang extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Programm auswählen");
+                FileDialog chooser = new FileDialog(daten.mediathekGui, "Programm auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
@@ -1459,7 +1459,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Film speichern");
+                FileDialog chooser = new FileDialog(daten.mediathekGui, "Film speichern");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed
@@ -1620,7 +1620,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            GuiFunktionenProgramme.programmePruefen(ddaten);
+            GuiFunktionenProgramme.programmePruefen(daten);
         }
     }
 

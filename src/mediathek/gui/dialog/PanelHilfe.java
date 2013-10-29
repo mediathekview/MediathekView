@@ -55,23 +55,23 @@ public class PanelHilfe extends PanelVorlage {
         jTextFieldPfad.setText(Funktionen.getPathJar());
         try {
             jXHyperlinkWebsite.setText(Konstanten.ADRESSE_WEBSITE);
-            jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_WEBSITE));
+            jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(daten, Konstanten.ADRESSE_WEBSITE));
             jXHyperlinkAnleitung.setText(Konstanten.ADRESSE_ANLEITUNG);
-            jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_ANLEITUNG));
+            jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(daten, Konstanten.ADRESSE_ANLEITUNG));
             jXHyperlinkForum.setText(Konstanten.ADRESSE_FORUM);
-            jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_FORUM));
+            jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(daten, Konstanten.ADRESSE_FORUM));
         } catch (URISyntaxException ignored) {
         }
         jButtonLogErstellen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ProgrammLog.LogDateiSchreiben(ddaten);
+                ProgrammLog.LogDateiSchreiben(daten);
             }
         });
         jButtonHilfeReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(ddaten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true);
+                new DialogHilfe(daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true);
             }
         });
         jButtonReset.addActionListener(new ActionListener() {
@@ -82,7 +82,7 @@ public class PanelHilfe extends PanelVorlage {
                     // damit wird vor dem Beenden das Konfig-Verzeichnis umbenannt und so startet das
                     // Programm wie beim ersten Start
                     Daten.RESET = true;
-                    ddaten.mediathekGui.beenden();
+                    daten.mediathekGui.beenden();
                 }
             }
         });

@@ -216,7 +216,7 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Filmlisten-Liste verwenden");
+                FileDialog chooser = new FileDialog(daten.mediathekGui, "Filmlisten-Liste verwenden");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

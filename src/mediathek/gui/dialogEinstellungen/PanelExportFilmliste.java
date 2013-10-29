@@ -209,7 +209,7 @@ public class PanelExportFilmliste extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Filme exportieren");
+                FileDialog chooser = new FileDialog(daten.mediathekGui, "Filme exportieren");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

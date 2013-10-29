@@ -25,7 +25,7 @@ import mediathek.tool.MVJTable;
 
 public class PanelVorlage extends javax.swing.JPanel {
 
-    public Daten ddaten;
+    public Daten daten;
     public boolean stopBeob = false;
     public Component parentComponent = null;
     MVJTable tabelle = null;
@@ -36,7 +36,7 @@ public class PanelVorlage extends javax.swing.JPanel {
      * @param pparentComponent
      */
     public PanelVorlage(Daten d, Component pparentComponent) {
-        ddaten = d;
+        daten = d;
         parentComponent = pparentComponent;
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override

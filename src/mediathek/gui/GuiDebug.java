@@ -33,10 +33,8 @@ import javax.swing.JLabel;
 import mediathek.MediathekGui;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
-import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.gui.dialogEinstellungen.PanelSenderLaden;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVNotification;
@@ -52,7 +50,7 @@ public class GuiDebug extends PanelVorlage {
     public GuiDebug(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
-        ddaten = d;
+        daten = d;
         sender = Daten.filmeLaden.getSenderNamen();
         buttonSender = new JButton[sender.length];
         for (int i = 0; i < Daten.filmeLaden.getSenderNamen().length; ++i) {
@@ -69,7 +67,7 @@ public class GuiDebug extends PanelVorlage {
         jButtonAllesSpeichern.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ddaten.allesSpeichern();
+                daten.allesSpeichern();
             }
         });
         jButtonFilmlisteLoeschen.addActionListener(new ActionListener() {
@@ -109,9 +107,9 @@ public class GuiDebug extends PanelVorlage {
             }
         });
         jPanelSenderLaden.setLayout(new BorderLayout());
-        jPanelSenderLaden.add(new PanelSenderLaden(ddaten, ddaten.mediathekGui));
+        jPanelSenderLaden.add(new PanelSenderLaden(daten, daten.mediathekGui));
         jPanelListen.setLayout(new BorderLayout());
-        jPanelListen.add(new PanelListeFilmlistenServer(d, ddaten.mediathekGui));
+        jPanelListen.add(new PanelListeFilmlistenServer(d, daten.mediathekGui));
         jButtonTasklist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -200,7 +198,8 @@ public class GuiDebug extends PanelVorlage {
                 System.out.println("======================================");
                 System.out.println("     ->    Dauer[ms]: " + sekunden);
                 System.out.println("======================================");
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDebug.class.getSimpleName());
+                daten.listeAbo.aenderungMelden();
+
             }
         });
         jButtonJsonSchreiben.addActionListener(new ActionListener() {
@@ -287,7 +286,8 @@ public class GuiDebug extends PanelVorlage {
                 System.out.println(" bz2 ");
                 System.out.println("     ->    Dauer[ms]: " + sekunden);
                 System.out.println("======================================");
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDebug.class.getSimpleName());
+                daten.listeAbo.aenderungMelden();
+
             }
         });
     }

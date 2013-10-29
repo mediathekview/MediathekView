@@ -28,6 +28,7 @@ import mediathek.tool.DatumZeit;
 import mediathek.tool.Filter;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MViewListeFilme;
 import mediathek.tool.TModelAbo;
 import msearch.daten.DatenFilm;
 
@@ -52,8 +53,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         DialogEditAbo dialogEditAbo = new DialogEditAbo(null, true, daten, datenAbo);
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
-//            if (getAbo(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR], datenAbo.arr[DatenAbo.ABO_TITEL_NR],
-//                    datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR], datenAbo.mindestdauerMinuten) == null) {
             if (!aboExistiertBereits(datenAbo)) {
                 addAbo(datenAbo);
                 ret = true;
@@ -65,23 +64,30 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
 
     public void addAbo(DatenAbo datenAbo) {
-        String str = String.valueOf(nr++);
+        ++nr;
+        datenAbo.aboNr = nr;
+        String str = String.valueOf(nr);
         while (str.length() < 3) {
             str = "0" + str;
         }
-        datenAbo.aboNr = nr;
         datenAbo.arr[DatenAbo.ABO_NR_NR] = str;
         datenAbo.setMindestDauerMinuten();
         super.add(datenAbo);
         sort();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
+        aenderungMelden();
     }
 
     public void aboLoeschen(DatenAbo abo) {
         if (abo != null) {
             this.remove(abo);
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
+            aenderungMelden();
         }
+    }
+
+    public void aenderungMelden() {
+        // Filmliste anpassen
+        MViewListeFilme.abosEintragen(Daten.listeFilme, daten);
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
     }
 
     public DatenAbo getAboNr(int i) {
@@ -130,22 +136,46 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         return false;
     }
 
-    public DatenAbo getAboFuerFilm(DatenFilm film) {
-        if (film.aboNr < 0) {
+    public DatenAbo getAboFuerFilm_schnell(DatenFilm film, boolean laengePruefen) {
+        // da wird nur in der Filmliste geschaut, ob in "DatenFilm" ein Abo eingetragen ist
+        // geht schneller, "getAboFuerFilm" muss aber vorher schon gelaufen sein!!
+        if (film.abo == null) {
             return null;
-        }
-        DatenAbo datenAbo;
-        ListIterator<DatenAbo> it = this.listIterator();
-        while (it.hasNext()) {
-            datenAbo = it.next();
-            if (datenAbo.aboNr == film.aboNr) {
-                return datenAbo;
+        } else {
+            if (laengePruefen) {
+                if (!Filter.laengePruefen(((DatenAbo) film.abo).mindestdauerMinuten, film.dauerL)) {
+                    return null;
+                }
             }
+            return (DatenAbo) film.abo;
         }
-        return null;
     }
 
-    public DatenAbo getAboFuerFilm(DatenFilm film, boolean laengePruefen) {
+//    public DatenAbo getAboFuerFilm_schnell(DatenFilm film, boolean laengePruefen) {
+//        // da wird nur in der Filmliste geschaut, ob in "DatenFilm" ein Abo eingetragen ist
+//        // geht schneller, "getAboFuerFilm" muss aber vorher schon gelaufen sein!!
+//        if (film.aboNr < 0) {
+//            return null;
+//        }
+//        DatenAbo datenAbo;
+//        ListIterator<DatenAbo> it = this.listIterator();
+//        while (it.hasNext()) {
+//            datenAbo = it.next();
+//            if (datenAbo.aboNr == film.aboNr) {
+//                if (laengePruefen) {
+//                    if (Filter.laengePruefen(datenAbo.mindestdauerMinuten, film.dauerL)) {
+//                        return datenAbo;
+//                    }
+//                } else {
+//                    return datenAbo;
+//                }
+//            }
+//        }
+//        return null;
+//    }
+    public DatenAbo getAboFuerFilm(DatenFilm film) {
+        // hier wird tatsächlich für jeden Film die Liste der Abos durchsucht
+        // braucht länger
         DatenAbo datenAbo;
         ListIterator<DatenAbo> it = this.listIterator();
         while (it.hasNext()) {
@@ -155,7 +185,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                     Filter.isPattern(datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR]) ? new String[]{datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR]} : datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR].split(","),
                     Filter.isPattern(datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR]) ? new String[]{datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR]} : datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR].split(","),
                     datenAbo.mindestdauerMinuten,
-                    film, laengePruefen)) {
+                    film, false)) {
                 return datenAbo;
             }
         }

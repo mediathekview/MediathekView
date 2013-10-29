@@ -49,9 +49,9 @@ public class PanelPset extends PanelVorlage {
         jPanelPset.removeAll();
         jPanelPset.setLayout(new BorderLayout());
         if (jCheckBoxAlleEinstellungen.isSelected()) {
-            jPanelPset.add(new PanelPsetLang(ddaten, parentComponent, ddaten.listePset), BorderLayout.CENTER);
+            jPanelPset.add(new PanelPsetLang(daten, parentComponent, daten.listePset), BorderLayout.CENTER);
         } else {
-            jPanelPset.add(new PanelPsetKurz(ddaten, parentComponent, ddaten.listePset), BorderLayout.CENTER);
+            jPanelPset.add(new PanelPsetKurz(daten, parentComponent, daten.listePset), BorderLayout.CENTER);
         }
         jPanelPset.updateUI();
     }

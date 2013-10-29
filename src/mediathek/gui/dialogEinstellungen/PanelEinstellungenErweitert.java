@@ -49,7 +49,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         initComponents();
         jButtonProgrammDateimanager.setIcon(GetIcon.getIcon("fileopen_16.png"));
         jButtonProgrammUrl.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        ddaten = d;
+        daten = d;
         init();
         jButtonName.addActionListener(new ActionListener() {
             @Override
@@ -131,7 +131,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 //we can use native chooser on Mac...
                 if (SystemInfo.isMacOSX()) {
-                    FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Dateimanager suchen");
+                    FileDialog chooser = new FileDialog(daten.mediathekGui, "Dateimanager suchen");
                     chooser.setMode(FileDialog.LOAD);
                     chooser.setVisible(true);
                     if (chooser.getFile() != null) {
@@ -166,9 +166,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 if (!programm.equals("")) {
                     try {
                         if (!new File(programm).exists()) {
-                            MVMessageDialog.showMessageDialog(ddaten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                            MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
                         } else if (!new File(programm).canExecute()) {
-                            MVMessageDialog.showMessageDialog(ddaten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                            MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                         }
                     } catch (Exception ignored) {
                     }
@@ -181,7 +181,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 //we can use native chooser on Mac...
                 if (SystemInfo.isMacOSX()) {
-                    FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Browser suchen");
+                    FileDialog chooser = new FileDialog(daten.mediathekGui, "Browser suchen");
                     chooser.setMode(FileDialog.LOAD);
                     chooser.setVisible(true);
                     if (chooser.getFile() != null) {
@@ -216,9 +216,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 if (!programm.equals("")) {
                     try {
                         if (!new File(programm).exists()) {
-                            MVMessageDialog.showMessageDialog(ddaten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                            MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
                         } else if (!new File(programm).canExecute()) {
-                            MVMessageDialog.showMessageDialog(ddaten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                            MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                         }
                     } catch (Exception ignored) {
                     }

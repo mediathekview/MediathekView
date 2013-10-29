@@ -49,17 +49,17 @@ public class PanelInfoStarts extends PanelVorlage {
                 init();
             }
         });
-        ddaten = d;
+        daten = d;
         jButtonAuffrischen.addActionListener(new BeobLaden());
         tModel = ListeStarts.getEmptyModel();
         jTable1.setModel(tModel);
-        jTable1.setDefaultRenderer(Object.class, new CellRendererFilme(ddaten));
+        jTable1.setDefaultRenderer(Object.class, new CellRendererFilme(daten));
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         init();
     }
 
     private synchronized void init() {
-        tModel = ddaten.starterClass.getModellStarts(tModel);
+        tModel = daten.starterClass.getModellStarts(tModel);
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
             if (i > DatenFilm.FILM_URL_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(0);

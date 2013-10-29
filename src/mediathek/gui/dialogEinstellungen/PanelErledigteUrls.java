@@ -47,16 +47,16 @@ public class PanelErledigteUrls extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, PanelErledigteUrls.class.getSimpleName()) {
             @Override
             public void ping() {
-                jTable1.setModel(new TModel(ddaten.erledigteAbos.getObjectData(), new String[]{"Url"}));
+                jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), new String[]{"Url"}));
             }
         });
         jButtonLoeschen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ddaten.erledigteAbos.alleLoeschen();
+                daten.erledigteAbos.alleLoeschen();
             }
         });
-        jTable1.setModel(new TModel(ddaten.erledigteAbos.getObjectData(), new String[]{"Url"}));
+        jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), new String[]{"Url"}));
     }
 
     public void initHistory() {
@@ -64,16 +64,16 @@ public class PanelErledigteUrls extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, PanelErledigteUrls.class.getSimpleName()) {
             @Override
             public void ping() {
-                jTable1.setModel(new TModel(ddaten.history.getObjectData(), new String[]{"Url"}));
+                jTable1.setModel(new TModel(daten.history.getObjectData(), new String[]{"Url"}));
             }
         });
         jButtonLoeschen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ddaten.history.loeschen();
+                daten.history.loeschen();
             }
         });
-        jTable1.setModel(new TModel(ddaten.history.getObjectData(), new String[]{"Url"}));
+        jTable1.setModel(new TModel(daten.history.getObjectData(), new String[]{"Url"}));
     }
 
     /** This method is called from within the constructor to
@@ -170,9 +170,9 @@ public class PanelErledigteUrls extends PanelVorlage {
                 if (selectedTableRow >= 0) {
                     String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), 0).toString();
                     if (abo) {
-                        ddaten.erledigteAbos.urlAusLogfileLoeschen(del);
+                        daten.erledigteAbos.urlAusLogfileLoeschen(del);
                     } else {
-                        ddaten.history.remove(del);
+                        daten.history.remove(del);
 
                     }
                 }

@@ -215,14 +215,14 @@ public class MViewListeFilme {
 ////        }
     }
 
-    public static void abosEintragen(ListeFilme listeFilme, Daten ddaten) {
+    public static void abosEintragen(ListeFilme listeFilme, Daten daten) {
         // Aboname in die Filmliste eintragen
         DatenFilm film;
         DatenAbo datenAbo;
         ListIterator<DatenFilm> iterator = listeFilme.listIterator(0);
         while (iterator.hasNext()) {
             film = iterator.next();
-            datenAbo = ddaten.listeAbo.getAboFuerFilm(film, false);
+            datenAbo = daten.listeAbo.getAboFuerFilm(film);
             if (datenAbo != null) {
                 film.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
                 // und jetzt noch die Filmlänge prüfen
@@ -230,11 +230,11 @@ public class MViewListeFilme {
                     // dann ist der Film zu kurz
                     film.arr[DatenFilm.FILM_ABO_NAME_NR] = film.arr[DatenFilm.FILM_ABO_NAME_NR] + " [zu kurz]";
                 } else {
-                    film.aboNr = datenAbo.aboNr;
+                    film.abo = datenAbo;
                 }
             } else {
                 film.arr[DatenFilm.FILM_ABO_NAME_NR] = "";
-                film.aboNr = -1;
+                film.abo = null;
             }
         }
     }
