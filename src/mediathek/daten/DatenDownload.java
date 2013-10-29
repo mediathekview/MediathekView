@@ -23,8 +23,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
-import mediathek.tool.AsxLesen;
 import mediathek.controller.starter.Start;
+import mediathek.tool.AsxLesen;
 import mediathek.tool.Datum;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
@@ -55,53 +55,55 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_PROGRESS_NR = 6;
     public static final String DOWNLOAD_RESTZEIT = "Restzeit";
     public static final int DOWNLOAD_RESTZEIT_NR = 7;
+    public static final String DOWNLOAD_BANDBREITE = "Bandbreite [MB/s]";
+    public static final int DOWNLOAD_BANDBREITE_NR = 8;
     public static final String DOWNLOAD_DATUM = "Datum";
-    public static final int DOWNLOAD_DATUM_NR = 8;
+    public static final int DOWNLOAD_DATUM_NR = 9;
     public static final String DOWNLOAD_ZEIT = "Zeit";
-    public static final int DOWNLOAD_ZEIT_NR = 9;
+    public static final int DOWNLOAD_ZEIT_NR = 10;
     public static final String DOWNLOAD_DAUER = "Dauer";
-    public static final int DOWNLOAD_DAUER_NR = 10;
+    public static final int DOWNLOAD_DAUER_NR = 11;
     public static final String DOWNLOAD_GROESSE = "Größe [MB]";
-    public static final int DOWNLOAD_GROESSE_NR = 11;
+    public static final int DOWNLOAD_GROESSE_NR = 12;
     public static final String DOWNLOAD_FILM_URL = "Film-URL";
-    public static final int DOWNLOAD_FILM_URL_NR = 12;
+    public static final int DOWNLOAD_FILM_URL_NR = 13;
     public static final String DOWNLOAD_URL = "URL";
-    public static final int DOWNLOAD_URL_NR = 13;
+    public static final int DOWNLOAD_URL_NR = 14;
     public static final String DOWNLOAD_URL_RTMP = "URL-rtmp";
-    public static final int DOWNLOAD_URL_RTMP_NR = 14;
+    public static final int DOWNLOAD_URL_RTMP_NR = 15;
     public static final String DOWNLOAD_URL_AUTH = "URL-Auth";
-    public static final int DOWNLOAD_URL_AUTH_NR = 15;
+    public static final int DOWNLOAD_URL_AUTH_NR = 16;
     public static final String DOWNLOAD_PROGRAMMSET = "Programmset";
-    public static final int DOWNLOAD_PROGRAMMSET_NR = 16;
+    public static final int DOWNLOAD_PROGRAMMSET_NR = 17;
     public static final String DOWNLOAD_PROGRAMM = "Programm";
-    public static final int DOWNLOAD_PROGRAMM_NR = 17;
+    public static final int DOWNLOAD_PROGRAMM_NR = 18;
     public static final String DOWNLOAD_PROGRAMM_AUFRUF = "Programmaufruf";
-    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 18;
+    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 19;
     public static final String DOWNLOAD_PROGRAMM_RESTART = "Restart";
-    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 19;
+    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 20;
     public static final String DOWNLOAD_ZIEL_DATEINAME = "Dateiname";
-    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 20;
+    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 21;
     public static final String DOWNLOAD_ZIEL_PFAD = "Pfad";
-    public static final int DOWNLOAD_ZIEL_PFAD_NR = 21;
+    public static final int DOWNLOAD_ZIEL_PFAD_NR = 22;
     public static final String DOWNLOAD_ZIEL_PFAD_DATEINAME = "Pfad-Dateiname";
-    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 22;
+    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 23;
     public static final String DOWNLOAD_ART = "Art"; //Art des Downloads: direkter Dateidownload oder über ein Programm
-    public static final int DOWNLOAD_ART_NR = 23;
+    public static final int DOWNLOAD_ART_NR = 24;
     public static final String DOWNLOAD_QUELLE = "Quelle"; //Quelle: gestartet über einen Button, Download, Abo
-    public static final int DOWNLOAD_QUELLE_NR = 24;
+    public static final int DOWNLOAD_QUELLE_NR = 25;
     public static final String DOWNLOAD_ZURUECKGESTELLT = "Zurueckgestellt";
-    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 25;
+    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 26;
     //
     public static final String DOWNLOAD = "Downlad";
-    public static final int MAX_ELEM = 26;
+    public static final int MAX_ELEM = 27;
     public static final String[] COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
-        DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT,
+        DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_GROESSE,
         DOWNLOAD_FILM_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT};
     public static final String[] COLUMN_NAMES_ = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
-        DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT,
+        DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, "Bandbreite" /*DOWNLOAD_BANDBREITE*/,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, "Groesse"/*DOWNLOAD_GROESSE*/,
         DOWNLOAD_FILM_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
@@ -227,10 +229,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public String getTextRestzeit(Daten ddaten) {
         Start s = ddaten.starterClass.getStart(arr[DatenDownload.DOWNLOAD_URL_NR]);
-        return getTextRestzeit(ddaten, s);
+        return getTextRestzeit(s);
     }
 
-    public String getTextRestzeit(Daten ddaten, Start s) {
+    public String getTextRestzeit(Start s) {
         String ret = "";
         if (s != null) {
             if (s.restSekunden > 0) {
@@ -240,6 +242,47 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     ret = Long.toString(s.restSekunden / 60) + " Min.";
                 }
             }
+        }
+        return ret;
+    }
+
+    public String getTextBandbreite(Start s) {
+        String ret = "";
+        if (s != null) {
+            if (s.bandbreite > 0) {
+                if (s.bandbreite > 1000 * 1000) {
+                    return String.valueOf(s.bandbreite / (1000 * 1000)) + "MB/s";
+                } else if (s.bandbreite > 1000) {
+                    return String.valueOf(s.bandbreite / (1000)) + "kB/s";
+                } else if (s.bandbreite > 0) {
+                    return String.valueOf(s.bandbreite) + "B/s";
+                }
+            } else {
+                return "";
+            }
+        }
+        return ret;
+    }
+
+    public String getTextGroesse(Start s) {
+        String ret = "";
+        if (s != null) {
+            if (s.fileSizeMax > 0 && s.fileSizeAkt > 0) {
+                return getGroesse(s.fileSizeAkt) + " von " + getGroesse(s.fileSizeMax);
+            } else if (s.fileSizeMax > 0) {
+                return String.valueOf(s.fileSizeMax);
+            }
+        }
+        return ret;
+    }
+
+    private String getGroesse(long l) {
+        String ret = "";
+        if (l > 1000 * 1000) {
+            // größer als 1MB sonst kann ich mirs sparen
+            ret = String.valueOf(l / (1000 * 1000));
+        } else if (l > 0) {
+            ret = "1";
         }
         return ret;
     }

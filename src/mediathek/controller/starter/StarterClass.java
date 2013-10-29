@@ -174,6 +174,12 @@ public class StarterClass {
         Thread startenThread = new Thread(starten);
         startenThread.setDaemon(true);
         startenThread.start();
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, StarterClass.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                listeStarts.setBanbreite();
+            }
+        });
     }
 
     private void notifyStartEvent() {
@@ -411,8 +417,8 @@ public class StarterClass {
             try {
                 int len;
                 new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
-                long maxLen = MVUrlDateiGroesse.laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                long downLen = 0;
+                start.fileSizeMax = MVUrlDateiGroesse.laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                start.fileSizeAkt = 0;
                 BufferedInputStream srcBuffer = null;
                 BufferedOutputStream destBuffer = null;
                 HttpURLConnection conn = null;
@@ -426,8 +432,8 @@ public class StarterClass {
 //                        conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
 //                        conn.connect();
 //                    } else {
-                        conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                        conn.connect();
+                    conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+                    conn.connect();
 //                    }
 //                    RandomAccessFile outFile = new RandomAccessFile(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR], "rw");
 //                    if (downloaded > 0) {
@@ -437,6 +443,7 @@ public class StarterClass {
                         Log.fehlerMeldung(915236798, Log.FEHLER_ART_PROG, "StartetClass", "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
                     }
                     input = new MVInputStream(conn.getInputStream());
+                    start.mVInputStream = input;
                     srcBuffer = new BufferedInputStream(input);
 //                    FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
 //                    destBuffer = new BufferedOutputStream(fos, 1024);
@@ -447,9 +454,9 @@ public class StarterClass {
 //                        outFile.write(buffer, downloaded, len);
 //                        downloaded += len;
                         destBuffer.write(buffer, 0, len);
-                        downLen += len;
-                        if (maxLen > 0) {
-                            p = (downLen * (long) 1000) / maxLen;
+                        start.fileSizeAkt += len;
+                        if (start.fileSizeMax > 0) {
+                            p = (start.fileSizeAkt * (long) 1000) / start.fileSizeMax;
                             // p muss zwischen 1 und 999 liegen
                             if (p == 0) {
                                 p = StarterClass.PROGRESS_GESTARTET;
@@ -460,8 +467,9 @@ public class StarterClass {
                             if (p != pp) {
                                 pp = p;
                                 // Restzeit ermitteln
-                                if (p > 5) {
+                                if (p > 2) {
                                     // sonst macht es noch keinen Sinn
+                                    start.bandbreite = input.getBandbreite();
                                     int diffZeit = start.startZeit.diffInSekunden();
                                     int restProzent = 1000 - (int) p;
                                     start.restSekunden = (diffZeit * restProzent / p);
