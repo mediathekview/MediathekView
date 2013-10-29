@@ -133,16 +133,16 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         }
     }
 
-    public boolean checkBlackOkFilme_Downloads(DatenFilm film) {
-        // hier werden die Filme für Downloads gesucht
-        // ob die Blackliste dafür verwendet werden soll, ist schon geklärt
-        setFilter();
-        tage = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
-        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR]);
-        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]);
-        jetzt = DatumZeit.getMorgen_0_Uhr();
-        return checkFilm(film);
-    }
+//    public boolean checkBlackOkFilme_Downloads(DatenFilm film) {
+//        // hier werden die Filme für Downloads gesucht
+//        // ob die Blackliste dafür verwendet werden soll, ist schon geklärt
+//        setFilter();
+//        tage = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
+//        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR]);
+//        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]);
+//        jetzt = DatumZeit.getMorgen_0_Uhr();
+//        return checkFilm(film);
+//    }
 
     private void setFilter() {
         try {

@@ -229,9 +229,12 @@ public class MViewListeFilme {
                 if (!Filter.laengePruefen(datenAbo.mindestdauerMinuten, film.dauerL)) {
                     // dann ist der Film zu kurz
                     film.arr[DatenFilm.FILM_ABO_NAME_NR] = film.arr[DatenFilm.FILM_ABO_NAME_NR] + " [zu kurz]";
+                } else {
+                    film.aboNr = datenAbo.aboNr;
                 }
             } else {
                 film.arr[DatenFilm.FILM_ABO_NAME_NR] = "";
+                film.aboNr = -1;
             }
         }
     }

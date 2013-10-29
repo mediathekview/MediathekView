@@ -69,6 +69,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         while (str.length() < 3) {
             str = "0" + str;
         }
+        datenAbo.aboNr = nr;
         datenAbo.arr[DatenAbo.ABO_NR_NR] = str;
         datenAbo.setMindestDauerMinuten();
         super.add(datenAbo);
@@ -127,6 +128,21 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             }
         }
         return false;
+    }
+
+    public DatenAbo getAboFuerFilm(DatenFilm film) {
+        if (film.aboNr < 0) {
+            return null;
+        }
+        DatenAbo datenAbo;
+        ListIterator<DatenAbo> it = this.listIterator();
+        while (it.hasNext()) {
+            datenAbo = it.next();
+            if (datenAbo.aboNr == film.aboNr) {
+                return datenAbo;
+            }
+        }
+        return null;
     }
 
     public DatenAbo getAboFuerFilm(DatenFilm film, boolean laengePruefen) {

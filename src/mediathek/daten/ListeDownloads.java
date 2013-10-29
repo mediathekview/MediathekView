@@ -193,12 +193,18 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         boolean gefunden = false;
         DatenFilm film;
         DatenAbo abo;
-        boolean checkBlack = !Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR])
+        ListIterator<DatenFilm> itFilm;
+        // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
+        boolean checkWithBlackList = !Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR])
                 && Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUCH_ABO_NR]);
-        ListIterator<DatenFilm> itFilm = Daten.listeFilme.listIterator();
+        if (checkWithBlackList) {
+            itFilm = Daten.listeFilmeNachBlackList.listIterator();
+        } else {
+            itFilm = Daten.listeFilme.listIterator();
+        }
         while (itFilm.hasNext()) {
             film = itFilm.next();
-            abo = ddaten.listeAbo.getAboFuerFilm(film, true /*auch die Länge überprüfen*/);
+            abo = ddaten.listeAbo.getAboFuerFilm(film);
             if (abo == null) {
                 continue;
             }
@@ -213,11 +219,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 // haben wir schon in der Downloadliste
                 continue;
             }
-            if (checkBlack) {
-                if (!ddaten.listeBlacklist.checkBlackOkFilme_Downloads(film)) { // wenn Blacklist auch für Abos, dann ers mal da schauen
-                    continue;
-                }
-            }
             //diesen Film in die Downloadliste eintragen
             abo.arr[DatenAbo.ABO_DOWN_DATUM_NR] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
             //wenn nicht doppelt, dann in die Liste schreiben
@@ -229,8 +230,43 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
                 gefunden = true;
             }
-
-        } //while
+        }
+//        ListIterator<DatenFilm> itFilm = Daten.listeFilme.listIterator();
+//        while (itFilm.hasNext()) {
+//            film = itFilm.next();
+//            abo = ddaten.listeAbo.getAboFuerFilm(film, true /*auch die Länge überprüfen*/);
+//            if (abo == null) {
+//                continue;
+//            }
+//            if (!abo.aboIstEingeschaltet()) {
+//                continue;
+//            }
+//            if (ddaten.erledigteAbos.urlPruefen(film.arr[DatenFilm.FILM_URL_NR])) {
+//                // ist schon im Logfile, weiter
+//                continue;
+//            }
+//            if (checkListe(film.arr[DatenFilm.FILM_URL_NR])) {
+//                // haben wir schon in der Downloadliste
+//                continue;
+//            }
+//            if (checkWithBlackList) {
+//                if (!ddaten.listeBlacklist.checkBlackOkFilme_Downloads(film)) { // wenn Blacklist auch für Abos, dann ers mal da schauen
+//                    continue;
+//                }
+//            }
+//            //diesen Film in die Downloadliste eintragen
+//            abo.arr[DatenAbo.ABO_DOWN_DATUM_NR] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+//            //wenn nicht doppelt, dann in die Liste schreiben
+//            DatenPset pSet = ddaten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET_NR]);
+//            if (pSet != null) {
+//                if (!abo.arr[DatenAbo.ABO_PSET_NR].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR])) {
+//                    abo.arr[DatenAbo.ABO_PSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
+//                }
+//                add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
+//                gefunden = true;
+//            }
+//
+//        } //while
         if (gefunden) {
             listeNummerieren();
         }
