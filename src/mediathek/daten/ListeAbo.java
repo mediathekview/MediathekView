@@ -86,7 +86,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
     public void aenderungMelden() {
         // Filmliste anpassen
-        MViewListeFilme.abosEintragen(Daten.listeFilme, daten);
+        MViewListeFilme.abosEintragen(Daten.listeFilme, this);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
     }
 

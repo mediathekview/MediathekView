@@ -73,7 +73,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 if (ret == JOptionPane.OK_OPTION) {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     updateUI();
-                    Duration duration = new Duration();
+                    Duration duration = new Duration(PanelExportFilmliste.class.getSimpleName());
                     duration.start("Filmliste schreiben: " + exporDatei);
                     new MSearchFilmlisteSchreiben().filmlisteSchreibenJson(exporDatei, Daten.listeFilme);
                     duration.stop("fertig");

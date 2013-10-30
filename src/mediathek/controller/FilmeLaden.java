@@ -24,6 +24,7 @@ import javax.swing.event.EventListenerList;
 import mediathek.daten.Daten;
 import mediathek.tool.Duration;
 import mediathek.tool.Log;
+import mediathek.tool.MViewListeFilme;
 import msearch.daten.ListeFilme;
 import msearch.daten.MSearchConfig;
 import msearch.filmeLaden.ListeDownloadUrlsFilmlisten;
@@ -40,7 +41,7 @@ public class FilmeLaden {
     public static final int UPDATE_FILME_URL = 1; // manuell laden, Url automatisch wählen
     public static final int UPDATE_FILME_AUTO = 2; // beim Start, immer mal wieder, + Url auto
     public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
-    private Duration duration = new Duration();
+    private Duration duration = new Duration(FilmeLaden.class.getSimpleName());
 
     private static enum ListenerMelden {
 
@@ -159,6 +160,9 @@ public class FilmeLaden {
     }
 
     private void undEnde(MSearchListenerFilmeLadenEvent event) {
+        // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
+        // beim Ändern von Abos gemacht wird
+        MViewListeFilme.abosEintragen(Daten.listeFilme, Daten.listeAbo);
         istAmLaufen = false;
         notifyFertig(event);
     }

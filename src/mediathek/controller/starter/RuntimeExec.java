@@ -190,19 +190,19 @@ public class RuntimeExec {
             }
         }
     }
-    private static final String TASKLIST = "tasklist";
-
-    public static String isProcessRunging() throws Exception {
-        String ret = "";
-        Process p = Runtime.getRuntime().exec(TASKLIST);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line);
-            ret += line + "\n";
-        }
-
-        return ret;
-
-    }
+//    private static final String TASKLIST = "tasklist";
+//
+//    public static String isProcessRunging() throws Exception {
+//        String ret = "";
+//        Process p = Runtime.getRuntime().exec(TASKLIST);
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//        String line;
+//        while ((line = reader.readLine()) != null) {
+//            System.out.println(line);
+//            ret += line + "\n";
+//        }
+//
+//        return ret;
+//
+//    }
 }

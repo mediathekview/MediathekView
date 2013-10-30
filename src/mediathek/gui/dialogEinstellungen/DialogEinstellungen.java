@@ -31,7 +31,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
-import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.PanelAbout;
 import mediathek.tool.EscBeenden;

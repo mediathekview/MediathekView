@@ -26,8 +26,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.JOptionPane;
 import mediathek.MediathekGui;
-import mediathek.controller.FilmeLaden;
 import mediathek.controller.ErledigteAbos;
+import mediathek.controller.FilmeLaden;
 import mediathek.controller.History;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
@@ -66,8 +66,8 @@ public class Daten {
     public static ListeFilme listeFilmeNachBlackList = null;
     public ListeBlacklist listeBlacklist = null;
     public ListePset listePset = null;
-    public ListeAbo listeAbo = null;
-    public ListeDownloads listeDownloads = null;
+    public static  ListeAbo listeAbo = null;
+    public static  ListeDownloads listeDownloads = null;
     public History history = null;
     public ErledigteAbos erledigteAbos = null;
     // globale Objekte
@@ -85,8 +85,12 @@ public class Daten {
 
     public Daten(String basis, MediathekGui gui) {
         basisverzeichnis = basis;
-        init();
         mediathekGui = gui;
+
+        init();
+
+        listeFilme = new ListeFilme();
+        filmeLaden = new FilmeLaden();
 
         updateSplashScreen("Lade Blacklist...");
         listeFilmeNachBlackList = new ListeFilme();
@@ -141,8 +145,6 @@ public class Daten {
         if (Daten.debug) {
             Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUS);
         }
-        listeFilme = new ListeFilme();
-        filmeLaden = new FilmeLaden();
     }
 
     /**

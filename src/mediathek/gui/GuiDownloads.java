@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
@@ -35,8 +36,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import com.jidesoft.utils.SystemInfo;
 import mediathek.MVStatusBar_Mac;
 import mediathek.MediathekGui;
 import mediathek.controller.starter.Start;
@@ -53,10 +52,10 @@ import mediathek.tool.Datum;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.MVJTable;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import mediathek.tool.MVJTable;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelDownload;
 import msearch.daten.DatenFilm;
@@ -67,6 +66,7 @@ public class GuiDownloads extends PanelVorlage {
 
     private MVFilmInformation filmInfoHud;
     private PanelBeschreibung panelBeschreibung;
+    private int zeileVon = -1;
 
     public GuiDownloads(Daten d, Component parentComponent) {
         super(d, parentComponent);
@@ -244,7 +244,7 @@ public class GuiDownloads extends PanelVorlage {
             abo = false;
             download = true;
         }
-        daten.listeDownloads.getModel((TModelDownload) tabelle.getModel(), abo, download);
+        Daten.listeDownloads.getModel((TModelDownload) tabelle.getModel(), abo, download);
         tabelle.setSpalten();
         stopBeob = false;
         aktFilmSetzen();
@@ -254,9 +254,9 @@ public class GuiDownloads extends PanelVorlage {
     private synchronized void downloadsAktualisieren() {
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
         downloadsAufraeumen();
-        daten.listeDownloads.zurueckgestellteWiederAktivieren();
-        daten.listeDownloads.abosLoschenWennNochNichtGestartet();
-        daten.listeDownloads.abosSuchen();
+        Daten.listeDownloads.zurueckgestellteWiederAktivieren();
+        Daten.listeDownloads.abosLoschenWennNochNichtGestartet();
+        Daten.listeDownloads.abosSuchen();
         tabelleLaden();
         if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR])) {
             // und wenn gewollt auch gleich starten
@@ -267,7 +267,7 @@ public class GuiDownloads extends PanelVorlage {
     private synchronized void downloadsAufraeumen() {
         // abgeschlossene Downloads werden aus der Tabelle/Liste entfernt
         // die Starts dafür werden auch gelöscht
-        daten.listeDownloads.listePutzen();
+        Daten.listeDownloads.listePutzen();
     }
 
     private synchronized void downloadAendern() {
@@ -275,7 +275,7 @@ public class GuiDownloads extends PanelVorlage {
         if (row != -1) {
             int delRow = tabelle.convertRowIndexToModel(row);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-            DatenDownload download = daten.listeDownloads.getDownloadByUrl(url);
+            DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
             DatenDownload d = download.getCopy();
             DialogEditDownload dialog = new DialogEditDownload(null, true, daten, d);
             dialog.setVisible(true);

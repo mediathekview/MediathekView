@@ -25,6 +25,7 @@ import java.util.ListIterator;
 import java.util.TreeSet;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
+import mediathek.daten.ListeAbo;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 
@@ -215,14 +216,14 @@ public class MViewListeFilme {
 ////        }
     }
 
-    public static void abosEintragen(ListeFilme listeFilme, Daten daten) {
+    public static void abosEintragen(ListeFilme listeFilme, ListeAbo listeAbo) {
         // Aboname in die Filmliste eintragen
         DatenFilm film;
         DatenAbo datenAbo;
         ListIterator<DatenFilm> iterator = listeFilme.listIterator(0);
         while (iterator.hasNext()) {
             film = iterator.next();
-            datenAbo = daten.listeAbo.getAboFuerFilm(film);
+            datenAbo = listeAbo.getAboFuerFilm(film);
             if (datenAbo != null) {
                 film.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
                 // und jetzt noch die Filmlänge prüfen

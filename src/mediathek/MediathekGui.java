@@ -105,7 +105,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     JPanel jPanelAnzahl = new JPanel();
     JSplitPane splitPane = null;
     private MVStatusBar statusBar;
-    private Duration duration = new Duration();
+    private Duration duration = new Duration(MediathekGui.class.getSimpleName());
 
     public enum UIButtonState {
 
@@ -229,16 +229,18 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
 
         updateSplashScreenText("Anwendungsdaten laden...");
-        duration.ping("Daten");
+        duration.ping("Start");
+
         daten = new Daten(pfad, this);
+        duration.ping("Daten");
 
         Log.startMeldungen(this.getClass().getName());
-
         createStatusBar();
 
         //create the Film Information HUD
         daten.filmInfoHud = new MVFilmInformation(this, jTabbedPane, daten);
-        duration.ping("Daten");
+        duration.ping("HUD");
+
         if (IoXmlLesen.einstellungenExistieren()) {
             // gibt schon Programmeinstellungen, dann damit starten
             daten.allesLaden();
@@ -247,19 +249,23 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             // erster Start
             new DialogStarteinstellungen(null, true, daten).setVisible(true);
         }
-        duration.ping("alles laden");
+        duration.ping("Alles laden");
 
         setOrgTitel();
         setLookAndFeel();
+        duration.ping("LookAndFeel");
         //GuiFunktionen.setLook(this);
         init();
+        duration.ping("init");
         setSize(max);
+        duration.ping("setSize");
 
         // Dialog mit den Programmeinstellungen einrichten
         dialogEinstellungen = new DialogEinstellungen(this, daten);
 
         // Prüfen obs ein Programmupdate gibt
         new CheckUpdate(daten).suchen();
+        duration.ping("CheckUpdate");
 
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.filmlisteZuAlt()) {
@@ -267,6 +273,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 Daten.filmeLaden.importFilmliste("");
             }
         }
+        duration.ping("FilmlisteZuAlt");
 
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, MediathekGui.class.getSimpleName()) {
             @Override
@@ -309,7 +316,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
         setFocusSuchfeld();
-        duration.ping("Gui");
+        duration.ping("Gui steht!");
     }
 
     private void setFocusSuchfeld() {
@@ -614,6 +621,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         daten.guiFilme = new GuiFilme(daten, daten.mediathekGui);
         daten.guiDownloads = new GuiDownloads(daten, daten.mediathekGui);
         daten.guiAbo = new GuiAbo(daten, daten.mediathekGui);
+//        MVJFrame frameFilme = new MVJFrame(daten.guiFilme);
+//        frameFilme.setVisible(true);
+//        MVJFrame frameDownloads = new MVJFrame(daten.guiDownloads);
+//        frameDownloads.setVisible(true);
+//        MVJFrame frameAbos = new MVJFrame(daten.guiAbo);
+//        frameAbos.setVisible(true);
+
         jTabbedPane.addTab("Filme", daten.guiFilme);
         jTabbedPane.addTab("Downloads", daten.guiDownloads);
         jTabbedPane.addTab("Abos", daten.guiAbo);

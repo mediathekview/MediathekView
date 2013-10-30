@@ -733,7 +733,7 @@ public class GuiFilme extends PanelVorlage {
         if (abosEintragen) {
             // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
             // beim Ändern von Abos gemacht wird
-            MViewListeFilme.abosEintragen(Daten.listeFilme, daten);
+            MViewListeFilme.abosEintragen(Daten.listeFilme, Daten.listeAbo);
         }
         daten.listeBlacklist.filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
         themenLaden();
