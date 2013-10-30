@@ -55,16 +55,16 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_PROGRESS_NR = 6;
     public static final String DOWNLOAD_RESTZEIT = "Restzeit";
     public static final int DOWNLOAD_RESTZEIT_NR = 7;
-    public static final String DOWNLOAD_BANDBREITE = "Bandbreite [MB/s]";
+    public static final String DOWNLOAD_BANDBREITE = "Bandbreite";
     public static final int DOWNLOAD_BANDBREITE_NR = 8;
-    public static final String DOWNLOAD_DATUM = "Datum";
-    public static final int DOWNLOAD_DATUM_NR = 9;
-    public static final String DOWNLOAD_ZEIT = "Zeit";
-    public static final int DOWNLOAD_ZEIT_NR = 10;
-    public static final String DOWNLOAD_DAUER = "Dauer";
-    public static final int DOWNLOAD_DAUER_NR = 11;
     public static final String DOWNLOAD_GROESSE = "Größe [MB]";
-    public static final int DOWNLOAD_GROESSE_NR = 12;
+    public static final int DOWNLOAD_GROESSE_NR = 9;
+    public static final String DOWNLOAD_DATUM = "Datum";
+    public static final int DOWNLOAD_DATUM_NR = 10;
+    public static final String DOWNLOAD_ZEIT = "Zeit";
+    public static final int DOWNLOAD_ZEIT_NR = 11;
+    public static final String DOWNLOAD_DAUER = "Dauer";
+    public static final int DOWNLOAD_DAUER_NR = 12;
     public static final String DOWNLOAD_FILM_URL = "Film-URL";
     public static final int DOWNLOAD_FILM_URL_NR = 13;
     public static final String DOWNLOAD_URL = "URL";
@@ -97,14 +97,14 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final String DOWNLOAD = "Downlad";
     public static final int MAX_ELEM = 27;
     public static final String[] COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
-        DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE,
-        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_GROESSE,
+        DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, DOWNLOAD_GROESSE,
+        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER,
         DOWNLOAD_FILM_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT};
     public static final String[] COLUMN_NAMES_ = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
-        DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, "Bandbreite" /*DOWNLOAD_BANDBREITE*/,
-        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, "Groesse"/*DOWNLOAD_GROESSE*/,
+        DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, "Groesse"/*DOWNLOAD_GROESSE*/,
+        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER,
         DOWNLOAD_FILM_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT};
@@ -254,7 +254,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     return String.valueOf(s.bandbreite / (1000 * 1000)) + "MB/s";
                 } else if (s.bandbreite > 1000) {
                     return String.valueOf(s.bandbreite / (1000)) + "kB/s";
-                } else if (s.bandbreite > 0) {
+                } else {
                     return String.valueOf(s.bandbreite) + "B/s";
                 }
             } else {

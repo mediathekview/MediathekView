@@ -72,7 +72,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             if (s != null) {
                 setColor(this, s, isSelected);
             }
-            if (c == DatenDownload.DOWNLOAD_BANDBREITE_NR ||c == DatenDownload.DOWNLOAD_GROESSE_NR || c == DatenDownload.DOWNLOAD_DATUM_NR || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR) {
+            if (c == DatenDownload.DOWNLOAD_BANDBREITE_NR || c == DatenDownload.DOWNLOAD_GROESSE_NR || c == DatenDownload.DOWNLOAD_DATUM_NR || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
             if (c == DatenDownload.DOWNLOAD_GROESSE_NR) {
@@ -82,7 +82,9 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
                 this.setText(download.getTextRestzeit(s));
             } else if (s != null && c == DatenDownload.DOWNLOAD_GROESSE_NR) {
-                this.setText(download.getTextGroesse(s));
+                if (s.status >= Start.STATUS_RUN) {
+                    this.setText(download.getTextGroesse(s));
+                }
             } else if (s != null && c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
                 this.setText(download.getTextBandbreite(s));
             } else if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {

@@ -514,6 +514,7 @@ public class StarterClass {
             fertigmeldung(start);
             start.restSekunden = -1;
             start.percent = PROGRESS_FERTIG;
+            start.fileSizeAkt = -1;
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
             notifyStartEvent();
         }
