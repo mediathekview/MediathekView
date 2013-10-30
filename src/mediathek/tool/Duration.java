@@ -24,22 +24,24 @@ import java.util.Date;
 
 public class Duration {
 
-    private boolean firstStart = true;
     private Date startZeit = new Date(System.currentTimeMillis());
     private Date stopZeit = new Date(System.currentTimeMillis());
     private final static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private int sekunden;
+    private int count = 0;
+    private String TEXT = "";
 
-    public void ping(String text) {
-        if (firstStart) {
-            firstStart = false;
-        } else {
-            stop(text);
-        }
+    public Duration(String t) {
+        TEXT = t;
         start("");
     }
 
-    public void start(String text) {
+    public void ping(String text) {
+        stop(TEXT + " #  " + text + " " + count++);
+        startZeit = new Date(System.currentTimeMillis());
+    }
+
+    public final void start(String text) {
         startZeit = new Date(System.currentTimeMillis());
         if (!text.isEmpty()) {
             System.out.println("");

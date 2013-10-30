@@ -26,12 +26,13 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import mediathek.MediathekGui;
-import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.gui.dialogEinstellungen.PanelSenderLaden;
@@ -110,13 +111,17 @@ public class GuiDebug extends PanelVorlage {
         jPanelSenderLaden.add(new PanelSenderLaden(daten, daten.mediathekGui));
         jPanelListen.setLayout(new BorderLayout());
         jPanelListen.add(new PanelListeFilmlistenServer(d, daten.mediathekGui));
-        jButtonTasklist.addActionListener(new ActionListener() {
+        jButtonCheckUrl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                long l = 0;
                 try {
-                    jTextArea1.setText(RuntimeExec.isProcessRunging());
+                    URLConnection co = new URL(jTextFieldUrl.getText()).openConnection();
+                    l = co.getContentLengthLong();
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+                System.out.println("Byte: " + l);
             }
         });
         jButtonDoppelt.addActionListener(new ActionListener() {
@@ -340,9 +345,8 @@ public class GuiDebug extends PanelVorlage {
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         jPanelListen = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
-        jButtonTasklist = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jButtonCheckUrl = new javax.swing.JButton();
+        jTextFieldUrl = new javax.swing.JTextField();
         javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
         jToggleButtonAllesLaden = new javax.swing.JToggleButton();
         jButtonFilmlisteLoeschen = new javax.swing.JButton();
@@ -370,7 +374,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLadenLayout.setVerticalGroup(
             jPanelSenderLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 443, Short.MAX_VALUE)
+            .addGap(0, 444, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -402,7 +406,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLayout.setVerticalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 443, Short.MAX_VALUE)
+            .addGap(0, 444, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -432,7 +436,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelListenLayout.setVerticalGroup(
             jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 466, Short.MAX_VALUE)
+            .addGap(0, 468, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -454,11 +458,7 @@ public class GuiDebug extends PanelVorlage {
 
         jTabbedPane1.addTab("tab3", jPanel3);
 
-        jButtonTasklist.setText("Tasklist");
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jButtonCheckUrl.setText("check URL");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -466,22 +466,22 @@ public class GuiDebug extends PanelVorlage {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 837, Short.MAX_VALUE)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jButtonTasklist)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(jButtonCheckUrl)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextFieldUrl, javax.swing.GroupLayout.DEFAULT_SIZE, 726, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButtonTasklist)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonCheckUrl)
+                    .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(455, Short.MAX_VALUE))
         );
+
+        jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonCheckUrl, jTextFieldUrl});
 
         jTabbedPane1.addTab("tab4", jPanel5);
 
@@ -612,6 +612,7 @@ public class GuiDebug extends PanelVorlage {
     private javax.swing.JButton jButtonAlleLaden;
     private javax.swing.JButton jButtonAllesSpeichern;
     private javax.swing.JButton jButtonCheck;
+    private javax.swing.JButton jButtonCheckUrl;
     private javax.swing.JButton jButtonDoppelt;
     private javax.swing.JButton jButtonDoppeltIndex;
     private javax.swing.JButton jButtonFehler;
@@ -621,15 +622,13 @@ public class GuiDebug extends PanelVorlage {
     private javax.swing.JButton jButtonListeLesen;
     private javax.swing.JButton jButtonListeSchreiben;
     private javax.swing.JButton jButtonNotify;
-    private javax.swing.JButton jButtonTasklist;
     private javax.swing.JButton jButtonjSonLesen;
     private javax.swing.JCheckBox jCheckBoxDateiGroesse;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelListen;
     private javax.swing.JPanel jPanelSender;
     private javax.swing.JPanel jPanelSenderLaden;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextFieldUrl;
     private javax.swing.JToggleButton jToggleButtonAllesLaden;
     // End of variables declaration//GEN-END:variables
 

@@ -19,12 +19,21 @@
  */
 package mediathek.tool;
 
+import java.awt.Cursor;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DragSource;
 import java.util.LinkedList;
 import java.util.List;
+import javax.activation.ActivationDataFlavor;
+import javax.activation.DataHandler;
+import javax.swing.DropMode;
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
+import javax.swing.TransferHandler;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
@@ -84,6 +93,9 @@ public final class MVJTable extends JTable {
                 //indexSpalte = DatenDownload.DOWNLOAD_FILM_NR_NR;
                 indexSpalte = DatenDownload.DOWNLOAD_URL_NR;
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR;
+                this.setDragEnabled(true);
+                this.setDropMode(DropMode.INSERT_ROWS);
+                this.setTransferHandler(new TableRowTransferHandler(this));
                 this.setModel(new TModelDownload(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_ABOS:
@@ -115,6 +127,67 @@ public final class MVJTable extends JTable {
         }
         breite = getArray(maxSpalten);
         reihe = getArray(maxSpalten);
+    }
+
+    class TableRowTransferHandler extends TransferHandler {
+
+        private final DataFlavor localObjectFlavor = new ActivationDataFlavor(Integer.class, DataFlavor.javaJVMLocalObjectMimeType, "Integer Row Index");
+        private JTable tableTransfer = null;
+
+        public TableRowTransferHandler(JTable table) {
+            this.tableTransfer = table;
+        }
+
+        @Override
+        protected Transferable createTransferable(JComponent c) {
+            assert (c == tableTransfer);
+            return new DataHandler(new Integer(tableTransfer.getSelectedRow()), localObjectFlavor.getMimeType());
+        }
+
+        @Override
+        public boolean canImport(TransferHandler.TransferSupport info) {
+            boolean b = info.getComponent() == tableTransfer && info.isDrop() && info.isDataFlavorSupported(localObjectFlavor);
+            tableTransfer.setCursor(b ? DragSource.DefaultMoveDrop : DragSource.DefaultMoveNoDrop);
+            return b;
+        }
+
+        @Override
+        public int getSourceActions(JComponent c) {
+            return TransferHandler.MOVE;
+        }
+
+        @Override
+        public boolean importData(TransferHandler.TransferSupport info) {
+            JTable target = (JTable) info.getComponent();
+            JTable.DropLocation dl = (JTable.DropLocation) info.getDropLocation();
+            int index = dl.getRow();
+            int max = tableTransfer.getModel().getRowCount();
+            if (index < 0 || index > max) {
+                index = max;
+            }
+            target.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            try {
+                Integer rowFrom = (Integer) info.getTransferable().getTransferData(localObjectFlavor);
+                if (rowFrom != -1 && rowFrom != index) {
+                    ((TModel) tableTransfer.getModel()).reorder(convertRowIndexToModel(rowFrom), convertRowIndexToModel(index));
+                    if (index > rowFrom) {
+                        index--;
+                    }
+                    target.getSelectionModel().addSelectionInterval(index, index);
+                    return true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void exportDone(JComponent c, Transferable t, int act) {
+            if (act == TransferHandler.MOVE) {
+                tableTransfer.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            }
+        }
     }
 
     public void initTabelle() {
