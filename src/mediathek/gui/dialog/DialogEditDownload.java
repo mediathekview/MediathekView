@@ -126,7 +126,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                 textfeldListe[i].setText(StarterClass.getTextProgress(start));
             } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
-                textfeldListe[i].setText(download.getTextRestzeit( start));
+                textfeldListe[i].setText(download.getTextRestzeit(start));
             } else if (i == DatenDownload.DOWNLOAD_ART_NR) {
                 switch (download.getArt()) {
                     case Start.ART_DOWNLOAD:

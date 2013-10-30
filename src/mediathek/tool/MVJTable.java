@@ -374,6 +374,7 @@ public final class MVJTable extends JTable {
                     } else if (i == DatenDownload.DOWNLOAD_DATUM_NR
                             || i == DatenDownload.DOWNLOAD_ZEIT_NR
                             || i == DatenDownload.DOWNLOAD_GROESSE_NR
+                            || i == DatenDownload.DOWNLOAD_BANDBREITE_NR
                             || i == DatenDownload.DOWNLOAD_SENDER_NR
                             || i == DatenDownload.DOWNLOAD_PROGRESS_NR
                             || i == DatenDownload.DOWNLOAD_RESTZEIT_NR
