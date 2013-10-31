@@ -310,7 +310,7 @@ public final class MVJTable extends JTable {
                 }
                 indexWertSelection = null;
                 break;
-            case TABELLE_STANDARD:
+            default:
                 if (selection != null) {
                     if (selection.length > 0) {
                         this.selectionModel.setValueIsAdjusting(true);
