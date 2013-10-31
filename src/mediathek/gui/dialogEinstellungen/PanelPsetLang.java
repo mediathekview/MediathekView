@@ -140,55 +140,74 @@ public class PanelPsetLang extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jButtonAbspielen.setBackground(COLOR_ABSPIELEN);
-//                jButtonAbspielen.setEnabled(false);
-//                jButtonAbspielen.setForeground(Color.BLACK);
-                getPset().setAbspielen(daten);
-                nurtabellePset();
-                notifyPset();
+                DatenPset pset = getPset();
+                if (pset != null) {
+                    pset.setAbspielen(daten);
+                    nurtabellePset();
+                    notifyPset();
+                }
             }
         });
         jCheckBoxSpeichern.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getPset().setSpeichern(jCheckBoxSpeichern.isSelected());
-                nurtabellePset();
-                notifyPset();
+                DatenPset pset = getPset();
+                if (pset != null) {
+                    pset.setSpeichern(jCheckBoxSpeichern.isSelected());
+                    nurtabellePset();
+                    notifyPset();
+                }
             }
         });
         jCheckBoxButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getPset().setButton(jCheckBoxButton.isSelected());
-                nurtabellePset();
-                notifyPset();
+                DatenPset pset = getPset();
+                if (pset != null) {
+                    pset.setButton(jCheckBoxButton.isSelected());
+                    nurtabellePset();
+                    notifyPset();
+                }
             }
         });
         jCheckBoxAbo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getPset().setAbo(jCheckBoxAbo.isSelected());
-                nurtabellePset();
-                notifyPset();
+                DatenPset pset = getPset();
+                if (pset != null) {
+                    pset.setAbo(jCheckBoxAbo.isSelected());
+                    nurtabellePset();
+                    notifyPset();
+                }
             }
         });
         jCheckBoxLaenge.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getPset().arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = Boolean.toString(jCheckBoxLaenge.isSelected());
-                nurtabellePset();
+                DatenPset pset = getPset();
+                if (pset != null) {
+                    pset.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = Boolean.toString(jCheckBoxLaenge.isSelected());
+                    nurtabellePset();
+                }
             }
         });
         jCheckBoxThema.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getPset().arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR] = Boolean.toString(jCheckBoxThema.isSelected());
-                nurtabellePset();
+                DatenPset pset = getPset();
+                if (pset != null) {
+                    pset.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR] = Boolean.toString(jCheckBoxThema.isSelected());
+                    nurtabellePset();
+                }
             }
         });
         jSpinnerLaenge.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                getPset().arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = String.valueOf(((Number) jSpinnerLaenge.getModel().getValue()).intValue());
+                DatenPset pset = getPset();
+                if (pset != null) {
+                    pset.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = String.valueOf(((Number) jSpinnerLaenge.getModel().getValue()).intValue());
+                }
             }
         });
         jButtonGruppeNeu.addActionListener(new BeobGruppeNeu());
@@ -251,13 +270,22 @@ public class PanelPsetLang extends PanelVorlage {
 
     private void setAufloesung() {
         if (jRadioButtonAufloesungNormal.isSelected()) {
-            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenFilm.AUFLOESUNG_NORMAL;
+            DatenPset pset = getPset();
+            if (pset != null) {
+                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenFilm.AUFLOESUNG_NORMAL;
+            }
         }
         if (jRadioButtonAufloesungHD.isSelected()) {
-            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenFilm.AUFLOESUNG_HD;
+            DatenPset pset = getPset();
+            if (pset != null) {
+                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenFilm.AUFLOESUNG_HD;
+            }
         }
         if (jRadioButtonAufloesungKlein.isSelected()) {
-            getPset().arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenFilm.AUFLOESUNG_KLEIN;
+            DatenPset pset = getPset();
+            if (pset != null) {
+                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR] = DatenFilm.AUFLOESUNG_KLEIN;
+            }
         }
     }
 

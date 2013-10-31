@@ -157,6 +157,17 @@ public class GuiDownloads extends PanelVorlage {
                 tabelleLaden();
             }
         });
+//        tabelle.addMouseMotionListener(new MouseMotionListener() {
+//            public void mouseDragged(MouseEvent e) {
+//                e.consume();
+//                JComponent c = (JComponent) e.getSource();
+//                TransferHandler handler = c.getTransferHandler();
+//                handler.exportAsDrag(c, e, TransferHandler.MOVE);
+//            }
+//
+//            public void mouseMoved(MouseEvent e) {
+//            }
+//        });
         jRadioButtonAlles.addActionListener(new BeobAnzeige());
         jRadioButtonAbos.addActionListener(new BeobAnzeige());
         jRadioButtonDownloads.addActionListener(new BeobAnzeige());
