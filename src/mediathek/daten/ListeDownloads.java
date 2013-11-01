@@ -77,6 +77,21 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         this.add(toIndex, d);
     }
 
+    public void addDatenDownloads(int index, LinkedList<DatenDownload> liste) {
+        if (index > this.size()) {
+            index = this.size();
+        }
+        for (DatenDownload d : liste) {
+            this.add(index++, d);
+        }
+    }
+
+    public void addDatenDownloads(LinkedList<DatenDownload> liste) {
+        for (DatenDownload d : liste) {
+            this.add(d);
+        }
+    }
+
     public synchronized void listePutzen() {
         // beim Programmende fertige Downloads löschen
         boolean gefunden = false;

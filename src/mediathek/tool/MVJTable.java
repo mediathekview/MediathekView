@@ -23,6 +23,7 @@ import java.awt.Cursor;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.activation.ActivationDataFlavor;
@@ -96,6 +97,7 @@ public final class MVJTable extends JTable {
                 this.setDragEnabled(true);
                 this.setDropMode(DropMode.INSERT_ROWS);
                 this.setTransferHandler(new TableRowTransferHandler(this, ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD));
+                this.setTransferHandler(new TableRowTransferHandler2(this, ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD));
                 this.setModel(new TModelDownload(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_ABOS:
@@ -127,6 +129,81 @@ public final class MVJTable extends JTable {
         }
         breite = getArray(maxSpalten);
         reihe = getArray(maxSpalten);
+    }
+
+    class TableRowTransferHandler2 extends TransferHandler {
+
+        private int[] rows = null;
+        private final DataFlavor localObjectFlavor;
+        private String[] transferedObjects = null;
+        private MVJTable tableTransfer = null;
+        private int ereignisMelden;
+
+        public TableRowTransferHandler2(MVJTable table, int ereignisMelden) {
+            this.tableTransfer = table;
+            this.ereignisMelden = ereignisMelden;
+            localObjectFlavor = new ActivationDataFlavor(
+                    String[].class, DataFlavor.javaJVMLocalObjectMimeType, "String Array");
+        }
+
+        @Override
+        protected Transferable createTransferable(JComponent c) {
+            assert (c == tableTransfer);
+            TModel model = (TModel) tableTransfer.getModel();
+            ArrayList< String> list = new ArrayList<>();
+            for (int i : rows = tableTransfer.getSelectedRows()) {
+                list.add(model.getValueAt(i, DatenDownload.DOWNLOAD_NR_NR).toString());
+            }
+            transferedObjects = list.toArray(new String[]{});
+            return new DataHandler(transferedObjects, localObjectFlavor.getMimeType());
+        }
+
+        @Override
+        public boolean canImport(TransferHandler.TransferSupport info) {
+            boolean b = info.getComponent() == tableTransfer;
+            b = b && info.isDrop() && info.isDataFlavorSupported(localObjectFlavor);
+            tableTransfer.setCursor(b ? DragSource.DefaultMoveDrop : DragSource.DefaultMoveNoDrop);
+            return b;
+        }
+
+        @Override
+        public int getSourceActions(JComponent c) {
+            return TransferHandler.MOVE;
+        }
+
+        @Override
+        public boolean importData(TransferHandler.TransferSupport info) {
+            JTable target = (JTable) info.getComponent();
+            JTable.DropLocation dl = (JTable.DropLocation) info.getDropLocation();
+            TModel tModel = (TModel) tableTransfer.getModel();
+            int index = dl.getRow();
+            int max = tModel.getRowCount();
+            if (index < 0 || index > max) {
+                index = max;
+            }
+            target.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            try {
+//                tableTransfer.clearSelection();
+                String[] values = (String[]) info.getTransferable().getTransferData(localObjectFlavor);
+//                for (int i = 0; i < values.length; i++) {
+//                    int idx = index++;
+//                    tableTransfer.getSelectionModel().addSelectionInterval(idx, idx);
+//                }
+                reorder(index, values);
+                ListenerMediathekView.notify(ereignisMelden, MVJTable.class.getSimpleName());
+                return true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void exportDone(JComponent c, Transferable t, int act) {
+            if (act == TransferHandler.MOVE) {
+                tableTransfer.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            }
+        }
     }
 
     class TableRowTransferHandler extends TransferHandler {
@@ -218,6 +295,46 @@ public final class MVJTable extends JTable {
 //                this.getSelectionModel().setSelectionInterval(rowFrom, rowFrom);
                 setSelected();
         }
+    }
+
+    // erster Versuch
+    private void reorder(int toRow, String[] zeilen) {
+        getSelected();
+        TModel tModel = (TModel) this.getModel();
+        // listeDownloads neu nach der Reihenfolge in der Tabelle erstellen
+        for (int i = 0; i < this.getRowCount(); ++i) {
+            String nr = tModel.getValueAt(this.convertRowIndexToModel(i), indexSpalte).toString();
+            DatenDownload d = Daten.listeDownloads.getDownloadByNr(nr);
+            if (d != null) {
+                Daten.listeDownloads.remove(d);
+                Daten.listeDownloads.add(d);
+            }
+        }
+        // und jetzt noch den Download verschieben
+        LinkedList<DatenDownload> l = new LinkedList<>();
+        LinkedList<DatenDownload> l1 = new LinkedList<>();
+        LinkedList<DatenDownload> l2 = new LinkedList<>();
+
+        for (int i = 0; i < toRow; ++i) {
+            l1.add(Daten.listeDownloads.get(i));
+        }
+        for (int i = toRow; i < Daten.listeDownloads.size(); ++i) {
+            l2.add(Daten.listeDownloads.get(i));
+        }
+        for (String s : zeilen) {
+            DatenDownload d = Daten.listeDownloads.getDownloadByNr(s);
+            l1.remove(d);
+            l2.remove(d);
+            l.add(d);
+        }
+        Daten.listeDownloads.clear();
+        Daten.listeDownloads.addDatenDownloads(l1);
+        Daten.listeDownloads.addDatenDownloads(l);
+        Daten.listeDownloads.addDatenDownloads(l2);
+        this.getRowSorter().setSortKeys(null);
+        this.setRowSorter(null);
+        this.setAutoCreateRowSorter(true);
+        setSelected();
     }
 
     public void initTabelle() {
