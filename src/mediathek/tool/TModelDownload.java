@@ -39,6 +39,13 @@ public class TModelDownload extends TModel {
         }
     }
 
+//    @Override
+//    public void reorder(int fromIndex, int toIndex) {
+//        this.moveRow(fromIndex, fromIndex, toIndex);
+//        // und jetzt noch die Reihenfolge in der Liste ändern!!
+////        Daten.listeDownloads.reorder(fromIndex, toIndex);
+//    }
+
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return types[columnIndex];

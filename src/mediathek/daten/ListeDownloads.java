@@ -71,6 +71,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
+    public void reorder(int fromIndex, int toIndex) {
+        // die Reihenfolge in der Liste ändern
+        DatenDownload d = this.remove(fromIndex);
+        this.add(toIndex, d);
+    }
+
     public synchronized void listePutzen() {
         // beim Programmende fertige Downloads löschen
         boolean gefunden = false;
@@ -126,6 +132,19 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         while (it.hasNext()) {
             DatenDownload d = it.next();
             if (d.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
+                ret = d;
+                break;
+            }
+        }
+        return ret;
+    }
+
+    public synchronized DatenDownload getDownloadByNr(String nr) {
+        DatenDownload ret = null;
+        ListIterator<DatenDownload> it = this.listIterator(0);
+        while (it.hasNext()) {
+            DatenDownload d = it.next();
+            if (d.arr[DatenDownload.DOWNLOAD_NR_NR].equals(nr)) {
                 ret = d;
                 break;
             }

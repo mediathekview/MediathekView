@@ -91,11 +91,11 @@ public final class MVJTable extends JTable {
                 maxSpalten = DatenDownload.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
                 //indexSpalte = DatenDownload.DOWNLOAD_FILM_NR_NR;
-                indexSpalte = DatenDownload.DOWNLOAD_URL_NR;
+                indexSpalte = DatenDownload.DOWNLOAD_NR_NR;
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR;
                 this.setDragEnabled(true);
                 this.setDropMode(DropMode.INSERT_ROWS);
-                this.setTransferHandler(new TableRowTransferHandler(this));
+                this.setTransferHandler(new TableRowTransferHandler(this, ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD));
                 this.setModel(new TModelDownload(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_ABOS:
@@ -133,9 +133,11 @@ public final class MVJTable extends JTable {
 
         private final DataFlavor localObjectFlavor = new ActivationDataFlavor(Integer.class, DataFlavor.javaJVMLocalObjectMimeType, "Integer Row Index");
         private JTable tableTransfer = null;
+        private int ereignisMelden;
 
-        public TableRowTransferHandler(JTable table) {
+        public TableRowTransferHandler(JTable table, int ereignisMelden) {
             this.tableTransfer = table;
+            this.ereignisMelden = ereignisMelden;
         }
 
         @Override
@@ -169,11 +171,12 @@ public final class MVJTable extends JTable {
             try {
                 Integer rowFrom = (Integer) info.getTransferable().getTransferData(localObjectFlavor);
                 if (rowFrom != -1 && rowFrom != index) {
-                    ((TModel) tableTransfer.getModel()).reorder(convertRowIndexToModel(rowFrom), convertRowIndexToModel(index));
                     if (index > rowFrom) {
                         index--;
                     }
-                    target.getSelectionModel().addSelectionInterval(index, index);
+                    reorder(rowFrom, index);
+                    //target.getSelectionModel().setSelectionInterval(index, index);
+                    ListenerMediathekView.notify(ereignisMelden, MVJTable.class.getSimpleName());
                     return true;
                 }
             } catch (Exception e) {
@@ -187,6 +190,33 @@ public final class MVJTable extends JTable {
             if (act == TransferHandler.MOVE) {
                 tableTransfer.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             }
+        }
+    }
+
+    private void reorder(int rowFrom, int rowTo) {
+        switch (tabelle) {
+            case TABELLE_TAB_DOWNLOADS:
+                getSelected();
+                TModel tModel = (TModel) this.getModel();
+                // listeDownloads neu nach der Reihenfolge in der Tabelle erstellen
+                for (int i = 0; i < this.getRowCount(); ++i) {
+                    String nr = tModel.getValueAt(this.convertRowIndexToModel(i), indexSpalte).toString();
+                    DatenDownload d = Daten.listeDownloads.getDownloadByNr(nr);
+                    if (d != null) {
+                        Daten.listeDownloads.remove(d);
+                        Daten.listeDownloads.add(d);
+                    }
+                }
+                // und jetzt noch den Download verschieben
+                Daten.listeDownloads.reorder(rowFrom, rowTo);
+                // jetzt das Modell drehen
+                //((TModel) this.getModel()).reorder(convertRowIndexToModel(rowFrom), convertRowIndexToModel(rowTo));
+                this.getRowSorter().setSortKeys(null);
+                this.setRowSorter(null);
+                this.setAutoCreateRowSorter(true);
+                //this.getSelectionModel().setSelectionInterval(rowTo, rowTo);
+//                this.getSelectionModel().setSelectionInterval(rowFrom, rowFrom);
+                setSelected();
         }
     }
 
