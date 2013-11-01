@@ -51,12 +51,12 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_BLACKLIST_AUCH_FUER_ABOS = 25;
     public static final int EREIGNIS_BANDBREITE = 26;
     public static final int EREIGNIS_REIHENFOLGE_DOWNLOAD = 27;
-    public int ereignis = -1;
+    public int mvEreignis = -1;
     public String klasse = "";
     private static EventListenerList listeners = new EventListenerList();
 
     public ListenerMediathekView(int eereignis, String kklasse) {
-        ereignis = eereignis;
+        mvEreignis = eereignis;
         klasse = kklasse;
     }
 
@@ -69,7 +69,7 @@ public class ListenerMediathekView implements EventListener {
 
     public static synchronized void notify(int ereignis, String klasse) {
         for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
-            if (l.ereignis == ereignis) {
+            if (l.mvEreignis == ereignis) {
                 if (!l.klasse.equals(klasse)) {
                     // um einen Kreislauf zu verhindern
                     try {
