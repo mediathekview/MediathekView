@@ -220,6 +220,12 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, GuiDownloads.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                tabelleLaden();
+            }
+        });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {

@@ -123,6 +123,24 @@ public class ListeStarts extends LinkedList<Start> {
         return s;
     }
 
+    synchronized Start urlTauschen(String url) {
+        // Starts mit der URL wird vorgezogen und startet als nächster
+        Start s = null;
+        Iterator<Start> it = iterator();
+        while (it.hasNext()) {
+            s = it.next();
+            if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
+                if (s.status < Start.STATUS_RUN) {
+                    // sonst bringts nichts mehr
+                    it.remove();
+                    addFirst(s);
+                }
+                break;
+            }
+        }
+        return s;
+    }
+
     synchronized int getDownloadsWarten() {
         int ret = 0;
         Iterator<Start> it = iterator();

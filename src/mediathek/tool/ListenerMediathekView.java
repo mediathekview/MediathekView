@@ -50,6 +50,7 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_SUCHFELD_FOCUS_SETZEN = 24;
     public static final int EREIGNIS_BLACKLIST_AUCH_FUER_ABOS = 25;
     public static final int EREIGNIS_BANDBREITE = 26;
+    public static final int EREIGNIS_REIHENFOLGE_DOWNLOAD = 27;
     public int ereignis = -1;
     public String klasse = "";
     private static EventListenerList listeners = new EventListenerList();

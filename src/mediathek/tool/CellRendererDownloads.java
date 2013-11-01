@@ -82,7 +82,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
                 this.setText(download.getTextRestzeit(s));
             } else if (s != null && c == DatenDownload.DOWNLOAD_GROESSE_NR) {
-                if (s.status >= Start.STATUS_RUN) {
+                if (s.status >= Start.STATUS_RUN && s.status < Start.STATUS_FERTIG) {
                     this.setText(download.getTextGroesse(s));
                 }
             } else if (s != null && c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
