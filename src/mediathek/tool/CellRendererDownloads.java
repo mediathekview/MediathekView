@@ -88,6 +88,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             } else if (s != null && c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
                 this.setText(download.getTextBandbreite(s));
             } else if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                s = (Start) value;
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (s != null) {
                     if (1 < s.percent && s.percent < StarterClass.PROGRESS_FERTIG) {

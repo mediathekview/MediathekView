@@ -66,8 +66,8 @@ public class Daten {
     public static ListeFilme listeFilmeNachBlackList = null;
     public ListeBlacklist listeBlacklist = null;
     public ListePset listePset = null;
-    public static  ListeAbo listeAbo = null;
-    public static  ListeDownloads listeDownloads = null;
+    public static ListeAbo listeAbo = null;
+    public static ListeDownloads listeDownloads = null;
     public History history = null;
     public ErledigteAbos erledigteAbos = null;
     // globale Objekte
