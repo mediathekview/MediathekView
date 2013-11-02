@@ -148,6 +148,7 @@ public class GuiDownloads extends PanelVorlage {
         jRadioButtonDownloads.setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
         tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads(daten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads(daten));
+        tabelle.setDefaultRenderer(Start.class, new CellRendererDownloads(daten));
         tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
@@ -521,9 +522,10 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void tabelleProzentGeaendert() {
-        stopBeob = true;
-        tabelle.fireTableDataChanged(true /*setSpalten*/);
-        stopBeob = false;
+        Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
+//        stopBeob = true;
+//        tabelle.fireTableDataChanged(true /*setSpalten*/);
+//        stopBeob = false;
         setInfo();
     }
 

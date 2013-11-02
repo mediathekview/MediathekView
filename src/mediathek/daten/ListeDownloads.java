@@ -202,6 +202,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                             object[i] = "";
                         } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                             object[i] = download.datumFilm;
+                        } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                            object[i] = ddaten.starterClass.getStart(download.arr[DatenDownload.DOWNLOAD_URL_NR]);
                         } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
                             if (download.film != null) {
                                 object[i] = download.film.dateigroesseL;
@@ -218,6 +220,19 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     tModel.addRow(object);
                 }
             }
+        }
+    }
+
+    public synchronized void setModelProgress(TModelDownload tModel) {
+        for (int i = 0; i < tModel.getRowCount(); ++i) {
+            String nr = tModel.getValueAt(i, DatenDownload.DOWNLOAD_NR_NR).toString();
+            DatenDownload d = Daten.listeDownloads.getDownloadByNr(nr);
+            Start s = ddaten.starterClass.getStart(d.arr[DatenDownload.DOWNLOAD_URL_NR]);
+            tModel.setValueAt(s, i, DatenDownload.DOWNLOAD_PROGRESS_NR);
+            tModel.setValueAt(d.arr[DatenDownload.DOWNLOAD_BANDBREITE_NR], i, DatenDownload.DOWNLOAD_BANDBREITE_NR);
+            tModel.setValueAt(d.arr[DatenDownload.DOWNLOAD_RESTZEIT_NR], i, DatenDownload.DOWNLOAD_RESTZEIT_NR);
+            tModel.setValueAt(d.arr[DatenDownload.DOWNLOAD_GROESSE_NR], i, DatenDownload.DOWNLOAD_GROESSE_NR);
+            tModel.setValueAt(d.arr[DatenDownload.DOWNLOAD_DAUER_NR], i, DatenDownload.DOWNLOAD_DAUER_NR);
         }
     }
 

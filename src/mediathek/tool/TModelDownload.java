@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 
 public class TModelDownload extends TModel {
@@ -31,6 +32,8 @@ public class TModelDownload extends TModel {
         for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
             if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                 types[i] = Datum.class;
+            } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                types[i] = Start.class;
             } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
                 types[i] = MVLong.class;
             } else {
@@ -38,13 +41,6 @@ public class TModelDownload extends TModel {
             }
         }
     }
-
-//    @Override
-//    public void reorder(int fromIndex, int toIndex) {
-//        this.moveRow(fromIndex, fromIndex, toIndex);
-//        // und jetzt noch die Reihenfolge in der Liste ändern!!
-////        Daten.listeDownloads.reorder(fromIndex, toIndex);
-//    }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
