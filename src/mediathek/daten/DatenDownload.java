@@ -170,19 +170,22 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public void starten(Daten ddaten) {
         // Start erstellen und zur Liste hinzufügen
-        ddaten.starterClass.addStart(new Start(this));
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
+        Start s = new Start(this);
+        this.start = s;
+        // gestartete Filme (originalURL des Films) auch in die History eintragen
+        ddaten.history.add(arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
     }
 
     public static void starten(Daten ddaten, ArrayList<DatenDownload> ad) {
         // Start erstellen und zur Liste hinzufügen
         ArrayList<Start> al = new ArrayList<Start>();
         for (DatenDownload d : ad) {
-            al.add(new Start(d));
+            Start s = new Start(d);
+            d.start = s;
         }
-        //die Starts jetzt starten
-        ddaten.starterClass.addStart(al);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, DatenDownload.class.getName());
+        ddaten.history.add(al.toArray(new String[]{}));
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, DatenDownload.class.getSimpleName());
     }
 
     public DatenDownload getCopy() {
@@ -231,7 +234,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     public String getTextRestzeit(Daten ddaten) {
-        Start s =Daten.listeDownloads.getStart(arr[DatenDownload.DOWNLOAD_URL_NR]);
+        Start s = Daten.listeDownloads.getStart(arr[DatenDownload.DOWNLOAD_URL_NR]);
         return getTextRestzeit(s);
     }
 

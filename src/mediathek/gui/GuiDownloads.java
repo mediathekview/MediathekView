@@ -404,7 +404,7 @@ public class GuiDownloads extends PanelVorlage {
             if (!arrayUrlsAbo.isEmpty()) {
                 daten.erledigteAbos.zeileSchreiben(arrayUrlsAbo);
             }
-            daten.starterClass.filmLoeschen(arrayUrls);
+            Daten.listeDownloads.delStart(arrayUrls);
             tabelleLaden();
             ersteZeileMarkieren();
         } else {
@@ -457,7 +457,7 @@ public class GuiDownloads extends PanelVorlage {
         // ========================
         // und jetzt abarbeiten
         for (String url : urls) {
-            Start s = daten.starterClass.getStart(url);
+            Start s = Daten.listeDownloads.getStart(url);
             DatenDownload download = daten.listeDownloads.getDownloadByUrl(url);
             if (starten) {
                 // --------------
@@ -494,7 +494,7 @@ public class GuiDownloads extends PanelVorlage {
         }
         // ========================
         // jetzt noch die Starts stoppen
-        daten.starterClass.filmLoeschen(arrayUrls);
+        Daten.listeDownloads.delStart(arrayUrls);
         // und die Downloads starten oder stoppen
         if (starten) {
             //alle Downloads starten/wiederstarten
@@ -511,7 +511,7 @@ public class GuiDownloads extends PanelVorlage {
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
             int delRow = tabelle.convertRowIndexToModel(i);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-            Start s = daten.starterClass.getStart(url);
+            Start s = Daten.listeDownloads.getStart(url);
             if (s != null) {
                 if (s.status < Start.STATUS_RUN) {
                     urls.add(url);
@@ -519,7 +519,7 @@ public class GuiDownloads extends PanelVorlage {
             }
         }
         for (String url : urls) {
-            daten.starterClass.filmLoeschen(url);
+            Daten.listeDownloads.delStart(url);
         }
     }
 
@@ -755,7 +755,7 @@ public class GuiDownloads extends PanelVorlage {
             boolean wartenOderLaufen = false;
             if (row >= 0) {
                 int delRow = tabelle.convertRowIndexToModel(row);
-                Start s = daten.starterClass.getStart(tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                Start s = Daten.listeDownloads.getStart(tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
                 if (s != null) {
                     if (s.status <= Start.STATUS_RUN) {
                         wartenOderLaufen = true;
