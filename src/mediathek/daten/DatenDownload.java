@@ -170,7 +170,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public void starten(Daten ddaten) {
         // Start erstellen und zur Liste hinzufügen
-        Start s = new Start(this);
+        Start s = new Start();
         this.start = s;
         // gestartete Filme (originalURL des Films) auch in die History eintragen
         ddaten.history.add(arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
@@ -181,7 +181,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         // Start erstellen und zur Liste hinzufügen
         ArrayList<Start> al = new ArrayList<Start>();
         for (DatenDownload d : ad) {
-            Start s = new Start(d);
+            Start s = new Start();
             d.start = s;
         }
         ddaten.history.add(al.toArray(new String[]{}));
@@ -233,35 +233,30 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART_NR]);
     }
 
-    public String getTextRestzeit(Daten ddaten) {
-        Start s = Daten.listeDownloads.getStart(arr[DatenDownload.DOWNLOAD_URL_NR]);
-        return getTextRestzeit(s);
-    }
-
-    public String getTextRestzeit(Start s) {
+    public String getTextRestzeit() {
         String ret = "";
-        if (s != null) {
-            if (s.restSekunden > 0) {
-                if (s.restSekunden < 60) {
+        if (start != null) {
+            if (start.restSekunden > 0) {
+                if (start.restSekunden < 60) {
                     ret = "< 1 Min.";
                 } else {
-                    ret = Long.toString(s.restSekunden / 60) + " Min.";
+                    ret = Long.toString(start.restSekunden / 60) + " Min.";
                 }
             }
         }
         return ret;
     }
 
-    public String getTextBandbreite(Start s) {
+    public String getTextBandbreite() {
         String ret = "";
-        if (s != null) {
-            if (s.bandbreite > 0) {
-                if (s.bandbreite > 1000 * 1000) {
-                    return String.valueOf(s.bandbreite / (1000 * 1000)) + "MB/s";
-                } else if (s.bandbreite > 1000) {
-                    return String.valueOf(s.bandbreite / (1000)) + "kB/s";
+        if (start != null) {
+            if (start.bandbreite > 0) {
+                if (start.bandbreite > 1000 * 1000) {
+                    return String.valueOf(start.bandbreite / (1000 * 1000)) + "MB/s";
+                } else if (start.bandbreite > 1000) {
+                    return String.valueOf(start.bandbreite / (1000)) + "kB/s";
                 } else {
-                    return String.valueOf(s.bandbreite) + "B/s";
+                    return String.valueOf(start.bandbreite) + "B/s";
                 }
             } else {
                 return "";

@@ -22,8 +22,8 @@ package mediathek.gui.dialogEinstellungen;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.controller.starter.ListeStarts;
 import mediathek.daten.Daten;
+import mediathek.daten.DatenDownload;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.CellRendererFilme;
@@ -51,11 +51,25 @@ public class PanelInfoStarts extends PanelVorlage {
         });
         daten = d;
         jButtonAuffrischen.addActionListener(new BeobLaden());
-        tModel = ListeStarts.getEmptyModel();
+        tModel = getEmptyModel();
         jTable1.setModel(tModel);
         jTable1.setDefaultRenderer(Object.class, new CellRendererFilme(daten));
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         init();
+    }
+
+    public static TModel getEmptyModel() {
+        int max = DatenDownload.MAX_ELEM + 1;
+        String[] titel = new String[max];
+        for (int i = 0; i < max; ++i) {
+            if (i < DatenDownload.MAX_ELEM) {
+                titel[i] = DatenDownload.COLUMN_NAMES[i];
+            } else {
+                titel[i] = "Art";
+            }
+        }
+        TModel model = new TModel(new Object[][]{}, titel);
+        return model;
     }
 
     private synchronized void init() {
