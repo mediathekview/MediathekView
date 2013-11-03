@@ -94,21 +94,23 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_QUELLE_NR = 25;
     public static final String DOWNLOAD_ZURUECKGESTELLT = "Zurueckgestellt";
     public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 26;
+    public static final String DOWNLOAD_REF = "Ref";
+    public static final int DOWNLOAD_REF_NR = 27;
     //
     public static final String DOWNLOAD = "Downlad";
-    public static final int MAX_ELEM = 27;
+    public static final int MAX_ELEM = 28;
     public static final String[] COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, DOWNLOAD_GROESSE,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER,
         DOWNLOAD_FILM_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
-        DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT};
+        DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_REF};
     public static final String[] COLUMN_NAMES_ = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, "Groesse"/*DOWNLOAD_GROESSE*/,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER,
         DOWNLOAD_FILM_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
-        DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT};
+        DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_REF};
     public Datum datumFilm = new Datum(0);
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
@@ -170,8 +172,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public void starten(Daten ddaten) {
         // Start erstellen und zur Liste hinzufügen
-        Start s = new Start();
-        this.start = s;
+        this.start = new Start();
         // gestartete Filme (originalURL des Films) auch in die History eintragen
         ddaten.history.add(arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());

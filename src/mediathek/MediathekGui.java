@@ -42,6 +42,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ListIterator;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBoxMenuItem;
@@ -63,7 +64,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.CheckUpdate;
 import mediathek.controller.IoXmlLesen;
+import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
+import mediathek.daten.DatenDownload;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
@@ -1082,7 +1085,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     public void beenden() {
-        if (daten.listeDownloads.nochNichtFertigeDownloads()) {
+        if (Daten.listeDownloads.nochNichtFertigeDownloads()) {
             // erst mal prüfen ob noch Downloads laufen
             int ret = JOptionPane.showConfirmDialog(this, "Laufende Downloads abbrechen?", "Abbrechen?", JOptionPane.YES_NO_OPTION);
             if (ret != JOptionPane.OK_OPTION) {
@@ -1093,10 +1096,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         daten.guiFilme.tabelleSpeichern();
         daten.guiDownloads.tabelleSpeichern();
         daten.guiAbo.tabelleSpeichern();
-        daten.listeDownloads.listePutzen();
         if (Daten.listeDownloads != null) {
             // alle laufenden Downloads/Programme stoppen
-            Daten.listeDownloads.delAllStart();
+            ListIterator<DatenDownload> it = Daten.listeDownloads.listIterator();
+            while (it.hasNext()) {
+                Start s = it.next().start;
+                if (s != null) {
+                    s.stoppen = true;
+                }
+            }
         }
         if (this.getExtendedState() == JFrame.MAXIMIZED_BOTH) {
             Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR] = Boolean.TRUE.toString();

@@ -30,6 +30,7 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenBlacklist;
@@ -148,11 +149,17 @@ public class IoXmlSchreiben {
         Iterator<DatenDownload> iterator;
         //Abo schreiben
         DatenDownload d;
-        iterator = daten.listeDownloads.iterator();
+        iterator = Daten.listeDownloads.iterator();
         while (iterator.hasNext()) {
             d = iterator.next();
             if (!d.istAbo()) {
                 // Abos müssen neu angelegt werden
+                if (d.start != null) {
+                    if (d.start.status >= Start.STATUS_FERTIG) {
+                        // keine fertigen Downloads
+                        continue;
+                    }
+                }
                 xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr);
             }
         }

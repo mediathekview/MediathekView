@@ -61,7 +61,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             String url = table.getModel().getValueAt(r, DatenFilm.FILM_URL_NR).toString();
             boolean live = table.getModel().getValueAt(r, DatenFilm.FILM_THEMA_NR).equals(ListeFilme.THEMA_LIVE);
             boolean start = false;
-            DatenDownload datenDownload = Daten.listeDownloads.getStartOrgUrl(url);
+            DatenDownload datenDownload = Daten.listeDownloads.getDownloadUrlFilm(url);
             if (c == DatenFilm.FILM_GROESSE_NR || c == DatenFilm.FILM_DATUM_NR || c == DatenFilm.FILM_ZEIT_NR || c == DatenFilm.FILM_DAUER_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
@@ -69,38 +69,40 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 10));
                 setHorizontalAlignment(SwingConstants.RIGHT);
             }
-            if (datenDownload.start != null) {
-                if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
-                    start = true;
-                    switch (datenDownload.start.status) {
-                        case Start.STATUS_INIT:
-                            if (isSelected) {
-                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
-                            } else {
-                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
-                            }
-                            break;
-                        case Start.STATUS_RUN:
-                            if (isSelected) {
-                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
-                            } else {
-                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
-                            }
-                            break;
-                        case Start.STATUS_FERTIG:
-                            if (isSelected) {
-                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
-                            } else {
-                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
-                            }
-                            break;
-                        case Start.STATUS_ERR:
-                            if (isSelected) {
-                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
-                            } else {
-                                setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
-                            }
-                            break;
+            if (datenDownload != null) {
+                if (datenDownload.start != null) {
+                    if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
+                        start = true;
+                        switch (datenDownload.start.status) {
+                            case Start.STATUS_INIT:
+                                if (isSelected) {
+                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
+                                } else {
+                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
+                                }
+                                break;
+                            case Start.STATUS_RUN:
+                                if (isSelected) {
+                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
+                                } else {
+                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
+                                }
+                                break;
+                            case Start.STATUS_FERTIG:
+                                if (isSelected) {
+                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
+                                } else {
+                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
+                                }
+                                break;
+                            case Start.STATUS_ERR:
+                                if (isSelected) {
+                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
+                                } else {
+                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+                                }
+                                break;
+                        }
                     }
                 }
             }

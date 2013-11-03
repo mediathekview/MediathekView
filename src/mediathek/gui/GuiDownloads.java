@@ -150,7 +150,6 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads(daten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads(daten));
         tabelle.setDefaultRenderer(Start.class, new CellRendererDownloads(daten));
-        tabelle.setDefaultRenderer(DatenDownload.class, new CellRendererDownloads(daten));
         tabelle.setDefaultRenderer(MVFilmSize.class, new CellRendererDownloads(daten));
         tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
