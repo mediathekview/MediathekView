@@ -101,7 +101,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void listePutzen() {
-        // beim Programmende fertige Downloads löschen
+        // fertige Downloads löschen
         boolean gefunden = false;
         Iterator<DatenDownload> it = iterator();
         while (it.hasNext()) {
@@ -212,11 +212,15 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                         } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                             object[i] = download.datumFilm;
                         } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
-                            object[i] = download;
-                        } else if (i == DatenDownload.DOWNLOAD_BANDBREITE_NR || i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                            object[i] = download.getTextRestzeit();
+                        } else if (i == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
+                            object[i] = download.getTextBandbreite();
+                        } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                             object[i] = download.start;
                         } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
                             object[i] = download.mVFilmSize;
+                        } else if (i == DatenDownload.DOWNLOAD_REF_NR) {
+                            object[i] = download;
                         } else if (i != DatenDownload.DOWNLOAD_FILM_NR_NR && i != DatenDownload.DOWNLOAD_URL_NR && !DatenDownload.anzeigen(i)) {
                             // Filmnr und URL immer füllen, egal ob angezeigt
                             object[i] = "";
@@ -238,9 +242,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (s != null) {
                 if (s.status == Start.STATUS_RUN) {
                     // wichtig ist nur "s", die anderen nur, damit sie geändert werden, werden im Cellrenderer berechnet
+                    tModel.setValueAt(d.getTextBandbreite(), i, DatenDownload.DOWNLOAD_BANDBREITE_NR);
+                    tModel.setValueAt(d.getTextRestzeit(), i, DatenDownload.DOWNLOAD_RESTZEIT_NR);
                     tModel.setValueAt(s, i, DatenDownload.DOWNLOAD_PROGRESS_NR);
-                    tModel.setValueAt(s, i, DatenDownload.DOWNLOAD_BANDBREITE_NR);
-                    tModel.setValueAt(s, i, DatenDownload.DOWNLOAD_RESTZEIT_NR);
                     tModel.setValueAt(d.mVFilmSize, i, DatenDownload.DOWNLOAD_GROESSE_NR);
                 }
             }
@@ -339,8 +343,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         while (it.hasNext()) {
             DatenDownload d = it.next();
             if (d.istAbo()) {
-                Start s = Daten.listeDownloads.getStart(d.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                if (s == null) {
+                if (d.start == null) {
                     // ansonsten läuft er schon
                     it.remove();
                     gefunden = true;
@@ -377,6 +380,17 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         return ret;
+    }
+
+    public synchronized DatenDownload getDownloadUrlFilm(String urlFilm) {
+        Iterator<DatenDownload> it = iterator();
+        while (it.hasNext()) {
+            DatenDownload datenDownload = it.next();
+            if (datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL_NR].equals(urlFilm)) {
+                return datenDownload;
+            }
+        }
+        return null;
     }
 
     // ###############################################################
@@ -458,39 +472,17 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-    public synchronized DatenDownload getStartOrgUrl(String orgUrl) {
-        DatenDownload ret = null;
-        Iterator<DatenDownload> it = iterator();
-        while (it.hasNext()) {
-            DatenDownload datenDownload = it.next();
-            if (datenDownload.start != null) {
-                if (datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL_NR].equals(orgUrl)) {
-                    ret = datenDownload;
-                    break;
-                }
-            }
-        }
-        return ret;
-    }
-
-    public synchronized void delAllStart() {
-        ListIterator<DatenDownload> it = this.listIterator(0);
-        while (it.hasNext()) {
-            Start s = it.next().start;
-            if (s != null) {
-                s.stoppen = true; /////s löschen????
-            }
-        }
-        notifyStartEvent();
-    }
-
     public synchronized void delStart(String url) {
         ListIterator<DatenDownload> it = this.listIterator(0);
         while (it.hasNext()) {
             DatenDownload datenDownload = it.next();
             if (datenDownload.start != null) {
                 if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
-                    datenDownload.start.stoppen = true; /////s löschen????
+                    if (datenDownload.start.status < Start.STATUS_RUN) {
+                        datenDownload.start = null;
+                    } else {
+                        datenDownload.start.stoppen = true; /////s löschen????
+                    }
                     notifyStartEvent();
                     break;
                 }
@@ -507,7 +499,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     DatenDownload datenDownload = it.next();
                     if (datenDownload.start != null) {
                         if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(u)) {
-                            datenDownload.start.stoppen = true; /////s löschen????
+                            if (datenDownload.start.status < Start.STATUS_RUN) {
+                                datenDownload.start = null;
+                            } else {
+                                datenDownload.start.stoppen = true; /////s löschen????
+                            }
                             break;
                         }
                     }
@@ -587,9 +583,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         DatenDownload ret = null;
         if (this.size() > 0 && getDown(Integer.parseInt(Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR]))) {
             DatenDownload datenDownload = naechsterStart();
-            if (datenDownload.start != null) {
-                if (datenDownload.start.status == Start.STATUS_INIT) {
-                    ret = datenDownload;
+            if (datenDownload != null) {
+                if (datenDownload.start != null) {
+                    if (datenDownload.start.status == Start.STATUS_INIT) {
+                        ret = datenDownload;
+                    }
                 }
             }
         }

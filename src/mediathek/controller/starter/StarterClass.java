@@ -43,10 +43,6 @@ import msearch.daten.DatenFilm;
 public class StarterClass {
     //Tags Filme
 
-    public static final int PROGRESS_NICHT_GESTARTET = -1;
-    public static final int PROGRESS_WARTEN = 0;
-    public static final int PROGRESS_GESTARTET = 1;
-    public static final int PROGRESS_FERTIG = 1000;
     private Daten daten;
     private Starten starten = null;
     private boolean pause = false;
@@ -70,57 +66,15 @@ public class StarterClass {
         if (!url.equals("")) {
             DatenDownload d = new DatenDownload(pSet, ersterFilm, Start.QUELLE_BUTTON, null, "", "", "" /*Aufloesung*/);
             d.start = new Start();
+            //gestartete Filme (originalURL des Films) auch in die History eintragen
+            daten.history.add(d.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
             starten.startStarten(d);
-            //addStart(s); ////???
         }
         return s;
     }
 
     public void pause() {
         pause = true;
-    }
-
-    public static String getTextProgress(Start s) {
-        String ret = "";
-        if (s == null) {
-            return "";
-        }
-        if (s.percent == PROGRESS_NICHT_GESTARTET) {
-            // noch nicht gestartet
-        } else if (s.percent == PROGRESS_WARTEN) {
-            ret = "warten";
-        } else if (s.percent == PROGRESS_GESTARTET) {
-            ret = "gestartet";
-        } else if (1 < s.percent && s.percent < PROGRESS_FERTIG) {
-            double d = s.percent / 10.0;
-            ret = Double.toString(d) + "%";
-        } else if (s.percent == PROGRESS_FERTIG) {
-            if (s.status == Start.STATUS_ERR) {
-                ret = "fehlerhaft";
-            } else {
-                ret = "fertig";
-            }
-        }
-        return ret;
-    }
-    // ===================================
-    // Private
-    // ===================================
-
-    private void notifyStartEvent() {
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
-    }
-
-    private synchronized DatenDownload getNextStart() throws InterruptedException {
-        // get: erstes passendes Element der Liste zurückgeben oder null
-        // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
-        if (pause) {
-            // beim Löschen der Downloads, kann das Starten etwas "pausiert" werden
-            // damit ein zu Löschender Download nicht noch schnell gestartet wird
-            this.wait(5 * 1000);
-            pause = false;
-        }
-        return Daten.listeDownloads.getNextStart();
     }
 
     // ********************************************
@@ -146,6 +100,18 @@ public class StarterClass {
                     Log.fehlerMeldung(613822015, Log.FEHLER_ART_PROG, "StarterClass.Starten.run", ex);
                 }
             } //while(true)
+        }
+
+        private synchronized DatenDownload getNextStart() throws InterruptedException {
+            // get: erstes passendes Element der Liste zurückgeben oder null
+            // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
+            if (pause) {
+                // beim Löschen der Downloads, kann das Starten etwas "pausiert" werden
+                // damit ein zu Löschender Download nicht noch schnell gestartet wird
+                this.wait(5 * 1000);
+                pause = false;
+            }
+            return Daten.listeDownloads.getNextStart();
         }
 
         private void startStarten(DatenDownload datenDownload) {
@@ -299,7 +265,7 @@ public class StarterClass {
             leeresFileLoeschen(file);
             fertigmeldung(datenDownload);
             datenDownload.start.restSekunden = -1;
-            datenDownload.start.percent = PROGRESS_FERTIG;
+            datenDownload.start.percent = Start.PROGRESS_FERTIG;
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
 //            start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
@@ -379,7 +345,7 @@ public class StarterClass {
                             p = (datenDownload.mVFilmSize.getAktSize() * (long) 1000) / datenDownload.mVFilmSize.getSize();
                             // p muss zwischen 1 und 999 liegen
                             if (p == 0) {
-                                p = StarterClass.PROGRESS_GESTARTET;
+                                p = Start.PROGRESS_GESTARTET;
                             } else if (p >= 1000) {
                                 p = 999;
                             }
@@ -433,7 +399,7 @@ public class StarterClass {
             leeresFileLoeschen(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
             fertigmeldung(datenDownload);
             datenDownload.start.restSekunden = -1;
-            datenDownload.start.percent = PROGRESS_FERTIG;
+            datenDownload.start.percent = Start.PROGRESS_FERTIG;
             datenDownload.mVFilmSize.setAktSize(-1);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
             notifyStartEvent();
@@ -544,5 +510,9 @@ public class StarterClass {
         if (!datenDownload.start.stoppen) {
             MVNotification.addNotification(datenDownload, datenDownload.start.status != Start.STATUS_ERR);
         }
+    }
+
+    private void notifyStartEvent() {
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
     }
 }

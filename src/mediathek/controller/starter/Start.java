@@ -24,9 +24,12 @@ import mediathek.tool.MVInputStream;
 
 public class Start {
 
+    public static final int PROGRESS_NICHT_GESTARTET = -1;
+    public static final int PROGRESS_WARTEN = 0;
+    public static final int PROGRESS_GESTARTET = 1;
+    public static final int PROGRESS_FERTIG = 1000;
     public int status = STATUS_INIT;
     public int startcounter = 0;
-    //public DatenDownload datenDownload = null;
     public Process process = null; //Prozess des Download
     public int percent = -1; // Prozent fertiggestellt: -1=nix, 999=99,9%
     public long bandbreite = -1; // Downloadbandbreite
@@ -55,14 +58,30 @@ public class Start {
     //Download wird so oft gestartet, falls er beim ersten Mal nicht anspringt
     public static final int STARTCOUNTER_MAX = 3;
 
-    /**
-     * Initialisiert einen neuen Download
-     *
-     * @param ddatenFilm
-     * @param aart
-     * @param pprog
-     * @param rrestart
-     */
     public Start() {
+    }
+
+    public static String getTextProgress(Start s) {
+        String ret = "";
+        if (s == null) {
+            return "";
+        }
+        if (s.percent == PROGRESS_NICHT_GESTARTET) {
+            // noch nicht gestartet
+        } else if (s.percent == PROGRESS_WARTEN) {
+            ret = "warten";
+        } else if (s.percent == PROGRESS_GESTARTET) {
+            ret = "gestartet";
+        } else if (1 < s.percent && s.percent < PROGRESS_FERTIG) {
+            double d = s.percent / 10.0;
+            ret = Double.toString(d) + "%";
+        } else if (s.percent == PROGRESS_FERTIG) {
+            if (s.status == Start.STATUS_ERR) {
+                ret = "fehlerhaft";
+            } else {
+                ret = "fertig";
+            }
+        }
+        return ret;
     }
 }

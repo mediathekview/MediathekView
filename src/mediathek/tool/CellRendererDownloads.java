@@ -32,7 +32,6 @@ import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.starter.Start;
-import mediathek.controller.starter.StarterClass;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
@@ -63,30 +62,18 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     table, value, isSelected, hasFocus, row, column);
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
-            if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR || c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
-                setHorizontalAlignment(SwingConstants.CENTER);
-                DatenDownload datenDownload = (DatenDownload) value;
-                if (datenDownload.start != null) {
-                    setColor(this, datenDownload.start, isSelected);
-                }
-                if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
-                    this.setText(datenDownload.getTextRestzeit());
-                } else if (c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
-                    this.setText(datenDownload.getTextBandbreite());
-                }
-            } else if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+            if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 Start s = (Start) value;
                 if (s != null) {
                     setColor(this, s, isSelected);
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    if (1 < s.percent && s.percent < StarterClass.PROGRESS_FERTIG) {
+                    if (1 < s.percent && s.percent < Start.PROGRESS_FERTIG) {
                         JProgressBar progressBar = new JProgressBar(0, 1000);
-                        JPanel panel = new JPanel(new BorderLayout());
-                        setColor(panel, s, isSelected);
-                        setColor(progressBar, s, isSelected);
                         progressBar.setBorder(BorderFactory.createEmptyBorder());
                         progressBar.setStringPainted(true);
+                        JPanel panel = new JPanel(new BorderLayout());
+                        panel.setBorder(BorderFactory.createEmptyBorder());
+                        panel.add(progressBar);
                         progressBar.setUI(new BasicProgressBarUI() {
                             @Override
                             protected Color getSelectionBackground() {
@@ -98,39 +85,29 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                                 return Color.white;
                             }
                         });
-                        panel.add(progressBar);
-                        panel.setBorder(BorderFactory.createEmptyBorder());
+                        setColor(panel, s, isSelected);
+                        setColor(progressBar, s, isSelected);
                         progressBar.setValue(s.percent);
                         double d = s.percent / 10.0;
                         progressBar.setString(Double.toString(d) + "%");
                         return panel;
                     } else {
-                        this.setText(StarterClass.getTextProgress(s));
+                        this.setText(Start.getTextProgress(s));
                     }
                 } else {
-                    this.setText(StarterClass.getTextProgress(s));
+                    this.setText(Start.getTextProgress(s));
                 }
-            } else if (c == DatenDownload.DOWNLOAD_GROESSE_NR) {
-                setHorizontalAlignment(SwingConstants.CENTER);
-                setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 10));
-                setHorizontalAlignment(SwingConstants.RIGHT);
-//                MVFilmSize mVFilmSize = (MVFilmSize) value;
-//                this.setText(mVFilmSize.toString());
-//                if (s != null) {
-//                    setColor(this, s, isSelected);
-//                    if (s.status >= Start.STATUS_RUN && s.status < Start.STATUS_FERTIG) {
-//                        this.setText(s.datenDownload.getTextGroesse(s));
-//                    }
-//                }
             } else {
-                String url = table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_URL_NR).toString();
-                Start s = Daten.listeDownloads.getStart(url);
-                if (s != null) {
-                    setColor(this, s, isSelected);
+                DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_REF_NR);
+//                String url = table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_URL_NR).toString();
+//                Start s = Daten.listeDownloads.getStart(url);
+                if (datenDownload.start != null) {
+                    setColor(this, datenDownload.start, isSelected);
                 }
-                DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
+                //DatenDownload datenDownload = Daten.listeDownloads.getDownloadByUrl(url);
                 // Starts
-                if (c == DatenDownload.DOWNLOAD_DATUM_NR || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR) {
+                if (c == DatenDownload.DOWNLOAD_DATUM_NR || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR
+                        || c == DatenDownload.DOWNLOAD_BANDBREITE_NR || c == DatenDownload.DOWNLOAD_RESTZEIT_NR || c == DatenDownload.DOWNLOAD_GROESSE_NR) {
                     setHorizontalAlignment(SwingConstants.CENTER);
                 }
                 if (c == DatenDownload.DOWNLOAD_ABO_NR) {
@@ -143,7 +120,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                         setHorizontalAlignment(SwingConstants.CENTER);
                     }
                 } else if (c == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
-                    boolean restart = download.isRestart();
+                    boolean restart = datenDownload.isRestart();
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (restart) {
                         setIcon(GetIcon.getIcon("ja_16.png"));

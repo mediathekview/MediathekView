@@ -556,7 +556,8 @@ public final class MVJTable extends JTable {
                             || i == DatenDownload.DOWNLOAD_ZIEL_PFAD_NR
                             || i == DatenDownload.DOWNLOAD_ART_NR
                             || i == DatenDownload.DOWNLOAD_QUELLE_NR
-                            || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR) {
+                            || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR
+                            || i == DatenDownload.DOWNLOAD_REF_NR) {
                         breite[i] = 0;
                     }
                     break;

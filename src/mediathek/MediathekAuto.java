@@ -47,7 +47,7 @@ public class MediathekAuto {
     }
 
     public void starten() {
-        daten = new Daten(pfad,null);
+        daten = new Daten(pfad, null);
         Daten.auto = true;
         Log.startMeldungen(this.getClass().getName());
         if (IoXmlLesen.einstellungenExistieren()) {
@@ -75,12 +75,11 @@ public class MediathekAuto {
     private synchronized void filmeLaden() {
         try {
             Log.playerMeldungenAus = true;
-            daten.listeDownloads.abosLoschenWennNochNichtGestartet();
-            daten.listeDownloads.abosSuchen();
-            Log.systemMeldung(daten.listeDownloads.size() + " Filme zum Laden");
+            Daten.listeDownloads.abosSuchen();
+            Log.systemMeldung(Daten.listeDownloads.size() + " Filme zum Laden");
             // erst mal die Filme schreiben
             int i = 0;
-            ListIterator<DatenDownload> it = daten.listeDownloads.listIterator();
+            ListIterator<DatenDownload> it = Daten.listeDownloads.listIterator();
             while (it.hasNext()) {
                 DatenDownload d = it.next();
                 Log.systemMeldung("Film " + (i++) + ": ");
@@ -90,7 +89,7 @@ public class MediathekAuto {
             }
             Log.systemMeldung("###########################################################");
             // und jetzt starten
-            it = daten.listeDownloads.listIterator(0);
+            it = Daten.listeDownloads.listIterator(0);
             while (it.hasNext()) {
                 // alle 5 Sekungen einen Download starten
                 it.next().starten(daten);
@@ -103,11 +102,8 @@ public class MediathekAuto {
         } catch (Exception ex) {
             Log.fehlerMeldung(769325469, Log.FEHLER_ART_AUTO, "MediathekAuto.filmeLaden", ex);
         }
-        daten.listeDownloads.listePutzen();
-        daten.listeDownloads.abosLoschenWennNochNichtGestartet();
         daten.allesSpeichern();
         Log.printEndeMeldung();
         System.exit(0);
     }
-
 }
