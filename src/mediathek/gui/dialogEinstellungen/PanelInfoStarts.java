@@ -59,7 +59,7 @@ public class PanelInfoStarts extends PanelVorlage {
     }
 
     private synchronized void init() {
-        tModel = daten.starterClass.getModellStarts(tModel);
+        tModel = Daten.listeDownloads.getModelStarts(tModel);
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
             if (i > DatenFilm.FILM_URL_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(0);
@@ -69,7 +69,6 @@ public class PanelInfoStarts extends PanelVorlage {
         }
         this.updateUI();
     }
-
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -121,5 +120,4 @@ public class PanelInfoStarts extends PanelVorlage {
             init();
         }
     }
-
 }

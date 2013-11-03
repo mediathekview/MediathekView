@@ -1094,9 +1094,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         daten.guiDownloads.tabelleSpeichern();
         daten.guiAbo.tabelleSpeichern();
         daten.listeDownloads.listePutzen();
-        if (daten.starterClass != null) {
+        if (Daten.listeDownloads != null) {
             // alle laufenden Downloads/Programme stoppen
-            daten.starterClass.delAllStart();
+            Daten.listeDownloads.delAllStart();
         }
         if (this.getExtendedState() == JFrame.MAXIMIZED_BOTH) {
             Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR] = Boolean.TRUE.toString();

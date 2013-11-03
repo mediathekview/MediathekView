@@ -119,7 +119,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 //                }
             } else {
                 String url = table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_URL_NR).toString();
-                Start s = ddaten.starterClass.getStart(url);
+                Start s = Daten.listeDownloads.getStart(url);
                 if (s != null) {
                     setColor(this, s, isSelected);
                 }

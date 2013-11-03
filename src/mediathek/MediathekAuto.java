@@ -22,7 +22,6 @@ package mediathek;
 import java.io.File;
 import java.util.ListIterator;
 import mediathek.controller.IoXmlLesen;
-import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.Log;
@@ -94,8 +93,7 @@ public class MediathekAuto {
             it = daten.listeDownloads.listIterator(0);
             while (it.hasNext()) {
                 // alle 5 Sekungen einen Download starten
-                Start s = new Start(it.next());
-                daten.starterClass.addStart(s);
+                it.next().starten(daten);
                 this.wait(5000);
             }
             while (Daten.listeDownloads.getStartsWaiting() > 0) {

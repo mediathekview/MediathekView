@@ -52,7 +52,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
         download = ddownload;
         ddaten = dd;
         String url = download.arr[DatenDownload.DOWNLOAD_URL_NR];
-        start = ddaten.starterClass.getStart(url);
+        start = Daten.listeDownloads.getStart(url);
         jButtonBeenden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

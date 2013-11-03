@@ -28,7 +28,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
@@ -39,7 +38,6 @@ import mediathek.tool.Log;
 import mediathek.tool.MVInputStream;
 import mediathek.tool.MVNotification;
 import mediathek.tool.MVUrlDateiGroesse;
-import mediathek.tool.TModel;
 import msearch.daten.DatenFilm;
 
 public class StarterClass {
@@ -50,7 +48,6 @@ public class StarterClass {
     public static final int PROGRESS_GESTARTET = 1;
     public static final int PROGRESS_FERTIG = 1000;
     private Daten daten;
-    private ListeStarts listeStarts;
     private Starten starten = null;
     private boolean pause = false;
 
@@ -68,60 +65,12 @@ public class StarterClass {
         Start s = null;
         String url = ersterFilm.arr[DatenFilm.FILM_URL_NR];
         if (!url.equals("")) {
-            s = new Start(new DatenDownload(pSet, ersterFilm, Start.QUELLE_BUTTON, null, "", "", "" /*Aufloesung*/));
+            DatenDownload d = new DatenDownload(pSet, ersterFilm, Start.QUELLE_BUTTON, null, "", "", "" /*Aufloesung*/);
+            d.start = new Start(d);
             starten.startStarten(s);
-            addStart(s);
+            //addStart(s); ////???
         }
         return s;
-    }
-
-    public Start urlVorziehen(String url) {
-        // Starts mit der URL wird vorgezogen und startet als nächster
-        return listeStarts.urlVorziehen(url);
-    }
-
-    public synchronized LinkedList<Start> getStarts(int quelle) {
-        return listeStarts.getStarts(quelle);
-    }
-
-    public synchronized TModel getModellStarts(TModel model) {
-        return listeStarts.getModelStarts(model);
-
-    }
-
-    public synchronized void addStart(Start start) {
-        //add: Neues Element an die Liste anhängen
-        listeStarts.addStart(start);
-    }
-
-    public synchronized void addStart(ArrayList<Start> start) {
-        //add: Neues Element an die Liste anhängen
-        listeStarts.addStart(start);
-    }
-
-    public synchronized Start getStart(String url) {
-        return listeStarts.getStart(url);
-    }
-
-    public synchronized Start getStartOrgUrl(String url) {
-        return listeStarts.getStartOrgUrl(url);
-    }
-
-    public synchronized void aufraeumen() {
-        listeStarts.aufraeumen();
-    }
-
-    public synchronized void delAllStart() {
-        // Alle Downloads werden abgebrochen
-        listeStarts.delAllStart();
-    }
-
-    public synchronized void filmLoeschen(ArrayList<String> url) {
-        listeStarts.delStart(url);
-    }
-
-    public synchronized void filmLoeschen(String url) {
-        listeStarts.delStart(url);
     }
 
     public void pause() {
@@ -156,29 +105,17 @@ public class StarterClass {
     // ===================================
 
     private void init() {
-        listeStarts = new ListeStarts(daten);
         starten = new Starten();
         Thread startenThread = new Thread(starten);
         startenThread.setDaemon(true);
         startenThread.start();
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, StarterClass.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                listeStarts.setBanbreite();
-            }
-        });
     }
 
     private void notifyStartEvent() {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
     }
 
-    private void buttonStartsPutzen() {
-        // Starts durch Button die fertig sind, löschen
-        listeStarts.buttonStartsPutzen();
-    }
-
-    private synchronized Start getListe() throws InterruptedException {
+    private synchronized Start getNextStart() throws InterruptedException {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
         if (pause) {
@@ -187,7 +124,7 @@ public class StarterClass {
             this.wait(5 * 1000);
             pause = false;
         }
-        return listeStarts.getListe();
+        return Daten.listeDownloads.getNextStart();
     }
 
     // ********************************************
@@ -202,12 +139,12 @@ public class StarterClass {
         public synchronized void run() {
             while (true) {
                 try {
-                    while ((start = getListe()) != null) {
+                    while ((start = getNextStart()) != null) {
                         startStarten(start);
                         //alle 5 Sekunden einen Download starten
                         this.wait(5 * 1000);
                     }
-                    buttonStartsPutzen(); // Button Starts aus der Liste löschen
+                    Daten.listeDownloads.buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     this.wait(3 * 1000);
                 } catch (Exception ex) {
                     Log.fehlerMeldung(613822015, Log.FEHLER_ART_PROG, "StarterClass.Starten.run", ex);
