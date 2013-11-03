@@ -30,8 +30,6 @@ public class Start {
     public DatenDownload datenDownload = null;
     public Process process = null; //Prozess des Download
     public int percent = -1; // Prozent fertiggestellt: -1=nix, 999=99,9%
-    public long fileSizeMax = -1; // Gesamtdateigröße
-    public long fileSizeAkt = -1; // aktuelle Dateigröße
     public long bandbreite = -1; // Downloadbandbreite
     public boolean stoppen = false;
     public Datum startZeit = null;

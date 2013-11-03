@@ -55,6 +55,7 @@ import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVJTable;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelDownload;
@@ -149,6 +150,7 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads(daten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads(daten));
         tabelle.setDefaultRenderer(Start.class, new CellRendererDownloads(daten));
+        tabelle.setDefaultRenderer(MVFilmSize.class, new CellRendererDownloads(daten));
         tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
@@ -532,8 +534,8 @@ public class GuiDownloads extends PanelVorlage {
     private void setInfo() {
         String textLinks;
         // Text links: Zeilen Tabelle
-        int laufen = daten.starterClass.getDownloadsLaufen();
-        int warten = daten.starterClass.getDownloadsWarten();
+        int laufen = Daten.listeDownloads.getDownloadsLaufen();
+        int warten = Daten.listeDownloads.getDownloadsWarten();
         int gesamt = tabelle.getModel().getRowCount();
         if (gesamt == 1) {
             textLinks = "1 Download,";

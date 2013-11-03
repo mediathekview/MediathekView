@@ -32,10 +32,11 @@ public class TModelDownload extends TModel {
         for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
             if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                 types[i] = Datum.class;
-            } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+            } else if (i == DatenDownload.DOWNLOAD_BANDBREITE_NR || i == DatenDownload.DOWNLOAD_PROGRESS_NR
+                    || i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
                 types[i] = Start.class;
             } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
-                types[i] = MVLong.class;
+                types[i] = MVFilmSize.class;
             } else {
                 types[i] = String.class;
             }

@@ -28,7 +28,6 @@ import java.util.ListIterator;
 import mediathek.controller.starter.Start;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVLong;
 import mediathek.tool.TModelDownload;
 import msearch.daten.DatenFilm;
 
@@ -198,18 +197,15 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 if (abos && istAbo || downloads && !istAbo) {
                     object = new Object[DatenDownload.MAX_ELEM];
                     for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
+                        Start s = Daten.listeDownloads.getStart(download.arr[DatenDownload.DOWNLOAD_URL_NR]);
                         if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                             object[i] = "";
                         } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                             object[i] = download.datumFilm;
-                        } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                            object[i] = ddaten.starterClass.getStart(download.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                        } else if (i == DatenDownload.DOWNLOAD_BANDBREITE_NR || i == DatenDownload.DOWNLOAD_PROGRESS_NR || i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                            object[i] = s;
                         } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
-                            if (download.film != null) {
-                                object[i] = download.film.dateigroesseL;
-                            } else {
-                                object[i] = new MVLong(download.arr[DatenDownload.DOWNLOAD_GROESSE_NR]);
-                            }
+                            object[i] = download.mVFilmSize;
                         } else if (i != DatenDownload.DOWNLOAD_FILM_NR_NR && i != DatenDownload.DOWNLOAD_URL_NR && !DatenDownload.anzeigen(i)) {
                             // Filmnr und URL immer füllen, egal ob angezeigt
                             object[i] = "";
@@ -227,12 +223,16 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         for (int i = 0; i < tModel.getRowCount(); ++i) {
             String nr = tModel.getValueAt(i, DatenDownload.DOWNLOAD_NR_NR).toString();
             DatenDownload d = Daten.listeDownloads.getDownloadByNr(nr);
-            Start s = ddaten.starterClass.getStart(d.arr[DatenDownload.DOWNLOAD_URL_NR]);
-            tModel.setValueAt(s, i, DatenDownload.DOWNLOAD_PROGRESS_NR);
-            tModel.setValueAt(d.arr[DatenDownload.DOWNLOAD_BANDBREITE_NR], i, DatenDownload.DOWNLOAD_BANDBREITE_NR);
-            tModel.setValueAt(d.arr[DatenDownload.DOWNLOAD_RESTZEIT_NR], i, DatenDownload.DOWNLOAD_RESTZEIT_NR);
-            tModel.setValueAt(d.arr[DatenDownload.DOWNLOAD_GROESSE_NR], i, DatenDownload.DOWNLOAD_GROESSE_NR);
-            tModel.setValueAt(d.arr[DatenDownload.DOWNLOAD_DAUER_NR], i, DatenDownload.DOWNLOAD_DAUER_NR);
+            Start s = Daten.listeDownloads.getStart(d.arr[DatenDownload.DOWNLOAD_URL_NR]);
+            if (s != null) {
+                if (s.status == Start.STATUS_RUN) {
+                    // wichtig ist nur "s", die anderen nur, damit sie geändert werden, werden im Cellrenderer berechnet
+                    tModel.setValueAt(s, i, DatenDownload.DOWNLOAD_PROGRESS_NR);
+                    tModel.setValueAt(s, i, DatenDownload.DOWNLOAD_BANDBREITE_NR);
+                    tModel.setValueAt(s, i, DatenDownload.DOWNLOAD_RESTZEIT_NR);
+                    tModel.setValueAt(d.mVFilmSize, i, DatenDownload.DOWNLOAD_GROESSE_NR);
+                }
+            }
         }
     }
 
@@ -328,7 +328,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         while (it.hasNext()) {
             DatenDownload d = it.next();
             if (d.istAbo()) {
-                Start s = ddaten.starterClass.getStart(d.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                Start s = Daten.listeDownloads.getStart(d.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 if (s == null) {
                     // ansonsten läuft er schon
                     it.remove();
@@ -352,7 +352,75 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             it.next().arr[DatenDownload.DOWNLOAD_NR_NR] = str;
         }
     }
+    // ###############################################################
+    // Starts
+    // ###############################################################
 
+    public synchronized int getDownloadsWarten() {
+        int ret = 0;
+        Iterator<DatenDownload> it = iterator();
+        while (it.hasNext()) {
+            Start s = it.next().start;
+            if (s != null) {
+                if (s.datenDownload.getQuelle() == Start.QUELLE_ABO || s.datenDownload.getQuelle() == Start.QUELLE_DOWNLOAD) {
+                    if (s.status == Start.STATUS_INIT) {
+                        ++ret;
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    public synchronized int getDownloadsLaufen() {
+        int ret = 0;
+        Iterator<DatenDownload> it = iterator();
+        while (it.hasNext()) {
+            Start s = it.next().start;
+            if (s != null) {
+                if (s.datenDownload.getQuelle() == Start.QUELLE_ABO || s.datenDownload.getQuelle() == Start.QUELLE_DOWNLOAD) {
+                    if (s.status == Start.STATUS_RUN) {
+                        ++ret;
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    public synchronized int getStartsWaiting() {
+        // liefert die Listengröße wenn noch nicht alle fertig
+        // sonst wenn alle fertig: 0
+        ListIterator<DatenDownload> it = this.listIterator(0);
+        while (it.hasNext()) {
+            Start s = it.next().start;
+            if (s != null) {
+                if (it.next().start.status < Start.STATUS_FERTIG) {
+                    return this.size();
+                }
+            }
+        }
+        return 0;
+    }
+
+    public synchronized Start getStart(String url) {
+        Start ret = null;
+        Iterator<DatenDownload> it = iterator();
+        while (it.hasNext()) {
+            Start s = it.next().start;
+            if (s != null) {
+                if (s.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
+                    ret = s;
+                    break;
+                }
+            }
+        }
+        return ret;
+    }
+
+    // ################################################################
+    // private
+    // ################################################################
     private boolean checkListe(String url) {
         //prüfen, ob der Film schon in der Liste ist, (manche Filme sind in verschiedenen Themen)
         boolean ret = false;

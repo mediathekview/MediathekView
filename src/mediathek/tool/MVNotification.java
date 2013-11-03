@@ -6,8 +6,6 @@ package mediathek.tool;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.net.URL;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -35,7 +33,7 @@ public class MVNotification {
         String[] m = {
             "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
             "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER_NR],
-            "Größe:  " + datenDownload.arr[DatenDownload.DOWNLOAD_GROESSE_NR] + " MB",
+            "Größe:  " + datenDownload.mVFilmSize.toString() + " MB",
             (erfolgreich ? "Download war erfolgreich" : "Download war fehlerhaft")
         };
         add("Download beendet", m, erfolgreich);

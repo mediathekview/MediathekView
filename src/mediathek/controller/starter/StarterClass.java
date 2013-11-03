@@ -84,19 +84,6 @@ public class StarterClass {
         return listeStarts.getStarts(quelle);
     }
 
-    public synchronized int getDownloadsWarten() {
-        return listeStarts.getDownloadsWarten();
-    }
-
-    public synchronized int getDownloadsLaufen() {
-        return listeStarts.getDownloadsLaufen();
-    }
-
-    public synchronized int getStartsWaiting() {
-        // für "Auto", wenn alle abgearbeitet sind, dann fertig
-        return listeStarts.getmax();
-    }
-
     public synchronized TModel getModellStarts(TModel model) {
         return listeStarts.getModelStarts(model);
 
@@ -417,8 +404,8 @@ public class StarterClass {
             try {
                 int len;
                 new File(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
-                start.fileSizeMax = MVUrlDateiGroesse.laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                start.fileSizeAkt = 0;
+                start.datenDownload.mVFilmSize.setSize(MVUrlDateiGroesse.laenge(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]));
+                start.datenDownload.mVFilmSize.setAktSize(0);
                 BufferedInputStream srcBuffer = null;
                 BufferedOutputStream destBuffer = null;
                 HttpURLConnection conn = null;
@@ -454,9 +441,9 @@ public class StarterClass {
 //                        outFile.write(buffer, downloaded, len);
 //                        downloaded += len;
                         destBuffer.write(buffer, 0, len);
-                        start.fileSizeAkt += len;
-                        if (start.fileSizeMax > 0) {
-                            p = (start.fileSizeAkt * (long) 1000) / start.fileSizeMax;
+                        start.datenDownload.mVFilmSize.addAktSize(len);
+                        if (start.datenDownload.mVFilmSize.getSize() > 0) {
+                            p = (start.datenDownload.mVFilmSize.getAktSize() * (long) 1000) / start.datenDownload.mVFilmSize.getSize();
                             // p muss zwischen 1 und 999 liegen
                             if (p == 0) {
                                 p = StarterClass.PROGRESS_GESTARTET;
@@ -514,7 +501,7 @@ public class StarterClass {
             fertigmeldung(start);
             start.restSekunden = -1;
             start.percent = PROGRESS_FERTIG;
-            start.fileSizeAkt = -1;
+            start.datenDownload.mVFilmSize.setAktSize(-1);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
             notifyStartEvent();
         }
