@@ -1084,7 +1084,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     public void beenden() {
         if (daten.listeDownloads.nochNichtFertigeDownloads()) {
             // erst mal prüfen ob noch Downloads laufen
-            int ret = JOptionPane.showConfirmDialog(this, "Noch laufende Downloads abbrechen?", "Abbrechen?", JOptionPane.YES_NO_OPTION);
+            int ret = JOptionPane.showConfirmDialog(this, "Laufende Downloads abbrechen?", "Abbrechen?", JOptionPane.YES_NO_OPTION);
             if (ret != JOptionPane.OK_OPTION) {
                 return;
             }

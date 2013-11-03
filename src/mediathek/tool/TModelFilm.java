@@ -33,7 +33,7 @@ public class TModelFilm extends TModel {
             if (i == DatenFilm.FILM_DATUM_NR) {
                 types[i] = Datum.class;
             } else if (i == DatenFilm.FILM_GROESSE_NR) {
-                types[i] = MVLong.class;
+                types[i] = MVFilmSize.class;
             } else {
                 types[i] = String.class;
             }

@@ -141,34 +141,6 @@ public class ListeStarts extends LinkedList<Start> {
         return s;
     }
 
-    synchronized int getDownloadsWarten() {
-        int ret = 0;
-        Iterator<Start> it = iterator();
-        while (it.hasNext()) {
-            Start s = it.next();
-            if (s.datenDownload.getQuelle() == Start.QUELLE_ABO || s.datenDownload.getQuelle() == Start.QUELLE_DOWNLOAD) {
-                if (s.status == Start.STATUS_INIT) {
-                    ++ret;
-                }
-            }
-        }
-        return ret;
-    }
-
-    synchronized int getDownloadsLaufen() {
-        int ret = 0;
-        Iterator<Start> it = iterator();
-        while (it.hasNext()) {
-            Start s = it.next();
-            if (s.datenDownload.getQuelle() == Start.QUELLE_ABO || s.datenDownload.getQuelle() == Start.QUELLE_DOWNLOAD) {
-                if (s.status == Start.STATUS_RUN) {
-                    ++ret;
-                }
-            }
-        }
-        return ret;
-    }
-
     synchronized void buttonStartsPutzen() {
         // Starts durch Button die fertig sind, löschen
         boolean gefunden = false;
@@ -269,18 +241,6 @@ public class ListeStarts extends LinkedList<Start> {
         if (gefunden) {
             notifyStartEvent();
         }
-    }
-
-    int getmax() {
-        // liefert die Listengröße wenn noch nicht alle fertig
-        // sonst wenn alle fertig: 0
-        ListIterator<Start> it = this.listIterator(0);
-        while (it.hasNext()) {
-            if (it.next().status < Start.STATUS_FERTIG) {
-                return this.size();
-            }
-        }
-        return 0;
     }
 
     TModel getModelStarts(TModel model) {

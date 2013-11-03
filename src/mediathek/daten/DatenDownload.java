@@ -32,6 +32,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
+import mediathek.tool.MVFilmSize;
 import msearch.daten.DatenFilm;
 
 public class DatenDownload implements Comparable<DatenDownload> {
@@ -112,6 +113,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
     public DatenFilm film = null;
+    public MVFilmSize mVFilmSize = new MVFilmSize();
+    public Start start = null;
 
     public DatenDownload() {
         makeArr();
@@ -138,8 +141,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[DOWNLOAD_URL_RTMP_NR] = ffilm.getUrlRtmpFuerAufloesung(aufloesung);
         }
         // und jetzt noch die Dateigröße für die entsp. URL
-        arr[DOWNLOAD_GROESSE_NR] = ffilm.getDateigroesse(arr[DOWNLOAD_URL_NR]);
         film = ffilm;
+        mVFilmSize.setFilm(film);
         aufrufBauen(pSet, ffilm, abo, name, pfad);
         init();
     }
@@ -228,7 +231,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     public String getTextRestzeit(Daten ddaten) {
-        Start s = ddaten.starterClass.getStart(arr[DatenDownload.DOWNLOAD_URL_NR]);
+        Start s =Daten.listeDownloads.getStart(arr[DatenDownload.DOWNLOAD_URL_NR]);
         return getTextRestzeit(s);
     }
 
@@ -260,29 +263,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
             } else {
                 return "";
             }
-        }
-        return ret;
-    }
-
-    public String getTextGroesse(Start s) {
-        String ret = "";
-        if (s != null) {
-            if (s.fileSizeMax > 0 && s.fileSizeAkt > 0) {
-                return getGroesse(s.fileSizeAkt) + " von " + getGroesse(s.fileSizeMax);
-            } else if (s.fileSizeMax > 0) {
-                return String.valueOf(s.fileSizeMax);
-            }
-        }
-        return ret;
-    }
-
-    private String getGroesse(long l) {
-        String ret = "";
-        if (l > 1000 * 1000) {
-            // größer als 1MB sonst kann ich mirs sparen
-            ret = String.valueOf(l / (1000 * 1000));
-        } else if (l > 0) {
-            ret = "1";
         }
         return ret;
     }

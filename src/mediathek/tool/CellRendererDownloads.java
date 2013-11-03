@@ -63,80 +63,88 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     table, value, isSelected, hasFocus, row, column);
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
-            String url = table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_URL_NR).toString();
-            DatenDownload download = ddaten.listeDownloads.getDownloadByUrl(url);
-            // Abos
-            boolean abo = !table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_ABO_NR).equals("");
-            // Starts
-            Start s = ddaten.starterClass.getStart(url);
-            if (s != null) {
-                setColor(this, s, isSelected);
-            }
-            if (c == DatenDownload.DOWNLOAD_BANDBREITE_NR || c == DatenDownload.DOWNLOAD_GROESSE_NR || c == DatenDownload.DOWNLOAD_DATUM_NR || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR) {
+            if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR || c == DatenDownload.DOWNLOAD_BANDBREITE_NR || c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
-            }
-            if (c == DatenDownload.DOWNLOAD_GROESSE_NR) {
-                setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 10));
-                setHorizontalAlignment(SwingConstants.RIGHT);
-            }
-            if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
-                this.setText(download.getTextRestzeit(s));
-            } else if (s != null && c == DatenDownload.DOWNLOAD_GROESSE_NR) {
-                if (s.status >= Start.STATUS_RUN && s.status < Start.STATUS_FERTIG) {
-                    this.setText(download.getTextGroesse(s));
-                }
-            } else if (s != null && c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
-                this.setText(download.getTextBandbreite(s));
-            } else if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                s = (Start) value;
-                setHorizontalAlignment(SwingConstants.CENTER);
+                Start s = (Start) value;
                 if (s != null) {
-                    if (1 < s.percent && s.percent < StarterClass.PROGRESS_FERTIG) {
-                        JProgressBar progressBar = new JProgressBar(0, 1000);
-                        JPanel panel = new JPanel(new BorderLayout());
-                        setColor(panel, s, isSelected);
-                        setColor(progressBar, s, isSelected);
-                        progressBar.setBorder(BorderFactory.createEmptyBorder());
-                        progressBar.setStringPainted(true);
-                        progressBar.setUI(new BasicProgressBarUI() {
-                            @Override
-                            protected Color getSelectionBackground() {
-                                return UIManager.getDefaults().getColor("Table.foreground");
-                            }
+                    setColor(this, s, isSelected);
+                    if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                        this.setText(s.datenDownload.getTextRestzeit(s));
+                    } else if (c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
+                        this.setText(s.datenDownload.getTextBandbreite(s));
+                    } else if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                        if (1 < s.percent && s.percent < StarterClass.PROGRESS_FERTIG) {
+                            JProgressBar progressBar = new JProgressBar(0, 1000);
+                            JPanel panel = new JPanel(new BorderLayout());
+                            setColor(panel, s, isSelected);
+                            setColor(progressBar, s, isSelected);
+                            progressBar.setBorder(BorderFactory.createEmptyBorder());
+                            progressBar.setStringPainted(true);
+                            progressBar.setUI(new BasicProgressBarUI() {
+                                @Override
+                                protected Color getSelectionBackground() {
+                                    return UIManager.getDefaults().getColor("Table.foreground");
+                                }
 
-                            @Override
-                            protected Color getSelectionForeground() {
-                                return Color.white;
-                            }
-                        });
-                        panel.add(progressBar);
-                        panel.setBorder(BorderFactory.createEmptyBorder());
-                        progressBar.setValue(s.percent);
-                        double d = s.percent / 10.0;
-                        progressBar.setString(Double.toString(d) + "%");
-                        return panel;
+                                @Override
+                                protected Color getSelectionForeground() {
+                                    return Color.white;
+                                }
+                            });
+                            panel.add(progressBar);
+                            panel.setBorder(BorderFactory.createEmptyBorder());
+                            progressBar.setValue(s.percent);
+                            double d = s.percent / 10.0;
+                            progressBar.setString(Double.toString(d) + "%");
+                            return panel;
+                        } else {
+                            this.setText(StarterClass.getTextProgress(s));
+                        }
                     } else {
                         this.setText(StarterClass.getTextProgress(s));
                     }
-                } else {
-                    this.setText(StarterClass.getTextProgress(s));
                 }
-            } else if (c == DatenDownload.DOWNLOAD_ABO_NR) {
-                setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
-                if (abo) {
-                    setForeground(GuiKonstanten.ABO_FOREGROUND);
-                } else {
-                    setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
-                    setIcon(GetIcon.getIcon("nein_12.png"));
+            } else if (c == DatenDownload.DOWNLOAD_GROESSE_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+                setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 10));
+                setHorizontalAlignment(SwingConstants.RIGHT);
+//                MVFilmSize mVFilmSize = (MVFilmSize) value;
+//                this.setText(mVFilmSize.toString());
+//                if (s != null) {
+//                    setColor(this, s, isSelected);
+//                    if (s.status >= Start.STATUS_RUN && s.status < Start.STATUS_FERTIG) {
+//                        this.setText(s.datenDownload.getTextGroesse(s));
+//                    }
+//                }
+            } else {
+                String url = table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_URL_NR).toString();
+                Start s = ddaten.starterClass.getStart(url);
+                if (s != null) {
+                    setColor(this, s, isSelected);
+                }
+                DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
+                // Starts
+                if (c == DatenDownload.DOWNLOAD_DATUM_NR || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR) {
                     setHorizontalAlignment(SwingConstants.CENTER);
                 }
-            } else if (c == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
-                boolean restart = download.isRestart();
-                setHorizontalAlignment(SwingConstants.CENTER);
-                if (restart) {
-                    setIcon(GetIcon.getIcon("ja_16.png"));
-                } else {
-                    setIcon(GetIcon.getIcon("nein_12.png"));
+                if (c == DatenDownload.DOWNLOAD_ABO_NR) {
+                    setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
+                    if (!table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_ABO_NR).equals("")) {
+                        setForeground(GuiKonstanten.ABO_FOREGROUND);
+                    } else {
+                        setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
+                        setIcon(GetIcon.getIcon("nein_12.png"));
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                    }
+                } else if (c == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+                    boolean restart = download.isRestart();
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (restart) {
+                        setIcon(GetIcon.getIcon("ja_16.png"));
+                    } else {
+                        setIcon(GetIcon.getIcon("nein_12.png"));
+                    }
                 }
             }
         } catch (Exception ex) {

@@ -668,8 +668,8 @@ public class GuiFilme extends PanelVorlage {
         int gesamt = Daten.listeFilme.size();
         int anzListe = tabelle.getModel().getRowCount();
         int runs = daten.starterClass.getStarts(Start.QUELLE_BUTTON).size();
-        int laufen = daten.starterClass.getDownloadsLaufen();
-        int warten = daten.starterClass.getDownloadsWarten();
+        int laufen = Daten.listeDownloads.getDownloadsLaufen();
+        int warten = Daten.listeDownloads.getDownloadsWarten();
         // Anzahl der Filme
         if (gesamt == anzListe) {
             if (anzListe == 1) {
