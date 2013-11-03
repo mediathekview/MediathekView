@@ -150,6 +150,7 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads(daten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads(daten));
         tabelle.setDefaultRenderer(Start.class, new CellRendererDownloads(daten));
+        tabelle.setDefaultRenderer(DatenDownload.class, new CellRendererDownloads(daten));
         tabelle.setDefaultRenderer(MVFilmSize.class, new CellRendererDownloads(daten));
         tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
@@ -457,22 +458,22 @@ public class GuiDownloads extends PanelVorlage {
         // ========================
         // und jetzt abarbeiten
         for (String url : urls) {
-            Start s = Daten.listeDownloads.getStart(url);
-            DatenDownload download = daten.listeDownloads.getDownloadByUrl(url);
+            DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
             if (starten) {
                 // --------------
                 // starten
-                if (s != null) {
-                    if (s.status > Start.STATUS_RUN) {
+                if (download.start != null) {
+                    if (download.start.status > Start.STATUS_RUN) {
                         // wenn er noch läuft gibts nix
                         // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
-                        int a = JOptionPane.showConfirmDialog(parentComponent, "Film nochmal starten?  ==> " + s.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR], "Fertiger Download", JOptionPane.YES_NO_OPTION);
+                        int a = JOptionPane.showConfirmDialog(parentComponent, "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL_NR],
+                                "Fertiger Download", JOptionPane.YES_NO_OPTION);
                         if (a != JOptionPane.YES_OPTION) {
                             // weiter mit der nächsten URL
                             continue;
                         }
                         arrayUrls.add(url);
-                        if (s.datenDownload.istAbo()) {
+                        if (download.istAbo()) {
                             // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                             daten.erledigteAbos.urlAusLogfileLoeschen(url);
                         }
@@ -482,9 +483,9 @@ public class GuiDownloads extends PanelVorlage {
             } else {
                 // ---------------
                 // stoppen
-                if (s != null) {
+                if (download.start != null) {
                     // wenn kein s -> dann gibts auch nichts zum stoppen oder wieder-starten
-                    if (s.status <= Start.STATUS_RUN) {
+                    if (download.start.status <= Start.STATUS_RUN) {
                         // löschen -> nur wenn noch läuft, sonst gibts nichts mehr zum löschen
                         arrayUrls.add(url);
                     }

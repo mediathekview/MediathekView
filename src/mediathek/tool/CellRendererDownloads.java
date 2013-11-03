@@ -63,47 +63,52 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     table, value, isSelected, hasFocus, row, column);
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
-            if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR || c == DatenDownload.DOWNLOAD_BANDBREITE_NR || c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+            if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR || c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+                DatenDownload datenDownload = (DatenDownload) value;
+                if (datenDownload.start != null) {
+                    setColor(this, datenDownload.start, isSelected);
+                }
+                if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                    this.setText(datenDownload.getTextRestzeit());
+                } else if (c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
+                    this.setText(datenDownload.getTextBandbreite());
+                }
+            } else if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 Start s = (Start) value;
                 if (s != null) {
                     setColor(this, s, isSelected);
-                    if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
-                        this.setText(s.datenDownload.getTextRestzeit(s));
-                    } else if (c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
-                        this.setText(s.datenDownload.getTextBandbreite(s));
-                    } else if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                        setHorizontalAlignment(SwingConstants.CENTER);
-                        if (1 < s.percent && s.percent < StarterClass.PROGRESS_FERTIG) {
-                            JProgressBar progressBar = new JProgressBar(0, 1000);
-                            JPanel panel = new JPanel(new BorderLayout());
-                            setColor(panel, s, isSelected);
-                            setColor(progressBar, s, isSelected);
-                            progressBar.setBorder(BorderFactory.createEmptyBorder());
-                            progressBar.setStringPainted(true);
-                            progressBar.setUI(new BasicProgressBarUI() {
-                                @Override
-                                protected Color getSelectionBackground() {
-                                    return UIManager.getDefaults().getColor("Table.foreground");
-                                }
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (1 < s.percent && s.percent < StarterClass.PROGRESS_FERTIG) {
+                        JProgressBar progressBar = new JProgressBar(0, 1000);
+                        JPanel panel = new JPanel(new BorderLayout());
+                        setColor(panel, s, isSelected);
+                        setColor(progressBar, s, isSelected);
+                        progressBar.setBorder(BorderFactory.createEmptyBorder());
+                        progressBar.setStringPainted(true);
+                        progressBar.setUI(new BasicProgressBarUI() {
+                            @Override
+                            protected Color getSelectionBackground() {
+                                return UIManager.getDefaults().getColor("Table.foreground");
+                            }
 
-                                @Override
-                                protected Color getSelectionForeground() {
-                                    return Color.white;
-                                }
-                            });
-                            panel.add(progressBar);
-                            panel.setBorder(BorderFactory.createEmptyBorder());
-                            progressBar.setValue(s.percent);
-                            double d = s.percent / 10.0;
-                            progressBar.setString(Double.toString(d) + "%");
-                            return panel;
-                        } else {
-                            this.setText(StarterClass.getTextProgress(s));
-                        }
+                            @Override
+                            protected Color getSelectionForeground() {
+                                return Color.white;
+                            }
+                        });
+                        panel.add(progressBar);
+                        panel.setBorder(BorderFactory.createEmptyBorder());
+                        progressBar.setValue(s.percent);
+                        double d = s.percent / 10.0;
+                        progressBar.setString(Double.toString(d) + "%");
+                        return panel;
                     } else {
                         this.setText(StarterClass.getTextProgress(s));
                     }
+                } else {
+                    this.setText(StarterClass.getTextProgress(s));
                 }
             } else if (c == DatenDownload.DOWNLOAD_GROESSE_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);

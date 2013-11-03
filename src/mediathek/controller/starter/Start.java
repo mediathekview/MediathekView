@@ -19,7 +19,6 @@
  */
 package mediathek.controller.starter;
 
-import mediathek.daten.DatenDownload;
 import mediathek.tool.Datum;
 import mediathek.tool.MVInputStream;
 
@@ -27,7 +26,7 @@ public class Start {
 
     public int status = STATUS_INIT;
     public int startcounter = 0;
-    public DatenDownload datenDownload = null;
+    //public DatenDownload datenDownload = null;
     public Process process = null; //Prozess des Download
     public int percent = -1; // Prozent fertiggestellt: -1=nix, 999=99,9%
     public long bandbreite = -1; // Downloadbandbreite
@@ -64,7 +63,6 @@ public class Start {
      * @param pprog
      * @param rrestart
      */
-    public Start(DatenDownload d) {
-        datenDownload = d;
+    public Start() {
     }
 }

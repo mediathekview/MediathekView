@@ -27,6 +27,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.History;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
+import mediathek.daten.DatenDownload;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 
@@ -60,7 +61,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             String url = table.getModel().getValueAt(r, DatenFilm.FILM_URL_NR).toString();
             boolean live = table.getModel().getValueAt(r, DatenFilm.FILM_THEMA_NR).equals(ListeFilme.THEMA_LIVE);
             boolean start = false;
-            Start s = Daten.listeDownloads.getStartOrgUrl(url);
+            DatenDownload datenDownload = Daten.listeDownloads.getStartOrgUrl(url);
             if (c == DatenFilm.FILM_GROESSE_NR || c == DatenFilm.FILM_DATUM_NR || c == DatenFilm.FILM_ZEIT_NR || c == DatenFilm.FILM_DAUER_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
@@ -68,10 +69,10 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 10));
                 setHorizontalAlignment(SwingConstants.RIGHT);
             }
-            if (s != null) {
-                if (s.datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
+            if (datenDownload.start != null) {
+                if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
                     start = true;
-                    switch (s.status) {
+                    switch (datenDownload.start.status) {
                         case Start.STATUS_INIT:
                             if (isSelected) {
                                 setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);

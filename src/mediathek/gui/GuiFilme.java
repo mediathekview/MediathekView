@@ -1190,13 +1190,13 @@ public class GuiFilme extends PanelVorlage {
         }
 
         private void showMenu(MouseEvent evt) {
-            LinkedList<Start> liste = Daten.listeDownloads.getStarts(Start.QUELLE_BUTTON);
+            LinkedList<DatenDownload> liste = Daten.listeDownloads.getStarts(Start.QUELLE_BUTTON);
             if (liste.size() > 0) {
                 JPopupMenu jPopupMenu = new JPopupMenu();
                 JMenuItem item;
-                for (Start s : liste) {
+                for (DatenDownload s : liste) {
                     // dann läuft er noch
-                    item = new JMenuItem("Beenden: [" + s.datenDownload.arr[DatenDownload.DOWNLOAD_SENDER_NR] + "]  " + s.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+                    item = new JMenuItem("Beenden: [" + s.arr[DatenDownload.DOWNLOAD_SENDER_NR] + "]  " + s.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
                     item.addActionListener(new BeobProgramm(s));
                     jPopupMenu.add(item);
                 }
@@ -1207,17 +1207,17 @@ public class GuiFilme extends PanelVorlage {
 
         private class BeobProgramm implements ActionListener {
 
-            Start start;
+            DatenDownload datenDownload;
 
-            public BeobProgramm(Start sstart) {
-                start = sstart;
+            public BeobProgramm(DatenDownload d) {
+                datenDownload = d;
             }
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (start != null) {
-                        Daten.listeDownloads.delStart(start.datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                    if (datenDownload.start != null) {
+                        Daten.listeDownloads.delStart(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                     }
                 } catch (Exception ex) {
                     System.err.println("GuiFilme.BeobProgramm: " + ex);
