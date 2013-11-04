@@ -167,7 +167,14 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     public void zurueckstellen() {
+        if (start != null) {
+            if (start.status > Start.STATUS_INIT) {
+                // zu spät
+                return;
+            }
+        }
         arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.TRUE.toString();
+        start = null;
     }
 
     public void starten(Daten ddaten) {

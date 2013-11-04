@@ -96,7 +96,7 @@ public final class MVJTable extends JTable {
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR;
                 this.setDragEnabled(true);
                 this.setDropMode(DropMode.INSERT_ROWS);
-                this.setTransferHandler(new TableRowTransferHandlerDownload(this, ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD));
+                this.setTransferHandler(new TableRowTransferHandlerDownload(this));
                 this.setModel(new TModelDownload(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_ABOS:
@@ -135,11 +135,9 @@ public final class MVJTable extends JTable {
         private final DataFlavor localObjectFlavor;
         private String[] transferedRows = null;
         private MVJTable mVJTable = null;
-        private int ereignisMelden;
 
-        public TableRowTransferHandlerDownload(MVJTable table, int ereignisMelden) {
+        public TableRowTransferHandlerDownload(MVJTable table) {
             this.mVJTable = table;
-            this.ereignisMelden = ereignisMelden;
             localObjectFlavor = new ActivationDataFlavor(
                     String[].class, DataFlavor.javaJVMLocalObjectMimeType, "String Array");
         }
@@ -183,7 +181,6 @@ public final class MVJTable extends JTable {
             try {
                 String[] values = (String[]) info.getTransferable().getTransferData(localObjectFlavor);
                 reorder(index, values);
-                ListenerMediathekView.notify(ereignisMelden, MVJTable.class.getSimpleName());
                 return true;
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -233,10 +230,12 @@ public final class MVJTable extends JTable {
         Daten.listeDownloads.addDatenDownloads(l1);
         Daten.listeDownloads.addDatenDownloads(l);
         Daten.listeDownloads.addDatenDownloads(l2);
+        Daten.listeDownloads.listeNummerieren();
         this.getRowSorter().setSortKeys(null);
         this.setRowSorter(null);
         this.setAutoCreateRowSorter(true);
         setSelected();
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, MVJTable.class.getSimpleName());
     }
 
     public void initTabelle() {
