@@ -31,27 +31,21 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.controller.starter.Start;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
 
 public class DialogEditDownload extends javax.swing.JDialog {
 
-    private DatenDownload download;
+    private DatenDownload datenDownload;
     private JTextField[] textfeldListe;
     private JLabel[] labelListe;
     private JCheckBox jCheckBox = new JCheckBox(DatenDownload.DOWNLOAD_PROGRAMM_RESTART);
-    private Daten ddaten;
-    private Start start = null;
     public boolean ok = false;
 
-    public DialogEditDownload(java.awt.Frame parent, boolean modal, Daten dd, DatenDownload ddownload) {
+    public DialogEditDownload(java.awt.Frame parent, boolean modal, DatenDownload ddownload) {
         super(parent, modal);
         initComponents();
-        download = ddownload;
-        ddaten = dd;
-        String url = download.arr[DatenDownload.DOWNLOAD_URL_NR];
-        start = Daten.listeDownloads.getStart(url);
+        datenDownload = ddownload;
         jButtonBeenden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,7 +83,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             labelListe[i] = label;
             JTextField textfeld = new JTextField();
             textfeld.setEditable(false);
-            textfeld.setText(download.arr[i]);
+            textfeld.setText(datenDownload.arr[i]);
             textfeldListe[i] = textfeld;
             addExtraFeld(i, gridbag, c);
             ++zeile;
@@ -107,7 +101,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
         }
         if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
             labelListe[i].setForeground(Color.BLUE);
-            jCheckBox.setSelected(download.isRestart());
+            jCheckBox.setSelected(datenDownload.isRestart());
             jCheckBox.addActionListener(new BeobCheckbox());
             gridbag.setConstraints(labelListe[i], c);
             jPanelExtra.add(labelListe[i]);
@@ -118,16 +112,16 @@ public class DialogEditDownload extends javax.swing.JDialog {
         } else {
             if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
                 labelListe[i].setForeground(Color.BLUE);
-                if (download.getArt() != Start.ART_DOWNLOAD) {
+                if (datenDownload.getArt() != Start.ART_DOWNLOAD) {
                     textfeldListe[i].setEditable(true);
                     textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                 }
             } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                textfeldListe[i].setText(Start.getTextProgress(start));
+                textfeldListe[i].setText(Start.getTextProgress(datenDownload.start));
             } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
-                textfeldListe[i].setText(download.getTextRestzeit());
+                textfeldListe[i].setText(datenDownload.getTextRestzeit());
             } else if (i == DatenDownload.DOWNLOAD_ART_NR) {
-                switch (download.getArt()) {
+                switch (datenDownload.getArt()) {
                     case Start.ART_DOWNLOAD:
                         textfeldListe[i].setText(Start.ART_DOWNLOAD_TXT);
                         break;
@@ -136,7 +130,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                         break;
                 }
             } else if (i == DatenDownload.DOWNLOAD_QUELLE_NR) {
-                switch (download.getQuelle()) {
+                switch (datenDownload.getQuelle()) {
                     case Start.QUELLE_ALLE:
                         textfeldListe[i].setText(Start.QUELLE_ALLE_TXT);
                         break;
@@ -265,7 +259,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
         }
 
         private void eingabe() {
-            download.arr[nr] = textfeldListe[nr].getText().trim();
+            datenDownload.arr[nr] = textfeldListe[nr].getText().trim();
         }
     }
 
@@ -273,7 +267,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            download.arr[DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBox.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBox.isSelected());
         }
     }
 }

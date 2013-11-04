@@ -92,11 +92,11 @@ public final class MVJTable extends JTable {
                 maxSpalten = DatenDownload.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
                 //indexSpalte = DatenDownload.DOWNLOAD_FILM_NR_NR;
-                indexSpalte = DatenDownload.DOWNLOAD_NR_NR;
+                indexSpalte = DatenDownload.DOWNLOAD_URL_NR;
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR;
                 this.setDragEnabled(true);
                 this.setDropMode(DropMode.INSERT_ROWS);
-                this.setTransferHandler(new TableRowTransferHandler(this, ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD));
+                this.setTransferHandler(new TableRowTransferHandlerDownload(this, ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD));
                 this.setModel(new TModelDownload(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_ABOS:
@@ -130,14 +130,14 @@ public final class MVJTable extends JTable {
         reihe = getArray(maxSpalten);
     }
 
-    class TableRowTransferHandler extends TransferHandler {
+    class TableRowTransferHandlerDownload extends TransferHandler {
 
         private final DataFlavor localObjectFlavor;
         private String[] transferedRows = null;
         private MVJTable mVJTable = null;
         private int ereignisMelden;
 
-        public TableRowTransferHandler(MVJTable table, int ereignisMelden) {
+        public TableRowTransferHandlerDownload(MVJTable table, int ereignisMelden) {
             this.mVJTable = table;
             this.ereignisMelden = ereignisMelden;
             localObjectFlavor = new ActivationDataFlavor(
@@ -150,7 +150,7 @@ public final class MVJTable extends JTable {
             TModel model = (TModel) mVJTable.getModel();
             ArrayList< String> list = new ArrayList<>();
             for (int i : mVJTable.getSelectedRows()) {
-                list.add(model.getValueAt(mVJTable.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_NR_NR).toString());
+                list.add(model.getValueAt(mVJTable.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_URL_NR).toString());
             }
             transferedRows = list.toArray(new String[]{});
             return new DataHandler(transferedRows, localObjectFlavor.getMimeType());
@@ -205,8 +205,8 @@ public final class MVJTable extends JTable {
         TModel tModel = (TModel) this.getModel();
         // listeDownloads neu nach der Reihenfolge in der Tabelle erstellen
         for (int i = 0; i < this.getRowCount(); ++i) {
-            String nr = tModel.getValueAt(this.convertRowIndexToModel(i), indexSpalte).toString();
-            DatenDownload d = Daten.listeDownloads.getDownloadByNr(nr);
+            String idx = tModel.getValueAt(this.convertRowIndexToModel(i), indexSpalte).toString();
+            DatenDownload d = Daten.listeDownloads.getDownloadByUrl(idx);
             if (d != null) {
                 Daten.listeDownloads.remove(d);
                 Daten.listeDownloads.add(d);
@@ -224,7 +224,7 @@ public final class MVJTable extends JTable {
             l2.add(Daten.listeDownloads.get(i));
         }
         for (String s : zeilen) {
-            DatenDownload d = Daten.listeDownloads.getDownloadByNr(s);
+            DatenDownload d = Daten.listeDownloads.getDownloadByUrl(s);
             l1.remove(d);
             l2.remove(d);
             l.add(d);
