@@ -1217,7 +1217,7 @@ public class GuiFilme extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (datenDownload.start != null) {
-                        Daten.listeDownloads.delDownloadByUrl(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                        Daten.listeDownloads.delDownloadByUrl(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR], false /*nurStart*/);
                     }
                 } catch (Exception ex) {
                     System.err.println("GuiFilme.BeobProgramm: " + ex);

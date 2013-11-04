@@ -121,7 +121,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     public void vorziehen() {
-        downloadVorziehen();
+        downloadsVorziehen();
     }
 
     public void zurueckstellen() {
@@ -147,10 +147,9 @@ public class GuiDownloads extends PanelVorlage {
         panelBeschreibungSetzen();
         jRadioButtonAbos.setForeground(GuiKonstanten.ABO_FOREGROUND);
         jRadioButtonDownloads.setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
-        tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads(daten));
-        tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads(daten));
-        tabelle.setDefaultRenderer(Start.class, new CellRendererDownloads(daten));
-        tabelle.setDefaultRenderer(MVFilmSize.class, new CellRendererDownloads(daten));
+        tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads());
+        tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads());
+        tabelle.setDefaultRenderer(MVFilmSize.class, new CellRendererDownloads());
         tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
@@ -290,16 +289,14 @@ public class GuiDownloads extends PanelVorlage {
             dialog.setVisible(true);
             if (dialog.ok) {
                 datenDownload.aufMichKopieren(datenDownloadKopy);
-                tabelle.getSelected();
                 tabelleLaden();
-                tabelle.setSelected();
             }
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
 
-    private void downloadVorziehen() {
+    private void downloadsVorziehen() {
         String[] urls;
         // ==========================
         // erst mal die URLs sammeln
@@ -310,10 +307,7 @@ public class GuiDownloads extends PanelVorlage {
                 int row = tabelle.convertRowIndexToModel(rows[i]);
                 urls[i] = tabelle.getModel().getValueAt(row, DatenDownload.DOWNLOAD_URL_NR).toString();
             }
-            for (String url : urls) {
-                daten.listeDownloads.downloadVorziehen(url);
-            }
-            tabelleLaden();
+            Daten.listeDownloads.downloadsVorziehen(urls);
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
@@ -325,7 +319,7 @@ public class GuiDownloads extends PanelVorlage {
         int row = tabelle.getSelectedRow();
         if (row >= 0) {
             String url = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_URL_NR).toString();
-            DatenDownload download = daten.listeDownloads.getDownloadByUrl(url);
+            DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
             String s = download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
             if (!s.endsWith(File.separator)) {
                 s += File.separator;
@@ -382,20 +376,19 @@ public class GuiDownloads extends PanelVorlage {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
             ArrayList<String> arrayUrls = new ArrayList<>();
-            ArrayList<String[]> arrayUrlsAbo = new ArrayList<String[]>();
+            ArrayList<String[]> arrayUrlsAbo = new ArrayList<>();
+            String url;
             for (int row : rows) {
-                arrayUrls.add(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_URL_NR).toString());
-            }
-            for (String url : arrayUrls) {
-                DatenDownload download = daten.listeDownloads.getDownloadByUrl(url);
+                url = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_URL_NR).toString();
+                DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
                 if (dauerhaft) {
+                    arrayUrls.add(url);
                     if (download.istAbo()) {
                         // ein Abo wird zusätzlich ins Logfile geschrieben
                         arrayUrlsAbo.add(new String[]{download.arr[DatenDownload.DOWNLOAD_THEMA_NR],
                             download.arr[DatenDownload.DOWNLOAD_TITEL_NR],
                             download.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]});
                     }
-                    Daten.listeDownloads.delDownloadByUrl(url);
                 } else {
                     // wenn nicht dauerhaft
                     download.zurueckstellen();
@@ -404,7 +397,7 @@ public class GuiDownloads extends PanelVorlage {
             if (!arrayUrlsAbo.isEmpty()) {
                 daten.erledigteAbos.zeileSchreiben(arrayUrlsAbo);
             }
-            Daten.listeDownloads.delDownloadByUrl(arrayUrls);
+            Daten.listeDownloads.delDownloadByUrl(arrayUrls, false /*nurStart*/);
             tabelleLaden();
             ersteZeileMarkieren();
         } else {
@@ -431,6 +424,20 @@ public class GuiDownloads extends PanelVorlage {
         String[] urls;
         ArrayList<String> arrayUrls = new ArrayList<>();
         ArrayList<DatenDownload> arrayDownload = new ArrayList<>();
+        // ==========================
+        // erst mal die Liste nach der Tabelle sortieren
+        if (starten) {
+            if (tabelle.getRowCount() == 0) {
+                return;
+            }
+            for (int i = 0; i < tabelle.getRowCount(); ++i) {
+                String url = tabelle.getModel().getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString();
+                DatenDownload datenDownload = Daten.listeDownloads.getDownloadByUrl(url);
+                Daten.listeDownloads.remove(datenDownload);
+                Daten.listeDownloads.add(datenDownload);
+            }
+            Daten.listeDownloads.listeNummerieren();
+        }
         // ==========================
         // erst mal die URLs sammeln
         if (alle) {
@@ -494,7 +501,7 @@ public class GuiDownloads extends PanelVorlage {
         }
         // ========================
         // jetzt noch die Starts stoppen
-        Daten.listeDownloads.delDownloadByUrl(arrayUrls);
+        Daten.listeDownloads.delDownloadByUrl(arrayUrls, true /*nurStart*/);
         // und die Downloads starten oder stoppen
         if (starten) {
             //alle Downloads starten/wiederstarten
@@ -503,6 +510,7 @@ public class GuiDownloads extends PanelVorlage {
             //oder alle Downloads stoppen
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getName());
         }
+        tabelleLaden();
     }
 
     private void wartendeDownloadsStoppen() {
@@ -518,16 +526,11 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         }
-        for (String url : urls) {
-            Daten.listeDownloads.delDownloadByUrl(url);
-        }
+        Daten.listeDownloads.delDownloadByUrl(urls, true /*nurStart*/);
     }
 
     private void tabelleProzentGeaendert() {
         Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
-//        stopBeob = true;
-//        tabelle.fireTableDataChanged(true /*setSpalten*/);
-//        stopBeob = false;
         setInfo();
     }
 
@@ -564,7 +567,7 @@ public class GuiDownloads extends PanelVorlage {
             int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
                 int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
-                DatenDownload download = daten.listeDownloads.getDownloadByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                DatenDownload download = Daten.listeDownloads.getDownloadByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString());
                 if (download != null) {
                     // wenn beim Löschen aufgerufen, ist der Download schon weg
                     if (download.film == null) {
@@ -808,7 +811,7 @@ public class GuiDownloads extends PanelVorlage {
             itemVorziehen.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
-                    downloadVorziehen();
+                    downloadsVorziehen();
                 }
             });
             JMenuItem itemLoeschen = new JMenuItem("Download zurückstellen");

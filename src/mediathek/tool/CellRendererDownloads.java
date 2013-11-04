@@ -32,17 +32,10 @@ import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.starter.Start;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 
 public class CellRendererDownloads extends DefaultTableCellRenderer {
-
-    private Daten ddaten;
-
-    public CellRendererDownloads(Daten d) {
-        ddaten = d;
-    }
 
     @Override
     public Component getTableCellRendererComponent(
@@ -64,10 +57,10 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             int c = table.convertColumnIndexToModel(column);
             if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
-                Start s = (Start) value;
-                if (s != null) {
-                    setColor(this, s, isSelected);
-                    if (1 < s.percent && s.percent < Start.PROGRESS_FERTIG) {
+                DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_REF_NR);
+                if (datenDownload.start != null) {
+                    setColor(this, datenDownload.start, isSelected);
+                    if (1 < datenDownload.start.percent && datenDownload.start.percent < Start.PROGRESS_FERTIG) {
                         JProgressBar progressBar = new JProgressBar(0, 1000);
                         progressBar.setBorder(BorderFactory.createEmptyBorder());
                         progressBar.setStringPainted(true);
@@ -85,17 +78,17 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                                 return Color.white;
                             }
                         });
-                        setColor(panel, s, isSelected);
-                        setColor(progressBar, s, isSelected);
-                        progressBar.setValue(s.percent);
-                        double d = s.percent / 10.0;
+                        setColor(panel, datenDownload.start, isSelected);
+                        setColor(progressBar, datenDownload.start, isSelected);
+                        progressBar.setValue(datenDownload.start.percent);
+                        double d = datenDownload.start.percent / 10.0;
                         progressBar.setString(Double.toString(d) + "%");
                         return panel;
                     } else {
-                        this.setText(Start.getTextProgress(s));
+                        this.setText(Start.getTextProgress(datenDownload.start));
                     }
                 } else {
-                    this.setText(Start.getTextProgress(s));
+                    this.setText("");
                 }
             } else {
                 DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_REF_NR);

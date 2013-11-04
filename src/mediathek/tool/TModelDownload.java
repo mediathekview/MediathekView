@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 
 public class TModelDownload extends TModel {
@@ -32,8 +31,8 @@ public class TModelDownload extends TModel {
         for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
             if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                 types[i] = Datum.class;
-            } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                types[i] = Start.class;
+//            } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+//                types[i] = Start.class;
             } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
                 types[i] = MVFilmSize.class;
             } else if (i == DatenDownload.DOWNLOAD_REF_NR) {
