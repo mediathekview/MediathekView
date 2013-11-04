@@ -667,9 +667,9 @@ public class GuiFilme extends PanelVorlage {
         boolean open = false;
         int gesamt = Daten.listeFilme.size();
         int anzListe = tabelle.getModel().getRowCount();
-        int runs = Daten.listeDownloads.getStarts(Start.QUELLE_BUTTON).size();
-        int laufen = Daten.listeDownloads.getDownloadsLaufen();
-        int warten = Daten.listeDownloads.getDownloadsWarten();
+        int runs = Daten.listeDownloads.getListteStartsNotFinished(Start.QUELLE_BUTTON).size();
+        int laufen = Daten.listeDownloads.getStartsRun();
+        int warten = Daten.listeDownloads.getStartsNotStarted();
         // Anzahl der Filme
         if (gesamt == anzListe) {
             if (anzListe == 1) {
@@ -1190,7 +1190,7 @@ public class GuiFilme extends PanelVorlage {
         }
 
         private void showMenu(MouseEvent evt) {
-            LinkedList<DatenDownload> liste = Daten.listeDownloads.getStarts(Start.QUELLE_BUTTON);
+            LinkedList<DatenDownload> liste = Daten.listeDownloads.getListteStartsNotFinished(Start.QUELLE_BUTTON);
             if (liste.size() > 0) {
                 JPopupMenu jPopupMenu = new JPopupMenu();
                 JMenuItem item;
@@ -1217,7 +1217,7 @@ public class GuiFilme extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (datenDownload.start != null) {
-                        Daten.listeDownloads.delStart(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                        Daten.listeDownloads.delDownloadByUrl(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                     }
                 } catch (Exception ex) {
                     System.err.println("GuiFilme.BeobProgramm: " + ex);

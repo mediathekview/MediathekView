@@ -94,7 +94,7 @@ public class StarterClass {
                         //alle 5 Sekunden einen Download starten
                         this.wait(5 * 1000);
                     }
-                    Daten.listeDownloads.buttonStartsPutzen(); // Button Starts aus der Liste löschen
+//                    Daten.listeDownloads.buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     this.wait(3 * 1000);
                 } catch (Exception ex) {
                     Log.fehlerMeldung(613822015, Log.FEHLER_ART_PROG, "StarterClass.Starten.run", ex);

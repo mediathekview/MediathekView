@@ -33,7 +33,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.daten.Daten;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenBlacklist;
 import mediathek.daten.DatenDownload;
@@ -197,7 +196,7 @@ public class IoXmlLesen {
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
             DatenPset datenPset = null;
-            try (InputStreamReader in = new InputStreamReader(Files.newInputStream(xmlFilePath), Konstanten.KODIERUNG_UTF)){
+            try (InputStreamReader in = new InputStreamReader(Files.newInputStream(xmlFilePath), Konstanten.KODIERUNG_UTF)) {
                 XMLStreamReader parser = inFactory.createXMLStreamReader(in);
                 while (parser.hasNext()) {
                     event = parser.next();
@@ -224,13 +223,14 @@ public class IoXmlLesen {
                             //Abo
                             DatenAbo datenAbo = new DatenAbo();
                             if (get(parser, event, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
-                                ddaten.listeAbo.addAbo(datenAbo);
+                                Daten.listeAbo.addAbo(datenAbo);
                             }
                         } else if (parser.getLocalName().equals(DatenDownload.DOWNLOAD)) {
                             //Downloads
                             DatenDownload d = new DatenDownload();
                             if (get(parser, event, DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr)) {
-                                ddaten.listeDownloads.add(d);
+                                d.init();
+                                Daten.listeDownloads.add(d);
                             }
                         } else if (parser.getLocalName().equals(DatenBlacklist.BLACKLIST)) {
                             //Blacklist
@@ -258,12 +258,11 @@ public class IoXmlLesen {
             } catch (XMLStreamException | IOException ex) {
                 Log.fehlerMeldung(392840096, Log.FEHLER_ART_PROG, "IoXml.xmlDatenLesen", ex);
             }
-            ddaten.listeDownloads.listeNummerieren();
+            Daten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
             Daten.filmeLaden.getDownloadUrlsFilmlisten(false).sort();
         }
     }
-
 
     private static boolean get(XMLStreamReader parser, int event, String xmlElem, String[] xmlNames, String[] strRet) {
         return get(parser, xmlElem, xmlNames, strRet, true);

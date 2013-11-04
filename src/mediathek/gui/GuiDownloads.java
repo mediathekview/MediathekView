@@ -284,12 +284,12 @@ public class GuiDownloads extends PanelVorlage {
         if (row != -1) {
             int delRow = tabelle.convertRowIndexToModel(row);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-            DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
-            DatenDownload d = download.getCopy();
-            DialogEditDownload dialog = new DialogEditDownload(null, true, daten, d);
+            DatenDownload datenDownload = Daten.listeDownloads.getDownloadByUrl(url);
+            DatenDownload datenDownloadKopy = datenDownload.getCopy();
+            DialogEditDownload dialog = new DialogEditDownload(null, true, datenDownloadKopy);
             dialog.setVisible(true);
             if (dialog.ok) {
-                download.aufMichKopieren(d);
+                datenDownload.aufMichKopieren(datenDownloadKopy);
                 tabelle.getSelected();
                 tabelleLaden();
                 tabelle.setSelected();
@@ -395,7 +395,7 @@ public class GuiDownloads extends PanelVorlage {
                             download.arr[DatenDownload.DOWNLOAD_TITEL_NR],
                             download.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]});
                     }
-                    daten.listeDownloads.delDownloadByUrl(url);
+                    Daten.listeDownloads.delDownloadByUrl(url);
                 } else {
                     // wenn nicht dauerhaft
                     download.zurueckstellen();
@@ -404,7 +404,7 @@ public class GuiDownloads extends PanelVorlage {
             if (!arrayUrlsAbo.isEmpty()) {
                 daten.erledigteAbos.zeileSchreiben(arrayUrlsAbo);
             }
-            Daten.listeDownloads.delStart(arrayUrls);
+            Daten.listeDownloads.delDownloadByUrl(arrayUrls);
             tabelleLaden();
             ersteZeileMarkieren();
         } else {
@@ -494,7 +494,7 @@ public class GuiDownloads extends PanelVorlage {
         }
         // ========================
         // jetzt noch die Starts stoppen
-        Daten.listeDownloads.delStart(arrayUrls);
+        Daten.listeDownloads.delDownloadByUrl(arrayUrls);
         // und die Downloads starten oder stoppen
         if (starten) {
             //alle Downloads starten/wiederstarten
@@ -511,15 +511,15 @@ public class GuiDownloads extends PanelVorlage {
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
             int delRow = tabelle.convertRowIndexToModel(i);
             String url = tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-            Start s = Daten.listeDownloads.getStart(url);
-            if (s != null) {
-                if (s.status < Start.STATUS_RUN) {
+            DatenDownload datenDownload = Daten.listeDownloads.getDownloadByUrl(url);
+            if (datenDownload.start != null) {
+                if (datenDownload.start.status < Start.STATUS_RUN) {
                     urls.add(url);
                 }
             }
         }
         for (String url : urls) {
-            Daten.listeDownloads.delStart(url);
+            Daten.listeDownloads.delDownloadByUrl(url);
         }
     }
 
@@ -534,8 +534,8 @@ public class GuiDownloads extends PanelVorlage {
     private void setInfo() {
         String textLinks;
         // Text links: Zeilen Tabelle
-        int laufen = Daten.listeDownloads.getDownloadsLaufen();
-        int warten = Daten.listeDownloads.getDownloadsWarten();
+        int laufen = Daten.listeDownloads.getStartsRun();
+        int warten = Daten.listeDownloads.getStartsNotStarted();
         int gesamt = tabelle.getModel().getRowCount();
         if (gesamt == 1) {
             textLinks = "1 Download,";
@@ -755,14 +755,13 @@ public class GuiDownloads extends PanelVorlage {
             boolean wartenOderLaufen = false;
             if (row >= 0) {
                 int delRow = tabelle.convertRowIndexToModel(row);
-                Start s = Daten.listeDownloads.getStart(tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
-                if (s != null) {
-                    if (s.status <= Start.STATUS_RUN) {
+                DatenDownload datenDownload = Daten.listeDownloads.getDownloadByUrl(tabelle.getModel().getValueAt(delRow, DatenDownload.DOWNLOAD_URL_NR).toString());
+                if (datenDownload.start != null) {
+                    if (datenDownload.start.status <= Start.STATUS_RUN) {
                         wartenOderLaufen = true;
                     }
                 }
             }
-
             // Download starten
             JMenuItem itemStarten = new JMenuItem("Download starten");
             itemStarten.setIcon(GetIcon.getIcon("player_play_16.png"));
