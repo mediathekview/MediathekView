@@ -48,6 +48,7 @@ public class GuiKonstanten {
     public static Color FARBE_GRAU = new Color(225, 225, 225);
     public static Color FARBE_GRAU_SEL = new Color(190, 190, 190);
     // Tabelle Abos
+    public static Color ANSEHEN = new Color(0, 130, 10);
     public static Color ABO_FOREGROUND = new Color(138, 67, 0);
     public static Color ABO = new Color(255, 245, 229);
     public static Color ABO_SEL = new Color(255, 204, 127);
@@ -57,8 +58,13 @@ public class GuiKonstanten {
     // Tabelle Downloads
     public static Color DOWNLOAD_FARBE_WAIT = new Color(239, 244, 255);
     public static Color DOWNLOAD_FARBE_WAIT_SEL = new Color(199, 206, 222);
+    // Download läuft
     public static Color DOWNLOAD_FARBE_RUN = new Color(241, 228, 188);
     public static Color DOWNLOAD_FARBE_RUN_SEL = new Color(206, 178, 92);
+    // kann bereits angesehen werden
+//    public static Color DOWNLOAD_FARBE_RUN_ANSEHEHN = new Color(241, 216, 140);
+//    public static Color DOWNLOAD_FARBE_RUN_ANSEHEN_SEL = new Color(206, 168, 52);
+    // und ist jetzt fertig
     public static Color DOWNLOAD_FARBE_FERTIG = new Color(188, 241, 195);
     public static Color DOWNLOAD_FARBE_FERTIG_SEL = new Color(115, 206, 92);
     public static Color DOWNLOAD_FARBE_ERR = new Color(241, 188, 221);

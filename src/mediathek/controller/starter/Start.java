@@ -34,6 +34,7 @@ public class Start {
     public int percent = -1; // Prozent fertiggestellt: -1=nix, 999=99,9%
     public long bandbreite = -1; // Downloadbandbreite
     public boolean stoppen = false;
+    public boolean beginnAnschauen = false;
     public Datum startZeit = null;
     public long restSekunden = -1;
     public MVInputStream mVInputStream = null;

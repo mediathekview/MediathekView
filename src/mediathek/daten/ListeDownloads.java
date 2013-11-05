@@ -184,6 +184,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     }
                 }
                 if (nurStart) {
+                    datenDownload.mVFilmSize.reset();
                     datenDownload.start = null;
                 } else {
                     it.remove();
@@ -210,6 +211,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                             }
                         }
                         if (nurStart) {
+                            datenDownload.mVFilmSize.reset();
                             datenDownload.start = null;
                         } else {
                             it.remove();
@@ -280,16 +282,17 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void setModelProgress(TModelDownload tModel) {
-        for (int i = 0; i < tModel.getRowCount(); ++i) {
-            String url = tModel.getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString();
-            DatenDownload d = Daten.listeDownloads.getDownloadByUrl(url);
-            if (d.start != null) {
-                if (d.start.status == Start.STATUS_RUN) {
+        for (int row = 0; row < tModel.getRowCount(); ++row) {
+            DatenDownload datenDownload = (DatenDownload) tModel.getValueAt(row, DatenDownload.DOWNLOAD_REF_NR);
+//            String url = tModel.getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString();
+//            DatenDownload datenDownload = Daten.listeDownloads.getDownloadByUrl(url);
+            if (datenDownload.start != null) {
+                if (datenDownload.start.status == Start.STATUS_RUN) {
                     // wichtig ist nur "s", die anderen nur, damit sie geändert werden, werden im Cellrenderer berechnet
-                    tModel.setValueAt(d.getTextBandbreite(), i, DatenDownload.DOWNLOAD_BANDBREITE_NR);
-                    tModel.setValueAt(d.getTextRestzeit(), i, DatenDownload.DOWNLOAD_RESTZEIT_NR);
-                    tModel.setValueAt(null, i, DatenDownload.DOWNLOAD_PROGRESS_NR);
-                    tModel.setValueAt(d.mVFilmSize, i, DatenDownload.DOWNLOAD_GROESSE_NR);
+                    tModel.setValueAt(datenDownload.getTextBandbreite(), row, DatenDownload.DOWNLOAD_BANDBREITE_NR);
+                    tModel.setValueAt(datenDownload.getTextRestzeit(), row, DatenDownload.DOWNLOAD_RESTZEIT_NR);
+                    tModel.setValueAt(null, row, DatenDownload.DOWNLOAD_PROGRESS_NR);
+                    tModel.setValueAt(datenDownload.mVFilmSize, row, DatenDownload.DOWNLOAD_GROESSE_NR);
                 }
             }
         }

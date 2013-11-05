@@ -64,11 +64,11 @@ import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 public class GuiDownloads extends PanelVorlage {
-
+    
     private MVFilmInformation filmInfoHud;
     private PanelBeschreibung panelBeschreibung;
     private int zeileVon = -1;
-
+    
     public GuiDownloads(Daten d, Component parentComponent) {
         super(d, parentComponent);
         initComponents();
@@ -103,39 +103,39 @@ public class GuiDownloads extends PanelVorlage {
         daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD);
         aktFilmSetzen();
     }
-
+    
     public void aktualisieren() {
         downloadsAktualisieren();
     }
-
+    
     public void starten(boolean alle) {
         filmStartenWiederholenStoppen(alle, true /* starten */);
     }
-
+    
     public void stoppen(boolean alle) {
         filmStartenWiederholenStoppen(alle, false /* starten */);
     }
-
+    
     public void wartendeStoppen() {
         wartendeDownloadsStoppen();
     }
-
+    
     public void vorziehen() {
         downloadsVorziehen();
     }
-
+    
     public void zurueckstellen() {
         downloadLoeschen(false);
     }
-
+    
     public void loeschen() {
         downloadLoeschen(true);
     }
-
+    
     public void aufraeumen() {
         downloadsAufraeumen();
     }
-
+    
     public void aendern() {
         downloadAendern();
     }
@@ -177,7 +177,7 @@ public class GuiDownloads extends PanelVorlage {
             }
         });
     }
-
+    
     private void addListenerMediathekView() {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
             @Override
@@ -232,11 +232,11 @@ public class GuiDownloads extends PanelVorlage {
             }
         });
     }
-
+    
     private void panelBeschreibungSetzen() {
         jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR]));
     }
-
+    
     private synchronized void tabelleLaden() {
         // nur Downloads die schon in der Liste sind werden geladen
         boolean abo, download;
@@ -258,7 +258,7 @@ public class GuiDownloads extends PanelVorlage {
         aktFilmSetzen();
         setInfo();
     }
-
+    
     private synchronized void downloadsAktualisieren() {
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
         downloadsAufraeumen();
@@ -271,13 +271,13 @@ public class GuiDownloads extends PanelVorlage {
             filmStartenWiederholenStoppen(true /*alle*/, true /*starten*/);
         }
     }
-
+    
     private synchronized void downloadsAufraeumen() {
         // abgeschlossene Downloads werden aus der Tabelle/Liste entfernt
         // die Starts dafür werden auch gelöscht
         Daten.listeDownloads.listePutzen();
     }
-
+    
     private synchronized void downloadAendern() {
         int row = tabelle.getSelectedRow();
         if (row != -1) {
@@ -295,7 +295,7 @@ public class GuiDownloads extends PanelVorlage {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
-
+    
     private void downloadsVorziehen() {
         String[] urls;
         // ==========================
@@ -312,7 +312,7 @@ public class GuiDownloads extends PanelVorlage {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
-
+    
     private void zielordnerOeffnen() {
         boolean gut = false;
         File sFile = null;
@@ -371,7 +371,7 @@ public class GuiDownloads extends PanelVorlage {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
-
+    
     private void downloadLoeschen(boolean dauerhaft) {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
@@ -404,7 +404,7 @@ public class GuiDownloads extends PanelVorlage {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
-
+    
     private void ersteZeileMarkieren() {
         if (tabelle.getRowCount() > 0) {
             // sonst ist schon eine Zeile markiert
@@ -413,9 +413,9 @@ public class GuiDownloads extends PanelVorlage {
                 tabelle.setRowSelectionInterval(0, 0);
             }
         }
-
+        
     }
-
+    
     private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */) {
         // bezieht sich immer auf "alle" oder nur die markierten
         // Film der noch keinen Starts hat wird gestartet
@@ -426,13 +426,12 @@ public class GuiDownloads extends PanelVorlage {
         ArrayList<DatenDownload> arrayDownload = new ArrayList<>();
         // ==========================
         // erst mal die Liste nach der Tabelle sortieren
-        if (starten) {
+        if (starten && alle) {
             if (tabelle.getRowCount() == 0) {
                 return;
             }
             for (int i = 0; i < tabelle.getRowCount(); ++i) {
-                String url = tabelle.getModel().getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString();
-                DatenDownload datenDownload = Daten.listeDownloads.getDownloadByUrl(url);
+                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR);
                 Daten.listeDownloads.remove(datenDownload);
                 Daten.listeDownloads.add(datenDownload);
             }
@@ -512,7 +511,7 @@ public class GuiDownloads extends PanelVorlage {
         }
         tabelleLaden();
     }
-
+    
     private void wartendeDownloadsStoppen() {
         // es werden alle noch nicht gestarteten Downloads gelöscht
         ArrayList<String> urls = new ArrayList<>();
@@ -528,12 +527,12 @@ public class GuiDownloads extends PanelVorlage {
         }
         Daten.listeDownloads.delDownloadByUrl(urls, true /*nurStart*/);
     }
-
+    
     private void tabelleProzentGeaendert() {
         Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
         setInfo();
     }
-
+    
     private void setInfo() {
         String textLinks;
         // Text links: Zeilen Tabelle
@@ -560,7 +559,7 @@ public class GuiDownloads extends PanelVorlage {
         // Infopanel setzen
         daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD, textLinks);
     }
-
+    
     private void aktFilmSetzen() {
         if (this.isShowing()) {
             DatenFilm aktFilm = null;
@@ -706,7 +705,7 @@ public class GuiDownloads extends PanelVorlage {
     // End of variables declaration//GEN-END:variables
 
     private class BeobachterTableSelect implements ListSelectionListener {
-
+        
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (!event.getValueIsAdjusting()) {
@@ -714,14 +713,14 @@ public class GuiDownloads extends PanelVorlage {
             }
         }
     }
-
+    
     public class BeobMausTabelle extends MouseAdapter {
-
+        
         private Point p;
-
+        
         public BeobMausTabelle() {
         }
-
+        
         @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
@@ -730,21 +729,21 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         }
-
+        
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
-
+        
         @Override
         public void mouseReleased(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
-
+        
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
             int nr = tabelle.rowAtPoint(p);
@@ -970,9 +969,9 @@ public class GuiDownloads extends PanelVorlage {
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
-
+    
     private class BeobAnzeige implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             tabelleLaden();

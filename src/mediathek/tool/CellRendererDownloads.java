@@ -96,6 +96,12 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 //                Start s = Daten.listeDownloads.getStart(url);
                 if (datenDownload.start != null) {
                     setColor(this, datenDownload.start, isSelected);
+                    if (datenDownload.start.beginnAnschauen) {
+                        if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                            setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
+                            setForeground(GuiKonstanten.ANSEHEN);
+                        }
+                    }
                 }
                 //DatenDownload datenDownload = Daten.listeDownloads.getDownloadByUrl(url);
                 // Starts
@@ -138,12 +144,21 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 }
                 break;
             case Start.STATUS_RUN:
+//                if (s.beginnAnschauen) {
+//                    if (isSelected) {
+//                        c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_ANSEHEN_SEL);
+//                    } else {
+//                        c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_ANSEHEHN);
+//                    }
+//                    break;
+//                } else {
                 if (isSelected) {
                     c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
                 } else {
                     c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
                 }
                 break;
+//                }
             case Start.STATUS_FERTIG:
                 if (isSelected) {
                     c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
