@@ -316,7 +316,7 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                tabelle.fireTableDataChanged(true /*setSpalten*/);
+//////                tabelle.fireTableDataChanged(true /*setSpalten*/);
                 setInfo();
             }
         });

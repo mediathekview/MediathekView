@@ -267,7 +267,6 @@ public class StarterClass {
             datenDownload.start.restSekunden = -1;
             datenDownload.start.percent = Start.PROGRESS_FERTIG;
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
-//            start.datenDownload.statusMelden(DatenDownload.PROGRESS_FERTIG);
             notifyStartEvent();
         }
 
@@ -359,6 +358,9 @@ public class StarterClass {
                                     int diffZeit = datenDownload.start.startZeit.diffInSekunden();
                                     int restProzent = 1000 - (int) p;
                                     datenDownload.start.restSekunden = (diffZeit * restProzent / p);
+                                    // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
+                                    // als die bereits geladene Speilzeit des Films
+                                    bereitsAnschauen(datenDownload);
                                 }
                                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
                             }
@@ -403,6 +405,28 @@ public class StarterClass {
             datenDownload.mVFilmSize.setAktSize(-1);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
             notifyStartEvent();
+        }
+    }
+
+    private void bereitsAnschauen(DatenDownload datenDownload) {
+        if (datenDownload.film != null) {
+            if (datenDownload.film.dauerL > 0
+                    && datenDownload.start.restSekunden > 0
+                    && datenDownload.mVFilmSize.getAktSize() > 0
+                    && datenDownload.mVFilmSize.getSize() > 0) {
+                // macht nur dann Sinn
+                long zeitGeladen = datenDownload.film.dauerL * datenDownload.mVFilmSize.getAktSize() / datenDownload.mVFilmSize.getSize();
+                if (zeitGeladen > (datenDownload.start.restSekunden * 1.1 /* plus 10% zur Sicherheit*/)) {
+                    // die Restzeit muss die bereits geladenen Filmzeit um mind. 10 Minuten übertreffen
+//                    if (!datenDownload.start.beginnAnschauen) {
+//                        // dann auch die Änderung melden
+//                        datenDownload.start.beginnAnschauen = true;
+//                        notifyStartEvent();
+//                    } else {
+                    datenDownload.start.beginnAnschauen = true;
+//                    }
+                }
+            }
         }
     }
 

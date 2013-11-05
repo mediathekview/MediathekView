@@ -24,7 +24,7 @@ import msearch.daten.DatenFilm;
 public class MVFilmSize implements Comparable<MVFilmSize> {
 
     Long aktSizeL = -1L;
-    Long sizeL = 0L;
+    public Long sizeL = 0L;
     String sizeStr = "";
 
     public MVFilmSize() {
@@ -42,6 +42,12 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
 
     public void setFilm(DatenFilm film) {
         // im Film ist die Größe in "MB" !!
+        if (film == null) {
+            aktSizeL = -1L;
+            sizeL = 0L;
+            sizeStr = "";
+            return;
+        }
         if (film.arr[DatenFilm.FILM_GROESSE_NR].equals("<1")) {
             film.arr[DatenFilm.FILM_GROESSE_NR] = "1";
         }
@@ -56,7 +62,11 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
                 sizeStr = "";
             }
         }
+    }
 
+    public void reset() {
+        aktSizeL = -1L;
+        setString();
     }
 
     public void setSize(long l) {
