@@ -28,6 +28,7 @@ import mediathek.controller.History;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
+import mediathek.res.GetIcon;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 
@@ -53,6 +54,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             setBackground(null);
             setForeground(null);
             setFont(null);
+            setIcon(null);
             setHorizontalAlignment(SwingConstants.LEADING);
             super.getTableCellRendererComponent(
                     table, value, isSelected, hasFocus, row, column);
@@ -66,43 +68,13 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
             if (c == DatenFilm.FILM_GROESSE_NR) {
-                setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 10));
                 setHorizontalAlignment(SwingConstants.RIGHT);
             }
             if (datenDownload != null) {
                 if (datenDownload.start != null) {
                     if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
                         start = true;
-                        switch (datenDownload.start.status) {
-                            case Start.STATUS_INIT:
-                                if (isSelected) {
-                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
-                                } else {
-                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
-                                }
-                                break;
-                            case Start.STATUS_RUN:
-                                if (isSelected) {
-                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
-                                } else {
-                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
-                                }
-                                break;
-                            case Start.STATUS_FERTIG:
-                                if (isSelected) {
-                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
-                                } else {
-                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
-                                }
-                                break;
-                            case Start.STATUS_ERR:
-                                if (isSelected) {
-                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
-                                } else {
-                                    setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
-                                }
-                                break;
-                        }
+                        setColor(this, datenDownload.start, isSelected);
                     }
                 }
             }
@@ -111,19 +83,72 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     // bei livestreams keine History anzeigen
                     if (history.contains(table.getModel().getValueAt(r, DatenFilm.FILM_URL_NR).toString())) {
                         if (isSelected) {
-                            setBackground(GuiKonstanten.FARBE_GRAU_SEL);
+                            //setBackground(GuiKonstanten.FARBE_GRAU_SEL);
                         } else {
                             setBackground(GuiKonstanten.FARBE_GRAU);
                         }
                     }
                 } else {
-                    setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
                     setForeground(GuiKonstanten.DOWNLOAD_FARBE_LIVE);
                 }
             }
+            if (c == DatenFilm.FILM_ABSPIELEN_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+                if (isSelected) {
+                    setIcon(GetIcon.getIcon("player_play_25.png"));
+                } else {
+                    setIcon(GetIcon.getIcon("player_play_sw_15.png"));
+                }
+            } else if (c == DatenFilm.FILM_AUFZEICHNEN_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+                if (isSelected) {
+                    setIcon(GetIcon.getIcon("player_rec_25.png"));
+                } else {
+                    setIcon(GetIcon.getIcon("player_rec_sw_15.png"));
+                }
+            }
+
         } catch (Exception ex) {
             Log.fehlerMeldung(630098552, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
         }
+        if (isSelected) {
+            setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
+        } else {
+            setFont(new java.awt.Font(null));
+        }
         return this;
+    }
+
+    private void setColor(Component c, Start s, boolean isSelected) {
+        switch (s.status) {
+            case Start.STATUS_INIT:
+                if (isSelected) {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
+                } else {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
+                }
+                break;
+            case Start.STATUS_RUN:
+                if (isSelected) {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
+                } else {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
+                }
+                break;
+            case Start.STATUS_FERTIG:
+                if (isSelected) {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
+                } else {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
+                }
+                break;
+            case Start.STATUS_ERR:
+                if (isSelected) {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
+                } else {
+                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+                }
+                break;
+        }
     }
 }

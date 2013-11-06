@@ -19,6 +19,8 @@
  */
 package mediathek.gui.dialog;
 
+import com.jidesoft.utils.SystemInfo;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -26,9 +28,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-
-import com.jidesoft.utils.SystemInfo;
-import java.awt.Color;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.controller.starter.Start;
@@ -209,7 +208,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         if (ok) {
             // jetzt wird mit den angegebenen Pfaden gearbeitet
             datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), jTextFieldPfad.getText(), getAufloesung());
-            ddaten.listeDownloads.addMitNummer(datenDownload);
+            Daten.listeDownloads.addMitNummer(datenDownload);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
             if (jCheckBoxStarten.isSelected()) {
                 // und evtl. auch gleich starten

@@ -65,6 +65,7 @@ public class StarterClass {
         String url = ersterFilm.arr[DatenFilm.FILM_URL_NR];
         if (!url.equals("")) {
             DatenDownload d = new DatenDownload(pSet, ersterFilm, Start.QUELLE_BUTTON, null, "", "", "" /*Aufloesung*/);
+            Daten.listeDownloads.addMitNummer(d);
             d.start = new Start();
             //gestartete Filme (originalURL des Films) auch in die History eintragen
             daten.history.add(d.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
@@ -94,7 +95,7 @@ public class StarterClass {
                         //alle 5 Sekunden einen Download starten
                         this.wait(5 * 1000);
                     }
-//                    Daten.listeDownloads.buttonStartsPutzen(); // Button Starts aus der Liste löschen
+                    Daten.listeDownloads.buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     this.wait(3 * 1000);
                 } catch (Exception ex) {
                     Log.fehlerMeldung(613822015, Log.FEHLER_ART_PROG, "StarterClass.Starten.run", ex);
@@ -136,12 +137,14 @@ public class StarterClass {
     private class StartenProgramm implements Runnable {
 
         DatenDownload datenDownload;
+        Start start;
         RuntimeExec runtimeExec;
         File file;
 
         public StartenProgramm(DatenDownload d) {
             datenDownload = d;
-            datenDownload.start.status = Start.STATUS_RUN;
+            start = datenDownload.start;
+            start.status = Start.STATUS_RUN;
             file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
             notifyStartEvent();
             try {
@@ -177,13 +180,13 @@ public class StarterClass {
                         case stat_laufen:
                             //hier läuft der Download bis zum Abbruch oder Ende
                             try {
-                                if (datenDownload.start.stoppen) {
+                                if (start.stoppen) {
                                     stat = stat_fertig_ok;
-                                    if (datenDownload.start.process != null) {
-                                        datenDownload.start.process.destroy();
+                                    if (start.process != null) {
+                                        start.process.destroy();
                                     }
                                 } else {
-                                    int exitV = datenDownload.start.process.exitValue();
+                                    int exitV = start.process.exitValue();
                                     if (exitV != 0) {
                                         stat = stat_restart;
                                     } else {
@@ -211,7 +214,7 @@ public class StarterClass {
                                         stat = stat_start;
                                     } else {
                                         // counter prüfen und bei einem Maxwert abbrechen, sonst endlos
-                                        if (datenDownload.start.startcounter < Start.STARTCOUNTER_MAX) {
+                                        if (start.startcounter < Start.STARTCOUNTER_MAX) {
                                             // dann nochmal von vorne
                                             stat = stat_start;
                                         } else {
@@ -241,7 +244,7 @@ public class StarterClass {
                             if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
                                 //für die direkten Starts mit dem Button wars das dann
                                 stat = stat_fertig_ok;
-                            } else if (pruefen(datenDownload)) {
+                            } else if (pruefen(datenDownload, start)) {
                                 //fertig und OK
                                 stat = stat_fertig_ok;
                             } else {
@@ -250,11 +253,11 @@ public class StarterClass {
                             }
                             break;
                         case stat_fertig_fehler:
-                            datenDownload.start.status = Start.STATUS_ERR;
+                            start.status = Start.STATUS_ERR;
                             stat = stat_ende;
                             break;
                         case stat_fertig_ok:
-                            datenDownload.start.status = Start.STATUS_FERTIG;
+                            start.status = Start.STATUS_FERTIG;
                             stat = stat_ende;
                             break;
                     }
@@ -263,9 +266,9 @@ public class StarterClass {
                 Log.fehlerMeldung(395623710, Log.FEHLER_ART_PROG, "StarterClass.StartenProgramm-2", ex);
             }
             leeresFileLoeschen(file);
-            fertigmeldung(datenDownload);
-            datenDownload.start.restSekunden = -1;
-            datenDownload.start.percent = Start.PROGRESS_FERTIG;
+            fertigmeldung(datenDownload, start);
+            start.restSekunden = -1;
+            start.percent = Start.PROGRESS_FERTIG;
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
             notifyStartEvent();
         }
@@ -273,11 +276,11 @@ public class StarterClass {
         private boolean starten() {
             boolean ret = false;
             // die Reihenfolge: startcounter - startmeldung ist wichtig!
-            datenDownload.start.startcounter++;
-            startmeldung(datenDownload);
+            start.startcounter++;
+            startmeldung(datenDownload, start);
             runtimeExec = new RuntimeExec(datenDownload);
-            datenDownload.start.process = runtimeExec.exec();
-            if (datenDownload.start.process != null) {
+            start.process = runtimeExec.exec();
+            if (start.process != null) {
                 ret = true;
             }
             return ret;
@@ -287,16 +290,18 @@ public class StarterClass {
     private class StartenDownload implements Runnable {
 
         DatenDownload datenDownload;
+        Start start;
 
         public StartenDownload(DatenDownload d) {
             datenDownload = d;
-            datenDownload.start.status = Start.STATUS_RUN;
+            start = datenDownload.start;
+            start.status = Start.STATUS_RUN;
             notifyStartEvent();
         }
 
         @Override
         public void run() {
-            startmeldung(datenDownload);
+            startmeldung(datenDownload, start);
             MVInputStream input;
             OutputStream destStream;
             try {
@@ -328,14 +333,14 @@ public class StarterClass {
                         Log.fehlerMeldung(915236798, Log.FEHLER_ART_PROG, "StartetClass", "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
                     }
                     input = new MVInputStream(conn.getInputStream());
-                    datenDownload.start.mVInputStream = input;
+                    start.mVInputStream = input;
                     srcBuffer = new BufferedInputStream(input);
 //                    FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
 //                    destBuffer = new BufferedOutputStream(fos, 1024);
                     destBuffer = new BufferedOutputStream(new FileOutputStream(file), 1024);
                     byte[] buffer = new byte[1024];
                     long p, pp = 0;
-                    while ((len = srcBuffer.read(buffer)) != -1 && !datenDownload.start.stoppen) {
+                    while ((len = srcBuffer.read(buffer)) != -1 && !start.stoppen) {
 //                        outFile.write(buffer, downloaded, len);
 //                        downloaded += len;
                         destBuffer.write(buffer, 0, len);
@@ -348,16 +353,16 @@ public class StarterClass {
                             } else if (p >= 1000) {
                                 p = 999;
                             }
-                            datenDownload.start.percent = (int) p;
+                            start.percent = (int) p;
                             if (p != pp) {
                                 pp = p;
                                 // Restzeit ermitteln
                                 if (p > 2) {
                                     // sonst macht es noch keinen Sinn
-                                    datenDownload.start.bandbreite = input.getBandbreite();
-                                    int diffZeit = datenDownload.start.startZeit.diffInSekunden();
+                                    start.bandbreite = input.getBandbreite();
+                                    int diffZeit = start.startZeit.diffInSekunden();
                                     int restProzent = 1000 - (int) p;
-                                    datenDownload.start.restSekunden = (diffZeit * restProzent / p);
+                                    start.restSekunden = (diffZeit * restProzent / p);
                                     // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
                                     // als die bereits geladene Speilzeit des Films
                                     bereitsAnschauen(datenDownload);
@@ -386,22 +391,22 @@ public class StarterClass {
             } catch (Exception ex) {
                 Log.fehlerMeldung(502039078, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload-1", ex);
             }
-            if (!datenDownload.start.stoppen) {
+            if (!start.stoppen) {
                 if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
                     // direkter Start mit dem Button
-                    datenDownload.start.status = Start.STATUS_FERTIG;
-                } else if (pruefen(datenDownload)) {
+                    start.status = Start.STATUS_FERTIG;
+                } else if (pruefen(datenDownload, start)) {
                     //Anzeige ändern - fertig
-                    datenDownload.start.status = Start.STATUS_FERTIG;
+                    start.status = Start.STATUS_FERTIG;
                 } else {
                     //Anzeige ändern - bei Fehler fehlt der Eintrag
-                    datenDownload.start.status = Start.STATUS_ERR;
+                    start.status = Start.STATUS_ERR;
                 }
             }
             leeresFileLoeschen(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
-            fertigmeldung(datenDownload);
-            datenDownload.start.restSekunden = -1;
-            datenDownload.start.percent = Start.PROGRESS_FERTIG;
+            fertigmeldung(datenDownload, start);
+            start.restSekunden = -1;
+            start.percent = Start.PROGRESS_FERTIG;
             datenDownload.mVFilmSize.setAktSize(-1);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
             notifyStartEvent();
@@ -409,7 +414,7 @@ public class StarterClass {
     }
 
     private void bereitsAnschauen(DatenDownload datenDownload) {
-        if (datenDownload.film != null) {
+        if (datenDownload.film != null && datenDownload.start != null) {
             if (datenDownload.film.dauerL > 0
                     && datenDownload.start.restSekunden > 0
                     && datenDownload.mVFilmSize.getAktSize() > 0
@@ -417,14 +422,7 @@ public class StarterClass {
                 // macht nur dann Sinn
                 long zeitGeladen = datenDownload.film.dauerL * datenDownload.mVFilmSize.getAktSize() / datenDownload.mVFilmSize.getSize();
                 if (zeitGeladen > (datenDownload.start.restSekunden * 1.1 /* plus 10% zur Sicherheit*/)) {
-                    // die Restzeit muss die bereits geladenen Filmzeit um mind. 10 Minuten übertreffen
-//                    if (!datenDownload.start.beginnAnschauen) {
-//                        // dann auch die Änderung melden
-//                        datenDownload.start.beginnAnschauen = true;
-//                        notifyStartEvent();
-//                    } else {
                     datenDownload.start.beginnAnschauen = true;
-//                    }
                 }
             }
         }
@@ -435,17 +433,22 @@ public class StarterClass {
 //            // Sicherheitsabfrage, dann beenden
 //        }
 //    }
-    private boolean pruefen(DatenDownload datenDownload) {
+    private boolean pruefen(DatenDownload datenDownload, Start start) {
         //prüfen ob der Downoad geklappt hat und die Datei existiert und eine min. Grüße hat
         boolean ret = false;
+        if (start != null) {
+            if (start.percent > -1 && start.percent < 995) {
+                // Prozent werden berechnet und es wurde vor 99,5% abgebrochen
+                Log.fehlerMeldung(696510258, Log.FEHLER_ART_PROG, "StartetClass.pruefen-3", "Download fehlgeschlagen: 99,5% wurden nicht erreicht"
+                        + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                return false;
+            }
+        }
         File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         if (!file.exists()) {
             Log.fehlerMeldung(550236231, Log.FEHLER_ART_PROG, "StartetClass.pruefen-1", "Download fehlgeschlagen: Datei existiert nicht" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
             Log.fehlerMeldung(795632500, Log.FEHLER_ART_PROG, "StartetClass.pruefen-2", "Download fehlgeschlagen: Datei zu klein" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-        } else if (datenDownload.start.percent > -1 && datenDownload.start.percent < 995) {
-            // Prozent werden berechnet und es wurde vor 99,5% abgebrochen
-            Log.fehlerMeldung(696510258, Log.FEHLER_ART_PROG, "StartetClass.pruefen-3", "Download fehlgeschlagen: 99,5% wurden nicht erreicht" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else {
             if (datenDownload.istAbo()) {
                 daten.erledigteAbos.zeileSchreiben(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
@@ -476,14 +479,14 @@ public class StarterClass {
         }
     }
 
-    private void startmeldung(DatenDownload datenDownload) {
-        ArrayList<String> text = new ArrayList<String>();
+    private void startmeldung(DatenDownload datenDownload, Start start) {
+        ArrayList<String> text = new ArrayList<>();
         boolean abspielen = datenDownload.getQuelle() == Start.QUELLE_BUTTON;
         if (abspielen) {
             text.add("Film starten");
         } else {
-            if (datenDownload.start.startcounter > 1) {
-                text.add("Download starten - Restart (Summe Starts: " + datenDownload.start.startcounter + ")");
+            if (start.startcounter > 1) {
+                text.add("Download starten - Restart (Summe Starts: " + start.startcounter + ")");
             } else {
                 text.add("Download starten");
             }
@@ -491,7 +494,7 @@ public class StarterClass {
             text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-        text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(datenDownload.start.startZeit));
+        text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
         if (datenDownload.getArt() == Start.ART_DOWNLOAD) {
             text.add(Start.ART_DOWNLOAD_TXT);
         } else {
@@ -500,15 +503,15 @@ public class StarterClass {
         Log.systemMeldung(text.toArray(new String[]{}));
     }
 
-    private void fertigmeldung(DatenDownload datenDownload) {
-        ArrayList<String> text = new ArrayList<String>();
-        boolean abspielen = datenDownload.getQuelle() == Start.QUELLE_BUTTON;
-        if (abspielen) {
+    private void fertigmeldung(DatenDownload datenDownload, Start start) {
+        ArrayList<String> text = new ArrayList<>();
+        if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
+            //Daten.listeDownloads.listePutzen();
             text.add("Film fertig");
         } else {
-            if (datenDownload.start.stoppen) {
+            if (start.stoppen) {
                 text.add("Download abgebrochen");
-            } else if (datenDownload.start.status != Start.STATUS_ERR) {
+            } else if (start.status != Start.STATUS_ERR) {
                 // dann ists gut
                 text.add("Download ist fertig und hat geklappt");
             } else {
@@ -517,12 +520,12 @@ public class StarterClass {
             text.add("Programmset: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
             text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
-        text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(datenDownload.start.startZeit));
-        long dauer = datenDownload.start.startZeit.diffInMinuten();
+        text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
+        long dauer = start.startZeit.diffInMinuten();
         if (dauer == 0) {
             text.add("Dauer: <1 Min.");
         } else {
-            text.add("Dauer: " + datenDownload.start.startZeit.diffInMinuten() + " Min");
+            text.add("Dauer: " + start.startZeit.diffInMinuten() + " Min");
         }
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
         if (datenDownload.getArt() == Start.ART_DOWNLOAD) {
@@ -531,8 +534,8 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
         }
         Log.systemMeldung(text.toArray(new String[]{}));
-        if (!datenDownload.start.stoppen) {
-            MVNotification.addNotification(datenDownload, datenDownload.start.status != Start.STATUS_ERR);
+        if (!start.stoppen) {
+            MVNotification.addNotification(datenDownload, start.status != Start.STATUS_ERR);
         }
     }
 
