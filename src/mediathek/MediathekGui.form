@@ -34,7 +34,7 @@
                   <KeyStroke key="F5"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/download_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/filmlisteLaden_16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="neue Filmliste laden"/>
               </Properties>
@@ -411,7 +411,7 @@
             <Component class="javax.swing.JButton" name="jButtonFilmeLaden">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/download_32.png"/>
+                  <Image iconType="3" name="/mediathek/res/filmlisteLaden_32.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="neue Filmliste laden"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">

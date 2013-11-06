@@ -551,7 +551,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     private void init() {
-        jButtonFilmeLaden.setIcon(GetIcon.getIcon("download_32.png"));
+        jButtonFilmeLaden.setIcon(GetIcon.getIcon("filmlisteLaden_32.png"));
         jButtonFilmAbspielen.setIcon(GetIcon.getIcon("player_play_32.png"));
         jButtonInfo.setIcon(GetIcon.getIcon("info_32.png"));
         jButtonFilmSpeichern.setIcon(GetIcon.getIcon("player_rec_32.png"));
@@ -565,7 +565,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jButtonAbosLoeschen.setIcon(GetIcon.getIcon("del_32.png"));
         jButtonAboAendern.setIcon(GetIcon.getIcon("configure_32.png"));
         jButtonFilterPanel.setIcon(GetIcon.getIcon("filter_anzeigen_22.png"));
-        jMenuItemFilmlisteLaden.setIcon(GetIcon.getIcon("download_16.png"));
+        jMenuItemFilmlisteLaden.setIcon(GetIcon.getIcon("filmlisteLaden_16.png"));
         jMenuItemEinstellungen.setIcon(GetIcon.getIcon("configure_16.png"));
         jMenuItemBeenden.setIcon(GetIcon.getIcon("beenden_16.png"));
         jMenuItemFilmAbspielen.setIcon(GetIcon.getIcon("player_play_16.png"));
@@ -1133,7 +1133,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxIconKlein.setSelected(klein);
         beobMausToolBar.itemKlein.setSelected(klein);
         if (klein) {
-            jButtonFilmeLaden.setIcon(GetIcon.getIcon("download_16.png"));
+            jButtonFilmeLaden.setIcon(GetIcon.getIcon("filmlisteLaden_16.png"));
             jButtonFilmAbspielen.setIcon(GetIcon.getIcon("player_play_16.png"));
             jButtonInfo.setIcon(GetIcon.getIcon("info_16.png"));
             jButtonFilmSpeichern.setIcon(GetIcon.getIcon("player_rec_16.png"));
@@ -1147,7 +1147,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             jButtonAbosAusschalten.setIcon(GetIcon.getIcon("nein_16.png"));
             jButtonAboAendern.setIcon(GetIcon.getIcon("configure_16.png"));
         } else {
-            jButtonFilmeLaden.setIcon(GetIcon.getIcon("download_32.png"));
+            jButtonFilmeLaden.setIcon(GetIcon.getIcon("filmlisteLaden_32.png"));
             jButtonFilmAbspielen.setIcon(GetIcon.getIcon("player_play_32.png"));
             jButtonInfo.setIcon(GetIcon.getIcon("info_32.png"));
             jButtonFilmSpeichern.setIcon(GetIcon.getIcon("player_rec_32.png"));
@@ -1278,7 +1278,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jToolBar.setFloatable(false);
         jToolBar.add(filler3);
 
-        jButtonFilmeLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_32.png"))); // NOI18N
+        jButtonFilmeLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filmlisteLaden_32.png"))); // NOI18N
         jButtonFilmeLaden.setToolTipText("neue Filmliste laden");
         jButtonFilmeLaden.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         jButtonFilmeLaden.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1419,7 +1419,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuDatei.setText("Datei");
 
         jMenuItemFilmlisteLaden.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        jMenuItemFilmlisteLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_16.png"))); // NOI18N
+        jMenuItemFilmlisteLaden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filmlisteLaden_16.png"))); // NOI18N
         jMenuItemFilmlisteLaden.setText("neue Filmliste laden");
         jMenuDatei.add(jMenuItemFilmlisteLaden);
 

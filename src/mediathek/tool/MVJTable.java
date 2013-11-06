@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -35,6 +36,7 @@ import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
 import javax.swing.TransferHandler;
+import javax.swing.table.TableCellRenderer;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
@@ -128,6 +130,17 @@ public final class MVJTable extends JTable {
         }
         breite = getArray(maxSpalten);
         reihe = getArray(maxSpalten);
+    }
+
+    @Override
+    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        Component c = super.prepareRenderer(renderer, row, column);
+        if (isRowSelected(row)) {
+            setRowHeight(row, 25);
+        } else {
+            setRowHeight(row, 17);
+        }
+        return c;
     }
 
     class TableRowTransferHandlerDownload extends TransferHandler {
@@ -478,15 +491,21 @@ public final class MVJTable extends JTable {
                         breite[i] = 100;
                     } else if (i == DatenFilm.FILM_URL_NR) {
                         breite[i] = 500;
+                    } else if (i == DatenFilm.FILM_ABSPIELEN_NR
+                            || i == DatenFilm.FILM_AUFZEICHNEN_NR) {
+                        breite[i] = 50;
                     }
                     break;
                 case TABELLE_TAB_DOWNLOADS:
                     reihe[i] = i;
                     breite[i] = 200;
                     if (i == DatenDownload.DOWNLOAD_NR_NR
-                            || i == DatenDownload.DOWNLOAD_FILM_NR_NR
-                            || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+                            || i == DatenDownload.DOWNLOAD_FILM_NR_NR) {
                         breite[i] = 75;
+                    } else if (i == DatenDownload.DOWNLOAD_BUTTON_START_NR
+                            || i == DatenDownload.DOWNLOAD_BUTTON_DEL_NR
+                            || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+                        breite[i] = 50;
                     } else if (i == DatenDownload.DOWNLOAD_TITEL_NR) {
                         breite[i] = 250;
                     } else if (i == DatenDownload.DOWNLOAD_ABO_NR

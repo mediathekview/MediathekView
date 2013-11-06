@@ -55,9 +55,9 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     table, value, isSelected, hasFocus, row, column);
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
+            DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_REF_NR);
             if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
-                DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_REF_NR);
                 if (datenDownload.start != null) {
                     setColor(this, datenDownload.start, isSelected);
                     if (1 < datenDownload.start.percent && datenDownload.start.percent < Start.PROGRESS_FERTIG) {
@@ -90,46 +90,95 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 } else {
                     this.setText("");
                 }
-            } else {
-                DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_REF_NR);
-//                String url = table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_URL_NR).toString();
-//                Start s = Daten.listeDownloads.getStart(url);
+            } else if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
                 if (datenDownload.start != null) {
                     setColor(this, datenDownload.start, isSelected);
                     if (datenDownload.start.beginnAnschauen) {
-                        if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
-                            setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
-                            setForeground(GuiKonstanten.ANSEHEN);
+                        setForeground(GuiKonstanten.ANSEHEN);
+                    }
+                }
+            } else if (c == DatenDownload.DOWNLOAD_DATUM_NR || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR
+                    || c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+                if (datenDownload.start != null) {
+                    setColor(this, datenDownload.start, isSelected);
+                }
+            } else if (c == DatenDownload.DOWNLOAD_GROESSE_NR) {
+                setHorizontalAlignment(SwingConstants.RIGHT);
+                if (datenDownload.start != null) {
+                    setColor(this, datenDownload.start, isSelected);
+                }
+            } else if (c == DatenDownload.DOWNLOAD_ABO_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+                if (datenDownload.start != null) {
+                    setColor(this, datenDownload.start, isSelected);
+                }
+                if (!datenDownload.arr[DatenDownload.DOWNLOAD_ABO_NR].equals("")) {
+                    setForeground(GuiKonstanten.ABO_FOREGROUND);
+                } else {
+                    setIcon(GetIcon.getIcon("nein_12.png"));
+                }
+            } else if (c == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+                if (datenDownload.start != null) {
+                    setColor(this, datenDownload.start, isSelected);
+                }
+                if (datenDownload.isRestart()) {
+                    setIcon(GetIcon.getIcon("ja_16.png"));
+                } else {
+                    setIcon(GetIcon.getIcon("nein_12.png"));
+                }
+            } else if (c == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+                if (datenDownload.start != null) {
+                    setColor(this, datenDownload.start, isSelected);
+                }
+                if (isSelected) {
+                    if (datenDownload.start != null) {
+                        if (datenDownload.start.status < Start.STATUS_FERTIG) {
+                            setIcon(GetIcon.getIcon("download_stop_25.png"));
+                        } else {
+                            setIcon(GetIcon.getIcon("download_start_25.png"));
                         }
-                    }
-                }
-                //DatenDownload datenDownload = Daten.listeDownloads.getDownloadByUrl(url);
-                // Starts
-                if (c == DatenDownload.DOWNLOAD_DATUM_NR || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR
-                        || c == DatenDownload.DOWNLOAD_BANDBREITE_NR || c == DatenDownload.DOWNLOAD_RESTZEIT_NR || c == DatenDownload.DOWNLOAD_GROESSE_NR) {
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                }
-                if (c == DatenDownload.DOWNLOAD_ABO_NR) {
-                    setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
-                    if (!table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_ABO_NR).equals("")) {
-                        setForeground(GuiKonstanten.ABO_FOREGROUND);
                     } else {
-                        setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
-                        setIcon(GetIcon.getIcon("nein_12.png"));
-                        setHorizontalAlignment(SwingConstants.CENTER);
+                        setIcon(GetIcon.getIcon("download_start_25.png"));
                     }
-                } else if (c == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
-                    boolean restart = datenDownload.isRestart();
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    if (restart) {
-                        setIcon(GetIcon.getIcon("ja_16.png"));
+                } else if (datenDownload.start != null) {
+                    if (datenDownload.start.status < Start.STATUS_FERTIG) {
+                        setIcon(GetIcon.getIcon("download_stop_sw_16.png"));
+                        //setText("[]");
                     } else {
-                        setIcon(GetIcon.getIcon("nein_12.png"));
+                        setIcon(GetIcon.getIcon("download_start_sw_16.png"));
+                        //setText(">");
                     }
+                } else {
+                    setIcon(GetIcon.getIcon("download_start_sw_16.png"));
+                    //setText(">");
+                }
+            } else if (c == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+                if (datenDownload.start != null) {
+                    setColor(this, datenDownload.start, isSelected);
+                }
+                if (isSelected) {
+                    setIcon(GetIcon.getIcon("download_del_25.png"));
+                } else {
+                    //setText("x");
+                    setIcon(GetIcon.getIcon("download_del_sw_16.png"));
+                }
+            } else {
+                if (datenDownload.start != null) {
+                    setColor(this, datenDownload.start, isSelected);
                 }
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(758200166, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
+        }
+        if (isSelected) {
+            setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
+        } else {
+            setFont(new java.awt.Font(null));
         }
         return this;
     }
@@ -144,21 +193,12 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 }
                 break;
             case Start.STATUS_RUN:
-//                if (s.beginnAnschauen) {
-//                    if (isSelected) {
-//                        c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_ANSEHEN_SEL);
-//                    } else {
-//                        c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_ANSEHEHN);
-//                    }
-//                    break;
-//                } else {
                 if (isSelected) {
                     c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
                 } else {
                     c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
                 }
                 break;
-//                }
             case Start.STATUS_FERTIG:
                 if (isSelected) {
                     c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
@@ -175,55 +215,4 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 break;
         }
     }
-//    private class ProgressPanel extends JPanel {
-//
-//        private JPanel panel = new JPanel(new BorderLayout());
-//        private Start s = null;
-//        private int i = 0;
-//        private JProgressBar progressBar = new JProgressBar(0, 1000);
-//
-//        public ProgressPanel(Start s_) {
-//            s = s_;
-//            ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, CellRendererDownloads.class.getSimpleName()) {
-//                @Override
-//                public void ping() {
-//                    panelUpdate();
-//                }
-//            });
-//            setHorizontalAlignment(SwingConstants.CENTER);
-//            // JProgressBar progressBar = new JProgressBar(0, 1000);
-//            // JPanel panel = new JPanel(new BorderLayout());
-//            // setColor(panel, s, isSelected);
-//            // setColor(progressBar, s, isSelected);
-//            progressBar.setBorder(BorderFactory.createEmptyBorder());
-//            progressBar.setStringPainted(true);
-//            progressBar.setUI(new BasicProgressBarUI() {
-//                @Override
-//                protected Color getSelectionBackground() {
-//                    return UIManager.getDefaults().getColor("Table.foreground");
-//                }
-//
-//                @Override
-//                protected Color getSelectionForeground() {
-//                    return Color.white;
-//                }
-//            });
-//            panel.add(progressBar);
-//            panel.setBorder(BorderFactory.createEmptyBorder());
-//        }
-//
-//        public JPanel progressPanel() {
-//            return panel;
-//        }
-//
-//        private void panelUpdate() {
-//            if (s != null) {
-//                i = Integer.parseInt(s.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRESS_NR]);
-//                progressBar.setValue(i);
-//                double d = i / 10.0;
-//                progressBar.setString(Double.toString(d) + "%");
-//                this.updateUI();
-//            }
-//        }
-//    }
 }

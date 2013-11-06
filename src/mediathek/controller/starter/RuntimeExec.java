@@ -37,7 +37,7 @@ public class RuntimeExec {
     Thread clearIn;
     Thread clearOut;
     private Process process = null;
-    DatenDownload datenDownload;
+    Start start;
     private static int procnr = 0; //TH
     //private Pattern patternFlvstreamer = Pattern.compile("([0-9.]*%)");
     private Pattern patternFlvstreamer = Pattern.compile("([0-9]*.[0-9]{1}%)");
@@ -47,8 +47,8 @@ public class RuntimeExec {
     private String zeit, prozent;
 
     public RuntimeExec(DatenDownload d) {
-        datenDownload = d;
-        prog = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
+        start = d.start;
+        prog = d.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
     }
 
     public RuntimeExec(String p) {
@@ -171,7 +171,7 @@ public class RuntimeExec {
             // nur ganze Int speichern, und 1000 Schritte
             d *= 10;
             int pNeu = (int) d;
-            datenDownload.start.percent = pNeu;
+            start.percent = pNeu;
             if (pNeu != percent) {
                 percent = pNeu;
                 if (percent_start == -1) {
@@ -180,10 +180,10 @@ public class RuntimeExec {
                 }
                 if (percent > (percent_start + 5)) {
                     // sonst macht es noch keinen Sinn
-                    int diffZeit = datenDownload.start.startZeit.diffInSekunden();
+                    int diffZeit = start.startZeit.diffInSekunden();
                     int diffProzent = percent - percent_start;
                     int restProzent = 1000 - percent;
-                    datenDownload.start.restSekunden = (diffZeit * restProzent / diffProzent);
+                    start.restSekunden = (diffZeit * restProzent / diffProzent);
                 }
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
 //                start.datenDownload.statusMelden(percent);

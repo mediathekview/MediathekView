@@ -60,7 +60,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         Collections.<DatenDownload>sort(this);
     }
 
-    public boolean addMitNummer(DatenDownload e) {
+    public synchronized boolean addMitNummer(DatenDownload e) {
         boolean ret = super.add(e);
         listeNummerieren();
         return ret;
@@ -74,7 +74,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 //            this.add(index++, d);
 //        }
 //    }
-    public void addDatenDownloads(LinkedList<DatenDownload> liste) {
+    public synchronized void addDatenDownloads(LinkedList<DatenDownload> liste) {
         for (DatenDownload d : liste) {
             this.add(d);
         }
@@ -366,7 +366,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public void listeNummerieren() {
+    public synchronized void listeNummerieren() {
         int i = 0;
         ListIterator<DatenDownload> it = listIterator();
         while (it.hasNext()) {
@@ -450,10 +450,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-    public TModel getModelStarts(TModel model) {
+    public synchronized TModel getModelStarts(TModel model) {
         model.setRowCount(0);
         Object[] object;
-        Start start;
         if (this.size() > 0) {
             Iterator<DatenDownload> iterator = iterator();
             int objLen = DatenDownload.MAX_ELEM + 1;
@@ -479,26 +478,27 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return model;
     }
 
-//    public synchronized void buttonStartsPutzen() {
-//        // Starts durch Button die fertig sind, löschen
-//        boolean gefunden = false;
-//        Iterator<DatenDownload> it = iterator();
-//        while (it.hasNext()) {
-//            DatenDownload d = it.next();
-//            if (d.start != null) {
-//                if (d.getQuelle() == Start.QUELLE_BUTTON) {
-//                    if (d.start.status != Start.STATUS_RUN) {
-//                        // dann ist er fertig oder abgebrochen
-//                        it.remove();
-//                        gefunden = true;
-//                    }
-//                }
-//            }
-//        }
-//        if (gefunden) {
-//            notifyStartEvent(); // und dann bescheid geben
-//        }
-//    }
+    public synchronized void buttonStartsPutzen() {
+        // Starts durch Button die fertig sind, löschen
+        boolean gefunden = false;
+        Iterator<DatenDownload> it = iterator();
+        while (it.hasNext()) {
+            DatenDownload d = it.next();
+            if (d.start != null) {
+                if (d.getQuelle() == Start.QUELLE_BUTTON) {
+                    if (d.start.status >= Start.STATUS_FERTIG) {
+                        // dann ist er fertig oder abgebrochen
+                        it.remove();
+                        gefunden = true;
+                    }
+                }
+            }
+        }
+        if (gefunden) {
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+        }
+    }
+
     public synchronized DatenDownload getNextStart() {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
