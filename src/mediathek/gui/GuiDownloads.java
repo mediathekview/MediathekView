@@ -152,7 +152,6 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.setDefaultRenderer(MVFilmSize.class, new CellRendererDownloads());
         tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
-        tabelle.addMouseListener(new BeobMausTabelleButton());
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenDownload.COLUMN_NAMES, DatenDownload.spaltenAnzeigen) {
             @Override
@@ -719,13 +718,17 @@ public class GuiDownloads extends PanelVorlage {
 
         private Point p;
 
-        public BeobMausTabelle() {
-        }
-
         @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
-                if (arg0.getClickCount() > 1) {
+                if (arg0.getClickCount() == 1) {
+                    p = arg0.getPoint();
+                    int row = tabelle.rowAtPoint(p);
+                    int column = tabelle.columnAtPoint(p);
+                    if (row >= 0) {
+                        buttonTable(row, column);
+                    }
+                } else if (arg0.getClickCount() > 1) {
                     downloadAendern();
                 }
             }
@@ -742,6 +745,30 @@ public class GuiDownloads extends PanelVorlage {
         public void mouseReleased(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
+            }
+        }
+
+        private void buttonTable(int row, int column) {
+            if (row != -1) {
+                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+                if (column == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
+                    // filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */)
+                    if (datenDownload.start != null) {
+                        if (datenDownload.start.status < Start.STATUS_FERTIG) {
+                            // Download stoppen
+                            filmStartenWiederholenStoppen(false, false);
+                        } else {
+                            // Download starten
+                            filmStartenWiederholenStoppen(false, true);
+                        }
+                    } else {
+                        // Download starten
+                        filmStartenWiederholenStoppen(false, true);
+                    }
+                } else if (column == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
+                    // Download dauerhaft löschen
+                    downloadLoeschen(true);
+                }
             }
         }
 
@@ -968,48 +995,6 @@ public class GuiDownloads extends PanelVorlage {
             // ######################
             // Menü anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-    }
-
-    public class BeobMausTabelleButton extends MouseAdapter {
-
-        private Point p;
-
-        @Override
-        public void mouseClicked(MouseEvent evt) {
-            if (evt.getButton() == MouseEvent.BUTTON1) {
-                p = evt.getPoint();
-                int row = tabelle.rowAtPoint(p);
-                int column = tabelle.columnAtPoint(p);
-                if (row >= 0) {
-                    tabelle.setRowSelectionInterval(row, row);
-                    buttonTable(row, column);
-                }
-            }
-        }
-
-        private void buttonTable(int row, int column) {
-            if (row != -1) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
-                if (column == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
-                    // filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */)
-                    if (datenDownload.start != null) {
-                        if (datenDownload.start.status < Start.STATUS_FERTIG) {
-                            // Download stoppen
-                            filmStartenWiederholenStoppen(false, false);
-                        } else {
-                            // Download starten
-                            filmStartenWiederholenStoppen(false, true);
-                        }
-                    } else {
-                        // Download starten
-                        filmStartenWiederholenStoppen(false, true);
-                    }
-                } else if (column == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
-                    // Download dauerhaft löschen
-                    downloadLoeschen(true);
-                }
-            }
         }
     }
 
