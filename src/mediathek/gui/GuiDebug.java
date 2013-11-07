@@ -69,6 +69,7 @@ public class GuiDebug extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 daten.allesSpeichern();
+                Daten.filmlisteSpeichern();
             }
         });
         jButtonFilmlisteLoeschen.addActionListener(new ActionListener() {

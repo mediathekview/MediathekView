@@ -1258,12 +1258,13 @@ public class GuiFilme extends PanelVorlage {
                     int row = tabelle.rowAtPoint(p);
                     int column = tabelle.columnAtPoint(p);
                     if (row >= 0) {
-                        tabelle.setRowSelectionInterval(row, row);
                         buttonTable(row, column);
                     }
-                }
-                if (arg0.getClickCount() > 1) {
-                    filmAbspielen_();
+                } else if (arg0.getClickCount() > 1) {
+                    //filmAbspielen_();
+                    if (!filmInfoHud.isVisible()) {
+                        filmInfoHud.show();
+                    }
                 }
             }
         }
@@ -1363,7 +1364,7 @@ public class GuiFilme extends PanelVorlage {
             itemAboMitTitel = new JMenuItem("Abo mit Sender und Thema und Titel anlegen");
             itemAboFilter = new JMenuItem("Abo aus Filter anlegen");
             if (film != null) {
-                if ((daten.listeAbo.getAboFuerFilm_schnell(film, false /*die Länge nicht prüfen*/)) != null) {
+                if ((Daten.listeAbo.getAboFuerFilm_schnell(film, false /*die Länge nicht prüfen*/)) != null) {
                     //gibts schon, dann löschen
                     itemAbo.setEnabled(false);
                     itemAboMitTitel.setEnabled(false);
@@ -1662,33 +1663,6 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-//    public class BeobMausTabelleButton extends MouseAdapter {
-//
-//        private Point p;
-//
-//        @Override
-//        public void mouseClicked(MouseEvent evt) {
-//            if (evt.getButton() == MouseEvent.BUTTON1) {
-//                p = evt.getPoint();
-//                int row = tabelle.rowAtPoint(p);
-//                int column = tabelle.columnAtPoint(p);
-//                if (row >= 0) {
-//                    tabelle.setRowSelectionInterval(row, row);
-//                    buttonTable(row, column);
-//                }
-//            }
-//        }
-//
-//        private void buttonTable(int row, int column) {
-//            if (row != -1) {
-//                if (column == DatenFilm.FILM_ABSPIELEN_NR) {
-//                    filmAbspielen_();
-//                } else if (column == DatenFilm.FILM_AUFZEICHNEN_NR) {
-//                    filmSpeichern_();
-//                }
-//            }
-//        }
-//    }
     private class BeobAbstractAction extends AbstractAction {
 
         @Override

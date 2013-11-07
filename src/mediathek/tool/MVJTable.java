@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -36,7 +35,6 @@ import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
 import javax.swing.TransferHandler;
-import javax.swing.table.TableCellRenderer;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
@@ -80,6 +78,7 @@ public final class MVJTable extends JTable {
         tabelle = ttabelle;
         this.setAutoCreateRowSorter(true);
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        this.setRowHeight(18);
         switch (tabelle) {
             case TABELLE_TAB_FILME:
                 spaltenTitel = DatenFilm.COLUMN_NAMES;
@@ -132,17 +131,16 @@ public final class MVJTable extends JTable {
         reihe = getArray(maxSpalten);
     }
 
-    @Override
-    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-        Component c = super.prepareRenderer(renderer, row, column);
-        if (isRowSelected(row)) {
-            setRowHeight(row, 25);
-        } else {
-            setRowHeight(row, 17);
-        }
-        return c;
-    }
-
+//    @Override
+//    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+//        Component c = super.prepareRenderer(renderer, row, column);
+//        if (isRowSelected(row)) {
+//            setRowHeight(row, 22);
+//        } else {
+//            setRowHeight(row, 17);
+//        }
+//        return c;
+//    }
     class TableRowTransferHandlerDownload extends TransferHandler {
 
         private final DataFlavor localObjectFlavor;
