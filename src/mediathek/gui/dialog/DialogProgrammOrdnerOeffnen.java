@@ -19,14 +19,17 @@
  */
 package mediathek.gui.dialog;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 
@@ -220,36 +223,36 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-//            if (SystemInfo.isMacOSX()) {
-            FileDialog chooser = new FileDialog(parentComponent, "Dateimanager suchen");
-            chooser.setMode(FileDialog.LOAD);
-            chooser.setVisible(true);
-            if (chooser.getFile() != null) {
-                try {
-                    File destination = new File(chooser.getDirectory() + chooser.getFile());
-                    jTextFieldProgramm.setText(destination.getAbsolutePath());
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(398762109, Log.FEHLER_ART_PROG, "DialogProgrammOrdnerOeffnen.ZielBeobachter", ex);
+            if (SystemInfo.isMacOSX()) {
+                FileDialog chooser = new FileDialog(parentComponent, "Dateimanager suchen");
+                chooser.setMode(FileDialog.LOAD);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
+                        jTextFieldProgramm.setText(destination.getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(398762109, Log.FEHLER_ART_PROG, "DialogProgrammOrdnerOeffnen.ZielBeobachter", ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jTextFieldProgramm.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldProgramm.getText()));
+                } else {
+                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldProgramm.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(107458930, Log.FEHLER_ART_PROG, "DialogProgrammOrdnerOeffnen.ZielBeobachter", ex);
+                    }
                 }
             }
-//            } else {
-//                int returnVal;
-//                JFileChooser chooser = new JFileChooser();
-//                if (!jTextFieldProgramm.getText().equals("")) {
-//                    chooser.setCurrentDirectory(new File(jTextFieldProgramm.getText()));
-//                } else {
-//                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
-//                }
-//                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-//                returnVal = chooser.showOpenDialog(null);
-//                if (returnVal == JFileChooser.APPROVE_OPTION) {
-//                    try {
-//                        jTextFieldProgramm.setText(chooser.getSelectedFile().getAbsolutePath());
-//                    } catch (Exception ex) {
-//                        Log.fehlerMeldung(107458930, Log.FEHLER_ART_PROG, "DialogProgrammOrdnerOeffnen.ZielBeobachter", ex);
-//                    }
-//                }
-//            }
         }
     }
 }

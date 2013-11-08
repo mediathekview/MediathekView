@@ -30,7 +30,6 @@ import java.util.ListIterator;
 import mediathek.controller.starter.Start;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVJTable;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 import msearch.daten.DatenFilm;
@@ -159,19 +158,19 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
     }
 
-    public synchronized void downloadsNachTabelleSortieren(MVJTable mVJTable) {
-        if (mVJTable.getRowCount() == 0) {
-            return;
-        }
-        for (int i = 0; i < mVJTable.getRowCount(); ++i) {
-            String url = mVJTable.getModel().getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString();
-            DatenDownload datenDownload = Daten.listeDownloads.getDownloadByUrl(url);
-            this.remove(datenDownload);
-            this.add(datenDownload);
-        }
-        listeNummerieren();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
-    }
+//    public synchronized void downloadsNachTabelleSortieren(MVJTable mVJTable) {
+//        if (mVJTable.getRowCount() == 0) {
+//            return;
+//        }
+//        for (int i = 0; i < mVJTable.getRowCount(); ++i) {
+//            String url = mVJTable.getModel().getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString();
+//            DatenDownload datenDownload = Daten.listeDownloads.getDownloadByUrl(url);
+//            this.remove(datenDownload);
+//            this.add(datenDownload);
+//        }
+//        listeNummerieren();
+//        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
+//    }
 
     public synchronized DatenDownload getDownloadByUrl(String url) {
         DatenDownload ret = null;

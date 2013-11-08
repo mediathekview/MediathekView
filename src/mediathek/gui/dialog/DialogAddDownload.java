@@ -39,6 +39,7 @@ import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
@@ -69,6 +70,13 @@ public class DialogAddDownload extends javax.swing.JDialog {
     }
 
     private void init() {
+        jCheckBoxStarten.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN_NR]));
+        jCheckBoxStarten.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN_NR] = String.valueOf(jCheckBoxStarten.isSelected());
+            }
+        });
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
         if (ddaten.listePset.getListeSpeichern().size() == 0) {
             // Satz mit x, war wohl nix
