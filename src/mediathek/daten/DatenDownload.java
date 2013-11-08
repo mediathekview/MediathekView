@@ -183,7 +183,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         start = null;
     }
 
-    public void starten(Daten ddaten) {
+    public void startenDownload(Daten ddaten) {
         // Start erstellen und zur Liste hinzufügen
         this.start = new Start();
         // gestartete Filme (originalURL des Films) auch in die History eintragen
@@ -191,7 +191,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
     }
 
-    public static void starten(Daten ddaten, ArrayList<DatenDownload> ad) {
+    public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> ad) {
         // Start erstellen und zur Liste hinzufügen
         ArrayList<Start> al = new ArrayList<>();
         for (DatenDownload d : ad) {

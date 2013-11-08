@@ -111,6 +111,20 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
+    public synchronized void listePutzen(DatenDownload datenDownload) {
+        // fertigen Download löschen
+        boolean gefunden = false;
+        if (datenDownload.start != null) {
+            if (datenDownload.start.status >= Start.STATUS_FERTIG) {
+                gefunden = true;
+                this.remove(datenDownload);
+            }
+        }
+        if (gefunden) {
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+        }
+    }
+
     public synchronized boolean nochNichtFertigeDownloads() {
         // es wird nach noch nicht fertigen gestarteten Downloads gesucht
         boolean gefunden = false;
@@ -440,7 +454,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         while (it.hasNext()) {
             DatenDownload datenDownload = it.next();
             if (datenDownload.start != null) {
-                if (datenDownload.start.status <= Start.STATUS_FERTIG) {
+                if (datenDownload.start.status < Start.STATUS_FERTIG) {
                     if (datenDownload.getQuelle() == quelle || quelle == Start.QUELLE_ALLE) {
                         ret.add(datenDownload);
                     }

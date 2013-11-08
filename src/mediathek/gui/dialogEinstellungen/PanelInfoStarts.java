@@ -49,6 +49,12 @@ public class PanelInfoStarts extends PanelVorlage {
                 init();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                init();
+            }
+        });
         daten = d;
         jButtonAuffrischen.addActionListener(new BeobLaden());
         tModel = getEmptyModel();

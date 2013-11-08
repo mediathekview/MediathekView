@@ -312,10 +312,10 @@ public class GuiFilme extends PanelVorlage {
                 tabelleLaden();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-//////                tabelle.fireTableDataChanged(true /*setSpalten*/);
+                tabelle.fireTableDataChanged(true /*setSpalten*/);
                 setInfo();
             }
         });
