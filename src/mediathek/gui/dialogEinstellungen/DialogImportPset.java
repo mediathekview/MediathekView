@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Component;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.daten.Daten;
@@ -31,7 +31,7 @@ public class DialogImportPset extends javax.swing.JDialog {
     public boolean ok = false;
     private ListePset liste;
     private Daten ddaten;
-    private Component parentComponent;
+    private Frame parentComponent;
 
     public DialogImportPset(java.awt.Frame parent, boolean modal, Daten dd, ListePset lliste) {
         super(parent, modal);

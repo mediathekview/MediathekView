@@ -20,9 +20,9 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -43,7 +43,7 @@ public class PanelExportFilmliste extends PanelVorlage {
 
     public String ziel;
 
-    public PanelExportFilmliste(Daten d, Component parent) {
+    public PanelExportFilmliste(Daten d, Frame parent) {
         super(d, parent);
         initComponents();
         init();

@@ -21,14 +21,12 @@ package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Desktop;
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -43,18 +41,17 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogEditDownload;
-import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererDownloads;
 import mediathek.tool.Datum;
+import mediathek.tool.DirOpenAction;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
 import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVJTable;
 import mediathek.tool.MVMessageDialog;
@@ -69,7 +66,7 @@ public class GuiDownloads extends PanelVorlage {
     private PanelBeschreibung panelBeschreibung;
     private int zeileVon = -1;
 
-    public GuiDownloads(Daten d, Component parentComponent) {
+    public GuiDownloads(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
         tabelle = new MVJTable(MVJTable.TABELLE_TAB_DOWNLOADS);
@@ -320,59 +317,12 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void zielordnerOeffnen() {
-        boolean gut = false;
-        File sFile = null;
         int row = tabelle.getSelectedRow();
         if (row >= 0) {
             String url = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_URL_NR).toString();
             DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
             String s = download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
-            if (!s.endsWith(File.separator)) {
-                s += File.separator;
-            }
-            try {
-                sFile = new File(s);
-                if (!sFile.exists()) {
-                    sFile = sFile.getParentFile();
-                }
-                if (Desktop.isDesktopSupported()) {
-                    Desktop d = Desktop.getDesktop();
-                    if (d.isSupported(Desktop.Action.OPEN)) {
-                        d.open(sFile);
-                        gut = true;
-                    }
-                }
-            } catch (Exception ex) {
-                try {
-                    gut = false;
-                    String programm = "";
-                    if (Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR].equals("")) {
-                        String text = "\n Der Dateimanager zum Anzeigen des Speicherordners wird nicht gefunden.\n Dateimanager selbst auswählen.";
-                        DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(daten.mediathekGui, daten, true, "", "Dateimanager suchen", text);
-                        dialog.setVisible(true);
-                        if (dialog.ok) {
-                            programm = dialog.ziel;
-                        }
-                    } else {
-                        programm = Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR];
-                    }
-                    if (sFile != null) {
-                        Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
-                        Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = programm;
-                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
-                        gut = true;
-                    }
-                } catch (Exception eex) {
-                    Log.fehlerMeldung(306590789, Log.FEHLER_ART_PROG, GuiDownloads.class.getName(), ex, "Ordner öffnen: " + download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
-                }
-            } finally {
-                if (!gut) {
-                    Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = "";
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
-                    MVMessageDialog.showMessageDialog(parentComponent, "Kann den Dateimanager nicht öffnen!",
-                            "Fehler", JOptionPane.ERROR_MESSAGE);
-                }
-            }
+            DirOpenAction.zielordnerOeffnen(parentComponent, s);
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
@@ -983,7 +933,7 @@ public class GuiDownloads extends PanelVorlage {
                                 filmDownload.arr[DatenFilm.FILM_URL_KLEIN_NR] = "";
                                 filmDownload.arr[DatenFilm.FILM_URL_RTMP_KLEIN_NR] = "";
                                 // und starten
-                                daten.starterClass.urlStarten(gruppe, filmDownload);
+                                daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload);
                             }
                         } else {
                             String menuPath;

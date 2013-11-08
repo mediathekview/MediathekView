@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -46,7 +45,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
     private final String ICONSET_STANDARD = "Standard";
 
-    public PanelEinstellungen(Daten d, Component parentComponent) {
+    public PanelEinstellungen(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
         jButtonInfos.setIcon(GetIcon.getIcon("icons_refresh_16.png"));

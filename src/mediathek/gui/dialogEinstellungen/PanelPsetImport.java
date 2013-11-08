@@ -21,9 +21,9 @@ package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -35,10 +35,9 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.controller.IoXmlLesen;
-import mediathek.daten.ListePsetVorlagen;
-import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
+import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
@@ -53,7 +52,7 @@ public class PanelPsetImport extends PanelVorlage {
     ListePsetVorlagen listeVorlagen = new ListePsetVorlagen();
     PanelVorlage me;
 
-    public PanelPsetImport(Daten d, Component parentComponent) {
+    public PanelPsetImport(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         me = this;
         initComponents();

@@ -19,8 +19,9 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Component;
+import com.jidesoft.utils.SystemInfo;
 import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -28,9 +29,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import com.jidesoft.utils.SystemInfo;
-import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
@@ -44,7 +42,7 @@ import mediathek.tool.MVMessageDialog;
 
 public class PanelEinstellungenErweitert extends PanelVorlage {
 
-    public PanelEinstellungenErweitert(Daten d, Component parentComponent) {
+    public PanelEinstellungenErweitert(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
         jButtonProgrammDateimanager.setIcon(GetIcon.getIcon("fileopen_16.png"));

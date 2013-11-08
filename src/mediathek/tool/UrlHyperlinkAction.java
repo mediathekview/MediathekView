@@ -26,7 +26,6 @@ import java.net.URISyntaxException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import mediathek.daten.Daten;
-import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
 public class UrlHyperlinkAction extends AbstractAction {
@@ -63,7 +62,7 @@ public class UrlHyperlinkAction extends AbstractAction {
                     String programm = "";
                     if (Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR].equals("")) {
                         String text = "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen.";
-                        DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(ddaten.mediathekGui, ddaten, true, "", "Browser suchen", text);
+                        DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(ddaten.mediathekGui, true, "", "Browser suchen", text);
                         dialog.setVisible(true);
                         if (dialog.ok) {
                             programm = dialog.ziel;

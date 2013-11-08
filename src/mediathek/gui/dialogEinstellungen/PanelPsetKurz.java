@@ -19,9 +19,11 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -38,9 +40,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import com.jidesoft.utils.SystemInfo;
-import java.awt.Dimension;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
@@ -58,7 +57,7 @@ public class PanelPsetKurz extends PanelVorlage {
     private DatenPset pSet = null;
     private ListePset listePset;
 
-    public PanelPsetKurz(Daten d, Component parentComponent, ListePset llistePset) {
+    public PanelPsetKurz(Daten d, Frame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));

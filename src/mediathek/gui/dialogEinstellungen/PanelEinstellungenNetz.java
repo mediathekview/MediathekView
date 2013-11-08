@@ -19,12 +19,11 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Component;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
@@ -32,7 +31,7 @@ import mediathek.tool.Konstanten;
 
 public class PanelEinstellungenNetz extends PanelVorlage {
 
-    public PanelEinstellungenNetz(Daten d, Component parentComponent) {
+    public PanelEinstellungenNetz(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
         daten = d;
