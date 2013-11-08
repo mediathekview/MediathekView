@@ -278,6 +278,12 @@ public class GuiDownloads extends PanelVorlage {
         Daten.listeDownloads.listePutzen();
     }
 
+    private synchronized void downloadsAufraeumen(DatenDownload datenDownload) {
+        // abgeschlossene Downloads werden aus der Tabelle/Liste entfernt
+        // die Starts dafür werden auch gelöscht
+        Daten.listeDownloads.listePutzen(datenDownload);
+    }
+
     private synchronized void downloadAendern() {
         int row = tabelle.getSelectedRow();
         if (row != -1) {
@@ -465,9 +471,13 @@ public class GuiDownloads extends PanelVorlage {
         for (String url : urls) {
             DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
             if (starten) {
-                // --------------
+                // ==========================================
                 // starten
                 if (download.start != null) {
+                    if (download.start.status == Start.STATUS_RUN) {
+                        // dann läuft er schon
+                        continue;
+                    }
                     if (download.start.status > Start.STATUS_RUN) {
                         // wenn er noch läuft gibts nix
                         // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
@@ -486,7 +496,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
                 arrayDownload.add(download);
             } else {
-                // ---------------
+                // ==========================================
                 // stoppen
                 if (download.start != null) {
                     // wenn kein s -> dann gibts auch nichts zum stoppen oder wieder-starten
@@ -504,9 +514,9 @@ public class GuiDownloads extends PanelVorlage {
         // und die Downloads starten oder stoppen
         if (starten) {
             //alle Downloads starten/wiederstarten
-            DatenDownload.starten(daten, arrayDownload);
+            DatenDownload.startenDownloads(daten, arrayDownload);
         } else {
-            //oder alle Downloads stoppen
+            //oder stoppen
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getName());
         }
         tabelleLaden();
@@ -766,8 +776,17 @@ public class GuiDownloads extends PanelVorlage {
                         filmStartenWiederholenStoppen(false, true);
                     }
                 } else if (column == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
-                    // Download dauerhaft löschen
-                    downloadLoeschen(true);
+                    if (datenDownload.start != null) {
+                        if (datenDownload.start.status >= Start.STATUS_FERTIG) {
+                            downloadsAufraeumen(datenDownload);
+                        } else {
+                            // Download dauerhaft löschen
+                            downloadLoeschen(true);
+                        }
+                    } else {
+                        // Download dauerhaft löschen
+                        downloadLoeschen(true);
+                    }
                 }
             }
         }

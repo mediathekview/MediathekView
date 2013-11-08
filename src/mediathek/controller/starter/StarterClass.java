@@ -146,7 +146,7 @@ public class StarterClass {
             start = datenDownload.start;
             start.status = Start.STATUS_RUN;
             file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-            notifyStartEvent();
+            notifyStartEvent(datenDownload);
             try {
                 new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
             } catch (Exception ex) {
@@ -270,7 +270,7 @@ public class StarterClass {
             start.restSekunden = -1;
             start.percent = Start.PROGRESS_FERTIG;
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
-            notifyStartEvent();
+            notifyStartEvent(datenDownload);
         }
 
         private boolean starten() {
@@ -296,7 +296,7 @@ public class StarterClass {
             datenDownload = d;
             start = datenDownload.start;
             start.status = Start.STATUS_RUN;
-            notifyStartEvent();
+            notifyStartEvent(datenDownload);
         }
 
         @Override
@@ -409,7 +409,7 @@ public class StarterClass {
             start.percent = Start.PROGRESS_FERTIG;
             datenDownload.mVFilmSize.setAktSize(-1);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
-            notifyStartEvent();
+            notifyStartEvent(datenDownload);
         }
     }
 
@@ -539,7 +539,12 @@ public class StarterClass {
         }
     }
 
-    private void notifyStartEvent() {
+    private void notifyStartEvent(DatenDownload datenDownload) {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
+        if (datenDownload != null) {
+            if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, StarterClass.class.getSimpleName());
+            }
+        }
     }
 }

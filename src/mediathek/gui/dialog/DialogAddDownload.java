@@ -212,7 +212,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
             if (jCheckBoxStarten.isSelected()) {
                 // und evtl. auch gleich starten
-                datenDownload.starten(ddaten);
+                datenDownload.startenDownload(ddaten);
             }
         }
         this.dispose();

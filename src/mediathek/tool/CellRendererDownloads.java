@@ -147,24 +147,30 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 } else if (datenDownload.start != null) {
                     if (datenDownload.start.status < Start.STATUS_FERTIG) {
                         setIcon(GetIcon.getIcon("download_stop_sw_16.png"));
-                        //setText("[]");
                     } else {
                         setIcon(GetIcon.getIcon("download_start_sw_16.png"));
-                        //setText(">");
                     }
                 } else {
                     setIcon(GetIcon.getIcon("download_start_sw_16.png"));
-                    //setText(">");
                 }
             } else if (c == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (datenDownload.start != null) {
                     setColor(this, datenDownload.start, isSelected);
-                }
-                if (isSelected) {
+                    if (datenDownload.start.status >= Start.STATUS_FERTIG) {
+                        if (isSelected) {
+                            setIcon(GetIcon.getIcon("download_clear_25.png"));
+                        } else {
+                            setIcon(GetIcon.getIcon("download_clear_sw_16.png"));
+                        }
+                    } else if (isSelected) {
+                        setIcon(GetIcon.getIcon("download_del_25.png"));
+                    } else {
+                        setIcon(GetIcon.getIcon("download_del_sw_16.png"));
+                    }
+                } else if (isSelected) {
                     setIcon(GetIcon.getIcon("download_del_25.png"));
                 } else {
-                    //setText("x");
                     setIcon(GetIcon.getIcon("download_del_sw_16.png"));
                 }
             } else {
