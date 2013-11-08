@@ -19,13 +19,12 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.Component;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.daten.ListePsetVorlagen;
-import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
+import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.PanelPsetLang;
@@ -41,7 +40,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private final int STAT_PSET = 3;
     private final int STAT_FERTIG = 4;
     private int status = STAT_START;
-    private Component parentComponent;
+    private Frame parentComponent;
 
     public DialogStarteinstellungen(java.awt.Frame parent, boolean modal, Daten dd) {
         super(parent, modal);

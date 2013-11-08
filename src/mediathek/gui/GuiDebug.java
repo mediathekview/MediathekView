@@ -20,7 +20,7 @@
 package mediathek.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -48,7 +48,7 @@ public class GuiDebug extends PanelVorlage {
     private JButton[] buttonSender;
     private String[] sender;
 
-    public GuiDebug(Daten d, Component parentComponent) {
+    public GuiDebug(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
         daten = d;

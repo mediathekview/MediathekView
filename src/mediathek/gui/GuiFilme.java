@@ -22,6 +22,7 @@ package mediathek.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -95,7 +96,7 @@ public class GuiFilme extends PanelVorlage {
     //private String[] alleThemen;
     private PanelBeschreibung panelBeschreibung;
 
-    public GuiFilme(Daten d, Component parentComponent) {
+    public GuiFilme(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
         tabelle = new MVJTable(MVJTable.TABELLE_TAB_FILME);
@@ -170,7 +171,7 @@ public class GuiFilme extends PanelVorlage {
         Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public void start(MSearchListenerFilmeLadenEvent event) {
-                beobMausTabelle.itemSenderLaden.setEnabled(false);
+////                beobMausTabelle.itemSenderLaden.setEnabled(false);
                 tabelleLaden();
             }
 
@@ -178,7 +179,7 @@ public class GuiFilme extends PanelVorlage {
             public void fertig(MSearchListenerFilmeLadenEvent event) {
                 checkBlacklist(true);
                 tabelleLaden();
-                beobMausTabelle.itemSenderLaden.setEnabled(true);
+////                beobMausTabelle.itemSenderLaden.setEnabled(true);
             }
         });
         jButtonHilfe.addActionListener(new ActionListener() {
@@ -646,7 +647,8 @@ public class GuiFilme extends PanelVorlage {
             int selectedModelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
             //DatenFilm datenFilm = Daten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
             DatenFilm datenFilm = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
-            daten.starterClass.urlStarten(pSet, datenFilm);
+            daten.starterClass.urlMitProgrammStarten(pSet, datenFilm);
+//            tabelleLaden();
         }
     }
 
@@ -1226,7 +1228,7 @@ public class GuiFilme extends PanelVorlage {
     public class BeobMausTabelle extends MouseAdapter {
         //rechhte Maustaste in der Tabelle
 
-        JMenuItem itemSenderLaden = new JMenuItem("Sender aktualisieren");
+////        JMenuItem itemSenderLaden = new JMenuItem("Sender aktualisieren");
         private BeobUrl beobUrl = new BeobUrl();
         private BeobPrint beobPrint = new BeobPrint();
         private BeobFilterLoeschen beobLoeschen = new BeobFilterLoeschen();
@@ -1422,9 +1424,9 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.addSeparator();
             //##Trenner##
 
-            //Sender laden
-            itemSenderLaden.addActionListener(beobSenderLaden);
-            jPopupMenu.add(itemSenderLaden);
+////            //Sender laden
+////            itemSenderLaden.addActionListener(beobSenderLaden);
+////            jPopupMenu.add(itemSenderLaden);
             //Url
             item = new JMenuItem("URL kopieren");
             item.addActionListener(beobUrl);

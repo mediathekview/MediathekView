@@ -21,8 +21,8 @@ package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -67,7 +67,7 @@ public class PanelPsetLang extends PanelVorlage {
     private boolean modalHilfe = false;
     private final static Color COLOR_ABSPIELEN = new Color(205, 255, 191);
 
-    public PanelPsetLang(Daten d, Component parentComponent) {
+    public PanelPsetLang(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
         modalHilfe = false;
@@ -79,7 +79,7 @@ public class PanelPsetLang extends PanelVorlage {
         init();
     }
 
-    public PanelPsetLang(Daten d, Component parentComponent, ListePset llistePset) {
+    public PanelPsetLang(Daten d, Frame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
         modalHilfe = true;

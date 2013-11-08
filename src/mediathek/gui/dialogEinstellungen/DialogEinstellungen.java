@@ -19,8 +19,8 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,7 +46,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private PanelEinstellungenNetz panelEinstellungenNetz;
     private PanelFilmlisteLaden panelImportFilme;
     private PanelExportFilmliste panelExportFilmliste;
-    private PanelSenderLaden panelSenderLaden;
+////    private PanelSenderLaden panelSenderLaden;
     private PanelBlacklist panelBlacklist;
     private PanelErledigteUrls panelErledigteAbos;
     private PanelErledigteUrls panelHistory;
@@ -60,7 +60,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private PanelMeldungen panelMeldungenSystem;
     private PanelMeldungen panelMeldungenPlayer;
     private JPanel panelLeer = new JPanel();
-    private Component parentComponent = this;
+    private Frame parentComponent = this;
 
     /**
      * @param parent
@@ -119,7 +119,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         panelEinstellungenNetz = new PanelEinstellungenNetz(ddaten, parentComponent);
         panelImportFilme = new PanelFilmlisteLaden(ddaten, parentComponent);
         panelExportFilmliste = new PanelExportFilmliste(ddaten, parentComponent);
-        panelSenderLaden = new PanelSenderLaden(ddaten, parentComponent);
+////        panelSenderLaden = new PanelSenderLaden(ddaten, parentComponent);
         panelBlacklist = new PanelBlacklist(ddaten, parentComponent, PanelBlacklist.class.getName());
         panelHistory = new PanelErledigteUrls(ddaten, parentComponent);
         panelHistory.initHistory();
@@ -142,7 +142,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
         final String NAME_netzwerk = "Netzwerk";
         final String NAME_filmListeLaden = "Filmliste laden";
-        final String NAME_senderLaden = "Sender aktualisieren";
+////        final String NAME_senderLaden = "Sender aktualisieren";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";
         final String NAME_programmset = "Set bearbeiten";
@@ -175,8 +175,8 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filmliste");
         DefaultMutableTreeNode treeNodeFilmliste = new DefaultMutableTreeNode(NAME_filmListeLaden);
         treeNodeFilme.add(treeNodeFilmliste);
-        DefaultMutableTreeNode treeNodeSenderLaden = new DefaultMutableTreeNode(NAME_senderLaden);
-        treeNodeFilme.add(treeNodeSenderLaden);
+////        DefaultMutableTreeNode treeNodeSenderLaden = new DefaultMutableTreeNode(NAME_senderLaden);
+////        treeNodeFilme.add(treeNodeSenderLaden);
         DefaultMutableTreeNode treeNodeFilmlisteExport = new DefaultMutableTreeNode(NAME_filmListeExportieren);
         treeNodeFilme.add(treeNodeFilmlisteExport);
         DefaultMutableTreeNode treeNodeBlacklist = new DefaultMutableTreeNode(NAME_blacklist);
@@ -241,9 +241,9 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                     } else if (name.equals(NAME_filmListeLaden)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelImportFilme);
-                    } else if (name.equals(NAME_senderLaden)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelSenderLaden);
+////                    } else if (name.equals(NAME_senderLaden)) {
+////                        jPanelExtra.removeAll();
+////                        jPanelExtra.add(panelSenderLaden);
                     } else if (name.equals(NAME_filmListeExportieren)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelExportFilmliste);

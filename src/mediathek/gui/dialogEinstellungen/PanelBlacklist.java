@@ -20,7 +20,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,7 +57,7 @@ public class PanelBlacklist extends PanelVorlage {
     private Color cGruen = new Color(0, 153, 51);
     private Color cRot = new Color(255, 0, 0);
 
-    public PanelBlacklist(Daten d, Component parentComponent, String nname) {
+    public PanelBlacklist(Daten d, Frame parentComponent, String nname) {
         super(d, parentComponent);
         initComponents();
         name = nname;

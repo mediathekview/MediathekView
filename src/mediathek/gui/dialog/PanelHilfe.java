@@ -19,13 +19,12 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.Component;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
 import javax.swing.JOptionPane;
 import mediathek.controller.ProgrammLog;
-import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
@@ -42,7 +41,7 @@ public class PanelHilfe extends PanelVorlage {
      * @param dd
      * @param parentComponent
      */
-    public PanelHilfe(Daten dd, Component p) {
+    public PanelHilfe(Daten dd, Frame p) {
         super(dd, p);
         initComponents();
         jButtonHilfeReset.setIcon(GetIcon.getIcon("help_16.png"));

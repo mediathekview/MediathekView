@@ -58,8 +58,8 @@ public class StarterClass {
         startenThread.start();
     }
 
-    public synchronized Start urlStarten(DatenPset pSet, DatenFilm ersterFilm) {
-        // url mit dem Programm mit der Nr. starten (Button oder Doppelklick)
+    public synchronized Start urlMitProgrammStarten(DatenPset pSet, DatenFilm ersterFilm) {
+        // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
         Start s = null;
         String url = ersterFilm.arr[DatenFilm.FILM_URL_NR];

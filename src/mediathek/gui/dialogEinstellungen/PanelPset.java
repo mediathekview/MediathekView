@@ -20,17 +20,16 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mediathek.daten.Daten;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.Konstanten;
 
 public class PanelPset extends PanelVorlage {
 
-    public PanelPset(Daten d, Component parentComponent) {
+    public PanelPset(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
         jCheckBoxAlleEinstellungen.addActionListener(new ActionListener() {
