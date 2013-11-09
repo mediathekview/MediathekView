@@ -95,16 +95,16 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             if (c == DatenFilm.FILM_ABSPIELEN_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (isSelected) {
-                    setIcon(GetIcon.getIcon("player_play_25.png"));
+                    setIcon(GetIcon.getIcon("film_play_tab.png"));
                 } else {
-                    setIcon(GetIcon.getIcon("player_play_sw_15.png"));
+                    setIcon(GetIcon.getIcon("film_play_sw_tab.png"));
                 }
             } else if (c == DatenFilm.FILM_AUFZEICHNEN_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (isSelected) {
-                    setIcon(GetIcon.getIcon("player_rec_25.png"));
+                    setIcon(GetIcon.getIcon("film_rec_tab.png"));
                 } else {
-                    setIcon(GetIcon.getIcon("player_rec_sw_15.png"));
+                    setIcon(GetIcon.getIcon("film_rec_sw_tab.png"));
                 }
             }
 

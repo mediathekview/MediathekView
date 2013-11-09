@@ -27,24 +27,23 @@ import mediathek.daten.Daten;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
-public class DirOpenAction {
+public class OpenPlayerAction {
 
-    public static void zielordnerOeffnen(Frame parent, String ordner) {
+    public static void filmAbspielen(Frame parent, String datei) {
         boolean gut = false;
         File sFile = null;
-        if (ordner.isEmpty()) {
+        if (datei.isEmpty()) {
             return;
         }
-        if (!ordner.endsWith(File.separator)) {
-            ordner += File.separator;
+        sFile = new File(datei);
+        if (!sFile.exists()) {
+            MVMessageDialog.showMessageDialog(parent, "Film existiert noch nicht!",
+                    "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
         }
         try {
-            sFile = new File(ordner);
-            if (!sFile.exists()) {
-                sFile = sFile.getParentFile();
-            }
-            if (!Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR].isEmpty()) {
-                String programm = Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR];
+            if (!Daten.system[Konstanten.SYSTEM_PLAYER_ABSPIELEN_NR].isEmpty()) {
+                String programm = Daten.system[Konstanten.SYSTEM_PLAYER_ABSPIELEN_NR];
                 Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
                 gut = true;
             } else {
@@ -60,30 +59,26 @@ public class DirOpenAction {
             try {
                 gut = false;
                 String programm = "";
-                if (Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR].equals("")) {
-                    String text = "\n Der Dateimanager zum Anzeigen des Speicherordners wird nicht gefunden.\n Dateimanager selbst auswählen.";
-                    DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(parent, true, "", "Dateimanager suchen", text);
-                    dialog.setVisible(true);
-                    if (dialog.ok) {
-                        programm = dialog.ziel;
-                    }
-                } else {
-                    programm = Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR];
+                String text = "\n Ein Videoplayer zum Abspielen wird nicht gefunden.\n Videoplayer selbst auswählen.";
+                DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(parent, true, "", "Videoplayer suchen", text);
+                dialog.setVisible(true);
+                if (dialog.ok) {
+                    programm = dialog.ziel;
                 }
                 if (sFile != null) {
                     Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
-                    Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = programm;
+                    Daten.system[Konstanten.SYSTEM_PLAYER_ABSPIELEN_NR] = programm;
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                     gut = true;
                 }
             } catch (Exception eex) {
-                Log.fehlerMeldung(306590789, Log.FEHLER_ART_PROG, GuiDownloads.class.getName(), ex, "Ordner öffnen: " + ordner);
+                Log.fehlerMeldung(959632369, Log.FEHLER_ART_PROG, GuiDownloads.class.getName(), ex, "Ordner öffnen: " + datei);
             }
         } finally {
             if (!gut) {
-                Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = "";
+                Daten.system[Konstanten.SYSTEM_PLAYER_ABSPIELEN_NR] = "";
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
-                MVMessageDialog.showMessageDialog(parent, "Kann den Dateimanager nicht öffnen!",
+                MVMessageDialog.showMessageDialog(parent, "Kann den Videoplayer nicht öffnen!",
                         "Fehler", JOptionPane.ERROR_MESSAGE);
             }
         }
