@@ -174,6 +174,56 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
             }
         });
+        jButtonProgrammVideoplayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //we can use native chooser on Mac...
+                if (SystemInfo.isMacOSX()) {
+                    FileDialog chooser = new FileDialog(daten.mediathekGui, "Dateimanager suchen");
+                    chooser.setMode(FileDialog.LOAD);
+                    chooser.setVisible(true);
+                    if (chooser.getFile() != null) {
+                        try {
+                            File destination = new File(chooser.getDirectory() + chooser.getFile());
+                            jTextFieldVideoplayer.setText(destination.getAbsolutePath());
+                        } catch (Exception ex) {
+                            Log.fehlerMeldung(821036489, Log.FEHLER_ART_PROG, "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                        }
+                    }
+                } else {
+                    int returnVal;
+                    JFileChooser chooser = new JFileChooser();
+                    if (!jTextFieldVideoplayer.getText().equals("")) {
+                        chooser.setCurrentDirectory(new File(jTextFieldVideoplayer.getText()));
+                    } else {
+                        chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                    }
+                    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                    returnVal = chooser.showOpenDialog(null);
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        try {
+                            jTextFieldVideoplayer.setText(chooser.getSelectedFile().getAbsolutePath());
+                        } catch (Exception ex) {
+                            Log.fehlerMeldung(732656980, Log.FEHLER_ART_PROG, "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                        }
+                    }
+                }
+                // merken und prüfen
+                Daten.system[Konstanten.SYSTEM_PLAYER_ABSPIELEN_NR] = jTextFieldVideoplayer.getText();
+                String programm = jTextFieldVideoplayer.getText();
+                if (!programm.equals("")) {
+                    try {
+                        if (!new File(programm).exists()) {
+                            MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        } else if (!new File(programm).canExecute()) {
+                            MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+
+            }
+        });
         jButtonProgrammUrl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -235,6 +285,17 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
             }
         });
+        jButtonHilfeVideoplayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(null, true, "\n"
+                        + "In der Tabelle \"Downloads\" kann man mit der rechten\n"
+                        + "Maustaste den geladenen Film in einem Videoplayer\n"
+                        + "öffnen. Normalerweise wird der Videoplayer des\n"
+                        + "Betriebssystems gefunden und geöffnet. Klappt das nicht,\n"
+                        + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
+            }
+        });
         jButtonHilfeProgrammUrl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -263,6 +324,26 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
             private void tus() {
                 Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = jTextFieldProgrammDateimanager.getText();
+            }
+        });
+        jTextFieldVideoplayer.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            private void tus() {
+                Daten.system[Konstanten.SYSTEM_PLAYER_ABSPIELEN_NR] = jTextFieldVideoplayer.getText();
             }
         });
         jTextFieldProgrammUrl.getDocument().addDocumentListener(new DocumentListener() {
@@ -336,6 +417,11 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jTextFieldProgrammDateimanager = new javax.swing.JTextField();
         jButtonProgrammDateimanager = new javax.swing.JButton();
         jButtonHilfeProgrammDateimanager = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jTextFieldVideoplayer = new javax.swing.JTextField();
+        jButtonHilfeVideoplayer = new javax.swing.JButton();
+        jButtonProgrammVideoplayer = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jTextFieldProgrammUrl = new javax.swing.JTextField();
         jButtonProgrammUrl = new javax.swing.JButton();
@@ -367,7 +453,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jCheckBoxAboSuchen)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxDownloadSofortStarten)
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("User-Agent"));
@@ -408,7 +494,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jRadioButtonAuto)
                     .addComponent(jTextFieldAuto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonHilfe))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jRadioButtonManuel)
                     .addComponent(jTextFieldUserAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -450,14 +536,22 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jCheckBoxUnicode))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxNurAscii)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab Download: Ordner öffnen"));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab Download"));
 
         jButtonProgrammDateimanager.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
 
         jButtonHilfeProgrammDateimanager.setText("Hilfe");
+
+        jLabel1.setText("Ordner öffnen");
+
+        jLabel2.setText("Film abspielen");
+
+        jButtonHilfeVideoplayer.setText("Hilfe");
+
+        jButtonProgrammVideoplayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -465,25 +559,54 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextFieldProgrammDateimanager)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonProgrammDateimanager)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonHilfeProgrammDateimanager)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jTextFieldVideoplayer)
+                            .addComponent(jTextFieldProgrammDateimanager, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jButtonProgrammDateimanager)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonHilfeProgrammDateimanager))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jButtonProgrammVideoplayer)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonHilfeVideoplayer)))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldProgrammDateimanager, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonProgrammDateimanager)
                     .addComponent(jButtonHilfeProgrammDateimanager))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldVideoplayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButtonHilfeVideoplayer)
+                        .addComponent(jButtonProgrammVideoplayer)))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammDateimanager, jButtonProgrammDateimanager, jTextFieldProgrammDateimanager});
+
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeVideoplayer, jButtonProgrammVideoplayer, jTextFieldVideoplayer});
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Programm zum Öffnen von URL's"));
 
@@ -512,7 +635,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jTextFieldProgrammUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonProgrammUrl)
                     .addComponent(jButtonHilfeProgrammUrl))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammUrl, jButtonProgrammUrl, jTextFieldProgrammUrl});
@@ -535,7 +658,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jCheckBoxUmbenennen)
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -568,21 +691,25 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonHilfeProgrammDateimanager;
     private javax.swing.JButton jButtonHilfeProgrammUrl;
+    private javax.swing.JButton jButtonHilfeVideoplayer;
     private javax.swing.JButton jButtonName;
     private javax.swing.JButton jButtonProgrammDateimanager;
     private javax.swing.JButton jButtonProgrammUrl;
+    private javax.swing.JButton jButtonProgrammVideoplayer;
     private javax.swing.JCheckBox jCheckBoxAboSuchen;
     private javax.swing.JCheckBox jCheckBoxDownloadSofortStarten;
     private javax.swing.JCheckBox jCheckBoxNurAscii;
     private javax.swing.JCheckBox jCheckBoxUmbenennen;
     private javax.swing.JCheckBox jCheckBoxUnicode;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -592,6 +719,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private javax.swing.JTextField jTextFieldProgrammDateimanager;
     private javax.swing.JTextField jTextFieldProgrammUrl;
     private javax.swing.JTextField jTextFieldUserAgent;
+    private javax.swing.JTextField jTextFieldVideoplayer;
     // End of variables declaration//GEN-END:variables
 
     private class BeobUserAgent implements DocumentListener {

@@ -1307,7 +1307,7 @@ public class GuiFilme extends PanelVorlage {
 
             //Thema laden
             JMenuItem item = new JMenuItem("Film abspielen");
-            item.setIcon(GetIcon.getIcon("player_play_16.png"));
+            item.setIcon(GetIcon.getIcon("film_play_16.png"));
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -1317,7 +1317,7 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.add(item);
             //Url
             item = new JMenuItem("Film aufzeichnen");
-            item.setIcon(GetIcon.getIcon("player_rec_16.png"));
+            item.setIcon(GetIcon.getIcon("film_rec_16.png"));
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

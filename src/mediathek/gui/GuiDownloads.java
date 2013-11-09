@@ -55,6 +55,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVJTable;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.OpenPlayerAction;
 import mediathek.tool.TModelDownload;
 import msearch.daten.DatenFilm;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
@@ -103,6 +104,10 @@ public class GuiDownloads extends PanelVorlage {
 
     public void aktualisieren() {
         downloadsAktualisieren();
+    }
+
+    public void filmAbspielen() {
+        filmAbspielen_();
     }
 
     public void starten(boolean alle) {
@@ -323,6 +328,18 @@ public class GuiDownloads extends PanelVorlage {
             DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
             String s = download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
             DirOpenAction.zielordnerOeffnen(parentComponent, s);
+        } else {
+            new HinweisKeineAuswahl().zeigen(parentComponent);
+        }
+    }
+
+    private void filmAbspielen_() {
+        int row = tabelle.getSelectedRow();
+        if (row >= 0) {
+            String url = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_URL_NR).toString();
+            DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
+            String s = download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR];
+            OpenPlayerAction.filmAbspielen(parentComponent, s);
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
@@ -714,12 +731,14 @@ public class GuiDownloads extends PanelVorlage {
                 if (column == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
                     // filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */)
                     if (datenDownload.start != null) {
-                        if (datenDownload.start.status < Start.STATUS_FERTIG) {
-                            // Download stoppen
-                            filmStartenWiederholenStoppen(false, false);
-                        } else {
+                        if (datenDownload.start.status >= Start.STATUS_FERTIG) {
+                            filmAbspielen_();
+                        } else if (datenDownload.start.status < Start.STATUS_RUN) {
                             // Download starten
                             filmStartenWiederholenStoppen(false, true);
+                        } else {
+                            // Download stoppen
+                            filmStartenWiederholenStoppen(false, false);
                         }
                     } else {
                         // Download starten
@@ -763,7 +782,7 @@ public class GuiDownloads extends PanelVorlage {
             }
             // Download starten
             JMenuItem itemStarten = new JMenuItem("Download starten");
-            itemStarten.setIcon(GetIcon.getIcon("player_play_16.png"));
+            itemStarten.setIcon(GetIcon.getIcon("download_start_16.png"));
             itemStarten.setEnabled(!wartenOderLaufen);
             jPopupMenu.add(itemStarten);
             itemStarten.addActionListener(new ActionListener() {
@@ -775,7 +794,7 @@ public class GuiDownloads extends PanelVorlage {
 
             // Download stoppen
             JMenuItem itemStoppen = new JMenuItem("Download stoppen");
-            itemStoppen.setIcon(GetIcon.getIcon("player_stop_16.png"));
+            itemStoppen.setIcon(GetIcon.getIcon("download_stop_16.png"));
             itemStoppen.setEnabled(wartenOderLaufen);
             jPopupMenu.add(itemStoppen);
             itemStoppen.addActionListener(new ActionListener() {
@@ -821,7 +840,7 @@ public class GuiDownloads extends PanelVorlage {
             });
             //dauerhaft löschen
             JMenuItem itemDauerhaftLoeschen = new JMenuItem("Download dauerhaft löschen");
-            itemDauerhaftLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
+            itemDauerhaftLoeschen.setIcon(GetIcon.getIcon("download_del_16.png"));
             jPopupMenu.add(itemDauerhaftLoeschen);
             itemDauerhaftLoeschen.addActionListener(new ActionListener() {
                 @Override
@@ -845,7 +864,7 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
 
             JMenuItem itemAlleStarten = new JMenuItem("alle Downloads starten");
-            itemAlleStarten.setIcon(GetIcon.getIcon("alle_starten_16.png"));
+            itemAlleStarten.setIcon(GetIcon.getIcon("download_alleStarten_16.png"));
             jPopupMenu.add(itemAlleStarten);
             itemAlleStarten.addActionListener(new ActionListener() {
                 @Override
@@ -854,7 +873,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemAlleStoppen = new JMenuItem("alle Downloads stoppen");
-            itemAlleStoppen.setIcon(GetIcon.getIcon("player_stop_16.png"));
+            itemAlleStoppen.setIcon(GetIcon.getIcon("download_stop_16.png"));
             jPopupMenu.add(itemAlleStoppen);
             itemAlleStoppen.addActionListener(new ActionListener() {
                 @Override
@@ -863,7 +882,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
-            itemWartendeStoppen.setIcon(GetIcon.getIcon("player_stop_16.png"));
+            itemWartendeStoppen.setIcon(GetIcon.getIcon("download_stop_16.png"));
             jPopupMenu.add(itemWartendeStoppen);
             itemWartendeStoppen.addActionListener(new ActionListener() {
                 @Override
@@ -881,7 +900,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemAufraeumen = new JMenuItem("Liste Aufräumen");
-            itemAufraeumen.setIcon(GetIcon.getIcon("clear_16.png"));
+            itemAufraeumen.setIcon(GetIcon.getIcon("download_clear_16.png"));
             jPopupMenu.add(itemAufraeumen);
             itemAufraeumen.addActionListener(new ActionListener() {
                 @Override
@@ -893,24 +912,20 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
             jPopupMenu.addSeparator();
             //#######################################
+            // Film abspielen
+            JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film abspielen");
+            itemPlayerDownload.setIcon(GetIcon.getIcon("film_play_16.png"));
 
-            // url
-            JMenuItem itemUrl = new JMenuItem("URL kopieren");
-            itemUrl.addActionListener(new ActionListener() {
+            itemPlayerDownload.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int nr = tabelle.rowAtPoint(p);
-                    if (nr >= 0) {
-                        GuiFunktionen.copyToClipboard(
-                                tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr),
-                                DatenDownload.DOWNLOAD_URL_NR).toString());
-                    }
+                    filmAbspielen_();
                 }
             });
-            jPopupMenu.add(itemUrl);
+            jPopupMenu.add(itemPlayerDownload);
 
-            // Player
-            JMenuItem itemPlayer = new JMenuItem("Film abspielen");
+            // URL abspielen
+            JMenuItem itemPlayer = new JMenuItem("Film (URL) abspielen");
             itemPlayer.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -920,7 +935,7 @@ public class GuiDownloads extends PanelVorlage {
                         if (gruppe != null) {
                             int selectedModelRow = tabelle.convertRowIndexToModel(nr);
                             String url = tabelle.getModel().getValueAt(selectedModelRow, DatenDownload.DOWNLOAD_URL_NR).toString();
-                            DatenDownload download = daten.listeDownloads.getDownloadByUrl(url);
+                            DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
                             if (download != null) {
                                 if (download.film == null) {
                                     // bei Einmaldownload nach Programmstart
@@ -949,6 +964,21 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemPlayer);
+
+            // URL kopieren
+            JMenuItem itemUrl = new JMenuItem("URL kopieren");
+            itemUrl.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int nr = tabelle.rowAtPoint(p);
+                    if (nr >= 0) {
+                        GuiFunktionen.copyToClipboard(
+                                tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr),
+                                DatenDownload.DOWNLOAD_URL_NR).toString());
+                    }
+                }
+            });
+            jPopupMenu.add(itemUrl);
 
             // Infos
             JMenuItem itemInfo = new JMenuItem("Infos anzeigen");

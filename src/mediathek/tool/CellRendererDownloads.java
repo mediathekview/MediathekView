@@ -136,22 +136,28 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 }
                 if (isSelected) {
                     if (datenDownload.start != null) {
-                        if (datenDownload.start.status < Start.STATUS_FERTIG) {
-                            setIcon(GetIcon.getIcon("download_stop_25.png"));
+                        if (datenDownload.start.status >= Start.STATUS_FERTIG) {
+                            setIcon(GetIcon.getIcon("film_play_tab.png"));
+                        } else if (datenDownload.start.status < Start.STATUS_RUN) {
+                            setIcon(GetIcon.getIcon("download_start_tab.png"));
                         } else {
-                            setIcon(GetIcon.getIcon("download_start_25.png"));
+                            setIcon(GetIcon.getIcon("download_stop_tab.png"));
                         }
                     } else {
-                        setIcon(GetIcon.getIcon("download_start_25.png"));
-                    }
-                } else if (datenDownload.start != null) {
-                    if (datenDownload.start.status < Start.STATUS_FERTIG) {
-                        setIcon(GetIcon.getIcon("download_stop_sw_16.png"));
-                    } else {
-                        setIcon(GetIcon.getIcon("download_start_sw_16.png"));
+                        setIcon(GetIcon.getIcon("download_start_tab.png"));
                     }
                 } else {
-                    setIcon(GetIcon.getIcon("download_start_sw_16.png"));
+                    if (datenDownload.start != null) {
+                        if (datenDownload.start.status >= Start.STATUS_FERTIG) {
+                            setIcon(GetIcon.getIcon("film_play_sw_tab.png"));
+                        } else if (datenDownload.start.status < Start.STATUS_RUN) {
+                            setIcon(GetIcon.getIcon("download_start_sw_tab.png"));
+                        } else {
+                            setIcon(GetIcon.getIcon("download_stop_sw_tab.png"));
+                        }
+                    } else {
+                        setIcon(GetIcon.getIcon("download_start_sw_tab.png"));
+                    }
                 }
             } else if (c == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
@@ -159,19 +165,19 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     setColor(this, datenDownload.start, isSelected);
                     if (datenDownload.start.status >= Start.STATUS_FERTIG) {
                         if (isSelected) {
-                            setIcon(GetIcon.getIcon("download_clear_25.png"));
+                            setIcon(GetIcon.getIcon("download_clear_tab.png"));
                         } else {
-                            setIcon(GetIcon.getIcon("download_clear_sw_16.png"));
+                            setIcon(GetIcon.getIcon("download_clear_sw_tab.png"));
                         }
                     } else if (isSelected) {
-                        setIcon(GetIcon.getIcon("download_del_25.png"));
+                        setIcon(GetIcon.getIcon("download_del_tab.png"));
                     } else {
-                        setIcon(GetIcon.getIcon("download_del_sw_16.png"));
+                        setIcon(GetIcon.getIcon("download_del_sw_tab.png"));
                     }
                 } else if (isSelected) {
-                    setIcon(GetIcon.getIcon("download_del_25.png"));
+                    setIcon(GetIcon.getIcon("download_del_tab.png"));
                 } else {
-                    setIcon(GetIcon.getIcon("download_del_sw_16.png"));
+                    setIcon(GetIcon.getIcon("download_del_sw_tab.png"));
                 }
             } else {
                 if (datenDownload.start != null) {
