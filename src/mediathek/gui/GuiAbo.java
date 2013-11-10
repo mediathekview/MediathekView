@@ -95,8 +95,8 @@ public class GuiAbo extends PanelVorlage {
             }
         });
         tabelle.addMouseListener(new BeobMausTabelle1());
-        tabelle.setDefaultRenderer(Object.class, new CellRendererAbo(daten));
-        tabelle.setDefaultRenderer(Datum.class, new CellRendererAbo(daten));
+        tabelle.setDefaultRenderer(Object.class, new CellRendererAbo());
+        tabelle.setDefaultRenderer(Datum.class, new CellRendererAbo());
         tabelle.setModel(new TModelAbo(new Object[][]{}, DatenAbo.COLUMN_NAMES));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenAbo.COLUMN_NAMES, DatenAbo.spaltenAnzeigen) {
             @Override
@@ -134,12 +134,12 @@ public class GuiAbo extends PanelVorlage {
                 for (int i = rows.length - 1; i >= 0; --i) {
                     int delRow = tabelle.convertRowIndexToModel(rows[i]);
                     ((TModelAbo) tabelle.getModel()).removeRow(delRow);
-                    daten.listeAbo.remove(delRow);
+                    Daten.listeAbo.remove(delRow);
                 }
             }
             tabelleLaden();
             zeileMarkieren(0);
-            daten.listeAbo.aenderungMelden();
+            Daten.listeAbo.aenderungMelden();
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
@@ -159,16 +159,32 @@ public class GuiAbo extends PanelVorlage {
         int row = tabelle.getSelectedRow();
         if (row >= 0) {
             int delRow = tabelle.convertRowIndexToModel(row);
-            DatenAbo akt = daten.listeAbo.getAboNr(delRow);
+            DatenAbo akt = Daten.listeAbo.getAboNr(delRow);
             DatenAbo ret = akt.getCopy();
             DialogEditAbo dialog = new DialogEditAbo(null, true, daten, ret);
             dialog.setVisible(true);
             if (dialog.ok) {
                 akt.aufMichKopieren(ret);
                 tabelleLaden();
-                daten.listeAbo.aenderungMelden();
+                Daten.listeAbo.aenderungMelden();
             }
             setInfo();
+        } else {
+            new HinweisKeineAuswahl().zeigen(parentComponent);
+        }
+    }
+
+    private void aboEinAus() {
+        int sel = tabelle.getSelectedRow();
+        if (sel > 0) {
+            int modelRow = tabelle.convertRowIndexToModel(sel);
+            DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
+            akt.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(!Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET_NR]));
+            tabelleLaden();
+            tabelle.clearSelection();
+            tabelle.addRowSelectionInterval(sel, sel);
+            setInfo();
+            Daten.listeAbo.aenderungMelden();
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
@@ -180,7 +196,7 @@ public class GuiAbo extends PanelVorlage {
         if (rows.length > 0) {
             for (int row : rows) {
                 int modelRow = tabelle.convertRowIndexToModel(row);
-                DatenAbo akt = daten.listeAbo.getAboNr(modelRow);
+                DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
                 akt.arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(ein);
             }
             tabelleLaden();
@@ -190,7 +206,7 @@ public class GuiAbo extends PanelVorlage {
                 tabelle.addRowSelectionInterval(row, row);
             }
             setInfo();
-            daten.listeAbo.aenderungMelden();
+            Daten.listeAbo.aenderungMelden();
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
@@ -277,11 +293,16 @@ public class GuiAbo extends PanelVorlage {
         @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
-                if (arg0.getClickCount() > 1) {
+                if (arg0.getClickCount() == 1) {
+                    p = arg0.getPoint();
+                    int row = tabelle.rowAtPoint(p);
+                    int column = tabelle.columnAtPoint(p);
+                    if (row >= 0) {
+                        buttonTable(row, column);
+                    }
+                } else if (arg0.getClickCount() > 1) {
                     aboAendern();
                 }
-//            } else if (arg0.getButton() == MouseEvent.BUTTON3) {
-//                showMenu(arg0);
             }
         }
 
@@ -296,6 +317,14 @@ public class GuiAbo extends PanelVorlage {
         public void mouseReleased(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
+            }
+        }
+
+        private void buttonTable(int row, int column) {
+            if (row != -1) {
+                if (column == DatenAbo.ABO_EINGESCHALTET_NR) {
+                    aboEinAus();
+                }
             }
         }
 
