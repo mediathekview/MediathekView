@@ -733,16 +733,13 @@ public class GuiDownloads extends PanelVorlage {
                     if (datenDownload.start != null) {
                         if (datenDownload.start.status >= Start.STATUS_FERTIG) {
                             filmAbspielen_();
-                        } else if (datenDownload.start.status < Start.STATUS_RUN) {
-                            // Download starten
-                            filmStartenWiederholenStoppen(false, true);
                         } else {
                             // Download stoppen
-                            filmStartenWiederholenStoppen(false, false);
+                            filmStartenWiederholenStoppen(false, false /*starten*/);
                         }
                     } else {
                         // Download starten
-                        filmStartenWiederholenStoppen(false, true);
+                        filmStartenWiederholenStoppen(false, true /*starten*/);
                     }
                 } else if (column == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
                     if (datenDownload.start != null) {

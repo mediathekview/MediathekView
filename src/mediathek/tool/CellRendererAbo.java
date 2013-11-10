@@ -30,12 +30,6 @@ import mediathek.res.GetIcon;
 
 public class CellRendererAbo extends DefaultTableCellRenderer {
 
-    Daten daten;
-
-    public CellRendererAbo(Daten d) {
-        daten = d;
-    }
-
     @Override
     public Component getTableCellRendererComponent(
             JTable table,
@@ -54,7 +48,7 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
         try {
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
-            DatenAbo abo = daten.listeAbo.getAboNr(r);
+            DatenAbo abo = Daten.listeAbo.getAboNr(r);
             boolean eingeschaltet = abo.aboIstEingeschaltet();
             if (!eingeschaltet) {
                 setFont(new java.awt.Font("Dialog", Font.ITALIC, 12));

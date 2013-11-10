@@ -138,8 +138,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     if (datenDownload.start != null) {
                         if (datenDownload.start.status >= Start.STATUS_FERTIG) {
                             setIcon(GetIcon.getIcon("film_play_tab.png"));
-                        } else if (datenDownload.start.status < Start.STATUS_RUN) {
-                            setIcon(GetIcon.getIcon("download_start_tab.png"));
                         } else {
                             setIcon(GetIcon.getIcon("download_stop_tab.png"));
                         }
@@ -150,8 +148,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     if (datenDownload.start != null) {
                         if (datenDownload.start.status >= Start.STATUS_FERTIG) {
                             setIcon(GetIcon.getIcon("film_play_sw_tab.png"));
-                        } else if (datenDownload.start.status < Start.STATUS_RUN) {
-                            setIcon(GetIcon.getIcon("download_start_sw_tab.png"));
                         } else {
                             setIcon(GetIcon.getIcon("download_stop_sw_tab.png"));
                         }
