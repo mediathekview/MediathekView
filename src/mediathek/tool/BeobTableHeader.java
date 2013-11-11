@@ -34,11 +34,13 @@ public class BeobTableHeader extends MouseAdapter {
     String[] columns;
     boolean[] spaltenAnzeigen;
     JCheckBoxMenuItem[] box;
+    int[] immerAnzeigen;
 
-    public BeobTableHeader(MVJTable tabelle, String[] columns, boolean[] spalten) {
+    public BeobTableHeader(MVJTable tabelle, String[] columns, boolean[] spalten, int[] iimmerAnzeigen) {
         this.tabelle = tabelle;
         this.columns = columns;
         spaltenAnzeigen = spalten;
+        immerAnzeigen = iimmerAnzeigen;
     }
 
     @Override
@@ -55,11 +57,23 @@ public class BeobTableHeader extends MouseAdapter {
         }
     }
 
+    private boolean immer(int i) {
+        for (int ii : immerAnzeigen) {
+            if (i == ii) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void showMenu(MouseEvent evt) {
         JPopupMenu jPopupMenu = new JPopupMenu();
         // Spalten ein-ausschalten
         box = new JCheckBoxMenuItem[this.columns.length];
         for (int i = 0; i < columns.length; ++i) {
+            if (immer(i)) {
+                continue;
+            }
             box[i] = new JCheckBoxMenuItem(columns[i]);
             box[i].setSelected(anzeigen(i));
             box[i].addActionListener(new ActionListener() {
@@ -96,7 +110,9 @@ public class BeobTableHeader extends MouseAdapter {
 
     private void setSpalten() {
         for (int i = 0; i < box.length; ++i) {
-            spaltenAnzeigen[i] = box[i].isSelected();
+            if (box[i] != null) {
+                spaltenAnzeigen[i] = box[i].isSelected();
+            }
         }
         tabelle.spaltenEinAus();
         tabelleLaden_();

@@ -362,17 +362,20 @@ public class PanelPsetKurz extends PanelVorlage {
         JTextField textField;
         String[] arr = null;
         int idx;
+        boolean file;
 
         public ZielBeobachter(JTextField tt, String[] aarr, int iidx) {
             textField = tt;
             arr = aarr; // Programmarray
             idx = iidx;
+            file = true;
         }
 
         public ZielBeobachter(JTextField tt, int iidx) {
             // für den Zielpfad
             textField = tt;
             idx = iidx;
+            file = false;
         }
 
         @Override
@@ -383,7 +386,9 @@ public class PanelPsetKurz extends PanelVorlage {
             //we can use native directory chooser on Mac...
             if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
-                System.setProperty("apple.awt.fileDialogForDirectories", "true");
+                if (!file) {
+                    System.setProperty("apple.awt.fileDialogForDirectories", "true");
+                }
                 FileDialog chooser = new FileDialog(daten.mediathekGui, "Film speichern");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
@@ -399,13 +404,15 @@ public class PanelPsetKurz extends PanelVorlage {
                         Log.fehlerMeldung(392847589, Log.FEHLER_ART_PROG, "DialogZielPset.ZielBeobachter", ex);
                     }
                 }
-                System.setProperty("apple.awt.fileDialogForDirectories", "false");
+                if (!file) {
+                    System.setProperty("apple.awt.fileDialogForDirectories", "false");
+                }
             } else {
                 //use the cross-platform swing chooser
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
                 chooser.setCurrentDirectory(new File(textField.getText()));
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                chooser.setFileSelectionMode(file ? JFileChooser.FILES_ONLY : JFileChooser.DIRECTORIES_ONLY);
                 returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {

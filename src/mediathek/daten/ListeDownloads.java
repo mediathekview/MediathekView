@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import java.awt.Frame;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,9 +28,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import javax.swing.JOptionPane;
 import mediathek.controller.starter.Start;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 import msearch.daten.DatenFilm;
@@ -171,7 +174,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 //        listeNummerieren();
 //        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
 //    }
-
     public synchronized DatenDownload getDownloadByUrl(String url) {
         DatenDownload ret = null;
         ListIterator<DatenDownload> it = this.listIterator();
@@ -311,7 +313,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized void abosSuchen() {
+    public synchronized void abosSuchen(Frame parent) {
         // in der Filmliste nach passenden Filmen suchen und 
         // in die Liste der Downloads eintragen
         boolean gefunden = false;
@@ -353,6 +355,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
                 add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
                 gefunden = true;
+            } else if (parent != null) {
+                // sonst sind wir evtl. nur in einer Konsole ohne X
+                MVMessageDialog.showMessageDialog(parent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen\" ein Programm zum Aufzeichnen für Abos festlegen.",
+                        "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+                break;
             }
         }
         if (gefunden) {
@@ -394,18 +401,28 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     // ###############################################################
     // Starts
     // ###############################################################
-    public synchronized int getStartsNotStarted() {
-        // liefert die Anzahl Starts die noch nicht gestarted sind, Status: init
+    public synchronized int[] getStarts() {
+        // liefert die Anzahl Starts die:
+        // Anzahl, nicht gestarted sind, die laufen, die fertig sind: OK, die fertig sind: fehler
         // Downloads und Abos
-        int ret = 0;
+        int[] ret = new int[]{0, 0, 0, 0, 0};
         DatenDownload datenDownload;
         Iterator<DatenDownload> it = iterator();
         while (it.hasNext()) {
             datenDownload = it.next();
+            if (!datenDownload.istZurueckgestellt()) {
+                ++ret[0];
+            }
             if (datenDownload.start != null) {
                 if (datenDownload.getQuelle() == Start.QUELLE_ABO || datenDownload.getQuelle() == Start.QUELLE_DOWNLOAD) {
                     if (datenDownload.start.status == Start.STATUS_INIT) {
-                        ++ret;
+                        ++ret[1];
+                    } else if (datenDownload.start.status == Start.STATUS_RUN) {
+                        ++ret[2];
+                    } else if (datenDownload.start.status == Start.STATUS_FERTIG) {
+                        ++ret[3];
+                    } else if (datenDownload.start.status == Start.STATUS_ERR) {
+                        ++ret[4];
                     }
                 }
             }
@@ -413,25 +430,91 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-    public synchronized int getStartsRun() {
-        // liefert die Anzahl Starts die laufen, Status: run
-        // Downloads und Abos
-        int ret = 0;
-        DatenDownload datenDownload;
-        Iterator<DatenDownload> it = iterator();
-        while (it.hasNext()) {
-            datenDownload = it.next();
-            if (datenDownload.start != null) {
-                if (datenDownload.getQuelle() == Start.QUELLE_ABO || datenDownload.getQuelle() == Start.QUELLE_DOWNLOAD) {
-                    if (datenDownload.start.status == Start.STATUS_RUN) {
-                        ++ret;
-                    }
-                }
+    public String getInfo() {
+        String textLinks;
+        // Text links: Zeilen Tabelle
+        // nicht gestarted, laufen, fertig OK, fertig fehler
+        int[] starts = getStarts();
+        if (starts[0] == 1) {
+            textLinks = "1 Download";
+        } else {
+            textLinks = starts[0] + " Downloads";
+        }
+        boolean print = false;
+        for (int ii = 1; ii < starts.length; ++ii) {
+            if (starts[ii] > 0) {
+                print = true;
+                break;
             }
         }
-        return ret;
+        if (print) {
+            textLinks += ": ";
+            if (starts[2] == 1) {
+                textLinks += "1 läuft";
+            } else {
+                textLinks += starts[2] + " laufen";
+            }
+            if (starts[1] == 1) {
+                textLinks += ", 1 wartet";
+            } else {
+                textLinks += ", " + starts[1] + " warten";
+            }
+            if (starts[3] > 0) {
+                if (starts[3] == 1) {
+                    textLinks += ", 1 fertig";
+                } else {
+                    textLinks += ", " + starts[3] + " fertig";
+                }
+            }
+            if (starts[4] > 0) {
+                if (starts[3] == 1) {
+                    textLinks += ", 1 fehlerhaft";
+                } else {
+                    textLinks += ", " + starts[4] + " fehlerhaft";
+                }
+            }
+            //textLinks += ")";
+        }
+        return textLinks;
     }
 
+//    public synchronized int getStartsNotStarted() {
+//        // liefert die Anzahl Starts die noch nicht gestarted sind, Status: init
+//        // Downloads und Abos
+//        int ret = 0;
+//        DatenDownload datenDownload;
+//        Iterator<DatenDownload> it = iterator();
+//        while (it.hasNext()) {
+//            datenDownload = it.next();
+//            if (datenDownload.start != null) {
+//                if (datenDownload.getQuelle() == Start.QUELLE_ABO || datenDownload.getQuelle() == Start.QUELLE_DOWNLOAD) {
+//                    if (datenDownload.start.status == Start.STATUS_INIT) {
+//                        ++ret;
+//                    }
+//                }
+//            }
+//        }
+//        return ret;
+//    }
+//
+//    public synchronized int getStartsRun() {
+//        // liefert die Anzahl Starts die laufen, Status: run
+//        // Downloads und Abos
+//        int ret = 0;
+//        DatenDownload datenDownload;
+//        Iterator<DatenDownload> it = iterator();
+//        while (it.hasNext()) {
+//            datenDownload = it.next();
+//            if (datenDownload.start != null) {
+//                if (datenDownload.getQuelle() == Start.QUELLE_ABO || datenDownload.getQuelle() == Start.QUELLE_DOWNLOAD) {
+//                    if (datenDownload.start.status == Start.STATUS_RUN) {
+//                        ++ret;
+//                    }
+//                }
+//            }
+//        }
+//        return ret;
+//    }
     public synchronized int getStartsNotFinished() {
         // liefert die Anzahl Starts die noch anstehen, Status: "init" oder "run"
         ListIterator<DatenDownload> it = this.listIterator(0);

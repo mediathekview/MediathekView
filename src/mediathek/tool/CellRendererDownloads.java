@@ -117,7 +117,9 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 if (!datenDownload.arr[DatenDownload.DOWNLOAD_ABO_NR].equals("")) {
                     setForeground(GuiKonstanten.ABO_FOREGROUND);
                 } else {
-                    setIcon(GetIcon.getIcon("nein_12.png"));
+                    setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
+                    setText("Download");
+                    //setIcon(GetIcon.getIcon("nein_12.png"));
                 }
             } else if (c == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);

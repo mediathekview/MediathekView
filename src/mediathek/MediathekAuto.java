@@ -75,7 +75,7 @@ public class MediathekAuto {
     private synchronized void filmeLaden() {
         try {
             Log.playerMeldungenAus = true;
-            Daten.listeDownloads.abosSuchen();
+            Daten.listeDownloads.abosSuchen(null);
             Log.systemMeldung(Daten.listeDownloads.size() + " Filme zum Laden");
             // erst mal die Filme schreiben
             int i = 0;
