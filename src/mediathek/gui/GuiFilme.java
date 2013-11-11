@@ -124,6 +124,7 @@ public class GuiFilme extends PanelVorlage {
         daten.mediathekGui.setToolbar(MediathekGui.UIButtonState.FILME);
         daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.FILME);
         aktFilmSetzen();
+        setInfo();
     }
 
     public void filmAbspielen() {
@@ -214,7 +215,8 @@ public class GuiFilme extends PanelVorlage {
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         tabelle.setDefaultRenderer(Object.class, new CellRendererFilme(daten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererFilme(daten));
-        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen) {
+        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
+                new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR}) {
             @Override
             public void tabelleLaden_() {
                 tabelleLaden();
@@ -317,6 +319,18 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void ping() {
                 tabelle.fireTableDataChanged(true /*setSpalten*/);
+                setInfo();
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setInfo();
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
                 setInfo();
             }
         });
@@ -664,13 +678,10 @@ public class GuiFilme extends PanelVorlage {
 
     private void setInfo() {
         String textLinks;
-        // Text links: Zeilen Tabelle
-        boolean open = false;
+        final String TRENNER = "  ||  ";
         int gesamt = Daten.listeFilme.size();
         int anzListe = tabelle.getModel().getRowCount();
         int runs = Daten.listeDownloads.getListteStartsNotFinished(Start.QUELLE_BUTTON).size();
-        int laufen = Daten.listeDownloads.getStartsRun();
-        int warten = Daten.listeDownloads.getStartsNotStarted();
         // Anzahl der Filme
         if (gesamt == anzListe) {
             if (anzListe == 1) {
@@ -684,50 +695,21 @@ public class GuiFilme extends PanelVorlage {
             } else {
                 textLinks = anzListe + " Filme";
             }
-            textLinks = ifOpen(open, textLinks);
-            open = true;
-            textLinks += "insgesamt: " + gesamt + " Filme";
+            textLinks += " (Insgesamt: " + gesamt + " )";
         }
         // laufende Programme
         if (runs == 1) {
-            textLinks = ifOpen(open, textLinks);
-            open = true;
+            textLinks += TRENNER;
             textLinks += (runs + " laufender Film");
         } else if (runs > 1) {
-            textLinks = ifOpen(open, textLinks);
-            open = true;
+            textLinks += TRENNER;
             textLinks += (runs + " laufende Filme");
         }
         // auch die Downloads anzeigen
-        if (laufen > 0 || warten > 0) {
-            textLinks = ifOpen(open, textLinks);
-            open = true;
-            textLinks += "Downloads: ";
-            if (laufen == 1) {
-                textLinks += "1 läuft,";
-            } else {
-                textLinks += laufen + " laufen,";
-            }
-            if (warten == 1) {
-                textLinks += " 1 wartet";
-            } else {
-                textLinks += " " + warten + " warten";
-            }
-        }
-        if (open) {
-            textLinks += ")";
-        }
+        textLinks += TRENNER;
+        textLinks += Daten.listeDownloads.getInfo();
         // Infopanel setzen
         daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.FILME, textLinks);
-    }
-
-    private String ifOpen(boolean open, String textLinks) {
-        if (!open) {
-            textLinks += ", (";
-        } else {
-            textLinks += "  -  ";
-        }
-        return textLinks;
     }
 
     private void checkBlacklist(boolean abosEintragen) {

@@ -582,12 +582,6 @@ public final class MVJTable extends JTable {
                 case TABELLE_STANDARD:
                     break;
             }
-//            if (Daten.debug) {
-//                // dann wird nichts ausgeschaltet
-//                if (breite[i] == 0) {
-//                    breite[i] = 100;
-//                }
-//            }
         }
     }
 

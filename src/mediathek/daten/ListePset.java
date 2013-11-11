@@ -82,10 +82,13 @@ public class ListePset extends LinkedList<DatenPset> {
             }
             if (ret == null) {
                 // die erste Pset der Abos
-                ret = getListeAbo().getFirst();
-                if (ret == null) {
-                    // dann die erste Prgruppe
-                    ret = this.getFirst();
+                ListePset ps = getListeAbo();
+                if (ps.size() > 0) {
+                    ret = getListeAbo().getFirst();
+                    if (ret == null) {
+                        // dann die erste Prgruppe
+                        ret = this.getFirst();
+                    }
                 }
             }
         }

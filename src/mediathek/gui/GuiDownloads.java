@@ -155,7 +155,8 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
-        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenDownload.COLUMN_NAMES, DatenDownload.spaltenAnzeigen) {
+        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenDownload.COLUMN_NAMES, DatenDownload.spaltenAnzeigen,
+                new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR}) {
             @Override
             public void tabelleLaden_() {
                 tabelleLaden();
@@ -184,7 +185,8 @@ public class GuiDownloads extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                tabelleProzentGeaendert();
+                Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
+                setInfo();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
@@ -266,7 +268,7 @@ public class GuiDownloads extends PanelVorlage {
         downloadsAufraeumen();
         Daten.listeDownloads.zurueckgestellteWiederAktivieren();
         Daten.listeDownloads.abosLoschenWennNochNichtGestartet();
-        Daten.listeDownloads.abosSuchen();
+        Daten.listeDownloads.abosSuchen(parentComponent);
         tabelleLaden();
         if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR])) {
             // und wenn gewollt auch gleich starten
@@ -505,34 +507,8 @@ public class GuiDownloads extends PanelVorlage {
         Daten.listeDownloads.delDownloadByUrl(urls, true /*nurStart*/);
     }
 
-    private void tabelleProzentGeaendert() {
-        Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
-        setInfo();
-    }
-
     private void setInfo() {
-        String textLinks;
-        // Text links: Zeilen Tabelle
-        int laufen = Daten.listeDownloads.getStartsRun();
-        int warten = Daten.listeDownloads.getStartsNotStarted();
-        int gesamt = tabelle.getModel().getRowCount();
-        if (gesamt == 1) {
-            textLinks = "1 Download,";
-        } else {
-            textLinks = gesamt + " Downloads,";
-        }
-        textLinks += " (";
-        if (laufen == 1) {
-            textLinks += "1 läuft,";
-        } else {
-            textLinks += laufen + " laufen,";
-        }
-        if (warten == 1) {
-            textLinks += " 1 wartet";
-        } else {
-            textLinks += " " + warten + " warten";
-        }
-        textLinks += ")";
+        String textLinks = Daten.listeDownloads.getInfo();
         // Infopanel setzen
         daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD, textLinks);
     }

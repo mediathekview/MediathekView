@@ -248,23 +248,21 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     public String getTextRestzeit() {
-        String ret = "";
         if (start != null) {
-            if (start.restSekunden > 0) {
+            if (start.status < Start.STATUS_FERTIG && start.restSekunden > 0) {
                 if (start.restSekunden < 60) {
-                    ret = "< 1 Min.";
+                    return "< 1 Min.";
                 } else {
-                    ret = Long.toString(start.restSekunden / 60) + " Min.";
+                    return Long.toString(start.restSekunden / 60) + " Min.";
                 }
             }
         }
-        return ret;
+        return "";
     }
 
     public String getTextBandbreite() {
-        String ret = "";
         if (start != null) {
-            if (start.bandbreite > 0) {
+            if (start.status < Start.STATUS_FERTIG && start.bandbreite > 0) {
                 if (start.bandbreite > 1000 * 1000) {
                     return String.valueOf(start.bandbreite / (1000 * 1000)) + "MB/s";
                 } else if (start.bandbreite > 1000) {
@@ -272,11 +270,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 } else {
                     return String.valueOf(start.bandbreite) + "B/s";
                 }
-            } else {
-                return "";
             }
         }
-        return ret;
+        return "";
     }
 
     private void aufrufBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {

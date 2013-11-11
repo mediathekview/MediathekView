@@ -15,8 +15,6 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import org.jdesktop.swingx.JXHyperlink;
-
 import java.net.URISyntaxException;
 import java.net.URL;
 import javax.imageio.ImageIO;
@@ -36,6 +34,7 @@ import mediathek.tool.EscBeenden;
 import mediathek.tool.Log;
 import mediathek.tool.UrlHyperlinkAction;
 import msearch.daten.DatenFilm;
+import org.jdesktop.swingx.JXHyperlink;
 
 /**
  * Display the current film information in a Apple-style HUD window.
@@ -170,7 +169,9 @@ public class MVFilmInformation implements ChangeListener {
                     || i == DatenFilm.FILM_URL_HD_NR
                     || i == DatenFilm.FILM_URL_RTMP_HD_NR
                     || i == DatenFilm.FILM_URL_KLEIN_NR
-                    || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR) {
+                    || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR
+                    || i == DatenFilm.FILM_ABSPIELEN_NR
+                    || i == DatenFilm.FILM_AUFZEICHNEN_NR) {
                 continue;
             }
             c.gridy = zeile;
