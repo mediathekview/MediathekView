@@ -691,7 +691,7 @@ public class GuiFilme extends PanelVorlage {
         }
         // auch die Downloads anzeigen
         textLinks += TRENNER;
-        textLinks += Daten.listeDownloads.getInfo();
+        textLinks += Daten.listeDownloads.getInfo(false /*mitAbo*/);
         // Infopanel setzen
         daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.FILME, textLinks);
     }

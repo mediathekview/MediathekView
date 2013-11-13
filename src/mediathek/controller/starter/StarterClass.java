@@ -67,9 +67,9 @@ public class StarterClass {
             DatenDownload d = new DatenDownload(pSet, ersterFilm, Start.QUELLE_BUTTON, null, "", "", "" /*Aufloesung*/);
             Daten.listeDownloads.addMitNummer(d);
             d.start = new Start();
-            //gestartete Filme (originalURL des Films) auch in die History eintragen
+            //starten.startStarten(d);
+            // gestartete Filme (originalURL des Films) auch in die History eintragen
             daten.history.add(d.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
-            starten.startStarten(d);
         }
         return s;
     }

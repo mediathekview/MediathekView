@@ -495,7 +495,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void setInfo() {
-        String textLinks = Daten.listeDownloads.getInfo();
+        String textLinks = Daten.listeDownloads.getInfo(true /*mitAbo*/);
         // Infopanel setzen
         daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD, textLinks);
     }
