@@ -255,43 +255,82 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void getModel(TModelDownload tModel, boolean abos, boolean downloads) {
-        tModel.setRowCount(0);
-        Object[] object;
         DatenDownload download;
-        if (this.size() > 0) {
-            ListIterator<DatenDownload> iterator = this.listIterator();
-            while (iterator.hasNext()) {
-                download = iterator.next();
-                if (download.istZurueckgestellt()) {
-                    continue;
-                }
-                boolean istAbo = download.istAbo();
-                if (abos && istAbo || downloads && !istAbo) {
-                    object = new Object[DatenDownload.MAX_ELEM];
-                    for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
-                        if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
-                            object[i] = "";
-                        } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
-                            object[i] = download.datumFilm;
-                        } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
-                            object[i] = download.getTextRestzeit();
-                        } else if (i == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
-                            object[i] = download.getTextBandbreite();
-                        } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                            object[i] = null;
-                        } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
-                            object[i] = download.mVFilmSize;
-                        } else if (i == DatenDownload.DOWNLOAD_REF_NR) {
-                            object[i] = download;
-                        } else if (i != DatenDownload.DOWNLOAD_FILM_NR_NR && i != DatenDownload.DOWNLOAD_URL_NR && !DatenDownload.anzeigen(i)) {
-                            // Filmnr und URL immer füllen, egal ob angezeigt
-                            object[i] = "";
-                        } else {
-                            object[i] = download.arr[i];
-                        }
+        tModel.setRowCount(this.size());
+        ListIterator<DatenDownload> iterator = this.listIterator();
+        int r = 0;
+        while (iterator.hasNext()) {
+            download = iterator.next();
+            if (download.istZurueckgestellt()) {
+                continue;
+            }
+            boolean istAbo = download.istAbo();
+            if (abos && istAbo || downloads && !istAbo) {
+                for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
+                    if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+                        tModel.setValueAt("", r, i);
+                    } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
+                        tModel.setValueAt(download.datumFilm, r, i);
+                    } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                        tModel.setValueAt(download.getTextRestzeit(), r, i);
+                    } else if (i == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
+                        tModel.setValueAt(download.getTextBandbreite(), r, i);
+                    } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                        tModel.setValueAt("", r, i);
+                    } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
+                        tModel.setValueAt(download.mVFilmSize, r, i);
+                    } else if (i == DatenDownload.DOWNLOAD_REF_NR) {
+                        tModel.setValueAt(download, r, i);
+                    } else if (i != DatenDownload.DOWNLOAD_FILM_NR_NR && i != DatenDownload.DOWNLOAD_URL_NR && !DatenDownload.anzeigen(i)) {
+                        // Filmnr und URL immer füllen, egal ob angezeigt
+                        tModel.setValueAt(null, r, i);
+                    } else {
+                        tModel.setValueAt(download.arr[i], r, i);
                     }
-                    tModel.addRow(object);
                 }
+                ++r;
+            }
+        }//while
+        tModel.setRowCount(r);
+        tModel.fireTableStructureChanged();
+    }
+
+    public synchronized void getModel_(TModelDownload tModel, boolean abos, boolean downloads) {
+        Object[] object;
+        tModel.setRowCount(0);
+        DatenDownload download;
+        ListIterator<DatenDownload> iterator = this.listIterator();
+        while (iterator.hasNext()) {
+            download = iterator.next();
+            if (download.istZurueckgestellt()) {
+                continue;
+            }
+            boolean istAbo = download.istAbo();
+            if (abos && istAbo || downloads && !istAbo) {
+                object = new Object[DatenDownload.MAX_ELEM];
+                for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
+                    if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+                        object[i] = "";
+                    } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
+                        object[i] = download.datumFilm;
+                    } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                        object[i] = download.getTextRestzeit();
+                    } else if (i == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
+                        object[i] = download.getTextBandbreite();
+                    } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                        object[i] = null;
+                    } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
+                        object[i] = download.mVFilmSize;
+                    } else if (i == DatenDownload.DOWNLOAD_REF_NR) {
+                        object[i] = download;
+                    } else if (i != DatenDownload.DOWNLOAD_FILM_NR_NR && i != DatenDownload.DOWNLOAD_URL_NR && !DatenDownload.anzeigen(i)) {
+                        // Filmnr und URL immer füllen, egal ob angezeigt
+                        object[i] = "";
+                    } else {
+                        object[i] = download.arr[i];
+                    }
+                }
+                tModel.addRow(object);
             }
         }
     }
@@ -396,39 +435,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    // ###############################################################
-    // Starts
-    // ###############################################################
-    public synchronized int[] getStarts() {
-        // liefert die Anzahl Starts die:
-        // Anzahl, nicht gestarted sind, die laufen, die fertig sind: OK, die fertig sind: fehler
-        // Downloads und Abos
-        int[] ret = new int[]{0, 0, 0, 0, 0};
-        DatenDownload datenDownload;
-        Iterator<DatenDownload> it = iterator();
-        while (it.hasNext()) {
-            datenDownload = it.next();
-            if (!datenDownload.istZurueckgestellt()) {
-                ++ret[0];
-            }
-            if (datenDownload.start != null) {
-                if (datenDownload.getQuelle() == Start.QUELLE_ABO || datenDownload.getQuelle() == Start.QUELLE_DOWNLOAD) {
-                    if (datenDownload.start.status == Start.STATUS_INIT) {
-                        ++ret[1];
-                    } else if (datenDownload.start.status == Start.STATUS_RUN) {
-                        ++ret[2];
-                    } else if (datenDownload.start.status == Start.STATUS_FERTIG) {
-                        ++ret[3];
-                    } else if (datenDownload.start.status == Start.STATUS_ERR) {
-                        ++ret[4];
-                    }
-                }
-            }
-        }
-        return ret;
-    }
-
-    public String getInfo() {
+    public String getInfo(boolean mitAbo) {
         String textLinks;
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
@@ -437,6 +444,18 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             textLinks = "1 Download";
         } else {
             textLinks = starts[0] + " Downloads";
+        }
+        if (mitAbo) {
+            if (starts[1] == 1) {
+                textLinks += " (1 Abo, ";
+            } else {
+                textLinks += " (" + starts[1] + " Abos, ";
+            }
+            if (starts[2] == 1) {
+                textLinks += "1 Download)";
+            } else {
+                textLinks += starts[2] + " Downloads)";
+            }
         }
         boolean print = false;
         for (int ii = 1; ii < starts.length; ++ii) {
@@ -447,33 +466,68 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         if (print) {
             textLinks += ": ";
-            if (starts[2] == 1) {
+            if (starts[4] == 1) {
                 textLinks += "1 läuft";
             } else {
-                textLinks += starts[2] + " laufen";
+                textLinks += starts[4] + " laufen";
             }
-            if (starts[1] == 1) {
+            if (starts[3] == 1) {
                 textLinks += ", 1 wartet";
             } else {
-                textLinks += ", " + starts[1] + " warten";
+                textLinks += ", " + starts[3] + " warten";
             }
-            if (starts[3] > 0) {
-                if (starts[3] == 1) {
+            if (starts[5] > 0) {
+                if (starts[5] == 1) {
                     textLinks += ", 1 fertig";
                 } else {
-                    textLinks += ", " + starts[3] + " fertig";
+                    textLinks += ", " + starts[5] + " fertig";
                 }
             }
-            if (starts[4] > 0) {
-                if (starts[3] == 1) {
+            if (starts[6] > 0) {
+                if (starts[6] == 1) {
                     textLinks += ", 1 fehlerhaft";
                 } else {
-                    textLinks += ", " + starts[4] + " fehlerhaft";
+                    textLinks += ", " + starts[6] + " fehlerhaft";
                 }
             }
             //textLinks += ")";
         }
         return textLinks;
+    }
+
+    private synchronized int[] getStarts() {
+        // liefert die Anzahl Starts die:
+        // Anzahl, Anz-Abo, Anz-Down, nicht gestarted sind, die laufen, die fertig sind: OK, die fertig sind: fehler
+        // Downloads und Abos
+
+        int[] ret = new int[]{0, 0, 0, 0, 0, 0, 0};
+        DatenDownload datenDownload;
+        Iterator<DatenDownload> it = iterator();
+        while (it.hasNext()) {
+            datenDownload = it.next();
+            if (!datenDownload.istZurueckgestellt()) {
+                ++ret[0];
+            }
+            if (datenDownload.istAbo()) {
+                ++ret[1];
+            } else {
+                ++ret[2];
+            }
+            if (datenDownload.start != null) {
+                if (datenDownload.getQuelle() == Start.QUELLE_ABO || datenDownload.getQuelle() == Start.QUELLE_DOWNLOAD) {
+                    if (datenDownload.start.status == Start.STATUS_INIT) {
+                        ++ret[3];
+                    } else if (datenDownload.start.status == Start.STATUS_RUN) {
+                        ++ret[4];
+                    } else if (datenDownload.start.status == Start.STATUS_FERTIG) {
+                        ++ret[5];
+                    } else if (datenDownload.start.status == Start.STATUS_ERR) {
+                        ++ret[6];
+                    }
+                }
+            }
+        }
+        return ret;
     }
 
 //    public synchronized int getStartsNotStarted() {

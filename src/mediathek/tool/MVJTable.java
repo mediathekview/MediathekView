@@ -549,7 +549,7 @@ public final class MVJTable extends JTable {
             switch (tabelle) {
                 case TABELLE_TAB_FILME:
                     if (i == DatenFilm.FILM_BESCHREIBUNG_NR
-                            || i == DatenFilm.FILM_KEYWORDS_NR
+//                            || i == DatenFilm.FILM_KEYWORDS_NR
                             || i == DatenFilm.FILM_WEBSEITE_NR
                             || i == DatenFilm.FILM_IMAGE_URL_NR
                             || i == DatenFilm.FILM_URL_RTMP_NR

@@ -22,8 +22,6 @@ package mediathek.tool;
 import java.awt.Color;
 import java.util.regex.Pattern;
 import javax.swing.JTextField;
-
-import com.jidesoft.utils.SystemInfo;
 import mediathek.daten.DatenAbo;
 import msearch.daten.DatenFilm;
 
@@ -91,7 +89,8 @@ public class Filter {
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_THEMA_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG_NR])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_KEYWORDS_NR])) {
+//                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_KEYWORDS_NR])
+                                ) {
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden
                                 if (laengePruefen(laengeMinutenSuchen, film.dauerL)) {
