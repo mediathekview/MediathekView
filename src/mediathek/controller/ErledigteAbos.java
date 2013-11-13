@@ -155,31 +155,77 @@ public class ErledigteAbos {
         return ret;
     }
 
-    public synchronized boolean zeileSchreiben(ArrayList<String[]> list) {
-        boolean ret = false;
-        String text;
-        String zeit = DatumZeit.getHeute_dd_MM_yyyy();
-        String thema, titel, url;
+    /// eigener Thread!!
+    public synchronized void zeileSchreiben(ArrayList<String[]> list) {
+        new Thread(new zeileSchreiben_(list)).start();
+    }
+//    public synchronized boolean zeileSchreiben(ArrayList<String[]> list) {
+//
+//        boolean ret = false;
+//        String text;
+//        String zeit = DatumZeit.getHeute_dd_MM_yyyy();
+//        String thema, titel, url;
+//
+//        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getDownloadAboFilePath(), StandardOpenOption.APPEND))) {
+//            for (String[] a : list) {
+//                thema = a[0];
+//                titel = a[1];
+//                url = a[2];
+//                listeErledigteAbos.add(url);
+//                thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
+//                titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
+//                text = zeit + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
+//                writer.write(text);
+//                ret = true;
+//            }
+//        } catch (Exception ex) {
+//            ret = false;
+//            Log.fehlerMeldung(945258023, Log.FEHLER_ART_PROG, "LogDownload.zeileSchreiben-1", ex);
+//        }
+//
+//        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
+//        return ret;
+//    }
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getDownloadAboFilePath(), StandardOpenOption.APPEND))) {
-            for (String[] a : list) {
-                thema = a[0];
-                titel = a[1];
-                url = a[2];
-                listeErledigteAbos.add(url);
-                thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
-                titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
-                text = zeit + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
-                writer.write(text);
-                ret = true;
-            }
-        } catch (Exception ex) {
-            ret = false;
-            Log.fehlerMeldung(945258023, Log.FEHLER_ART_PROG, "LogDownload.zeileSchreiben-1", ex);
+    private class zeileSchreiben_ implements Runnable {
+
+        ArrayList<String[]> l;
+
+        public zeileSchreiben_(ArrayList<String[]> ll) {
+            l = ll;
         }
 
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
-        return ret;
+        @Override
+        public synchronized void run() {
+            zeileSchreiben(l);
+        }
+
+        public synchronized boolean zeileSchreiben(ArrayList<String[]> list) {
+
+            boolean ret = false;
+            String text;
+            String zeit = DatumZeit.getHeute_dd_MM_yyyy();
+            String thema, titel, url;
+
+            try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getDownloadAboFilePath(), StandardOpenOption.APPEND))) {
+                for (String[] a : list) {
+                    thema = a[0];
+                    titel = a[1];
+                    url = a[2];
+                    listeErledigteAbos.add(url);
+                    thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
+                    titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
+                    text = zeit + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
+                    writer.write(text);
+                    ret = true;
+                }
+            } catch (Exception ex) {
+                ret = false;
+                Log.fehlerMeldung(945258023, Log.FEHLER_ART_PROG, "LogDownload.zeileSchreiben-1", ex);
+            }
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, ErledigteAbos.class.getSimpleName());
+            return ret;
+        }
     }
 
     public synchronized boolean urlPruefen(String urlFilm) {

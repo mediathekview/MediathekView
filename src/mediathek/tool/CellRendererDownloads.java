@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
@@ -36,6 +37,34 @@ import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 
 public class CellRendererDownloads extends DefaultTableCellRenderer {
+
+    private static ImageIcon ja_16 = null;
+    private static ImageIcon nein_12 = null;
+    private static ImageIcon film_play_tab = null;
+    private static ImageIcon download_stop_tab = null;
+    private static ImageIcon download_start_tab = null;
+    private static ImageIcon film_play_sw_tab = null;
+    private static ImageIcon download_stop_sw_tab = null;
+    private static ImageIcon download_start_sw_tab = null;
+    private static ImageIcon download_clear_tab = null;
+    private static ImageIcon download_clear_sw_tab = null;
+    private static ImageIcon download_del_tab = null;
+    private static ImageIcon download_del_sw_tab = null;
+
+    public CellRendererDownloads() {
+        ja_16 = GetIcon.getIcon("ja_16.png");
+        nein_12 = GetIcon.getIcon("nein_12.png");
+        film_play_tab = GetIcon.getIcon("film_play_tab.png");
+        film_play_sw_tab = GetIcon.getIcon("film_play_sw_tab.png");
+        download_stop_tab = GetIcon.getIcon("download_stop_tab.png");
+        download_stop_sw_tab = GetIcon.getIcon("download_stop_sw_tab.png");
+        download_start_tab = GetIcon.getIcon("download_start_tab.png");
+        download_start_sw_tab = GetIcon.getIcon("download_start_sw_tab.png");
+        download_clear_tab = GetIcon.getIcon("download_clear_tab.png");
+        download_clear_sw_tab = GetIcon.getIcon("download_clear_sw_tab.png");
+        download_del_tab = GetIcon.getIcon("download_del_tab.png");
+        download_del_sw_tab = GetIcon.getIcon("download_del_sw_tab.png");
+    }
 
     @Override
     public Component getTableCellRendererComponent(
@@ -127,9 +156,9 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     setColor(this, datenDownload.start, isSelected);
                 }
                 if (datenDownload.isRestart()) {
-                    setIcon(GetIcon.getIcon("ja_16.png"));
+                    setIcon(ja_16);
                 } else {
-                    setIcon(GetIcon.getIcon("nein_12.png"));
+                    setIcon(nein_12);
                 }
             } else if (c == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
@@ -139,22 +168,22 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 if (isSelected) {
                     if (datenDownload.start != null) {
                         if (datenDownload.start.status >= Start.STATUS_FERTIG) {
-                            setIcon(GetIcon.getIcon("film_play_tab.png"));
+                            setIcon(film_play_tab);
                         } else {
-                            setIcon(GetIcon.getIcon("download_stop_tab.png"));
+                            setIcon(download_stop_tab);
                         }
                     } else {
-                        setIcon(GetIcon.getIcon("download_start_tab.png"));
+                        setIcon(download_start_tab);
                     }
                 } else {
                     if (datenDownload.start != null) {
                         if (datenDownload.start.status >= Start.STATUS_FERTIG) {
-                            setIcon(GetIcon.getIcon("film_play_sw_tab.png"));
+                            setIcon(film_play_sw_tab);
                         } else {
-                            setIcon(GetIcon.getIcon("download_stop_sw_tab.png"));
+                            setIcon(download_stop_sw_tab);
                         }
                     } else {
-                        setIcon(GetIcon.getIcon("download_start_sw_tab.png"));
+                        setIcon(download_start_sw_tab);
                     }
                 }
             } else if (c == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
@@ -163,19 +192,19 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     setColor(this, datenDownload.start, isSelected);
                     if (datenDownload.start.status >= Start.STATUS_FERTIG) {
                         if (isSelected) {
-                            setIcon(GetIcon.getIcon("download_clear_tab.png"));
+                            setIcon(download_clear_tab);
                         } else {
-                            setIcon(GetIcon.getIcon("download_clear_sw_tab.png"));
+                            setIcon(download_clear_sw_tab);
                         }
                     } else if (isSelected) {
-                        setIcon(GetIcon.getIcon("download_del_tab.png"));
+                        setIcon(download_del_tab);
                     } else {
-                        setIcon(GetIcon.getIcon("download_del_sw_tab.png"));
+                        setIcon(download_del_sw_tab);
                     }
                 } else if (isSelected) {
-                    setIcon(GetIcon.getIcon("download_del_tab.png"));
+                    setIcon(download_del_tab);
                 } else {
-                    setIcon(GetIcon.getIcon("download_del_sw_tab.png"));
+                    setIcon(download_del_sw_tab);
                 }
             } else {
                 if (datenDownload.start != null) {

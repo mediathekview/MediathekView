@@ -269,7 +269,6 @@ public class StarterClass {
             fertigmeldung(datenDownload, start);
             start.restSekunden = -1;
             start.percent = Start.PROGRESS_FERTIG;
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
             notifyStartEvent(datenDownload);
         }
 
@@ -408,7 +407,6 @@ public class StarterClass {
             start.restSekunden = -1;
             start.percent = Start.PROGRESS_FERTIG;
             datenDownload.mVFilmSize.setAktSize(-1);
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
             notifyStartEvent(datenDownload);
         }
     }

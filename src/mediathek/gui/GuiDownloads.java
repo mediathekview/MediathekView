@@ -165,12 +165,6 @@ public class GuiDownloads extends PanelVorlage {
         jRadioButtonAlles.addActionListener(new BeobAnzeige());
         jRadioButtonAbos.addActionListener(new BeobAnzeige());
         jRadioButtonDownloads.addActionListener(new BeobAnzeige());
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                tabelleLaden();
-            }
-        });
         Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public void fertig(MSearchListenerFilmeLadenEvent event) {
@@ -182,13 +176,6 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void addListenerMediathekView() {
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
-                setInfo();
-            }
-        });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -199,7 +186,8 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, GuiDownloads.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS,
+            ListenerMediathekView.EREIGNIS_LISTE_ABOS}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
@@ -207,25 +195,25 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR])) {
-                    downloadsAktualisieren();
-                }
-            }
-        });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, GuiDownloads.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS,
+            ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelleLaden();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiDownloads.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_START_EVENT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelle.fireTableDataChanged(true /*setSpalten*/);
-                // aktFilmSetzen();
+                Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
+                setInfo();
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT}, GuiDownloads.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
                 setInfo();
             }
         });
@@ -397,8 +385,8 @@ public class GuiDownloads extends PanelVorlage {
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // bei !starten wird der Film gestoppt
         String[] urls;
-        ArrayList<String> arrayUrls = new ArrayList<>();
-        ArrayList<DatenDownload> arrayDownload = new ArrayList<>();
+        ArrayList<String> urlsDownloadLoeschen = new ArrayList<>();
+        ArrayList<DatenDownload> downloadsStarten = new ArrayList<>();
         // ==========================
         // erst mal die Liste nach der Tabelle sortieren
         if (starten && alle) {
@@ -456,14 +444,14 @@ public class GuiDownloads extends PanelVorlage {
                             // weiter mit der nächsten URL
                             continue;
                         }
-                        arrayUrls.add(url);
+                        urlsDownloadLoeschen.add(url);
                         if (download.istAbo()) {
                             // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                             daten.erledigteAbos.urlAusLogfileLoeschen(url);
                         }
                     }
                 }
-                arrayDownload.add(download);
+                downloadsStarten.add(download);
             } else {
                 // ==========================================
                 // stoppen
@@ -471,19 +459,18 @@ public class GuiDownloads extends PanelVorlage {
                     // wenn kein s -> dann gibts auch nichts zum stoppen oder wieder-starten
                     if (download.start.status <= Start.STATUS_RUN) {
                         // löschen -> nur wenn noch läuft, sonst gibts nichts mehr zum löschen
-                        arrayUrls.add(url);
+                        urlsDownloadLoeschen.add(url);
                     }
-                    arrayDownload.add(download);
                 }
             }
         }
         // ========================
         // jetzt noch die Starts stoppen
-        Daten.listeDownloads.delDownloadByUrl(arrayUrls, true /*nurStart*/);
+        Daten.listeDownloads.delDownloadByUrl(urlsDownloadLoeschen, true /*nurStart*/);
         // und die Downloads starten oder stoppen
         if (starten) {
             //alle Downloads starten/wiederstarten
-            DatenDownload.startenDownloads(daten, arrayDownload);
+            DatenDownload.startenDownloads(daten, downloadsStarten);
         } else {
             //oder stoppen
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getName());

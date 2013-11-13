@@ -135,7 +135,6 @@ public class RuntimeExec {
                     double d = Double.parseDouble(prozent);
                     meldenDouble(d);
                 } catch (Exception ex) {
-//                    start.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
                     Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG, "RuntimeExec.GetPercentageFromErrorStream-1", input);
                 }
@@ -161,7 +160,6 @@ public class RuntimeExec {
                     }
                 } catch (Exception ex) {
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-//                    start.datenDownload.statusMelden(DatenDownload.PROGRESS_GESTARTET);
                     Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG, "RuntimeExec.GetPercentageFromErrorStream-2", input);
                 }
             }
@@ -186,7 +184,6 @@ public class RuntimeExec {
                     start.restSekunden = (diffZeit * restProzent / diffProzent);
                 }
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-//                start.datenDownload.statusMelden(percent);
             }
         }
     }
