@@ -60,7 +60,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private PanelMeldungen panelMeldungenSystem;
     private PanelMeldungen panelMeldungenPlayer;
     private JPanel panelLeer = new JPanel();
-    private Frame parentComponent = this;
+    private Frame parentComponent;
 
     /**
      * @param parent
@@ -71,6 +71,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     public DialogEinstellungen(java.awt.Frame parent, Daten d) {
         initComponents();
         setTitle("Einstellungen");
+        parentComponent = parent;
         ddaten = d;
         init();
         initTree();

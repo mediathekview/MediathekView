@@ -21,6 +21,7 @@ package mediathek.tool;
 
 import java.awt.Component;
 import java.awt.Font;
+import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -34,12 +35,20 @@ import msearch.daten.ListeFilme;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
 
+    private static ImageIcon film_play_tab = null;
+    private static ImageIcon film_play_sw_tab = null;
+    private static ImageIcon film_rec_tab = null;
+    private static ImageIcon film_rec_sw_tab = null;
     private Daten ddaten;
     private History history = null;
 
     public CellRendererFilme(Daten d) {
         ddaten = d;
         history = ddaten.history;
+        film_play_tab = GetIcon.getIcon("film_play_tab.png");
+        film_play_sw_tab = GetIcon.getIcon("film_play_sw_tab.png");
+        film_rec_tab = GetIcon.getIcon("film_rec_tab.png");
+        film_rec_sw_tab = GetIcon.getIcon("film_rec_sw_tab.png");
     }
 
     @Override
@@ -95,16 +104,16 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             if (c == DatenFilm.FILM_ABSPIELEN_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (isSelected) {
-                    setIcon(GetIcon.getIcon("film_play_tab.png"));
+                    setIcon(film_play_tab);
                 } else {
-                    setIcon(GetIcon.getIcon("film_play_sw_tab.png"));
+                    setIcon(film_play_sw_tab);
                 }
             } else if (c == DatenFilm.FILM_AUFZEICHNEN_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (isSelected) {
-                    setIcon(GetIcon.getIcon("film_rec_tab.png"));
+                    setIcon(film_rec_tab);
                 } else {
-                    setIcon(GetIcon.getIcon("film_rec_sw_tab.png"));
+                    setIcon(film_rec_sw_tab);
                 }
             }
 

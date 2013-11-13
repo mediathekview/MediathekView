@@ -40,6 +40,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         jTable1.addMouseListener(new BeobMausTabelle());
+        jButtonLoeschen.setEnabled(false);
     }
 
     public void initAbo() {
@@ -47,7 +48,9 @@ public class PanelErledigteUrls extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, PanelErledigteUrls.class.getSimpleName()) {
             @Override
             public void ping() {
-                jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), new String[]{"Url"}));
+                if (jToggleButtonLaden.isSelected()) {
+                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), new String[]{"Url"}));
+                }
             }
         });
         jButtonLoeschen.addActionListener(new ActionListener() {
@@ -56,7 +59,18 @@ public class PanelErledigteUrls extends PanelVorlage {
                 daten.erledigteAbos.alleLoeschen();
             }
         });
-        jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), new String[]{"Url"}));
+        jToggleButtonLaden.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (jToggleButtonLaden.isSelected()) {
+                    jButtonLoeschen.setEnabled(true);
+                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), new String[]{"Url"}));
+                } else {
+                    jButtonLoeschen.setEnabled(false);
+                    jTable1.setModel(new TModel(null, new String[]{"Url"}));
+                }
+            }
+        });
     }
 
     public void initHistory() {
@@ -64,7 +78,9 @@ public class PanelErledigteUrls extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, PanelErledigteUrls.class.getSimpleName()) {
             @Override
             public void ping() {
-                jTable1.setModel(new TModel(daten.history.getObjectData(), new String[]{"Url"}));
+                if (jToggleButtonLaden.isSelected()) {
+                    jTable1.setModel(new TModel(daten.history.getObjectData(), new String[]{"Url"}));
+                }
             }
         });
         jButtonLoeschen.addActionListener(new ActionListener() {
@@ -73,7 +89,18 @@ public class PanelErledigteUrls extends PanelVorlage {
                 daten.history.loeschen();
             }
         });
-        jTable1.setModel(new TModel(daten.history.getObjectData(), new String[]{"Url"}));
+        jToggleButtonLaden.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (jToggleButtonLaden.isSelected()) {
+                    jButtonLoeschen.setEnabled(true);
+                    jTable1.setModel(new TModel(daten.history.getObjectData(), new String[]{"Url"}));
+                } else {
+                    jButtonLoeschen.setEnabled(false);
+                    jTable1.setModel(new TModel(null, new String[]{"Url"}));
+                }
+            }
+        });
     }
 
     /** This method is called from within the constructor to
@@ -87,11 +114,14 @@ public class PanelErledigteUrls extends PanelVorlage {
         javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButtonLoeschen = new javax.swing.JButton();
+        jToggleButtonLaden = new javax.swing.JToggleButton();
 
         jTable1.setModel(new TModel());
         jScrollPane1.setViewportView(jTable1);
 
         jButtonLoeschen.setText("Liste löschen");
+
+        jToggleButtonLaden.setText("Laden");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -100,25 +130,32 @@ public class PanelErledigteUrls extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jToggleButtonLaden)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonLoeschen)))
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonLoeschen, jToggleButtonLaden});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonLoeschen)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonLoeschen)
+                    .addComponent(jToggleButtonLaden))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonLoeschen;
     private javax.swing.JTable jTable1;
+    private javax.swing.JToggleButton jToggleButtonLaden;
     // End of variables declaration//GEN-END:variables
 
     public class BeobMausTabelle extends MouseAdapter {
@@ -173,7 +210,6 @@ public class PanelErledigteUrls extends PanelVorlage {
                         daten.erledigteAbos.urlAusLogfileLoeschen(del);
                     } else {
                         daten.history.remove(del);
-
                     }
                 }
             }

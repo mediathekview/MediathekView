@@ -55,6 +55,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         if (dialogEditAbo.ok) {
             if (!aboExistiertBereits(datenAbo)) {
                 addAbo(datenAbo);
+                aenderungMelden();
                 ret = true;
             } else {
                 MVMessageDialog.showMessageDialog(null, "Abo existiert bereits", "Abo anlegen", JOptionPane.INFORMATION_MESSAGE);
@@ -64,6 +65,8 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
 
     public void addAbo(DatenAbo datenAbo) {
+        // die Änderung an der Liste wird nicht gemeldet!!
+        // für das Lesen der Konfig-Datei beim Programmstart
         ++nr;
         datenAbo.aboNr = nr;
         String str = String.valueOf(nr);
@@ -74,7 +77,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         datenAbo.setMindestDauerMinuten();
         super.add(datenAbo);
         sort();
-        aenderungMelden();
     }
 
     public void aboLoeschen(DatenAbo abo) {

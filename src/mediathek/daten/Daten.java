@@ -42,6 +42,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MViewListeFilme;
 import msearch.daten.ListeFilme;
 import msearch.io.MSearchFilmlisteLesen;
 import msearch.io.MSearchFilmlisteSchreiben;
@@ -252,6 +253,7 @@ public class Daten {
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
         new MSearchFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste(), "", Daten.listeFilme);
+        MViewListeFilme.abosEintragen(Daten.listeFilme, Daten.listeAbo);
     }
 
     public static void filmlisteSpeichern() {

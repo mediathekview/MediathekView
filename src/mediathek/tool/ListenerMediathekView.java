@@ -52,11 +52,16 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_BLACKLIST_AUCH_FUER_ABOS = 26;
     public static final int EREIGNIS_BANDBREITE = 27;
     public static final int EREIGNIS_REIHENFOLGE_DOWNLOAD = 28;
-    public int mvEreignis = -1;
+    public int[] mvEreignis = {-1};
     public String klasse = "";
     private static EventListenerList listeners = new EventListenerList();
 
     public ListenerMediathekView(int eereignis, String kklasse) {
+        mvEreignis = new int[]{eereignis};
+        klasse = kklasse;
+    }
+
+    public ListenerMediathekView(int[] eereignis, String kklasse) {
         mvEreignis = eereignis;
         klasse = kklasse;
     }
@@ -70,13 +75,15 @@ public class ListenerMediathekView implements EventListener {
 
     public static synchronized void notify(int ereignis, String klasse) {
         for (ListenerMediathekView l : listeners.getListeners(ListenerMediathekView.class)) {
-            if (l.mvEreignis == ereignis) {
-                if (!l.klasse.equals(klasse)) {
-                    // um einen Kreislauf zu verhindern
-                    try {
-                        l.pingen();
-                    } catch (Exception ex) {
-                        Log.fehlerMeldung(562314008, Log.FEHLER_ART_PROG, "ListenerMediathekView.notifyMediathekListener", ex);
+            for (int er : l.mvEreignis) {
+                if (er == ereignis) {
+                    if (!l.klasse.equals(klasse)) {
+                        // um einen Kreislauf zu verhindern
+                        try {
+                            l.pingen();
+                        } catch (Exception ex) {
+                            Log.fehlerMeldung(562314008, Log.FEHLER_ART_PROG, "ListenerMediathekView.notifyMediathekListener", ex);
+                        }
                     }
                 }
             }

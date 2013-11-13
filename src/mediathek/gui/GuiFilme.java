@@ -146,7 +146,7 @@ public class GuiFilme extends PanelVorlage {
         jButtonBlacklist.setIcon(GetIcon.getIcon("blacklist_16.png"));
         jButtonFilterLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
         jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
-        checkBlacklist(true);
+        checkBlacklist(false);
         panelBeschreibungSetzen();
         jPanelFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
         jComboBoxZeitraum.setModel(new DefaultComboBoxModel<String>(COMBO_ZEIT));
@@ -178,7 +178,7 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void fertig(MSearchListenerFilmeLadenEvent event) {
-                checkBlacklist(true);
+                checkBlacklist(false);
                 tabelleLaden();
 ////                beobMausTabelle.itemSenderLaden.setEnabled(true);
             }
@@ -295,24 +295,20 @@ public class GuiFilme extends PanelVorlage {
                 panelVideoplayerSetzen();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT,
+            ListenerMediathekView.EREIGNIS_LISTE_ABOS}, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelleLaden();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT,
+            ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT}, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 checkBlacklist(false);
                 tabelleLaden();
-            }
-        });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                checkBlacklist(false); // nur GuiDebug zum löschen aus der Filmliste
-                tabelleLaden();
+
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, GuiFilme.class.getSimpleName()) {
@@ -322,23 +318,11 @@ public class GuiFilme extends PanelVorlage {
                 setInfo();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT,
+            ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 setInfo();
-            }
-        });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setInfo();
-            }
-        });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                //checkBlacklist(true);
-                tabelleLaden();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, GuiFilme.class.getSimpleName()) {

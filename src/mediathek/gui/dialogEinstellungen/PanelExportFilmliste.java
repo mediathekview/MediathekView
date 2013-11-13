@@ -96,13 +96,13 @@ public class PanelExportFilmliste extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel4 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
         jTextFieldPfad = new javax.swing.JTextField();
         jButtonExportPfad = new javax.swing.JButton();
-        jLabelDatei = new javax.swing.JLabel();
+        javax.swing.JLabel jLabelDatei = new javax.swing.JLabel();
         jButtonExportieren = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JTextArea jTextArea1 = new javax.swing.JTextArea();
 
         jPanel4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -138,10 +138,10 @@ public class PanelExportFilmliste extends PanelVorlage {
 
         jButtonExportieren.setText("Exportieren");
 
-        jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
         jTextArea1.setRows(7);
-        jTextArea1.setText("Es kann die programmeigene Liste mit den Filmen exportiert werden.\n\nDabei werden Dateinamen mit einer Endung\n\".zip\" als Zip-Dateien und \n\".bz2\" als Bzip2-Dateien\n\nund alle anderen Dateien als unkomprimierte Dateien verwendet.");
+        jTextArea1.setText("Es kann die programmeigene Liste mit den Filmen exportiert werden.\n\nDateien werden mit der Endung:\n\n\".zip\"\tals Zip-Dateien,\n\".bz2\"\tals Bzip2-Dateien und\n\".xz\" \tim XZ-Container mit LZMA2 komprimiert.\n\nAlle anderen Dateien werden unkomprimiert gespeichert.\n");
         jTextArea1.setMargin(new java.awt.Insets(4, 4, 4, 4));
         jScrollPane1.setViewportView(jTextArea1);
 
@@ -165,19 +165,15 @@ public class PanelExportFilmliste extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonExportieren)
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonExportPfad;
     private javax.swing.JButton jButtonExportieren;
-    private javax.swing.JLabel jLabelDatei;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextFieldPfad;
     // End of variables declaration//GEN-END:variables
 

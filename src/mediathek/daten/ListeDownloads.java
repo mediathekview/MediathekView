@@ -299,8 +299,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     public synchronized void setModelProgress(TModelDownload tModel) {
         for (int row = 0; row < tModel.getRowCount(); ++row) {
             DatenDownload datenDownload = (DatenDownload) tModel.getValueAt(row, DatenDownload.DOWNLOAD_REF_NR);
-//            String url = tModel.getValueAt(i, DatenDownload.DOWNLOAD_URL_NR).toString();
-//            DatenDownload datenDownload = Daten.listeDownloads.getDownloadByUrl(url);
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_RUN) {
                     // wichtig ist nur "s", die anderen nur, damit sie geändert werden, werden im Cellrenderer berechnet
@@ -591,7 +589,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, this.getClass().getSimpleName());
         }
     }
 

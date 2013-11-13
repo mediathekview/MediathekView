@@ -24,7 +24,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.gui.GuiFilme;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.CellRendererFilme;
 import mediathek.tool.ListenerMediathekView;
@@ -43,13 +42,19 @@ public class PanelInfoStarts extends PanelVorlage {
     public PanelInfoStarts(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, PanelInfoStarts.class.getSimpleName()) {
             @Override
             public void ping() {
                 init();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, PanelInfoStarts.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                init();
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, PanelInfoStarts.class.getSimpleName()) {
             @Override
             public void ping() {
                 init();
