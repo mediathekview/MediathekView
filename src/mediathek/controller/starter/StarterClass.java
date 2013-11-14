@@ -65,11 +65,13 @@ public class StarterClass {
         String url = ersterFilm.arr[DatenFilm.FILM_URL_NR];
         if (!url.equals("")) {
             DatenDownload d = new DatenDownload(pSet, ersterFilm, Start.QUELLE_BUTTON, null, "", "", "" /*Aufloesung*/);
-            Daten.listeDownloads.addMitNummer(d);
             d.start = new Start();
-            //starten.startStarten(d);
+            starten.startStarten(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
             daten.history.add(d.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
+            // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
+            Daten.listeDownloadsButton.addMitNummer(d);
+
         }
         return s;
     }
@@ -95,7 +97,7 @@ public class StarterClass {
                         //alle 5 Sekunden einen Download starten
                         this.wait(5 * 1000);
                     }
-                    Daten.listeDownloads.buttonStartsPutzen(); // Button Starts aus der Liste löschen
+                    Daten.listeDownloadsButton.buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     this.wait(3 * 1000);
                 } catch (Exception ex) {
                     Log.fehlerMeldung(613822015, Log.FEHLER_ART_PROG, "StarterClass.Starten.run", ex);

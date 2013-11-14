@@ -65,10 +65,11 @@ public class Daten {
     public static String proxyUrl = "";
     public static int proxyPort = -1;
     public static ListeFilme listeFilmeNachBlackList = null;
+    public static ListeDownloads listeDownloads = null; // Filme die als "Download: Tab Download" geladen werden sollen
+    public static ListeDownloads listeDownloadsButton = null; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     public ListeBlacklist listeBlacklist = null;
     public ListePset listePset = null;
     public static ListeAbo listeAbo = null;
-    public static ListeDownloads listeDownloads = null;
     public History history = null;
     public ErledigteAbos erledigteAbos = null;
     // globale Objekte
@@ -105,6 +106,7 @@ public class Daten {
 
         updateSplashScreen("Lade Downloads...");
         listeDownloads = new ListeDownloads(this);
+        listeDownloadsButton = new ListeDownloads(this);
 
         updateSplashScreen("Lade erledigte Abos...");
         erledigteAbos = new ErledigteAbos();

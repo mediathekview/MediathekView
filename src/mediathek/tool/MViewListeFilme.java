@@ -34,11 +34,10 @@ public class MViewListeFilme {
     public static HashSet<String> hashSet = new HashSet<>();
     public static TreeSet<String> treeSet = new TreeSet<>(msearch.tool.GermanStringSorter.getInstance());
 
-    public static synchronized void getModelTabFilme__(ListeFilme listeFilme, Daten ddaten, MVJTable table,
+    public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVJTable table,
             String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
             int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
         // Model für die Tabelle Filme zusammenbauen
-//        ((TModel) table.getModel()).setRowCount(0);
         if (listeFilme.isEmpty()) {
             // wenn die Liste leer ist, dann Tschüss
             table.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
@@ -46,7 +45,6 @@ public class MViewListeFilme {
         }
         // dann ein neues Model anlegen
         TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
-//        tModel.setRowCount(listeFilme.size());
         if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("") && filterIrgendwo.equals("") && laenge == 0
                 && !keineAbos && !kGesehen && !nurHd && !live) {
             // wenn ganze Liste
@@ -111,7 +109,7 @@ public class MViewListeFilme {
         table.setModel(tModel);
     }
 
-    public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVJTable table,
+    public static synchronized void getModelTabFilme_(ListeFilme listeFilme, Daten ddaten, MVJTable table,
             String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
             int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
         // Model für die Tabelle Filme zusammenbauen
@@ -133,7 +131,7 @@ public class MViewListeFilme {
                 addObjectDataTabFilme(tModel, film, row);
                 ++row;
             }
-            tModel.setRowCount(row);
+            //tModel.setRowCount(row);
         } else {
             // =============================================================
             // nur mit Filter laden
@@ -191,8 +189,8 @@ public class MViewListeFilme {
                 }
                 if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film, true /*länge nicht prüfen*/)) {
                     addObjectDataTabFilme(tModel, film, row);
+                    ++row;
                 }
-                ++row;
             }
             tModel.setRowCount(row);
         }
@@ -205,11 +203,11 @@ public class MViewListeFilme {
                 tModel.setValueAt(film.datumFilm, row, column);
             } else if (column == DatenFilm.FILM_GROESSE_NR) {
                 tModel.setValueAt(film.dateigroesseL, row, column);
-            } else if (column == DatenFilm.FILM_URL_NR || column == DatenFilm.FILM_NR_NR) {
-                // Url und Nr immer füllen, egal ob angezeigt
-                tModel.setValueAt(film.arr[column], row, column);
-            } else if (!DatenFilm.anzeigen(column)) {
-                tModel.setValueAt("", row, column);
+//            } else if (column == DatenFilm.FILM_URL_NR || column == DatenFilm.FILM_NR_NR) {
+//                // Url und Nr immer füllen, egal ob angezeigt
+//                tModel.setValueAt(film.arr[column], row, column);
+//            } else if (!DatenFilm.anzeigen(column)) {
+//                tModel.setValueAt("", row, column);
             } else {
                 tModel.setValueAt(film.arr[column], row, column);
             }
@@ -297,28 +295,14 @@ public class MViewListeFilme {
                 object[m] = film.datumFilm;
             } else if (m == DatenFilm.FILM_GROESSE_NR) {
                 object[m] = film.dateigroesseL;
-            } else if (m != DatenFilm.FILM_URL_NR && m != DatenFilm.FILM_NR_NR && !DatenFilm.anzeigen(m)) {
-                // Url und Nr immer füllen, egal ob angezeigt
-                object[m] = "";
+//            } else if (m != DatenFilm.FILM_URL_NR && m != DatenFilm.FILM_NR_NR && !DatenFilm.anzeigen(m)) {
+//                // Url und Nr immer füllen, egal ob angezeigt
+//                object[m] = "";
             } else {
                 object[m] = film.arr[m];
             }
         }
         tModel.addRow(object);
-////        for (int column = 0; column < DatenFilm.MAX_ELEM; ++column) {
-////            if (column == DatenFilm.FILM_DATUM_NR) {
-////                tModel.setValueAt(film.datumFilm, row, column);
-////            } else if (column == DatenFilm.FILM_GROESSE_NR) {
-////                tModel.setValueAt(film.dateigroesseL, row, column);
-////            } else if (column == DatenFilm.FILM_URL_NR || column == DatenFilm.FILM_NR_NR) {
-////                // Url und Nr immer füllen, egal ob angezeigt
-////                tModel.setValueAt(film.arr[column], row, column);
-////            } else if (!DatenFilm.anzeigen(column)) {
-////                tModel.setValueAt("", row, column);
-////            } else {
-////                tModel.setValueAt(film.arr[column], row, column);
-////            }
-////        }
     }
 
     public static void abosEintragen(ListeFilme listeFilme, ListeAbo listeAbo) {
