@@ -216,7 +216,7 @@ public class GuiFilme extends PanelVorlage {
         tabelle.setDefaultRenderer(Object.class, new CellRendererFilme(daten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererFilme(daten));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
-                new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR}) {
+                new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR, DatenFilm.FILM_KEYWORDS_NR}) {
             @Override
             public void tabelleLaden_() {
                 tabelleLaden();
@@ -665,7 +665,7 @@ public class GuiFilme extends PanelVorlage {
         final String TRENNER = "  ||  ";
         int gesamt = Daten.listeFilme.size();
         int anzListe = tabelle.getModel().getRowCount();
-        int runs = Daten.listeDownloads.getListteStartsNotFinished(Start.QUELLE_BUTTON).size();
+        int runs = Daten.listeDownloadsButton.getListteStartsNotFinished(Start.QUELLE_BUTTON).size();
         // Anzahl der Filme
         if (gesamt == anzListe) {
             if (anzListe == 1) {
