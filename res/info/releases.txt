@@ -19,8 +19,18 @@
  */
 
 
+	# Version 3.4.0
+	- Das Dateiformat der Filmliste ist auf "json" geändert worden, die Liste zum Download wird mit den XZ Utils mit "LZMA2" komprimiert
+	- Die Tabelle Download kann mit der Maus sortiert werden, die Downloads werden dann in der Reihenfolge gestartet
+	- Beim Download wird die aktuelle Bandbreite in der Tabelle angezeigt
+	- Downloads und Filme können mit Button aus der Tabelle heraus gestartet werden
+	- Die Farbe der Restzeit eines Downloads ändert sich, wenn man bereits zum Ansehen anfangen kann
+	- Ist ein Download fertig, kommt ein Hinweisfenster
+	- Fertig geladen Filme/Downloads können direkt im Tab Download gestartet werden (Button in der Tabelle und in der Toolbar)
+	- Ist im Tab Filme der Filter "HD" aktiv, werden die Filme in der HD-Auflösung gestartet
+	
 	# Version 3.3.0
-    - Sortierreihenfolge der Tabellen wird gespeichert
+	- Sortierreihenfolge der Tabellen wird gespeichert
     - Es kann ein eigenes Iconset verwendet werden
     - Über den Menüpunkt "Hilfe->Hilfe und Fragen.." können alle Einstellungen zurückgesetzt werden
     - Neue Infos zu den Sendungen: Beschreibung, Bild, Sendungsdauer, Dateigröße

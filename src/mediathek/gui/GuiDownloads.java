@@ -908,7 +908,7 @@ public class GuiDownloads extends PanelVorlage {
                                 filmDownload.arr[DatenFilm.FILM_URL_KLEIN_NR] = "";
                                 filmDownload.arr[DatenFilm.FILM_URL_RTMP_KLEIN_NR] = "";
                                 // und starten
-                                daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload);
+                                daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "" /*Auflösung*/);
                             }
                         } else {
                             String menuPath;

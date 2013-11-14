@@ -58,13 +58,13 @@ public class StarterClass {
         startenThread.start();
     }
 
-    public synchronized Start urlMitProgrammStarten(DatenPset pSet, DatenFilm ersterFilm) {
+    public synchronized Start urlMitProgrammStarten(DatenPset pSet, DatenFilm ersterFilm, String aufloesung) {
         // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
         Start s = null;
         String url = ersterFilm.arr[DatenFilm.FILM_URL_NR];
         if (!url.equals("")) {
-            DatenDownload d = new DatenDownload(pSet, ersterFilm, Start.QUELLE_BUTTON, null, "", "", "" /*Aufloesung*/);
+            DatenDownload d = new DatenDownload(pSet, ersterFilm, Start.QUELLE_BUTTON, null, "", "", aufloesung);
             d.start = new Start();
             starten.startStarten(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen

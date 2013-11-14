@@ -216,7 +216,7 @@ public class GuiFilme extends PanelVorlage {
         tabelle.setDefaultRenderer(Object.class, new CellRendererFilme(daten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererFilme(daten));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
-                new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR, DatenFilm.FILM_KEYWORDS_NR}) {
+                new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR/*, DatenFilm.FILM_KEYWORDS_NR*/}) {
             @Override
             public void tabelleLaden_() {
                 tabelleLaden();
@@ -413,6 +413,28 @@ public class GuiFilme extends PanelVorlage {
                     dialog.setVisible(true);
                 }
             }
+        }
+    }
+
+    private void playerStarten(DatenPset pSet) {
+        // Url mit Prognr. starten
+        if (tabelle.getSelectedRow() == -1) {
+            new HinweisKeineAuswahl().zeigen(parentComponent);
+        } else if (pSet.istSpeichern()) {
+            // wenn das pSet zum Speichern (über die Button) gewählt wurde,
+            // weiter mit dem Dialog "Speichern"
+            filmSpeichern_(pSet);
+        } else {
+            // mit dem flvstreamer immer nur einen Filme starten
+            int selectedModelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
+            //DatenFilm datenFilm = Daten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
+            DatenFilm datenFilm = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
+            String aufloesung = "";
+            if (jCheckBoxNurHd.isSelected()) {
+                aufloesung = DatenFilm.AUFLOESUNG_HD;
+            }
+            daten.starterClass.urlMitProgrammStarten(pSet, datenFilm, aufloesung);
+//            tabelleLaden();
         }
     }
 
@@ -630,24 +652,6 @@ public class GuiFilme extends PanelVorlage {
             return film;
         }
         return null;
-    }
-
-    private void playerStarten(DatenPset pSet) {
-        // Url mit Prognr. starten
-        if (tabelle.getSelectedRow() == -1) {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
-        } else if (pSet.istSpeichern()) {
-            // wenn das pSet zum Speichern (über die Button) gewählt wurde,
-            // weiter mit dem Dialog "Speichern"
-            filmSpeichern_(pSet);
-        } else {
-            // mit dem flvstreamer immer nur einen Filme starten
-            int selectedModelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
-            //DatenFilm datenFilm = Daten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
-            DatenFilm datenFilm = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
-            daten.starterClass.urlMitProgrammStarten(pSet, datenFilm);
-//            tabelleLaden();
-        }
     }
 
     private void senderLaden() {
@@ -1205,7 +1209,7 @@ public class GuiFilme extends PanelVorlage {
         private BeobFilterSender beobSender = new BeobFilterSender();
         private BeobFilterSenderThema beobSenderThema = new BeobFilterSenderThema();
         private BeobFilterSenderThemaTitel beobSenderThemaTitel = new BeobFilterSenderThemaTitel();
-        private BeobSenderLaden beobSenderLaden = new BeobSenderLaden();
+//        private BeobSenderLaden beobSenderLaden = new BeobSenderLaden();
         private BeobBlacklist boeobBlacklistSender = new BeobBlacklist(true, false);
         private BeobBlacklist boeobBlacklistSenderThema = new BeobBlacklist(true, true);
         private Point p;
