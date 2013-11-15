@@ -205,8 +205,8 @@ public class GuiDownloads extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_START_EVENT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                tabelle.fireTableDataChanged(true /*setSpalten*/);
                 Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
+                tabelle.fireTableDataChanged(true /*setSpalten*/);
                 setInfo();
             }
         });
