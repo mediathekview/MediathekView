@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -65,7 +66,7 @@ public class GuiDownloads extends PanelVorlage {
 
     private MVFilmInformation filmInfoHud;
     private PanelBeschreibung panelBeschreibung;
-    private int zeileVon = -1;
+    private long lastUpdate = 0;
 
     public GuiDownloads(Daten d, Frame parentComponent) {
         super(d, parentComponent);
@@ -205,7 +206,7 @@ public class GuiDownloads extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_START_EVENT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
+                Daten.listeDownloads.setModelProgressAlleStart((TModelDownload) tabelle.getModel());
                 tabelle.fireTableDataChanged(true /*setSpalten*/);
                 setInfo();
             }
@@ -213,8 +214,11 @@ public class GuiDownloads extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
-                setInfo();
+                if (lastUpdate < (new Date().getTime() - 250)) {
+                    // nur alle 250ms aufrufen
+                    lastUpdate = new Date().getTime();
+                    Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
+                }
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiDownloads.class.getSimpleName()) {

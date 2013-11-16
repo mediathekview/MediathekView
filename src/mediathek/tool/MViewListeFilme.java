@@ -53,31 +53,31 @@ public class MViewListeFilme {
             // Titel
             String[] arrTitel;
             if (Filter.isPattern(filterTitel)) {
-                arrTitel = new String[]{filterTitel};
+                arrTitel = new String[]{filterTitel.toLowerCase()};
             } else {
                 arrTitel = filterTitel.split(",");
                 for (int i = 0; i < arrTitel.length; ++i) {
-                    arrTitel[i] = arrTitel[i].trim();
+                    arrTitel[i] = arrTitel[i].trim().toLowerCase();
                 }
             }
             // ThemaTitel
             String[] arrThemaTitel;
             if (Filter.isPattern(filterThemaTitel)) {
-                arrThemaTitel = new String[]{filterThemaTitel};
+                arrThemaTitel = new String[]{filterThemaTitel.toLowerCase()};
             } else {
                 arrThemaTitel = filterThemaTitel.split(",");
                 for (int i = 0; i < arrThemaTitel.length; ++i) {
-                    arrThemaTitel[i] = arrThemaTitel[i].trim();
+                    arrThemaTitel[i] = arrThemaTitel[i].trim().toLowerCase();
                 }
             }
             // Irgendwo
             String[] arrIrgendwo;
             if (Filter.isPattern(filterIrgendwo)) {
-                arrIrgendwo = new String[]{filterIrgendwo};
+                arrIrgendwo = new String[]{filterIrgendwo.toLowerCase()};
             } else {
                 arrIrgendwo = filterIrgendwo.split(",");
                 for (int i = 0; i < arrIrgendwo.length; ++i) {
-                    arrIrgendwo[i] = arrIrgendwo[i].trim();
+                    arrIrgendwo[i] = arrIrgendwo[i].trim().toLowerCase();
                 }
             }
             for (DatenFilm film : listeFilme) {
@@ -138,31 +138,31 @@ public class MViewListeFilme {
             // Titel
             String[] arrTitel;
             if (Filter.isPattern(filterTitel)) {
-                arrTitel = new String[]{filterTitel};
+                arrTitel = new String[]{filterTitel.toLowerCase()};
             } else {
                 arrTitel = filterTitel.split(",");
                 for (int i = 0; i < arrTitel.length; ++i) {
-                    arrTitel[i] = arrTitel[i].trim();
+                    arrTitel[i] = arrTitel[i].trim().toLowerCase();
                 }
             }
             // ThemaTitel
             String[] arrThemaTitel;
             if (Filter.isPattern(filterThemaTitel)) {
-                arrThemaTitel = new String[]{filterThemaTitel};
+                arrThemaTitel = new String[]{filterThemaTitel.toLowerCase()};
             } else {
                 arrThemaTitel = filterThemaTitel.split(",");
                 for (int i = 0; i < arrThemaTitel.length; ++i) {
-                    arrThemaTitel[i] = arrThemaTitel[i].trim();
+                    arrThemaTitel[i] = arrThemaTitel[i].trim().toLowerCase();
                 }
             }
             // Irgendwo
             String[] arrIrgendwo;
             if (Filter.isPattern(filterIrgendwo)) {
-                arrIrgendwo = new String[]{filterIrgendwo};
+                arrIrgendwo = new String[]{filterIrgendwo.toLowerCase()};
             } else {
                 arrIrgendwo = filterIrgendwo.split(",");
                 for (int i = 0; i < arrIrgendwo.length; ++i) {
-                    arrIrgendwo[i] = arrIrgendwo[i].trim();
+                    arrIrgendwo[i] = arrIrgendwo[i].trim().toLowerCase();
                 }
             }
             int row = 0;

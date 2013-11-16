@@ -26,7 +26,6 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.CellRendererFilme;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
 import msearch.daten.DatenFilm;
 
@@ -42,24 +41,24 @@ public class PanelInfoStarts extends PanelVorlage {
     public PanelInfoStarts(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, PanelInfoStarts.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                init();
-            }
-        });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, PanelInfoStarts.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                init();
-            }
-        });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, PanelInfoStarts.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                init();
-            }
-        });
+//        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, PanelInfoStarts.class.getSimpleName()) {
+//            @Override
+//            public void ping() {
+//                init();
+//            }
+//        });
+//        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, PanelInfoStarts.class.getSimpleName()) {
+//            @Override
+//            public void ping() {
+//                init();
+//            }
+//        });
+//        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, PanelInfoStarts.class.getSimpleName()) {
+//            @Override
+//            public void ping() {
+//                init();
+//            }
+//        });
         daten = d;
         jButtonAuffrischen.addActionListener(new BeobLaden());
         tModel = getEmptyModel();
