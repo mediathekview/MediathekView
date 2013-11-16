@@ -3,10 +3,6 @@ package mediathek;
 import com.explodingpixels.macwidgets.BottomBar;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
-import mediathek.daten.Daten;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Log;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -15,6 +11,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
+import mediathek.daten.Daten;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 /**
@@ -52,7 +51,7 @@ public final class MVStatusBar_Mac extends MVStatusBar {
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.filmeLaden.setStop();
+                Daten.filmeLaden.setStop(true);
             }
         });
         bottomBar.addComponentToRight(stopButton);
