@@ -72,7 +72,7 @@ public class MVStatusBar_Win_Linux extends MVStatusBar {
         jButtonStop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.filmeLaden.setStop();
+                Daten.filmeLaden.setStop(true);
             }
         });
         new Thread(new TimerClass()).start();

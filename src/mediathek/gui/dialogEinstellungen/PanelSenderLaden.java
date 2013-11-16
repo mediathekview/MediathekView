@@ -67,7 +67,7 @@ public class PanelSenderLaden extends PanelVorlage {
         jButtonStop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.filmeLaden.setStop();
+                Daten.filmeLaden.setStop(true);
             }
         });
         addSender();

@@ -96,8 +96,8 @@ public class FilmeLaden {
     }
 
     // ###########################
-    public synchronized void setStop() {
-        MSearchConfig.setStop();
+    public synchronized void setStop(boolean set) {
+        MSearchConfig.setStop(set);
     }
 
     public String[] getSenderNamen() {
