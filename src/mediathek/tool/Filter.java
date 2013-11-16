@@ -33,9 +33,9 @@ public class Filter {
 
         String senderExistiert = aboExistiert.arr[DatenAbo.ABO_SENDER_NR];
         String themaExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA_NR];
-        String[] titelExistiert = aboExistiert.arr[DatenAbo.ABO_TITEL_NR].split(",");
-        String[] themaTitelExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA_TITEL_NR].split(",");
-        String[] irgendwoExistiert = aboExistiert.arr[DatenAbo.ABO_IRGENDWO_NR].split(",");
+        String[] titelExistiert = aboExistiert.arr[DatenAbo.ABO_TITEL_NR].toLowerCase().split(",");
+        String[] themaTitelExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA_TITEL_NR].toLowerCase().split(",");
+        String[] irgendwoExistiert = aboExistiert.arr[DatenAbo.ABO_IRGENDWO_NR].toLowerCase().split(",");
         // Abos sollen sich nicht nur in der Länge unterscheiden
         // int laengeExistiert = aboExistiert.mindestdauerMinuten;
         String senderPruefen = aboPruefen.arr[DatenAbo.ABO_SENDER_NR];
@@ -88,8 +88,7 @@ public class Filter {
                         if (irgendwoSuchen.length == 0
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_THEMA_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL_NR])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG_NR])
-//                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_KEYWORDS_NR])
+                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG_NR]) //                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_KEYWORDS_NR])
                                 ) {
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden
@@ -121,7 +120,7 @@ public class Filter {
             }
         }
         for (String s : aboFilter) {
-            if (textPruefen(s, im)) {
+            if (im.toLowerCase().contains(s)) {
                 return true;
             }
         }

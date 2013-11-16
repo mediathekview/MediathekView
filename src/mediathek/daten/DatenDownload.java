@@ -262,13 +262,15 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public String getTextBandbreite() {
         if (start != null) {
-            if (start.status < Start.STATUS_FERTIG && start.bandbreite > 0) {
+            if (start.status < Start.STATUS_FERTIG) {
                 if (start.bandbreite > 1000 * 1000) {
                     return String.valueOf(start.bandbreite / (1000 * 1000)) + "MB/s";
                 } else if (start.bandbreite > 1000) {
                     return String.valueOf(start.bandbreite / (1000)) + "kB/s";
-                } else {
+                } else if (start.bandbreite > 1) {
                     return String.valueOf(start.bandbreite) + "B/s";
+                } else {
+                    return "";
                 }
             }
         }
