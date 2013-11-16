@@ -181,7 +181,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         DatenAbo datenAbo;
         ListIterator<DatenAbo> it = this.listIterator();
         while (it.hasNext()) {
-            datenAbo = it.next();
+            da  tenAbo = it.next();
             String[] titel, thema, irgendwo;
             if (datenAbo.arr[DatenAbo.ABO_TITEL_NR].isEmpty()) {
                 titel = new String[]{""};
