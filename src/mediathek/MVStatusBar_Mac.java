@@ -13,6 +13,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import mediathek.daten.Daten;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
@@ -28,12 +29,12 @@ public final class MVStatusBar_Mac extends MVStatusBar {
     private JProgressBar progress;
     private JButton stopButton;
     private BottomBar bottomBar;
+
     /**
      * This contains all the strings that will be displayed according to selected index.
      */
 //    private EnumMap<StatusbarIndex, String> displayListForLeftLabel = new EnumMap<StatusbarIndex, String>(StatusbarIndex.class);
 //    private StatusbarIndex currentIndex = StatusbarIndex.NONE;
-
     public MVStatusBar_Mac() {
         bottomBar = new BottomBar(BottomBarSize.LARGE);
         lblCenter = MacWidgetFactory.createEmphasizedLabel("");
@@ -57,7 +58,23 @@ public final class MVStatusBar_Mac extends MVStatusBar {
         bottomBar.addComponentToRight(stopButton);
 
         hideProgressIndicators();
-        new AgeUpdateTimer().start();
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TIMER, MVStatusBar_Mac.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                try {
+                    if (!stopTimer) {
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                setInfoRechts();
+                            }
+                        });
+                    }
+                } catch (Exception ex) {
+                    Log.fehlerMeldung(936251087, Log.FEHLER_ART_PROG, MVStatusBar_Mac.class.getName(), ex);
+                }
+            }
+        });
     }
 
     @Override
@@ -147,35 +164,5 @@ public final class MVStatusBar_Mac extends MVStatusBar {
         currentIndex = i;
         String displayString = displayListForLeftLabel.get(i);
         lblCenter.setText(displayString);
-    }
-
-//    public enum StatusbarIndex {
-//
-//        NONE, FILME, DOWNLOAD, ABO
-//    };
-
-    //FIXME use swing timer
-    private class AgeUpdateTimer extends Thread {
-
-        private final int WARTEZEIT = 1000; // 1 Sekunde
-
-        @Override
-        public synchronized void run() {
-            while (true) {
-                try {
-                    sleep(WARTEZEIT);
-                    if (!stopTimer) {
-                        SwingUtilities.invokeAndWait(new Runnable() {
-                            @Override
-                            public void run() {
-                                setInfoRechts();
-                            }
-                        });
-                    }
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(936251087, Log.FEHLER_ART_PROG, MVStatusBar_Mac.class.getName(), ex);
-                }
-            }
-        }
     }
 }

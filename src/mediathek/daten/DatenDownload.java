@@ -333,7 +333,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             // ##############################
             // Name sinnvoll belegen
             if (name.equals("")) {
-                name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+                name = DatumZeit.Heute_yyyyMMdd + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
             }
             name = replaceString(name, film);
             name = GuiFunktionen.replaceLeerDateiname(name, true/* istDatei */, true /* leerEntfernen */);
@@ -397,7 +397,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             pfad = GuiFunktionen.getStandardDownloadPath();
         }
         if (name.equals("")) {
-            name = DatumZeit.getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+            name = DatumZeit.Heute_yyyyMMdd + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
         }
         arr[DOWNLOAD_ZIEL_DATEINAME_NR] = name;
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
@@ -431,13 +431,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private String replaceString(String s, DatenFilm film) {
-        s = s.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
-        s = s.replace("%d", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? DatumZeit.getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT_NR]));
+        s = s.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.Heute_yyyyMMdd : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
+        s = s.replace("%d", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? DatumZeit.Jetzt_HHMMSS : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT_NR]));
         s = s.replace("%t", film.arr[DatenFilm.FILM_THEMA_NR]);
         s = s.replace("%T", film.arr[DatenFilm.FILM_TITEL_NR]);
         s = s.replace("%s", film.arr[DatenFilm.FILM_SENDER_NR]);
-        s = s.replace("%H", DatumZeit.getHeute_yyyyMMdd());
-        s = s.replace("%h", DatumZeit.getJetzt_HHMMSS());
+        s = s.replace("%H", DatumZeit.Heute_yyyyMMdd);
+        s = s.replace("%h", DatumZeit.Jetzt_HHMMSS);
         s = s.replace("%N", GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
         s = s.replace("%S", GuiFunktionen.getDateiSuffix(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
         return s;

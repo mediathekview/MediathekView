@@ -19,17 +19,16 @@
  */
 package mediathek.controller;
 
-import mediathek.daten.Daten;
-import mediathek.gui.dialog.DialogZiel;
-import mediathek.tool.*;
-
-import javax.swing.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.swing.*;
+import mediathek.daten.Daten;
+import mediathek.gui.dialog.DialogZiel;
+import mediathek.tool.*;
 
 public class ProgrammLog {
 

@@ -24,7 +24,6 @@ import javax.swing.event.EventListenerList;
 import mediathek.daten.Daten;
 import mediathek.tool.Duration;
 import mediathek.tool.Log;
-import mediathek.tool.MViewListeFilme;
 import msearch.daten.ListeFilme;
 import msearch.daten.MSearchConfig;
 import msearch.filmeLaden.ListeDownloadUrlsFilmlisten;
@@ -162,7 +161,8 @@ public class FilmeLaden {
     private void undEnde(MSearchListenerFilmeLadenEvent event) {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
-        MViewListeFilme.abosEintragen(Daten.listeFilme, Daten.listeAbo);
+        Daten.listeFilme.themenLaden();
+        Daten.listeAbo.setAboFuerFilm(Daten.listeFilme);
         istAmLaufen = false;
         notifyFertig(event);
     }

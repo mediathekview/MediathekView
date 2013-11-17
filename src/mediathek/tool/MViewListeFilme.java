@@ -19,20 +19,14 @@
  */
 package mediathek.tool;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.TreeSet;
 import mediathek.daten.Daten;
-import mediathek.daten.DatenAbo;
-import mediathek.daten.ListeAbo;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 
 public class MViewListeFilme {
 
-    public static HashSet<String> hashSet = new HashSet<>();
-    public static TreeSet<String> treeSet = new TreeSet<>(msearch.tool.GermanStringSorter.getInstance());
+//    public static HashSet<String> hashSet = new HashSet<>();
+//    public static TreeSet<String> treeSet = new TreeSet<>(msearch.tool.GermanStringSorter.getInstance());
 
     public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVJTable table,
             String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
@@ -214,69 +208,81 @@ public class MViewListeFilme {
         }
     }
 
-    public static synchronized String[] getModelOfFieldThema(ListeFilme listeFilme, String sender) {
-        // erstellt ein StringArray der Themen eines Senders oder wenn "sender" leer, aller Sender
-        // ist für die Filterfelder im GuiFilme
-        // doppelte Einträge (bei der Groß- und Kleinschribung) werden entfernt
-        String str, s;
-        treeSet.add("");
-        DatenFilm film;
-        Iterator<DatenFilm> it = listeFilme.iterator();
-        if (sender.equals("")) {
-            //alle Theman
-            while (it.hasNext()) {
-                str = it.next().arr[DatenFilm.FILM_THEMA_NR];
-                //hinzufügen
-                s = str.toLowerCase();
-                if (!hashSet.contains(s)) {
-                    hashSet.add(s);
-                    treeSet.add(str);
-                }
-            }
-        } else {
-            //nur Theman des Senders
-            while (it.hasNext()) {
-                film = it.next();
-                if (film.arr[DatenFilm.FILM_SENDER_NR].equals(sender)) { // Filterstring ist immer "Sender"
-                    //hinzufügen
-                    str = film.arr[DatenFilm.FILM_THEMA_NR];
-                    s = str.toLowerCase();
-                    if (!hashSet.contains(s)) {
-                        hashSet.add(s);
-                        treeSet.add(str);
-                    }
-                }
-            }
-        }
-        hashSet.clear();
-        String[] a = treeSet.toArray(new String[]{});
-        treeSet.clear();
-        return a;
-    }
+//    public static synchronized String[] getModelOfFieldThema(ListeFilme listeFilme, String sender) {
+//        // erstellt ein StringArray der Themen eines Senders oder wenn "sender" leer, aller Sender
+//        // ist für die Filterfelder im GuiFilme
+//        // doppelte Einträge (bei der Groß- und Kleinschribung) werden entfernt
+//        String str, s;
+//        treeSet.add("");
+//        DatenFilm film;
+//        Iterator<DatenFilm> it = listeFilme.iterator();
+//        if (sender.equals("")) {
+//            //alle Theman
+//            while (it.hasNext()) {
+//                str = it.next().arr[DatenFilm.FILM_THEMA_NR];
+//                //hinzufügen
+//                s = str.toLowerCase();
+//                if (!hashSet.contains(s)) {
+//                    hashSet.add(s);
+//                    treeSet.add(str);
+//                }
+//            }
+//        } else {
+//            //nur Theman des Senders
+//            while (it.hasNext()) {
+//                film = it.next();
+//                if (film.arr[DatenFilm.FILM_SENDER_NR].equals(sender)) { // Filterstring ist immer "Sender"
+//                    //hinzufügen
+//                    str = film.arr[DatenFilm.FILM_THEMA_NR];
+//                    s = str.toLowerCase();
+//                    if (!hashSet.contains(s)) {
+//                        hashSet.add(s);
+//                        treeSet.add(str);
+//                    }
+//                }
+//            }
+//        }
+//        hashSet.clear();
+//        String[] a = treeSet.toArray(new String[]{});
+//        treeSet.clear();
+//        return a;
+//    }
 
-    /** Erstellt ein StringArray mit den Sendernamen.
-     *
-     * @param listeFilme
-     * @return StringArray der Sendernamen
-     */
-    public static synchronized String[] getModelOfFieldSender(ListeFilme listeFilme) {
-        treeSet.add("");
-        // Sendernamen gibts nur in einer Schreibweise
-        final int max = Daten.filmeLaden.getSenderNamen().length; // gibt nur so viele
-        for (DatenFilm film : listeFilme) {
-            String str = film.arr[DatenFilm.FILM_SENDER_NR];
-            if (!treeSet.contains(str)) {
-                treeSet.add(str);
-                if (treeSet.size() > max) { // eins mehr wegen Leerzeile
-                    break;
-                }
-            }
-        }
-        String[] a = treeSet.toArray(new String[]{});
-        treeSet.clear();
-        return a;
-    }
+//    /** Erstellt ein StringArray mit den Sendernamen.
+//     *
+//     * @param listeFilme
+//     * @return StringArray der Sendernamen
+//     */
+//    public static synchronized String[] getModelOfFieldSender(ListeFilme listeFilme) {
+//        // Sendernamen gibts nur in einer Schreibweise
+//        String[] sender = Daten.filmeLaden.getSenderNamen(); // gibt nur so viele
+//        ArrayList<String> al = new ArrayList<>();
+//        al.add("");
+//        for (String s : sender) {
+//            if (!Daten.listeBlacklist.blockSender(s)) {
+//                al.add(s);
+//            }
+//        }
+//        return al.toArray(new String[]{});
+//    }
 
+//    public static synchronized String[] getModelOfFieldSender(ListeFilme listeFilme) {
+//        treeSet.add("");
+//        // Sendernamen gibts nur in einer Schreibweise
+//        final int max = Daten.filmeLaden.getSenderNamen().length; // gibt nur so viele
+//        for (DatenFilm film : listeFilme) {
+//            String str = film.arr[DatenFilm.FILM_SENDER_NR];
+//            if (!treeSet.contains(str)) {
+//                treeSet.add(str);
+////                if (treeSet.size() > max) { // eins mehr wegen Leerzeile
+////                    break;
+////                }
+//            }
+//        }
+//        String[] a = treeSet.toArray(new String[]{});
+//        treeSet.clear();
+//        return a;
+//    }
     //===================================
     // private
     //===================================
@@ -303,29 +309,5 @@ public class MViewListeFilme {
             }
         }
         tModel.addRow(object);
-    }
-
-    public static void abosEintragen(ListeFilme listeFilme, ListeAbo listeAbo) {
-        // Aboname in die Filmliste eintragen
-        DatenFilm film;
-        DatenAbo datenAbo;
-        ListIterator<DatenFilm> iterator = listeFilme.listIterator(0);
-        while (iterator.hasNext()) {
-            film = iterator.next();
-            datenAbo = listeAbo.getAboFuerFilm(film);
-            if (datenAbo != null) {
-                film.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
-                // und jetzt noch die Filmlänge prüfen
-                if (!Filter.laengePruefen(datenAbo.mindestdauerMinuten, film.dauerL)) {
-                    // dann ist der Film zu kurz
-                    film.arr[DatenFilm.FILM_ABO_NAME_NR] = film.arr[DatenFilm.FILM_ABO_NAME_NR] + " [zu kurz]";
-                } else {
-                    film.abo = datenAbo;
-                }
-            } else {
-                film.arr[DatenFilm.FILM_ABO_NAME_NR] = "";
-                film.abo = null;
-            }
-        }
     }
 }

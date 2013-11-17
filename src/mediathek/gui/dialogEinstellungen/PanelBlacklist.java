@@ -44,15 +44,15 @@ import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MViewListeFilme;
 import mediathek.tool.TModel;
+import msearch.filmeSuchen.MSearchListenerFilmeLaden;
+import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 public class PanelBlacklist extends PanelVorlage {
 
     public boolean ok = false;
     public String ziel;
     private String[] sender;
-    private String[][] themenPerSender;
     private String name;
     private Color cGruen = new Color(0, 153, 51);
     private Color cRot = new Color(255, 0, 0);
@@ -75,6 +75,12 @@ public class PanelBlacklist extends PanelVorlage {
             @Override
             public void ping() {
                 init_();
+            }
+        });
+        Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
+            @Override
+            public void fertig(MSearchListenerFilmeLadenEvent event) {
+                comboThemaLaden();
             }
         });
     }
@@ -223,36 +229,36 @@ public class PanelBlacklist extends PanelVorlage {
     private void comboThemaLaden() {
         String filterSender = jComboBoxSender.getSelectedItem().toString();
         if (filterSender.equals("")) {
-            jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen("")));
+            jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
         } else {
-            jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen(filterSender)));
+            jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen(filterSender)));
         }
 
     }
 
     private String[] getThemen(String ssender) {
-        for (int i = 1; i < themenPerSender.length; ++i) {
-            if (sender[i].equals(ssender)) {
-                return themenPerSender[i];
+        for (int i = 1; i < Daten.listeFilme.themenPerSender.length; ++i) {
+            if (Daten.listeFilme.sender[i].equals(ssender)) {
+                return Daten.listeFilme.themenPerSender[i];
             }
         }
         //return alleThemen;
-        return themenPerSender[0];
+        return Daten.listeFilme.themenPerSender[0];
     }
 
     private void initCombo() {
         // der erste Sender ist ""
         sender = GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen());
-        jComboBoxSender.setModel(new javax.swing.DefaultComboBoxModel<String>(sender));
+        jComboBoxSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
         //für den Sender "" sind alle Themen im themenPerSender[0]
-        themenPerSender = new String[sender.length][];
-        for (int i = 0; i < sender.length; ++i) {
-            themenPerSender[i] = MViewListeFilme.getModelOfFieldThema(Daten.listeFilme, sender[i]);
-        }
+//        themenPerSender = new String[sender.length][];
+//        for (int i = 0; i < sender.length; ++i) {
+//            themenPerSender[i] = MViewListeFilme.getModelOfFieldThema(Daten.listeFilme, sender[i]);
+//        }
     }
 
     private void tabelleLaden() {
-        jTableBlacklist.setModel(new TModel(daten.listeBlacklist.getObjectData(), DatenBlacklist.BLACKLIST_COLUMN_NAMES_ANZEIGE));
+        jTableBlacklist.setModel(new TModel(Daten.listeBlacklist.getObjectData(), DatenBlacklist.BLACKLIST_COLUMN_NAMES_ANZEIGE));
     }
 
     private void setPanelBlacklist() {
@@ -276,7 +282,7 @@ public class PanelBlacklist extends PanelVorlage {
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR_NR).toString();
-            bl = daten.listeBlacklist.get(delNr);
+            bl = Daten.listeBlacklist.get(delNr);
         }
         if (bl != null) {
             jComboBoxSender.setSelectedItem(bl.arr[DatenBlacklist.BLACKLIST_SENDER_NR]);

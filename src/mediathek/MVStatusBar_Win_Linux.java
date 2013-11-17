@@ -26,10 +26,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
@@ -75,7 +75,19 @@ public class MVStatusBar_Win_Linux extends MVStatusBar {
                 Daten.filmeLaden.setStop(true);
             }
         });
-        new Thread(new TimerClass()).start();
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TIMER, MVStatusBar_Win_Linux.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                try {
+                    if (!stopTimer) {
+                        setInfoRechts();
+                    }
+                } catch (Exception ex) {
+                    Log.fehlerMeldung(936251087, Log.FEHLER_ART_PROG, MVStatusBar_Mac.class.getName(), ex);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -212,35 +224,4 @@ public class MVStatusBar_Win_Linux extends MVStatusBar {
     private javax.swing.JLabel jLabelStatusLinks;
     private javax.swing.JProgressBar jProgressBar1;
     // End of variables declaration//GEN-END:variables
-
-    private class TimerClass implements Runnable {
-
-        private final int WARTEZEIT = 1000; // 1 Sekunde
-
-        @Override
-        public synchronized void run() {
-            while (true) {
-                try {
-                    schlafen();
-                    if (!stopTimer) {
-                        SwingUtilities.invokeAndWait(new Runnable() {
-                            @Override
-                            public void run() {
-                                setInfoRechts();
-                            }
-                        });
-                    }
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(936251087, Log.FEHLER_ART_PROG, MVStatusBar_Win_Linux.class.getName(), ex);
-                }
-            }
-        }
-
-        private void schlafen() {
-            try {
-                Thread.sleep(WARTEZEIT);
-            } catch (InterruptedException e) {
-            }
-        }
-    }
 }
