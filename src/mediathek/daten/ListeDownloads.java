@@ -254,7 +254,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return null;
     }
 
-    public synchronized void getModel(TModelDownload tModel, boolean abos, boolean downloads) {
+    public synchronized void getModel_(TModelDownload tModel, boolean abos, boolean downloads) {
         DatenDownload download;
         tModel.setRowCount(this.size());
         ListIterator<DatenDownload> iterator = this.listIterator();
@@ -283,7 +283,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                         tModel.setValueAt(download, r, i);
                     } else if (i != DatenDownload.DOWNLOAD_FILM_NR_NR && i != DatenDownload.DOWNLOAD_URL_NR && !DatenDownload.anzeigen(i)) {
                         // Filmnr und URL immer füllen, egal ob angezeigt
-                        tModel.setValueAt(null, r, i);
+                        tModel.setValueAt("", r, i);
                     } else {
                         tModel.setValueAt(download.arr[i], r, i);
                     }
@@ -295,7 +295,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         tModel.fireTableStructureChanged();
     }
 
-    public synchronized void getModel_(TModelDownload tModel, boolean abos, boolean downloads) {
+    public synchronized void getModel(TModelDownload tModel, boolean abos, boolean downloads) {
         Object[] object;
         tModel.setRowCount(0);
         DatenDownload download;
