@@ -26,6 +26,16 @@ import java.util.Locale;
 
 public class DatumZeit {
 
+    public static String Jetzt_HHMMSS = getJetzt_HHMMSS();
+    public static String Heute_yyyyMMdd = getHeute_yyyyMMdd();
+    public static long Morgen_0_Uhr = getMorgen_0_Uhr();
+
+    public static void set() {
+        Jetzt_HHMMSS = getJetzt_HHMMSS();
+        Heute_yyyyMMdd = getHeute_yyyyMMdd();
+        Morgen_0_Uhr = getMorgen_0_Uhr();
+    }
+
     public static String getJetzt_ddMMyyyy_HHmm() {
         Date today;
         String output;
@@ -46,16 +56,15 @@ public class DatumZeit {
         return output;
     }
 
-    public static String getJetzt_HH_MM_SS() {
-        Date today;
-        String output;
-        SimpleDateFormat formatter;
-        formatter = new SimpleDateFormat("HH:mm:ss");
-        today = new Date();
-        output = formatter.format(today);
-        return output;
-    }
-
+//    public static String getJetzt_HH_MM_SS() {
+//        Date today;
+//        String output;
+//        SimpleDateFormat formatter;
+//        formatter = new SimpleDateFormat("HH:mm:ss");
+//        today = new Date();
+//        output = formatter.format(today);
+//        return output;
+//    }
     public static String getJetzt_HHMMSS() {
         Date today;
         String output;
@@ -86,16 +95,15 @@ public class DatumZeit {
         return output;
     }
 
-    public static String getGestern_dd_MM_yyyy() {
-        Date today;
-        String output;
-        SimpleDateFormat formatter;
-        formatter = new SimpleDateFormat("dd.MM.yyyy");
-        today = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) /* ein Tag */);
-        output = formatter.format(today);
-        return output;
-    }
-
+//    public static String getGestern_dd_MM_yyyy() {
+//        Date today;
+//        String output;
+//        SimpleDateFormat formatter;
+//        formatter = new SimpleDateFormat("dd.MM.yyyy");
+//        today = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) /* ein Tag */);
+//        output = formatter.format(today);
+//        return output;
+//    }
     public static long getMorgen_0_Uhr() {
         try {
             SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.yyyy");
@@ -106,20 +114,19 @@ public class DatumZeit {
         }
     }
 
-    public static String convertDatum(String datum) {
-        //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
-        try {
-            SimpleDateFormat sdfIn = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
-            Date filmDate = sdfIn.parse(datum);
-            SimpleDateFormat sdfOut;
-            sdfOut = new SimpleDateFormat("dd.MM.yyyy");
-            datum = sdfOut.format(filmDate);
-        } catch (Exception ex) {
-            Log.fehlerMeldung(649600299, Log.FEHLER_ART_PROG, "DatumDatum.convertDatum", ex);
-        }
-        return datum;
-    }
-
+//    public static String convertDatum(String datum) {
+//        //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
+//        try {
+//            SimpleDateFormat sdfIn = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
+//            Date filmDate = sdfIn.parse(datum);
+//            SimpleDateFormat sdfOut;
+//            sdfOut = new SimpleDateFormat("dd.MM.yyyy");
+//            datum = sdfOut.format(filmDate);
+//        } catch (Exception ex) {
+//            Log.fehlerMeldung(649600299, Log.FEHLER_ART_PROG, "DatumDatum.convertDatum", ex);
+//        }
+//        return datum;
+//    }
     public static String convertTime(String zeit) {
         //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
         try {
@@ -134,31 +141,6 @@ public class DatumZeit {
         return zeit;
     }
 
-//    public static String datumDrehen(String datum) {
-//        String ret = "";
-//        if (!datum.equals("")) {
-//            try {
-//                if (datum.length() == 10) {
-//                    String tmp = datum.substring(6); // Jahr
-//                    tmp += "." + datum.substring(3, 5); // Monat
-//                    tmp += "." + datum.substring(0, 2); // Tag
-//                    ret = tmp;
-//                }
-//            } catch (Exception ex) {
-//                Log.fehlerMeldung(293561086, "DatumZeit.datumDrehen", ex);
-//            }
-//
-//        }
-//        return ret;
-//    }
-//
-//    public static String datumDatumZeitReinigen(String datum) {
-//        String ret = "";
-//        ret = datum;
-//        ret = ret.replace(":", "");
-//        ret = ret.replace(".", "");
-//        return ret;
-//    }
     public static Datum getDatumForObject(String datum) {
         Datum tmp = new Datum(0);
         if (!datum.equals("")) {
@@ -170,5 +152,4 @@ public class DatumZeit {
         }
         return tmp;
     }
-
 }

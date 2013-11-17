@@ -19,12 +19,15 @@
  */
 package mediathek.daten;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 import mediathek.MediathekGui;
 import mediathek.controller.ErledigteAbos;
 import mediathek.controller.FilmeLaden;
@@ -40,9 +43,9 @@ import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
-import mediathek.tool.MViewListeFilme;
 import msearch.daten.ListeFilme;
 import msearch.io.MSearchFilmlisteLesen;
 import msearch.io.MSearchFilmlisteSchreiben;
@@ -67,7 +70,7 @@ public class Daten {
     public static ListeFilme listeFilmeNachBlackList = null;
     public static ListeDownloads listeDownloads = null; // Filme die als "Download: Tab Download" geladen werden sollen
     public static ListeDownloads listeDownloadsButton = null; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
-    public ListeBlacklist listeBlacklist = null;
+    public static ListeBlacklist listeBlacklist = null;
     public ListePset listePset = null;
     public static ListeAbo listeAbo = null;
     public History history = null;
@@ -84,6 +87,7 @@ public class Daten {
     // für die Tabellen
     public boolean nachDownloadShutDown = false;
     public MVFilmInformation filmInfoHud = null;
+    private Timer timer;
 
     public Daten(String basis, MediathekGui gui) {
         basisverzeichnis = basis;
@@ -119,6 +123,15 @@ public class Daten {
         history = new History();
 
         starterClass = new StarterClass(this);
+        timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_TIMER, Daten.class.getName());
+                DatumZeit.set(); // die Zeitkonstanten setzen
+
+            }
+        });
+        timer.start();
     }
 
     private void init() {
@@ -255,7 +268,8 @@ public class Daten {
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
         new MSearchFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste(), "", Daten.listeFilme);
-        MViewListeFilme.abosEintragen(Daten.listeFilme, Daten.listeAbo);
+        Daten.listeFilme.themenLaden();
+        Daten.listeAbo.setAboFuerFilm(Daten.listeFilme);
     }
 
     public static void filmlisteSpeichern() {

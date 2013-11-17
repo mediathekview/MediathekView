@@ -505,7 +505,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     private void setSize(boolean max) {
-        this.pack();
         if (max || Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR])) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else {

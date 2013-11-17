@@ -91,8 +91,8 @@ public class GuiFilme extends PanelVorlage {
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 4, 5, 10, 15, 20, 30};
     private BeobMausTabelle beobMausTabelle;
     private MVFilmInformation filmInfoHud;
-    private String[] sender;
-    private String[][] themenPerSender;
+//    private String[] sender;
+//    private String[][] themenPerSender;
     //private String[] alleThemen;
     private PanelBeschreibung panelBeschreibung;
 
@@ -230,7 +230,7 @@ public class GuiFilme extends PanelVorlage {
                 if (!stopBeob) {
                     stopBeob = true;
                     //auch die Filter löschen
-                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
+                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
                     jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
                     jTextFieldFilterTitel.setText("");
                 }
@@ -239,7 +239,7 @@ public class GuiFilme extends PanelVorlage {
         });
         //Combo Sender
         jButtonFilterLoeschen.addActionListener(new BeobFilterLoeschen());
-        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
+        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
         jComboBoxFilterSender.addActionListener(new BeobFilterSender());
         jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
         jComboBoxFilterThema.addActionListener(new BeobFilter());
@@ -359,24 +359,23 @@ public class GuiFilme extends PanelVorlage {
         tabelleLaden();
     }
 
-    private void themenLaden() {
-        // der erste Sender ist ""
-        sender = MViewListeFilme.getModelOfFieldSender(Daten.listeFilmeNachBlackList);
-        //für den Sender "" sind alle Themen im themenPerSender[0]
-        themenPerSender = new String[sender.length][];
-        for (int i = 0; i < sender.length; ++i) {
-            themenPerSender[i] = MViewListeFilme.getModelOfFieldThema(Daten.listeFilmeNachBlackList, sender[i]);
-        }
-        //alleThemen = Daten.listeFilmeNachBlackList.getModelOfFieldThema("");
-    }
-
+////    private void themenLaden() {
+////        // der erste Sender ist ""
+////        sender = MViewListeFilme.getModelOfFieldSender(Daten.listeFilmeNachBlackList);
+////        //für den Sender "" sind alle Themen im themenPerSender[0]
+////        themenPerSender = new String[sender.length][];
+////        for (int i = 0; i < sender.length; ++i) {
+////            themenPerSender[i] = MViewListeFilme.getModelOfFieldThema(Daten.listeFilmeNachBlackList, sender[i]);
+////        }
+////        //alleThemen = Daten.listeFilmeNachBlackList.getModelOfFieldThema("");
+////    }
     private String[] getThemen(String ssender) {
-        for (int i = 1; i < themenPerSender.length; ++i) {
-            if (sender[i].equals(ssender)) {
-                return themenPerSender[i];
+        for (int i = 1; i < Daten.listeFilmeNachBlackList.themenPerSender.length; ++i) {
+            if (Daten.listeFilmeNachBlackList.sender[i].equals(ssender)) {
+                return Daten.listeFilmeNachBlackList.themenPerSender[i];
             }
         }
-        return themenPerSender[0];
+        return Daten.listeFilmeNachBlackList.themenPerSender[0];
         //return alleThemen;
     }
 
@@ -532,8 +531,8 @@ public class GuiFilme extends PanelVorlage {
                 if (Daten.listeFilmeNachBlackList.isEmpty()) {
                     //jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(Daten.listeFilmeNachBlackList.getModelOfFieldSender()));
                     //jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(Daten.listeFilmeNachBlackList.getModelOfFieldThema("")));
-                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<String>(sender));
-                    jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen("")));
+                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
+                    jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
                     jComboBoxFilterSender.setSelectedIndex(0);
                     jComboBoxFilterThema.setSelectedIndex(0);
                     listeInModellLaden(); // zum löschen der Tabelle
@@ -541,7 +540,7 @@ public class GuiFilme extends PanelVorlage {
                     //Filme neu laden
                     listeInModellLaden();
                     //Filter Sender
-                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<String>(sender));
+                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
                     jComboBoxFilterSender.setSelectedIndex(0);
                     if (!filterSender.equals("")) {
                         // ist wohl ein Bug beim Combo, klappt nur richtig wenn editable?!
@@ -608,7 +607,7 @@ public class GuiFilme extends PanelVorlage {
     private void filterLoeschen() {
         stopBeob = true;
         //ComboModels neu aufbauen
-        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
+        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
         jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
         jTextFieldFilterTitel.setText("");
         jTextFieldFilterThemaTitel.setText("");
@@ -704,10 +703,9 @@ public class GuiFilme extends PanelVorlage {
         if (abosEintragen) {
             // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
             // beim Ändern von Abos gemacht wird
-            MViewListeFilme.abosEintragen(Daten.listeFilme, Daten.listeAbo);
+            Daten.listeAbo.setAboFuerFilm(Daten.listeFilme);
         }
-        daten.listeBlacklist.filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
-        themenLaden();
+        Daten.listeBlacklist.filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
     }
 
     /**
