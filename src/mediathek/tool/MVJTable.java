@@ -47,7 +47,7 @@ import msearch.daten.DatenFilm;
  * @author emil
  */
 public final class MVJTable extends JTable {
-    
+
     public static final String TABELLEN = "Tabellen";
     public static final int TABELLE_STANDARD = -1;
     public static final int TABELLE_TAB_FILME = 0;
@@ -68,14 +68,14 @@ public final class MVJTable extends JTable {
     private boolean[] spaltenAnzeigen;
     private String indexWertSel = null;
     private boolean stopBeob = false;
-    private int anzModel = -1;
-    private int[] selModel = null;
+    private int modelRowCount = -1;
+    private int[] modelSelections = null;
     //
     int nrDatenSystem = 0;
     int tabelle;
     String[] spaltenTitel;
     int maxSpalten;
-    
+
     public MVJTable(int ttabelle) {
         tabelle = ttabelle;
         this.setAutoCreateRowSorter(true);
@@ -144,17 +144,17 @@ public final class MVJTable extends JTable {
 //        return c;
 //    }
     class TableRowTransferHandlerDownload extends TransferHandler {
-        
+
         private final DataFlavor localObjectFlavor;
         private String[] transferedRows = null;
         private MVJTable mVJTable = null;
-        
+
         public TableRowTransferHandlerDownload(MVJTable table) {
             this.mVJTable = table;
             localObjectFlavor = new ActivationDataFlavor(
                     String[].class, DataFlavor.javaJVMLocalObjectMimeType, "String Array");
         }
-        
+
         @Override
         protected Transferable createTransferable(JComponent c) {
             assert (c == mVJTable);
@@ -166,7 +166,7 @@ public final class MVJTable extends JTable {
             transferedRows = list.toArray(new String[]{});
             return new DataHandler(transferedRows, localObjectFlavor.getMimeType());
         }
-        
+
         @Override
         public boolean canImport(TransferHandler.TransferSupport info) {
             boolean b = info.getComponent() == mVJTable;
@@ -174,12 +174,12 @@ public final class MVJTable extends JTable {
             mVJTable.setCursor(b ? DragSource.DefaultMoveDrop : DragSource.DefaultMoveNoDrop);
             return b;
         }
-        
+
         @Override
         public int getSourceActions(JComponent c) {
             return TransferHandler.MOVE;
         }
-        
+
         @Override
         public boolean importData(TransferHandler.TransferSupport info) {
             JTable target = (JTable) info.getComponent();
@@ -200,7 +200,7 @@ public final class MVJTable extends JTable {
             }
             return false;
         }
-        
+
         @Override
         protected void exportDone(JComponent c, Transferable t, int act) {
             if (act == TransferHandler.MOVE) {
@@ -226,7 +226,7 @@ public final class MVJTable extends JTable {
         LinkedList<DatenDownload> l = new LinkedList<>();
         LinkedList<DatenDownload> l1 = new LinkedList<>();
         LinkedList<DatenDownload> l2 = new LinkedList<>();
-        
+
         for (int i = 0; i < toRow; ++i) {
             l1.add(Daten.listeDownloads.get(i));
         }
@@ -250,7 +250,7 @@ public final class MVJTable extends JTable {
         setSelected();
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, MVJTable.class.getSimpleName());
     }
-    
+
     public void initTabelle() {
         // Tabelle das erste Mal initialisieren,
         // mit den gespeicherten Daten oder
@@ -300,17 +300,17 @@ public final class MVJTable extends JTable {
             //vorsichtshalber
         }
     }
-    
+
     private boolean anzeigen(int i, boolean[] spaltenAnzeigen) {
         return spaltenAnzeigen[i];
     }
-    
+
     private void setSpaltenEinAus(int[] nr, boolean[] spaltenAnzeigen) {
         for (int i = 0; i < spaltenAnzeigen.length; ++i) {
             spaltenAnzeigen[i] = nr[i] > 0;
         }
     }
-    
+
     private boolean[] getSpaltenEinAus(boolean[] spaltenAnzeigen, int MAX_ELEM) {
 //        spaltenAnzeigen = new boolean[MAX_ELEM];
         for (int i = 0; i < MAX_ELEM; ++i) {
@@ -318,7 +318,7 @@ public final class MVJTable extends JTable {
         }
         return spaltenAnzeigen;
     }
-    
+
     public void fireTableDataChanged(boolean setSpalten) {
 //        this.selectionModel.setValueIsAdjusting(true);
         if (setSpalten) {
@@ -330,82 +330,50 @@ public final class MVJTable extends JTable {
         }
 //        this.selectionModel.setValueIsAdjusting(false);
     }
-    
+
+    public void clearSelected() {
+        clearSelection();
+        modelRowCount = -1;
+        modelSelections = null;
+    }
+
     public void getSelected() {
         // Einstellungen der Tabelle merken
-        sel = this.getSelectedRow();
-        selection = this.getSelectedRows();
-        if (sel >= 0) {
-            indexWertSel = this.getModel().getValueAt(this.convertRowIndexToModel(sel), indexSpalte).toString();
-            selModel = new int[selection.length];
+        if (this.getSelectedRow() >= 0) {
+            selection = this.getSelectedRows();
+            modelSelections = new int[selection.length];
             for (int i = 0; i < selection.length; ++i) {
-                selModel[i] = this.convertRowIndexToModel(selection[i]);
+                modelSelections[i] = this.convertRowIndexToModel(selection[i]);
             }
-            anzModel = this.getRowCount();
+            modelRowCount = this.getRowCount();
         } else {
-            indexWertSel = "";
-            selModel = null;
-            anzModel = -1;
-        }
-        if (selection != null) {
-            if (selection.length > 0) {
-                indexWertSelection = new String[selection.length];
-                for (int i = 0; i < selection.length; ++i) {
-                    indexWertSelection[i] = this.getModel().getValueAt(this.convertRowIndexToModel(selection[i]), indexSpalte).toString();
-                }
-            }
+            modelSelections = null;
+            modelRowCount = -1;
         }
     }
-    
+
     public void setSelected() {
         // gemerkte Einstellungen der Tabelle wieder setzten
         stopBeob = true;
         this.getSelectionModel().setValueIsAdjusting(true);
-        if (selModel != null && anzModel >= 0 && anzModel == this.getRowCount()) {
-            this.clearSelection();
+        if (modelSelections != null && modelRowCount >= 0 && modelRowCount == this.getRowCount()) {
             int b;
-            for (int i = 0; i < selModel.length; ++i) {
-                b = this.convertRowIndexToView(selModel[i]);
+            b = this.convertRowIndexToView(modelSelections[0]);
+            this.setRowSelectionInterval(b, b);
+            for (int i = 1; i < modelSelections.length; ++i) {
+                b = this.convertRowIndexToView(modelSelections[i]);
                 this.addRowSelectionInterval(b, b);
             }
         } else {
-            switch (tabelle) {
-                case TABELLE_TAB_FILME:
-                case TABELLE_TAB_DOWNLOADS:
-                case TABELLE_TAB_ABOS:
-                    if (indexWertSelection != null) {
-                        this.selectionModel.setValueIsAdjusting(true);
-                        for (String idx : indexWertSelection) {
-                            int r = ((TModel) this.getModel()).getIdxRow(indexSpalte, idx);
-                            if (r >= 0) {
-                                // ansonsten gibts die Zeile nicht mehr
-                                r = this.convertRowIndexToView(r);
-                                this.addRowSelectionInterval(r, r);
-                            }
-                        }
-                        this.selectionModel.setValueIsAdjusting(false);
-                    }
-                    indexWertSelection = null;
-                    break;
-                default:
-                    if (selection != null) {
-                        if (selection.length > 0) {
-                            this.selectionModel.setValueIsAdjusting(true);
-                            for (int i = 0; i < selection.length; ++i) {
-                                if (selection[i] < this.getRowCount()) {
-                                    this.addRowSelectionInterval(selection[i], selection[i]);
-                                }
-                            }
-                            this.selectionModel.setValueIsAdjusting(false);
-                        }
-                    }
-                    break;
+            this.clearSelection();
+            if (this.getRowCount() > 0) {
+                this.setRowSelectionInterval(0, 0);
             }
         }
         this.getSelectionModel().setValueIsAdjusting(false);
         stopBeob = false;
     }
-    
+
     public void spaltenEinAus() {
         for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
             if (!anzeigen(i, spaltenAnzeigen)) {
@@ -430,7 +398,7 @@ public final class MVJTable extends JTable {
         }
         this.validate();
     }
-    
+
     public void getSpalten() {
         // Einstellungen der Tabelle merken
         getSelected();
@@ -447,7 +415,7 @@ public final class MVJTable extends JTable {
             listeSortKeys = null;
         }
     }
-    
+
     public void setSpalten() {
         // gemerkte Einstellungen der Tabelle wieder setzten
         stopBeob = true;
@@ -489,7 +457,7 @@ public final class MVJTable extends JTable {
         }
         stopBeob = false;
     }
-    
+
     public void resetTabelle() {
         // Standardwerte wetzen
         for (int i = 0; i < maxSpalten; ++i) {
@@ -563,7 +531,7 @@ public final class MVJTable extends JTable {
         setSpaltenEinAus(breite, spaltenAnzeigen);
         setSpalten();
     }
-    
+
     private void spaltenAusschalten() {
         for (int i = 0; i < maxSpalten; ++i) {
             switch (tabelle) {
@@ -604,7 +572,7 @@ public final class MVJTable extends JTable {
             }
         }
     }
-    
+
     public void tabelleNachDatenSchreiben() {
         if (tabelle == TABELLE_STANDARD) {
             // wird nur für eingerichtet Tabellen gemacht
@@ -637,7 +605,7 @@ public final class MVJTable extends JTable {
         }
         Daten.system[nrDatenSystem] = b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown;
     }
-    
+
     private int[] getArray(int anzahl) {
         int[] arr = new int[anzahl];
         for (int i = 0; i < arr.length; ++i) {
@@ -645,7 +613,7 @@ public final class MVJTable extends JTable {
         }
         return arr;
     }
-    
+
     private boolean arrLesen(String s, int[] arr) {
         String sub;
         if (maxSpalten != countString(s)) {
@@ -671,7 +639,7 @@ public final class MVJTable extends JTable {
         }
         return true;
     }
-    
+
     private SortKey sortKeyLesen(String s, String upDown) {
         SortKey sk;
         int sp;
@@ -687,7 +655,7 @@ public final class MVJTable extends JTable {
         }
         return sk;
     }
-    
+
     private int countString(String s) {
         int ret = 0;
         for (int i = 0; i < s.length(); ++i) {
