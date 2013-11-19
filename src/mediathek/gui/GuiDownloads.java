@@ -479,7 +479,8 @@ public class GuiDownloads extends PanelVorlage {
             //oder stoppen
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getName());
         }
-        tabelleLaden();
+        tabelle.fireTableDataChanged(true);
+        //tabelleLaden();
     }
 
     private void wartendeDownloadsStoppen() {

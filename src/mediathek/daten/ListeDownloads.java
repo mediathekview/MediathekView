@@ -239,7 +239,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         if (gefunden) {
             listeNummerieren();
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            if (nurStart) {
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
+            } else {
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            }
         }
     }
 
