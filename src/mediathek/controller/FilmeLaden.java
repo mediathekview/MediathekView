@@ -136,6 +136,7 @@ public class FilmeLaden {
             istAmLaufen = true;
             MSearchConfig.senderAllesLaden = senderAllesLaden;
             MSearchConfig.updateFilmliste = filmlisteUpdate;
+            MSearchConfig.debug = Daten.debug;
             mSearchFilmeSuchen.filmeBeimSenderLaden(Daten.listeFilme);
         }
     }
@@ -146,6 +147,7 @@ public class FilmeLaden {
             // nicht doppelt starten
             istAmLaufen = true;
             MSearchConfig.senderAllesLaden = senderAllesLaden;
+            MSearchConfig.debug = Daten.debug;
             mSearchFilmeSuchen.updateSender(sender, Daten.listeFilme);
         }
     }
