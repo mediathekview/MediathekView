@@ -475,12 +475,12 @@ public class GuiDownloads extends PanelVorlage {
         if (starten) {
             //alle Downloads starten/wiederstarten
             DatenDownload.startenDownloads(daten, downloadsStarten);
+            //tabelle.fireTableDataChanged(true);
+            tabelleLaden();
         } else {
             //oder stoppen
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getName());
         }
-        tabelle.fireTableDataChanged(true);
-        //tabelleLaden();
     }
 
     private void wartendeDownloadsStoppen() {

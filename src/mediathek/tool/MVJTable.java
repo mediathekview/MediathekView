@@ -211,7 +211,9 @@ public final class MVJTable extends JTable {
 
     // erster Versuch
     private void reorder(int toRow, String[] zeilen) {
-        getSelected();
+        clearSelection();
+//        getSelected();
+//        selection = this.getSelectedRows();
         TModel tModel = (TModel) this.getModel();
         // listeDownloads neu nach der Reihenfolge in der Tabelle erstellen
         for (int i = 0; i < this.getRowCount(); ++i) {
@@ -247,7 +249,10 @@ public final class MVJTable extends JTable {
         this.getRowSorter().setSortKeys(null);
         this.setRowSorter(null);
         this.setAutoCreateRowSorter(true);
-        setSelected();
+//        setSelected();
+//        for (int i = 1; i < selection.length; ++i) {
+//            this.addRowSelectionInterval(selection[i], selection[i]);
+//        }
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, MVJTable.class.getSimpleName());
     }
 
