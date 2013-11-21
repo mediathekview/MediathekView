@@ -153,6 +153,7 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads());
         tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads());
         tabelle.setDefaultRenderer(MVFilmSize.class, new CellRendererDownloads());
+        tabelle.setDefaultRenderer(Integer.class, new CellRendererDownloads());
         tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES));
         tabelle.addMouseListener(new BeobMausTabelle());
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
@@ -402,7 +403,7 @@ public class GuiDownloads extends PanelVorlage {
                 Daten.listeDownloads.remove(datenDownload);
                 Daten.listeDownloads.add(datenDownload);
             }
-            Daten.listeDownloads.listeNummerieren();
+//            Daten.listeDownloads.listeNummerieren();
         }
         // ==========================
         // erst mal die URLs sammeln

@@ -21,7 +21,6 @@ package mediathek.tool;
 
 import msearch.daten.DatenFilm;
 
-
 public class TModelFilm extends TModel {
 
     Class[] types;
@@ -30,7 +29,9 @@ public class TModelFilm extends TModel {
         super(data, columnNames);
         types = new Class[DatenFilm.MAX_ELEM];
         for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
-            if (i == DatenFilm.FILM_DATUM_NR) {
+            if (i == DatenFilm.FILM_NR_NR) {
+                types[i] = Integer.class;
+            } else if (i == DatenFilm.FILM_DATUM_NR) {
                 types[i] = Datum.class;
             } else if (i == DatenFilm.FILM_GROESSE_NR) {
                 types[i] = MVFilmSize.class;

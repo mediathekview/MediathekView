@@ -127,7 +127,8 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                         setForeground(GuiKonstanten.ANSEHEN);
                     }
                 }
-            } else if (c == DatenDownload.DOWNLOAD_DATUM_NR || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR
+            } else if (c == DatenDownload.DOWNLOAD_NR_NR || c == DatenDownload.DOWNLOAD_DATUM_NR
+                    || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR
                     || c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (datenDownload.start != null) {

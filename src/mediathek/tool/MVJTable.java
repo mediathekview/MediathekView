@@ -62,9 +62,10 @@ public final class MVJTable extends JTable {
     int[] breite;
     int[] reihe;
     private int indexSpalte = 0;
-    private int sel = -1;
-    private int[] selection;
+    private int selRow = -1;
+    private int[] selRows;
     private String[] indexWertSelection = null;
+    private int[] selIndexes = null;
     private boolean[] spaltenAnzeigen;
     private String indexWertSel = null;
     private boolean stopBeob = false;
@@ -94,8 +95,8 @@ public final class MVJTable extends JTable {
                 spaltenTitel = DatenDownload.COLUMN_NAMES;
                 maxSpalten = DatenDownload.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
-                //indexSpalte = DatenDownload.DOWNLOAD_FILM_NR_NR;
-                indexSpalte = DatenDownload.DOWNLOAD_URL_NR;
+                indexSpalte = DatenDownload.DOWNLOAD_NR_NR;
+                //indexSpalte = DatenDownload.DOWNLOAD_URL_NR;
                 nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR;
                 this.setDragEnabled(true);
                 this.setDropMode(DropMode.INSERT_ROWS);
@@ -211,10 +212,8 @@ public final class MVJTable extends JTable {
 
     // erster Versuch
     private void reorder(int toRow, String[] zeilen) {
-        clearSelection();
-//        getSelected();
-//        selection = this.getSelectedRows();
-        TModel tModel = (TModel) this.getModel();
+        getSelected();
+        TModel tModel = (TModelDownload) this.getModel();
         // listeDownloads neu nach der Reihenfolge in der Tabelle erstellen
         for (int i = 0; i < this.getRowCount(); ++i) {
             String idx = tModel.getValueAt(this.convertRowIndexToModel(i), indexSpalte).toString();
@@ -245,14 +244,11 @@ public final class MVJTable extends JTable {
         Daten.listeDownloads.addDatenDownloads(l1);
         Daten.listeDownloads.addDatenDownloads(l);
         Daten.listeDownloads.addDatenDownloads(l2);
-        Daten.listeDownloads.listeNummerieren();
+//        Daten.listeDownloads.listeNummerieren();
         this.getRowSorter().setSortKeys(null);
         this.setRowSorter(null);
         this.setAutoCreateRowSorter(true);
-//        setSelected();
-//        for (int i = 1; i < selection.length; ++i) {
-//            this.addRowSelectionInterval(selection[i], selection[i]);
-//        }
+        setSelected();
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, MVJTable.class.getSimpleName());
     }
 
@@ -336,46 +332,132 @@ public final class MVJTable extends JTable {
 //        this.selectionModel.setValueIsAdjusting(false);
     }
 
-    public void clearSelected() {
-        clearSelection();
-        modelRowCount = -1;
-        modelSelections = null;
-    }
-
+//    public void clearSelected() {
+//        clearSelection();
+//        modelRowCount = -1;
+//        modelSelections = null;
+//    }
+//    public void getSelected() {
+//        // Einstellungen der Tabelle merken
+//        if (this.getSelectedRow() >= 0) {
+//            selection = this.getSelectedRows();
+//            modelSelections = new int[selection.length];
+//            for (int i = 0; i < selection.length; ++i) {
+//                modelSelections[i] = this.convertRowIndexToModel(selection[i]);
+//            }
+//            modelRowCount = this.getRowCount();
+//        } else {
+//            modelSelections = null;
+//            modelRowCount = -1;
+//        }
+//    }
+//    public void setSelected() {
+//        // gemerkte Einstellungen der Tabelle wieder setzten
+//        stopBeob = true;
+//        this.getSelectionModel().setValueIsAdjusting(true);
+//        if (modelSelections != null && modelRowCount >= 0 && modelRowCount == this.getRowCount()) {
+//            int b;
+//            b = this.convertRowIndexToView(modelSelections[0]);
+//            this.setRowSelectionInterval(b, b);
+//            for (int i = 1; i < modelSelections.length; ++i) {
+//                b = this.convertRowIndexToView(modelSelections[i]);
+//                this.addRowSelectionInterval(b, b);
+//            }
+//        } else {
+//            this.clearSelection();
+//            if (this.getRowCount() > 0) {
+//                this.setRowSelectionInterval(0, 0);
+//            }
+//        }
+//        this.getSelectionModel().setValueIsAdjusting(false);
+//        stopBeob = false;
+//    }
     public void getSelected() {
         // Einstellungen der Tabelle merken
-        if (this.getSelectedRow() >= 0) {
-            selection = this.getSelectedRows();
-            modelSelections = new int[selection.length];
-            for (int i = 0; i < selection.length; ++i) {
-                modelSelections[i] = this.convertRowIndexToModel(selection[i]);
-            }
-            modelRowCount = this.getRowCount();
-        } else {
-            modelSelections = null;
-            modelRowCount = -1;
+        selRow = this.getSelectedRow();
+        selRows = this.getSelectedRows();
+        switch (tabelle) {
+            case TABELLE_TAB_DOWNLOADS:
+            case TABELLE_TAB_FILME:
+                if (selRow >= 0) {
+                    selIndexes = new int[selRows.length];
+                    int k = 0;
+                    for (int i : selRows) {
+                        selIndexes[k++] = (Integer) this.getModel().getValueAt(this.convertRowIndexToModel(i), indexSpalte);
+                    }
+                } else {
+                    selIndexes = null;
+                }
+                break;
+            default:
+                if (selRow >= 0) {
+                    indexWertSel = this.getModel().getValueAt(this.convertRowIndexToModel(selRow), indexSpalte).toString();
+                } else {
+                    indexWertSel = "";
+                }
+                if (selRows != null) {
+                    if (selRows.length > 0) {
+                        indexWertSelection = new String[selRows.length];
+                        for (int i = 0; i < selRows.length; ++i) {
+                            indexWertSelection[i] = this.getModel().getValueAt(this.convertRowIndexToModel(selRows[i]), indexSpalte).toString();
+                        }
+                    }
+                }
+                break;
         }
     }
 
     public void setSelected() {
         // gemerkte Einstellungen der Tabelle wieder setzten
         stopBeob = true;
-        this.getSelectionModel().setValueIsAdjusting(true);
-        if (modelSelections != null && modelRowCount >= 0 && modelRowCount == this.getRowCount()) {
-            int b;
-            b = this.convertRowIndexToView(modelSelections[0]);
-            this.setRowSelectionInterval(b, b);
-            for (int i = 1; i < modelSelections.length; ++i) {
-                b = this.convertRowIndexToView(modelSelections[i]);
-                this.addRowSelectionInterval(b, b);
-            }
-        } else {
-            this.clearSelection();
-            if (this.getRowCount() > 0) {
-                this.setRowSelectionInterval(0, 0);
-            }
+        switch (tabelle) {
+            case TABELLE_TAB_DOWNLOADS:
+            case TABELLE_TAB_FILME:
+                if (selIndexes != null) {
+                    this.selectionModel.setValueIsAdjusting(true);
+                    for (int i : selIndexes) {
+                        int r = ((TModel) this.getModel()).getIdxRow(indexSpalte, i);
+                        if (r >= 0) {
+                            // ansonsten gibts die Zeile nicht mehr
+                            r = this.convertRowIndexToView(r);
+                            this.addRowSelectionInterval(r, r);
+                        }
+                    }
+                    this.selectionModel.setValueIsAdjusting(false);
+                }
+                indexWertSelection = null;
+
+                break;
+//            case TABELLE_TAB_FILME:
+            case TABELLE_TAB_ABOS:
+                if (indexWertSelection != null) {
+                    this.selectionModel.setValueIsAdjusting(true);
+                    for (String idx : indexWertSelection) {
+                        int r = ((TModel) this.getModel()).getIdxRow(indexSpalte, idx);
+                        if (r >= 0) {
+                            // ansonsten gibts die Zeile nicht mehr
+                            r = this.convertRowIndexToView(r);
+                            this.addRowSelectionInterval(r, r);
+                        }
+                    }
+                    this.selectionModel.setValueIsAdjusting(false);
+                }
+                indexWertSelection = null;
+                break;
+            default:
+                if (selRows != null) {
+                    if (selRows.length > 0) {
+                        this.selectionModel.setValueIsAdjusting(true);
+                        for (int i = 0; i < selRows.length; ++i) {
+                            if (selRows[i] < this.getRowCount()) {
+                                this.addRowSelectionInterval(selRows[i], selRows[i]);
+                            }
+                        }
+                        this.selectionModel.setValueIsAdjusting(false);
+                    }
+                }
+                break;
         }
-        this.getSelectionModel().setValueIsAdjusting(false);
         stopBeob = false;
     }
 

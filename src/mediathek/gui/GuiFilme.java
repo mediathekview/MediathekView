@@ -76,8 +76,8 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 import mediathek.tool.MVJTable;
+import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
-import mediathek.tool.MViewListeFilme;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelFilm;
 import msearch.daten.DatenFilm;
@@ -215,6 +215,7 @@ public class GuiFilme extends PanelVorlage {
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         tabelle.setDefaultRenderer(Object.class, new CellRendererFilme(daten));
         tabelle.setDefaultRenderer(Datum.class, new CellRendererFilme(daten));
+        tabelle.setDefaultRenderer(Integer.class, new CellRendererFilme(daten));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
                 new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR/*, DatenFilm.FILM_KEYWORDS_NR*/}) {
             @Override
@@ -589,13 +590,13 @@ public class GuiFilme extends PanelVorlage {
     private synchronized void listeInModellLaden() {
         if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
             // normal mit den Filtern aus dem Filterpanel suchen
-            MViewListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle, jComboBoxFilterSender.getSelectedItem().toString(),
+            MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle, jComboBoxFilterSender.getSelectedItem().toString(),
                     jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(),
                     jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue(),
                     jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
-            MViewListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle, "",
+            MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle, "",
                     "", "", daten.mediathekGui.getFilterTextFromSearchField(), "", 0,
                     false, false, false, false);
         }

@@ -123,6 +123,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public DatenFilm film = null;
     public MVFilmSize mVFilmSize = new MVFilmSize();
     public Start start = null;
+    public int nr = 0;
 
     public DatenDownload() {
         makeArr();
