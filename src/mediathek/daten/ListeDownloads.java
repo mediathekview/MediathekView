@@ -157,7 +157,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
             }
         }
-        listeNummerieren();
+        //listeNummerieren();
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
     }
 
@@ -204,7 +204,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 } else {
                     it.remove();
                 }
-                listeNummerieren();
+                //listeNummerieren();
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
                 break;
             }
@@ -238,7 +238,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            listeNummerieren();
+            //listeNummerieren();
             if (nurStart) {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
             } else {
@@ -313,7 +313,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (abos && istAbo || downloads && !istAbo) {
                 object = new Object[DatenDownload.MAX_ELEM];
                 for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
-                    if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+                    if (i == DatenDownload.DOWNLOAD_NR_NR) {
+                        object[i] = download.nr;
+                    } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                         object[i] = "";
                     } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                         object[i] = download.datumFilm;
@@ -421,7 +423,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public synchronized void abosLoschenWennNochNichtGestartet() {
         // es werden alle Abos (DIE NOCH NICHT GESTARTET SIND) aus der Liste gelöscht
-        boolean gefunden = false;
+//        boolean gefunden = false;
         Iterator<DatenDownload> it = this.iterator();
         while (it.hasNext()) {
             DatenDownload d = it.next();
@@ -429,27 +431,34 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 if (d.start == null) {
                     // ansonsten läuft er schon
                     it.remove();
-                    gefunden = true;
+//                    gefunden = true;
                 }
             }
         }
-        if (gefunden) {
-            listeNummerieren();
-        }
+//        if (gefunden) {
+//            listeNummerieren();
+//        }
     }
 
     public synchronized void listeNummerieren() {
-        int i = 0;
+        int i = 1;
         ListIterator<DatenDownload> it = listIterator();
         while (it.hasNext()) {
-            String str = String.valueOf(i++);
-            while (str.length() < 3) {
-                str = "0" + str;
-            }
-            it.next().arr[DatenDownload.DOWNLOAD_NR_NR] = str;
+            it.next().nr = i++;
         }
     }
 
+//    public synchronized void listeNummerieren() {
+//        int i = 0;
+//        ListIterator<DatenDownload> it = listIterator();
+//        while (it.hasNext()) {
+//            String str = String.valueOf(i++);
+//            while (str.length() < 3) {
+//                str = "0" + str;
+//            }
+//            it.next().arr[DatenDownload.DOWNLOAD_NR_NR] = str;
+//        }
+//    }
     public String getInfo(boolean mitAbo) {
         String textLinks;
         // Text links: Zeilen Tabelle

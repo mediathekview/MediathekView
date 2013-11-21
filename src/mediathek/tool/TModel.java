@@ -29,24 +29,24 @@ import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 
 public class TModel extends DefaultTableModel {
-    
+
     TableModelListener[] tmls = null;
     public Object[][] object;
     Object[] columns;
-    
+
     public TModel() {
     }
-    
+
     public TModel(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
         object = data;
         columns = columnNames;
     }
-    
+
     public void reorder(int fromIndex, int toIndex) {
         this.moveRow(fromIndex, fromIndex, toIndex);
     }
-    
+
     @Override
     public boolean isCellEditable(int i, int j) {
         return false;
@@ -65,7 +65,20 @@ public class TModel extends DefaultTableModel {
         }
         return -1;
     }
-    
+
+    public int getIdxRow(int idxSpalte, int idxWert) {
+        //liefert die Zeile in der die erste Spalte idx enthält
+        int ret = 0;
+        ListIterator<List> it = this.getDataVector().listIterator();
+        while (it.hasNext()) {
+            if (((Integer) it.next().get(idxSpalte)).intValue() == idxWert) {
+                return ret;
+            }
+            ++ret;
+        }
+        return -1;
+    }
+
     public void filterModel(String str, int feld, boolean exact) {
         if (str != null) {
             if (!str.equals("")) {
@@ -85,7 +98,7 @@ public class TModel extends DefaultTableModel {
             }
         }
     }
-    
+
     public void filter(Daten daten, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
         List zeile;
         ListIterator<List> it = this.getDataVector().listIterator();
@@ -115,11 +128,11 @@ public class TModel extends DefaultTableModel {
                     }
                 }
             }
-            
-            
+
+
         }
     }
-    
+
     public String[] getModelOfField(Daten daten, int feld, boolean leer) {
         /* erstellt ein StringArray mit den Daten des Feldes
          * leer: immer ein leeres Feld am Anfang */
@@ -148,7 +161,7 @@ public class TModel extends DefaultTableModel {
         }
         return ret;
     }
-    
+
     public boolean delRow(int spalte, String wert) {
         /* löscht die Zeile(n) in der die "Spalte" den "Wert" hat */
         boolean gefunden = false;

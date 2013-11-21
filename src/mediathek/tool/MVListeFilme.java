@@ -23,11 +23,10 @@ import mediathek.daten.Daten;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 
-public class MViewListeFilme {
+public class MVListeFilme {
 
 //    public static HashSet<String> hashSet = new HashSet<>();
 //    public static TreeSet<String> treeSet = new TreeSet<>(msearch.tool.GermanStringSorter.getInstance());
-
     public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVJTable table,
             String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
             int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
@@ -247,7 +246,6 @@ public class MViewListeFilme {
 //        treeSet.clear();
 //        return a;
 //    }
-
 //    /** Erstellt ein StringArray mit den Sendernamen.
 //     *
 //     * @param listeFilme
@@ -265,7 +263,6 @@ public class MViewListeFilme {
 //        }
 //        return al.toArray(new String[]{});
 //    }
-
 //    public static synchronized String[] getModelOfFieldSender(ListeFilme listeFilme) {
 //        treeSet.add("");
 //        // Sendernamen gibts nur in einer Schreibweise
@@ -297,7 +294,9 @@ public class MViewListeFilme {
     private static void addObjectDataTabFilme(TModel tModel, DatenFilm film) {
         Object[] object = new Object[DatenFilm.MAX_ELEM];
         for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
-            if (m == DatenFilm.FILM_DATUM_NR) {
+            if (m == DatenFilm.FILM_NR_NR) {
+                object[m] = film.nr;
+            } else if (m == DatenFilm.FILM_DATUM_NR) {
                 object[m] = film.datumFilm;
             } else if (m == DatenFilm.FILM_GROESSE_NR) {
                 object[m] = film.dateigroesseL;
