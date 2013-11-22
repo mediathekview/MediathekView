@@ -194,12 +194,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> ad) {
         // Start erstellen und zur Liste hinzufügen
-        ArrayList<Start> al = new ArrayList<>();
         for (DatenDownload d : ad) {
             Start s = new Start();
             d.start = s;
         }
-        ddaten.history.add(al.toArray(new String[]{}));
+        ddaten.history.add(ad.toArray(new String[]{}));
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, DatenDownload.class.getSimpleName());
     }
 

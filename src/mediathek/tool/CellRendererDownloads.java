@@ -37,7 +37,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 
 public class CellRendererDownloads extends DefaultTableCellRenderer {
-
+    
     private static ImageIcon ja_16 = null;
     private static ImageIcon nein_12 = null;
     private static ImageIcon film_play_tab = null;
@@ -50,7 +50,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     private static ImageIcon download_clear_sw_tab = null;
     private static ImageIcon download_del_tab = null;
     private static ImageIcon download_del_sw_tab = null;
-
+    
     public CellRendererDownloads() {
         ja_16 = GetIcon.getIcon("ja_16.png");
         nein_12 = GetIcon.getIcon("nein_12.png");
@@ -65,7 +65,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         download_del_tab = GetIcon.getIcon("download_del_tab.png");
         download_del_sw_tab = GetIcon.getIcon("download_del_sw_tab.png");
     }
-
+    
     @Override
     public Component getTableCellRendererComponent(
             JTable table,
@@ -101,7 +101,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                             protected Color getSelectionBackground() {
                                 return UIManager.getDefaults().getColor("Table.foreground");
                             }
-
+                            
                             @Override
                             protected Color getSelectionForeground() {
                                 return Color.white;
@@ -126,6 +126,14 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     if (datenDownload.start.beginnAnschauen) {
                         setForeground(GuiKonstanten.ANSEHEN);
                     }
+                }
+            } else if (c == DatenDownload.DOWNLOAD_FILM_NR_NR) {
+                if ((Integer) table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_FILM_NR_NR) == 0) {
+                    this.setText("");
+                }
+                setHorizontalAlignment(SwingConstants.CENTER);
+                if (datenDownload.start != null) {
+                    setColor(this, datenDownload.start, isSelected);
                 }
             } else if (c == DatenDownload.DOWNLOAD_NR_NR || c == DatenDownload.DOWNLOAD_DATUM_NR
                     || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR
@@ -222,7 +230,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         }
         return this;
     }
-
+    
     private void setColor(Component c, Start s, boolean isSelected) {
         switch (s.status) {
             case Start.STATUS_INIT:

@@ -29,16 +29,24 @@ public class TModelDownload extends TModel {
         super(data, columnNames);
         types = new Class<?>[DatenDownload.MAX_ELEM];
         for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
-            if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
-                types[i] = Datum.class;
-            } else if (i == DatenDownload.DOWNLOAD_NR_NR) {
-                types[i] = Integer.class;
-            } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
-                types[i] = MVFilmSize.class;
-            } else if (i == DatenDownload.DOWNLOAD_REF_NR) {
-                types[i] = DatenDownload.class;
-            } else {
-                types[i] = String.class;
+            switch (i) {
+                case DatenDownload.DOWNLOAD_NR_NR:
+                    types[i] = Integer.class;
+                    break;
+                case DatenDownload.DOWNLOAD_FILM_NR_NR:
+                    types[i] = Integer.class;
+                    break;
+                case DatenDownload.DOWNLOAD_DATUM_NR:
+                    types[i] = Datum.class;
+                    break;
+                case DatenDownload.DOWNLOAD_GROESSE_NR:
+                    types[i] = MVFilmSize.class;
+                    break;
+                case DatenDownload.DOWNLOAD_REF_NR:
+                    types[i] = DatenDownload.class;
+                    break;
+                default:
+                    types[i] = String.class;
             }
         }
     }

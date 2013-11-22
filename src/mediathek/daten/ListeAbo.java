@@ -70,12 +70,12 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // die Änderung an der Liste wird nicht gemeldet!!
         // für das Lesen der Konfig-Datei beim Programmstart
         ++nr;
-        datenAbo.aboNr = nr;
-        String str = String.valueOf(nr);
-        while (str.length() < 3) {
-            str = "0" + str;
-        }
-        datenAbo.arr[DatenAbo.ABO_NR_NR] = str;
+        datenAbo.nr = nr;
+//        String str = String.valueOf(nr);
+//        while (str.length() < 3) {
+//            str = "0" + str;
+//        }
+//        datenAbo.arr[DatenAbo.ABO_NR_NR] = str;
         datenAbo.setMindestDauerMinuten();
         super.add(datenAbo);
         sort();
@@ -112,7 +112,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             datenAbo = iterator.next();
             //object[i] = datenAbo.arr;
             for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
-                if (m == DatenAbo.ABO_DOWN_DATUM_NR) {
+                if (m == DatenAbo.ABO_NR_NR) {
+                    object[m] = datenAbo.nr;
+                } else if (m == DatenAbo.ABO_DOWN_DATUM_NR) {
                     object[m] = DatumZeit.getDatumForObject(datenAbo.arr[DatenAbo.ABO_DOWN_DATUM_NR]);
                 } else if (m == DatenAbo.ABO_EINGESCHALTET_NR) {
                     object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());

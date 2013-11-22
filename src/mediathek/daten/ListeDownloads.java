@@ -315,6 +315,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
                     if (i == DatenDownload.DOWNLOAD_NR_NR) {
                         object[i] = download.nr;
+                    } else if (i == DatenDownload.DOWNLOAD_FILM_NR_NR) {
+                        if (download.film != null) {
+                            object[i] = download.film.nr;
+                        } else {
+                            object[i] = 0;
+                        }
                     } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                         object[i] = "";
                     } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
