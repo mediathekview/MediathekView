@@ -27,9 +27,12 @@ public class TModelAbo extends TModel {
 
     public TModelAbo(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
-        types = new Class[DatenAbo.MAX_ELEM];
+        types = new Class<?>[DatenAbo.MAX_ELEM];
         for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
             switch (i) {
+                case DatenAbo.ABO_NR_NR:
+                    types[i] = Integer.class;
+                    break;
                 case DatenAbo.ABO_DOWN_DATUM_NR:
                     types[i] = Datum.class;
                     break;
@@ -40,19 +43,7 @@ public class TModelAbo extends TModel {
     }
 
     @Override
-    public Class getColumnClass(int columnIndex) {
+    public Class<?> getColumnClass(int columnIndex) {
         return types[columnIndex];
     }
-//    @Override
-//    public Class<?> getColumnClass(int columnIndex) {
-//        switch (columnIndex) {
-//            case DatenAbo.ABO_EINGESCHALTET_NR:
-//            case DatenAbo.ABO_THEMA_EXAKT_NR:
-//                return Boolean.class;
-//            case DatenAbo.ABO_DOWN_DATUM_NR:
-//                return Datum.class;
-//            default:
-//                return String.class;
-//        }
-//    }
 }

@@ -56,9 +56,9 @@ public class DatenAbo implements Comparable<DatenAbo> {
         ABO_IRGENDWO, ABO_MINDESTDAUER, ABO_ZIELPFAD, ABO_DOWN_DATUM, ABO_PSET};
     public static final String[] COLUMN_NAMES_ = COLUMN_NAMES;
     public int mindestdauerMinuten = 0;
-    public int aboNr = -1;
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
+    public int nr = 0;
 
     public DatenAbo() {
         makeArr();

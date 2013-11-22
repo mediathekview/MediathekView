@@ -379,6 +379,7 @@ public final class MVJTable extends JTable {
         switch (tabelle) {
             case TABELLE_TAB_DOWNLOADS:
             case TABELLE_TAB_FILME:
+            case TABELLE_TAB_ABOS:
                 if (selRow >= 0) {
                     selIndexes = new int[selRows.length];
                     int k = 0;
@@ -413,27 +414,11 @@ public final class MVJTable extends JTable {
         switch (tabelle) {
             case TABELLE_TAB_DOWNLOADS:
             case TABELLE_TAB_FILME:
+            case TABELLE_TAB_ABOS:
                 if (selIndexes != null) {
                     this.selectionModel.setValueIsAdjusting(true);
                     for (int i : selIndexes) {
                         int r = ((TModel) this.getModel()).getIdxRow(indexSpalte, i);
-                        if (r >= 0) {
-                            // ansonsten gibts die Zeile nicht mehr
-                            r = this.convertRowIndexToView(r);
-                            this.addRowSelectionInterval(r, r);
-                        }
-                    }
-                    this.selectionModel.setValueIsAdjusting(false);
-                }
-                indexWertSelection = null;
-
-                break;
-//            case TABELLE_TAB_FILME:
-            case TABELLE_TAB_ABOS:
-                if (indexWertSelection != null) {
-                    this.selectionModel.setValueIsAdjusting(true);
-                    for (String idx : indexWertSelection) {
-                        int r = ((TModel) this.getModel()).getIdxRow(indexSpalte, idx);
                         if (r >= 0) {
                             // ansonsten gibts die Zeile nicht mehr
                             r = this.convertRowIndexToView(r);

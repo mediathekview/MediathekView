@@ -50,6 +50,9 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
             int c = table.convertColumnIndexToModel(column);
             DatenAbo abo = Daten.listeAbo.getAboNr(r);
             boolean eingeschaltet = abo.aboIstEingeschaltet();
+            if (c == DatenAbo.ABO_NR_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+            }
             if (!eingeschaltet) {
                 setFont(new java.awt.Font("Dialog", Font.ITALIC, 12));
                 if (isSelected) {
@@ -67,7 +70,7 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(630365892,Log.FEHLER_ART_PROG,this.getClass().getName(), ex);
+            Log.fehlerMeldung(630365892, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
         }
         return this;
     }

@@ -27,22 +27,26 @@ public class TModelFilm extends TModel {
 
     public TModelFilm(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
-        types = new Class[DatenFilm.MAX_ELEM];
+        types = new Class<?>[DatenFilm.MAX_ELEM];
         for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
-            if (i == DatenFilm.FILM_NR_NR) {
-                types[i] = Integer.class;
-            } else if (i == DatenFilm.FILM_DATUM_NR) {
-                types[i] = Datum.class;
-            } else if (i == DatenFilm.FILM_GROESSE_NR) {
-                types[i] = MVFilmSize.class;
-            } else {
-                types[i] = String.class;
+            switch (i) {
+                case DatenFilm.FILM_NR_NR:
+                    types[i] = Integer.class;
+                    break;
+                case DatenFilm.FILM_DATUM_NR:
+                    types[i] = Datum.class;
+                    break;
+                case DatenFilm.FILM_GROESSE_NR:
+                    types[i] = MVFilmSize.class;
+                    break;
+                default:
+                    types[i] = String.class;
             }
         }
     }
 
     @Override
-    public Class getColumnClass(int columnIndex) {
+    public Class<?> getColumnClass(int columnIndex) {
         return types[columnIndex];
     }
 }
