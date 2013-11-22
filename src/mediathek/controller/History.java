@@ -27,9 +27,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import mediathek.daten.Daten;
+import mediathek.daten.DatenDownload;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
 
@@ -51,9 +53,9 @@ public class History extends HashSet<String> {
         return ret;
     }
 
-    public void add(String[] url) {
-        for (String s : url) {
-            super.add(s);
+    public void add(ArrayList<DatenDownload> ad) {
+        for (DatenDownload d : ad) {
+            super.add(d.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
         }
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
     }
