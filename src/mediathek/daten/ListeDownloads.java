@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import mediathek.controller.starter.Start;
@@ -348,29 +349,53 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void setModelProgress(TModelDownload tModel) {
-        for (int row = 0; row < tModel.getRowCount(); ++row) {
-            DatenDownload datenDownload = (DatenDownload) tModel.getValueAt(row, DatenDownload.DOWNLOAD_REF_NR);
+        ListIterator<List> it = tModel.getDataVector().listIterator();
+        while (it.hasNext()) {
+            List l = it.next();
+            DatenDownload datenDownload = (DatenDownload) l.get(DatenDownload.DOWNLOAD_REF_NR);
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_RUN) {
-                    tModel.setValueAt(datenDownload.getTextRestzeit(), row, DatenDownload.DOWNLOAD_RESTZEIT_NR);
-                    tModel.setValueAt(datenDownload.getTextBandbreite(), row, DatenDownload.DOWNLOAD_BANDBREITE_NR);
-                    tModel.setValueAt(null, row, DatenDownload.DOWNLOAD_PROGRESS_NR);
-                    tModel.setValueAt(datenDownload.mVFilmSize, row, DatenDownload.DOWNLOAD_GROESSE_NR);
+                    l.set(DatenDownload.DOWNLOAD_RESTZEIT_NR, datenDownload.getTextRestzeit());
+                    l.set(DatenDownload.DOWNLOAD_BANDBREITE_NR, datenDownload.getTextBandbreite());
+                    l.set(DatenDownload.DOWNLOAD_PROGRESS_NR, null);
+                    l.set(DatenDownload.DOWNLOAD_GROESSE_NR, datenDownload.mVFilmSize);
                 }
             }
         }
+//        for (int row = 0; row < tModel.getRowCount(); ++row) {
+//            DatenDownload datenDownload = (DatenDownload) tModel.getValueAt(row, DatenDownload.DOWNLOAD_REF_NR);
+//            if (datenDownload.start != null) {
+//                if (datenDownload.start.status == Start.STATUS_RUN) {
+//                    tModel.setValueAt(datenDownload.getTextRestzeit(), row, DatenDownload.DOWNLOAD_RESTZEIT_NR);
+//                    tModel.setValueAt(datenDownload.getTextBandbreite(), row, DatenDownload.DOWNLOAD_BANDBREITE_NR);
+//                    tModel.setValueAt(null, row, DatenDownload.DOWNLOAD_PROGRESS_NR);
+//                    tModel.setValueAt(datenDownload.mVFilmSize, row, DatenDownload.DOWNLOAD_GROESSE_NR);
+//                }
+//            }
+//        }
     }
 
     public synchronized void setModelProgressAlleStart(TModelDownload tModel) {
-        for (int row = 0; row < tModel.getRowCount(); ++row) {
-            DatenDownload datenDownload = (DatenDownload) tModel.getValueAt(row, DatenDownload.DOWNLOAD_REF_NR);
+        ListIterator<List> it = tModel.getDataVector().listIterator();
+        while (it.hasNext()) {
+            List l = it.next();
+            DatenDownload datenDownload = (DatenDownload) l.get(DatenDownload.DOWNLOAD_REF_NR);
             if (datenDownload.start != null) {
-                tModel.setValueAt(datenDownload.getTextRestzeit(), row, DatenDownload.DOWNLOAD_RESTZEIT_NR);
-                tModel.setValueAt(datenDownload.getTextBandbreite(), row, DatenDownload.DOWNLOAD_BANDBREITE_NR);
-                tModel.setValueAt(null, row, DatenDownload.DOWNLOAD_PROGRESS_NR);
-                tModel.setValueAt(datenDownload.mVFilmSize, row, DatenDownload.DOWNLOAD_GROESSE_NR);
+                l.set(DatenDownload.DOWNLOAD_RESTZEIT_NR, datenDownload.getTextRestzeit());
+                l.set(DatenDownload.DOWNLOAD_BANDBREITE_NR, datenDownload.getTextBandbreite());
+                l.set(DatenDownload.DOWNLOAD_PROGRESS_NR, null);
+                l.set(DatenDownload.DOWNLOAD_GROESSE_NR, datenDownload.mVFilmSize);
             }
         }
+//        for (int row = 0; row < tModel.getRowCount(); ++row) {
+//            DatenDownload datenDownload = (DatenDownload) tModel.getValueAt(row, DatenDownload.DOWNLOAD_REF_NR);
+//            if (datenDownload.start != null) {
+//                tModel.setValueAt(datenDownload.getTextRestzeit(), row, DatenDownload.DOWNLOAD_RESTZEIT_NR);
+//                tModel.setValueAt(datenDownload.getTextBandbreite(), row, DatenDownload.DOWNLOAD_BANDBREITE_NR);
+//                tModel.setValueAt(null, row, DatenDownload.DOWNLOAD_PROGRESS_NR);
+//                tModel.setValueAt(datenDownload.mVFilmSize, row, DatenDownload.DOWNLOAD_GROESSE_NR);
+//            }
+//        }
     }
 
     public synchronized void abosSuchen(Frame parent) {
