@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;
 import msearch.daten.DatenFilm;
@@ -26,6 +27,7 @@ import msearch.daten.DatenFilm;
 public class DatenAbo implements Comparable<DatenAbo> {
     //Tags Abo
 
+    private static GermanStringSorter sorter = GermanStringSorter.getInstance();
     public static final String ABO = "Abonnement";
     public static final String ABO_NR = "Nr";
     public static final int ABO_NR_NR = 0;
@@ -169,6 +171,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     @Override
     public int compareTo(DatenAbo arg0) {
-        return (arr[ABO_NAME_NR].compareToIgnoreCase((arg0).arr[ABO_NAME_NR]));
+        return sorter.compare(arr[ABO_NAME_NR], arg0.arr[ABO_NAME_NR]);
     }
 }
