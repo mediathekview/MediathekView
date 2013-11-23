@@ -38,6 +38,7 @@ import msearch.daten.DatenFilm;
 public class DatenDownload implements Comparable<DatenDownload> {
     //
 
+    private static GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
     private static SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
     public static final String DOWNLOAD_NR = "Nr";
@@ -472,9 +473,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
     @Override
     public int compareTo(DatenDownload arg0) {
         int ret = 0;
-        GermanStringSorter sorter = GermanStringSorter.getInstance();
         if ((ret = sorter.compare(arr[DatenDownload.DOWNLOAD_SENDER_NR], arg0.arr[DatenDownload.DOWNLOAD_SENDER_NR])) == 0) {
-            ret = sorter.compare(arr[DatenDownload.DOWNLOAD_THEMA_NR], arg0.arr[DatenDownload.DOWNLOAD_THEMA_NR]);
+            return sorter.compare(arr[DatenDownload.DOWNLOAD_THEMA_NR], arg0.arr[DatenDownload.DOWNLOAD_THEMA_NR]);
         }
         return ret;
     }

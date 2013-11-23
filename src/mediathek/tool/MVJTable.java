@@ -417,8 +417,10 @@ public final class MVJTable extends JTable {
             case TABELLE_TAB_ABOS:
                 if (selIndexes != null) {
                     this.selectionModel.setValueIsAdjusting(true);
+                    TModel tModel = (TModel) this.getModel();
+                    int r;
                     for (int i : selIndexes) {
-                        int r = ((TModel) this.getModel()).getIdxRow(indexSpalte, i);
+                        r = tModel.getIdxRow(i);
                         if (r >= 0) {
                             // ansonsten gibts die Zeile nicht mehr
                             r = this.convertRowIndexToView(r);
