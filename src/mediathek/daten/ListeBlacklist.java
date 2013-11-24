@@ -118,9 +118,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     }
 
     public void filterListe(ListeFilme listeFilme, ListeFilme listeRet) {
+        listeRet.clear();
         setFilter();
         if (listeFilme != null) {
-            listeRet.clear();
             DatenFilm film;
             listeRet.setMeta(listeFilme);
             Iterator<DatenFilm> it = listeFilme.iterator();
