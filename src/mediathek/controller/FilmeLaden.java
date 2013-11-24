@@ -118,7 +118,6 @@ public class FilmeLaden {
             istAmLaufen = true;
             // Hash mit URLs füllen
             hashSet.clear();
-            Daten.listeFilme.neueFilme = false;
             fillHash(Daten.listeFilme);
             Daten.listeFilme.clear();
             Daten.listeFilmeNachBlackList.clear();
@@ -142,6 +141,8 @@ public class FilmeLaden {
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
+            hashSet.clear();
+            fillHash(Daten.listeFilme);
             MSearchConfig.senderAllesLaden = senderAllesLaden;
             MSearchConfig.updateFilmliste = filmlisteUpdate;
             MSearchConfig.debug = Daten.debug;
@@ -154,6 +155,8 @@ public class FilmeLaden {
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
+            hashSet.clear();
+            fillHash(Daten.listeFilme);
             MSearchConfig.senderAllesLaden = senderAllesLaden;
             MSearchConfig.debug = Daten.debug;
             mSearchFilmeSuchen.updateSender(sender, Daten.listeFilme);

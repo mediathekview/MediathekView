@@ -105,17 +105,17 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 }
             }
             if (!start) {
-                if (!live) {
+                if (live) {
                     // bei livestreams keine History anzeigen
-                    if (datenFilm.neuerFilm) {
-                        setForeground(GuiKonstanten.FARBE_FILM_NEU_FORGROUND);
-                    } else if (history.contains(url)) {
+                    setForeground(GuiKonstanten.DOWNLOAD_FARBE_LIVE);
+                } else {
+                    if (history.contains(url)) {
                         if (!isSelected) {
                             setBackground(GuiKonstanten.FARBE_GRAU);
                         }
+                    } else if (datenFilm.neuerFilm) {
+                        setForeground(GuiKonstanten.FARBE_FILM_NEU_FORGROUND);
                     }
-                } else {
-                    setForeground(GuiKonstanten.DOWNLOAD_FARBE_LIVE);
                 }
             }
             if (isSelected) {
