@@ -188,6 +188,19 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
+    public synchronized DatenDownload getDownloadByNr(int nr) {
+        DatenDownload ret = null;
+        ListIterator<DatenDownload> it = this.listIterator();
+        while (it.hasNext()) {
+            DatenDownload d = it.next();
+            if (d.nr == nr) {
+                ret = d;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public synchronized void delDownloadByUrl(String url, boolean nurStart) {
         ListIterator<DatenDownload> it = this.listIterator();
         DatenDownload datenDownload;

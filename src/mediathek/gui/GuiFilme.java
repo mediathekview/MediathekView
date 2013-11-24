@@ -143,7 +143,7 @@ public class GuiFilme extends PanelVorlage {
     //===================================
 
     private void init() {
-        jCheckBoxNeue.setEnabled(false);
+        jToggleButtonNeue.setEnabled(false);
         jButtonBlacklist.setIcon(GetIcon.getIcon("blacklist_16.png"));
         jButtonFilterLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
         jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
@@ -174,6 +174,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void start(MSearchListenerFilmeLadenEvent event) {
 ////                beobMausTabelle.itemSenderLaden.setEnabled(false);
+                jToggleButtonNeue.setEnabled(false);
                 tabelleLaden();
             }
 
@@ -265,7 +266,7 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxKeineAbos.addActionListener(new BeobFilter());
         jCheckBoxKeineGesehenen.addActionListener(new BeobFilter());
         jCheckBoxNurHd.addActionListener(new BeobFilter());
-        jCheckBoxNeue.addActionListener(new BeobFilter());
+        jToggleButtonNeue.addActionListener(new BeobFilter());
         //restliche Filter
 //        jScrollPane1.addMouseListener(new BeobMausLaufendeProgramme());
 //        daten.mediathekGui.getStatusBar().getComponent().addMouseListener(new BeobMausLaufendeProgramme());
@@ -595,7 +596,7 @@ public class GuiFilme extends PanelVorlage {
             MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle, jComboBoxFilterSender.getSelectedItem().toString(),
                     jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(),
                     jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue(),
-                    jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected(), jCheckBoxNeue.isSelected());
+                    jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected(), jToggleButtonNeue.isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
             MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle, "",
@@ -709,7 +710,7 @@ public class GuiFilme extends PanelVorlage {
             Daten.listeAbo.setAboFuerFilm(Daten.listeFilme);
         }
         Daten.listeBlacklist.filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
-        jCheckBoxNeue.setEnabled(Daten.listeFilmeNachBlackList.neueFilme);
+        jToggleButtonNeue.setEnabled(Daten.listeFilmeNachBlackList.neueFilme);
     }
 
     /**
@@ -748,7 +749,7 @@ public class GuiFilme extends PanelVorlage {
         jButtonBlacklist = new javax.swing.JButton();
         jButtonHilfe = new javax.swing.JButton();
         jCheckBoxNurHd = new javax.swing.JCheckBox();
-        jCheckBoxNeue = new javax.swing.JCheckBox();
+        jToggleButtonNeue = new javax.swing.JToggleButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
         jPanelExtra = new javax.swing.JPanel();
@@ -881,7 +882,7 @@ public class GuiFilme extends PanelVorlage {
 
         jCheckBoxNurHd.setText("HD");
 
-        jCheckBoxNeue.setText("Neue");
+        jToggleButtonNeue.setText("Neue");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -898,9 +899,9 @@ public class GuiFilme extends PanelVorlage {
                 .addComponent(jCheckBoxKeineAbos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxNurHd)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxNeue)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
+                .addComponent(jToggleButtonNeue)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToggleButtonLivestram)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonBlacklist)
@@ -921,7 +922,7 @@ public class GuiFilme extends PanelVorlage {
                     .addComponent(jToggleButtonLivestram)
                     .addComponent(jButtonBlacklist)
                     .addComponent(jButtonHilfe)
-                    .addComponent(jCheckBoxNeue))
+                    .addComponent(jToggleButtonNeue))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1072,7 +1073,6 @@ public class GuiFilme extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxFilter;
     private javax.swing.JCheckBox jCheckBoxKeineAbos;
     private javax.swing.JCheckBox jCheckBoxKeineGesehenen;
-    private javax.swing.JCheckBox jCheckBoxNeue;
     private javax.swing.JCheckBox jCheckBoxNurHd;
     private javax.swing.JCheckBox jCheckBoxProgamme;
     private javax.swing.JComboBox<String> jComboBoxFilterSender;
@@ -1094,6 +1094,7 @@ public class GuiFilme extends PanelVorlage {
     private javax.swing.JTextField jTextFieldFilterThemaTitel;
     private javax.swing.JTextField jTextFieldFilterTitel;
     private javax.swing.JToggleButton jToggleButtonLivestram;
+    private javax.swing.JToggleButton jToggleButtonNeue;
     // End of variables declaration//GEN-END:variables
 
     private class BeobOpen implements ActionListener {
