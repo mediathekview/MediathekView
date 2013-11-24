@@ -47,6 +47,7 @@ public class GuiKonstanten {
     // Farben
     public static Color FARBE_GRAU = new Color(225, 225, 225);
     public static Color FARBE_GRAU_SEL = new Color(190, 190, 190);
+    public static Color FARBE_FILM_NEU_FORGROUND = new Color(0, 0, 240);
     // Tabelle Abos
     public static Color ANSEHEN = new Color(0, 125, 0);
     public static Color ABO_FOREGROUND = new Color(138, 67, 0);

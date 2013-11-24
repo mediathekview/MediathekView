@@ -164,6 +164,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         ListIterator<DatenFilm> iteratorFilm = listeFilme.listIterator();
         DatenAbo datenAbo;
         ListIterator<DatenAbo> iteratorAbo;
+        if (this.size() == 0) {
+            return;
+        }
         while (iteratorFilm.hasNext()) {
             // für jeden Film
             datenFilm = iteratorFilm.next();
@@ -206,7 +209,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                         datenFilm.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
                         datenFilm.abo = datenAbo;
                     }
-                    // und nicht wie weiter
+                    // und nichts wie weiter
                     break;
                 }
             }
