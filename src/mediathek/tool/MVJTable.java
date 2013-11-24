@@ -620,7 +620,8 @@ public final class MVJTable extends JTable {
                             || i == DatenFilm.FILM_URL_RTMP_HD_NR
                             || i == DatenFilm.FILM_URL_KLEIN_NR
                             || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR
-                            || i == DatenFilm.FILM_DATUM_LONG_NR) {
+                            || i == DatenFilm.FILM_DATUM_LONG_NR
+                            || i == DatenFilm.FILM_REF_NR) {
                         breite[i] = 0;
                     }
                     break;

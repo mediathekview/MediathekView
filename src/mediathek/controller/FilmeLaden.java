@@ -19,11 +19,14 @@
  */
 package mediathek.controller;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import mediathek.daten.Daten;
 import mediathek.tool.Duration;
 import mediathek.tool.Log;
+import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 import msearch.daten.MSearchConfig;
 import msearch.filmeLaden.ListeDownloadUrlsFilmlisten;
@@ -41,6 +44,7 @@ public class FilmeLaden {
     public static final int UPDATE_FILME_AUTO = 2; // beim Start, immer mal wieder, + Url auto
     public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
     private Duration duration = new Duration(FilmeLaden.class.getSimpleName());
+    private HashSet<String> hashSet = new HashSet<>();
 
     private static enum ListenerMelden {
 
@@ -112,6 +116,10 @@ public class FilmeLaden {
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
+            // Hash mit URLs füllen
+            hashSet.clear();
+            Daten.listeFilme.neueFilme = false;
+            fillHash(Daten.listeFilme);
             Daten.listeFilme.clear();
             Daten.listeFilmeNachBlackList.clear();
             System.gc();
@@ -163,15 +171,35 @@ public class FilmeLaden {
     private void undEnde(MSearchListenerFilmeLadenEvent event) {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
+        searchHash(Daten.listeFilme);
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme);
         istAmLaufen = false;
         notifyFertig(event);
     }
 
+    private void fillHash(ListeFilme listeFilme) {
+        Iterator<DatenFilm> it = listeFilme.iterator();
+        while (it.hasNext()) {
+            hashSet.add(it.next().arr[DatenFilm.FILM_URL_NR]);
+        }
+    }
+
+    private void searchHash(ListeFilme listeFilme) {
+        Iterator<DatenFilm> it = listeFilme.iterator();
+        while (it.hasNext()) {
+            DatenFilm datenFilm = it.next();
+            if (!hashSet.contains(datenFilm.arr[DatenFilm.FILM_URL_NR])) {
+                datenFilm.neuerFilm = true;
+                listeFilme.neueFilme = true;
+            }
+        }
+        hashSet.clear();
+    }
     // ###########################
     // Listener
     // ###########################
+
     public void addAdListener(MSearchListenerFilmeLaden listener) {
         listeners.add(MSearchListenerFilmeLaden.class, listener);
     }

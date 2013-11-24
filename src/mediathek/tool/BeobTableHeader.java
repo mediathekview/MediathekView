@@ -34,13 +34,13 @@ public class BeobTableHeader extends MouseAdapter {
     String[] columns;
     boolean[] spaltenAnzeigen;
     JCheckBoxMenuItem[] box;
-    int[] immerAnzeigen;
+    int[] ausblenden;
 
-    public BeobTableHeader(MVJTable tabelle, String[] columns, boolean[] spalten, int[] iimmerAnzeigen) {
+    public BeobTableHeader(MVJTable tabelle, String[] columns, boolean[] spalten, int[] aausblenden) {
         this.tabelle = tabelle;
         this.columns = columns;
         spaltenAnzeigen = spalten;
-        immerAnzeigen = iimmerAnzeigen;
+        this.ausblenden = aausblenden;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class BeobTableHeader extends MouseAdapter {
     }
 
     private boolean immer(int i) {
-        for (int ii : immerAnzeigen) {
+        for (int ii : ausblenden) {
             if (i == ii) {
                 return true;
             }

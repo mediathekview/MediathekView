@@ -39,6 +39,9 @@ public class TModelFilm extends TModel {
                 case DatenFilm.FILM_GROESSE_NR:
                     types[i] = MVFilmSize.class;
                     break;
+                case DatenFilm.FILM_REF_NR:
+                    types[i] = DatenFilm.class;
+                    break;
                 default:
                     types[i] = String.class;
             }

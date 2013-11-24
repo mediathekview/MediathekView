@@ -29,7 +29,7 @@ public class MVListeFilme {
 //    public static TreeSet<String> treeSet = new TreeSet<>(msearch.tool.GermanStringSorter.getInstance());
     public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVJTable table,
             String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
-            int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
+            int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live, boolean nurNeue) {
         // Model für die Tabelle Filme zusammenbauen
         if (listeFilme.isEmpty()) {
             // wenn die Liste leer ist, dann Tschüss
@@ -39,7 +39,7 @@ public class MVListeFilme {
         // dann ein neues Model anlegen
         TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
         if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("") && filterIrgendwo.equals("") && laenge == 0
-                && !keineAbos && !kGesehen && !nurHd && !live) {
+                && !keineAbos && !kGesehen && !nurHd && !live && !nurNeue) {
             // wenn ganze Liste
             addObjectDataTabFilme(listeFilme, tModel);
         } else {
@@ -74,6 +74,11 @@ public class MVListeFilme {
                 }
             }
             for (DatenFilm film : listeFilme) {
+                if (nurNeue) {
+                    if (!film.neuerFilm) {
+                        continue;
+                    }
+                }
                 if (live) {
                     if (!film.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE)) {
                         continue;
@@ -300,6 +305,8 @@ public class MVListeFilme {
                 object[m] = film.datumFilm;
             } else if (m == DatenFilm.FILM_GROESSE_NR) {
                 object[m] = film.dateigroesseL;
+            } else if (m == DatenFilm.FILM_REF_NR) {
+                object[m] = film;
 //            } else if (m != DatenFilm.FILM_URL_NR && m != DatenFilm.FILM_NR_NR && !DatenFilm.anzeigen(m)) {
 //                // Url und Nr immer füllen, egal ob angezeigt
 //                object[m] = "";

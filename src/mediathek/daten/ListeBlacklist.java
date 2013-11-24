@@ -128,6 +128,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 film = it.next();
                 if (checkFilm(film)) {
                     listeRet.add(film);
+                    if (film.neuerFilm) {
+                        listeRet.neueFilme = true;
+                    }
                 }
             }
             // Array mit Sendernamen/Themen füllen
