@@ -142,6 +142,8 @@ public class FilmeLaden {
             // nicht doppelt starten
             istAmLaufen = true;
             hashSet.clear();
+            Daten.listeFilme.neueFilme = false;
+            Daten.listeFilmeNachBlackList.neueFilme = false;
             fillHash(Daten.listeFilme);
             MSearchConfig.senderAllesLaden = senderAllesLaden;
             MSearchConfig.updateFilmliste = filmlisteUpdate;
@@ -156,6 +158,8 @@ public class FilmeLaden {
             // nicht doppelt starten
             istAmLaufen = true;
             hashSet.clear();
+            Daten.listeFilme.neueFilme = false;
+            Daten.listeFilmeNachBlackList.neueFilme = false;
             fillHash(Daten.listeFilme);
             MSearchConfig.senderAllesLaden = senderAllesLaden;
             MSearchConfig.debug = Daten.debug;
