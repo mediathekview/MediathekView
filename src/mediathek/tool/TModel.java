@@ -42,7 +42,6 @@ public class TModel extends DefaultTableModel {
 //    public void reorder(int fromIndex, int toIndex) {
 //        this.moveRow(fromIndex, fromIndex, toIndex);
 //    }
-
     @Override
     public boolean isCellEditable(int i, int j) {
         return false;
@@ -81,7 +80,6 @@ public class TModel extends DefaultTableModel {
 //            }
 //        }
 //    }
-
 //    public void filter(Daten daten, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
 //        List zeile;
 //        ListIterator<List> it = this.getDataVector().listIterator();
@@ -115,7 +113,6 @@ public class TModel extends DefaultTableModel {
 //
 //        }
 //    }
-
 //    public String[] getModelOfField(Daten daten, int feld, boolean leer) {
 //        /* erstellt ein StringArray mit den Daten des Feldes
 //         * leer: immer ein leeres Feld am Anfang */
@@ -144,7 +141,6 @@ public class TModel extends DefaultTableModel {
 //        }
 //        return ret;
 //    }
-
 //    public boolean delRow(int spalte, String wert) {
 //        /* löscht die Zeile(n) in der die "Spalte" den "Wert" hat */
 //        boolean gefunden = false;

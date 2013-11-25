@@ -28,6 +28,7 @@
 	- Ist ein Download fertig, kommt ein Hinweisfenster
 	- Fertig geladen Filme/Downloads können direkt im Tab Download gestartet werden (Button in der Tabelle und in der Toolbar)
 	- Ist im Tab Filme der Filter "HD" aktiv, werden die Filme in der HD-Auflösung gestartet
+	- Beim Neuladen einer Filmliste werden neue Filme in eigener Farbe in der Tabele angezeigt, es gibt auch einen Filter "nur Neue"
 	
 	# Version 3.3.0
 	- Sortierreihenfolge der Tabellen wird gespeichert
