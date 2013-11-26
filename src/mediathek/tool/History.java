@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.controller;
+package mediathek.tool;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -32,8 +32,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
 
 public class History extends HashSet<String> {
     private Path historyFilePath = null;

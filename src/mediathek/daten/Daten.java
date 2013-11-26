@@ -31,7 +31,7 @@ import javax.swing.Timer;
 import mediathek.MediathekGui;
 import mediathek.controller.ErledigteAbos;
 import mediathek.controller.FilmeLaden;
-import mediathek.controller.History;
+import mediathek.tool.History;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.starter.StarterClass;
