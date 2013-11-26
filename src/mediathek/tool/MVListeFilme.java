@@ -46,7 +46,7 @@ public class MVListeFilme {
             // Titel
             String[] arrTitel;
             if (Filter.isPattern(filterTitel)) {
-                arrTitel = new String[]{filterTitel.toLowerCase()};
+                arrTitel = new String[]{filterTitel};
             } else {
                 arrTitel = filterTitel.split(",");
                 for (int i = 0; i < arrTitel.length; ++i) {
@@ -56,7 +56,7 @@ public class MVListeFilme {
             // ThemaTitel
             String[] arrThemaTitel;
             if (Filter.isPattern(filterThemaTitel)) {
-                arrThemaTitel = new String[]{filterThemaTitel.toLowerCase()};
+                arrThemaTitel = new String[]{filterThemaTitel};
             } else {
                 arrThemaTitel = filterThemaTitel.split(",");
                 for (int i = 0; i < arrThemaTitel.length; ++i) {
@@ -66,7 +66,7 @@ public class MVListeFilme {
             // Irgendwo
             String[] arrIrgendwo;
             if (Filter.isPattern(filterIrgendwo)) {
-                arrIrgendwo = new String[]{filterIrgendwo.toLowerCase()};
+                arrIrgendwo = new String[]{filterIrgendwo};
             } else {
                 arrIrgendwo = filterIrgendwo.split(",");
                 for (int i = 0; i < arrIrgendwo.length; ++i) {
@@ -136,7 +136,7 @@ public class MVListeFilme {
             // Titel
             String[] arrTitel;
             if (Filter.isPattern(filterTitel)) {
-                arrTitel = new String[]{filterTitel.toLowerCase()};
+                arrTitel = new String[]{filterTitel};
             } else {
                 arrTitel = filterTitel.split(",");
                 for (int i = 0; i < arrTitel.length; ++i) {
@@ -146,7 +146,7 @@ public class MVListeFilme {
             // ThemaTitel
             String[] arrThemaTitel;
             if (Filter.isPattern(filterThemaTitel)) {
-                arrThemaTitel = new String[]{filterThemaTitel.toLowerCase()};
+                arrThemaTitel = new String[]{filterThemaTitel};
             } else {
                 arrThemaTitel = filterThemaTitel.split(",");
                 for (int i = 0; i < arrThemaTitel.length; ++i) {
@@ -156,7 +156,7 @@ public class MVListeFilme {
             // Irgendwo
             String[] arrIrgendwo;
             if (Filter.isPattern(filterIrgendwo)) {
-                arrIrgendwo = new String[]{filterIrgendwo.toLowerCase()};
+                arrIrgendwo = new String[]{filterIrgendwo};
             } else {
                 arrIrgendwo = filterIrgendwo.split(",");
                 for (int i = 0; i < arrIrgendwo.length; ++i) {

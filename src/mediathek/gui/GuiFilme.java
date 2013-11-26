@@ -621,15 +621,10 @@ public class GuiFilme extends PanelVorlage {
     private void aktFilmSetzen() {
         if (this.isShowing()) {
             DatenFilm aktFilm = new DatenFilm();
-            int selectedTableRow = tabelle.getSelectedRow();
-            if (selectedTableRow >= 0) {
-                //int selectedModelRow = tabelle.convertRowIndexToModel(selectedTableRow);
-                //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
-                //DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
-                DatenFilm film = getSelFilm();
-                if (film != null) {
-                    aktFilm = film;
-                }
+            DatenFilm film = getSelFilm();
+            if (film != null) {
+                aktFilm = film;
+//                aktFilm.neuerFilm = false;
             }
             filmInfoHud.updateCurrentFilm(aktFilm);
             // Beschreibung setzen
