@@ -219,6 +219,7 @@ public class GuiDownloads extends PanelVorlage {
                     // nur alle 250ms aufrufen
                     lastUpdate = new Date().getTime();
                     Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
+                    tabelle.fireTableDataChanged(true /*setSpalten*/);
                 }
             }
         });

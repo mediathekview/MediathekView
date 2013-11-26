@@ -41,9 +41,12 @@ public class RuntimeExec {
     private static int procnr = 0; //TH
     //private Pattern patternFlvstreamer = Pattern.compile("([0-9.]*%)");
     private Pattern patternFlvstreamer = Pattern.compile("([0-9]*.[0-9]{1}%)");
-    private Pattern patternFfmpeg = Pattern.compile("(?<=Duration: )[^,]*");
-    private Pattern patternZeit = Pattern.compile("(?<=time=)[\\d.]+");
+    //private Pattern patternFfmpeg = Pattern.compile("(?<=Duration: )[^,]*"); // Duration: 00:00:30.28, start: 0.000000, bitrate: N/A
+    private Pattern patternFfmpeg = Pattern.compile("(?<=  Duration: )[^,]*"); // Duration: 00:00:30.28, start: 0.000000, bitrate: N/A
+    //private Pattern patternZeit = Pattern.compile("(?<=time=)[\\d:.]+"); //    1611kB time=00:00:06.73 bitrate=1959.7kbits/s   
+    private Pattern patternZeit = Pattern.compile("(?<=time=)[^ ]*"); //    1611kB time=00:00:06.73 bitrate=1959.7kbits/s   
     private double totalSecs = 0;
+    private double aktSecs = 0;
     private String zeit, prozent;
 
     public RuntimeExec(DatenDownload d) {
@@ -146,7 +149,7 @@ public class RuntimeExec {
                     matcher = patternFfmpeg.matcher(input);
                     if (matcher.find()) {
                         // Find duration
-                        String dauer = matcher.group();
+                        String dauer = matcher.group().trim();
                         String[] hms = dauer.split(":");
                         totalSecs = Integer.parseInt(hms[0]) * 3600
                                 + Integer.parseInt(hms[1]) * 60
@@ -155,7 +158,11 @@ public class RuntimeExec {
                     matcher = patternZeit.matcher(input);
                     if (totalSecs > 0 && matcher.find()) {
                         zeit = matcher.group();
-                        double d = Double.parseDouble(zeit) / totalSecs * 100;
+                        String[] hms = zeit.split(":");
+                        aktSecs = Integer.parseInt(hms[0]) * 3600
+                                + Integer.parseInt(hms[1]) * 60
+                                + Double.parseDouble(hms[2]);
+                        double d = aktSecs / totalSecs * 100;
                         meldenDouble(d);
                     }
                 } catch (Exception ex) {

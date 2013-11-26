@@ -30,11 +30,11 @@ echo MediathekView Buildnummer: $relNr >> dist/info/$relNr.build
 cd dist/
 datum=$(date +%Y.%m.%d )
 zip -r MediathekView_3.3.0_$datum.zip .
+cd ..
 
 # Dateien ins share-Verzeichnis von VmWare kopieren
 cp -r dist/* /mnt/daten/virtualbox/share/aktMed
 
 cd $OLDPWD
-
 
 fi
