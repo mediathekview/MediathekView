@@ -37,25 +37,25 @@ import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 
 public class CellRendererDownloads extends DefaultTableCellRenderer {
-    
+
     private static ImageIcon ja_16 = null;
     private static ImageIcon nein_12 = null;
-    private static ImageIcon film_play_tab = null;
+    private static ImageIcon film_start_tab = null;
     private static ImageIcon download_stop_tab = null;
     private static ImageIcon download_start_tab = null;
-    private static ImageIcon film_play_sw_tab = null;
+    private static ImageIcon film_start_sw_tab = null;
     private static ImageIcon download_stop_sw_tab = null;
     private static ImageIcon download_start_sw_tab = null;
     private static ImageIcon download_clear_tab = null;
     private static ImageIcon download_clear_sw_tab = null;
     private static ImageIcon download_del_tab = null;
     private static ImageIcon download_del_sw_tab = null;
-    
+
     public CellRendererDownloads() {
         ja_16 = GetIcon.getIcon("ja_16.png");
         nein_12 = GetIcon.getIcon("nein_12.png");
-        film_play_tab = GetIcon.getIcon("film_play_tab.png");
-        film_play_sw_tab = GetIcon.getIcon("film_play_sw_tab.png");
+        film_start_tab = GetIcon.getIcon("film_start_tab.png");
+        film_start_sw_tab = GetIcon.getIcon("film_start_sw_tab.png");
         download_stop_tab = GetIcon.getIcon("download_stop_tab.png");
         download_stop_sw_tab = GetIcon.getIcon("download_stop_sw_tab.png");
         download_start_tab = GetIcon.getIcon("download_start_tab.png");
@@ -65,7 +65,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         download_del_tab = GetIcon.getIcon("download_del_tab.png");
         download_del_sw_tab = GetIcon.getIcon("download_del_sw_tab.png");
     }
-    
+
     @Override
     public Component getTableCellRendererComponent(
             JTable table,
@@ -101,7 +101,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                             protected Color getSelectionBackground() {
                                 return UIManager.getDefaults().getColor("Table.foreground");
                             }
-                            
+
                             @Override
                             protected Color getSelectionForeground() {
                                 return Color.white;
@@ -176,23 +176,35 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 }
                 if (isSelected) {
                     if (datenDownload.start != null) {
-                        if (datenDownload.start.status >= Start.STATUS_FERTIG) {
-                            setIcon(film_play_tab);
+                        if (datenDownload.start.status == Start.STATUS_FERTIG) {
+                            setIcon(film_start_tab);
+                            setToolTipText("Film abspielen");
+                        } else if (datenDownload.start.status == Start.STATUS_ERR) {
+                            setIcon(download_start_tab);
+                            setToolTipText("Download starten");
                         } else {
                             setIcon(download_stop_tab);
+                            setToolTipText("Download stoppen");
                         }
                     } else {
                         setIcon(download_start_tab);
+                        setToolTipText("Download starten");
                     }
                 } else {
                     if (datenDownload.start != null) {
-                        if (datenDownload.start.status >= Start.STATUS_FERTIG) {
-                            setIcon(film_play_sw_tab);
+                        if (datenDownload.start.status == Start.STATUS_FERTIG) {
+                            setIcon(film_start_sw_tab);
+                            setToolTipText("Film abspielen");
+                        } else if (datenDownload.start.status == Start.STATUS_ERR) {
+                            setIcon(download_start_sw_tab);
+                            setToolTipText("Download starten");
                         } else {
                             setIcon(download_stop_sw_tab);
+                            setToolTipText("Download stoppen");
                         }
                     } else {
                         setIcon(download_start_sw_tab);
+                        setToolTipText("Download starten");
                     }
                 }
             } else if (c == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
@@ -202,18 +214,24 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     if (datenDownload.start.status >= Start.STATUS_FERTIG) {
                         if (isSelected) {
                             setIcon(download_clear_tab);
+                            setToolTipText("Download entfernen");
                         } else {
                             setIcon(download_clear_sw_tab);
+                            setToolTipText("Download entfernen");
                         }
                     } else if (isSelected) {
                         setIcon(download_del_tab);
+                        setToolTipText("Download löschen");
                     } else {
                         setIcon(download_del_sw_tab);
+                        setToolTipText("Download löschen");
                     }
                 } else if (isSelected) {
                     setIcon(download_del_tab);
+                    setToolTipText("Download löschen");
                 } else {
                     setIcon(download_del_sw_tab);
+                    setToolTipText("Download löschen");
                 }
             } else {
                 if (datenDownload.start != null) {
@@ -230,7 +248,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         }
         return this;
     }
-    
+
     private void setColor(Component c, Start s, boolean isSelected) {
         switch (s.status) {
             case Start.STATUS_INIT:

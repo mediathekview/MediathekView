@@ -57,6 +57,7 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenBlacklist;
+import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
@@ -303,7 +304,13 @@ public class GuiFilme extends PanelVorlage {
             ListenerMediathekView.EREIGNIS_LISTE_ABOS}, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                tabelleLaden();
+                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+                    if (jCheckBoxKeineGesehenen.isSelected()) {
+                        tabelleLaden();
+                    } else {
+                        tabelle.fireTableDataChanged(true);
+                    }
+                }
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT,
@@ -1258,7 +1265,20 @@ public class GuiFilme extends PanelVorlage {
         private void buttonTable(int row, int column) {
             if (row != -1) {
                 if (column == DatenFilm.FILM_ABSPIELEN_NR) {
-                    filmAbspielen_();
+                    DatenFilm datenFilm = getSelFilm();
+                    boolean stop = false;
+                    DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL_NR]);
+                    if (datenDownload != null) {
+                        if (datenDownload.start != null) {
+                            if (datenDownload.start.status == Start.STATUS_RUN) {
+                                stop = true;
+                                Daten.listeDownloadsButton.delDownloadByUrl(datenFilm.arr[DatenFilm.FILM_URL_NR], true);
+                            }
+                        }
+                    }
+                    if (!stop) {
+                        filmAbspielen_();
+                    }
                 } else if (column == DatenFilm.FILM_AUFZEICHNEN_NR) {
                     filmSpeichern_();
                 }
@@ -1279,7 +1299,7 @@ public class GuiFilme extends PanelVorlage {
 
             //Thema laden
             JMenuItem item = new JMenuItem("Film abspielen");
-            item.setIcon(GetIcon.getIcon("film_play_16.png"));
+            item.setIcon(GetIcon.getIcon("film_start_16.png"));
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -1537,6 +1557,10 @@ public class GuiFilme extends PanelVorlage {
                     String thema = film.arr[DatenFilm.FILM_THEMA_NR];
                     jComboBoxFilterThema.setSelectedIndex(0);
                     jComboBoxFilterThema.setSelectedItem(thema);
+                    if (jComboBoxFilterThema.getSelectedIndex() == 0) {
+                        String themaFilter = getThemaFilter(sen, thema);
+                        jComboBoxFilterThema.setSelectedItem(themaFilter);
+                    }
                     stopBeob = false;
                     tabelleLaden();
                 }
@@ -1557,12 +1581,31 @@ public class GuiFilme extends PanelVorlage {
                     String thema = film.arr[DatenFilm.FILM_THEMA_NR];
                     jComboBoxFilterThema.setSelectedIndex(0);
                     jComboBoxFilterThema.setSelectedItem(thema);
+                    if (jComboBoxFilterThema.getSelectedIndex() == 0) {
+                        String themaFilter = getThemaFilter(sen, thema);
+                        jComboBoxFilterThema.setSelectedItem(themaFilter);
+                    }
                     String tit = film.arr[DatenFilm.FILM_TITEL_NR];
                     jTextFieldFilterTitel.setText(tit);
                     stopBeob = false;
                     tabelleLaden();
                 }
             }
+        }
+
+        private String getThemaFilter(String sender, String thema) {
+            // Thema für den Filter suchen bei zB: "Hallo" und "hallo" steht nur eines im FilterThema
+            String ret = "";
+            for (int i = 1; i < Daten.listeFilmeNachBlackList.themenPerSender.length; ++i) {
+                if (Daten.listeFilmeNachBlackList.sender[i].equals(sender)) {
+                    for (int k = 1; k < Daten.listeFilmeNachBlackList.themenPerSender[i].length; ++k) {
+                        if (Daten.listeFilmeNachBlackList.themenPerSender[i][k].equalsIgnoreCase(thema)) {
+                            ret = Daten.listeFilmeNachBlackList.themenPerSender[i][k];
+                        }
+                    }
+                }
+            }
+            return ret;
         }
 
         private class BeobFilterLoeschen implements ActionListener {
