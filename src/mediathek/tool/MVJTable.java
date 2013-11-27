@@ -66,10 +66,6 @@ public final class MVJTable extends JTable {
     private String[] indexWertSelection = null;
     private int[] selIndexes = null;
     private boolean[] spaltenAnzeigen;
-    private String indexWertSel = null;
-    private boolean stopBeob = false;
-    private int modelRowCount = -1;
-    private int[] modelSelections = null;
     //
     int nrDatenSystem = 0;
     int tabelle;
@@ -462,11 +458,6 @@ public final class MVJTable extends JTable {
                 }
                 break;
             default:
-                if (selRow >= 0) {
-                    indexWertSel = this.getModel().getValueAt(this.convertRowIndexToModel(selRow), indexSpalte).toString();
-                } else {
-                    indexWertSel = "";
-                }
                 if (selRows != null) {
                     if (selRows.length > 0) {
                         indexWertSelection = new String[selRows.length];
@@ -481,7 +472,6 @@ public final class MVJTable extends JTable {
 
     public void setSelected() {
         // gemerkte Einstellungen der Tabelle wieder setzten
-        stopBeob = true;
         switch (tabelle) {
             case TABELLE_TAB_DOWNLOADS:
             case TABELLE_TAB_FILME:
@@ -516,7 +506,6 @@ public final class MVJTable extends JTable {
                 }
                 break;
         }
-        stopBeob = false;
     }
 
     public void spaltenEinAus() {
@@ -563,7 +552,6 @@ public final class MVJTable extends JTable {
 
     public void setSpalten() {
         // gemerkte Einstellungen der Tabelle wieder setzten
-        stopBeob = true;
         spaltenAusschalten();
         setSelected();
         try {
@@ -600,7 +588,6 @@ public final class MVJTable extends JTable {
         } catch (Exception ex) {
             Log.fehlerMeldung(965001463, Log.FEHLER_ART_PROG, "JTableMed.setSpalten", ex);
         }
-        stopBeob = false;
     }
 
     public void resetTabelle() {

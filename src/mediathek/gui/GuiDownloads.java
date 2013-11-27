@@ -692,8 +692,11 @@ public class GuiDownloads extends PanelVorlage {
                 if (column == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
                     // filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */)
                     if (datenDownload.start != null) {
-                        if (datenDownload.start.status >= Start.STATUS_FERTIG) {
+                        if (datenDownload.start.status == Start.STATUS_FERTIG) {
                             filmAbspielen_();
+                        } else if (datenDownload.start.status == Start.STATUS_ERR) {
+                            // Download starten
+                            filmStartenWiederholenStoppen(false, true /*starten*/);
                         } else {
                             // Download stoppen
                             filmStartenWiederholenStoppen(false, false /*starten*/);
@@ -871,7 +874,7 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
             // Film abspielen
             JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film abspielen");
-            itemPlayerDownload.setIcon(GetIcon.getIcon("film_play_16.png"));
+            itemPlayerDownload.setIcon(GetIcon.getIcon("film_start_16.png"));
 
             itemPlayerDownload.addActionListener(new ActionListener() {
                 @Override

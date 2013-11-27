@@ -34,20 +34,24 @@ import msearch.daten.ListeFilme;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
 
-    private static ImageIcon film_play_tab = null;
-    private static ImageIcon film_play_sw_tab = null;
+    private static ImageIcon film_start_tab = null;
+    private static ImageIcon film_start_sw_tab = null;
     private static ImageIcon film_rec_tab = null;
     private static ImageIcon film_rec_sw_tab = null;
+    private static ImageIcon film_stop_tab = null;
+    private static ImageIcon film_stop_sw_tab = null;
     private Daten ddaten;
     private History history = null;
 
     public CellRendererFilme(Daten d) {
         ddaten = d;
         history = ddaten.history;
-        film_play_tab = GetIcon.getIcon("film_play_tab.png");
-        film_play_sw_tab = GetIcon.getIcon("film_play_sw_tab.png");
+        film_start_tab = GetIcon.getIcon("film_start_tab.png");
+        film_start_sw_tab = GetIcon.getIcon("film_start_sw_tab.png");
         film_rec_tab = GetIcon.getIcon("film_rec_tab.png");
         film_rec_sw_tab = GetIcon.getIcon("film_rec_sw_tab.png");
+        film_stop_tab = GetIcon.getIcon("film_stop_tab.png");
+        film_stop_sw_tab = GetIcon.getIcon("film_stop_sw_tab.png");
     }
 
     @Override
@@ -70,9 +74,8 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             int c = table.convertColumnIndexToModel(column);
             boolean start = false;
             DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(r, DatenFilm.FILM_REF_NR);
-            String url = datenFilm.arr[DatenFilm.FILM_URL_NR];
             boolean live = datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE);
-            DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(url);
+            DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL_NR]);
             if (c == DatenFilm.FILM_NR_NR || c == DatenFilm.FILM_GROESSE_NR
                     || c == DatenFilm.FILM_DATUM_NR || c == DatenFilm.FILM_ZEIT_NR || c == DatenFilm.FILM_DAUER_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
@@ -81,23 +84,46 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 setHorizontalAlignment(SwingConstants.RIGHT);
             }
             if (c == DatenFilm.FILM_ABSPIELEN_NR) {
+                // ======================
+                // Button Abspielen
                 setHorizontalAlignment(SwingConstants.CENTER);
-                if (isSelected) {
-                    setIcon(film_play_tab);
-                } else {
-                    setIcon(film_play_sw_tab);
+                if (datenDownload != null) {
+                    if (datenDownload.start != null) {
+                        if (datenDownload.start.status == Start.STATUS_RUN) {
+                            if (isSelected) {
+                                setIcon(film_stop_tab);
+                                setToolTipText("Film stoppen");
+                            } else {
+                                setIcon(film_stop_sw_tab);
+                                setToolTipText("Film stoppen");
+                            }
+                        }
+                    }
+                }
+                if (getIcon() == null) {
+                    if (isSelected) {
+                        setIcon(film_start_tab);
+                        setToolTipText("Film starten");
+                    } else {
+                        setIcon(film_start_sw_tab);
+                        setToolTipText("Film starten");
+                    }
                 }
             } else if (c == DatenFilm.FILM_AUFZEICHNEN_NR) {
+                // ==================
+                // Button Aufzeichnen
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (isSelected) {
                     setIcon(film_rec_tab);
+                    setToolTipText("Film speichern");
                 } else {
                     setIcon(film_rec_sw_tab);
+                    setToolTipText("Film speichern");
                 }
             }
             // Farben setzen
             if (datenDownload != null) {
-                // gestartete Filme
+                // gestarteter Film
                 if (datenDownload.start != null) {
                     start = true;
                     setColor(this, datenDownload.start, isSelected);
@@ -108,7 +134,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     // bei livestreams keine History anzeigen
                     setForeground(GuiKonstanten.DOWNLOAD_FARBE_LIVE);
                 } else {
-                    if (history.contains(url)) {
+                    if (history.contains(datenFilm.arr[DatenFilm.FILM_URL_NR])) {
                         if (!isSelected) {
                             setBackground(GuiKonstanten.FARBE_GRAU);
                         }
