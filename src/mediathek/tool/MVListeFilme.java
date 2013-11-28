@@ -276,9 +276,9 @@ public class MVListeFilme {
 //            String str = film.arr[DatenFilm.FILM_SENDER_NR];
 //            if (!treeSet.contains(str)) {
 //                treeSet.add(str);
-////                if (treeSet.size() > max) { // eins mehr wegen Leerzeile
-////                    break;
-////                }
+// //                if (treeSet.size() > max) { // eins mehr wegen Leerzeile
+// //                    break;
+// //                }
 //            }
 //        }
 //        String[] a = treeSet.toArray(new String[]{});
