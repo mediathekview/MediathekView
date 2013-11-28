@@ -116,8 +116,7 @@ public class MVUrlDateiGroesse {
                             //ret = conn.getContentLength();
                             conn.disconnect();
                             if (ret > 0) {
-                                ///
-                                Log.fehlerMeldung(698965431, Log.FEHLER_ART_GETURL, MVUrlDateiGroesse.class.getName(), "--->Proxy: OK");
+                                //Log.fehlerMeldung(698965431, Log.FEHLER_ART_GETURL, MVUrlDateiGroesse.class.getName(), "--->Proxy: OK");
                                 countArray(anzProxy, ssender);
                             }
                         } catch (Exception ex) {

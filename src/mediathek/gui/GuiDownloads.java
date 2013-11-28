@@ -67,6 +67,8 @@ public class GuiDownloads extends PanelVorlage {
     private MVFilmInformation filmInfoHud;
     private PanelBeschreibung panelBeschreibung;
     private long lastUpdate = 0;
+    private int[] transferedRows = null;
+    private int rowFrom = 0;
 
     public GuiDownloads(Daten d, Frame parentComponent) {
         super(d, parentComponent);
@@ -219,7 +221,7 @@ public class GuiDownloads extends PanelVorlage {
                     // nur alle 250ms aufrufen
                     lastUpdate = new Date().getTime();
                     Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
-                    tabelle.fireTableDataChanged(true /*setSpalten*/);
+                    //tabelle.fireTableDataChanged(true /*setSpalten*/);
                 }
             }
         });

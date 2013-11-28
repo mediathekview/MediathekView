@@ -25,7 +25,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
 import java.util.LinkedList;
 import java.util.List;
-import javax.activation.ActivationDataFlavor;
 import javax.activation.DataHandler;
 import javax.swing.DropMode;
 import javax.swing.JComponent;
@@ -129,124 +128,55 @@ public final class MVJTable extends JTable {
         reihe = getArray(maxSpalten);
     }
 
-//    @Override
-//    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-//        Component c = super.prepareRenderer(renderer, row, column);
-//        if (isRowSelected(row)) {
-//            setRowHeight(row, 22);
-//        } else {
-//            setRowHeight(row, 17);
-//        }
-//        return c;
-//    }
-//    public class TableRowTransferHandler extends TransferHandler {
-//
-//        private final DataFlavor localObjectFlavor = new ActivationDataFlavor(Integer.class,
-//                DataFlavor.javaJVMLocalObjectMimeType, "Integer Row Index");
-//        private JTable table = null;
-//
-//        public TableRowTransferHandler(JTable table) {
-//            this.table = table;
-//        }
-//
-//        @Override
-//        protected Transferable createTransferable(JComponent c) {
-//            assert (c == table);
-//            return new DataHandler(table.getSelectedRow(), localObjectFlavor.getMimeType());
-//        }
-//
-//        @Override
-//        public boolean canImport(TransferHandler.TransferSupport info) {
-//            boolean b = info.getComponent() == table && info.isDrop() && info.isDataFlavorSupported(localObjectFlavor);
-//            table.setCursor(b ? DragSource.DefaultMoveDrop : DragSource.DefaultMoveNoDrop);
-//            return b;
-//        }
-//
-//        @Override
-//        public int getSourceActions(JComponent c) {
-//            return TransferHandler.COPY_OR_MOVE;
-//        }
-//
-//        @Override
-//        public boolean importData(TransferHandler.TransferSupport info) {
-//            JTable target = (JTable) info.getComponent();
-//            JTable.DropLocation dl = (JTable.DropLocation) info.getDropLocation();
-//            int index = dl.getRow();
-//            int max = table.getModel().getRowCount();
-//            if (index < 0 || index > max) {
-//                index = max;
-//            }
-//            target.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//            try {
-//                Integer rowFrom = (Integer) info.getTransferable().getTransferData(localObjectFlavor);
-//                if (rowFrom != -1 && rowFrom != index) {
-//                    if (index > rowFrom) {
-//                        index--;
-//                    }
-//                    ((TModel) table.getModel()).moveRow(rowFrom, rowFrom, index);
-//
-//                    target.getSelectionModel().addSelectionInterval(index, index);
-//                    return true;
-//                }
-//            } catch (Exception e) {
-//            }
-//            return false;
-//        }
-//
-//        @Override
-//        protected void exportDone(JComponent c, Transferable t, int act) {
-//            if (act == TransferHandler.MOVE) {
-//                table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//            }
-//        }
-//    }
     class TableRowTransferHandlerDownload extends TransferHandler {
 
-        private final DataFlavor localObjectFlavor;
+        //private final DataFlavor localObjectFlavor = new ActivationDataFlavor(Integer.class, DataFlavor.javaJVMLocalObjectMimeType, "Integer Row Index");
+        private final DataFlavor localObjectFlavor = new DataFlavor(Integer.class, "Integer Row Index");
+        private JTable table = null;
         private int[] transferedRows = null;
-        private MVJTable mVJTable = null;
 
-        public TableRowTransferHandlerDownload(MVJTable table) {
-            this.mVJTable = table;
-            localObjectFlavor = new ActivationDataFlavor(
-                    Integer.class, DataFlavor.javaJVMLocalObjectMimeType, "Integer");
+        public TableRowTransferHandlerDownload(JTable table) {
+            this.table = table;
         }
 
         @Override
         protected Transferable createTransferable(JComponent c) {
-            assert (c == mVJTable);
-            transferedRows = mVJTable.getSelectedRows();
-            for (int i = 0; i < transferedRows.length; ++i) {
-                transferedRows[i] = mVJTable.convertRowIndexToModel(transferedRows[i]);
-            }
-            return new DataHandler(new Integer(0), localObjectFlavor.getMimeType());
+            assert (c == table);
+            transferedRows = table.getSelectedRows();
+            return new DataHandler(new Integer(table.getSelectedRow()), localObjectFlavor.getMimeType());
         }
 
         @Override
         public boolean canImport(TransferHandler.TransferSupport info) {
-            boolean b = info.getComponent() == mVJTable;
-            b = b && info.isDrop() && info.isDataFlavorSupported(localObjectFlavor);
-            mVJTable.setCursor(b ? DragSource.DefaultMoveDrop : DragSource.DefaultMoveNoDrop);
-            return b;
+            try {
+                boolean b = info.getComponent() == table && info.isDrop() && info.isDataFlavorSupported(localObjectFlavor);
+                table.setCursor(b ? DragSource.DefaultMoveDrop : DragSource.DefaultMoveNoDrop);
+                return b;
+                // here's the problem
+                // canImport is called during drags AND before drop is accepted
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return true;
         }
 
         @Override
         public int getSourceActions(JComponent c) {
-            return TransferHandler.MOVE;
+            return TransferHandler.COPY_OR_MOVE;
         }
 
         @Override
         public boolean importData(TransferHandler.TransferSupport info) {
-            JTable target = (JTable) info.getComponent();
-            JTable.DropLocation dl = (JTable.DropLocation) info.getDropLocation();
-            TModel tModel = (TModel) mVJTable.getModel();
-            int index = dl.getRow();
-            int max = tModel.getRowCount();
-            if (index < 0 || index > max) {
-                index = max;
-            }
-            target.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             try {
+                JTable target = (JTable) info.getComponent();
+                JTable.DropLocation dl = (JTable.DropLocation) info.getDropLocation();
+                int index = dl.getRow();
+                TModel tModel = (TModel) table.getModel();
+                int max = tModel.getRowCount();
+                if (index < 0 || index > max) {
+                    index = max;
+                }
+                target.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 if (transferedRows != null) {
                     reorder(index, transferedRows);
                     transferedRows = null;
@@ -261,57 +191,35 @@ public final class MVJTable extends JTable {
         @Override
         protected void exportDone(JComponent c, Transferable t, int act) {
             if (act == TransferHandler.MOVE) {
-                mVJTable.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                table.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             }
         }
     }
 
-    // erster Versuch
-    private void reorder(int index, int[] rowFrom) {
+    public void reorder(int index, int[] rowFrom) {
         getSelected();
         TModel tModel = (TModelDownload) this.getModel();
-        // erst mal das Model umsortieren
-        for (int i = 0; i < rowFrom.length; ++i) {
-            if (index > rowFrom[i]) {
-                --index;
-                tModel.moveRow(rowFrom[i], rowFrom[i], index);
-            } else {
-                tModel.moveRow(rowFrom[i], rowFrom[i], index);
-            }
-            ++index;
-        }
-
         // listeDownloads neu nach der Reihenfolge in der Tabelle erstellen
         for (int i = 0; i < this.getRowCount(); ++i) {
-            int nr = ((Integer) tModel.getValueAt(this.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_NR_NR));
-            DatenDownload d = Daten.listeDownloads.getDownloadByNr(nr);
+            DatenDownload d = ((DatenDownload) tModel.getValueAt(this.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR));
             if (d != null) {
                 Daten.listeDownloads.remove(d);
                 Daten.listeDownloads.add(d);
             }
         }
-////        // und jetzt noch den Download verschieben
-////        LinkedList<DatenDownload> l = new LinkedList<>();
-////        LinkedList<DatenDownload> l1 = new LinkedList<>();
-////        LinkedList<DatenDownload> l2 = new LinkedList<>();
-////
-////        for (int i = 0; i < toRow; ++i) {
-////            l1.add(Daten.listeDownloads.get(i));
-////        }
-////        for (int i = toRow; i < Daten.listeDownloads.size(); ++i) {
-////            l2.add(Daten.listeDownloads.get(i));
-////        }
-////        for (int i : zeilen) {
-////            DatenDownload d = Daten.listeDownloads.getDownloadByNr(i);
-////            l1.remove(d);
-////            l2.remove(d);
-////            l.add(d);
-////        }
-////        Daten.listeDownloads.clear();
-////        Daten.listeDownloads.addDatenDownloads(l1);
-////        Daten.listeDownloads.addDatenDownloads(l);
-////        Daten.listeDownloads.addDatenDownloads(l2);
-//        Daten.listeDownloads.listeNummerieren();
+        // Downloads zum Verschieben suchen
+        LinkedList<DatenDownload> liste = new LinkedList<>();
+        for (int i = 0; i < rowFrom.length; ++i) {
+            if (index > rowFrom[i]) {
+                --index;
+            }
+            DatenDownload d = ((DatenDownload) tModel.getValueAt(this.convertRowIndexToModel(rowFrom[i]), DatenDownload.DOWNLOAD_REF_NR));
+            liste.add(d);
+            Daten.listeDownloads.remove(d);
+        }
+        // an der richtigen Stellei einfügen
+        Daten.listeDownloads.addAll(index, liste);
+        // die Tabellensortierung löschen, die wird jetzt mit der Liste wieder gefüllt
         this.getRowSorter().setSortKeys(null);
         this.setRowSorter(null);
         this.setAutoCreateRowSorter(true);

@@ -174,7 +174,6 @@ public class GuiFilme extends PanelVorlage {
         Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public void start(MSearchListenerFilmeLadenEvent event) {
-////                beobMausTabelle.itemSenderLaden.setEnabled(false);
                 jToggleButtonNeue.setEnabled(false);
                 tabelleLaden();
             }
@@ -183,7 +182,6 @@ public class GuiFilme extends PanelVorlage {
             public void fertig(MSearchListenerFilmeLadenEvent event) {
                 checkBlacklist(false);
                 tabelleLaden();
-////                beobMausTabelle.itemSenderLaden.setEnabled(true);
             }
         });
         jButtonHilfe.addActionListener(new ActionListener() {
@@ -370,16 +368,6 @@ public class GuiFilme extends PanelVorlage {
         tabelleLaden();
     }
 
-////    private void themenLaden() {
-////        // der erste Sender ist ""
-////        sender = MViewListeFilme.getModelOfFieldSender(Daten.listeFilmeNachBlackList);
-////        //für den Sender "" sind alle Themen im themenPerSender[0]
-////        themenPerSender = new String[sender.length][];
-////        for (int i = 0; i < sender.length; ++i) {
-////            themenPerSender[i] = MViewListeFilme.getModelOfFieldThema(Daten.listeFilmeNachBlackList, sender[i]);
-////        }
-////        //alleThemen = Daten.listeFilmeNachBlackList.getModelOfFieldThema("");
-////    }
     private String[] getThemen(String ssender) {
         for (int i = 1; i < Daten.listeFilmeNachBlackList.themenPerSender.length; ++i) {
             if (Daten.listeFilmeNachBlackList.sender[i].equals(ssender)) {
@@ -639,7 +627,6 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    ///
     private DatenFilm getSelFilm() {
         int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
@@ -655,15 +642,6 @@ public class GuiFilme extends PanelVorlage {
         return null;
     }
 
-//    private void senderLaden() {
-//        //Mauskontext "Sender aktualisieren"
-//        int nr = tabelle.getSelectedRow();
-//        if (nr >= 0) {
-//            DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_NR_NR).toString());
-//            String send = film.arr[DatenFilm.FILM_SENDER_NR];
-//            Daten.filmeLaden.updateSender(new String[]{send}, Daten.listeFilme, false /* senderAllesLaden */);
-//        }
-//    }
     private void setInfo() {
         String textLinks;
         final String TRENNER = "  ||  ";
@@ -1205,7 +1183,6 @@ public class GuiFilme extends PanelVorlage {
     public class BeobMausTabelle extends MouseAdapter {
         //rechhte Maustaste in der Tabelle
 
-////        JMenuItem itemSenderLaden = new JMenuItem("Sender aktualisieren");
         private BeobUrl beobUrl = new BeobUrl();
         private BeobPrint beobPrint = new BeobPrint();
         private BeobFilterLoeschen beobLoeschen = new BeobFilterLoeschen();
@@ -1216,7 +1193,6 @@ public class GuiFilme extends PanelVorlage {
         private BeobFilterSender beobSender = new BeobFilterSender();
         private BeobFilterSenderThema beobSenderThema = new BeobFilterSenderThema();
         private BeobFilterSenderThemaTitel beobSenderThemaTitel = new BeobFilterSenderThemaTitel();
-//        private BeobSenderLaden beobSenderLaden = new BeobSenderLaden();
         private BeobBlacklist boeobBlacklistSender = new BeobBlacklist(true, false);
         private BeobBlacklist boeobBlacklistSenderThema = new BeobBlacklist(true, true);
         private Point p;
@@ -1416,9 +1392,6 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.addSeparator();
             //##Trenner##
 
-////            //Sender laden
-////            itemSenderLaden.addActionListener(beobSenderLaden);
-////            jPopupMenu.add(itemSenderLaden);
             //Url
             item = new JMenuItem("URL kopieren");
             item.addActionListener(beobUrl);

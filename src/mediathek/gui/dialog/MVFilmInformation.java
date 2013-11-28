@@ -56,7 +56,6 @@ public class MVFilmInformation implements ChangeListener {
 
     public MVFilmInformation(Frame owner, JTabbedPane tabbedPane, Daten ddaten) {
         this.ddaten = ddaten;
-        ///
 //        if (Funktionen.getOs() == Funktionen.OS_LINUX) {
 //            foreground = Color.WHITE;
 //            background = Color.BLACK;
@@ -171,7 +170,9 @@ public class MVFilmInformation implements ChangeListener {
                     || i == DatenFilm.FILM_URL_KLEIN_NR
                     || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR
                     || i == DatenFilm.FILM_ABSPIELEN_NR
-                    || i == DatenFilm.FILM_AUFZEICHNEN_NR) {
+                    || i == DatenFilm.FILM_AUFZEICHNEN_NR
+                    || i == DatenFilm.FILM_DATUM_LONG_NR
+                    || i == DatenFilm.FILM_REF_NR) {
                 continue;
             }
             c.gridy = zeile;

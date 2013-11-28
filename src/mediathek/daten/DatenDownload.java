@@ -231,7 +231,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
-    /// tunen!
     public int getQuelle() {
         try {
             return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);
