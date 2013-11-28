@@ -40,10 +40,6 @@ import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import msearch.daten.DatenFilm;
 
-/**
- *
- * @author emil
- */
 public final class MVJTable extends JTable {
 
     public static final String TABELLEN = "Tabellen";
