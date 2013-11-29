@@ -151,7 +151,7 @@ public class GuiFilme extends PanelVorlage {
         checkBlacklist(false);
         panelBeschreibungSetzen();
         jPanelFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
-        jComboBoxZeitraum.setModel(new DefaultComboBoxModel<String>(COMBO_ZEIT));
+        jComboBoxZeitraum.setModel(new DefaultComboBoxModel<>(COMBO_ZEIT));
         try {
             jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
             jCheckBoxKeineGesehenen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR]));
