@@ -39,7 +39,8 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private DatenDownload datenDownload;
     private JTextField[] textfeldListe;
     private JLabel[] labelListe;
-    private JCheckBox jCheckBox = new JCheckBox(DatenDownload.DOWNLOAD_PROGRAMM_RESTART);
+    private JCheckBox jCheckBoxRestart = new JCheckBox();
+    private JCheckBox jCheckBoxInfodatei = new JCheckBox();
     public boolean ok = false;
 
     public DialogEditDownload(java.awt.Frame parent, boolean modal, DatenDownload ddownload) {
@@ -102,14 +103,24 @@ public class DialogEditDownload extends javax.swing.JDialog {
         }
         if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
             labelListe[i].setForeground(Color.BLUE);
-            jCheckBox.setSelected(datenDownload.isRestart());
-            jCheckBox.addActionListener(new BeobCheckbox());
+            jCheckBoxRestart.setSelected(datenDownload.isRestart());
+            jCheckBoxRestart.addActionListener(new BeobCheckbox());
             gridbag.setConstraints(labelListe[i], c);
             jPanelExtra.add(labelListe[i]);
             c.gridx = 1;
             c.weightx = 10;
-            gridbag.setConstraints(jCheckBox, c);
-            jPanelExtra.add(jCheckBox);
+            gridbag.setConstraints(jCheckBoxRestart, c);
+            jPanelExtra.add(jCheckBoxRestart);
+        } else if (i == DatenDownload.DOWNLOAD_INFODATEI_NR) {
+            labelListe[i].setForeground(Color.BLUE);
+            jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR]));
+            jCheckBoxInfodatei.addActionListener(new BeobCheckbox());
+            gridbag.setConstraints(labelListe[i], c);
+            jPanelExtra.add(labelListe[i]);
+            c.gridx = 1;
+            c.weightx = 10;
+            gridbag.setConstraints(jCheckBoxInfodatei, c);
+            jPanelExtra.add(jCheckBoxInfodatei);
         } else {
             if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
                 labelListe[i].setForeground(Color.BLUE);
@@ -268,7 +279,8 @@ public class DialogEditDownload extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBox.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBoxRestart.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = Boolean.toString(jCheckBoxInfodatei.isSelected());
         }
     }
 }

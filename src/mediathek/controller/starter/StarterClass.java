@@ -21,11 +21,18 @@ package mediathek.controller.starter;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import mediathek.daten.Daten;
@@ -58,7 +65,7 @@ public class StarterClass {
         startenThread.start();
     }
 
-    public synchronized Start urlMitProgrammStarten(DatenPset pSet, DatenFilm ersterFilm, String aufloesung) {
+    public synchronized void urlMitProgrammStarten(DatenPset pSet, DatenFilm ersterFilm, String aufloesung) {
         // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
         Start s = null;
@@ -71,9 +78,7 @@ public class StarterClass {
             daten.history.add(d.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
             Daten.listeDownloadsButton.addMitNummer(d);
-
         }
-        return s;
     }
 
     public void pause() {
@@ -120,6 +125,9 @@ public class StarterClass {
         private void startStarten(DatenDownload datenDownload) {
             datenDownload.start.startZeit = new Datum();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+            if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR])) {
+                writeInfoFile(datenDownload);
+            }
             switch (datenDownload.getArt()) {
                 case Start.ART_PROGRAMM:
                     StartenProgramm startenProgrammn = new StartenProgramm(datenDownload);
@@ -545,6 +553,30 @@ public class StarterClass {
             if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, StarterClass.class.getSimpleName());
             }
+        }
+    }
+
+    private void writeInfoFile(DatenDownload datenDownload) {
+        try {
+            Path path = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] + ".txt");
+            BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(path))));
+            br.write(DatenFilm.FILM_SENDER + ": " + datenDownload.film.arr[DatenFilm.FILM_SENDER_NR]);
+            br.write("\n");
+            br.write(DatenFilm.FILM_THEMA + ":  " + datenDownload.film.arr[DatenFilm.FILM_THEMA_NR]);
+            br.write("\n\n");
+
+            br.write(DatenFilm.FILM_DATUM + ":  " + datenDownload.film.arr[DatenFilm.FILM_DATUM_NR]);
+            br.write("\n");
+            br.write(DatenFilm.FILM_ZEIT + ":   " + datenDownload.film.arr[DatenFilm.FILM_ZEIT_NR]);
+            br.write("\n");
+            br.write(DatenFilm.FILM_DAUER + ":  " + datenDownload.film.arr[DatenFilm.FILM_DAUER_NR]);
+            br.write("\n\n");
+
+            br.write(datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG_NR]);
+            br.write("\n\n");
+            br.flush();
+        } catch (IOException ex) {
+            Log.fehlerMeldung(975410369, Log.FEHLER_ART_PROG, "StartetClass.writeInfoFile", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
     }
 }

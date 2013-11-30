@@ -28,6 +28,7 @@ import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 
 public class DatenPset {
+    
     public static final String PROGRAMMSET = "Programmset";
     //Tags Programmgruppen
     public static final String PROGRAMMSET_NAME = "Name";
@@ -62,25 +63,27 @@ public class DatenPset {
     public static final int PROGRAMMSET_ADD_ON_NR = 14;
     public static final String PROGRAMMSET_BESCHREIBUNG = "Beschreibung";
     public static final int PROGRAMMSET_BESCHREIBUNG_NR = 15;
-    public static final int MAX_ELEM = 16;
+    public static final String PROGRAMMSET_INFODATEI = "Infodatei";
+    public static final int PROGRAMMSET_INFODATEI_NR = 16;
+    public static final int MAX_ELEM = 17;
     public static final String[] COLUMN_NAMES = {"Setname", PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
         PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
         PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
         PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, "Auflösung", PROGRAMMSET_ADD_ON,
-        PROGRAMMSET_BESCHREIBUNG};
+        PROGRAMMSET_BESCHREIBUNG, PROGRAMMSET_INFODATEI};
     public static final String[] COLUMN_NAMES_ = {PROGRAMMSET_NAME, PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
         PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
         PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
         PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_AUFLOESUNG, PROGRAMMSET_ADD_ON,
-        PROGRAMMSET_BESCHREIBUNG};
+        PROGRAMMSET_BESCHREIBUNG, PROGRAMMSET_INFODATEI};
     private ListeProg listeProg = new ListeProg();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
-
+    
     public DatenPset() {
         makeArray();
     }
-
+    
     public DatenPset(String name) {
         // neue Pset sind immer gleich Button
         makeArray();
@@ -92,15 +95,15 @@ public class DatenPset {
     public boolean addProg(DatenProg prog) {
         return listeProg.add(prog);
     }
-
+    
     public ListeProg getListeProg() {
         return listeProg;
     }
-
+    
     public DatenProg getProg(int i) {
         return listeProg.get(i);
     }
-
+    
     public boolean progsContainPath() {
         // ein Programmschalter mit "**"
         boolean ret = false;
@@ -115,23 +118,23 @@ public class DatenPset {
         }
         return ret;
     }
-
+    
     public boolean istAbspielen() {
         return Boolean.parseBoolean(arr[PROGRAMMSET_IST_ABSPIELEN_NR]);
     }
-
+    
     public boolean istSpeichern() {
         return Boolean.parseBoolean(arr[PROGRAMMSET_IST_SPEICHERN_NR]);
     }
-
+    
     public boolean istButton() {
         return Boolean.parseBoolean(arr[PROGRAMMSET_IST_BUTTON_NR]);
     }
-
+    
     public boolean istAbo() {
         return Boolean.parseBoolean(arr[PROGRAMMSET_IST_ABO_NR]);
     }
-
+    
     public boolean isLable() {
         // wenn die Programmliste leer ist und einen Namen hat, ist es ein Lable
         if (this.listeProg.isEmpty()) {
@@ -141,7 +144,7 @@ public class DatenPset {
         }
         return false;
     }
-
+    
     public boolean isFreeLine() {
         //Wenn die Programmgruppe keinen Namen hat, leere Zeile
         if (this.arr[PROGRAMMSET_NAME_NR].equals("")) {
@@ -150,7 +153,7 @@ public class DatenPset {
             return false;
         }
     }
-
+    
     public void setAbspielen(Daten ddaten) {
         Iterator<DatenPset> it = ddaten.listePset.iterator();
         while (it.hasNext()) {
@@ -159,19 +162,19 @@ public class DatenPset {
         }
         arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.TRUE.toString();
     }
-
+    
     public void setSpeichern(boolean set) {
         arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.toString(set);
     }
-
+    
     public void setButton(boolean set) {
         arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR] = Boolean.toString(set);
     }
-
+    
     public void setAbo(boolean set) {
         arr[DatenPset.PROGRAMMSET_IST_ABO_NR] = Boolean.toString(set);
     }
-
+    
     public DatenProg getProgUrl(String url) {
         //mit einer Url das Passende Programm finden
         //passt nichts, wird das letzte Programm genommen
@@ -198,7 +201,7 @@ public class DatenPset {
         }
         return ret;
     }
-
+    
     public String getZielDateiname(String url) {
         //gibt den Zieldateinamen für den Film zurück
         DatenProg prog = this.getProgUrl(url);
@@ -211,12 +214,12 @@ public class DatenPset {
         }
         return ret;
     }
-
+    
     public String getZielPfad() {
         //gibt den Zielpfad für den Film zurück
         return arr[PROGRAMMSET_ZIEL_PFAD_NR];
     }
-
+    
     public DatenPset copy() {
         DatenPset ret = new DatenPset();
         for (int i = 0; i < arr.length; ++i) {
@@ -231,7 +234,7 @@ public class DatenPset {
         }
         return ret;
     }
-
+    
     public Color getFarbe(Daten daten) {
         Color ret = null;
         String r, g, b;
@@ -248,12 +251,12 @@ public class DatenPset {
         }
         return ret;
     }
-
+    
     public void setFarbe(Color farbe) {
         arr[PROGRAMMSET_FARBE_NR] =
                 String.valueOf(farbe.getRed()) + "," + String.valueOf(farbe.getGreen()) + "," + String.valueOf(farbe.getBlue());
     }
-
+    
     public boolean checkDownloadDirekt(String url) {
         //auf direkte prüfen, pref oder suf: wenn angegeben dann muss es stimmen
         if (!this.arr[PROGRAMMSET_PRAEFIX_DIREKT_NR].equals("")
@@ -265,7 +268,7 @@ public class DatenPset {
         }
         return false;
     }
-
+    
     @Override
     public String toString() {
         String ret = "";
@@ -295,5 +298,6 @@ public class DatenPset {
         arr[PROGRAMMSET_IST_BUTTON_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_IST_ABO_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_THEMA_ANLEGEN_NR] = Boolean.toString(true);
+        arr[PROGRAMMSET_INFODATEI_NR] = Boolean.toString(false);
     }
 }
