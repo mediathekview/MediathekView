@@ -25,10 +25,14 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogZiel;
-import mediathek.tool.*;
+import mediathek.tool.DatumZeit;
+import mediathek.tool.Funktionen;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
+import mediathek.tool.MVMessageDialog;
 
 public class ProgrammLog {
 

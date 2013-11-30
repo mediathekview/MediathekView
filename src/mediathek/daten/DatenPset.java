@@ -271,7 +271,7 @@ public class DatenPset {
         String ret = "";
         ret += "================================================" + Daten.LINE_SEPARATOR;
         ret += "| Programmset" + Daten.LINE_SEPARATOR;
-        for (int i = 0; i < PROGRAMMSET_MAX_LAENGE_NR; ++i) {
+        for (int i = 0; i < MAX_ELEM; ++i) {
             ret += "| " + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
         }
         for (int i = 0; i < listeProg.size(); ++i) {
