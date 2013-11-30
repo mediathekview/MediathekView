@@ -58,7 +58,7 @@ import mediathek.tool.TModel;
 import msearch.daten.DatenFilm;
 
 public class PanelPsetLang extends PanelVorlage {
-
+    
     private int neuZaehler = 0;
     private String exportPfad = "";
     private ListePset listePset;
@@ -66,7 +66,7 @@ public class PanelPsetLang extends PanelVorlage {
     private MVJTable tabelleProgramme;
     private boolean modalHilfe = false;
     private final static Color COLOR_ABSPIELEN = new Color(205, 255, 191);
-
+    
     public PanelPsetLang(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
@@ -78,7 +78,7 @@ public class PanelPsetLang extends PanelVorlage {
         listePset = daten.listePset;
         init();
     }
-
+    
     public PanelPsetLang(Daten d, Frame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
@@ -90,7 +90,7 @@ public class PanelPsetLang extends PanelVorlage {
         listePset = llistePset;
         init();
     }
-
+    
     private void init() {
         jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
         jButtonGruppePfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
@@ -275,9 +275,9 @@ public class PanelPsetLang extends PanelVorlage {
             tabellePset.setRowSelectionInterval(0, 0);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(0, 0, false));
         }
-
+        
     }
-
+    
     private void setAufloesung() {
         if (jRadioButtonAufloesungNormal.isSelected()) {
             DatenPset pset = getPset();
@@ -298,12 +298,12 @@ public class PanelPsetLang extends PanelVorlage {
             }
         }
     }
-
+    
     private void tabellePset() {
         nurtabellePset();
         tabelleProgramme();
     }
-
+    
     private void nurtabellePset() {
         stopBeob = true;
         tabellePset.getSpalten();
@@ -312,7 +312,7 @@ public class PanelPsetLang extends PanelVorlage {
         spaltenSetzen();
         stopBeob = false;
     }
-
+    
     private void spaltenSetzen() {
         for (int i = 0; i < tabellePset.getColumnCount(); ++i) {
             if (i != DatenPset.PROGRAMMSET_NAME_NR) {
@@ -322,7 +322,7 @@ public class PanelPsetLang extends PanelVorlage {
             }
         }
     }
-
+    
     private void tabelleProgramme() {
         //Tabelle mit den Programmen füllen
         DatenPset pSet = getPset();
@@ -342,6 +342,7 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxLaenge.setEnabled(pSet != null);
         jCheckBoxThema.setEnabled(pSet != null);
         jSpinnerLaenge.setEnabled(pSet != null);
+        jCheckBoxInfodatei.setEnabled(pSet != null);
         if (pSet != null) {
             jTabbedPane.setTitleAt(0, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
             if (pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
@@ -352,6 +353,7 @@ public class PanelPsetLang extends PanelVorlage {
             }
             jCheckBoxLaenge.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR]));
             jCheckBoxThema.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR]));
+            jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_INFODATEI_NR]));
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTextFieldSetName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
             jTextFieldGruppeDirektSuffix.setText(pSet.arr[DatenPset.PROGRAMMSET_SUFFIX_DIREKT_NR]);
@@ -378,6 +380,7 @@ public class PanelPsetLang extends PanelVorlage {
             //jSpinnerLaenge.setValue(GuiKonstanten.MAX_LAENGE_DATEINAME); Exception!
             jCheckBoxLaenge.setSelected(false);
             jCheckBoxThema.setSelected(false);
+            jCheckBoxInfodatei.setSelected(false);
             jTextFieldSetName.setText("");
             jTextFieldGruppeDirektSuffix.setText("");
             jTextFieldGruppeDirektPraefix.setText("");
@@ -398,7 +401,7 @@ public class PanelPsetLang extends PanelVorlage {
         stopBeob = false;
         fillTextProgramme();
     }
-
+    
     public void spaltenSetzenProgramme() {
         for (int i = 0; i < tabelleProgramme.getColumnCount(); ++i) {
             if (i == DatenProg.PROGRAMM_PRAEFIX_NR
@@ -414,11 +417,11 @@ public class PanelPsetLang extends PanelVorlage {
             }
         }
     }
-
+    
     private void notifyPset() {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName());
     }
-
+    
     private void fillTextProgramme() {
         //Textfelder mit Programmdaten füllen
         stopBeob = true;
@@ -471,7 +474,7 @@ public class PanelPsetLang extends PanelVorlage {
         }
         return ret;
     }
-
+    
     private void setNamePruefen() {
         //doppelte Gruppennamen suchen
         int row = tabellePset.getSelectedRow();
@@ -489,7 +492,7 @@ public class PanelPsetLang extends PanelVorlage {
             }
         }
     }
-
+    
     private void setAufAb(boolean auf) {
         int row = tabellePset.getSelectedRow();
         if (row != -1) {
@@ -503,13 +506,13 @@ public class PanelPsetLang extends PanelVorlage {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
-
+    
     private void setNeu() {
         listePset.addPset(new DatenPset("Neu-" + ++neuZaehler));
         tabellePset();
         notifyPset();
     }
-
+    
     private void setLoeschen() {
         int rows[] = tabellePset.getSelectedRows();
         if (rows.length > 0) {
@@ -535,7 +538,7 @@ public class PanelPsetLang extends PanelVorlage {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
-
+    
     private void setExport() {
         LinkedList<DatenPset> liste = new LinkedList<DatenPset>();
         int rows[] = tabellePset.getSelectedRows();
@@ -561,7 +564,7 @@ public class PanelPsetLang extends PanelVorlage {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
-
+    
     private void progNeueZeile(DatenProg prog) {
         DatenPset gruppe = getPset();
         if (gruppe != null) {
@@ -569,7 +572,7 @@ public class PanelPsetLang extends PanelVorlage {
             tabelleProgramme();
         }
     }
-
+    
     private void progAufAb(boolean auf) {
         int rows = tabelleProgramme.getSelectedRow();
         if (rows != -1) {
@@ -581,7 +584,7 @@ public class PanelPsetLang extends PanelVorlage {
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
-
+        
     }
 
     /** This method is called from within the constructor to
@@ -1405,7 +1408,7 @@ public class PanelPsetLang extends PanelVorlage {
     // End of variables declaration//GEN-END:variables
 
     private class BeobProgRestart implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
@@ -1417,27 +1420,27 @@ public class PanelPsetLang extends PanelVorlage {
                     tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART_NR);
                 }
             }
-
+            
         }
     }
-
+    
     private class BeobProgDoc implements DocumentListener {
-
+        
         @Override
         public void insertUpdate(DocumentEvent arg0) {
             eingabe();
         }
-
+        
         @Override
         public void removeUpdate(DocumentEvent arg0) {
             eingabe();
         }
-
+        
         @Override
         public void changedUpdate(DocumentEvent arg0) {
             eingabe();
         }
-
+        
         private void eingabe() {
             if (!stopBeob) {
                 int rows = tabelleProgramme.getSelectedRow();
@@ -1461,9 +1464,9 @@ public class PanelPsetLang extends PanelVorlage {
             }
         }
     }
-
+    
     private class BeobTableSelectPset implements ListSelectionListener {
-
+        
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (!stopBeob) {
@@ -1480,9 +1483,9 @@ public class PanelPsetLang extends PanelVorlage {
             }
         }
     }
-
+    
     private class BeobDateiDialogProg implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
@@ -1516,9 +1519,9 @@ public class PanelPsetLang extends PanelVorlage {
             }
         }
     }
-
+    
     private class BeobDateiDialogPfad implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
@@ -1555,18 +1558,18 @@ public class PanelPsetLang extends PanelVorlage {
             }
         }
     }
-
+    
     private class BeobProgNeueZeile implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             DatenProg prog = new DatenProg();
             progNeueZeile(prog);
         }
     }
-
+    
     private class BeobProgDuplizieren implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             int rows = tabelleProgramme.getSelectedRow();
@@ -1579,38 +1582,38 @@ public class PanelPsetLang extends PanelVorlage {
             }
         }
     }
-
+    
     private class BeobDoc implements DocumentListener {
-
+        
         JTextField textfeld = null;
         JTextArea textArea = null;
         int nr;
-
+        
         public BeobDoc(JTextField ttextfeld, int nnr) {
             textfeld = ttextfeld;
             nr = nnr;
         }
-
+        
         public BeobDoc(JTextArea tt, int nnr) {
             textArea = tt;
             nr = nnr;
         }
-
+        
         @Override
         public void insertUpdate(DocumentEvent arg0) {
             eingabe();
         }
-
+        
         @Override
         public void removeUpdate(DocumentEvent arg0) {
             eingabe();
         }
-
+        
         @Override
         public void changedUpdate(DocumentEvent arg0) {
             eingabe();
         }
-
+        
         private void eingabe() {
             if (!stopBeob) {
                 DatenPset datenPset;
@@ -1636,9 +1639,9 @@ public class PanelPsetLang extends PanelVorlage {
             setNamePruefen();
         }
     }
-
+    
     private class BeobGruppeDuplizieren implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             DatenPset gruppe;
@@ -1653,9 +1656,9 @@ public class PanelPsetLang extends PanelVorlage {
             }
         }
     }
-
+    
     private class BeobProgLoeschen implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             int rows[] = tabelleProgramme.getSelectedRows();
@@ -1681,69 +1684,69 @@ public class PanelPsetLang extends PanelVorlage {
             }
         }
     }
-
+    
     private class BeobPuefen implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             GuiFunktionenProgramme.programmePruefen(daten);
         }
     }
-
+    
     private class BeobProgAufAb implements ActionListener {
-
+        
         boolean auf;
-
+        
         public BeobProgAufAb(boolean a) {
             auf = a;
         }
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             progAufAb(auf);
         }
     }
-
+    
     private class BeobGruppeAufAb implements ActionListener {
-
+        
         boolean auf;
-
+        
         public BeobGruppeAufAb(boolean a) {
             auf = a;
         }
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             setAufAb(auf);
         }
     }
-
+    
     private class BeobGruppeNeu implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             setNeu();
         }
     }
-
+    
     private class BeobGruppeLoeschen implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             setLoeschen();
         }
     }
-
+    
     private class BeobGruppeExport implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             setExport();
         }
     }
-
+    
     private class BeobachterFarbe implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             DatenPset pSet = getPset();
@@ -1756,12 +1759,12 @@ public class PanelPsetLang extends PanelVorlage {
                     notifyPset();
                 }
             }
-
+            
         }
     }
-
+    
     private class BeobStandardfarbe implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             DatenPset pSet = getPset();
@@ -1770,12 +1773,12 @@ public class PanelPsetLang extends PanelVorlage {
                 tabellePset();
                 notifyPset();
             }
-
+            
         }
     }
-
+    
     public class BeobTableSelect implements ListSelectionListener {
-
+        
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (!event.getValueIsAdjusting()) {
@@ -1783,7 +1786,7 @@ public class PanelPsetLang extends PanelVorlage {
                     fillTextProgramme();
                 }
             }
-
+            
         }
     }
 }
