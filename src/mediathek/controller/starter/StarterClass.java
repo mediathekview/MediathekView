@@ -601,7 +601,6 @@ public class StarterClass {
                     }
                 }
             }
-            //br.write(datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG_NR]);
             br.write("\n\n");
             br.flush();
         } catch (IOException ex) {
