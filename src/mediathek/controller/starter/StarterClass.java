@@ -571,8 +571,16 @@ public class StarterClass {
             br.write("\n");
             br.write(DatenFilm.FILM_DAUER + ":  " + datenDownload.film.arr[DatenFilm.FILM_DAUER_NR]);
             br.write("\n\n");
-
-            br.write(datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG_NR]);
+            int anz = 0;
+            for (String s : datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG_NR].split(" ")) {
+                anz += s.length();
+                br.write(s + " ");
+                if (anz > 50) {
+                    br.write("\n");
+                    anz = 0;
+                }
+            }
+            //br.write(datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG_NR]);
             br.write("\n\n");
             br.flush();
         } catch (IOException ex) {
