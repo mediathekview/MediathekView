@@ -30,7 +30,11 @@
 	- Ist im Tab Filme der Filter "HD" aktiv, werden die Filme in der HD-Auflösung gestartet
 	- Beim Neuladen einer Filmliste werden neue Filme in eigener Farbe in der Tabele angezeigt, es gibt auch einen Filter "nur Neue"
 	- Film können als gesehen/ungesehen markiert werden
-	- Der letzte Zustand im Downloaddialog "Download sofort starten" wird gemerkt und wieder genommen (gecheckt oder nicht)
+	- Der letzte Zustand im Downloaddialog "Download sofort starten" wird gespeichert und wieder verwendet (gecheckt oder nicht)
+	- Beim Anlegen eines Sets/Downloads kann man angeben, ob eine Infodatei mit den Filminfos mit gespeichert werden soll
+	
+	
+	
 	
 	# Version 3.3.0
 	- Sortierreihenfolge der Tabellen wird gespeichert
