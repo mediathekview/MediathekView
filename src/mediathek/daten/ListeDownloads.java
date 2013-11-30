@@ -91,11 +91,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-//    public void reorder(int fromIndex, int toIndex) {
-//        // die Reihenfolge in der Liste ändern
-//        DatenDownload d = this.remove(fromIndex);
-//        this.add(toIndex, d);
-//    }
     public synchronized void listePutzen() {
         // fertige Downloads löschen
         boolean gefunden = false;
@@ -103,7 +98,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         while (it.hasNext()) {
             DatenDownload d = it.next();
             if (d.start != null) {
-                if (d.start.status >= Start.STATUS_FERTIG) {
+                if (d.start.status >= Start.STATUS_FERTIG && d.getQuelle() == Start.QUELLE_ABO) {
+                    // fehlerhaft werden nur "Abos" gelöscht, die können wieder angelegt werden
+                    gefunden = true;
+                    it.remove();
+                } else if (d.start.status == Start.STATUS_FERTIG) {
                     gefunden = true;
                     it.remove();
                 }
