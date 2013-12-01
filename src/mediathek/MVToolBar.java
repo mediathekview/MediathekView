@@ -67,9 +67,6 @@ public class MVToolBar extends JToolBar {
 
     LinkedList<MVButton> buttonListe = new LinkedList<>();
 
-    public MVToolBar() {
-    }
-
     public MVToolBar(Daten ddaten) {
         daten = ddaten;
 
@@ -175,6 +172,7 @@ public class MVToolBar extends JToolBar {
         jTextFieldFilter.setInstantSearchDelay(150);
         // Icons
         setIcon(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ICON_KLEIN_NR]));
+        setVisible();
         initListener();
     }
 
@@ -239,6 +237,27 @@ public class MVToolBar extends JToolBar {
     public void filterAnzeigen(boolean anz) {
         jTextFieldFilter.setVisible(anz);
         jButtonFilterPanel.setVisible(anz);
+    }
+
+    public void setVisible() {
+        String[] b = Daten.system[Konstanten.SYSTEM_BUTTON_TOOLBAR_NR].split(":");
+        if (buttonListe.size() == b.length) {
+            // ansonsten gibt es neue Button: dann alle anzeigen
+            for (int i = 0; i < b.length; ++i) {
+                buttonListe.get(i).anzeigen = Boolean.parseBoolean(b[i]);
+                buttonListe.get(i).setVisible(Boolean.parseBoolean(b[i]));
+            }
+        }
+    }
+
+    private void getVisible() {
+        Daten.system[Konstanten.SYSTEM_BUTTON_TOOLBAR_NR] = "";
+        for (MVButton b : buttonListe) {
+            if (!Daten.system[Konstanten.SYSTEM_BUTTON_TOOLBAR_NR].isEmpty()) {
+                Daten.system[Konstanten.SYSTEM_BUTTON_TOOLBAR_NR] += ":";
+            }
+            Daten.system[Konstanten.SYSTEM_BUTTON_TOOLBAR_NR] += Boolean.toString(b.anzeigen);
+        }
     }
 
     private void initListener() {
@@ -466,6 +485,7 @@ public class MVToolBar extends JToolBar {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         setSpalten();
+                        getVisible();
                     }
                 });
                 jPopupMenu.add(box[i]);
