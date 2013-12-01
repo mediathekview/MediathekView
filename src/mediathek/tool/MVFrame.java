@@ -22,10 +22,10 @@ package mediathek.tool;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
-public class MVJFrame extends javax.swing.JFrame {
+public class MVFrame extends javax.swing.JFrame {
 
     /** Creates new form MVJFrame */
-    public MVJFrame(JPanel jPanel) {
+    public MVFrame(JPanel jPanel) {
         initComponents();
         jPanelExtra.setLayout(new BorderLayout());
         jPanelExtra.add(jPanel, BorderLayout.CENTER);

@@ -76,7 +76,7 @@ import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
-import mediathek.tool.MVJTable;
+import mediathek.tool.MVTable;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModel;
@@ -100,7 +100,7 @@ public class GuiFilme extends PanelVorlage {
     public GuiFilme(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
-        tabelle = new MVJTable(MVJTable.TABELLE_TAB_FILME);
+        tabelle = new MVTable(MVTable.TABELLE_TAB_FILME);
         jScrollPane1.setViewportView(tabelle);
         panelVideoplayerSetzen();
         panelBeschreibung = new PanelBeschreibung(daten);

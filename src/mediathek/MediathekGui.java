@@ -430,6 +430,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
     public void filterAnzeigen(boolean anz) {
         jCheckBoxMenuItemFilterAnzeigen.setSelected(!anz);
+        mVToolBar.filterAnzeigen(anz);
     }
 
     public void videoplayerAnzeigen(boolean anz) {
@@ -523,7 +524,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 //        jTextFieldFilter.setInstantSearchDelay(150);
 //    }
     private void init() {
-        mVToolBar.init();
 //        jButtonFilmeLaden.setIcon(GetIcon.getIcon("filmlisteLaden_32.png"));
 //        jButtonFilmAbspielen.setIcon(GetIcon.getIcon("film_start_32.png"));
 //        jButtonInfo.setIcon(GetIcon.getIcon("info_32.png"));
@@ -563,8 +563,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAnleitung.setIcon(GetIcon.getIcon("help_16.png"));
         initTabs();
         initMenue();
-//        initToolBar();
-//        initSearchField();
         Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public void start(MSearchListenerFilmeLadenEvent event) {
@@ -831,7 +829,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemFilmlisteLaden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                filmeLaden(false);
+                Daten.filmeLaden.filmeLaden(daten, false);
             }
         });
         jMenuItemFilmAbspielen.addActionListener(new ActionListener() {
@@ -1142,20 +1140,19 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 //        }
 //        this.repaint();
 //    }
-    private void filmeLaden(boolean manuell) {
-        if (manuell || GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUS) {
-            // Dialog zum Laden der Filme anzeigen
-            DialogLeer dialog = new DialogLeer(this, true);
-            dialog.init("Einstellungen zum Laden der Filme", new PanelFilmlisteLaden(daten, daten.mediathekGui, dialog));
-            dialog.setVisible(true);
-        } else {
-            // Filme werden automatisch geladen
-//            jButtonFilmeLaden.setEnabled(false);
-            jMenuItemFilmlisteLaden.setEnabled(false);
-            Daten.filmeLaden.importFilmliste("");
-        }
-    }
-
+//    private void filmeLaden(boolean manuell) {
+//        if (manuell || GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUS) {
+//            // Dialog zum Laden der Filme anzeigen
+//            DialogLeer dialog = new DialogLeer(this, true);
+//            dialog.init("Einstellungen zum Laden der Filme", new PanelFilmlisteLaden(daten, daten.mediathekGui, dialog));
+//            dialog.setVisible(true);
+//        } else {
+//            // Filme werden automatisch geladen
+////            jButtonFilmeLaden.setEnabled(false);
+//            jMenuItemFilmlisteLaden.setEnabled(false);
+//            Daten.filmeLaden.importFilmliste("");
+//        }
+//    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

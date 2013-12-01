@@ -21,14 +21,14 @@ package mediathek.gui;
 
 import java.awt.Frame;
 import mediathek.daten.Daten;
-import mediathek.tool.MVJTable;
+import mediathek.tool.MVTable;
 
 public class PanelVorlage extends javax.swing.JPanel {
 
     public Daten daten;
     public boolean stopBeob = false;
     public Frame parentComponent = null;
-    MVJTable tabelle = null;
+    MVTable tabelle = null;
 
     /**
      *

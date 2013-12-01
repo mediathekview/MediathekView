@@ -30,13 +30,13 @@ import javax.swing.JPopupMenu;
 public class BeobTableHeader extends MouseAdapter {
     //rechhte Maustaste in der Tabelle
 
-    MVJTable tabelle;
+    MVTable tabelle;
     String[] columns;
     boolean[] spaltenAnzeigen;
     JCheckBoxMenuItem[] box;
     int[] ausblenden;
 
-    public BeobTableHeader(MVJTable tabelle, String[] columns, boolean[] spalten, int[] aausblenden) {
+    public BeobTableHeader(MVTable tabelle, String[] columns, boolean[] spalten, int[] aausblenden) {
         this.tabelle = tabelle;
         this.columns = columns;
         spaltenAnzeigen = spalten;
