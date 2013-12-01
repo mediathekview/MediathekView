@@ -234,7 +234,7 @@ public class IoXmlLesen {
                             }
                         } else if (parser.getLocalName().equals(DatenBlacklist.BLACKLIST)) {
                             //Blacklist
-                            ListeBlacklist blacklist = ddaten.listeBlacklist;
+                            ListeBlacklist blacklist = Daten.listeBlacklist;
                             DatenBlacklist datenBlacklist = new DatenBlacklist();
                             if (get(parser, event, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
                                 blacklist.add(datenBlacklist);

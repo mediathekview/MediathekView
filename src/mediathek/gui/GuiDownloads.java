@@ -161,11 +161,11 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenDownload.COLUMN_NAMES, DatenDownload.spaltenAnzeigen,
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR, DatenDownload.DOWNLOAD_REF_NR}) {
-            @Override
-            public void tabelleLaden_() {
-                tabelleLaden();
-            }
-        });
+                    @Override
+                    public void tabelleLaden_() {
+                        tabelleLaden();
+                    }
+                });
         jRadioButtonAlles.addActionListener(new BeobAnzeige());
         jRadioButtonAbos.addActionListener(new BeobAnzeige());
         jRadioButtonDownloads.addActionListener(new BeobAnzeige());
@@ -261,7 +261,7 @@ public class GuiDownloads extends PanelVorlage {
 
     private synchronized void downloadsAktualisieren() {
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
-        downloadsAufraeumen();
+        Daten.listeDownloads.listePutzen(false /*putzen*/);
         Daten.listeDownloads.zurueckgestellteWiederAktivieren();
         Daten.listeDownloads.abosLoschenWennNochNichtGestartet();
         Daten.listeDownloads.abosSuchen(parentComponent);
@@ -275,7 +275,7 @@ public class GuiDownloads extends PanelVorlage {
     private synchronized void downloadsAufraeumen() {
         // abgeschlossene Downloads werden aus der Tabelle/Liste entfernt
         // die Starts dafür werden auch gelöscht
-        Daten.listeDownloads.listePutzen();
+        Daten.listeDownloads.listePutzen(true /*putzen*/);
     }
 
     private synchronized void downloadsAufraeumen(DatenDownload datenDownload) {
@@ -777,7 +777,6 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
 
-
             //#######################################
             jPopupMenu.addSeparator();
             //#######################################
@@ -934,7 +933,7 @@ public class GuiDownloads extends PanelVorlage {
                     if (nr >= 0) {
                         GuiFunktionen.copyToClipboard(
                                 tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr),
-                                DatenDownload.DOWNLOAD_URL_NR).toString());
+                                        DatenDownload.DOWNLOAD_URL_NR).toString());
                     }
                 }
             });

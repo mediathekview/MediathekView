@@ -169,7 +169,7 @@ public class IoXmlSchreiben {
         ListIterator<DatenAbo> iterator;
         //Abo schreibem
         DatenAbo datenAbo;
-        iterator = daten.listeAbo.listIterator();
+        iterator = Daten.listeAbo.listIterator();
         while (iterator.hasNext()) {
             datenAbo = iterator.next();
             xmlSchreibenDaten(DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr);
@@ -177,7 +177,7 @@ public class IoXmlSchreiben {
     }
 
     private void xmlSchreibenBlackList(Daten daten) {
-        Iterator<DatenBlacklist> it = daten.listeBlacklist.iterator();
+        Iterator<DatenBlacklist> it = Daten.listeBlacklist.iterator();
         //Blacklist schreibem
         DatenBlacklist blacklist;
         while (it.hasNext()) {
