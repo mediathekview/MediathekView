@@ -24,7 +24,11 @@ import java.util.Iterator;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import mediathek.daten.Daten;
+import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.Duration;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Log;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
@@ -105,6 +109,21 @@ public class FilmeLaden {
 
     public String[] getSenderNamen() {
         return mSearchFilmeSuchen.getNamenSender();
+    }
+
+    // ###################################################################
+    // Filme laden
+    // ###################################################################
+    public void filmeLaden(Daten daten, boolean manuell) {
+        if (manuell || GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUS) {
+            // Dialog zum Laden der Filme anzeigen
+            DialogLeer dialog = new DialogLeer(daten.mediathekGui, true);
+            dialog.init("Einstellungen zum Laden der Filme", new PanelFilmlisteLaden(daten, daten.mediathekGui, dialog));
+            dialog.setVisible(true);
+        } else {
+            // Filme werden automatisch geladen
+            Daten.filmeLaden.importFilmliste("");
+        }
     }
 
     // #########################################################

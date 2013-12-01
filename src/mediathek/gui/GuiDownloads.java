@@ -54,7 +54,7 @@ import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVFilmSize;
-import mediathek.tool.MVJTable;
+import mediathek.tool.MVTable;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.OpenPlayerAction;
 import mediathek.tool.TModelDownload;
@@ -73,7 +73,7 @@ public class GuiDownloads extends PanelVorlage {
     public GuiDownloads(Daten d, Frame parentComponent) {
         super(d, parentComponent);
         initComponents();
-        tabelle = new MVJTable(MVJTable.TABELLE_TAB_DOWNLOADS);
+        tabelle = new MVTable(MVTable.TABELLE_TAB_DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
         filmInfoHud = daten.filmInfoHud;
         panelBeschreibung = new PanelBeschreibung(daten);

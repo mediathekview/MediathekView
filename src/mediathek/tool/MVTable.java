@@ -40,7 +40,7 @@ import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import msearch.daten.DatenFilm;
 
-public final class MVJTable extends JTable {
+public final class MVTable extends JTable {
 
     public static final String TABELLEN = "Tabellen";
     public static final int TABELLE_STANDARD = -1;
@@ -67,7 +67,7 @@ public final class MVJTable extends JTable {
     String[] spaltenTitel;
     int maxSpalten;
 
-    public MVJTable(int ttabelle) {
+    public MVTable(int ttabelle) {
         tabelle = ttabelle;
         this.setAutoCreateRowSorter(true);
         this.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
@@ -220,7 +220,7 @@ public final class MVJTable extends JTable {
         this.setRowSorter(null);
         this.setAutoCreateRowSorter(true);
         setSelected();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, MVJTable.class.getSimpleName());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, MVTable.class.getSimpleName());
     }
 
     public void initTabelle() {

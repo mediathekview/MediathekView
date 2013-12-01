@@ -27,7 +27,7 @@ public class MVListeFilme {
 
 //    public static HashSet<String> hashSet = new HashSet<>();
 //    public static TreeSet<String> treeSet = new TreeSet<>(msearch.tool.GermanStringSorter.getInstance());
-    public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVJTable table,
+    public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVTable table,
             String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
             int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live, boolean nurNeue) {
         // Model für die Tabelle Filme zusammenbauen
@@ -107,7 +107,7 @@ public class MVListeFilme {
         table.setModel(tModel);
     }
 
-    public static synchronized void getModelTabFilme_(ListeFilme listeFilme, Daten ddaten, MVJTable table,
+    public static synchronized void getModelTabFilme_(ListeFilme listeFilme, Daten ddaten, MVTable table,
             String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
             int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
         // Model für die Tabelle Filme zusammenbauen

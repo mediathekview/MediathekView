@@ -53,7 +53,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.Log;
-import mediathek.tool.MVJTable;
+import mediathek.tool.MVTable;
 import mediathek.tool.TModel;
 import msearch.daten.DatenFilm;
 
@@ -62,8 +62,8 @@ public class PanelPsetLang extends PanelVorlage {
     private int neuZaehler = 0;
     private String exportPfad = "";
     private ListePset listePset;
-    private MVJTable tabellePset;
-    private MVJTable tabelleProgramme;
+    private MVTable tabellePset;
+    private MVTable tabelleProgramme;
     private boolean modalHilfe = false;
     private final static Color COLOR_ABSPIELEN = new Color(205, 255, 191);
     
@@ -71,9 +71,9 @@ public class PanelPsetLang extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         modalHilfe = false;
-        tabellePset = new MVJTable(MVJTable.TABELLE_TAB_PSET);
+        tabellePset = new MVTable(MVTable.TABELLE_TAB_PSET);
         jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new MVJTable(MVJTable.TABELLE_TAB_PROG);
+        tabelleProgramme = new MVTable(MVTable.TABELLE_TAB_PROG);
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = daten.listePset;
         init();
@@ -83,9 +83,9 @@ public class PanelPsetLang extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         modalHilfe = true;
-        tabellePset = new MVJTable(MVJTable.TABELLE_TAB_PSET);
+        tabellePset = new MVTable(MVTable.TABELLE_TAB_PSET);
         jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new MVJTable(MVJTable.TABELLE_TAB_PROG);
+        tabelleProgramme = new MVTable(MVTable.TABELLE_TAB_PROG);
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = llistePset;
         init();
@@ -105,7 +105,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeAb.setIcon(GetIcon.getIcon("move_down_16.png"));
 
         //Programme
-        tabellePset.setAutoResizeMode(MVJTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+        tabellePset.setAutoResizeMode(MVTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
             @Override
             public void ping() {
