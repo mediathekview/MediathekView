@@ -91,18 +91,24 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized void listePutzen() {
+    public synchronized void listePutzen(boolean putzen) {
         // fertige Downloads löschen
+        // wird nur aktualisiert: !putzen, werden fehlerhafte Downlods nicht gelöscht
         boolean gefunden = false;
         Iterator<DatenDownload> it = this.iterator();
         while (it.hasNext()) {
             DatenDownload d = it.next();
             if (d.start != null) {
-                if (d.start.status >= Start.STATUS_FERTIG && d.getQuelle() == Start.QUELLE_ABO) {
-                    // fehlerhaft werden nur "Abos" gelöscht, die können wieder angelegt werden
+                if (putzen && d.start.status >= Start.STATUS_FERTIG) {
+                    // alles was fertig/fehlerhaft ist, kommt beim putzen weg
+                    gefunden = true;
+                    it.remove();
+                } else if (d.getQuelle() == Start.QUELLE_ABO && d.start.status >= Start.STATUS_FERTIG) {
+                    // fehlerhafte "Abos" werden immer gelöscht, die können wieder angelegt werden
                     gefunden = true;
                     it.remove();
                 } else if (d.start.status == Start.STATUS_FERTIG) {
+                    // der Rest kommt nur weg, wenn er echt "feritig" und !fehlerhaft ist
                     gefunden = true;
                     it.remove();
                 }
