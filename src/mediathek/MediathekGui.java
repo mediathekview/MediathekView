@@ -563,6 +563,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAnleitung.setIcon(GetIcon.getIcon("help_16.png"));
         initTabs();
         initMenue();
+        mVToolBar.setVisible();
         Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public void start(MSearchListenerFilmeLadenEvent event) {
