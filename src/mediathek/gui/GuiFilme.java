@@ -52,6 +52,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.MVStatusBar_Mac;
+import mediathek.MVToolBar;
 import mediathek.MediathekGui;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
@@ -122,7 +123,7 @@ public class GuiFilme extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        daten.mediathekGui.setToolbar(MediathekGui.UIButtonState.FILME);
+        daten.mediathekGui.setToolbar(MVToolBar.SPARTE_TABFILM);
         daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.FILME);
         aktFilmSetzen();
         setInfo();
@@ -219,11 +220,11 @@ public class GuiFilme extends PanelVorlage {
         tabelle.setDefaultRenderer(Integer.class, new CellRendererFilme(daten));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
                 new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR, DatenFilm.FILM_DATUM_LONG_NR, DatenFilm.FILM_REF_NR}) {
-            @Override
-            public void tabelleLaden_() {
-                tabelleLaden();
-            }
-        });
+                    @Override
+                    public void tabelleLaden_() {
+                        tabelleLaden();
+                    }
+                });
 
         //beobachter Filter
         jToggleButtonLivestram.addActionListener(new ActionListener() {
@@ -1441,7 +1442,7 @@ public class GuiFilme extends PanelVorlage {
                 if (nr >= 0) {
                     GuiFunktionen.copyToClipboard(
                             tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr),
-                            DatenFilm.FILM_URL_NR).toString());
+                                    DatenFilm.FILM_URL_NR).toString());
                 }
             }
         }

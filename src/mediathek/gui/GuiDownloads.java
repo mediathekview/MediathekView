@@ -36,6 +36,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.MVStatusBar_Mac;
+import mediathek.MVToolBar;
 import mediathek.MediathekGui;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
@@ -100,7 +101,7 @@ public class GuiDownloads extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        daten.mediathekGui.setToolbar(MediathekGui.UIButtonState.DOWNLOAD);
+        daten.mediathekGui.setToolbar(MVToolBar.SPARTE_TABDOWNLOAD);
         daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD);
         aktFilmSetzen();
     }

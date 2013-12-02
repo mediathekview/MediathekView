@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import mediathek.MVStatusBar_Mac;
+import mediathek.MVToolBar;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
@@ -68,7 +69,7 @@ public class GuiAbo extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        daten.mediathekGui.setToolbar(MediathekGui.UIButtonState.ABO);
+        daten.mediathekGui.setToolbar(MVToolBar.SPARTE_TABABO);
         daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.ABO);
     }
 

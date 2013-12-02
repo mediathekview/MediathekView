@@ -25,12 +25,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import javax.swing.Box.Filler;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
-import mediathek.MediathekGui.UIButtonState;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
@@ -41,6 +39,11 @@ import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 import org.jdesktop.swingx.JXSearchField;
 
 public class MVToolBar extends JToolBar {
+
+    public static final String SPARTE_NIX = "";
+    public static final String SPARTE_TABFILM = "Filme";
+    public static final String SPARTE_TABDOWNLOAD = "Download";
+    public static final String SPARTE_TABABO = "Abo";
 
     private Daten daten;
     BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
@@ -75,37 +78,37 @@ public class MVToolBar extends JToolBar {
         this.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         this.setFloatable(false);
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
-        jButtonFilmeLaden = new MVButton("Filmliste laden", "neue Filmliste laden", "filmlisteLaden_32.png", "filmlisteLaden_16.png");
+        jButtonFilmeLaden = new MVButton(new String[]{SPARTE_TABFILM}, "Filmliste laden", "neue Filmliste laden", "filmlisteLaden_32.png", "filmlisteLaden_16.png");
         buttonListe.add(jButtonFilmeLaden);
         javax.swing.Box.Filler filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
-        jButtonInfo = new MVButton("Infos anzeigen", "Infos anzeigen", "info_32.png", "info_16.png");
+        jButtonInfo = new MVButton(new String[]{SPARTE_TABFILM, SPARTE_TABDOWNLOAD}, "Infos anzeigen", "Infos anzeigen", "info_32.png", "info_16.png");
         buttonListe.add(jButtonInfo);
         filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
-        jButtonFilmAbspielen = new MVButton("Film abspielen", "Film abspielen", "film_start_32.png", "film_start_16.png");
+        jButtonFilmAbspielen = new MVButton(new String[]{SPARTE_TABFILM}, "Film abspielen", "Film abspielen", "film_start_32.png", "film_start_16.png");
         buttonListe.add(jButtonFilmAbspielen);
-        jButtonFilmSpeichern = new MVButton("Film aufzeichnen", "Film aufzeichnen", "film_rec_32.png", "film_rec_16.png");
+        jButtonFilmSpeichern = new MVButton(new String[]{SPARTE_TABFILM}, "Film aufzeichnen", "Film aufzeichnen", "film_rec_32.png", "film_rec_16.png");
         buttonListe.add(jButtonFilmSpeichern);
         javax.swing.Box.Filler filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
-        jButtonDownloadAktualisieren = new MVButton("Downloads aktualisieren", "Downloads aktualisieren", "view-refresh_32.png", "view-refresh_16.png");
+        jButtonDownloadAktualisieren = new MVButton(new String[]{SPARTE_TABDOWNLOAD}, "Downloads aktualisieren", "Downloads aktualisieren", "view-refresh_32.png", "view-refresh_16.png");
         buttonListe.add(jButtonDownloadAktualisieren);
-        jButtonDownloadAlleStarten = new MVButton("alle Downloads starten", "alle Downloads starten", "download_alleStarten_32.png", "download_alleStarten_16.png");
+        jButtonDownloadAlleStarten = new MVButton(new String[]{SPARTE_TABDOWNLOAD}, "alle Downloads starten", "alle Downloads starten", "download_alleStarten_32.png", "download_alleStarten_16.png");
         buttonListe.add(jButtonDownloadAlleStarten);
-        jButtonDownloadFilmStarten = new MVButton("Film Starten", "Film im Player Starten", "film_start_32.png", "film_start_16.png");
+        jButtonDownloadFilmStarten = new MVButton(new String[]{SPARTE_TABDOWNLOAD}, "Film Starten", "Film im Player Starten", "film_start_32.png", "film_start_16.png");
         buttonListe.add(jButtonDownloadFilmStarten);
-        jButtonDownloadZurueckstellen = new MVButton("Download zurückstellen", "Download zurückstellen", "undo_32.png", "undo_16.png");
+        jButtonDownloadZurueckstellen = new MVButton(new String[]{SPARTE_TABDOWNLOAD}, "Download zurückstellen", "Download zurückstellen", "undo_32.png", "undo_16.png");
         buttonListe.add(jButtonDownloadZurueckstellen);
-        jButtonDownloadLoeschen = new MVButton("Download dauerhaft löschen", "Download dauerhaft löschen", "download_del_32.png", "download_del_16.png");
+        jButtonDownloadLoeschen = new MVButton(new String[]{SPARTE_TABDOWNLOAD}, "Download dauerhaft löschen", "Download dauerhaft löschen", "download_del_32.png", "download_del_16.png");
         buttonListe.add(jButtonDownloadLoeschen);
-        jButtonDownloadAufraeumen = new MVButton("Downloads aufräumen", "Liste der Downloads aufräumen", "download_clear_32.png", "download_clear_16.png");
+        jButtonDownloadAufraeumen = new MVButton(new String[]{SPARTE_TABDOWNLOAD}, "Downloads aufräumen", "Liste der Downloads aufräumen", "download_clear_32.png", "download_clear_16.png");
         buttonListe.add(jButtonDownloadAufraeumen);
         javax.swing.Box.Filler filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
-        jButtonAbosEinschalten = new MVButton("Abos einschalten", "Abos einschalten", "ja_32.png", "ja_16.png");
+        jButtonAbosEinschalten = new MVButton(new String[]{SPARTE_TABABO}, "Abos einschalten", "Abos einschalten", "ja_32.png", "ja_16.png");
         buttonListe.add(jButtonAbosEinschalten);
-        jButtonAbosAusschalten = new MVButton("Abos deaktivieren", "Abos deaktivieren", "nein_32.png", "nein_16.png");
+        jButtonAbosAusschalten = new MVButton(new String[]{SPARTE_TABABO}, "Abos deaktivieren", "Abos deaktivieren", "nein_32.png", "nein_16.png");
         buttonListe.add(jButtonAbosAusschalten);
-        jButtonAbosLoeschen = new MVButton("Abos löschen", "Abos löschen", "del_32.png", "del_16.png");
+        jButtonAbosLoeschen = new MVButton(new String[]{SPARTE_TABABO}, "Abos löschen", "Abos löschen", "del_32.png", "del_16.png");
         buttonListe.add(jButtonAbosLoeschen);
-        jButtonAboAendern = new MVButton("Abo ändern", "Abo ändern", "configure_32.png", "configure_16.png");
+        jButtonAboAendern = new MVButton(new String[]{SPARTE_TABABO}, "Abo ändern", "Abo ändern", "configure_32.png", "configure_16.png");
         buttonListe.add(jButtonAboAendern);
         filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(1, 5), new java.awt.Dimension(1, 5), new java.awt.Dimension(32767, 5));
         jButtonFilterPanel = new JButton();
@@ -196,44 +199,76 @@ public class MVToolBar extends JToolBar {
         this.repaint();
     }
 
-    public void setToolbar(UIButtonState nr) {
-        // public enum UIButtonState {        AUS, FILME, DOWNLOAD, ABO    }
-        switch (nr) {
-            case AUS:
-                buttonAus();
-                break;
-            case FILME:
-                buttonAus();
-                jButtonFilmeLaden.setEnabled(true);
-                jButtonFilmAbspielen.setEnabled(true);
-                jButtonInfo.setEnabled(true);
-                jButtonFilmSpeichern.setEnabled(true);
-                filterAnzeigen(!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
-                break;
-            case DOWNLOAD:
-                buttonAus();
-                jButtonInfo.setEnabled(true);
-                jButtonFilmeLaden.setEnabled(true);
-                jButtonDownloadAktualisieren.setEnabled(true);
-                jButtonDownloadAlleStarten.setEnabled(true);
-                jButtonDownloadFilmStarten.setEnabled(true);
-                jButtonDownloadZurueckstellen.setEnabled(true);
-                jButtonDownloadLoeschen.setEnabled(true);
-                jButtonDownloadAufraeumen.setEnabled(true);
-                filterAnzeigen(false);
-                break;
-            case ABO:
-                buttonAus();
-                jButtonFilmeLaden.setEnabled(true);
-                jButtonAbosLoeschen.setEnabled(true);
-                jButtonAbosEinschalten.setEnabled(true);
-                jButtonAbosAusschalten.setEnabled(true);
-                jButtonAboAendern.setEnabled(true);
-                filterAnzeigen(false);
-                break;
+    public void setToolbar(String state, boolean ausschalten) {
+        boolean ok;
+        if (state.equals(SPARTE_TABFILM)) {
+            filterAnzeigen(!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+        } else {
+            filterAnzeigen(false);
+        }
+        if (state.equals(SPARTE_NIX)) {
+            for (MVButton b : buttonListe) {
+                b.setEnabled(false);
+                if (ausschalten) {
+                    b.setVisible(false);
+                }
+            }
+        } else {
+            for (MVButton b : buttonListe) {
+                ok = false;
+                for (String s : b.sparte) {
+                    if (s.equals(state)) {
+                        b.setEnabled(true);
+                        b.setVisible(true);
+                        ok = true;
+                    }
+                }
+                if (!ok) {
+                    b.setEnabled(false);
+                    if (ausschalten) {
+                        b.setVisible(false);
+                    }
+                }
+            }
         }
     }
 
+//    public void setToolbar(String state, boolean ausschalten) {
+//        switch (state) {
+//            case "":
+//                buttonAus();
+//                break;
+//            case SPARTE_TABFILM:
+//                buttonAus();
+//                jButtonFilmeLaden.setEnabled(true);
+//                jButtonFilmAbspielen.setEnabled(true);
+//                jButtonInfo.setEnabled(true);
+//                jButtonFilmSpeichern.setEnabled(true);
+//                filterAnzeigen(!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+//                break;
+//            case SPARTE_TABDOWNLOAD:
+//                buttonAus();
+//                jButtonInfo.setEnabled(true);
+//                jButtonFilmeLaden.setEnabled(true);
+//                jButtonDownloadAktualisieren.setEnabled(true);
+//                jButtonDownloadAlleStarten.setEnabled(true);
+//                jButtonDownloadFilmStarten.setEnabled(true);
+//                jButtonDownloadZurueckstellen.setEnabled(true);
+//                jButtonDownloadLoeschen.setEnabled(true);
+//                jButtonDownloadAufraeumen.setEnabled(true);
+//                filterAnzeigen(false);
+//                break;
+//            case SPARTE_TABABO:
+//                buttonAus();
+//                jButtonFilmeLaden.setEnabled(true);
+//                jButtonAbosLoeschen.setEnabled(true);
+//                jButtonAbosEinschalten.setEnabled(true);
+//                jButtonAbosAusschalten.setEnabled(true);
+//                jButtonAboAendern.setEnabled(true);
+//                filterAnzeigen(false);
+//                break;
+//        }
+//    }
     public void filterAnzeigen(boolean anz) {
         jTextFieldFilter.setVisible(anz);
         jButtonFilterPanel.setVisible(anz);
@@ -417,13 +452,15 @@ public class MVToolBar extends JToolBar {
         String name = "";
         String imageIconKlein;
         String imageIconNormal;
+        String[] sparte = {};
 
-        public MVButton(String nname, String ttoolTip,
+        public MVButton(String[] ssparte, String nname, String ttoolTip,
                 String iimageIconNormal, String iimageIconKlein) {
             setToolTipText(ttoolTip);
             name = nname;
             imageIconKlein = iimageIconKlein;
             imageIconNormal = iimageIconNormal;
+            sparte = ssparte;
             setOpaque(false);
             setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
             setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
