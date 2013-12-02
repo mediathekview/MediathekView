@@ -29,6 +29,7 @@ public class PanelVorlage extends javax.swing.JPanel {
     public boolean stopBeob = false;
     public Frame parentComponent = null;
     MVTable tabelle = null;
+    public boolean solo = false; // nicht in einem eigenem Frame
 
     /**
      *

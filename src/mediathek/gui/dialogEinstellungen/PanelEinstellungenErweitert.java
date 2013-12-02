@@ -366,6 +366,24 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR] = jTextFieldProgrammUrl.getText();
             }
         });
+        jCheckBoxFensterDownload.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_DOWNLOAD_NR]));
+        jCheckBoxFensterDownload.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_FENSTER_DOWNLOAD_NR] = Boolean.toString(jCheckBoxFensterDownload.isSelected());
+                daten.mediathekGui.setFrame();
+            }
+        });
+        jCheckBoxFensterAbo.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_ABO_NR]));
+        jCheckBoxFensterAbo.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_FENSTER_ABO_NR] = Boolean.toString(jCheckBoxFensterAbo.isSelected());
+                daten.mediathekGui.setFrame();
+            }
+        });
     }
 
     private void init() {
@@ -403,6 +421,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         jCheckBoxAboSuchen = new javax.swing.JCheckBox();
         jCheckBoxDownloadSofortStarten = new javax.swing.JCheckBox();
+        jCheckBoxUmbenennen = new javax.swing.JCheckBox();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jTextFieldUserAgent = new javax.swing.JTextField();
         jButtonHilfe = new javax.swing.JButton();
@@ -427,13 +446,16 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonProgrammUrl = new javax.swing.JButton();
         jButtonHilfeProgrammUrl = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
-        jCheckBoxUmbenennen = new javax.swing.JCheckBox();
+        jCheckBoxFensterDownload = new javax.swing.JCheckBox();
+        jCheckBoxFensterAbo = new javax.swing.JCheckBox();
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Nach dem Neuladen der Filmliste"));
 
         jCheckBoxAboSuchen.setText("Abos automatisch suchen");
 
         jCheckBoxDownloadSofortStarten.setText("Downloads sofort starten");
+
+        jCheckBoxUmbenennen.setText("alte Filmliste vorher umbenennen");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -443,8 +465,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jCheckBoxAboSuchen)
-                    .addComponent(jCheckBoxDownloadSofortStarten))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jCheckBoxDownloadSofortStarten)
+                    .addComponent(jCheckBoxUmbenennen))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -453,7 +476,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jCheckBoxAboSuchen)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxDownloadSofortStarten)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxUmbenennen)
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("User-Agent"));
@@ -494,7 +519,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jRadioButtonAuto)
                     .addComponent(jTextFieldAuto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonHilfe))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jRadioButtonManuel)
                     .addComponent(jTextFieldUserAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -523,7 +548,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jCheckBoxUnicode)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonName)))
                 .addContainerGap())
         );
@@ -536,7 +561,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jCheckBoxUnicode))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxNurAscii)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab Download"));
@@ -568,7 +593,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jTextFieldVideoplayer)
-                            .addComponent(jTextFieldProgrammDateimanager, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
+                            .addComponent(jTextFieldProgrammDateimanager, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -601,7 +626,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButtonHilfeVideoplayer)
                         .addComponent(jButtonProgrammVideoplayer)))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammDateimanager, jButtonProgrammDateimanager, jTextFieldProgrammDateimanager});
@@ -635,14 +660,16 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jTextFieldProgrammUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonProgrammUrl)
                     .addComponent(jButtonHilfeProgrammUrl))
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammUrl, jButtonProgrammUrl, jTextFieldProgrammUrl});
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Beim Neuladen einer Filmliste"));
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Programmoberfläche"));
 
-        jCheckBoxUmbenennen.setText("alte Filmliste vorher umbenennen");
+        jCheckBoxFensterDownload.setText("Downloads in eigenem Fenster anzeigen");
+
+        jCheckBoxFensterAbo.setText("Abos in eigenem Fenster anzeigen");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -650,15 +677,19 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxUmbenennen)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBoxFensterDownload)
+                    .addComponent(jCheckBoxFensterAbo))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxUmbenennen)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addComponent(jCheckBoxFensterDownload)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxFensterAbo)
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -669,29 +700,31 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(151, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -705,6 +738,8 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private javax.swing.JButton jButtonProgrammVideoplayer;
     private javax.swing.JCheckBox jCheckBoxAboSuchen;
     private javax.swing.JCheckBox jCheckBoxDownloadSofortStarten;
+    private javax.swing.JCheckBox jCheckBoxFensterAbo;
+    private javax.swing.JCheckBox jCheckBoxFensterDownload;
     private javax.swing.JCheckBox jCheckBoxNurAscii;
     private javax.swing.JCheckBox jCheckBoxUmbenennen;
     private javax.swing.JCheckBox jCheckBoxUnicode;

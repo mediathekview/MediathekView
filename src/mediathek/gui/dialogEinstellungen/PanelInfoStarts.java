@@ -63,7 +63,7 @@ public class PanelInfoStarts extends PanelVorlage {
         jButtonAuffrischen.addActionListener(new BeobLaden());
         tModel = getEmptyModel();
         jTable1.setModel(tModel);
-        jTable1.setDefaultRenderer(Object.class, new CellRendererFilme(daten));
+//        jTable1.setDefaultRenderer(Object.class, new CellRendererFilme(daten));
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         init();
     }
