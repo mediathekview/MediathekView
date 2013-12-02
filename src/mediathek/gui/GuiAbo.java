@@ -35,7 +35,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import mediathek.MVStatusBar_Mac;
 import mediathek.MVToolBar;
-import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
@@ -69,8 +68,10 @@ public class GuiAbo extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        daten.mediathekGui.setToolbar(MVToolBar.SPARTE_TABABO);
-        daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.ABO);
+        if (!solo) {
+            daten.mediathekGui.setToolbar(MVToolBar.SPARTE_TABABO);
+            daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.ABO);
+        }
     }
 
     public void aendern() {
@@ -102,11 +103,11 @@ public class GuiAbo extends PanelVorlage {
         tabelle.setModel(new TModelAbo(new Object[][]{}, DatenAbo.COLUMN_NAMES));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenAbo.COLUMN_NAMES, DatenAbo.spaltenAnzeigen,
                 new int[]{DatenAbo.ABO_EINGESCHALTET_NR}) {
-            @Override
-            public void tabelleLaden_() {
-                tabelleLaden();
-            }
-        });
+                    @Override
+                    public void tabelleLaden_() {
+                        tabelleLaden();
+                    }
+                });
         //aendern
         ActionMap am = tabelle.getActionMap();
         am.put("aendern", new BeobAbstractAction());

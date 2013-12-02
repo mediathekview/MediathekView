@@ -28,11 +28,14 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="jPanel5" max="32767" attributes="0"/>
-                  <Component id="jPanel6" alignment="1" max="32767" attributes="0"/>
                   <Component id="jPanel1" alignment="1" max="32767" attributes="0"/>
-                  <Component id="jPanel3" alignment="0" max="32767" attributes="0"/>
                   <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
                   <Component id="jPanel4" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jPanel3" max="32767" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -42,18 +45,19 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="jPanel6" max="32767" attributes="0"/>
+                  <Component id="jPanel3" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="45" max="32767" attributes="0"/>
+              <EmptySpace pref="151" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -80,8 +84,9 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jCheckBoxAboSuchen" min="-2" max="-2" attributes="0"/>
                       <Component id="jCheckBoxDownloadSofortStarten" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jCheckBoxUmbenennen" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="11" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -92,7 +97,9 @@
                   <Component id="jCheckBoxAboSuchen" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jCheckBoxDownloadSofortStarten" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="19" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="jCheckBoxUmbenennen" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="11" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -106,6 +113,11 @@
         <Component class="javax.swing.JCheckBox" name="jCheckBoxDownloadSofortStarten">
           <Properties>
             <Property name="text" type="java.lang.String" value="Downloads sofort starten"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="jCheckBoxUmbenennen">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="alte Filmliste vorher umbenennen"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -155,7 +167,7 @@
                       <Component id="jTextFieldAuto" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonHilfe" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="22" max="32767" attributes="0"/>
+                  <EmptySpace pref="26" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="jRadioButtonManuel" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jTextFieldUserAgent" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -220,7 +232,7 @@
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="jCheckBoxUnicode" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="61" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="jButtonName" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -238,7 +250,7 @@
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jCheckBoxNurAscii" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="22" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -286,7 +298,7 @@
                       <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="jTextFieldVideoplayer" max="32767" attributes="0"/>
-                              <Component id="jTextFieldProgrammDateimanager" pref="247" max="32767" attributes="0"/>
+                              <Component id="jTextFieldProgrammDateimanager" pref="732" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -331,7 +343,7 @@
                           <Component id="jButtonProgrammVideoplayer" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="13" max="32767" attributes="0"/>
+                  <EmptySpace pref="17" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -409,7 +421,7 @@
                       <Component id="jButtonProgrammUrl" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonHilfeProgrammUrl" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="26" max="32767" attributes="0"/>
+                  <EmptySpace pref="30" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -435,7 +447,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Beim Neuladen einer Filmliste"/>
+            <TitledBorder title="Programmoberfl&#xe4;che"/>
           </Border>
         </Property>
       </Properties>
@@ -443,9 +455,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jCheckBoxUmbenennen" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jCheckBoxFensterDownload" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jCheckBoxFensterAbo" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -454,16 +469,23 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jCheckBoxUmbenennen" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="20" max="32767" attributes="0"/>
+                  <Component id="jCheckBoxFensterDownload" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="jCheckBoxFensterAbo" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="56" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JCheckBox" name="jCheckBoxUmbenennen">
+        <Component class="javax.swing.JCheckBox" name="jCheckBoxFensterDownload">
           <Properties>
-            <Property name="text" type="java.lang.String" value="alte Filmliste vorher umbenennen"/>
+            <Property name="text" type="java.lang.String" value="Downloads in eigenem Fenster anzeigen"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="jCheckBoxFensterAbo">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Abos in eigenem Fenster anzeigen"/>
           </Properties>
         </Component>
       </SubComponents>
