@@ -223,56 +223,55 @@ public class MVAboutDialog extends JDialog {
 
         gl_contentPanel.setHorizontalGroup(gl_contentPanel.createParallelGroup(
                 Alignment.LEADING).addGroup(
-                gl_contentPanel
-                .createSequentialGroup()
-                .addContainerGap()
-                .addGroup(gl_contentPanel
-                .createParallelGroup(Alignment.LEADING).addComponent(lblProgramIcon)
-                .addComponent(hprlnkWebsite,
-                GroupLayout.PREFERRED_SIZE,
-                GroupLayout.DEFAULT_SIZE,
-                GroupLayout.PREFERRED_SIZE)
-                .addComponent(hprlnkForum,
-                GroupLayout.PREFERRED_SIZE,
-                GroupLayout.DEFAULT_SIZE,
-                GroupLayout.PREFERRED_SIZE)
-                .addComponent(hprlnkAnleitung,
-                GroupLayout.PREFERRED_SIZE,
-                GroupLayout.DEFAULT_SIZE,
-                GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-                .addComponent(marqueePane, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
-                .addComponent(pnlJavaInformation, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
-                .addComponent(pnlProgramPaths, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
-                .addComponent(lblProgramName)
-                .addComponent(lblVersion, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE))
-                .addContainerGap()));
+                        gl_contentPanel
+                        .createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(gl_contentPanel
+                                .createParallelGroup(Alignment.LEADING).addComponent(lblProgramIcon)
+                                .addComponent(hprlnkWebsite,
+                                        GroupLayout.PREFERRED_SIZE,
+                                        GroupLayout.DEFAULT_SIZE,
+                                        GroupLayout.PREFERRED_SIZE)
+                                .addComponent(hprlnkForum,
+                                        GroupLayout.PREFERRED_SIZE,
+                                        GroupLayout.DEFAULT_SIZE,
+                                        GroupLayout.PREFERRED_SIZE)
+                                .addComponent(hprlnkAnleitung,
+                                        GroupLayout.PREFERRED_SIZE,
+                                        GroupLayout.DEFAULT_SIZE,
+                                        GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                                .addComponent(marqueePane, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                                .addComponent(pnlJavaInformation, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                                .addComponent(pnlProgramPaths, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                                .addComponent(lblProgramName)
+                                .addComponent(lblVersion, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE))
+                        .addContainerGap()));
         gl_contentPanel.setVerticalGroup(
                 gl_contentPanel.createParallelGroup(Alignment.LEADING)
                 .addGroup(gl_contentPanel.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-                .addGroup(gl_contentPanel.createSequentialGroup()
-                .addComponent(lblProgramName)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(lblVersion)
-                .addPreferredGap(ComponentPlacement.UNRELATED)
-                .addComponent(marqueePane, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(ComponentPlacement.UNRELATED)
-                .addComponent(pnlProgramPaths, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(pnlJavaInformation, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE))
-                .addGroup(gl_contentPanel.createSequentialGroup()
-                .addComponent(lblProgramIcon)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(hprlnkWebsite, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(hprlnkForum, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(hprlnkAnleitung, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(28, Short.MAX_VALUE)));
-
+                        .addContainerGap()
+                        .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                                .addGroup(gl_contentPanel.createSequentialGroup()
+                                        .addComponent(lblProgramName)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(lblVersion)
+                                        .addPreferredGap(ComponentPlacement.UNRELATED)
+                                        .addComponent(marqueePane, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.UNRELATED)
+                                        .addComponent(pnlProgramPaths, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(pnlJavaInformation, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(gl_contentPanel.createSequentialGroup()
+                                        .addComponent(lblProgramIcon)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(hprlnkWebsite, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(hprlnkForum, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(hprlnkAnleitung, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(28, Short.MAX_VALUE)));
 
         JLabel lblVersion_1 = new JLabel("Version:");
         lblVersion_1.setForeground(greyColor);
@@ -288,29 +287,28 @@ public class MVAboutDialog extends JDialog {
         gl_pnlJavaInformation.setHorizontalGroup(
                 gl_pnlJavaInformation.createParallelGroup(Alignment.LEADING)
                 .addGroup(gl_pnlJavaInformation.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(gl_pnlJavaInformation.createParallelGroup(Alignment.TRAILING)
-                .addComponent(lblJavaType)
-                .addComponent(lblVersion_1))
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addGroup(gl_pnlJavaInformation.createParallelGroup(Alignment.LEADING)
-                .addComponent(lblVmType, GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
-                .addComponent(lblJavaVersion, GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE))
-                .addContainerGap()));
+                        .addContainerGap()
+                        .addGroup(gl_pnlJavaInformation.createParallelGroup(Alignment.TRAILING)
+                                .addComponent(lblJavaType)
+                                .addComponent(lblVersion_1))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_pnlJavaInformation.createParallelGroup(Alignment.LEADING)
+                                .addComponent(lblVmType, GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
+                                .addComponent(lblJavaVersion, GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE))
+                        .addContainerGap()));
         gl_pnlJavaInformation.setVerticalGroup(
                 gl_pnlJavaInformation.createParallelGroup(Alignment.LEADING)
                 .addGroup(gl_pnlJavaInformation.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(gl_pnlJavaInformation.createParallelGroup(Alignment.BASELINE)
-                .addComponent(lblVersion_1)
-                .addComponent(lblJavaVersion))
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addGroup(gl_pnlJavaInformation.createParallelGroup(Alignment.BASELINE)
-                .addComponent(lblJavaType)
-                .addComponent(lblVmType))
-                .addContainerGap(52, Short.MAX_VALUE)));
+                        .addContainerGap()
+                        .addGroup(gl_pnlJavaInformation.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(lblVersion_1)
+                                .addComponent(lblJavaVersion))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_pnlJavaInformation.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(lblJavaType)
+                                .addComponent(lblVmType))
+                        .addContainerGap(52, Short.MAX_VALUE)));
         pnlJavaInformation.setLayout(gl_pnlJavaInformation);
-
 
         JLabel lblFilmliste = new JLabel("Filmliste:");
         lblFilmliste.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -326,52 +324,52 @@ public class MVAboutDialog extends JDialog {
         gl_panel.setHorizontalGroup(gl_panel
                 .createParallelGroup(Alignment.LEADING)
                 .addGroup(
-                gl_panel.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(
-                gl_panel.createParallelGroup(
-                Alignment.LEADING, false)
-                .addComponent(
-                lblFilmliste,
-                GroupLayout.DEFAULT_SIZE,
-                GroupLayout.DEFAULT_SIZE,
-                Short.MAX_VALUE)
-                .addComponent(
-                lblEinstellungen,
-                GroupLayout.DEFAULT_SIZE,
-                GroupLayout.DEFAULT_SIZE,
-                Short.MAX_VALUE))
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addGroup(
-                gl_panel.createParallelGroup(
-                Alignment.TRAILING)
-                .addComponent(
-                lblSettingsFilePath,
-                GroupLayout.DEFAULT_SIZE,
-                345, Short.MAX_VALUE)
-                .addComponent(
-                lblFilmlistPath,
-                GroupLayout.DEFAULT_SIZE,
-                345, Short.MAX_VALUE))
-                .addContainerGap()));
+                        gl_panel.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(
+                                gl_panel.createParallelGroup(
+                                        Alignment.LEADING, false)
+                                .addComponent(
+                                        lblFilmliste,
+                                        GroupLayout.DEFAULT_SIZE,
+                                        GroupLayout.DEFAULT_SIZE,
+                                        Short.MAX_VALUE)
+                                .addComponent(
+                                        lblEinstellungen,
+                                        GroupLayout.DEFAULT_SIZE,
+                                        GroupLayout.DEFAULT_SIZE,
+                                        Short.MAX_VALUE))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(
+                                gl_panel.createParallelGroup(
+                                        Alignment.TRAILING)
+                                .addComponent(
+                                        lblSettingsFilePath,
+                                        GroupLayout.DEFAULT_SIZE,
+                                        345, Short.MAX_VALUE)
+                                .addComponent(
+                                        lblFilmlistPath,
+                                        GroupLayout.DEFAULT_SIZE,
+                                        345, Short.MAX_VALUE))
+                        .addContainerGap()));
         gl_panel.setVerticalGroup(gl_panel.createParallelGroup(
                 Alignment.LEADING)
                 .addGroup(
-                gl_panel.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(
-                gl_panel.createParallelGroup(
-                Alignment.BASELINE)
-                .addComponent(lblFilmliste)
-                .addComponent(lblFilmlistPath))
-                .addPreferredGap(ComponentPlacement.RELATED)
-                .addGroup(
-                gl_panel.createParallelGroup(
-                Alignment.BASELINE)
-                .addComponent(lblEinstellungen)
-                .addComponent(
-                lblSettingsFilePath))
-                .addContainerGap(10, Short.MAX_VALUE)));
+                        gl_panel.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(
+                                gl_panel.createParallelGroup(
+                                        Alignment.BASELINE)
+                                .addComponent(lblFilmliste)
+                                .addComponent(lblFilmlistPath))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(
+                                gl_panel.createParallelGroup(
+                                        Alignment.BASELINE)
+                                .addComponent(lblEinstellungen)
+                                .addComponent(
+                                        lblSettingsFilePath))
+                        .addContainerGap(10, Short.MAX_VALUE)));
         pnlProgramPaths.setLayout(gl_panel);
         contentPanel.setLayout(gl_contentPanel);
         {
