@@ -660,19 +660,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         daten.guiAbo = new GuiAbo(daten, daten.mediathekGui);
         jTabbedPane.addTab("Filme", daten.guiFilme);
 
-//        // Tabs Download/Abo fürs erste einrichten
-//        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_DOWNLOAD_NR])) {
-//            daten.guiDownloads.solo = true;
-//            frameDownloads = new MVFrame(daten, daten.guiDownloads, MVToolBar.SPARTE_TABDOWNLOAD, "Downloads");
-//        } else {
-//            jTabbedPane.addTab("Downloads", daten.guiDownloads);
-//        }
-//        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_ABO_NR])) {
-//            daten.guiAbo.solo = true;
-//            frameAbos = new MVFrame(daten, daten.guiAbo, MVToolBar.SPARTE_TABABO, "Abos");
-//        } else {
-//            jTabbedPane.addTab("Abos", daten.guiAbo);
-//        }
         setFrame();
 
         // jetzt noch den Rest
