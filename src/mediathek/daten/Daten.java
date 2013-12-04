@@ -131,6 +131,7 @@ public class Daten {
 
             }
         });
+        timer.setInitialDelay(4000); // damit auch alles geladen ist
         timer.start();
     }
 
