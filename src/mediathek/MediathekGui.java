@@ -30,7 +30,6 @@ import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.SplashScreen;
@@ -72,6 +71,7 @@ import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
+import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialog.MVAboutDialog;
@@ -104,16 +104,18 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
     JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
     JPanel jPanelAnzahl = new JPanel();
+    PanelVorlage panelMeldungen = new PanelVorlage(daten, this);
     JSplitPane splitPane = null;
     private final MVToolBar mVToolBar;
     private MVStatusBar statusBar;
     private Duration duration = new Duration(MediathekGui.class.getSimpleName());
-    private MVFrame frameDownloads = null;
-    private MVFrame frameAbos = null;
+    private MVFrame[] frames = new MVFrame[3]; // Downloads, Abos, Meldungen
     private JCheckBox jCheckBoxDownloadAnzeigen = new JCheckBox();
     private JCheckBox jCheckBoxDownloadExtrafenster = new JCheckBox();
     private JCheckBox jCheckBoxAboAnzeigen = new JCheckBox();
     private JCheckBox jCheckBoxAboExtrafenster = new JCheckBox();
+    private JCheckBox jCheckBoxMeldungenAnzeigen = new JCheckBox();
+    private JCheckBox jCheckBoxMeldungenExtrafenster = new JCheckBox();
 
     /**
      * Legt die statusbar an.
@@ -562,78 +564,82 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         } else if (state.equals(MVToolBar.SPARTE_TABABO)) {
             jCheckBoxAboAnzeigen.setSelected(false);
             Daten.system[Konstanten.SYSTEM_VIS_ABO_NR] = Boolean.toString(false);
+        } else if (state.equals(MVToolBar.SPARTE_TABMELDUNGEN)) {
+            jCheckBoxMeldungenAnzeigen.setSelected(false);
+            Daten.system[Konstanten.SYSTEM_VIS_MELDUNGEN_NR] = Boolean.toString(false);
         }
-        setFrame();
+        initFrames();
     }
 
-    public void setFrame() {
+    public void initFrames() {
         // Downloads
+        int nr = 1;
         if (!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_VIS_DOWNLOAD_NR])) {
-            daten.guiDownloads.solo = true;
-            if (frameDownloads != null) {
-                frameDownloads.dispose();
-                frameDownloads = null;
-            }
-            if (tabContain(daten.guiDownloads)) {
-                jTabbedPane.remove(daten.guiDownloads);
-            }
-        } else if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_DOWNLOAD_NR])) {
-            daten.guiDownloads.solo = true;
-            if (frameDownloads == null) {
-                if (tabContain(daten.guiDownloads)) {
-                    jTabbedPane.remove(daten.guiDownloads);
-                }
-                frameDownloads = new MVFrame(daten, daten.guiDownloads, MVToolBar.SPARTE_TABDOWNLOAD, "Downloads");
-            }
-            frameDownloads.setVisible(true);
+            hide(0, daten.guiDownloads);
         } else {
-            if (frameDownloads != null) {
-                frameDownloads.dispose();
-                frameDownloads = null;
+            if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_DOWNLOAD_NR])) {
+                setFrame(0, Konstanten.SYSTEM_GROESSE_DOWNLOAD_NR, daten.guiDownloads, MVToolBar.SPARTE_TABDOWNLOAD, "Downloads");
+            } else {
+                setTab(0, daten.guiDownloads, "Downloads", nr++);
             }
-            if (!tabContain(daten.guiDownloads)) {
-                jTabbedPane.add(daten.guiDownloads, 1);
-                jTabbedPane.setTitleAt(1, "Downloads");
-            }
-            daten.guiDownloads.solo = false;
         }
         // Abos
         if (!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_VIS_ABO_NR])) {
-            daten.guiAbo.solo = true;
-            if (frameAbos != null) {
-                frameAbos.dispose();
-                frameAbos = null;
-            }
-            if (tabContain(daten.guiAbo)) {
-                jTabbedPane.remove(daten.guiAbo);
-            }
-        } else if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_ABO_NR])) {
-            daten.guiAbo.solo = true;
-            if (frameAbos == null) {
-                if (tabContain(daten.guiAbo)) {
-                    jTabbedPane.remove(daten.guiAbo);
-                }
-                frameAbos = new MVFrame(daten, daten.guiAbo, MVToolBar.SPARTE_TABABO, "Abos");
-            }
-            frameAbos.setVisible(true);
+            hide(1, daten.guiAbo);
         } else {
-            if (frameAbos != null) {
-                frameAbos.dispose();
-                frameAbos = null;
+            if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_ABO_NR])) {
+                setFrame(1, Konstanten.SYSTEM_GROESSE_ABO_NR, daten.guiAbo, MVToolBar.SPARTE_TABABO, "Abos");
+            } else {
+                setTab(1, daten.guiAbo, "Abos", nr++);
             }
-            if (!tabContain(daten.guiAbo)) {
-                // wenn es Download gibt ist es der Index 2 sonst 1
-                if (tabContain(daten.guiDownloads)) {
-                    jTabbedPane.add(daten.guiAbo, 2);
-                    jTabbedPane.setTitleAt(2, "Abos");
-                } else {
-                    jTabbedPane.add(daten.guiAbo, 1);
-                    jTabbedPane.setTitleAt(1, "Abos");
-                }
+        }
+        // Meldungen
+        if (!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_VIS_MELDUNGEN_NR])) {
+            hide(2, panelMeldungen);
+        } else {
+            if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_MELDUNGEN_NR])) {
+                setFrame(2, Konstanten.SYSTEM_GROESSE_MELDUNGEN_NR, panelMeldungen, MVToolBar.SPARTE_TABMELDUNGEN, "Meldungen");
+            } else {
+                setTab(2, panelMeldungen, "Meldungen", nr++);
             }
-            daten.guiAbo.solo = false;
         }
         jTabbedPane.setSelectedIndex(0);
+        daten.guiFilme.isShown();
+    }
+
+    private void hide(int nrFrameArr, PanelVorlage panelVorlage) {
+        panelVorlage.solo = true;
+        if (frames[nrFrameArr] != null) {
+            frames[nrFrameArr].dispose();
+            frames[nrFrameArr] = null;
+        }
+        if (tabContain(panelVorlage)) {
+            jTabbedPane.remove(panelVorlage);
+        }
+    }
+
+    private void setFrame(int nrFrameArr, int nrGroesse, PanelVorlage panelVorlage, String sparte, String titel) {
+        panelVorlage.solo = true;
+        if (frames[nrFrameArr] == null) {
+            if (tabContain(panelVorlage)) {
+                jTabbedPane.remove(panelVorlage);
+            }
+            frames[nrFrameArr] = new MVFrame(daten, panelVorlage, sparte, titel);
+            frames[nrFrameArr].setSize(nrGroesse);
+        }
+        frames[nrFrameArr].setVisible(true);
+    }
+
+    private void setTab(int nrFrameArr, PanelVorlage panelVorlage, String titel, int nrTab) {
+        if (frames[nrFrameArr] != null) {
+            frames[nrFrameArr].dispose();
+            frames[nrFrameArr] = null;
+        }
+        if (!tabContain(panelVorlage)) {
+            jTabbedPane.add(panelVorlage, nrTab);
+            jTabbedPane.setTitleAt(nrTab, titel);
+        }
+        panelVorlage.solo = false;
     }
 
     private boolean tabContain(Component check) {
@@ -646,37 +652,33 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         return false;
     }
 
-    private void setPanelMeldungen() {
-        if (jCheckBoxMenuItemMeldungen.isSelected()) {
-            jTabbedPane.addTab("Meldungen", splitPane);
-        } else {
-            jTabbedPane.remove(splitPane);
-        }
-    }
-
     private void initTabs() {
         daten.guiFilme = new GuiFilme(daten, daten.mediathekGui);
         daten.guiDownloads = new GuiDownloads(daten, daten.mediathekGui);
         daten.guiAbo = new GuiAbo(daten, daten.mediathekGui);
         jTabbedPane.addTab("Filme", daten.guiFilme);
 
-        setFrame();
-
         // jetzt noch den Rest
+        panelMeldungen = new PanelVorlage(daten, this) {
+
+            @Override
+            public void isShown() {
+                if (!solo) {
+                    setToolbar(MVToolBar.SPARTE_NIX);
+                    statusBar.setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.FILME);
+                }
+            }
+        };
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 new PanelMeldungen(daten, daten.mediathekGui, Log.textSystem, ListenerMediathekView.EREIGNIS_LOG_SYSTEM, "Systemmeldungen"),
                 new PanelMeldungen(daten, daten.mediathekGui, Log.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Hilfsprogramme"));
-        splitPane.addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                setToolbar(MVToolBar.SPARTE_NIX);
-                statusBar.setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.FILME);
-            }
-        });
+        panelMeldungen.setLayout(new BorderLayout());
+        panelMeldungen.add(splitPane, BorderLayout.CENTER);
         if (Daten.debug) {
             jTabbedPane.addTab("Debug", new GuiDebug(daten, daten.mediathekGui));
             jTabbedPane.addTab("Starts", new PanelInfoStarts(daten, daten.mediathekGui));
         }
+        initFrames();
     }
 
     private void initSpinner() {
@@ -915,37 +917,20 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
             }
         });
-        jCheckBoxMenuItemMeldungen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR]));
-        if (Daten.debug) {
-            jCheckBoxMenuItemMeldungen.setSelected(true);
-        }
-        setPanelMeldungen();
-        jCheckBoxMenuItemMeldungen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemMeldungen.isSelected());
-                setPanelMeldungen();
-            }
-        });
         // ============================
         // Downloads
         JPanel panelFenster = new JPanel();
-        //panelFenster.setLayout(new GridLayout(2, 3, 2, 2)); // rows, cols, hgap, vgap
-
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(2, 4, 2, 4);
         panelFenster.setLayout(gridbag);
-
         jCheckBoxDownloadAnzeigen.setText("Anzeigen");
         jCheckBoxDownloadAnzeigen.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jCheckBoxDownloadAnzeigen.setBorderPainted(true);
-
         jCheckBoxDownloadExtrafenster.setText("Extra Fenster");
         jCheckBoxDownloadExtrafenster.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jCheckBoxDownloadExtrafenster.setBorderPainted(true);
-
         c.gridy = 0;
         c.gridx = 0;
         c.weightx = 1;
@@ -966,7 +951,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_VIS_DOWNLOAD_NR] = Boolean.toString(jCheckBoxDownloadAnzeigen.isSelected());
-                setFrame();
+                initFrames();
             }
         });
         jCheckBoxDownloadExtrafenster.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_DOWNLOAD_NR]));
@@ -975,21 +960,18 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_FENSTER_DOWNLOAD_NR] = Boolean.toString(jCheckBoxDownloadExtrafenster.isSelected());
-                setFrame();
+                initFrames();
             }
         });
         // 
         // ============================
         // Abos
-
         jCheckBoxAboAnzeigen.setText("Anzeigen");
         jCheckBoxAboAnzeigen.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jCheckBoxAboAnzeigen.setBorderPainted(true);
-
         jCheckBoxAboExtrafenster.setText("Extra Fenster");
         jCheckBoxAboExtrafenster.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jCheckBoxAboExtrafenster.setBorderPainted(true);
-
         c.gridy = 1;
         c.gridx = 0;
         c.weightx = 1;
@@ -1010,7 +992,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_VIS_ABO_NR] = Boolean.toString(jCheckBoxAboAnzeigen.isSelected());
-                setFrame();
+                initFrames();
             }
         });
         jCheckBoxAboExtrafenster.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_ABO_NR]));
@@ -1019,7 +1001,48 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_FENSTER_ABO_NR] = Boolean.toString(jCheckBoxAboExtrafenster.isSelected());
-                setFrame();
+                initFrames();
+            }
+        });
+        // 
+        // ============================
+        // Meldungen
+        jCheckBoxMeldungenAnzeigen.setText("Anzeigen");
+        jCheckBoxMeldungenAnzeigen.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        jCheckBoxMeldungenAnzeigen.setBorderPainted(true);
+        jCheckBoxMeldungenExtrafenster.setText("Extra Fenster");
+        jCheckBoxMeldungenExtrafenster.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        jCheckBoxMeldungenExtrafenster.setBorderPainted(true);
+        c.gridy = 2;
+        c.gridx = 0;
+        c.weightx = 1;
+        l = new JLabel("Meldungen:");
+        gridbag.setConstraints(l, c);
+        panelFenster.add(l);
+        c.gridx = 1;
+        c.weightx = 10;
+        gridbag.setConstraints(jCheckBoxMeldungenAnzeigen, c);
+        panelFenster.add(jCheckBoxMeldungenAnzeigen);
+        c.gridx = 2;
+        c.weightx = 10;
+        gridbag.setConstraints(jCheckBoxMeldungenExtrafenster, c);
+        panelFenster.add(jCheckBoxMeldungenExtrafenster);
+        jCheckBoxMeldungenAnzeigen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_VIS_MELDUNGEN_NR]));
+        jCheckBoxMeldungenAnzeigen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_VIS_MELDUNGEN_NR] = Boolean.toString(jCheckBoxMeldungenAnzeigen.isSelected());
+                initFrames();
+            }
+        });
+        jCheckBoxMeldungenExtrafenster.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_MELDUNGEN_NR]));
+        jCheckBoxMeldungenExtrafenster.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_FENSTER_MELDUNGEN_NR] = Boolean.toString(jCheckBoxMeldungenExtrafenster.isSelected());
+                initFrames();
             }
         });
         jMenuAnsicht.add(panelFenster);
@@ -1175,7 +1198,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemFilterAnzeigen = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemBeschreibung = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemVideoplayer = new javax.swing.JCheckBoxMenuItem();
-        jCheckBoxMenuItemMeldungen = new javax.swing.JCheckBoxMenuItem();
         jMenuHilfe = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -1349,9 +1371,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
         jMenuAnsicht.add(jCheckBoxMenuItemVideoplayer);
 
-        jCheckBoxMenuItemMeldungen.setText("Meldungen anzeigen");
-        jMenuAnsicht.add(jCheckBoxMenuItemMeldungen);
-
         jMenuBar.add(jMenuAnsicht);
 
         jMenuHilfe.setText("Hilfe");
@@ -1389,7 +1408,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JCheckBoxMenuItem jCheckBoxIconKlein;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemFilterAnzeigen;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemMeldungen;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
     private javax.swing.JMenu jMenuAbos;

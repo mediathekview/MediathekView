@@ -44,6 +44,7 @@ public final class MVToolBar extends JToolBar {
     public static final String SPARTE_TABFILM = "Filme";
     public static final String SPARTE_TABDOWNLOAD = "Download";
     public static final String SPARTE_TABABO = "Abo";
+    public static final String SPARTE_TABMELDUNGEN = "Meldungen";
 
     private final Daten daten;
     BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
