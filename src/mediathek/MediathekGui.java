@@ -481,27 +481,14 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         if (max || Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR])) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else {
-            int breite, hoehe, posX, posY, divider;
-            try {
-                breite = Integer.parseInt(Daten.system[Konstanten.SYSTEM_GROESSE_X_NR]);
-                hoehe = Integer.parseInt(Daten.system[Konstanten.SYSTEM_GROESSE_Y_NR]);
-                posX = Integer.parseInt(Daten.system[Konstanten.SYSTEM_POS_X_NR]);
-                posY = Integer.parseInt(Daten.system[Konstanten.SYSTEM_POS_Y_NR]);
-                divider = Integer.parseInt(Daten.system[Konstanten.SYSTEM_BREITE_MELDUNGEN_NR]);
-            } catch (NumberFormatException ex) {
-                breite = 0;
-                hoehe = 0;
-                posX = 0;
-                posY = 0;
-                divider = 0;
-            }
-            if (breite > 0 && hoehe > 0) {
-                this.setSize(new Dimension(breite, hoehe));
-                this.setLocation(posX, posY);
-            }
+            GuiFunktionen.setSize(Konstanten.SYSTEM_GROESSE_NR, this, null);
+        }
+        try {
+            int divider = Integer.parseInt(Daten.system[Konstanten.SYSTEM_BREITE_MELDUNGEN_NR]);
             if (divider > 0) {
                 splitPane.setDividerLocation(divider);
             }
+        } catch (NumberFormatException ex) {
         }
     }
 
@@ -1139,15 +1126,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             Daten.system[Konstanten.SYSTEM_FENSTER_MAX_NR] = Boolean.FALSE.toString();
         }
         // Hauptfenster
-        Daten.system[Konstanten.SYSTEM_GROESSE_X_NR] = String.valueOf(this.getSize().width);
-        Daten.system[Konstanten.SYSTEM_GROESSE_Y_NR] = String.valueOf(this.getSize().height);
-        Daten.system[Konstanten.SYSTEM_POS_X_NR] = String.valueOf(this.getLocation().x);
-        Daten.system[Konstanten.SYSTEM_POS_Y_NR] = String.valueOf(this.getLocation().y);
+        GuiFunktionen.getSize(Konstanten.SYSTEM_GROESSE_NR, this);
         // Dialog Einstellungen
-        Daten.system[Konstanten.SYSTEM_GROESSE_EINSTELLUNEN_X_NR] = String.valueOf(dialogEinstellungen.getSize().width);
-        Daten.system[Konstanten.SYSTEM_GROESSE_EINSTELLUNEN_Y_NR] = String.valueOf(dialogEinstellungen.getSize().height);
-        Daten.system[Konstanten.SYSTEM_POS_EINSTELLUNEN_X_NR] = String.valueOf(dialogEinstellungen.getLocation().x);
-        Daten.system[Konstanten.SYSTEM_POS_EINSTELLUNEN_Y_NR] = String.valueOf(dialogEinstellungen.getLocation().y);
+        GuiFunktionen.getSize(Konstanten.SYSTEM_GROESSE_EINSTELLUNGEN_NR, dialogEinstellungen);
         Daten.system[Konstanten.SYSTEM_BREITE_MELDUNGEN_NR] = String.valueOf(splitPane.getDividerLocation());
         daten.allesSpeichern();
         Log.printEndeMeldung();

@@ -82,7 +82,7 @@ public class IoXmlSchreiben {
             Log.systemMeldung("Daten Schreiben");
             xmlSchreibenStart();
             //System schreibem
-            xmlSchreibenDaten(Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system);
+            xmlSchreibenDaten(Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system, true);
             //Senderliste
             xmlSchreibenProg(daten);
             xmlSchreibenDownloads(daten);
@@ -126,10 +126,10 @@ public class IoXmlSchreiben {
         iterator = daten.listePset.listIterator();
         while (iterator.hasNext()) {
             datenPset = iterator.next();
-            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr);
+            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false);
             it = datenPset.getListeProg().listIterator();
             while (it.hasNext()) {
-                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, it.next().arr);
+                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, it.next().arr, false);
             }
         }
     }
@@ -137,10 +137,10 @@ public class IoXmlSchreiben {
     private void xmlSchreibenPset(DatenPset[] psetArray) {
         ListIterator<DatenProg> it;
         for (DatenPset pset : psetArray) {
-            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, pset.arr);
+            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, pset.arr, false);
             it = pset.getListeProg().listIterator();
             while (it.hasNext()) {
-                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, it.next().arr);
+                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, it.next().arr, false);
             }
         }
     }
@@ -160,7 +160,7 @@ public class IoXmlSchreiben {
                         continue;
                     }
                 }
-                xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr);
+                xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr, false);
             }
         }
     }
@@ -172,7 +172,7 @@ public class IoXmlSchreiben {
         iterator = Daten.listeAbo.listIterator();
         while (iterator.hasNext()) {
             datenAbo = iterator.next();
-            xmlSchreibenDaten(DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr);
+            xmlSchreibenDaten(DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr, false);
         }
     }
 
@@ -182,7 +182,7 @@ public class IoXmlSchreiben {
         DatenBlacklist blacklist;
         while (it.hasNext()) {
             blacklist = it.next();
-            xmlSchreibenDaten(DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, blacklist.arr);
+            xmlSchreibenDaten(DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, blacklist.arr, false);
         }
     }
 
@@ -193,29 +193,38 @@ public class IoXmlSchreiben {
         iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten(false).iterator();
         while (iterator.hasNext()) {
             datenUrlFilmliste = iterator.next();
-            xmlSchreibenDaten(MSearchFilmlistenSuchen.FILM_UPDATE_SERVER, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr);
+            xmlSchreibenDaten(MSearchFilmlistenSuchen.FILM_UPDATE_SERVER, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
         Iterator<DatenFilmlistenServer> it;
         it = Daten.filmeLaden.getListeFilmlistnServer().iterator();
         while (it.hasNext()) {
             DatenFilmlistenServer f = it.next();
-            xmlSchreibenDaten(DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, f.arr);
+            xmlSchreibenDaten(DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, f.arr, false);
         }
     }
 
-    private void xmlSchreibenDaten(String xmlName, String[] xmlSpalten, String[] datenArray) {
+    private void xmlSchreibenDaten(String xmlName, String[] xmlSpalten, String[] datenArray, boolean newLine) {
         int xmlMax = datenArray.length;
         try {
             writer.writeStartElement(xmlName);
+            if (newLine) {
+                writer.writeCharacters("\n"); //neue Zeile
+            }
             for (int i = 0; i < xmlMax; ++i) {
                 if (!datenArray[i].equals("")) {
+                    if (newLine) {
+                        writer.writeCharacters("\t"); //Tab
+                    }
                     writer.writeStartElement(xmlSpalten[i]);
                     writer.writeCharacters(datenArray[i]);
                     writer.writeEndElement();
+                    if (newLine) {
+                        writer.writeCharacters("\n"); //neue Zeile
+                    }
                 }
             }
             writer.writeEndElement();
-            writer.writeCharacters("\n");//neue Zeile
+            writer.writeCharacters("\n"); //neue Zeile
         } catch (Exception ex) {
             Log.fehlerMeldung(198325017, Log.FEHLER_ART_PROG, "IoXmlSchreiben.xmlSchreibenDaten", ex);
         }
