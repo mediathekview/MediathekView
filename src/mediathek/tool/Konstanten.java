@@ -213,11 +213,11 @@ public class Konstanten {
     public static final String SYSTEM_FENSTER_MELDUNGEN = "Fenster-Meldungen";
     public static final int SYSTEM_FENSTER_MELDUNGEN_NR = 73;
     public static final String SYSTEM_VIS_MELDUNGEN = "Vis-Meldungen";
-    public static final int SYSTEM_VIS_MELDUNGEN_NR = 73;
+    public static final int SYSTEM_VIS_MELDUNGEN_NR = 74;
     public static final String SYSTEM_GROESSE_MELDUNGEN = "Groesse-Meldungen";
-    public static final int SYSTEM_GROESSE_MELDUNGEN_NR = 74;
+    public static final int SYSTEM_GROESSE_MELDUNGEN_NR = 75;
     public static final String SYSTEM = "system";
-    public static final int SYSTEM_MAX_ELEM = 75;
+    public static final int SYSTEM_MAX_ELEM = 76;
     public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION,
         SYSTEM_GROESSE, SYSTEM_GROESSE_EINSTELLUNGEN,
         SYSTEM_ICON_KLEIN, SYSTEM_FENSTER_MAX, SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, SYSTEM_PANEL_MELDUNGEN_ANZEIGEN, SYSTEM_PANEL_FILTER_ANZEIGEN,
