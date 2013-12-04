@@ -24,7 +24,6 @@ import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics2D;
@@ -1130,6 +1129,16 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         // Dialog Einstellungen
         GuiFunktionen.getSize(Konstanten.SYSTEM_GROESSE_EINSTELLUNGEN_NR, dialogEinstellungen);
         Daten.system[Konstanten.SYSTEM_BREITE_MELDUNGEN_NR] = String.valueOf(splitPane.getDividerLocation());
+        // Frames
+        if (frames[0] != null) {
+            GuiFunktionen.getSize(Konstanten.SYSTEM_GROESSE_DOWNLOAD_NR, frames[0]);
+        }
+        if (frames[1] != null) {
+            GuiFunktionen.getSize(Konstanten.SYSTEM_GROESSE_ABO_NR, frames[1]);
+        }
+        if (frames[2] != null) {
+            GuiFunktionen.getSize(Konstanten.SYSTEM_GROESSE_MELDUNGEN_NR, frames[2]);
+        }
         daten.allesSpeichern();
         Log.printEndeMeldung();
         this.dispose();
