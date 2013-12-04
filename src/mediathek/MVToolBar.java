@@ -92,7 +92,7 @@ public final class MVToolBar extends JToolBar {
         this.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         this.setFloatable(false);
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
-        jButtonFilmeLaden = new MVButton(new String[]{SPARTE_TABFILM}, "Filmliste laden", "neue Filmliste laden", "filmlisteLaden_32.png", "filmlisteLaden_16.png");
+        jButtonFilmeLaden = new MVButton(new String[]{SPARTE_TABFILM, SPARTE_TABDOWNLOAD}, "Filmliste laden", "neue Filmliste laden", "filmlisteLaden_32.png", "filmlisteLaden_16.png");
         buttonListe.add(jButtonFilmeLaden);
         javax.swing.Box.Filler filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767));
         jButtonInfo = new MVButton(new String[]{SPARTE_TABFILM, SPARTE_TABDOWNLOAD}, "Infos anzeigen", "Infos anzeigen", "info_32.png", "info_16.png");

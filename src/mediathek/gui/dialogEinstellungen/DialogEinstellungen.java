@@ -34,6 +34,7 @@ import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.PanelAbout;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.Log;
 
@@ -72,7 +73,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         ddaten = d;
         init();
         initTree();
-        setSize();
+        GuiFunktionen.setSize(Konstanten.SYSTEM_GROESSE_EINSTELLUNGEN_NR, this, ddaten.mediathekGui);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
         jButtonBeenden.addActionListener(new ActionListener() {
             @Override
@@ -86,29 +87,6 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                 beenden();
             }
         };
-    }
-
-    private void setSize() {
-        int breite, hoehe, posX, posY;
-        try {
-            breite = Integer.parseInt(Daten.system[Konstanten.SYSTEM_GROESSE_EINSTELLUNEN_X_NR]);
-            hoehe = Integer.parseInt(Daten.system[Konstanten.SYSTEM_GROESSE_EINSTELLUNEN_Y_NR]);
-            posX = Integer.parseInt(Daten.system[Konstanten.SYSTEM_POS_EINSTELLUNEN_X_NR]);
-            posY = Integer.parseInt(Daten.system[Konstanten.SYSTEM_POS_EINSTELLUNEN_Y_NR]);
-        } catch (Exception ex) {
-            breite = 0;
-            hoehe = 0;
-            posX = 0;
-            posY = 0;
-        }
-        if (breite > 0 && hoehe > 0) {
-            this.setSize(new Dimension(breite, hoehe));
-        }
-        if (posX > 0 && posY > 0) {
-            this.setLocation(posX, posY);
-        } else {
-            setLocationRelativeTo(ddaten.mediathekGui);
-        }
     }
 
     private void init() {

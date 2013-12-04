@@ -66,43 +66,14 @@ public class MVFrame extends javax.swing.JFrame {
     @Override
     public void dispose() {
         if (nrGroesse != -1) {
-            Daten.system[nrGroesse] = String.valueOf(this.getSize().width) + ":"
-                    + String.valueOf(this.getSize().height) + ":"
-                    + String.valueOf(this.getLocation().x) + ":"
-                    + String.valueOf(this.getLocation().y);
+            GuiFunktionen.getSize(nrGroesse, this);
         }
         super.dispose();
     }
 
     public void setSize(int nr) {
         nrGroesse = nr;
-        int breite, hoehe, posX, posY;
-        breite = 0;
-        hoehe = 0;
-        posX = 0;
-        posY = 0;
-        String[] arr = Daten.system[nrGroesse].split(":");
-        try {
-            if (arr.length == 4) {
-                breite = Integer.parseInt(arr[0]);
-                hoehe = Integer.parseInt(arr[1]);
-                posX = Integer.parseInt(arr[2]);
-                posY = Integer.parseInt(arr[3]);
-            }
-        } catch (Exception ex) {
-            breite = 0;
-            hoehe = 0;
-            posX = 0;
-            posY = 0;
-        }
-        if (breite > 0 && hoehe > 0) {
-            this.setSize(new Dimension(breite, hoehe));
-        }
-        if (posX > 0 && posY > 0) {
-            this.setLocation(posX, posY);
-        } else {
-            setLocationRelativeTo(daten.mediathekGui);
-        }
+        GuiFunktionen.setSize(nr, this, daten.mediathekGui);
     }
 
 

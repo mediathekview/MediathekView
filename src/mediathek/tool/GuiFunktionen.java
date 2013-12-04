@@ -19,18 +19,56 @@
  */
 package mediathek.tool;
 
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
-import mediathek.daten.Daten;
+import javax.swing.JFrame;
 import mediathek.daten.Daten;
 
 public class GuiFunktionen extends Funktionen {
 
     public static void copyToClipboard(String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
+    }
+
+    public static void getSize(int nr, JFrame jFrame) {
+        Daten.system[nr] = String.valueOf(jFrame.getSize().width) + ":"
+                + String.valueOf(jFrame.getSize().height) + ":"
+                + String.valueOf(jFrame.getLocation().x) + ":"
+                + String.valueOf(jFrame.getLocation().y);
+    }
+
+    public static void setSize(int nr, JFrame jFrame, JFrame relativFrame) {
+        int breite, hoehe, posX, posY;
+        breite = 0;
+        hoehe = 0;
+        posX = 0;
+        posY = 0;
+        String[] arr = Daten.system[nr].split(":");
+        try {
+            if (arr.length == 4) {
+                breite = Integer.parseInt(arr[0]);
+                hoehe = Integer.parseInt(arr[1]);
+                posX = Integer.parseInt(arr[2]);
+                posY = Integer.parseInt(arr[3]);
+            }
+        } catch (Exception ex) {
+            breite = 0;
+            hoehe = 0;
+            posX = 0;
+            posY = 0;
+        }
+        if (breite > 0 && hoehe > 0) {
+            jFrame.setSize(new Dimension(breite, hoehe));
+        }
+        if (posX > 0 && posY > 0) {
+            jFrame.setLocation(posX, posY);
+        } else if (relativFrame != null) {
+            jFrame.setLocationRelativeTo(relativFrame);
+        }
     }
 
     public static void setProxy() {
