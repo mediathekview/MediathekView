@@ -63,9 +63,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
 
     /**
      * @param parent
-     * @param modal
      * @param d
-     * @param gguiFilme
      */
     public DialogEinstellungen(java.awt.Frame parent, Daten d) {
         initComponents();

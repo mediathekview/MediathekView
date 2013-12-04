@@ -20,22 +20,25 @@
 package mediathek.tool;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 import javax.swing.WindowConstants;
 import mediathek.MVToolBar;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
+import mediathek.gui.PanelVorlage;
 
 public class MVFrame extends javax.swing.JFrame {
 
     private final MVToolBar mVToolBar;
     private final Daten daten;
     private final String state;
+    private int nrGroesse = -1;
 
-    public MVFrame(Daten ddaten, JPanel jPanel, String sstate, String titel) {
+    public MVFrame(Daten ddaten, PanelVorlage jPanel, String sstate, String titel) {
         initComponents();
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
         this.setTitle(titel);
@@ -43,10 +46,13 @@ public class MVFrame extends javax.swing.JFrame {
         state = sstate;
         jPanelExtra.setLayout(new BorderLayout());
         jPanelExtra.add(jPanel, BorderLayout.CENTER);
-
-        mVToolBar = new MVToolBar(daten, state);
-        jPanelToolBar.setLayout(new BorderLayout());
-        jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
+        if (!state.equals(MVToolBar.SPARTE_TABMELDUNGEN)) {
+            mVToolBar = new MVToolBar(daten, state);
+            jPanelToolBar.setLayout(new BorderLayout());
+            jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
+        } else {
+            mVToolBar = null;
+        }
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -54,8 +60,52 @@ public class MVFrame extends javax.swing.JFrame {
                 daten.mediathekGui.hideFrame(state);
             }
         });
-
+        pack();
     }
+
+    @Override
+    public void dispose() {
+        if (nrGroesse != -1) {
+            Daten.system[nrGroesse] = String.valueOf(this.getSize().width) + ":"
+                    + String.valueOf(this.getSize().height) + ":"
+                    + String.valueOf(this.getLocation().x) + ":"
+                    + String.valueOf(this.getLocation().y);
+        }
+        super.dispose();
+    }
+
+    public void setSize(int nr) {
+        nrGroesse = nr;
+        int breite, hoehe, posX, posY;
+        breite = 0;
+        hoehe = 0;
+        posX = 0;
+        posY = 0;
+        String[] arr = Daten.system[nrGroesse].split(":");
+        try {
+            if (arr.length == 4) {
+                breite = Integer.parseInt(arr[0]);
+                hoehe = Integer.parseInt(arr[1]);
+                posX = Integer.parseInt(arr[2]);
+                posY = Integer.parseInt(arr[3]);
+            }
+        } catch (Exception ex) {
+            breite = 0;
+            hoehe = 0;
+            posX = 0;
+            posY = 0;
+        }
+        if (breite > 0 && hoehe > 0) {
+            this.setSize(new Dimension(breite, hoehe));
+        }
+        if (posX > 0 && posY > 0) {
+            this.setLocation(posX, posY);
+        } else {
+            setLocationRelativeTo(daten.mediathekGui);
+        }
+    }
+
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 

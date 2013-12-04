@@ -293,11 +293,6 @@
                 <Property name="text" type="java.lang.String" value="Buttons anzeigen"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItemMeldungen">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Meldungen anzeigen"/>
-              </Properties>
-            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuHilfe">

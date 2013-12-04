@@ -209,16 +209,27 @@ public class Konstanten {
     public static final int SYSTEM_PFADE_SPEICHERN_NR = 71;
     public static final String SYSTEM_BUTTON_TOOLBAR = "Toolbar-Button";
     public static final int SYSTEM_BUTTON_TOOLBAR_NR = 72;
+    // Extrafenster
     public static final String SYSTEM_FENSTER_DOWNLOAD = "Fenster-Download";
     public static final int SYSTEM_FENSTER_DOWNLOAD_NR = 73;
     public static final String SYSTEM_VIS_DOWNLOAD = "Vis-Download";
     public static final int SYSTEM_VIS_DOWNLOAD_NR = 74;
+    public static final String SYSTEM_GROESSE_DOWNLOAD = "Groesse-Download";
+    public static final int SYSTEM_GROESSE_DOWNLOAD_NR = 75;
     public static final String SYSTEM_FENSTER_ABO = "Fenster-Abo";
-    public static final int SYSTEM_FENSTER_ABO_NR = 75;
+    public static final int SYSTEM_FENSTER_ABO_NR = 76;
     public static final String SYSTEM_VIS_ABO = "Vis-Abo";
-    public static final int SYSTEM_VIS_ABO_NR = 76;
+    public static final int SYSTEM_VIS_ABO_NR = 77;
+    public static final String SYSTEM_GROESSE_ABO = "Groesse-Abo";
+    public static final int SYSTEM_GROESSE_ABO_NR = 78;
+    public static final String SYSTEM_FENSTER_MELDUNGEN = "Fenster-Meldungen";
+    public static final int SYSTEM_FENSTER_MELDUNGEN_NR = 79;
+    public static final String SYSTEM_VIS_MELDUNGEN = "Vis-Meldungen";
+    public static final int SYSTEM_VIS_MELDUNGEN_NR = 80;
+    public static final String SYSTEM_GROESSE_MELDUNGEN = "Groesse-Meldungen";
+    public static final int SYSTEM_GROESSE_MELDUNGEN_NR = 81;
     public static final String SYSTEM = "system";
-    public static final int SYSTEM_MAX_ELEM = 77;
+    public static final int SYSTEM_MAX_ELEM = 82;
     public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION,
         SYSTEM_GROESSE_X, SYSTEM_GROESSE_Y, SYSTEM_POS_X, SYSTEM_POS_Y,
         SYSTEM_GROESSE_EINSTELLUNEN_X, SYSTEM_GROESSE_EINSTELLUNEN_Y, SYSTEM_POS_EINSTELLUNEN_X, SYSTEM_EINSTELLUNEN_POS_Y,
@@ -238,7 +249,9 @@ public class Konstanten {
         SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN, SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN, SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN,
         SYSTEM_ANSICHT_SET_LANG, SYSTEM_ICON_STANARD, SYSTEM_ICON_PFAD, SYSTEM_BREITE_MELDUNGEN, SYSTEM_BANDBREITE, SYSTEM_FILMLISTE_UMBENENNEN, SYSTEM_DOWNLOAD_SOFORT_STARTEN,
         SYSTEM_NOTIFICATION, SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, SYSTEM_PLAYER_ABSPIELEN, SYSTEM_PFADE_SPEICHERN, SYSTEM_BUTTON_TOOLBAR,
-        SYSTEM_FENSTER_DOWNLOAD, SYSTEM_VIS_DOWNLOAD, SYSTEM_FENSTER_ABO, SYSTEM_VIS_ABO
+        SYSTEM_FENSTER_DOWNLOAD, SYSTEM_VIS_DOWNLOAD, SYSTEM_GROESSE_DOWNLOAD,
+        SYSTEM_FENSTER_ABO, SYSTEM_VIS_ABO, SYSTEM_GROESSE_ABO,
+        SYSTEM_FENSTER_MELDUNGEN, SYSTEM_VIS_MELDUNGEN, SYSTEM_GROESSE_MELDUNGEN
     };
     //
 }
