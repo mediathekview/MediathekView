@@ -54,8 +54,8 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private DatenPset pSet = null;
     private boolean ok = false;
     private DatenDownload datenDownload = null;
-    private Daten ddaten;
-    private DatenFilm datenFilm;
+    private final Daten daten;
+    private final DatenFilm datenFilm;
     private Component parentComponent = null;
     private String orgPfad = "";
 
@@ -63,7 +63,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         super(parent, true);
         parentComponent = parent;
         initComponents();
-        ddaten = dd;
+        daten = dd;
         datenFilm = film;
         pSet = ppSet;
         this.setTitle("Film Speichern");
@@ -83,7 +83,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
             }
         });
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        if (ddaten.listePset.getListeSpeichern().size() == 0) {
+        if (daten.listePset.getListeSpeichern().size() == 0) {
             // Satz mit x, war wohl nix
             ok = false;
             beenden();
@@ -112,13 +112,13 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 beenden();
             }
         });
-        jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel<>(ddaten.listePset.getListeSpeichern().getObjectDataCombo()));
+        jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel<>(daten.listePset.getListeSpeichern().getObjectDataCombo()));
         if (pSet != null) {
             jComboBoxPgr.setSelectedItem(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
         } else {
-            pSet = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
+            pSet = daten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
         }
-        if (ddaten.listePset.getListeSpeichern().size() == 1) {
+        if (daten.listePset.getListeSpeichern().size() == 1) {
             // macht dann keinen Sinn
             jComboBoxPgr.setEnabled(false);
         } else {
@@ -183,6 +183,13 @@ public class DialogAddDownload extends javax.swing.JDialog {
 
     private void setModelPfad(String pfad) {
         ArrayList<String> pfade = new ArrayList<>();
+        // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
+        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_LETZTEN_PFAD_ANZEIGEN_NR])) {
+            if (!Daten.system[Konstanten.SYSTEM_LETZTER_PFAD_SPEICHERN_NR].isEmpty()) {
+                pfade.add(Daten.system[Konstanten.SYSTEM_LETZTER_PFAD_SPEICHERN_NR]);
+            }
+        }
+        // dan den Rest
         pfade.add(pfad);
         if (!Daten.system[Konstanten.SYSTEM_PFADE_SPEICHERN_NR].isEmpty()) {
             String[] p = Daten.system[Konstanten.SYSTEM_PFADE_SPEICHERN_NR].split("<>");
@@ -194,6 +201,9 @@ public class DialogAddDownload extends javax.swing.JDialog {
     }
 
     private void saveComboPfad() {
+        String akt = jComboBoxPfad.getSelectedItem().toString();
+        Daten.system[Konstanten.SYSTEM_LETZTER_PFAD_SPEICHERN_NR] = akt;
+
         ArrayList<String> pfade = new ArrayList<>();
         if (!Daten.system[Konstanten.SYSTEM_PFADE_SPEICHERN_NR].isEmpty()) {
             String[] p = Daten.system[Konstanten.SYSTEM_PFADE_SPEICHERN_NR].split("<>");
@@ -201,7 +211,6 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 pfade.addAll(Arrays.asList(p));
             }
         }
-        String akt = jComboBoxPfad.getSelectedItem().toString();
         if (!pfade.contains(akt) && !akt.equals(orgPfad)) {
             pfade.add(0, akt);
         }
@@ -218,7 +227,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
 
     private void setCombo() {
         // stellt den Namen/Radios passend zum Combo ein
-        pSet = ddaten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
+        pSet = daten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
         if (!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_HD)) {
             jRadioButtonAufloesungHd.setSelected(true);
         } else if (!datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_KLEIN)) {
@@ -270,7 +279,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
             if (jCheckBoxStarten.isSelected()) {
                 // und evtl. auch gleich starten
-                datenDownload.startenDownload(ddaten);
+                datenDownload.startenDownload(daten);
             }
         }
         saveComboPfad();
@@ -609,7 +618,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
             if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Film speichern");
+                FileDialog chooser = new FileDialog(daten.mediathekGui, "Film speichern");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed
