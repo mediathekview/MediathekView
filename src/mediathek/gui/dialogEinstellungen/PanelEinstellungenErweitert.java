@@ -124,23 +124,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 Daten.system[Konstanten.SYSTEM_FILMLISTE_UMBENENNEN_NR] = Boolean.toString(jCheckBoxUmbenennen.isSelected());
             }
         });
-        jCheckBoxPfadDownload.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_LETZTEN_PFAD_ANZEIGEN_NR]));
-        jCheckBoxPfadDownload.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_LETZTEN_PFAD_ANZEIGEN_NR] = Boolean.toString(jCheckBoxPfadDownload.isSelected());
-            }
-        });
-        jButtonPfadDownload.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, true, "\n"
-                        + "Im Downloaddialog (Start eines Downloads\n"
-                        + "im Tab Filme) wird dannn der letzte\n"
-                        + "verwendetet Pfad eines Downloads\n"
-                        + "als Vorgabe angezeigt.").setVisible(true);
-            }
-        });
         jButtonProgrammDateimanager.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -444,9 +427,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jTextFieldProgrammUrl = new javax.swing.JTextField();
         jButtonProgrammUrl = new javax.swing.JButton();
         jButtonHilfeProgrammUrl = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
-        jCheckBoxPfadDownload = new javax.swing.JCheckBox();
-        jButtonPfadDownload = new javax.swing.JButton();
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Nach dem Neuladen der Filmliste"));
 
@@ -664,33 +644,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammUrl, jButtonProgrammUrl, jTextFieldProgrammUrl});
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Downloaddialog"));
-
-        jCheckBoxPfadDownload.setText("Im Downloaddialog zuletzt verwendeten Pfad vorgeben");
-
-        jButtonPfadDownload.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jCheckBoxPfadDownload)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonPfadDownload)
-                .addContainerGap())
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxPfadDownload)
-                    .addComponent(jButtonPfadDownload))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -702,8 +655,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -719,9 +671,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(79, Short.MAX_VALUE))
+                .addContainerGap(162, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -730,21 +680,18 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private javax.swing.JButton jButtonHilfeProgrammUrl;
     private javax.swing.JButton jButtonHilfeVideoplayer;
     private javax.swing.JButton jButtonName;
-    private javax.swing.JButton jButtonPfadDownload;
     private javax.swing.JButton jButtonProgrammDateimanager;
     private javax.swing.JButton jButtonProgrammUrl;
     private javax.swing.JButton jButtonProgrammVideoplayer;
     private javax.swing.JCheckBox jCheckBoxAboSuchen;
     private javax.swing.JCheckBox jCheckBoxDownloadSofortStarten;
     private javax.swing.JCheckBox jCheckBoxNurAscii;
-    private javax.swing.JCheckBox jCheckBoxPfadDownload;
     private javax.swing.JCheckBox jCheckBoxUmbenennen;
     private javax.swing.JCheckBox jCheckBoxUnicode;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JRadioButton jRadioButtonAuto;
     private javax.swing.JRadioButton jRadioButtonManuel;
     private javax.swing.JTextField jTextFieldAuto;
