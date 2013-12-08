@@ -58,10 +58,15 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private final DatenFilm datenFilm;
     private Component parentComponent = null;
     private String orgPfad = "";
+    String aufloesung = "";
+    String dateiGroesse_HD = "";
+    String dateiGroesse_Hoch = "";
+    String dateiGroesse_Klein = "";
 
-    public DialogAddDownload(java.awt.Frame parent, Daten dd, DatenFilm film, DatenPset ppSet) {
+    public DialogAddDownload(java.awt.Frame parent, Daten dd, DatenFilm film, DatenPset ppSet, String aaufloesung) {
         super(parent, true);
         parentComponent = parent;
+        aufloesung = aaufloesung;
         initComponents();
         daten = dd;
         datenFilm = film;
@@ -134,21 +139,20 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jRadioButtonAufloesungHd.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty());
         jRadioButtonAufloesungKlein.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty());
         jRadioButtonAufloesungHoch.setSelected(true);
-        String mb;
         if (jRadioButtonAufloesungHd.isEnabled()) {
-            mb = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
-            if (!mb.isEmpty()) {
-                jRadioButtonAufloesungHd.setText(jRadioButtonAufloesungHd.getText() + "   [ " + mb + " MB ]");
+            dateiGroesse_HD = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
+            if (!dateiGroesse_HD.isEmpty()) {
+                jRadioButtonAufloesungHd.setText(jRadioButtonAufloesungHd.getText() + "   [ " + dateiGroesse_HD + " MB ]");
             }
         }
-        mb = datenFilm.getDateigroesse(datenFilm.arr[DatenFilm.FILM_URL_NR]);
-        if (!mb.isEmpty()) {
-            jRadioButtonAufloesungHoch.setText(jRadioButtonAufloesungHoch.getText() + "   [ " + mb + " MB ]");
+        dateiGroesse_Hoch = datenFilm.getDateigroesse(datenFilm.arr[DatenFilm.FILM_URL_NR]);
+        if (!dateiGroesse_Hoch.isEmpty()) {
+            jRadioButtonAufloesungHoch.setText(jRadioButtonAufloesungHoch.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
         }
         if (jRadioButtonAufloesungKlein.isEnabled()) {
-            mb = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
-            if (!mb.isEmpty()) {
-                jRadioButtonAufloesungKlein.setText(jRadioButtonAufloesungKlein.getText() + "   [ " + mb + " MB ]");
+            dateiGroesse_Klein = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
+            if (!dateiGroesse_Klein.isEmpty()) {
+                jRadioButtonAufloesungKlein.setText(jRadioButtonAufloesungKlein.getText() + "   [ " + dateiGroesse_Klein + " MB ]");
             }
         }
         jButtonDelHistory.addActionListener(new ActionListener() {
@@ -236,9 +240,10 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private void setCombo() {
         // stellt den Namen/Radios passend zum Combo ein
         pSet = daten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
-        if (!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_HD)) {
+        if (aufloesung.equals(DatenFilm.AUFLOESUNG_HD) && !datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty() /* Dann wurde im Filter HD ausgewählt und wird voreingestellt */
+                || pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_HD) && !datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty()) {
             jRadioButtonAufloesungHd.setSelected(true);
-        } else if (!datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty() && pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_KLEIN)) {
+        } else if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_KLEIN) && !datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty()) {
             jRadioButtonAufloesungKlein.setSelected(true);
         } else {
             jRadioButtonAufloesungHoch.setSelected(true);
@@ -254,6 +259,16 @@ public class DialogAddDownload extends javax.swing.JDialog {
             return DatenFilm.AUFLOESUNG_KLEIN;
         } else {
             return DatenFilm.AUFLOESUNG_NORMAL;
+        }
+    }
+
+    private String getGroesse() {
+        if (jRadioButtonAufloesungHd.isSelected()) {
+            return dateiGroesse_HD;
+        } else if (jRadioButtonAufloesungKlein.isSelected()) {
+            return dateiGroesse_Klein;
+        } else {
+            return dateiGroesse_Hoch;
         }
     }
 
@@ -282,6 +297,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         if (ok) {
             // jetzt wird mit den angegebenen Pfaden gearbeitet
             datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), jComboBoxPfad.getSelectedItem().toString(), getAufloesung());
+            datenDownload.setGroesse(getGroesse());
             datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = Boolean.toString(jCheckBoxInfodatei.isSelected());
             Daten.listeDownloads.addMitNummer(datenDownload);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());

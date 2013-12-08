@@ -21,7 +21,6 @@ package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
-import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

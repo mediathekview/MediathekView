@@ -22,7 +22,6 @@ package mediathek.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -54,7 +53,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.MVStatusBar_Mac;
 import mediathek.MVToolBar;
-import mediathek.MediathekGui;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
@@ -408,7 +406,11 @@ public class GuiFilme extends PanelVorlage {
                 for (int selRow : selRows) {
                     // film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
                     film = (DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selRow), DatenFilm.FILM_REF_NR);
-                    DialogAddDownload dialog = new DialogAddDownload(daten.mediathekGui, daten, film, pSet);
+                    String aufloesung = "";
+                    if (jCheckBoxNurHd.isSelected()) {
+                        aufloesung = DatenFilm.AUFLOESUNG_HD;
+                    }
+                    DialogAddDownload dialog = new DialogAddDownload(daten.mediathekGui, daten, film, pSet, aufloesung);
                     dialog.setVisible(true);
                 }
             }
@@ -431,7 +433,6 @@ public class GuiFilme extends PanelVorlage {
                 aufloesung = DatenFilm.AUFLOESUNG_HD;
             }
             daten.starterClass.urlMitProgrammStarten(pSet, getSelFilm(), aufloesung);
-//            tabelleLaden();
         }
     }
 

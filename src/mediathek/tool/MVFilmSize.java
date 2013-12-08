@@ -40,24 +40,20 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
         return sizeStr;
     }
 
-    public void setFilm(DatenFilm film) {
+    public void setSize(String size) {
         // im Film ist die Größe in "MB" !!
-        if (film == null) {
+        if (size.isEmpty()) {
             aktSizeL = -1L;
             sizeL = 0L;
             sizeStr = "";
             return;
-        }
-        if (film.arr[DatenFilm.FILM_GROESSE_NR].equals("<1")) {
-            film.arr[DatenFilm.FILM_GROESSE_NR] = "1";
-        }
-        if (!film.arr[DatenFilm.FILM_GROESSE_NR].isEmpty()) {
+        } else {
             try {
-                sizeL = Long.valueOf(film.arr[DatenFilm.FILM_GROESSE_NR]);
-                sizeL = sizeL * 1024 * 1024;
-                sizeStr = getGroesse(sizeL);
+                sizeL = Long.valueOf(size);
+                sizeL = sizeL * 1000 * 1000;
+                sizeStr = size;
             } catch (Exception ex) {
-                Log.fehlerMeldung(978745320, Log.FEHLER_ART_MREADER, MVFilmSize.class.getName(), ex, "String: " + film.arr[DatenFilm.FILM_GROESSE_NR]);
+                Log.fehlerMeldung(978745320, Log.FEHLER_ART_MREADER, MVFilmSize.class.getName(), ex, "String: " + size);
                 sizeL = 0L;
                 sizeStr = "";
             }
