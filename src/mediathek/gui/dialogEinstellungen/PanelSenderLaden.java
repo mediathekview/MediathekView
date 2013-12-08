@@ -19,13 +19,13 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -42,7 +42,7 @@ public class PanelSenderLaden extends PanelVorlage {
     private JButton[] buttonSender;
     private String[] sender;
 
-    public PanelSenderLaden(Daten d, Frame parentComponent) {
+    public PanelSenderLaden(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
         jButtonStop.setIcon(GetIcon.getIcon("stop_16.png"));

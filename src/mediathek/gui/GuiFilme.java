@@ -38,6 +38,7 @@ import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -98,7 +99,7 @@ public class GuiFilme extends PanelVorlage {
     //private String[] alleThemen;
     private PanelBeschreibung panelBeschreibung;
 
-    public GuiFilme(Daten d, Frame parentComponent) {
+    public GuiFilme(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
         tabelle = new MVTable(MVTable.TABELLE_TAB_FILME);

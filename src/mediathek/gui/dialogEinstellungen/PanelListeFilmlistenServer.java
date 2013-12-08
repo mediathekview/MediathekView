@@ -21,11 +21,11 @@ package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
 import java.awt.FileDialog;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -41,7 +41,7 @@ import msearch.filmeLaden.DatenFilmlistenServer;
 
 public class PanelListeFilmlistenServer extends PanelVorlage {
 
-    public PanelListeFilmlistenServer(Daten d, Frame parentComponent) {
+    public PanelListeFilmlistenServer(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
         init();

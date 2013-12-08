@@ -26,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -45,7 +46,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
     private final String ICONSET_STANDARD = "Standard";
 
-    public PanelEinstellungen(Daten d, Frame parentComponent) {
+    public PanelEinstellungen(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
         jButtonInfos.setIcon(GetIcon.getIcon("icons_refresh_16.png"));

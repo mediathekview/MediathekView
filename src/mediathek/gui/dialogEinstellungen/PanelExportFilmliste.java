@@ -22,11 +22,11 @@ package mediathek.gui.dialogEinstellungen;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Cursor;
 import java.awt.FileDialog;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -43,7 +43,7 @@ public class PanelExportFilmliste extends PanelVorlage {
 
     public String ziel;
 
-    public PanelExportFilmliste(Daten d, Frame parent) {
+    public PanelExportFilmliste(Daten d, JFrame parent) {
         super(d, parent);
         initComponents();
         init();

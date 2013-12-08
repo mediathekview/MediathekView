@@ -31,6 +31,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -50,14 +51,14 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
     private JDialog dialog = null;
 
-    public PanelFilmlisteLaden(Daten d, Frame parentComponent, JDialog ddialog) {
+    public PanelFilmlisteLaden(Daten d, JFrame parentComponent, JDialog ddialog) {
         super(d, parentComponent);
         dialog = ddialog;
         initComponents();
         init();
     }
 
-    public PanelFilmlisteLaden(Daten d, Frame parentComponent) {
+    public PanelFilmlisteLaden(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
         init();

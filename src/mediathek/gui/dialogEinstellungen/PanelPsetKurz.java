@@ -23,7 +23,6 @@ import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FileDialog;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -33,6 +32,7 @@ import java.io.File;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -57,7 +57,7 @@ public class PanelPsetKurz extends PanelVorlage {
     private DatenPset pSet = null;
     private ListePset listePset;
 
-    public PanelPsetKurz(Daten d, Frame parentComponent, ListePset llistePset) {
+    public PanelPsetKurz(Daten d, JFrame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
