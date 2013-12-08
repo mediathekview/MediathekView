@@ -24,6 +24,7 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -59,17 +60,17 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private PanelMeldungen panelMeldungenFehler;
     private PanelMeldungen panelMeldungenSystem;
     private PanelMeldungen panelMeldungenPlayer;
-    private JPanel panelLeer = new JPanel();
-    private Frame parentComponent;
+    private final JPanel panelLeer = new JPanel();
+    private final Frame parentComponent;
 
     /**
      * @param parent
      * @param d
      */
-    public DialogEinstellungen(java.awt.Frame parent, Daten d) {
+    public DialogEinstellungen(JFrame parent, Daten d) {
         initComponents();
         setTitle("Einstellungen");
-        parentComponent = parent;
+        parentComponent = this;
         ddaten = d;
         init();
         initTree();
