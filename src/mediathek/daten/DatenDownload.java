@@ -157,9 +157,21 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI_NR];
         // und jetzt noch die Dateigröße für die entsp. URL
         film = ffilm;
-        mVFilmSize.setFilm(film);
+        if (film.arr[DatenFilm.FILM_URL_NR].equals(arr[DOWNLOAD_URL_NR])) {
+            mVFilmSize.setSize(film.arr[DatenFilm.FILM_GROESSE_NR]);
+        } else {
+            mVFilmSize.setSize("");
+        }
         aufrufBauen(pSet, ffilm, abo, name, pfad);
         init();
+    }
+
+    public void setGroesse(String groesse) {
+        if (!groesse.isEmpty()) {
+            mVFilmSize.setSize(groesse);
+        } else {
+            mVFilmSize.setSize(film.getDateigroesse(arr[DOWNLOAD_URL_NR]));
+        }
     }
 
     public static boolean anzeigen(int i) {
@@ -441,7 +453,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         s = s.replace("%t", film.arr[DatenFilm.FILM_THEMA_NR]);
         s = s.replace("%T", film.arr[DatenFilm.FILM_TITEL_NR]);
         s = s.replace("%s", film.arr[DatenFilm.FILM_SENDER_NR]);
-        
+
         s = s.replace("%H", DatumZeit.Heute_yyyyMMdd);
         s = s.replace("%h", DatumZeit.Jetzt_HHMMSS);
 
