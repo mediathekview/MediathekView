@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
@@ -41,7 +40,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private final int STAT_PSET = 3;
     private final int STAT_FERTIG = 4;
     private int status = STAT_START;
-    private Frame parentComponent;
+    private final JFrame parentComponent;
 
     public DialogStarteinstellungen(JFrame parent, boolean modal, Daten dd) {
         super(parent, modal);

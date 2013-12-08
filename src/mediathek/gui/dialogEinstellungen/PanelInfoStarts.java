@@ -19,13 +19,12 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.CellRendererFilme;
 import mediathek.tool.TModel;
 import msearch.daten.DatenFilm;
 
@@ -38,7 +37,7 @@ public class PanelInfoStarts extends PanelVorlage {
      *
      * @param d
      */
-    public PanelInfoStarts(Daten d, Frame parentComponent) {
+    public PanelInfoStarts(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
 //        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, PanelInfoStarts.class.getSimpleName()) {

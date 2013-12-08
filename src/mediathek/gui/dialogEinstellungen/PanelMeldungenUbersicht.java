@@ -19,16 +19,16 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import mediathek.controller.ProgrammLog;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 
 public class PanelMeldungenUbersicht extends PanelVorlage {
 
-    public PanelMeldungenUbersicht(Daten d, Frame parentComponent) {
+    public PanelMeldungenUbersicht(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
         jButtonLog.addActionListener(new ActionListener() {

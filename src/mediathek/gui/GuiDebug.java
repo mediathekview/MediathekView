@@ -31,6 +31,7 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
@@ -48,7 +49,7 @@ public class GuiDebug extends PanelVorlage {
     private JButton[] buttonSender;
     private String[] sender;
 
-    public GuiDebug(Daten d, Frame parentComponent) {
+    public GuiDebug(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
         daten = d;

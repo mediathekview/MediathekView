@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -49,7 +50,7 @@ import mediathek.tool.TModelAbo;
 
 public class GuiAbo extends PanelVorlage {
 
-    public GuiAbo(Daten d, Frame parentComponent) {
+    public GuiAbo(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
         tabelle = new MVTable(MVTable.TABELLE_TAB_ABOS);

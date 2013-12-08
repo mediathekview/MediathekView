@@ -23,6 +23,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mediathek.controller.ProgrammLog;
 import mediathek.daten.Daten;
@@ -39,9 +40,9 @@ public class PanelHilfe extends PanelVorlage {
      * Creates new form GuiFeed
      *
      * @param dd
-     * @param parentComponent
+     * @param p
      */
-    public PanelHilfe(Daten dd, Frame p) {
+    public PanelHilfe(Daten dd, JFrame p) {
         super(dd, p);
         initComponents();
         jButtonHilfeReset.setIcon(GetIcon.getIcon("help_16.png"));

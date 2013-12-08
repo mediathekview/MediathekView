@@ -19,8 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,7 +59,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private PanelMeldungen panelMeldungenSystem;
     private PanelMeldungen panelMeldungenPlayer;
     private final JPanel panelLeer = new JPanel();
-    private final Frame parentComponent;
+    private final JFrame parentComponent;
 
     /**
      * @param parent
