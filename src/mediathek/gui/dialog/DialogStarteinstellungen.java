@@ -22,6 +22,7 @@ package mediathek.gui.dialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
@@ -42,7 +43,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private int status = STAT_START;
     private Frame parentComponent;
 
-    public DialogStarteinstellungen(java.awt.Frame parent, boolean modal, Daten dd) {
+    public DialogStarteinstellungen(JFrame parent, boolean modal, Daten dd) {
         super(parent, modal);
         parentComponent = parent;
         initComponents();

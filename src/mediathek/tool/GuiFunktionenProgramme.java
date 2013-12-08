@@ -31,6 +31,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
@@ -395,7 +396,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return ret;
     }
 
-    public static boolean programmePruefen(Daten daten) {
+    public static boolean programmePruefen(JFrame jFrame, Daten daten) {
         // prüfen ob die eingestellten Programmsets passen
         final String PIPE = "| ";
         final String LEER = "      ";
@@ -459,7 +460,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 text += "++++++++++++++++++++++++++++++++++++++++++++" + "\n\n\n";
             }
         }
-        new DialogHilfe(null, true, text).setVisible(true);
+        new DialogHilfe(jFrame, true, text).setVisible(true);
         return ret;
     }
 }

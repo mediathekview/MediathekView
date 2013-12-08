@@ -20,6 +20,7 @@
 package mediathek.gui;
 
 import java.awt.Frame;
+import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.tool.MVTable;
 
@@ -27,7 +28,7 @@ public class PanelVorlage extends javax.swing.JPanel {
 
     public Daten daten;
     public boolean stopBeob = false;
-    public Frame parentComponent = null;
+    public JFrame parentComponent = null;
     MVTable tabelle = null;
     public boolean solo = false; // nicht in einem eigenem Frame
 
@@ -36,7 +37,7 @@ public class PanelVorlage extends javax.swing.JPanel {
      * @param d
      * @param pparentComponent
      */
-    public PanelVorlage(Daten d, Frame pparentComponent) {
+    public PanelVorlage(Daten d, JFrame pparentComponent) {
         daten = d;
         parentComponent = pparentComponent;
         addComponentListener(new java.awt.event.ComponentAdapter() {

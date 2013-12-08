@@ -21,11 +21,11 @@ package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
 import java.awt.FileDialog;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -42,8 +42,8 @@ import mediathek.tool.MVMessageDialog;
 
 public class PanelEinstellungenErweitert extends PanelVorlage {
 
-    public PanelEinstellungenErweitert(Daten d, Frame parentComponent) {
-        super(d, parentComponent);
+    public PanelEinstellungenErweitert(Daten d, JFrame pparentComponent) {
+        super(d, pparentComponent);
         initComponents();
         jButtonProgrammDateimanager.setIcon(GetIcon.getIcon("fileopen_16.png"));
         jButtonProgrammUrl.setIcon(GetIcon.getIcon("fileopen_16.png"));
@@ -277,7 +277,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonHilfeProgrammDateimanager.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, true, "\n"
+                new DialogHilfe(parentComponent, true, "\n"
                         + "In der Tabelle \"Downloads\" kann man mit der rechten\n"
                         + "Maustaste den Downloadordner des jeweiligen Downloads\n"
                         + "öffnen. Normalerweise wird der Dateimanager des\n"
@@ -285,10 +285,30 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
             }
         });
+        jButtonHilfeNeuladen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(parentComponent, true, "\n"
+                        + "Abos automatisch suchen:\n"
+                        + "Nach dem Neuladen einer Filmliste wird dann\n"
+                        + "sofort nach neuen Abos gesucht. Ansonsten muss man\n"
+                        + "im Tab Download auf \"Auffrischen\" klicken.\n"
+                        + "\n"
+                        + "Downloads sofort starten:\n"
+                        + "Neu angelegte Downloads (aus Abos) werden\n"
+                        + "sofort gestartet. Ansonsten muss man sie\n"
+                        + "selbst starten.\n"
+                        + "\n"
+                        + "Alte Filmliste vorher umbenennen:\n"
+                        + "Vor dem Neuladen einer Filmliste wird\n"
+                        + "die bestehende umbenannt und bleibt so erhalten.\n"
+                        + "Ansonsten wir sie überschrieben.").setVisible(true);
+            }
+        });
         jButtonHilfeVideoplayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, true, "\n"
+                new DialogHilfe(parentComponent, true, "\n"
                         + "In der Tabelle \"Downloads\" kann man mit der rechten\n"
                         + "Maustaste den geladenen Film in einem Videoplayer\n"
                         + "öffnen. Normalerweise wird der Videoplayer des\n"
@@ -299,7 +319,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonHilfeProgrammUrl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, true, "\n"
+                new DialogHilfe(parentComponent, true, "\n"
                         + "Wenn das Programm versucht, eine URL zu öffnen\n"
                         + "und die Standardanwendung nicht startet,\n"
                         + "kann man damit ein Programm auswählen mit\n"
@@ -404,6 +424,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jCheckBoxAboSuchen = new javax.swing.JCheckBox();
         jCheckBoxDownloadSofortStarten = new javax.swing.JCheckBox();
         jCheckBoxUmbenennen = new javax.swing.JCheckBox();
+        jButtonHilfeNeuladen = new javax.swing.JButton();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jTextFieldUserAgent = new javax.swing.JTextField();
         jButtonHilfe = new javax.swing.JButton();
@@ -436,6 +457,8 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jCheckBoxUmbenennen.setText("alte Filmliste vorher umbenennen");
 
+        jButtonHilfeNeuladen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -443,17 +466,25 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBoxAboSuchen)
-                    .addComponent(jCheckBoxDownloadSofortStarten)
-                    .addComponent(jCheckBoxUmbenennen))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBoxAboSuchen)
+                            .addComponent(jCheckBoxDownloadSofortStarten))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonHilfeNeuladen))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jCheckBoxUmbenennen)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxAboSuchen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBoxAboSuchen)
+                    .addComponent(jButtonHilfeNeuladen))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxDownloadSofortStarten)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxUmbenennen)
@@ -462,7 +493,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("User-Agent"));
 
-        jButtonHilfe.setText("Hilfe");
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonAuto);
         jRadioButtonAuto.setText("Auto:");
@@ -502,7 +533,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jRadioButtonManuel)
                     .addComponent(jTextFieldUserAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfe, jTextFieldAuto, jTextFieldUserAgent});
@@ -511,7 +542,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jCheckBoxNurAscii.setText("nur ASCII-Zeichen erlauben");
 
-        jButtonName.setText("Hilfe");
+        jButtonName.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
 
         jCheckBoxUnicode.setText("Unicode-Zeichen \"vereinfachen\"");
 
@@ -540,7 +571,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jCheckBoxUnicode))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxNurAscii)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab Download"));
@@ -605,7 +636,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButtonHilfeVideoplayer)
                         .addComponent(jButtonProgrammVideoplayer)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammDateimanager, jButtonProgrammDateimanager, jTextFieldProgrammDateimanager});
@@ -639,7 +670,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jTextFieldProgrammUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonProgrammUrl)
                     .addComponent(jButtonHilfeProgrammUrl))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammUrl, jButtonProgrammUrl, jTextFieldProgrammUrl});
@@ -663,19 +694,20 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(162, Short.MAX_VALUE))
+                .addContainerGap(161, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonHilfe;
+    private javax.swing.JButton jButtonHilfeNeuladen;
     private javax.swing.JButton jButtonHilfeProgrammDateimanager;
     private javax.swing.JButton jButtonHilfeProgrammUrl;
     private javax.swing.JButton jButtonHilfeVideoplayer;

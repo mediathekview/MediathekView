@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Date;
+import javax.swing.JFrame;
 import mediathek.Main;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
@@ -41,7 +42,7 @@ public class PanelAbout extends PanelVorlage {
      * @param dd
      * @param parentComponent
      */
-    public PanelAbout(Daten dd, Frame parentComponent) {
+    public PanelAbout(Daten dd, JFrame parentComponent) {
         super(dd, parentComponent);
         initComponents();
         //init
