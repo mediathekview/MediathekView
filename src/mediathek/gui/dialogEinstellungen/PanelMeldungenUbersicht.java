@@ -28,13 +28,13 @@ import mediathek.gui.PanelVorlage;
 
 public class PanelMeldungenUbersicht extends PanelVorlage {
 
-    public PanelMeldungenUbersicht(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+    public PanelMeldungenUbersicht(Daten d, JFrame pparentComponent) {
+        super(d, pparentComponent);
         initComponents();
         jButtonLog.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ProgrammLog.LogDateiSchreiben(daten);
+                ProgrammLog.LogDateiSchreiben(daten, parentComponent);
             }
         });
     }
