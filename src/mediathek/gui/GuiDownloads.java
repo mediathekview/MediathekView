@@ -101,7 +101,7 @@ public class GuiDownloads extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            daten.mediathekGui.setToolbar(MVToolBar.SPARTE_TABDOWNLOAD);
+            daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_TAB_DOWNLOADS);
             daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD);
         }
         aktFilmSetzen();

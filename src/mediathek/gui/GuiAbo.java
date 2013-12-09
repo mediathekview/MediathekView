@@ -70,7 +70,7 @@ public class GuiAbo extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            daten.mediathekGui.setToolbar(MVToolBar.SPARTE_TABABO);
+            daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_TAB_ABOS);
             daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.ABO);
         }
     }

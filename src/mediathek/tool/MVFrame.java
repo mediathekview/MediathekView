@@ -20,11 +20,9 @@
 package mediathek.tool;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JComponent;
 import javax.swing.WindowConstants;
 import mediathek.MVToolBar;
 import mediathek.MediathekGui;
@@ -46,7 +44,7 @@ public class MVFrame extends javax.swing.JFrame {
         state = sstate;
         jPanelExtra.setLayout(new BorderLayout());
         jPanelExtra.add(jPanel, BorderLayout.CENTER);
-        if (!state.equals(MVToolBar.SPARTE_TABMELDUNGEN)) {
+        if (!state.equals(MVToolBar.TOOLBAR_TAB_MELDUNGEN)) {
             mVToolBar = new MVToolBar(daten, state);
             jPanelToolBar.setLayout(new BorderLayout());
             jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);

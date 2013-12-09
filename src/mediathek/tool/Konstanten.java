@@ -70,7 +70,7 @@ public class Konstanten {
     public static final String SYSTEM_GROESSE_EINSTELLUNGEN = "Groesse-Einstellungen";
     public static final int SYSTEM_GROESSE_EINSTELLUNGEN_NR = 6;
     public static final String SYSTEM_ICON_KLEIN = "system-icon-groesse";
-    public static final int SYSTEM_ICON_KLEIN_NR = 7;
+    //public static final int SYSTEM_ICON_KLEIN_NR = 7;
     public static final String SYSTEM_FENSTER_MAX = "programmfenster-maximieren";
     public static final int SYSTEM_FENSTER_MAX_NR = 8;
     public static final String SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN = "system-panel-videoplayer-anzeigen";
@@ -199,29 +199,41 @@ public class Konstanten {
     public static final int SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN_NR = 66;
     public static final String SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN = "Dialog-Download-Pfad-speichern";
     public static final int SYSTEM_LETZTER_PFAD_SPEICHERN_NR = 67;
-    public static final String SYSTEM_BUTTON_TOOLBAR = "Toolbar-Button";
-    public static final int SYSTEM_BUTTON_TOOLBAR_NR = 68;
-    // Extrafenster
+    public static final String SYSTEM_TOOLBAR_ALLES = "Toolbar-Button-Alles";
+    public static final int SYSTEM_TOOLBAR_ALLES_NR = 68;
+    public static final String SYSTEM_TOOLBAR_DOWNLOAD_EXTERN = "Toolbar-Button-Download-Extern";
+    public static final int SYSTEM_TOOLBAR_DOWNLOAD_EXTERN_NR = 69;
+    public static final String SYSTEM_TOOLBAR_ABO_EXTERN = "Toolbar-Button-Abo-Extern";
+    public static final int SYSTEM_TOOLBAR_ABO_EXTERN_NR = 70;
+    public static final String SYSTEM_TOOLBAR_MELDUNGEN = "Toolbar-Button-Meldungen";
+    public static final int SYSTEM_TOOLBAR_MELDUNGEN_NR = 71;
+    public static final String SYSTEM_ICON_KLEIN_ALLES = "system-icon-groesse-alles";
+    public static final int SYSTEM_ICON_KLEIN_ALLES_NR = 72;
+    public static final String SYSTEM_ICON_KLEIN_DOWNLOADS_EXTERN = "system-icon-groesse-Download-Extern";
+    public static final int SYSTEM_ICON_KLEIN_DOWNLOADS_EXTERN_NR = 73;
+    public static final String SYSTEM_ICON_KLEIN_ABOS_EXTERN = "system-icon-groesse-Abos-Extern";
+    public static final int SYSTEM_ICON_KLEIN_ABOS_EXTERN_NR = 74;
+// Extrafenster
     public static final String SYSTEM_FENSTER_DOWNLOAD = "Fenster-Download";
-    public static final int SYSTEM_FENSTER_DOWNLOAD_NR = 69;
+    public static final int SYSTEM_FENSTER_DOWNLOAD_NR = 75;
     public static final String SYSTEM_VIS_DOWNLOAD = "Vis-Download";
-    public static final int SYSTEM_VIS_DOWNLOAD_NR = 70;
+    public static final int SYSTEM_VIS_DOWNLOAD_NR = 76;
     public static final String SYSTEM_GROESSE_DOWNLOAD = "Groesse-Download";
-    public static final int SYSTEM_GROESSE_DOWNLOAD_NR = 71;
+    public static final int SYSTEM_GROESSE_DOWNLOAD_NR = 77;
     public static final String SYSTEM_FENSTER_ABO = "Fenster-Abo";
-    public static final int SYSTEM_FENSTER_ABO_NR = 72;
+    public static final int SYSTEM_FENSTER_ABO_NR = 78;
     public static final String SYSTEM_VIS_ABO = "Vis-Abo";
-    public static final int SYSTEM_VIS_ABO_NR = 73;
+    public static final int SYSTEM_VIS_ABO_NR = 79;
     public static final String SYSTEM_GROESSE_ABO = "Groesse-Abo";
-    public static final int SYSTEM_GROESSE_ABO_NR = 74;
+    public static final int SYSTEM_GROESSE_ABO_NR = 80;
     public static final String SYSTEM_FENSTER_MELDUNGEN = "Fenster-Meldungen";
-    public static final int SYSTEM_FENSTER_MELDUNGEN_NR = 75;
+    public static final int SYSTEM_FENSTER_MELDUNGEN_NR = 81;
     public static final String SYSTEM_VIS_MELDUNGEN = "Vis-Meldungen";
-    public static final int SYSTEM_VIS_MELDUNGEN_NR = 76;
+    public static final int SYSTEM_VIS_MELDUNGEN_NR = 82;
     public static final String SYSTEM_GROESSE_MELDUNGEN = "Groesse-Meldungen";
-    public static final int SYSTEM_GROESSE_MELDUNGEN_NR = 77;
+    public static final int SYSTEM_GROESSE_MELDUNGEN_NR = 83;
     public static final String SYSTEM = "system";
-    public static final int SYSTEM_MAX_ELEM = 78;
+    public static final int SYSTEM_MAX_ELEM = 84;
     public static final String[] SYSTEM_COLUMN_NAMES = {SYSTEM_ECHTZEITSUCHE, SYSTEM_LOOK, SYSTEM_USER_AGENT_AUTO, SYSTEM_USER_AGENT, SYSTEM_VERSION,
         SYSTEM_GROESSE, SYSTEM_GROESSE_EINSTELLUNGEN,
         SYSTEM_ICON_KLEIN, SYSTEM_FENSTER_MAX, SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, SYSTEM_PANEL_MELDUNGEN_ANZEIGEN, SYSTEM_PANEL_FILTER_ANZEIGEN,
@@ -240,7 +252,9 @@ public class Konstanten {
         SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN, SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN, SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN,
         SYSTEM_ANSICHT_SET_LANG, SYSTEM_ICON_STANARD, SYSTEM_ICON_PFAD, SYSTEM_BREITE_MELDUNGEN, SYSTEM_BANDBREITE, SYSTEM_FILMLISTE_UMBENENNEN, SYSTEM_DOWNLOAD_SOFORT_STARTEN,
         SYSTEM_NOTIFICATION, SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, SYSTEM_PLAYER_ABSPIELEN, SYSTEM_PFADE_SPEICHERN, SYSTEM_LETZTEN_PFAD_ANZEIGEN,
-        SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN, SYSTEM_BUTTON_TOOLBAR,
+        SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN,
+        SYSTEM_TOOLBAR_ALLES, SYSTEM_TOOLBAR_DOWNLOAD_EXTERN, SYSTEM_TOOLBAR_ABO_EXTERN, SYSTEM_TOOLBAR_MELDUNGEN,
+        SYSTEM_ICON_KLEIN_ALLES, SYSTEM_ICON_KLEIN_DOWNLOADS_EXTERN, SYSTEM_ICON_KLEIN_ABOS_EXTERN,
         SYSTEM_FENSTER_DOWNLOAD, SYSTEM_VIS_DOWNLOAD, SYSTEM_GROESSE_DOWNLOAD,
         SYSTEM_FENSTER_ABO, SYSTEM_VIS_ABO, SYSTEM_GROESSE_ABO,
         SYSTEM_FENSTER_MELDUNGEN, SYSTEM_VIS_MELDUNGEN, SYSTEM_GROESSE_MELDUNGEN
