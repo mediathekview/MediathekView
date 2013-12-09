@@ -25,6 +25,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogZiel;
@@ -36,8 +37,8 @@ import mediathek.tool.MVMessageDialog;
 
 public class ProgrammLog {
 
-    public static void LogDateiSchreiben(Daten ddaten) {
-        DialogZiel dialog = new DialogZiel(ddaten.mediathekGui, ddaten, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
+    public static void LogDateiSchreiben(Daten ddaten, JFrame jFrame) {
+        DialogZiel dialog = new DialogZiel(jFrame, ddaten, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
         dialog.setVisible(true);
         if (!dialog.ok) {
             return;

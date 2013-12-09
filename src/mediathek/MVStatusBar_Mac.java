@@ -63,12 +63,7 @@ public final class MVStatusBar_Mac extends MVStatusBar {
             public void ping() {
                 try {
                     if (!stopTimer) {
-                        SwingUtilities.invokeAndWait(new Runnable() {
-                            @Override
-                            public void run() {
-                                setInfoRechts();
-                            }
-                        });
+                        setInfoRechts();
                     }
                 } catch (Exception ex) {
                     Log.fehlerMeldung(936251087, Log.FEHLER_ART_PROG, MVStatusBar_Mac.class.getName(), ex);

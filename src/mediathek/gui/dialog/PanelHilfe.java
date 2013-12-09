@@ -65,7 +65,7 @@ public class PanelHilfe extends PanelVorlage {
         jButtonLogErstellen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ProgrammLog.LogDateiSchreiben(daten);
+                ProgrammLog.LogDateiSchreiben(daten, parentComponent);
             }
         });
         jButtonHilfeReset.addActionListener(new ActionListener() {
