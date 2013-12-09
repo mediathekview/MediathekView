@@ -255,6 +255,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         } else {
             // erster Start
             new DialogStarteinstellungen(null, true, daten).setVisible(true);
+            this.pack();
         }
         duration.ping("Alles laden");
 
@@ -875,9 +876,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         });
 
         // Ansicht
+        jCheckBoxMenuItemToolBar.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_TOOLBAR_ALLES_ANZEIGEN_NR]));
+        mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
         jCheckBoxMenuItemToolBar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_TOOLBAR_ALLES_ANZEIGEN_NR] = Boolean.toString(jCheckBoxMenuItemToolBar.isSelected());
                 mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
             }
         });
