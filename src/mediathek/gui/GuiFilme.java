@@ -122,7 +122,7 @@ public class GuiFilme extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        daten.mediathekGui.setToolbar(MVToolBar.SPARTE_TABFILM);
+        daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_TAB_FILME);
         daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.FILME);
         aktFilmSetzen();
         setInfo();

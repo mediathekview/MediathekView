@@ -34,7 +34,7 @@
 	- Beim Anlegen eines Sets/Downloads kann man angeben, ob eine Infodatei mit den Filminfos mit gespeichert werden soll
 	- Die Tabs "Download", "Abo", "Meldungen" können ausgeblendet oder in einem Extrafenster angezeigt werden (-> Menü "Ansicht")
 	- Im Downloaddialog kann man sich den letzten verwendetet Pfad als Vorgabe anzeigen lassen
-	
+	- Toolbar kann angepasst werden (rechte Maustaste)
 	
 	# Version 3.3.0
 	- Sortierreihenfolge der Tabellen wird gespeichert
