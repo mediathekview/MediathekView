@@ -35,7 +35,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -172,26 +171,26 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return pfadScript;
     }
 
-    public static String getPfadMplayer(Daten dd) {
+    public static String getPfadMplayer(JFrame parent, Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(dd, false /* vlc */, false /* flvstreamer */, true /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(parent, dd, false /* vlc */, false /* flvstreamer */, true /* mplayer */), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR];
     }
 
-    public static String getPfadVlc(Daten dd) {
+    public static String getPfadVlc(JFrame parent, Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(dd, true /* vlc */, false /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(parent, dd, true /* vlc */, false /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR];
     }
 
-    public static String getPfadFlv(Daten dd) {
+    public static String getPfadFlv(JFrame parent, Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(dd, false /* vlc */, true /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(parent, dd, false /* vlc */, true /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
     }

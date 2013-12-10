@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -53,9 +54,11 @@ public class MVFilmInformation implements ChangeListener {
     private JButton buttonBild = new JButton("Bild laden");
     private Color foreground, background;
     private DatenFilm aktFilm = new DatenFilm();
+    private JFrame parent;
 
-    public MVFilmInformation(Frame owner, JTabbedPane tabbedPane, Daten ddaten) {
+    public MVFilmInformation(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
         this.ddaten = ddaten;
+        parent = owner;
 //        if (Funktionen.getOs() == Funktionen.OS_LINUX) {
 //            foreground = Color.WHITE;
 //            background = Color.BLACK;
@@ -137,7 +140,7 @@ public class MVFilmInformation implements ChangeListener {
         lblUrlThemaField.setDoubleBuffered(true);
         lblUrlThemaField.setForeground(foreground);
         try {
-            lblUrlThemaField.setAction(new UrlHyperlinkAction(ddaten, ""));
+            lblUrlThemaField.setAction(new UrlHyperlinkAction(parent, ddaten, ""));
         } catch (URISyntaxException ignored) {
         }
         lblUrlThemaField.setFont(HudPaintingUtils.getHudFont());
@@ -145,7 +148,7 @@ public class MVFilmInformation implements ChangeListener {
         lblUrlPicture.setDoubleBuffered(true);
         lblUrlPicture.setForeground(foreground);
         try {
-            lblUrlPicture.setAction(new UrlHyperlinkAction(ddaten, ""));
+            lblUrlPicture.setAction(new UrlHyperlinkAction(parent, ddaten, ""));
         } catch (URISyntaxException ignored) {
         }
         lblUrlPicture.setFont(HudPaintingUtils.getHudFont());

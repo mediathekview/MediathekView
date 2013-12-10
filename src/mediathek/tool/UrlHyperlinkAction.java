@@ -25,18 +25,21 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
 public class UrlHyperlinkAction extends AbstractAction {
 
     String url;
-    Daten ddaten;
+    Daten daten;
+    JFrame jFrameParent;
 
-    public UrlHyperlinkAction(Daten ddaten, String url) throws URISyntaxException {
-        this.ddaten = ddaten;
-        this.url = url;
-        super.putValue(Action.NAME, url);
+    public UrlHyperlinkAction(JFrame jjFrameParent, Daten ddaten, String uurl) throws URISyntaxException {
+        daten = ddaten;
+        url = uurl;
+        jFrameParent = jjFrameParent;
+        super.putValue(Action.NAME, uurl);
 //        super.putValue(SHORT_DESCRIPTION, url);
 //        super.putValue(LONG_DESCRIPTION, url);
     }
@@ -44,12 +47,12 @@ public class UrlHyperlinkAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            urlOeffnen(ddaten, e.getActionCommand());
+            urlOeffnen(daten, e.getActionCommand());
         } catch (URISyntaxException ignored) {
         }
     }
 
-    public boolean urlOeffnen(Daten ddaten, String url) throws URISyntaxException {
+    private boolean urlOeffnen(Daten ddaten, String url) throws URISyntaxException {
         if (Desktop.isDesktopSupported()) {
             Desktop d = Desktop.getDesktop();
             try {
@@ -62,7 +65,7 @@ public class UrlHyperlinkAction extends AbstractAction {
                     String programm = "";
                     if (Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR].equals("")) {
                         String text = "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen.";
-                        DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(ddaten.mediathekGui, true, "", "Browser suchen", text);
+                        DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(jFrameParent, true, "", "Browser suchen", text);
                         dialog.setVisible(true);
                         if (dialog.ok) {
                             programm = dialog.ziel;

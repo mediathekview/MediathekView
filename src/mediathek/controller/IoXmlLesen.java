@@ -28,6 +28,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import javax.swing.JFrame;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -61,7 +62,7 @@ public class IoXmlLesen {
         return Files.exists(xmlFilePath);
     }
 
-    public static ListePset importPset(Daten dd, String dateiUrl, boolean log) {
+    public static ListePset importPset(JFrame parent, Daten dd, String dateiUrl, boolean log) {
         int timeout = 10000; //10 Sekunden
         try {
             if (GuiFunktionen.istUrl(dateiUrl)) {
@@ -70,9 +71,9 @@ public class IoXmlLesen {
                 conn.setConnectTimeout(timeout);
                 conn.setReadTimeout(timeout);
                 conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                return importPset(dd, conn.getInputStream(), log);
+                return importPset(parent, dd, conn.getInputStream(), log);
             } else {
-                return importPset(dd, new FileInputStream(dateiUrl), log);
+                return importPset(parent, dd, new FileInputStream(dateiUrl), log);
             }
         } catch (Exception ex) {
             if (log) {
@@ -82,7 +83,7 @@ public class IoXmlLesen {
         }
     }
 
-    public static ListePset importPset(Daten dd, InputStream inStream, boolean log) {
+    public static ListePset importPset(JFrame parent, Daten dd, InputStream inStream, boolean log) {
         DatenPset datenPset = null;
         ListePset liste = new ListePset();
         try {
@@ -126,12 +127,12 @@ public class IoXmlLesen {
         } else {
             // damit die Variablen ersetzt werden
             ListePset ll = new ListePset();
-            ll.addVorlage(dd, liste);
+            ll.addVorlage(parent, dd, liste);
             return ll;
         }
     }
 
-    public static ListePset importPsetText(Daten dd, String text, boolean log) {
+    public static ListePset importPsetText(JFrame parent, Daten dd, String text, boolean log) {
         DatenPset datenPset;
         ListePset liste = new ListePset();
         try {
@@ -180,7 +181,7 @@ public class IoXmlLesen {
             return null;
         } else {
             ListePset ll = new ListePset();
-            ll.addVorlage(dd, liste);
+            ll.addVorlage(parent, dd, liste);
             return ll;
         }
     }

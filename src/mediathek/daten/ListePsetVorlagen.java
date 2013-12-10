@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -124,9 +125,9 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         return true;
     }
 
-    public static void getNeuVersionStandarset(Daten ddaten, String bs) {
-        ListePset lp = getStandarset(ddaten, bs);
-        SwingUtilities.invokeLater(new GetNeuVersion(ddaten, bs, lp));
+    public static void getNeuVersionStandarset(JFrame parent, Daten ddaten, String bs) {
+        ListePset lp = getStandarset(parent, ddaten, bs);
+        SwingUtilities.invokeLater(new GetNeuVersion(parent, ddaten, bs, lp));
     }
 
     private static class GetNeuVersion implements Runnable {
@@ -134,11 +135,13 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         Daten ddaten;
         String bs;
         ListePset lp;
+        JFrame parent;
 
-        public GetNeuVersion(Daten dd, String bbs, ListePset llp) {
+        public GetNeuVersion(JFrame pparent, Daten dd, String bbs, ListePset llp) {
             ddaten = dd;
             bs = bbs;
             lp = llp;
+            parent = pparent;
         }
 
         @Override
@@ -168,7 +171,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                             + "   \n"
                             + "   \n"
                             + "   \n";
-                    DialogOkCancel dialogOkCancel = new DialogOkCancel(null, ddaten, true, titel, text);
+                    DialogOkCancel dialogOkCancel = new DialogOkCancel(parent, ddaten, true, titel, text);
                     dialogOkCancel.setVisible(true);
                     if (dialogOkCancel.ok) {
                         Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = lp.version;
@@ -197,7 +200,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
     }
 
-    public static ListePset getStandarset(Daten ddaten, String bs) {
+    public static ListePset getStandarset(JFrame parent, Daten ddaten, String bs) {
         ListePset pSet = null;
         String[] vorlage = null;
         ListePsetVorlagen lv = new ListePsetVorlagen();
@@ -210,7 +213,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
             if (vorlage != null) {
                 if (!vorlage[PGR_URL_NR].equals("")) {
-                    pSet = IoXmlLesen.importPset(ddaten, vorlage[ListePsetVorlagen.PGR_URL_NR], true);
+                    pSet = IoXmlLesen.importPset(parent, ddaten, vorlage[ListePsetVorlagen.PGR_URL_NR], true);
                     if (pSet != null) {
                         pSet.version = vorlage[PGR_VERSION_NR];
                     }
@@ -219,12 +222,12 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
         if (pSet == null) {
             // dann nehmen wir halt die im jar-File
-            pSet = getStandardprogramme(ddaten);
+            pSet = getStandardprogramme(parent, ddaten);
         }
         return pSet;
     }
 
-    private static ListePset getStandardprogramme(Daten ddaten) {
+    private static ListePset getStandardprogramme(JFrame parent, Daten ddaten) {
         // liefert das Standard Programmset für das entsprechende BS
         ListePset pSet;
         InputStream datei;
@@ -242,7 +245,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 datei = new GetFile().getPsetVorlageWindows();
         }
         // Standardgruppen laden
-        pSet = IoXmlLesen.importPset(ddaten, datei, true);
+        pSet = IoXmlLesen.importPset(parent, ddaten, datei, true);
         return pSet;
     }
 

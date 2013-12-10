@@ -22,6 +22,7 @@ package mediathek.gui.dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
+import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Konstanten;
@@ -31,19 +32,16 @@ public class DialogOkCancel extends javax.swing.JDialog {
 
     public boolean ok = false;
     public boolean morgen = true;
-    private Daten ddaten;
 
     /**
      *
-     * @param parent
-     * @param ddaten
+     * @param pparent
      * @param modal
      * @param titel
      * @param text
      */
-    public DialogOkCancel(java.awt.Frame parent, Daten dd, boolean modal, String titel, String text) {
-        super(parent, modal);
-        ddaten = dd;
+    public DialogOkCancel(JFrame pparent, Daten daten, boolean modal, String titel, String text) {
+        super(pparent, modal);
         initComponents();
         setTitle(titel);
         jTextArea1.setText(text);
@@ -54,15 +52,15 @@ public class DialogOkCancel extends javax.swing.JDialog {
             }
         });
         try {
-            jXHyperlinkAnleitung.setAction(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_ANLEITUNG));
+            jXHyperlinkAnleitung.setAction(new UrlHyperlinkAction(pparent, daten, Konstanten.ADRESSE_ANLEITUNG));
         } catch (URISyntaxException ignored) {
         }
 
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
-        if (parent != null) {
-            parent = ddaten.mediathekGui;
-            setLocationRelativeTo(parent);
+        if (pparent != null) {
+            pparent = daten.mediathekGui;
+            setLocationRelativeTo(pparent);
         }
         new EscBeenden(this) {
             @Override

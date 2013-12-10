@@ -28,6 +28,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -47,13 +48,15 @@ public class PanelProgrammPfade extends JPanel {
     public JDialog dialog = null;
     private boolean vlc, flvstreamer, mplayer;
     private Daten ddaten;
+    private JFrame parentComponent;
 
-    public PanelProgrammPfade(Daten dd, boolean vvlc, boolean fflvstreamer, boolean mmplayer) {
+    public PanelProgrammPfade(JFrame parentFrame, Daten dd, boolean vvlc, boolean fflvstreamer, boolean mmplayer) {
         initComponents();
         ddaten = dd;
         vlc = vvlc;
         flvstreamer = fflvstreamer;
         mplayer = mmplayer;
+        parentComponent = parentFrame;
         init();
         initBeob();
     }
@@ -85,9 +88,9 @@ public class PanelProgrammPfade extends JPanel {
         jTextFieldFlv.getDocument().addDocumentListener(new BeobDoc());
         jTextFieldMplayer.getDocument().addDocumentListener(new BeobDoc());
         try {
-            jXHyperlinkVlc.setAction(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_WEBSITE_VLC));
-            jXHyperlinkflvstreamer.setAction(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_WEBSITE_FLVSTREAMER));
-            jXHyperlinkSmplayer.setAction(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_WEBSITE_MPLAYER));
+            jXHyperlinkVlc.setAction(new UrlHyperlinkAction(parentComponent, ddaten, Konstanten.ADRESSE_WEBSITE_VLC));
+            jXHyperlinkflvstreamer.setAction(new UrlHyperlinkAction(parentComponent, ddaten, Konstanten.ADRESSE_WEBSITE_FLVSTREAMER));
+            jXHyperlinkSmplayer.setAction(new UrlHyperlinkAction(parentComponent, ddaten, Konstanten.ADRESSE_WEBSITE_MPLAYER));
         } catch (URISyntaxException ignored) {
         }
         jButtonMplayerPfad.addActionListener(new BeobPfad(jTextFieldMplayer));

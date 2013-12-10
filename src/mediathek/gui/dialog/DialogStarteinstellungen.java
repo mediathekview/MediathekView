@@ -100,7 +100,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         } else {
             // nur dann automatisch Standardprogramme einrichten, sonst fragen
             //ListePset pSet = GuiFunktionenProgramme.getStandardprogramme(ddaten);
-            ListePset pSet = ListePsetVorlagen.getStandarset(ddaten, Funktionen.getOsString());
+            ListePset pSet = ListePsetVorlagen.getStandarset(parentComponent, ddaten, Funktionen.getOsString());
             if (pSet != null) {
                 ddaten.listePset.addPset(pSet);
                 Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = pSet.version;
@@ -116,7 +116,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         // erst Programmpfad prüfen
         jCheckBoxAnpassen.setVisible(false);
         jCheckBoxAlleEinstellungen.setVisible(false);
-        jScrollPane1.setViewportView(new PanelProgrammPfade(ddaten, true /* vlc */, true /* flvstreamer */, false /* mplayer */));
+        jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, ddaten, true /* vlc */, true /* flvstreamer */, false /* mplayer */));
         status = STAT_PSET;
         jButtonStandard.setText("Weiter");
     }
@@ -127,7 +127,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         jCheckBoxAlleEinstellungen.setVisible(true);
         if (ddaten.listePset.size() == 0) {
             // Standardset hinzufügen
-            ListePset pSet = ListePsetVorlagen.getStandarset(ddaten, Funktionen.getOsString());
+            ListePset pSet = ListePsetVorlagen.getStandarset(parentComponent, ddaten, Funktionen.getOsString());
             if (pSet != null) {
                 ddaten.listePset.addPset(pSet);
                 Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = pSet.version;

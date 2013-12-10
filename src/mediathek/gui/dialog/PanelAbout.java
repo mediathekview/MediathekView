@@ -58,11 +58,11 @@ public class PanelAbout extends PanelVorlage {
             jTextFieldEinstellungen.setText(xmlFilePath.toAbsolutePath().toString());
             jTextFieldFilme.setText(Daten.getDateiFilmliste());
             jXHyperlinkWebsite.setText(Konstanten.ADRESSE_WEBSITE);
-            jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(daten, Konstanten.ADRESSE_WEBSITE));
+            jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_WEBSITE));
             jXHyperlinkAnleitung.setText(Konstanten.ADRESSE_ANLEITUNG);
-            jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(daten, Konstanten.ADRESSE_ANLEITUNG));
+            jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_ANLEITUNG));
             jXHyperlinkForum.setText(Konstanten.ADRESSE_FORUM);
-            jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(daten, Konstanten.ADRESSE_FORUM));
+            jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_FORUM));
         } catch (URISyntaxException ignored) {
         }
         jButtonUpdate.setIcon(GetIcon.getIcon("view-refresh_16.png"));

@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
@@ -55,11 +54,11 @@ public class PanelHilfe extends PanelVorlage {
         jTextFieldPfad.setText(Funktionen.getPathJar());
         try {
             jXHyperlinkWebsite.setText(Konstanten.ADRESSE_WEBSITE);
-            jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(daten, Konstanten.ADRESSE_WEBSITE));
+            jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_WEBSITE));
             jXHyperlinkAnleitung.setText(Konstanten.ADRESSE_ANLEITUNG);
-            jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(daten, Konstanten.ADRESSE_ANLEITUNG));
+            jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_ANLEITUNG));
             jXHyperlinkForum.setText(Konstanten.ADRESSE_FORUM);
-            jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(daten, Konstanten.ADRESSE_FORUM));
+            jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_FORUM));
         } catch (URISyntaxException ignored) {
         }
         jButtonLogErstellen.addActionListener(new ActionListener() {

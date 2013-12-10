@@ -48,6 +48,7 @@ public final class MVToolBar extends JToolBar {
     public static final String TOOLBAR_TAB_MELDUNGEN = "Meldungen";
     Filler filler__5;
     Filler filler__10;
+    Filler filler__trenner;
     MVButton jButtonAboAendern;
     MVButton jButtonAbosAusschalten;
     MVButton jButtonAbosEinschalten;
@@ -115,8 +116,10 @@ public final class MVToolBar extends JToolBar {
         this.setBackground(new java.awt.Color(204, 204, 204));
         this.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         this.setFloatable(false);
-        filler__5 = new Filler(new java.awt.Dimension(5, 20), new java.awt.Dimension(5, 20), new java.awt.Dimension(5, 20));
-        filler__10 = new Filler(new java.awt.Dimension(10, 20), new java.awt.Dimension(10, 20), new java.awt.Dimension(10, 20));
+        filler__5 = new Filler(new java.awt.Dimension(5, 20), new java.awt.Dimension(5, 20), new java.awt.Dimension(5, 32767));
+        filler__10 = new Filler(new java.awt.Dimension(10, 20), new java.awt.Dimension(10, 20), new java.awt.Dimension(10, 32767));
+        filler__trenner = new javax.swing.Box.Filler(new java.awt.Dimension(1, 5), new java.awt.Dimension(1, 5), new java.awt.Dimension(32767, 5));
+
         jButtonFilmeLaden = new MVButton(new String[]{TOOLBAR_TAB_FILME, TOOLBAR_TAB_DOWNLOADS}, "Filmliste laden", "neue Filmliste laden", "filmlisteLaden_32.png", "filmlisteLaden_16.png");
         buttonListAlles.add(jButtonFilmeLaden);
         buttonListDownloads.add(jButtonFilmeLaden);
@@ -192,7 +195,7 @@ public final class MVToolBar extends JToolBar {
             this.add(jButtonAboAendern);
         }
         if (!extern) {
-            this.add(filler__10);
+            this.add(filler__trenner);
             jButtonFilterPanel.setToolTipText("Erweiterte Suche");
             jButtonFilterPanel.setBorder(null);
             jButtonFilterPanel.setBorderPainted(false);
