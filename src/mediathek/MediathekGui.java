@@ -252,7 +252,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             updateSplashScreenText("GUI Initialisieren...");
         } else {
             // erster Start
-            new DialogStarteinstellungen(null, true, daten).setVisible(true);
+            new DialogStarteinstellungen(this, true, daten).setVisible(true);
             this.pack();
         }
         duration.ping("Alles laden");
@@ -270,7 +270,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         dialogEinstellungen = new DialogEinstellungen(this, daten);
 
         // Prüfen obs ein Programmupdate gibt
-        new CheckUpdate(daten).suchen();
+        new CheckUpdate(this, daten).suchen();
         duration.ping("CheckUpdate");
 
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {

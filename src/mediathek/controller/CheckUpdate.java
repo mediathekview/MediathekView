@@ -19,6 +19,7 @@
  */
 package mediathek.controller;
 
+import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.tool.DatumZeit;
@@ -30,9 +31,11 @@ import mediathek.tool.Log;
 public class CheckUpdate {
 
     private Daten daten;
+    private JFrame parent;
 
-    public CheckUpdate(Daten dd) {
+    public CheckUpdate(JFrame pparent, Daten dd) {
         daten = dd;
+        parent = pparent;
     }
 
     public void suchen() {
@@ -52,7 +55,7 @@ public class CheckUpdate {
                         } else {
                             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
                         }
-                        ListePsetVorlagen.getNeuVersionStandarset(daten, Funktionen.getOsString());
+                        ListePsetVorlagen.getNeuVersionStandarset(parent, daten, Funktionen.getOsString());
                         try {
                             this.wait(10 * 1000); // 10 Sekunden den Titel anzeigen
                         } catch (Exception ignored) {

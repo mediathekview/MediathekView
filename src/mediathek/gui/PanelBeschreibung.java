@@ -22,6 +22,8 @@ package mediathek.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
@@ -34,11 +36,11 @@ import msearch.daten.DatenFilm;
  *
  * @author emil
  */
-public class PanelBeschreibung extends javax.swing.JPanel {
+public class PanelBeschreibung extends JPanel {
 
     Daten ddaten;
 
-    public PanelBeschreibung(Daten dd) {
+    public PanelBeschreibung(JFrame parent, Daten dd) {
         initComponents();
         ddaten = dd;
         //setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -53,7 +55,7 @@ public class PanelBeschreibung extends javax.swing.JPanel {
         });
         jXHyperlinkWebsite.setText("");
         try {
-            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(ddaten, ""));
+            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(parent, ddaten, ""));
         } catch (URISyntaxException ignored) {
         }
         jXHyperlinkWebsite.addMouseListener(new BeobMausUrl(jXHyperlinkWebsite));

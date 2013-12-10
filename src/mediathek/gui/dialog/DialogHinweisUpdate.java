@@ -21,37 +21,40 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
 
 public class DialogHinweisUpdate extends javax.swing.JDialog {
-    
+
     private String text = "";
     private Daten ddaten;
+    private JFrame parent;
 
     /**
      *
-     * @param parent
+     * @param pparent
      * @param modal
      * @param dd
      * @param dialogTitel
      * @param ttext
      */
-    public DialogHinweisUpdate(java.awt.Frame parent, boolean modal, Daten dd, String dialogTitel, String ttext) {
-        super(parent, modal);
+    public DialogHinweisUpdate(JFrame pparent, boolean modal, Daten dd, String dialogTitel, String ttext) {
+        super(pparent, modal);
+        parent = pparent;
         ddaten = dd;
         text = ttext;
         this.setTitle(dialogTitel);
         initComponents();
         initBeob();
     }
-    
+
     private void initBeob() {
         try {
             jXHyperlinkWebsite.setText(Konstanten.ADRESSE_DOWNLAD);
-            jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(ddaten, Konstanten.ADRESSE_DOWNLAD));
+            jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(parent, ddaten, Konstanten.ADRESSE_DOWNLAD));
         } catch (Exception ex) {
         }
         jButtonOk.addActionListener(new BeobBeenden());
@@ -63,7 +66,7 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
             }
         };
     }
-    
+
     private void beenden() {
         this.dispose();
     }
@@ -137,7 +140,7 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private class BeobBeenden implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             beenden();

@@ -103,7 +103,7 @@ public class GuiFilme extends PanelVorlage {
         tabelle = new MVTable(MVTable.TABELLE_TAB_FILME);
         jScrollPane1.setViewportView(tabelle);
         panelVideoplayerSetzen();
-        panelBeschreibung = new PanelBeschreibung(daten);
+        panelBeschreibung = new PanelBeschreibung(daten.mediathekGui, daten);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
         filmInfoHud = daten.filmInfoHud;

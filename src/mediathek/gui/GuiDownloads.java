@@ -76,7 +76,7 @@ public class GuiDownloads extends PanelVorlage {
         tabelle = new MVTable(MVTable.TABELLE_TAB_DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
         filmInfoHud = daten.filmInfoHud;
-        panelBeschreibung = new PanelBeschreibung(daten);
+        panelBeschreibung = new PanelBeschreibung(daten.mediathekGui,daten);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
         init();
