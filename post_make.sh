@@ -33,7 +33,7 @@ zip -r MediathekView_3.3.0_$datum.zip .
 cd ..
 
 # Dateien ins share-Verzeichnis von VmWare kopieren
-cp -r dist/* /mnt/daten/virtualbox/share/aktMed
+cp -r dist/* /mnt/lager/virtualbox/share/aktMed
 
 cd $OLDPWD
 
