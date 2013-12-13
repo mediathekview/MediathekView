@@ -47,10 +47,14 @@ public class Konstanten {
     public static final String KODIERUNG_UTF = "UTF-8";
     public static final String KODIERUNG_ISO15 = "ISO-8859-15";
     public static final String XML_START = "Mediathek";
-    public static final String LEITUNG_DSL1000 = "dsl1000";
-    public static final String LEITUNG_DSL2000 = "dsl2000";
     public static final int MAX_SENDER_FILME_LADEN = 2;//es können maximal soviele Filme eines Senders/Servers gleichzeitig geladen werden
     public static final int STRING_BUFFER_START_BUFFER = 10 * 1024 * 8; // 10 KiB
+
+    public static final String ZIELNAMEN_ANPASSEN_NORMAL = "normal";
+    public static final String ZIELNAMEN_ANPASSEN_ASCII = "ascii";
+    public static final String ZIELNAMEN_ANPASSEN_UNICODE = "unicode";
+    public static final String ZIELNAMEN_ANPASSEN_NIX = "NIX";
+
     // ################################
     // Tags System
     // ################################
@@ -145,10 +149,10 @@ public class Konstanten {
     //#######################
     public static final String SYSTEM_ABOS_SOFORT_SUCHEN = "Abos-sofort-suchen";
     public static final int SYSTEM_ABOS_SOFORT_SUCHEN_NR = 40;
-    public static final String SYSTEM_NUR_ASCII = "nur-Ascii-Zeichen";
-    public static final int SYSTEM_NUR_ASCII_NR = 41;
+    public static final String SYSTEM_ZIELNAMEN_ANPASSEN = "Zielnamen-anpassen";
+    public static final int SYSTEM_ZIELNAMEN_ANPASSEN_NR = 41;
     public static final String SYSTEM_UNICODE_AENDERN = "Unicode-aendern";
-    public static final int SYSTEM_UNICODE_AENDERN_NR = 42;
+//    public static final int SYSTEM_UNICODE_AENDERN_NR = 42;
     public static final String SYSTEM_HINWEIS_NR_ANGEZEIGT = "Hinweis-Nr-angezeigt";
     public static final int SYSTEM_HINWEIS_NR_ANGEZEIGT_NR = 43;
     public static final String SYSTEM_ORDNER_OEFFNEN = "Download-Ordner-oeffnen";
@@ -247,7 +251,7 @@ public class Konstanten {
         SYSTEM_FILTER_TAGE, SYSTEM_FILTER_KEINE_ABO, SYSTEM_FILTER_KEINE_GESEHENE, SYSTEM_FILTER_NUR_HD,
         SYSTEM_PFAD_VLC, SYSTEM_PFAD_FLVSTREAMER, SYSTEM_PFAD_MPLAYER,
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME, SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS, SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS,
-        SYSTEM_ABOS_SOFORT_SUCHEN, SYSTEM_NUR_ASCII, SYSTEM_UNICODE_AENDERN, SYSTEM_HINWEIS_NR_ANGEZEIGT,
+        SYSTEM_ABOS_SOFORT_SUCHEN, SYSTEM_ZIELNAMEN_ANPASSEN, SYSTEM_UNICODE_AENDERN, SYSTEM_HINWEIS_NR_ANGEZEIGT,
         SYSTEM_ORDNER_OEFFNEN, SYSTEM_URL_OEFFNEN,
         SYSTEM_BLACKLIST_ZUKUNFT__NICHT_ANZEIGEN, SYSTEM_BLACKLIST_AUCH_ABO, SYSTEM_BLACKLIST_AUSGESCHALTET, SYSTEM_BLACKLIST_IST_WHITELIST, SYSTEM_BLACKLIST_FILMLAENGE,
         SYSTEM_VERSION_PROGRAMMSET,
