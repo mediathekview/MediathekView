@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.Box.Filler;
 import javax.swing.JButton;
@@ -260,7 +261,14 @@ public final class MVToolBar extends JToolBar {
         this.repaint();
     }
 
+    public void setToolbar() {
+        if (state != null) {
+            setToolbar(state);
+        }
+    }
+
     public void setToolbar(String sstate) {
+        state = sstate;
         boolean ok;
         if (sstate.equals(TOOLBAR_TAB_FILME)) {
             filterAnzeigen(!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
@@ -278,18 +286,24 @@ public final class MVToolBar extends JToolBar {
         } else {
             for (MVButton b : buttonListToUse) {
                 ok = false;
-                for (String s : b.sparte) {
-                    if (s.equals(sstate)) {
-                        b.setEnabled(true);
-                        b.setVisible(b.anzeigen);
-                        ok = true;
-                    }
+                if (b.sparte.contains(sstate)) {
+                    b.setEnabled(true);
+                    b.setVisible(b.anzeigen);
+                    ok = true;
                 }
                 if (!ok) {
                     if (extern) {
                         b.setVisible(false);
                     } else {
-                        b.setEnabled(false);
+                        if (!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_VIS_DOWNLOAD_NR]) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)
+                                || Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_DOWNLOAD_NR]) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)) {
+                            b.setVisible(false);
+                        } else if (!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_VIS_ABO_NR]) && b.sparte.contains(TOOLBAR_TAB_ABOS)
+                                || Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_ABO_NR]) && b.sparte.contains(TOOLBAR_TAB_ABOS)) {
+                            b.setVisible(false);
+                        } else {
+                            b.setEnabled(false);
+                        }
                     }
                 }
             }
@@ -312,6 +326,7 @@ public final class MVToolBar extends JToolBar {
                 }
             }
         }
+        setToolbar();
         if (nrIconKlein > 0) {
             setIcon(Boolean.parseBoolean(Daten.system[nrIconKlein]));
         }
@@ -469,7 +484,7 @@ public final class MVToolBar extends JToolBar {
         String name = "";
         String imageIconKlein;
         String imageIconNormal;
-        String[] sparte = {};
+        ArrayList<String> sparte = new ArrayList<>();
 
         public MVButton(String[] ssparte, String nname, String ttoolTip,
                 String iimageIconNormal, String iimageIconKlein) {
@@ -477,7 +492,9 @@ public final class MVToolBar extends JToolBar {
             name = nname;
             imageIconKlein = iimageIconKlein;
             imageIconNormal = iimageIconNormal;
-            sparte = ssparte;
+            for (String s : ssparte) {
+                sparte.add(s);
+            }
             setOpaque(false);
             setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
             setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -590,6 +607,7 @@ public final class MVToolBar extends JToolBar {
                 buttonListToUse.get(i).anzeigen = box[i].isSelected();
                 buttonListToUse.get(i).setVisible(box[i].isSelected());
             }
+            setToolbar();
         }
 
         private void resetToolbar() {
@@ -603,6 +621,7 @@ public final class MVToolBar extends JToolBar {
                 buttonListToUse.get(i).anzeigen = true;
                 buttonListToUse.get(i).setVisible(true);
             }
+            setToolbar();
             setIcon(false);
         }
 
