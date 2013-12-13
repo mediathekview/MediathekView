@@ -91,6 +91,10 @@ public class GuiFunktionen extends Funktionen {
         // "istDatei" kennzeichnet einen Dateinamen, sonst Pfadnamen
         // verbotene Zeichen entfernen
         // < > ? " : | \ / *
+        if (Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR].equals(Konstanten.ZIELNAMEN_ANPASSEN_NIX)) {
+            // dann wars das!
+            return pfad;
+        }
         String ret = pfad;
         boolean winPfad = false;
         if (!istDatei && pfad.length() >= 2) {
@@ -131,7 +135,11 @@ public class GuiFunktionen extends Funktionen {
         ret = ret.replace(":", "_");
         ret = ret.replace("'", "_");
         ret = ret.replace("|", "_");
-        ret = getAscii(ret);
+        if (Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR].equals(Konstanten.ZIELNAMEN_ANPASSEN_UNICODE)) {
+            ret = cleanUnicode(ret, "_");
+        } else if (Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR].equals(Konstanten.ZIELNAMEN_ANPASSEN_ASCII)) {
+            ret = getAscii(ret);
+        }
         if (winPfad) {
             // c: wieder herstellen
             if (ret.length() >= 3) {
@@ -145,61 +153,24 @@ public class GuiFunktionen extends Funktionen {
 
     private static String getAscii(String ret) {
         String r = "";
-        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UNICODE_AENDERN_NR])) {
-            return cleanUnicode(ret, "_");
-        }
-        if (!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_NUR_ASCII_NR])) {
-            return ret;
-        } else {
-            char c;
-            ret = ret.replace("ä", "ae");
-            ret = ret.replace("ö", "oe");
-            ret = ret.replace("ü", "ue");
-            ret = ret.replace("Ä", "Ae");
-            ret = ret.replace("Ö", "Oe");
-            ret = ret.replace("Ü", "Ue");
-            for (int i = 0; i < ret.length(); ++i) {
-                if ((c = ret.charAt(i)) < 127) {
-                    r += c;
-                } else {
-                    r += "_";
-                }
+        char c;
+        ret = ret.replace("ä", "ae");
+        ret = ret.replace("ö", "oe");
+        ret = ret.replace("ü", "ue");
+        ret = ret.replace("Ä", "Ae");
+        ret = ret.replace("Ö", "Oe");
+        ret = ret.replace("Ü", "Ue");
+        for (int i = 0; i < ret.length(); ++i) {
+            if ((c = ret.charAt(i)) < 127) {
+                r += c;
+            } else {
+                r += "_";
             }
         }
         return r;
     }
 
-    public static String utf8(String ret) {
-        ret = ret.replace("\\u0026", "&");
-        ret = ret.replace("\\u003C", "<");
-        ret = ret.replace("\\u003c", "<");
-        ret = ret.replace("\\u003E", ">");
-        ret = ret.replace("\\u003e", ">");
-        ret = ret.replace("\\u00E4", "ä");
-        ret = ret.replace("\\u00e4", "ä");
-        ret = ret.replace("\\u00C4", "Ä");
-        ret = ret.replace("\\u00c4", "Ä");
-        ret = ret.replace("\\u00F6", "ö");
-        ret = ret.replace("\\u00f6", "ö");
-        ret = ret.replace("\\u00D6", "Ö");
-        ret = ret.replace("\\u00d6", "Ö");
-        ret = ret.replace("\\u00FC", "ü");
-        ret = ret.replace("\\u00fc", "ü");
-        ret = ret.replace("\\u00DC", "Ü");
-        ret = ret.replace("\\u00dc", "Ü");
-        ret = ret.replace("\\u00DF", "ß");
-        ret = ret.replace("\\u00df", "ß");
-        ret = ret.replace("\\u20AC", "€");
-        ret = ret.replace("\\u20ac", "€");
-        ret = ret.replace("\\u0024", "$");
-        ret = ret.replace("\\u00A3", "£");
-        ret = ret.replace("\\u00a3", "£");
-        ret = ret.replace("\\u00F3", "\u00f3");
-        ret = ret.replace("\\u00f3", "\u00f3");
-        return ret;
-    }
-
-    public static String cleanUnicode(String ret, String sonst) {
+    private static String cleanUnicode(String ret, String sonst) {
         String r = "";
         char c;
         for (int i = 0; i < ret.length(); ++i) {

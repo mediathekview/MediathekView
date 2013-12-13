@@ -49,7 +49,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonProgrammUrl.setIcon(GetIcon.getIcon("fileopen_16.png"));
         daten = d;
         init();
-        jButtonName.addActionListener(new ActionListener() {
+        jButtonZielname.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new DialogHilfe(null, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_UNICODE)).setVisible(true);
@@ -97,26 +97,53 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 Daten.system[Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR] = Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected());
             }
         });
-        jCheckBoxNurAscii.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_NUR_ASCII_NR]));
-        jCheckBoxNurAscii.addActionListener(new ActionListener() {
+        // ============================
+        // Zeildateiname
+        switch (Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR]) {
+            case Konstanten.ZIELNAMEN_ANPASSEN_NORMAL:
+                jRadioButtonNamenNormal.setSelected(true);
+                break;
+            case Konstanten.ZIELNAMEN_ANPASSEN_UNICODE:
+                jRadioButtonNameUnicode.setSelected(true);
+                break;
+            case Konstanten.ZIELNAMEN_ANPASSEN_ASCII:
+                jRadioButtonNameAscii.setSelected(true);
+                break;
+            case Konstanten.ZIELNAMEN_ANPASSEN_NIX:
+                jRadioButtonNameNix.setSelected(true);
+                break;
+            default:
+                jRadioButtonNameUnicode.setSelected(true);
+        }
+        jRadioButtonNamenNormal.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (jCheckBoxNurAscii.isSelected()) {
-                    jCheckBoxUnicode.setSelected(false);
-                }
-                Daten.system[Konstanten.SYSTEM_NUR_ASCII_NR] = Boolean.toString(jCheckBoxNurAscii.isSelected());
+                Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_NORMAL;
             }
         });
-        jCheckBoxUnicode.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UNICODE_AENDERN_NR]));
-        jCheckBoxUnicode.addActionListener(new ActionListener() {
+        jRadioButtonNameAscii.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (jCheckBoxUnicode.isSelected()) {
-                    jCheckBoxNurAscii.setSelected(false);
-                }
-                Daten.system[Konstanten.SYSTEM_UNICODE_AENDERN_NR] = Boolean.toString(jCheckBoxUnicode.isSelected());
+                Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_ASCII;
             }
         });
+        jRadioButtonNameUnicode.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_UNICODE;
+            }
+        });
+        jRadioButtonNameNix.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_NIX;
+            }
+        });
+        // ====================================
         jCheckBoxUmbenennen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILMLISTE_UMBENENNEN_NR]));
         jCheckBoxUmbenennen.addActionListener(new ActionListener() {
             @Override
@@ -420,6 +447,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private void initComponents() {
 
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         jCheckBoxAboSuchen = new javax.swing.JCheckBox();
         jCheckBoxDownloadSofortStarten = new javax.swing.JCheckBox();
@@ -432,9 +460,11 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jRadioButtonManuel = new javax.swing.JRadioButton();
         jTextFieldAuto = new javax.swing.JTextField();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
-        jCheckBoxNurAscii = new javax.swing.JCheckBox();
-        jButtonName = new javax.swing.JButton();
-        jCheckBoxUnicode = new javax.swing.JCheckBox();
+        jButtonZielname = new javax.swing.JButton();
+        jRadioButtonNamenNormal = new javax.swing.JRadioButton();
+        jRadioButtonNameUnicode = new javax.swing.JRadioButton();
+        jRadioButtonNameAscii = new javax.swing.JRadioButton();
+        jRadioButtonNameNix = new javax.swing.JRadioButton();
         jPanel2 = new javax.swing.JPanel();
         jTextFieldProgrammDateimanager = new javax.swing.JTextField();
         jButtonProgrammDateimanager = new javax.swing.JButton();
@@ -474,7 +504,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         .addComponent(jButtonHilfeNeuladen))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jCheckBoxUmbenennen)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 225, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -488,7 +518,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jCheckBoxDownloadSofortStarten)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxUmbenennen)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("User-Agent"));
@@ -533,18 +563,28 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jRadioButtonManuel)
                     .addComponent(jTextFieldUserAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfe, jTextFieldAuto, jTextFieldUserAgent});
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Dateiname der gespeicherten Filme"));
 
-        jCheckBoxNurAscii.setText("nur ASCII-Zeichen erlauben");
+        jButtonZielname.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
 
-        jButtonName.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        buttonGroup2.add(jRadioButtonNamenNormal);
+        jRadioButtonNamenNormal.setText("einfache Prüfung");
 
-        jCheckBoxUnicode.setText("Unicode-Zeichen \"vereinfachen\"");
+        buttonGroup2.add(jRadioButtonNameUnicode);
+        jRadioButtonNameUnicode.setSelected(true);
+        jRadioButtonNameUnicode.setText("Unicode-Zeichen \"vereinfachen\"");
+
+        buttonGroup2.add(jRadioButtonNameAscii);
+        jRadioButtonNameAscii.setText("nur ASCII-Zeichen erlauben");
+
+        buttonGroup2.add(jRadioButtonNameNix);
+        jRadioButtonNameNix.setForeground(new java.awt.Color(153, 0, 51));
+        jRadioButtonNameNix.setText("Keine Veränderung vornehmen (dann selbst prüfen!)");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -553,13 +593,18 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jCheckBoxNurAscii)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(jCheckBoxUnicode)
+                        .addComponent(jRadioButtonNamenNormal)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonName)))
+                        .addComponent(jButtonZielname))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButtonNameNix)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jRadioButtonNameUnicode)
+                                .addGap(18, 18, 18)
+                                .addComponent(jRadioButtonNameAscii)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -567,11 +612,15 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonName)
-                    .addComponent(jCheckBoxUnicode))
+                    .addComponent(jButtonZielname)
+                    .addComponent(jRadioButtonNamenNormal))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jRadioButtonNameUnicode)
+                    .addComponent(jRadioButtonNameAscii))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxNurAscii)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addComponent(jRadioButtonNameNix)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab Download"));
@@ -603,7 +652,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jTextFieldVideoplayer)
-                            .addComponent(jTextFieldProgrammDateimanager, javax.swing.GroupLayout.DEFAULT_SIZE, 748, Short.MAX_VALUE))
+                            .addComponent(jTextFieldProgrammDateimanager))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -636,7 +685,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButtonHilfeVideoplayer)
                         .addComponent(jButtonProgrammVideoplayer)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammDateimanager, jButtonProgrammDateimanager, jTextFieldProgrammDateimanager});
@@ -670,7 +719,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jTextFieldProgrammUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonProgrammUrl)
                     .addComponent(jButtonHilfeProgrammUrl))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammUrl, jButtonProgrammUrl, jTextFieldProgrammUrl});
@@ -702,30 +751,33 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(161, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonHilfeNeuladen;
     private javax.swing.JButton jButtonHilfeProgrammDateimanager;
     private javax.swing.JButton jButtonHilfeProgrammUrl;
     private javax.swing.JButton jButtonHilfeVideoplayer;
-    private javax.swing.JButton jButtonName;
     private javax.swing.JButton jButtonProgrammDateimanager;
     private javax.swing.JButton jButtonProgrammUrl;
     private javax.swing.JButton jButtonProgrammVideoplayer;
+    private javax.swing.JButton jButtonZielname;
     private javax.swing.JCheckBox jCheckBoxAboSuchen;
     private javax.swing.JCheckBox jCheckBoxDownloadSofortStarten;
-    private javax.swing.JCheckBox jCheckBoxNurAscii;
     private javax.swing.JCheckBox jCheckBoxUmbenennen;
-    private javax.swing.JCheckBox jCheckBoxUnicode;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JRadioButton jRadioButtonAuto;
     private javax.swing.JRadioButton jRadioButtonManuel;
+    private javax.swing.JRadioButton jRadioButtonNameAscii;
+    private javax.swing.JRadioButton jRadioButtonNameNix;
+    private javax.swing.JRadioButton jRadioButtonNameUnicode;
+    private javax.swing.JRadioButton jRadioButtonNamenNormal;
     private javax.swing.JTextField jTextFieldAuto;
     private javax.swing.JTextField jTextFieldProgrammDateimanager;
     private javax.swing.JTextField jTextFieldProgrammUrl;

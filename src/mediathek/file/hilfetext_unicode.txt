@@ -4,7 +4,7 @@ werden können. Beim Speichern kann das Probleme
 verursachen.
 
 
-* "Unicode-Zeichen vereinfachen"
+* "Unicode-Zeichen vereinfachen" (Empfehlung)
 Es wird versucht Zeichen, die Probleme verursachen 
 können, zu ersetzen.
 
@@ -14,3 +14,6 @@ Dabei wird noch strenger vorgegangen. Es werden
 auch zB. Umlaute "ö -> oe" ersetzt.
 
 
+* "keine Veränderungen vornehmen ..."
+Es werden KEINE Veränderungen am Dateinamen vorgenommen.
+Man muss selbst prüfen, ob das Betriebssystem damit klar kommt.

@@ -149,7 +149,7 @@ public class Daten {
         system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR] = Boolean.FALSE.toString();
-        system[Konstanten.SYSTEM_UNICODE_AENDERN_NR] = Boolean.TRUE.toString();
+        system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_UNICODE;
         system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_ICON_STANDARD_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR] = Boolean.TRUE.toString();
