@@ -87,7 +87,7 @@ public class History extends HashSet<String> {
             while ((strLine = br.readLine()) != null) {
                 super.add(strLine);
             }
-
+            br.close();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
         } catch (Exception e) {
             System.err.println("Fehler: " + e);
@@ -102,6 +102,7 @@ public class History extends HashSet<String> {
                 br.write(h + "\n");
 
             br.flush();
+            br.close();
         } catch (Exception e) {//Catch exception if any
             Log.fehlerMeldung(978786563, Log.FEHLER_ART_PROG, History.class.getName(), e);
         }

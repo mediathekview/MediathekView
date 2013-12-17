@@ -19,6 +19,7 @@
  */
 package mediathek.controller;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -41,19 +42,19 @@ public class ErledigteAbos {
     private final String TRENNER = "  |###|  ";
     private final String PAUSE = " |#| ";
     private HashSet<String> listeErledigteAbos;
-    private LinkedList<String> listeErledigteAbos_ = new LinkedList<>();
+    private LinkedList<String> listeErledigteAbosSortDate = new LinkedList<>();
 
     public ErledigteAbos() {
         listeErledigteAbos = new HashSet<String>() {
             @Override
             public boolean add(String e) {
-                listeErledigteAbos_.add(e);
+                listeErledigteAbosSortDate.add(e);
                 return super.add(e);
             }
 
             @Override
             public void clear() {
-                listeErledigteAbos_.clear();
+                listeErledigteAbosSortDate.clear();
                 super.clear();
             }
         };
@@ -113,16 +114,19 @@ public class ErledigteAbos {
                     liste.add(zeile);
                 }
             }
+            in.close();
         } catch (Exception ex) {
             Log.fehlerMeldung(281006874, Log.FEHLER_ART_PROG, "LogDownload.urlAusLogfileLoeschen-1", ex);
         }
 
         //und jetzt wieder schreiben, wenn nötig
         if (gefunden) {
-            try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getDownloadAboFilePath(), StandardOpenOption.APPEND))) {
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getDownloadAboFilePath())))) {
                 for (String entry : liste) {
-                    writer.write(entry + "\n");
+                    bufferedWriter.write(entry + "\n");
                 }
+                bufferedWriter.flush();
+                bufferedWriter.close();
             } catch (Exception ex) {
                 Log.fehlerMeldung(566277080, Log.FEHLER_ART_PROG, "LogDownload.urlAusLogfileLoeschen-3", ex);
             }
@@ -140,12 +144,13 @@ public class ErledigteAbos {
         listeErledigteAbos.add(url);
 
         //Automatic Resource Management
-        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getDownloadAboFilePath(), StandardOpenOption.APPEND))) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getDownloadAboFilePath(), StandardOpenOption.APPEND)))) {
             thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
             titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
             text = DatumZeit.getHeute_dd_MM_yyyy() + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
-            writer.write(text);
-
+            bufferedWriter.write(text);
+            bufferedWriter.flush();
+            bufferedWriter.close();
             ret = true;
         } catch (Exception ex) {
             Log.fehlerMeldung(945258023, Log.FEHLER_ART_PROG, "LogDownload.zeileSchreiben-1", ex);
@@ -179,8 +184,7 @@ public class ErledigteAbos {
             String text;
             String zeit = DatumZeit.getHeute_dd_MM_yyyy();
             String thema, titel, url;
-
-            try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(getDownloadAboFilePath(), StandardOpenOption.APPEND))) {
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getDownloadAboFilePath(), StandardOpenOption.APPEND)))) {
                 for (String[] a : list) {
                     thema = a[0];
                     titel = a[1];
@@ -189,9 +193,11 @@ public class ErledigteAbos {
                     thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
                     titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
                     text = zeit + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
-                    writer.write(text);
+                    bufferedWriter.write(text);
                     ret = true;
                 }
+                bufferedWriter.flush();
+                bufferedWriter.close();
             } catch (Exception ex) {
                 ret = false;
                 Log.fehlerMeldung(945258023, Log.FEHLER_ART_PROG, "LogDownload.zeileSchreiben-1", ex);
@@ -209,8 +215,8 @@ public class ErledigteAbos {
     public synchronized Object[][] getObjectData() {
         Object[][] object;
         int i = 0;
-        Iterator<String> iterator = listeErledigteAbos_.iterator();
-        object = new Object[listeErledigteAbos_.size()][1];
+        Iterator<String> iterator = listeErledigteAbosSortDate.iterator();
+        object = new Object[listeErledigteAbosSortDate.size()][1];
         while (iterator.hasNext()) {
             object[i][0] = iterator.next();
             ++i;
@@ -230,9 +236,9 @@ public class ErledigteAbos {
             while ((zeile = in.readLine()) != null) {
                 listeErledigteAbos.add(getUrlAusZeile(zeile));
             }
+            in.close();
         } catch (Exception ex) {
-            //FIXME assign new error code!
-            Log.fehlerMeldung(203632125, Log.FEHLER_ART_PROG, ErledigteAbos.class.getName(), ex);
+            Log.fehlerMeldung(926362547, Log.FEHLER_ART_PROG, ErledigteAbos.class.getName(), ex);
         }
     }
 

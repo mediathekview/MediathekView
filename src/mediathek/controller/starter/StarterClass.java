@@ -544,7 +544,7 @@ public class StarterClass {
         Log.systemMeldung(text.toArray(new String[]{}));
         if (!start.stoppen) {
             if (datenDownload.getQuelle() != Start.QUELLE_BUTTON) {
-                MVNotification.addNotification(datenDownload, start.status != Start.STATUS_ERR);
+                MVNotification.addNotification(daten, datenDownload, start.status != Start.STATUS_ERR);
             }
         }
     }

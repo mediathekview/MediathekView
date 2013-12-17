@@ -149,7 +149,7 @@ public class GuiDebug extends PanelVorlage {
         jButtonNotify.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MVNotification.addNotification("Titel", "<html>"
+                MVNotification.addNotification(daten, "Titel", "<html>"
                         + "<head>"
                         + "</head>"
                         + "<body>"
