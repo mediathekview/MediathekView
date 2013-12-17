@@ -28,12 +28,12 @@ public class DatumZeit {
 
     public static String Jetzt_HHMMSS = getJetzt_HHMMSS();
     public static String Heute_yyyyMMdd = getHeute_yyyyMMdd();
-    public static long Morgen_0_Uhr = getMorgen_0_Uhr();
+    public static long Morgen_0_Uhr = getZeitZukunftBlacklist();
 
     public static void set() {
         Jetzt_HHMMSS = getJetzt_HHMMSS();
         Heute_yyyyMMdd = getHeute_yyyyMMdd();
-        Morgen_0_Uhr = getMorgen_0_Uhr();
+        Morgen_0_Uhr = getZeitZukunftBlacklist();
     }
 
     public static String getJetzt_ddMMyyyy_HHmm() {
@@ -56,15 +56,6 @@ public class DatumZeit {
         return output;
     }
 
-//    public static String getJetzt_HH_MM_SS() {
-//        Date today;
-//        String output;
-//        SimpleDateFormat formatter;
-//        formatter = new SimpleDateFormat("HH:mm:ss");
-//        today = new Date();
-//        output = formatter.format(today);
-//        return output;
-//    }
     public static String getJetzt_HHMMSS() {
         Date today;
         String output;
@@ -95,38 +86,17 @@ public class DatumZeit {
         return output;
     }
 
-//    public static String getGestern_dd_MM_yyyy() {
-//        Date today;
-//        String output;
-//        SimpleDateFormat formatter;
-//        formatter = new SimpleDateFormat("dd.MM.yyyy");
-//        today = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) /* ein Tag */);
-//        output = formatter.format(today);
-//        return output;
-//    }
-    public static long getMorgen_0_Uhr() {
-        try {
-            SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.yyyy");
-            Date filmDate = sdfIn.parse(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
-            return filmDate.getTime() + (1000 * 60 * 60 * 24);
-        } catch (ParseException ex) {
-            return new Date().getTime();
-        }
+    private static long getZeitZukunftBlacklist() {
+//        try {
+//            SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.yyyy");
+//            Date filmDate = sdfIn.parse(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+//            return filmDate.getTime() + (1000 * 60 * 60 * 24);
+//        } catch (ParseException ex) {
+//            return new Date().getTime();
+//        }
+        return new Date().getTime();
     }
 
-//    public static String convertDatum(String datum) {
-//        //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
-//        try {
-//            SimpleDateFormat sdfIn = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
-//            Date filmDate = sdfIn.parse(datum);
-//            SimpleDateFormat sdfOut;
-//            sdfOut = new SimpleDateFormat("dd.MM.yyyy");
-//            datum = sdfOut.format(filmDate);
-//        } catch (Exception ex) {
-//            Log.fehlerMeldung(649600299, Log.FEHLER_ART_PROG, "DatumDatum.convertDatum", ex);
-//        }
-//        return datum;
-//    }
     public static String convertTime(String zeit) {
         //<pubDate>Mon, 03 Jan 2011 17:06:16 +0100</pubDate>
         try {
