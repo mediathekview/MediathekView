@@ -145,7 +145,6 @@ public class Daten {
         system[Konstanten.SYSTEM_USER_AGENT_NR] = Konstanten.USER_AGENT_DEFAULT;
         system[Konstanten.SYSTEM_WARTEN_NR] = "1";
         system[Konstanten.SYSTEM_LOOK_NR] = "0";
-        system[Konstanten.SYSTEM_VERSION_NR] = Konstanten.VERSION;
         system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR] = Boolean.TRUE.toString();
         system[Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR] = Boolean.FALSE.toString();

@@ -141,8 +141,8 @@ public class ProgrammUpdateSuchen {
         // liefert true, wenn es eine neue Version gibt
         try {
             // erste stelle
-            int info = Integer.parseInt(infoVersion.substring(0, 1) + infoVersion.substring(2, 3) + infoVersion.substring(4, 5));
-            int ich = Integer.parseInt(ichVersion.substring(0, 1) + ichVersion.substring(2, 3) + ichVersion.substring(4, 5));
+            int info = Integer.parseInt(infoVersion);
+            int ich = Integer.parseInt(ichVersion);
             if (info > ich) {
                 return true;
             }

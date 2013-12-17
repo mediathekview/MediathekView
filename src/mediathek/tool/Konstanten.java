@@ -21,13 +21,14 @@ package mediathek.tool;
 
 public class Konstanten {
 
-    public static final String VERSION = "3.3.0";
+    public static final String VERSION = "4";
     public static final String PROGRAMMNAME = "MediathekView";
     public static final String USER_AGENT_DEFAULT = PROGRAMMNAME + " " + VERSION;
     // MediathekView URLs
     public static final String ADRESSE_FILMLISTEN_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
     public static final String DATEINAME_LISTE_FILMLISTEN = "filmlisten.xml";
-    public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/version.xml";
+    //public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/version.xml"; alte bis 3.3.0
+    public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/prog-info.xml"; // ab Version 4, einstellig!
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";
     public static final String ADRESSE_ANLEITUNG = "http://sourceforge.net/p/zdfmediathk/wiki/Home/";
     public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen/programmgruppen.xml";
@@ -67,7 +68,7 @@ public class Konstanten {
     public static final String SYSTEM_USER_AGENT = "User-Agent";
     public static final int SYSTEM_USER_AGENT_NR = 3;
     public static final String SYSTEM_VERSION = "version";
-    public static final int SYSTEM_VERSION_NR = 4;
+    //public static final int SYSTEM_VERSION_NR = 4;
     // Fenstereinstellungen
     public static final String SYSTEM_GROESSE = "Groesse";
     public static final int SYSTEM_GROESSE_NR = 5;

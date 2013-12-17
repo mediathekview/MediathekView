@@ -19,7 +19,7 @@
  */
 
 
-	# Version 3.4.0
+	# Version 4
 	- Das Dateiformat der Filmliste ist auf "json" geändert worden, die Liste zum Download wird mit den XZ Utils mit "LZMA2" komprimiert
 	- Die Tabelle Download kann mit der Maus sortiert werden, die Downloads werden dann in der Reihenfolge gestartet
 	- Beim Download wird die aktuelle Bandbreite in der Tabelle angezeigt
@@ -29,7 +29,7 @@
 	- Fertig geladen Filme/Downloads können direkt im Tab Download gestartet werden (Button in der Tabelle und in der Toolbar)
 	- Ist im Tab Filme der Filter "HD" aktiv, werden die Filme in der HD-Auflösung gestartet
 	- Beim Neuladen einer Filmliste werden neue Filme in eigener Farbe in der Tabele angezeigt, es gibt auch einen Filter "nur Neue"
-	- Film können als gesehen/ungesehen markiert werden
+	- Filme können als gesehen/ungesehen markiert werden
 	- Der letzte Zustand im Downloaddialog "Download sofort starten" wird gespeichert und wieder verwendet (gecheckt oder nicht)
 	- Beim Anlegen eines Sets/Downloads kann man angeben, ob eine Infodatei mit den Filminfos mit gespeichert werden soll
 	- Die Tabs "Download", "Abo", "Meldungen" können ausgeblendet oder in einem Extrafenster angezeigt werden (-> Menü "Ansicht")
