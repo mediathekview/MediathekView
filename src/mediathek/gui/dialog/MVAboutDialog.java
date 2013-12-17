@@ -30,6 +30,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import javax.swing.AbstractAction;
+import static javax.swing.Action.LONG_DESCRIPTION;
+import static javax.swing.Action.SHORT_DESCRIPTION;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
@@ -191,6 +193,16 @@ public class MVAboutDialog extends JDialog {
         }
         hprlnkWebsite.setText("Website");
 
+        JXHyperlink hprlnkDonation = new JXHyperlink();
+        hprlnkDonation.setHorizontalAlignment(SwingConstants.LEFT);
+        try {
+            hprlnkDonation.setAction(new DonationHyperlinkAction());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        hprlnkDonation.setText("Spende");
+      
+        
         JXHyperlink hprlnkAnleitung = new JXHyperlink();
         hprlnkAnleitung.setHorizontalAlignment(SwingConstants.LEFT);
         try {
@@ -232,6 +244,10 @@ public class MVAboutDialog extends JDialog {
                                         GroupLayout.PREFERRED_SIZE,
                                         GroupLayout.DEFAULT_SIZE,
                                         GroupLayout.PREFERRED_SIZE)
+                                .addComponent(hprlnkDonation,
+                                        GroupLayout.PREFERRED_SIZE,
+                                        GroupLayout.DEFAULT_SIZE,
+                                        GroupLayout.PREFERRED_SIZE)
                                 .addComponent(hprlnkForum,
                                         GroupLayout.PREFERRED_SIZE,
                                         GroupLayout.DEFAULT_SIZE,
@@ -267,6 +283,8 @@ public class MVAboutDialog extends JDialog {
                                         .addComponent(lblProgramIcon)
                                         .addPreferredGap(ComponentPlacement.RELATED)
                                         .addComponent(hprlnkWebsite, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(hprlnkDonation, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(ComponentPlacement.RELATED)
                                         .addComponent(hprlnkForum, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(ComponentPlacement.RELATED)
@@ -395,6 +413,17 @@ public class MVAboutDialog extends JDialog {
             super(new URI(WEBSITE_URL), Action.BROWSE);
             putValue(SHORT_DESCRIPTION, WEBSITE_URL);
             putValue(LONG_DESCRIPTION, WEBSITE_URL);
+        }
+    }
+
+    private class DonationHyperlinkAction extends HyperlinkAction {
+
+        private final static String DONATION_URL = "http://zdfmediathk.sourceforge.net/index.html#donate";
+
+        public DonationHyperlinkAction() throws URISyntaxException {
+            super(new URI(DONATION_URL), Action.BROWSE);
+            putValue(SHORT_DESCRIPTION, DONATION_URL);
+            putValue(LONG_DESCRIPTION, DONATION_URL);
         }
     }
 

@@ -36,11 +36,17 @@ import org.jdesktop.swingx.painter.GlossPainter;
 
 public class MVNotification {
 
-    public static void addNotification(String titel, String meldung) {
+    public static void addNotification(Daten daten, String titel, String meldung) {
+        if (daten.mediathekGui == null) {
+            return; // dann gibts keine GUI
+        }
         add(titel, new String[]{meldung});
     }
 
-    public static void addNotification(DatenDownload datenDownload, boolean erfolgreich) {
+    public static void addNotification(Daten daten, DatenDownload datenDownload, boolean erfolgreich) {
+        if (daten.mediathekGui == null) {
+            return; // dann gibts keine GUI
+        }
         String[] m = {
             "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
             "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER_NR],
@@ -48,10 +54,6 @@ public class MVNotification {
             (erfolgreich ? "Download war erfolgreich" : "Download war fehlerhaft")
         };
         add("Download beendet", m, erfolgreich);
-    }
-
-    public static void addNotification(String titel, String[] meldung) {
-        add(titel, meldung);
     }
 
     private static void add(String titel, String[] mmeldung) {
