@@ -18,7 +18,7 @@ cp -r res/* build
 rm dist/README.TXT
 
 # Programmsets ins www-verzeichnis kopieren
-cp src/mediathek/file/*.xml /mnt/daten/www/online/ZDFMediathekView/programmgruppen/
+cp src/mediathek/file/*.xml /mnt/daten/www/online/ZDFMediathekView/programmgruppen4/
 
 # release
 relNr=$(cat src/version.properties | grep BUILD | sed 's#BUILD=##g')

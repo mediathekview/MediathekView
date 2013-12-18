@@ -70,6 +70,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = GuiFunktionenProgramme.getMusterPfadMplayer();
         Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = GuiFunktionenProgramme.getMusterPfadVlc();
         Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = GuiFunktionenProgramme.getMusterPfadFlv();
+        Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR] = GuiFunktionenProgramme.getMusterPfadFFmpeg();
     }
 
     private void weiter() {
@@ -91,7 +92,9 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
 
     private void statusStart() {
         jButtonStandard.setText("Weiter");
-        if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("") || Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
+        if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")
+                || Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")
+                || Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR].equals("")) {
             // ein Programm (VLC, flvstreamer) wurde nicht gefunden, muss der Benutzer eintragen
             status = STAT_PFAD;
         } else if (jCheckBoxAnpassen.isSelected()) {
@@ -116,7 +119,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         // erst Programmpfad prüfen
         jCheckBoxAnpassen.setVisible(false);
         jCheckBoxAlleEinstellungen.setVisible(false);
-        jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, ddaten, true /* vlc */, true /* flvstreamer */, false /* mplayer */));
+        jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, ddaten, true /* vlc */, true /* flvstreamer */, false /* mplayer */, true /*ffmpeg*/));
         status = STAT_PSET;
         jButtonStandard.setText("Weiter");
     }

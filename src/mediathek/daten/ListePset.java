@@ -36,6 +36,7 @@ public class ListePset extends LinkedList<DatenPset> {
     public static final String MUSTER_PFAD_MPLAYER = "PFAD_MPLAYER";
     public static final String MUSTER_PFAD_VLC = "PFAD_VLC";
     public static final String MUSTER_PFAD_FLV = "PFAD_FLVSTREAMER";
+    public static final String MUSTER_PFAD_FFMPEG = "PFAD_FFMPEG";
     public static final String MUSTER_PFAD_SCRIPT = "PFAD_SCRIPT";
     public String version = "";
 
@@ -212,6 +213,7 @@ public class ListePset extends LinkedList<DatenPset> {
         String mplayer = "";
         String vlc = "";
         String flvstreamer = "";
+        String ffmpeg = "";
         String skript = GuiFunktionenProgramme.getPfadScript();
         // damit nur die Variablen abgefragt werden, die auch verwendet werden
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
@@ -237,6 +239,13 @@ public class ListePset extends LinkedList<DatenPset> {
         }
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
+            if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_FFMPEG) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_FFMPEG)) {
+                ffmpeg = GuiFunktionenProgramme.getPfadFFmpeg(parent, dd);
+                break;
+            }
+        }
+        for (int p = 0; p < pSet.getListeProg().size(); ++p) {
+            DatenProg prog = pSet.getProg(p);
             // mplayer
             prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]
                     = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_MPLAYER, Matcher.quoteReplacement(mplayer));
@@ -252,6 +261,11 @@ public class ListePset extends LinkedList<DatenPset> {
                     = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_FLV, Matcher.quoteReplacement(flvstreamer));
             prog.arr[DatenProg.PROGRAMM_SCHALTER_NR]
                     = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_FLV, Matcher.quoteReplacement(flvstreamer));
+            // ffmpeg
+            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]
+                    = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_FFMPEG, Matcher.quoteReplacement(ffmpeg));
+            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR]
+                    = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_FFMPEG, Matcher.quoteReplacement(ffmpeg));
             // script
             prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]
                     = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(skript));
