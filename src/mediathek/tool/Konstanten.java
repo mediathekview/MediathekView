@@ -31,13 +31,14 @@ public class Konstanten {
     public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/prog-info.xml"; // ab Version 4, einstellig!
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";
     public static final String ADRESSE_ANLEITUNG = "http://sourceforge.net/p/zdfmediathk/wiki/Home/";
-    public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen/programmgruppen.xml";
+    public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen4/programmgruppen.xml";
     public static final String ADRESSE_WEBSITE = "http://zdfmediathk.sourceforge.net/";
     public static final String ADRESSE_FORUM = "http://sourceforge.net/apps/phpbb/zdfmediathk/";
     // ProgrammUrls
-    public static final String ADRESSE_WEBSITE_MPLAYER = "http://sourceforge.net/projects/smplayer/";
-    public static final String ADRESSE_WEBSITE_VLC = "http://www.videolan.org/";
-    public static final String ADRESSE_WEBSITE_FLVSTREAMER = "https://savannah.nongnu.org/projects/flvstreamer/";
+    public static final String ADRESSE_WEBSITE_MPLAYER = "http://sourceforge.net/projects/smplayer";
+    public static final String ADRESSE_WEBSITE_VLC = "http://www.videolan.org";
+    public static final String ADRESSE_WEBSITE_FLVSTREAMER = "https://savannah.nongnu.org/projects/flvstreamer";
+    public static final String ADRESSE_WEBSITE_FFMPEG = "http://ffmpeg.org";
     // Dateien/Verzeichnisse
     public static final String VERZEICNHISS_ICONS = "Icons"; // Unterverzeichnis im Programmverzeichnis in dem die Iconsets liegen
     public static final String VERZEICNHISS_DOWNLOADS = PROGRAMMNAME; // Standard wenn nichts angeben, Verzeichnis wird im Homeverzeichnis angelegt
@@ -138,20 +139,22 @@ public class Konstanten {
     public static final int SYSTEM_PFAD_VLC_NR = 34;
     public static final String SYSTEM_PFAD_FLVSTREAMER = "pfad-flvstreamer";
     public static final int SYSTEM_PFAD_FLVSTREAMER_NR = 35;
+    public static final String SYSTEM_PFAD_FFMPEG = "pfad-ffmpeg";
+    public static final int SYSTEM_PFAD_FFMPEG_NR = 36;
     public static final String SYSTEM_PFAD_MPLAYER = "pfad-mplayer";
-    public static final int SYSTEM_PFAD_MPLAYER_NR = 36;
+    public static final int SYSTEM_PFAD_MPLAYER_NR = 37;
     //#######################
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_FILME = "Eigenschaften-Tabellen-Filme";
-    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR = 37;
+    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR = 38;
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS = "Eigenschaften-Tabellen-Downloads";
-    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR = 38;
+    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR = 39;
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS = "Eigenschaften-Tabellen-Abos";
-    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR = 39;
+    public static final int SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR = 40;
     //#######################
     public static final String SYSTEM_ABOS_SOFORT_SUCHEN = "Abos-sofort-suchen";
-    public static final int SYSTEM_ABOS_SOFORT_SUCHEN_NR = 40;
+    public static final int SYSTEM_ABOS_SOFORT_SUCHEN_NR = 41;
     public static final String SYSTEM_ZIELNAMEN_ANPASSEN = "Zielnamen-anpassen";
-    public static final int SYSTEM_ZIELNAMEN_ANPASSEN_NR = 41;
+    public static final int SYSTEM_ZIELNAMEN_ANPASSEN_NR = 42;
     public static final String SYSTEM_UNICODE_AENDERN = "Unicode-aendern";
 //    public static final int SYSTEM_UNICODE_AENDERN_NR = 42;
     public static final String SYSTEM_HINWEIS_NR_ANGEZEIGT = "Hinweis-Nr-angezeigt";

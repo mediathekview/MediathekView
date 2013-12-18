@@ -149,6 +149,35 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         }
     }
 
+    public static String getMusterPfadFFmpeg() {
+        // liefert den Standardpfad für das entsprechende BS 
+        // bei Win+Mac wird das Programm mitgeliefert und liegt 
+        // im Ordner "bin" der mit dem Programm mitgeliefert wird
+        // bei Linux muss das Programm auf dem Rechner instelliert sein
+        final String PFAD_LINUX_FFMPEG = "/usr/bin/ffmpeg";
+        final String PFAD_MAC_FFMPEG = "bin/ffmpeg";
+        final String PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe";
+        String pfad;
+        switch (getOs()) {
+            case OS_LINUX:
+                pfad = PFAD_LINUX_FFMPEG;
+                break;
+            case OS_MAC:
+                pfad = Funktionen.getPathJar() + PFAD_MAC_FFMPEG;
+                break;
+            case OS_WIN_32BIT:
+            case OS_WIN_64BIT:
+            case OS_UNKNOWN:
+            default:
+                pfad = Funktionen.getPathJar() + PFAD_WINDOWS_FFMPEG;
+        }
+        if (new File(pfad).exists()) {
+            return pfad;
+        } else {
+            return "";
+        }
+    }
+
     public static String getPfadScript() {
         // liefert den Standardpfad zum Script "Ansehen" für das entsprechende BS 
         // liegt im Ordner "bin" der mit dem Programm mitgeliefert wird
@@ -174,7 +203,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     public static String getPfadMplayer(JFrame parent, Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, dd, false /* vlc */, false /* flvstreamer */, true /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(parent, dd, false /* vlc */, false /* flvstreamer */, true /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR];
     }
@@ -182,7 +211,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     public static String getPfadVlc(JFrame parent, Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, dd, true /* vlc */, false /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(parent, dd, true /* vlc */, false /* flvstreamer */, false /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR];
     }
@@ -190,9 +219,17 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     public static String getPfadFlv(JFrame parent, Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, dd, false /* vlc */, true /* flvstreamer */, false /* mplayer */), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(parent, dd, false /* vlc */, true /* flvstreamer */, false /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR];
+    }
+
+    public static String getPfadFFmpeg(JFrame parent, Daten dd) {
+        // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
+        if (Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR].equals("")) {
+            new DialogOk(null, true, new PanelProgrammPfade(parent, dd, false /* vlc */, false /* flvstreamer */, false /* mplayer */, true /*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
+        }
+        return Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR];
     }
 
     public static boolean addVorlagen(PanelVorlage parent, Daten ddaten, ListePset pSet, boolean auto) {

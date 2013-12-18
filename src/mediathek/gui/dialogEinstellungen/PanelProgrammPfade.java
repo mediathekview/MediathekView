@@ -46,15 +46,16 @@ import mediathek.tool.UrlHyperlinkAction;
 public class PanelProgrammPfade extends JPanel {
 
     public JDialog dialog = null;
-    private boolean vlc, flvstreamer, mplayer;
+    private boolean vlc, flvstreamer, mplayer, ffmpeg;
     private Daten ddaten;
     private JFrame parentComponent;
 
-    public PanelProgrammPfade(JFrame parentFrame, Daten dd, boolean vvlc, boolean fflvstreamer, boolean mmplayer) {
+    public PanelProgrammPfade(JFrame parentFrame, Daten dd, boolean vvlc, boolean fflvstreamer, boolean mmplayer, boolean fffmpeg) {
         initComponents();
         ddaten = dd;
         vlc = vvlc;
         flvstreamer = fflvstreamer;
+        ffmpeg = fffmpeg;
         mplayer = mmplayer;
         parentComponent = parentFrame;
         init();
@@ -78,8 +79,12 @@ public class PanelProgrammPfade extends JPanel {
         if (Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
             Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = GuiFunktionenProgramme.getMusterPfadFlv();
         }
+        if (Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR].equals("")) {
+            Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR] = GuiFunktionenProgramme.getMusterPfadFFmpeg();
+        }
         jTextFieldVlc.setText(Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR]);
         jTextFieldFlv.setText(Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR]);
+        jTextFieldFFmpeg.setText(Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR]);
         jTextFieldMplayer.setText(Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR]);
     }
 
@@ -91,11 +96,13 @@ public class PanelProgrammPfade extends JPanel {
             jXHyperlinkVlc.setAction(new UrlHyperlinkAction(parentComponent, ddaten, Konstanten.ADRESSE_WEBSITE_VLC));
             jXHyperlinkflvstreamer.setAction(new UrlHyperlinkAction(parentComponent, ddaten, Konstanten.ADRESSE_WEBSITE_FLVSTREAMER));
             jXHyperlinkSmplayer.setAction(new UrlHyperlinkAction(parentComponent, ddaten, Konstanten.ADRESSE_WEBSITE_MPLAYER));
+            jXHyperlinkFFmpeg.setAction(new UrlHyperlinkAction(parentComponent, ddaten, Konstanten.ADRESSE_WEBSITE_FFMPEG));
         } catch (URISyntaxException ignored) {
         }
         jButtonMplayerPfad.addActionListener(new BeobPfad(jTextFieldMplayer));
         jButtonVlcPfad.addActionListener(new BeobPfad(jTextFieldVlc));
         jButtonFlvPfad.addActionListener(new BeobPfad(jTextFieldFlv));
+        jButtonFFmpegPfad.addActionListener(new BeobPfad(jTextFieldFFmpeg));
         jButtonMplayerSuchen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -117,6 +124,13 @@ public class PanelProgrammPfade extends JPanel {
                 jTextFieldFlv.setText(GuiFunktionenProgramme.getMusterPfadFlv());
             }
         });
+        jButtonFFmpegSuchen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR] = "";
+                jTextFieldFFmpeg.setText(GuiFunktionenProgramme.getMusterPfadFFmpeg());
+            }
+        });
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -129,6 +143,7 @@ public class PanelProgrammPfade extends JPanel {
         Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = jTextFieldMplayer.getText();
         Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = jTextFieldVlc.getText();
         Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = jTextFieldFlv.getText();
+        Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR] = jTextFieldFFmpeg.getText();
         try {
             if (jTextFieldMplayer.getText().equals("")) {
                 jTextFieldMplayer.setBackground(new Color(255, 200, 200));
@@ -161,6 +176,17 @@ public class PanelProgrammPfade extends JPanel {
             }
         } catch (Exception ex) {
             jTextFieldFlv.setBackground(new Color(255, 200, 200));
+        }
+        try {
+            if (jTextFieldFFmpeg.getText().equals("")) {
+                jTextFieldFFmpeg.setBackground(new Color(255, 200, 200));
+            } else if (!new File(Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR]).exists()) {
+                jTextFieldFFmpeg.setBackground(new Color(255, 200, 200));
+            } else {
+                jTextFieldFFmpeg.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
+            }
+        } catch (Exception ex) {
+            jTextFieldFFmpeg.setBackground(new Color(255, 200, 200));
         }
     }
 
@@ -196,6 +222,12 @@ public class PanelProgrammPfade extends JPanel {
         jButtonMplayerSuchen = new javax.swing.JButton();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jXHyperlinkSmplayer = new org.jdesktop.swingx.JXHyperlink();
+        jPanelFFmpeg = new javax.swing.JPanel();
+        jTextFieldFFmpeg = new javax.swing.JTextField();
+        jButtonFFmpegSuchen = new javax.swing.JButton();
+        jButtonFFmpegPfad = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jXHyperlinkFFmpeg = new org.jdesktop.swingx.JXHyperlink();
 
         jPanelVlc.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zum VLC-Player auswählen"));
 
@@ -215,7 +247,7 @@ public class PanelProgrammPfade extends JPanel {
                 .addContainerGap()
                 .addGroup(jPanelVlcLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelVlcLayout.createSequentialGroup()
-                        .addComponent(jTextFieldVlc, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
+                        .addComponent(jTextFieldVlc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonVlcPfad)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -340,6 +372,53 @@ public class PanelProgrammPfade extends JPanel {
 
         jPanelMplayerLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonMplayerPfad, jButtonMplayerSuchen, jTextFieldMplayer});
 
+        jPanelFFmpeg.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zu ffmpeg auswählen"));
+
+        jButtonFFmpegSuchen.setText("suchen");
+
+        jButtonFFmpegPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+
+        jLabel4.setText("Website:");
+
+        jXHyperlinkFFmpeg.setText("http://ffmpeg.org");
+
+        javax.swing.GroupLayout jPanelFFmpegLayout = new javax.swing.GroupLayout(jPanelFFmpeg);
+        jPanelFFmpeg.setLayout(jPanelFFmpegLayout);
+        jPanelFFmpegLayout.setHorizontalGroup(
+            jPanelFFmpegLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFFmpegLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelFFmpegLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelFFmpegLayout.createSequentialGroup()
+                        .addComponent(jTextFieldFFmpeg)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonFFmpegPfad)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonFFmpegSuchen))
+                    .addGroup(jPanelFFmpegLayout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jXHyperlinkFFmpeg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanelFFmpegLayout.setVerticalGroup(
+            jPanelFFmpegLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFFmpegLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelFFmpegLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jTextFieldFFmpeg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonFFmpegPfad)
+                    .addComponent(jButtonFFmpegSuchen))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanelFFmpegLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jXHyperlinkFFmpeg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanelFFmpegLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonFFmpegPfad, jButtonFFmpegSuchen, jTextFieldFFmpeg});
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -349,8 +428,11 @@ public class PanelProgrammPfade extends JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanelFlv, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanelVlc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonHilfe, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanelMplayer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonHilfe))
+                    .addComponent(jPanelMplayer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelFFmpeg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -358,11 +440,13 @@ public class PanelProgrammPfade extends JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanelVlc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelFlv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelFFmpeg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelMplayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButtonHilfe)
                 .addContainerGap())
         );
@@ -382,11 +466,13 @@ public class PanelProgrammPfade extends JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addGap(18, 18, 18))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonFFmpegPfad;
+    private javax.swing.JButton jButtonFFmpegSuchen;
     private javax.swing.JButton jButtonFlvPfad;
     private javax.swing.JButton jButtonFlvSuchen;
     private javax.swing.JButton jButtonHilfe;
@@ -394,12 +480,16 @@ public class PanelProgrammPfade extends JPanel {
     private javax.swing.JButton jButtonMplayerSuchen;
     private javax.swing.JButton jButtonVlcPfad;
     private javax.swing.JButton jButtonVlcSuchen;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanelFFmpeg;
     private javax.swing.JPanel jPanelFlv;
     private javax.swing.JPanel jPanelMplayer;
     private javax.swing.JPanel jPanelVlc;
+    private javax.swing.JTextField jTextFieldFFmpeg;
     private javax.swing.JTextField jTextFieldFlv;
     private javax.swing.JTextField jTextFieldMplayer;
     private javax.swing.JTextField jTextFieldVlc;
+    private org.jdesktop.swingx.JXHyperlink jXHyperlinkFFmpeg;
     private org.jdesktop.swingx.JXHyperlink jXHyperlinkSmplayer;
     private org.jdesktop.swingx.JXHyperlink jXHyperlinkVlc;
     private org.jdesktop.swingx.JXHyperlink jXHyperlinkflvstreamer;

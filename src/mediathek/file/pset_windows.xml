@@ -24,6 +24,15 @@
         <Restart>true</Restart>
     </Programm>
     <Programm>
+        <Programmname>ffmpeg</Programmname>
+        <Zieldateiname>%t-%T-%N.mp4</Zieldateiname>
+        <Programmpfad>PFAD_FFMPEG</Programmpfad>
+        <Programmschalter>-i %f -c copy -absf aac_adtstoasc **</Programmschalter>
+        <Praefix>http</Praefix>
+        <Suffix>m3u8</Suffix>
+        <Restart>false</Restart>
+    </Programm>
+    <Programm>
         <Programmname>vlc ( &lt;#&gt; )</Programmname>
         <Zieldateiname>%t-%T-%N.ts</Zieldateiname>
         <Programmpfad>cmd /c</Programmpfad>
