@@ -31,6 +31,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -156,11 +158,30 @@ public class GuiDownloads extends PanelVorlage {
     //private
     //===================================
     private void init() {
+        //Tabelle einrichten
+        ActionMap am = tabelle.getActionMap();
+        InputMap im = tabelle.getInputMap();
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "aendern");
+        am.put("aendern", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                downloadAendern();
+            }
+        });
+
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
         this.getActionMap().put("tabelle", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabelle.requestFocusSelelct(jScrollPane1);
+            }
+        });
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "download");
+        this.getActionMap().put("download", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filmStartenWiederholenStoppen(false, true /* starten */);
             }
         });
         panelBeschreibungSetzen();
@@ -415,7 +436,7 @@ public class GuiDownloads extends PanelVorlage {
         } else {
             int[] rows = tabelle.getSelectedRows();
             urls = new String[rows.length];
-            if (rows.length >= 0) {
+            if (rows.length > 0) {
                 for (int i = 0; i < rows.length; i++) {
                     int row = tabelle.convertRowIndexToModel(rows[i]);
                     urls[i] = tabelle.getModel().getValueAt(row, DatenDownload.DOWNLOAD_URL_NR).toString();
