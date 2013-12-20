@@ -21,6 +21,7 @@ package mediathek.gui;
 
 import java.awt.Frame;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -29,6 +30,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -109,6 +111,13 @@ public class GuiAbo extends PanelVorlage {
                         tabelleLaden();
                     }
                 });
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
+        this.getActionMap().put("tabelle", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabelle.requestFocusSelelct(jScrollPane1);
+            }
+        });
         //aendern
         ActionMap am = tabelle.getActionMap();
         am.put("aendern", new BeobAbstractAction());

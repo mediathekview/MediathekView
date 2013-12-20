@@ -25,6 +25,7 @@
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="jMenuDatei">
           <Properties>
+            <Property name="mnemonic" type="int" value="100"/>
             <Property name="text" type="java.lang.String" value="Datei"/>
           </Properties>
           <SubComponents>
@@ -65,6 +66,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuFilme">
           <Properties>
+            <Property name="mnemonic" type="int" value="102"/>
             <Property name="text" type="java.lang.String" value="Filme"/>
           </Properties>
           <SubComponents>
@@ -94,6 +96,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuDownload">
           <Properties>
+            <Property name="mnemonic" type="int" value="119"/>
             <Property name="text" type="java.lang.String" value="Downloads"/>
           </Properties>
           <SubComponents>
@@ -212,6 +215,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuAbos">
           <Properties>
+            <Property name="mnemonic" type="int" value="98"/>
             <Property name="text" type="java.lang.String" value="Abos"/>
           </Properties>
           <SubComponents>
@@ -257,6 +261,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuAnsicht">
           <Properties>
+            <Property name="mnemonic" type="int" value="97"/>
             <Property name="text" type="java.lang.String" value="Ansicht"/>
           </Properties>
           <SubComponents>
@@ -291,6 +296,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuHilfe">
           <Properties>
+            <Property name="mnemonic" type="int" value="104"/>
             <Property name="text" type="java.lang.String" value="Hilfe"/>
           </Properties>
           <SubComponents>

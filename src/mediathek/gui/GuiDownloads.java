@@ -22,16 +22,21 @@ package mediathek.gui;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -76,7 +81,7 @@ public class GuiDownloads extends PanelVorlage {
         tabelle = new MVTable(MVTable.TABELLE_TAB_DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
         filmInfoHud = daten.filmInfoHud;
-        panelBeschreibung = new PanelBeschreibung(daten.mediathekGui,daten);
+        panelBeschreibung = new PanelBeschreibung(daten.mediathekGui, daten);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
         init();
@@ -151,6 +156,13 @@ public class GuiDownloads extends PanelVorlage {
     //private
     //===================================
     private void init() {
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
+        this.getActionMap().put("tabelle", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabelle.requestFocusSelelct(jScrollPane1);
+            }
+        });
         panelBeschreibungSetzen();
         jRadioButtonAbos.setForeground(GuiKonstanten.ABO_FOREGROUND);
         jRadioButtonDownloads.setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
@@ -366,21 +378,10 @@ public class GuiDownloads extends PanelVorlage {
             }
             Daten.listeDownloads.delDownloadByUrl(arrayUrls, false /*nurStart*/);
             tabelleLaden();
-            ersteZeileMarkieren();
+            tabelle.requestFocusSelelct(jScrollPane1);
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
-    }
-
-    private void ersteZeileMarkieren() {
-        if (tabelle.getRowCount() > 0) {
-            // sonst ist schon eine Zeile markiert
-            if (tabelle.getSelectedRow() == -1) {
-                tabelle.requestFocus();
-                tabelle.setRowSelectionInterval(0, 0);
-            }
-        }
-
     }
 
     private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */) {
