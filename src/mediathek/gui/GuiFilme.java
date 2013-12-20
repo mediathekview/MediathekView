@@ -26,17 +26,20 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
+import java.util.LinkedList;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -45,6 +48,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
+import javax.swing.RowSorter.SortKey;
+import javax.swing.SortOrder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -198,17 +203,51 @@ public class GuiFilme extends PanelVorlage {
                 dialog.setVisible(true);
             }
         });
+        daten.mediathekGui.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "sender");
+        daten.mediathekGui.getRootPane().getActionMap().put("sender", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                SortKey sk = new SortKey(DatenFilm.FILM_SENDER_NR, SortOrder.ASCENDING);
+                LinkedList<SortKey> listSortKeys = new LinkedList<>();
+                listSortKeys.add(sk);
+                tabelle.getRowSorter().setSortKeys(listSortKeys);
+                tabelle.requestFocusSelelct(jScrollPane1, 0);
+            }
+        });
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "abspielen");
+        this.getActionMap().put("abspielen", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filmAbspielen_();
+            }
+        });
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "download");
+        this.getActionMap().put("download", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filmSpeichern_();
+            }
+        });
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
+        this.getActionMap().put("tabelle", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabelle.requestFocusSelelct(jScrollPane1);
+            }
+        });
+
         //Tabelle einrichten
         ActionMap am = tabelle.getActionMap();
-        //ActionMap am = new ActionMap();
-        //tabelle.setActionMap(am);
-        am.put("film_starten", new BeobAbstractAction());
-
         InputMap im = tabelle.getInputMap();
-        //InputMap im = new InputMap();
-        //tabelle.setInputMap(JComponent.WHEN_FOCUSED, im);
-        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-        im.put(enter, "film_starten");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "film_starten");
+        am.put("film_starten", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filmAbspielen_();
+            }
+        });
 
         tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
         beobMausTabelle = new BeobMausTabelle();
@@ -1684,14 +1723,6 @@ public class GuiFilme extends PanelVorlage {
                     }
                 }
             }
-        }
-    }
-
-    private class BeobAbstractAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            filmAbspielen_();
         }
     }
 

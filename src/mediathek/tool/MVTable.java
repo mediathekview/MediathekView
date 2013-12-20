@@ -20,6 +20,7 @@
 package mediathek.tool;
 
 import java.awt.Cursor;
+import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
@@ -28,6 +29,7 @@ import java.util.List;
 import javax.activation.DataHandler;
 import javax.swing.DropMode;
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
@@ -343,6 +345,30 @@ public final class MVTable extends JTable {
 //        this.getSelectionModel().setValueIsAdjusting(false);
 //        stopBeob = false;
 //    }
+    public void requestFocusSelelct(JScrollPane jScrollPane) {
+        requestFocus();
+        if (getRowCount() > 0) {
+            // sonst ist schon eine Zeile markiert
+            if (getSelectedRow() == -1) {
+                setRowSelectionInterval(0, 0);
+            }
+            int firstSelectedRow = getSelectedRow();
+            Rectangle cellLocation = getCellRect(firstSelectedRow, 0, false);
+            jScrollPane.getVerticalScrollBar().setValue(cellLocation.y);
+        }
+    }
+
+    public void requestFocusSelelct(JScrollPane jScrollPane, int zeile) {
+        requestFocus();
+        if (getRowCount() > 0) {
+            // sonst ist schon eine Zeile markiert
+            setRowSelectionInterval(zeile, zeile);
+            int firstSelectedRow = getSelectedRow();
+            Rectangle cellLocation = getCellRect(firstSelectedRow, 0, false);
+            jScrollPane.getVerticalScrollBar().setValue(cellLocation.y);
+        }
+    }
+
     public void getSelected() {
         // Einstellungen der Tabelle merken
         selRow = this.getSelectedRow();

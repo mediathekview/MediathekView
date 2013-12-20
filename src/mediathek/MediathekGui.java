@@ -306,14 +306,14 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
 
-        this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK), "f");
-        this.getRootPane().getActionMap().put("f", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setFocusSuchfeld();
-            }
-        });
-        // für den Mac
+////        this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK), "f");
+////        this.getRootPane().getActionMap().put("f", new AbstractAction() {
+////            @Override
+////            public void actionPerformed(ActionEvent e) {
+////                setFocusSuchfeld();
+////            }
+////        });
+////        // für den Mac
         this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-f");
         this.getRootPane().getActionMap().put("mac-f", new AbstractAction() {
             @Override
@@ -1171,6 +1171,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jMenuDatei.setMnemonic('d');
         jMenuDatei.setText("Datei");
 
         jMenuItemFilmlisteLaden.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
@@ -1191,6 +1192,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jMenuBar.add(jMenuDatei);
 
+        jMenuFilme.setMnemonic('f');
         jMenuFilme.setText("Filme");
 
         jMenuItemFilmAbspielen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
@@ -1205,6 +1207,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jMenuBar.add(jMenuFilme);
 
+        jMenuDownload.setMnemonic('w');
         jMenuDownload.setText("Downloads");
 
         jMenuItemDownloadsAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/download_alleStarten_16.png"))); // NOI18N
@@ -1264,6 +1267,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jMenuBar.add(jMenuDownload);
 
+        jMenuAbos.setMnemonic('b');
         jMenuAbos.setText("Abos");
 
         jMenuItemAbosEinschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png"))); // NOI18N
@@ -1286,6 +1290,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jMenuBar.add(jMenuAbos);
 
+        jMenuAnsicht.setMnemonic('a');
         jMenuAnsicht.setText("Ansicht");
 
         jCheckBoxMenuItemToolBar.setSelected(true);
@@ -1305,6 +1310,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         jMenuBar.add(jMenuAnsicht);
 
+        jMenuHilfe.setMnemonic('h');
         jMenuHilfe.setText("Hilfe");
 
         jMenuItemAnleitung.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
