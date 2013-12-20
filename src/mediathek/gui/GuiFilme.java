@@ -236,6 +236,15 @@ public class GuiFilme extends PanelVorlage {
                 tabelle.requestFocusSelelct(jScrollPane1);
             }
         });
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "info");
+        this.getActionMap().put("info", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!filmInfoHud.isVisible()) {
+                    filmInfoHud.show();
+                }
+            }
+        });
 
         //Tabelle einrichten
         ActionMap am = tabelle.getActionMap();

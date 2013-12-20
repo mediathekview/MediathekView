@@ -184,6 +184,15 @@ public class GuiDownloads extends PanelVorlage {
                 filmStartenWiederholenStoppen(false, true /* starten */);
             }
         });
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "info");
+        this.getActionMap().put("info", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!filmInfoHud.isVisible()) {
+                    filmInfoHud.show();
+                }
+            }
+        });
         panelBeschreibungSetzen();
         jRadioButtonAbos.setForeground(GuiKonstanten.ABO_FOREGROUND);
         jRadioButtonDownloads.setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);

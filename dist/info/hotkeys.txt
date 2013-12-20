@@ -39,6 +39,7 @@ ctrl + d	Download erstellen
 ctrl + f	springt ins Suchfeld 
 			(entweder in der Toolbar oder "ThemaTitel" im Suchpanel wenn es angezeigt wird)
 ctrl + t	springt in die Tabelle
+ctrl + i	Infos zum Film anzeigen
 			
 in der Tabelle Filme
 ----------------------
@@ -51,6 +52,7 @@ Tab Downloads
 ==============
 ctrl + t	springt in die Tabelle
 ctrl + d	Download starten
+ctrl + i	Infos zum Film anzeigen
 
 in der Tabelle Downloads
 ----------------------
