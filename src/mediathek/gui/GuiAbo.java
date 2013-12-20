@@ -120,10 +120,15 @@ public class GuiAbo extends PanelVorlage {
         });
         //aendern
         ActionMap am = tabelle.getActionMap();
-        am.put("aendern", new BeobAbstractAction());
         InputMap im = tabelle.getInputMap();
-        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-        im.put(enter, "aendern");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "aendern");
+        am.put("aendern", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aendern();
+            }
+        });
     }
 
     private void tabelleLaden() {
@@ -291,14 +296,6 @@ public class GuiAbo extends PanelVorlage {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobAbstractAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            aendern();
-        }
-    }
 
     private class BeobMausTabelle1 extends MouseAdapter {
 

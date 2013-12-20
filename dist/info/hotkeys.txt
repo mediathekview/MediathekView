@@ -13,16 +13,19 @@ Menüpunkte
 ===========
 Einstellungen					F4
 neue Filmliste					F5
+
 Film abspielen					F6
 Film aufzeichnen				F7
+
 Download zurückstellen			Rücktaste
 Download dauerhaft löschen		Entf
 Downloads aktualisieren			Leertaste
+
 Abos löschen					Entf
 Abos ändern						Return
+
 Filter anzeigen					F8
 Beschreibung anzeigen			F9
-
 
 
 
@@ -32,7 +35,7 @@ Tab Filme
 ctrl + s	Die Tabelle wird nach Sender sortiert und der Focus wir auf 
 			die erste Tabellenzeile gesetzt
 ctrl + p	Film abspielen
-ctrl + d	Download starten
+ctrl + d	Download erstellen
 ctrl + f	springt ins Suchfeld 
 			(entweder in der Toolbar oder "ThemaTitel" im Suchpanel wenn es angezeigt wird)
 ctrl + t	springt in die Tabelle
@@ -47,6 +50,11 @@ return		Film abspielen
 Tab Downloads
 ==============
 ctrl + t	springt in die Tabelle
+ctrl + d	Download starten
+
+in der Tabelle Downloads
+----------------------
+return		Download ändern
 
 
 ===========================================================
@@ -57,3 +65,5 @@ ctrl + t	springt in die Tabelle
 in der Tabelle Abos
 ----------------------
 return		Abo ändern
+
+
