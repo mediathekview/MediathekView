@@ -175,6 +175,7 @@ public class MVFilmInformation implements ChangeListener {
                     || i == DatenFilm.FILM_ABSPIELEN_NR
                     || i == DatenFilm.FILM_AUFZEICHNEN_NR
                     || i == DatenFilm.FILM_DATUM_LONG_NR
+                    || i == DatenFilm.FILM_URL_HISTORY_NR
                     || i == DatenFilm.FILM_REF_NR) {
                 continue;
             }

@@ -54,7 +54,7 @@ public class History extends HashSet<String> {
 
     public void add(ArrayList<DatenDownload> ad) {
         for (DatenDownload d : ad) {
-            super.add(d.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
+            super.add(d.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
         }
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
     }

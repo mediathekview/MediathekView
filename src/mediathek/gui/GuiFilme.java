@@ -66,7 +66,6 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
-import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.MVFilmInformation;
@@ -77,12 +76,13 @@ import mediathek.tool.CellRendererFilme;
 import mediathek.tool.Datum;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
-import mediathek.tool.MVTable;
+import mediathek.gui.dialog.DialogAddDownload;
+import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVListeFilme;
+import mediathek.tool.MVTable;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelFilm;
@@ -266,7 +266,7 @@ public class GuiFilme extends PanelVorlage {
         tabelle.setDefaultRenderer(Datum.class, new CellRendererFilme(daten));
         tabelle.setDefaultRenderer(Integer.class, new CellRendererFilme(daten));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
-                new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR, DatenFilm.FILM_DATUM_LONG_NR, DatenFilm.FILM_REF_NR}) {
+                new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR, DatenFilm.FILM_DATUM_LONG_NR, /* DatenFilm.FILM_URL_HISTORY_NR, */ DatenFilm.FILM_REF_NR}) {
                     @Override
                     public void tabelleLaden_() {
                         tabelleLaden();
@@ -1464,7 +1464,7 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.add(item);
             //History
             if (film != null) {
-                if (daten.history.contains(film.arr[DatenFilm.FILM_URL_NR])) {
+                if (daten.history.contains(film.getUrlHistory())) {
                     item = new JMenuItem("Film als ungesehen markieren");
                     item.addActionListener(new BeobHistory(false));
                 } else {
@@ -1509,12 +1509,11 @@ public class GuiFilme extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 int nr = tabelle.rowAtPoint(p);
                 if (nr >= 0) {
+                    DatenFilm film = getFilm(nr);
                     if (eintragen) {
-                        daten.history.add(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr),
-                                DatenFilm.FILM_URL_NR).toString());
+                        daten.history.add(film.getUrlHistory());
                     } else {
-                        daten.history.remove(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr),
-                                DatenFilm.FILM_URL_NR).toString());
+                        daten.history.remove(film.getUrlHistory());
                     }
                 }
             }

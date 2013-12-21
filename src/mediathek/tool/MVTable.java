@@ -610,6 +610,7 @@ public final class MVTable extends JTable {
                             || i == DatenFilm.FILM_URL_KLEIN_NR
                             || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR
                             || i == DatenFilm.FILM_DATUM_LONG_NR
+                            || i == DatenFilm.FILM_URL_HISTORY_NR
                             || i == DatenFilm.FILM_REF_NR) {
                         breite[i] = 0;
                     }
@@ -626,6 +627,7 @@ public final class MVTable extends JTable {
                             || i == DatenDownload.DOWNLOAD_ART_NR
                             || i == DatenDownload.DOWNLOAD_QUELLE_NR
                             || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR
+                            || i == DatenDownload.DOWNLOAD_HISTORY_URL_NR
                             || i == DatenDownload.DOWNLOAD_REF_NR) {
                         breite[i] = 0;
                     }
