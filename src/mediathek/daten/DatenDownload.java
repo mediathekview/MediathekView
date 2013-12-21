@@ -31,7 +31,7 @@ import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.MVFilmSize;
 import msearch.daten.DatenFilm;
 

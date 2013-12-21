@@ -35,7 +35,6 @@ import mediathek.daten.Daten;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
 
 public class ErledigteAbos {
 

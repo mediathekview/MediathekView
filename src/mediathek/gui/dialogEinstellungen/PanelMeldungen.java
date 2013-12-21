@@ -28,7 +28,7 @@ import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 
 public class PanelMeldungen extends PanelVorlage {
 

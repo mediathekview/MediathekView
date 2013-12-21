@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.Log;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;

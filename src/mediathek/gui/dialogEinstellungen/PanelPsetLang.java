@@ -52,7 +52,7 @@ import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.MVTable;
 import mediathek.tool.TModel;
 import msearch.daten.DatenFilm;

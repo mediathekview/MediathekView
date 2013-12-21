@@ -40,7 +40,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 
 public class PanelEinstellungen extends PanelVorlage {
 

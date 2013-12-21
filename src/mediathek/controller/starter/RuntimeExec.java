@@ -27,7 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 
 public class RuntimeExec {
 

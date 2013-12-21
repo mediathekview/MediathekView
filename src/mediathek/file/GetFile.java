@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 
 /**
  *

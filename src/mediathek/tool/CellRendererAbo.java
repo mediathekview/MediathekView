@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.Log;
 import java.awt.Component;
 import java.awt.Font;
 import javax.swing.JTable;

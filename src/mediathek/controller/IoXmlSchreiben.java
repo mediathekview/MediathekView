@@ -39,7 +39,6 @@ import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
 import msearch.filmeLaden.DatenFilmlistenServer;
 import msearch.filmeLaden.DatenUrlFilmliste;
 import msearch.filmeLaden.MSearchFilmlistenSuchen;

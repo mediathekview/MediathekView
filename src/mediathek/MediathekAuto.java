@@ -24,7 +24,7 @@ import java.util.ListIterator;
 import mediathek.controller.IoXmlLesen;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 

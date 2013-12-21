@@ -83,7 +83,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.MVFrame;
 import mediathek.tool.MVMessageDialog;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;

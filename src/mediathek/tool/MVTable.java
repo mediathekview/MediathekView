@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.Log;
 import java.awt.Cursor;
 import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;

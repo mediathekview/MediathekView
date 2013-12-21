@@ -43,7 +43,6 @@ import mediathek.daten.ListeBlacklist;
 import mediathek.daten.ListePset;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
 import msearch.filmeLaden.DatenFilmlistenServer;
 import msearch.filmeLaden.DatenUrlFilmliste;
 import msearch.filmeLaden.MSearchFilmlistenSuchen;

@@ -80,7 +80,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.MVTable;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;

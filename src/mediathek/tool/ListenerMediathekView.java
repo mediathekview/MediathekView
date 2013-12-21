@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.Log;
 import java.util.EventListener;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;

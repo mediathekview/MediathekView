@@ -1,5 +1,6 @@
 package mediathek.tool;
 
+import mediathek.controller.Log;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
