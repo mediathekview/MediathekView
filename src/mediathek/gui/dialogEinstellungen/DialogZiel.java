@@ -32,7 +32,7 @@ import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.MVMessageDialog;
 
 public class DialogZiel extends javax.swing.JDialog {

@@ -40,7 +40,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.UrlHyperlinkAction;
 
 public class PanelProgrammPfade extends JPanel {

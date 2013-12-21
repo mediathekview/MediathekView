@@ -35,7 +35,7 @@ import mediathek.gui.dialog.PanelAbout;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 
 public class DialogEinstellungen extends javax.swing.JFrame {
 

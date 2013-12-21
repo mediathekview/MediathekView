@@ -19,6 +19,8 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.Log;
+import mediathek.controller.History;
 import java.awt.Component;
 import java.awt.Font;
 import javax.swing.ImageIcon;

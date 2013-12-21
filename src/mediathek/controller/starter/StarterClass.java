@@ -41,7 +41,7 @@ import mediathek.daten.DatenPset;
 import mediathek.tool.Datum;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.MVInputStream;
 import mediathek.tool.MVNotification;
 import mediathek.tool.MVUrlDateiGroesse;

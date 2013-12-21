@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.tool;
+package mediathek.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,6 +29,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.daten.Daten;
+import mediathek.tool.DatumZeit;
+import mediathek.tool.Funktionen;
+import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
 
 public class Log {
 

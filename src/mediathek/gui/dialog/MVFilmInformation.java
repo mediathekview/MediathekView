@@ -32,7 +32,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.UrlHyperlinkAction;
 import msearch.daten.DatenFilm;
 import org.jdesktop.swingx.JXHyperlink;

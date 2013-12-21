@@ -34,7 +34,7 @@ import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogOkCancel;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.TModel;
 
 public class ListePsetVorlagen extends LinkedList<String[]> {

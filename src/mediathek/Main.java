@@ -22,7 +22,7 @@ package mediathek;
 import com.jidesoft.utils.SystemInfo;
 import javax.swing.JOptionPane;
 import mediathek.daten.Daten;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.MVSingleInstance;
 
 public class Main {

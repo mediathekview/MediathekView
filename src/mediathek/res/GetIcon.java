@@ -24,7 +24,7 @@ import javax.swing.ImageIcon;
 import mediathek.daten.Daten;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 
 public class GetIcon {
 

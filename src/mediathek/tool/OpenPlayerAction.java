@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.Log;
 import java.awt.Desktop;
 import java.awt.Frame;
 import java.io.File;

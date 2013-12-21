@@ -43,7 +43,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.TModel;
 import mediathek.tool.UrlHyperlinkAction;
 

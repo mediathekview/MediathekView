@@ -38,7 +38,7 @@ import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.gui.dialogEinstellungen.PanelSenderLaden;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.MVNotification;
 import msearch.daten.MSearchConfig;
 import msearch.io.MSearchFilmlisteLesen;

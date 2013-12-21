@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.Log;
 import msearch.daten.DatenFilm;
 
 public class MVFilmSize implements Comparable<MVFilmSize> {

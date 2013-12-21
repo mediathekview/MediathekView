@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.Log;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;

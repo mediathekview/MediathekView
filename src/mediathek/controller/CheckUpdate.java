@@ -26,7 +26,6 @@ import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.Log;
 
 public class CheckUpdate {
 

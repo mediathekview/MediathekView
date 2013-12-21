@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.Log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

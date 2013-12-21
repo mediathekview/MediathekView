@@ -34,7 +34,6 @@ import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogHinweisUpdate;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
 
 public class ProgrammUpdateSuchen {
 

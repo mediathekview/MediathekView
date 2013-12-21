@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.Log;
 import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.security.CodeSource;

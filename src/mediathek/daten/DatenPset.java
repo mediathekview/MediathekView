@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.MVMessageDialog;
 
 public class DatenPset {

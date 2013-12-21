@@ -35,7 +35,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.Duration;
 import mediathek.tool.Konstanten;
-import mediathek.tool.Log;
+import mediathek.controller.Log;
 import mediathek.tool.MVMessageDialog;
 import msearch.io.MSearchFilmlisteSchreiben;
 
