@@ -204,7 +204,7 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.addMouseListener(new BeobMausTabelle());
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenDownload.COLUMN_NAMES, DatenDownload.spaltenAnzeigen,
-                new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR, DatenDownload.DOWNLOAD_REF_NR}) {
+                new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR, DatenDownload.DOWNLOAD_HISTORY_URL_NR, DatenDownload.DOWNLOAD_REF_NR}) {
                     @Override
                     public void tabelleLaden_() {
                         tabelleLaden();
@@ -396,7 +396,7 @@ public class GuiDownloads extends PanelVorlage {
                         // ein Abo wird zusätzlich ins Logfile geschrieben
                         arrayUrlsAbo.add(new String[]{datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
                             datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                            datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]});
+                            datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]});
                     }
                 } else {
                     // wenn nicht dauerhaft
@@ -482,7 +482,7 @@ public class GuiDownloads extends PanelVorlage {
                         urlsDownloadLoeschen.add(url);
                         if (download.istAbo()) {
                             // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                            daten.erledigteAbos.urlAusLogfileLoeschen(url);
+                            daten.erledigteAbos.urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
                         }
                     }
                 }

@@ -95,7 +95,7 @@ public class MVListeFilme {
                     }
                 }
                 if (kGesehen) {
-                    if (ddaten.history.contains(film.arr[DatenFilm.FILM_URL_NR])) {
+                    if (ddaten.history.contains(film.getUrlHistory())) {
                         continue;
                     }
                 }
@@ -181,7 +181,7 @@ public class MVListeFilme {
                     }
                 }
                 if (kGesehen) {
-                    if (ddaten.history.contains(film.arr[DatenFilm.FILM_URL_NR])) {
+                    if (ddaten.history.contains(film.getUrlHistory())) {
                         continue;
                     }
                 }

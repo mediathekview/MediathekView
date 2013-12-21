@@ -75,7 +75,7 @@ public class StarterClass {
             d.start = new Start();
             starten.startStarten(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
-            daten.history.add(d.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
+            daten.history.add(d.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
             Daten.listeDownloadsButton.addMitNummer(d);
         }
@@ -461,7 +461,7 @@ public class StarterClass {
             if (datenDownload.istAbo()) {
                 daten.erledigteAbos.zeileSchreiben(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
                         datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                        datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL_NR]);
+                        datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
             }
             ret = true;
         }

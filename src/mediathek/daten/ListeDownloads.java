@@ -422,7 +422,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (!abo.aboIstEingeschaltet()) {
                 continue;
             }
-            if (ddaten.erledigteAbos.urlPruefen(film.arr[DatenFilm.FILM_URL_NR])) {
+            if (ddaten.erledigteAbos.urlPruefen(film.getUrlHistory())) {
                 // ist schon im Logfile, weiter
                 continue;
             }

@@ -136,7 +136,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     // bei livestreams keine History anzeigen
                     setForeground(GuiKonstanten.DOWNLOAD_FARBE_LIVE);
                 } else {
-                    if (history.contains(datenFilm.arr[DatenFilm.FILM_URL_NR])) {
+                    if (history.contains(datenFilm.getUrlHistory())) {
                         if (!isSelected) {
                             setBackground(GuiKonstanten.FARBE_GRAU);
                         }
