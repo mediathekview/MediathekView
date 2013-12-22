@@ -153,7 +153,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         // liefert den Standardpfad für das entsprechende BS 
         // bei Win+Mac wird das Programm mitgeliefert und liegt 
         // im Ordner "bin" der mit dem Programm mitgeliefert wird
-        // bei Linux muss das Programm auf dem Rechner instelliert sein
+        // bei Linux muss das Programm auf dem Rechner installiert sein
         final String PFAD_LINUX_FFMPEG = "/usr/bin/ffmpeg";
         final String PFAD_MAC_FFMPEG = "bin/ffmpeg";
         final String PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe";
