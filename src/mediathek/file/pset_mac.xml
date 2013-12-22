@@ -18,14 +18,14 @@
         <Programmname>flvstreamer</Programmname>
         <Zieldateiname>%t-%T-%N.flv</Zieldateiname>
         <Programmpfad>/Applications/MediathekView.app/Contents/Resources/flvstreamer_macosx_intel_32bit_latest</Programmpfad>
-		<Programmschalter>%F --resume -o **</Programmschalter>
+	<Programmschalter>%F --resume -o **</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>true</Restart>
     </Programm>
     <Programm>
         <Programmname>ffmpeg</Programmname>
         <Zieldateiname>%t-%T-%N.mp4</Zieldateiname>
-        <Programmpfad>PFAD_FFMPEG</Programmpfad>
+        <Programmpfad>/Applications/MediathekView.app/Contents/Resources/ffmpeg</Programmpfad>
         <Programmschalter>-i %f -c copy -absf aac_adtstoasc **</Programmschalter>
         <Praefix>http</Praefix>
         <Suffix>m3u8</Suffix>
