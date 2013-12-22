@@ -193,22 +193,6 @@ public class GuiAbo extends PanelVorlage {
         }
     }
 
-    private void aboEinAus() {
-        int sel = tabelle.getSelectedRow();
-        if (sel > 0) {
-            int modelRow = tabelle.convertRowIndexToModel(sel);
-            DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
-            akt.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(!Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET_NR]));
-            tabelleLaden();
-            tabelle.clearSelection();
-            tabelle.addRowSelectionInterval(sel, sel);
-            setInfo();
-            Daten.listeAbo.aenderungMelden();
-        } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
-        }
-    }
-
     private void aboEinAus(boolean ein) {
         int sel = tabelle.getSelectedRow();
         int[] rows = tabelle.getSelectedRows();
@@ -334,7 +318,15 @@ public class GuiAbo extends PanelVorlage {
         private void buttonTable(int row, int column) {
             if (row != -1) {
                 if (column == DatenAbo.ABO_EINGESCHALTET_NR) {
-                    aboEinAus();
+                    DatenAbo akt = Daten.listeAbo.getAboNr(tabelle.convertRowIndexToModel(row));
+                    akt.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(!Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET_NR]));
+                    tabelle.getSpalten();
+                    tabelleLaden();
+                    tabelle.setSpalten();
+//                    tabelle.clearSelection();
+//                    tabelle.addRowSelectionInterval(row, row);
+                    setInfo();
+                    Daten.listeAbo.aenderungMelden();
                 }
             }
         }
