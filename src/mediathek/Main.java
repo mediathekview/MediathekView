@@ -68,7 +68,7 @@ public class Main {
                             state = StartupMode.AUTO;
                         }
                         if (s.equalsIgnoreCase("-d")) {
-////                            Daten.debug = true; fürs release
+                            Daten.debug = true; //fürs release
                             if (SystemInfo.isMacOSX()) {
                                 //prevent startup of multiple instances...useful during debugging :(
                                 MVSingleInstance singleInstanceWatcher = new MVSingleInstance();

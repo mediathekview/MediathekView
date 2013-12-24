@@ -29,6 +29,10 @@ import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.PanelPsetLang;
 import mediathek.tool.Funktionen;
+import static mediathek.tool.Funktionen.OS_MAC;
+import static mediathek.tool.Funktionen.OS_WIN_32BIT;
+import static mediathek.tool.Funktionen.OS_WIN_64BIT;
+import static mediathek.tool.Funktionen.getOs;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
 
@@ -119,7 +123,17 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         // erst Programmpfad prüfen
         jCheckBoxAnpassen.setVisible(false);
         jCheckBoxAlleEinstellungen.setVisible(false);
-        jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, ddaten, true /* vlc */, true /* flvstreamer */, false /* mplayer */, true /*ffmpeg*/));
+        switch (getOs()) {
+            case OS_MAC:
+            case OS_WIN_32BIT:
+            case OS_WIN_64BIT:
+                // da wird nur der VLC gebraucht, der Rest wird mitgeliefert
+                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, ddaten, true /* vlc */, false /* flvstreamer */, false /* mplayer */, false /*ffmpeg*/));
+                break;
+            default:
+                // da brauchs alles
+                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, ddaten, true /* vlc */, true /* flvstreamer */, false /* mplayer */, true /*ffmpeg*/));
+        }
         status = STAT_PSET;
         jButtonStandard.setText("Weiter");
     }
