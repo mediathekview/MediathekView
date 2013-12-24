@@ -44,12 +44,12 @@ import mediathek.controller.Log;
 import mediathek.tool.UrlHyperlinkAction;
 
 public class PanelProgrammPfade extends JPanel {
-
+    
     public JDialog dialog = null;
     private boolean vlc, flvstreamer, mplayer, ffmpeg;
     private Daten ddaten;
     private JFrame parentComponent;
-
+    
     public PanelProgrammPfade(JFrame parentFrame, Daten dd, boolean vvlc, boolean fflvstreamer, boolean mmplayer, boolean fffmpeg) {
         initComponents();
         ddaten = dd;
@@ -61,7 +61,7 @@ public class PanelProgrammPfade extends JPanel {
         init();
         initBeob();
     }
-
+    
     private void init() {
         jButtonVlcPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
         jButtonFlvPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
@@ -70,6 +70,7 @@ public class PanelProgrammPfade extends JPanel {
         jPanelVlc.setVisible(vlc);
         jPanelFlv.setVisible(flvstreamer);
         jPanelMplayer.setVisible(mplayer);
+        jPanelFFmpeg.setVisible(ffmpeg);
         if (Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR].equals("")) {
             Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = GuiFunktionenProgramme.getMusterPfadMplayer();
         }
@@ -87,7 +88,7 @@ public class PanelProgrammPfade extends JPanel {
         jTextFieldFFmpeg.setText(Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR]);
         jTextFieldMplayer.setText(Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR]);
     }
-
+    
     private void initBeob() {
         jTextFieldVlc.getDocument().addDocumentListener(new BeobDoc());
         jTextFieldFlv.getDocument().addDocumentListener(new BeobDoc());
@@ -138,7 +139,7 @@ public class PanelProgrammPfade extends JPanel {
             }
         });
     }
-
+    
     private void check() {
         Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = jTextFieldMplayer.getText();
         Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = jTextFieldVlc.getText();
@@ -496,31 +497,31 @@ public class PanelProgrammPfade extends JPanel {
     // End of variables declaration//GEN-END:variables
 
     private class BeobDoc implements DocumentListener {
-
+        
         @Override
         public void insertUpdate(DocumentEvent e) {
             check();
         }
-
+        
         @Override
         public void removeUpdate(DocumentEvent e) {
             check();
         }
-
+        
         @Override
         public void changedUpdate(DocumentEvent e) {
             check();
         }
     }
-
+    
     private class BeobPfad implements ActionListener {
-
+        
         private JTextField textField;
-
+        
         public BeobPfad(JTextField ttextField) {
             textField = ttextField;
         }
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
