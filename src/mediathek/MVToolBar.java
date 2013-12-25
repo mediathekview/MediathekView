@@ -197,7 +197,7 @@ public final class MVToolBar extends JToolBar {
         }
         if (!extern) {
             this.add(filler__trenner);
-            jButtonFilterPanel.setToolTipText("Erweiterte Suche");
+            jButtonFilterPanel.setToolTipText("Erweiterte Suche / Filter anzeigen");
             jButtonFilterPanel.setBorder(null);
             jButtonFilterPanel.setBorderPainted(false);
             jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
