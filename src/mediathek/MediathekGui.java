@@ -763,6 +763,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 daten.guiFilme.filmSpeichern();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+            }
+        });
+
         jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
         jCheckBoxMenuItemFilterAnzeigen.addActionListener(new ActionListener() {
             @Override
