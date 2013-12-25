@@ -44,6 +44,7 @@ import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVListeFilme;
 import mediathek.tool.TModel;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
@@ -109,21 +110,21 @@ public class PanelBlacklist extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST_NR] = Boolean.toString(jRadioButtonWhitelist.isSelected());
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
+                notifyBlack();
             }
         });
         jRadioButtonBlacklist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST_NR] = Boolean.toString(jRadioButtonWhitelist.isSelected());
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
+                notifyBlack();
             }
         });
         jCheckBoxZukunftNichtAnzeigen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR] = Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected());
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
+                notifyBlack();
             }
         });
         jCheckBoxAbo.addActionListener(new ActionListener() {
@@ -141,7 +142,7 @@ public class PanelBlacklist extends PanelVorlage {
                 jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
                 jCheckBoxBlacklistEingeschaltet.setText(jCheckBoxBlacklistEingeschaltet.isSelected() ? "Blacklist eingeschaltet" : "Blacklist ausgeschaltet");
                 Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR] = Boolean.toString(!jCheckBoxBlacklistEingeschaltet.isSelected());
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
+                notifyBlack();
                 setPanelBlacklist();
             }
         });
@@ -177,7 +178,7 @@ public class PanelBlacklist extends PanelVorlage {
                         bl.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR] = thti;
                         tabelleLaden();
                         jTableBlacklist.addRowSelectionInterval(row, row);
-                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
+                        notifyBlack();
                     }
                 }
 
@@ -217,13 +218,18 @@ public class PanelBlacklist extends PanelVorlage {
                 jTextFieldMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
                 if (!jSliderMinuten.getValueIsAdjusting()) {
                     Daten.system[Konstanten.SYSTEM_BLACKLIST_FILMLAENGE_NR] = String.valueOf(jSliderMinuten.getValue());
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
+                    notifyBlack();
                 }
             }
         });
         initCombo();
         comboThemaLaden();
         setPanelBlacklist();
+    }
+
+    private void notifyBlack() {
+        MVListeFilme.checkBlacklist();
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
     }
 
     private void comboThemaLaden() {

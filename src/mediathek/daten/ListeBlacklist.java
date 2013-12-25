@@ -29,6 +29,7 @@ import mediathek.tool.Filter;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.tool.MVListeFilme;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 
@@ -46,8 +47,13 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     public boolean add(DatenBlacklist b) {
         b.arr[DatenBlacklist.BLACKLIST_NR_NR] = getNr(nr++);
         boolean ret = super.add(b);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        notifyBlack();
         return ret;
+    }
+
+    private void notifyBlack() {
+        MVListeFilme.checkBlacklist();
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
     }
 
     public boolean change(String idx, DatenBlacklist b) {
@@ -55,21 +61,21 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         remove(idx);
         b.arr[DatenBlacklist.BLACKLIST_NR_NR] = getNr(nr++);
         ret = super.add(b);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        notifyBlack();
         return ret;
     }
 
     @Override
     public boolean remove(Object b) {
         boolean ret = super.remove(b);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        notifyBlack();
         return ret;
     }
 
     @Override
     public DatenBlacklist remove(int idx) {
         DatenBlacklist ret = super.remove(idx);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        notifyBlack();
         return ret;
     }
 
@@ -78,7 +84,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         if ((bl = get(idx)) != null) {
             remove(bl);
         }
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        notifyBlack();
         return bl;
     }
 
@@ -100,7 +106,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     @Override
     public void clear() {
         super.clear();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        notifyBlack();
     }
 
     public Object[][] getObjectData() {
