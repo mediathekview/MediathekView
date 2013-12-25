@@ -29,6 +29,7 @@ import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.Duration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
+import mediathek.tool.MVListeFilme;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 import msearch.daten.MSearchConfig;
@@ -270,6 +271,7 @@ public class FilmeLaden {
                     break;
                 case FINISHED:
                     listenerFilmeLaden.fertig(event);
+                    MVListeFilme.checkBlacklist();
                     break;
             }
         }

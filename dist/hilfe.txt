@@ -1,5 +1,8 @@
 
-MediathekView startet nicht
+MediathekView startet nicht:
+
+http://sourceforge.net/p/zdfmediathk/wiki/FAQ/
+http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
 
 * ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
 	ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
@@ -7,41 +10,13 @@ MediathekView startet nicht
 	kann dann die Programmdatei "MediathekView.exe" (unter XP 
 	"MediathekView-WinXp.exe") doppelgeklickt werden.
 
-* Zu wenig Arbeitsspeicher oder unbekanntes Problem (Windows): Einige User 
-	konnten MediatheView starten, nachdem sie einen Doppelklick auf die 
-	Programmdatei "MediathekView-WinXp.exe" (anstelle von "MediathekView.exe") 
-	vornahmen, auch wenn diese User gar nicht unter XP arbeiteten. Alternativ kann 
-	man auch versuchen, über einen Doppelklick auf "MediathekView.jar" das Programm 
-	zu starten.
-
-* Kein Programm dem Dateityp ".jar" zugeordnet (Windows): Ein Packprogramm 
-	(z.B. WinZip) hat sich den Dateityp ".jar" zugeordnet und dadurch werden die 
-	JAR-Files nicht mehr von Java gestartet. Bei gedrückter Shift-Taste mit der 
-	rechten Maustaste auf das JAR-File klicken und in dem Menü dann den Punkt 
-	"Öffnen mit" auswählen. Dort "Java(TM) Plattform SE binary" auswählen oder unter 
-	"Sonstiges" danach suchen. Wenn dann die Box unten angeklickt wird, wird der 
-	Filetyp "jar" wieder mit Java verbunden und Java-Programme starten wieder mit 
-	einem Doppelklick. Üblicherweise wird MediathekView über einen Doppelklick auf die 
-	Programmdatei "MediathekView.exe" (unter XP "MediathekView-WinXp.exe") 
-	gestartet.
-
 * Java ist nicht oder nicht in der richtigen Version installiert: zum 
 	Java-Download: 
 	http://java.com/de/
-	Falls unter OS X 10.7.3 (und neuer) MediathekView trotz 
-	Installation von Java 7 (JRE 7) nicht startet, dann zeigt der Pfad von Java noch 
-	auf Java 6. Abhilfe schafft die Installation des Java Development Kits (JDK 7)
 
 * Benötigte Dateien wurden aus dem Programm-Ordner gelöscht (Windows) Die 
 	benötigten Java-Bibliotheken (libs) oder die Hilfsprogramm (im Ordner "bin") 
 	fehlen, da Dateien aus dem MediathekView-Programmordner gelöscht oder verschoben 
 	wurden, ->dann eine Neuinstallation.
 
-* Falls auf OS X kein Java 7 (JRE 7) installiert werden kann, kann auch die 
-	Programmdatei für Windows/Linux genommen werden. ZIP entpacken und 
-	dann "MediathekView_Mac_Start.command" starten.
-
-
-http://sourceforge.net/p/zdfmediathk/wiki/FAQ/
-http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
 

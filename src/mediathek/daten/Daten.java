@@ -45,6 +45,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
 import msearch.daten.ListeFilme;
 import msearch.io.MSearchFilmlisteLesen;
@@ -274,6 +275,7 @@ public class Daten {
         new MSearchFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste(), "", Daten.listeFilme);
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme);
+        MVListeFilme.checkBlacklist();
     }
 
     public static void filmlisteSpeichern() {

@@ -25,6 +25,10 @@ import msearch.daten.ListeFilme;
 
 public class MVListeFilme {
 
+    public static void checkBlacklist() {
+        Daten.listeBlacklist.filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
+    }
+
 //    public static HashSet<String> hashSet = new HashSet<>();
 //    public static TreeSet<String> treeSet = new TreeSet<>(msearch.tool.GermanStringSorter.getInstance());
     public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVTable table,
