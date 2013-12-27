@@ -1401,7 +1401,7 @@ public class GuiFilme extends PanelVorlage {
             submenueAbo.add(itemAboFilter);
 
             //Programme einblenden
-            JMenu submenue = new JMenu("Film mit Programm starten:");
+            JMenu submenue = new JMenu("Film mit Set starten");
             jPopupMenu.add(submenue);
             ListePset liste = daten.listePset.getListeButton();
             for (DatenPset pset : liste) {
@@ -1444,11 +1444,11 @@ public class GuiFilme extends PanelVorlage {
             item.addActionListener(beobUrl);
             jPopupMenu.add(item);
             //Drucken
-            item = new JMenuItem("Tabelle Drucken");
+            item = new JMenuItem("Tabelle drucken");
             item.addActionListener(beobPrint);
             jPopupMenu.add(item);
             //Infos
-            item = new JMenuItem("Infos anzeigen");
+            item = new JMenuItem("Filminformation anzeigen");
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {

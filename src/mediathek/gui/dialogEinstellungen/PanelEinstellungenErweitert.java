@@ -60,8 +60,8 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 new DialogHilfe(null, true, "\n"
                         + "Dieser Text wird als User-Agent\n"
-                        + "an den Webserver übertragen. Das enstpricht\n"
-                        + "der Kennung die auch die Browser senden.").setVisible(true);
+                        + "an den Webserver übertragen. Das entspricht\n"
+                        + "der Kennung, die auch die Browser senden.").setVisible(true);
             }
         });
         jRadioButtonAuto.addActionListener(new ActionListener() {
@@ -349,8 +349,8 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 new DialogHilfe(parentComponent, true, "\n"
                         + "Wenn das Programm versucht, eine URL zu öffnen\n"
                         + "und die Standardanwendung nicht startet,\n"
-                        + "kann man damit ein Programm auswählen mit\n"
-                        + "dem URL's geöffnet werden sollen.").setVisible(true);
+                        + "kann man damit ein Programm auswählen, mit\n"
+                        + "dem URLs geöffnet werden sollen.").setVisible(true);
             }
         });
         jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new DocumentListener() {
@@ -504,7 +504,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         .addComponent(jButtonHilfeNeuladen))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jCheckBoxUmbenennen)
-                        .addGap(0, 225, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -692,7 +692,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeVideoplayer, jButtonProgrammVideoplayer, jTextFieldVideoplayer});
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Programm zum Öffnen von URL's"));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Programm zum Öffnen von URLs"));
 
         jButtonProgrammUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
 

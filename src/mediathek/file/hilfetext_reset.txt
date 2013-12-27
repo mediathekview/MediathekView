@@ -1,10 +1,10 @@
-Mit "alle Einstellungen zurücksetzen" wird
+Mit "Alle Einstellungen zurücksetzen" wird
 das Programm in den Ursprungszustand
-zurück gesetzt.
+zurückgesetzt.
 
 Es gehen alle Änderungen verloren.
 
 Das Programm beendet sich und muss neu
 gestartet werden. Der neue Start beginnt
-mit dem Einstellungesdialog.
+mit dem Einstellungsdialog.
 

@@ -1,4 +1,4 @@
-Bei der Funktion "Blacklist" werden Filme die auf die
+Bei der Funktion "Blacklist" werden Filme, die auf die
 Zeilen in der Tabelle passen, nicht angezeigt.
 
 Die Funktion "Whitelist" zeigt nur die Filme an,
@@ -8,7 +8,7 @@ Beim Umschalten "Blacklist - Whitelist" werden genau
 die vorher nicht angezeigten Filme jetzt angezeigt.
 
 "Sender" "Thema" werden exakt verglichen.
-Der Ttitelfilter muss im Titel enthalten sein.
+Der Titelfilter muss im Titel enthalten sein.
 Das Filterfeld "Thema/Titel" muss entweder im Filmthema
 oder im Filmtitel enthalten sein.
 
@@ -22,7 +22,7 @@ Auch bei den regulären Ausdrücken wird nicht zwischen
 Groß- und Kleinschreibung unterschieden.
 
 #:Abend.*
-Das bedeutet zB.: Es werden alle Filme gefiltert, die 
+Das bedeutet z.B.: Es werden alle Filme gefiltert, die 
 im jeweiligen Feld mit "Abend" (oder auch: "abend") beginnen.
 
 https://de.wikipedia.org/wiki/Regul%C3%A4rer_Ausdruck

@@ -38,7 +38,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jSplitPane1" pref="494" max="32767" attributes="0"/>
+              <Component id="jSplitPane1" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonHilfe" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -604,7 +604,7 @@
                           <Component id="jPanel12" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel13" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="67" max="32767" attributes="0"/>
+                          <EmptySpace pref="51" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -626,11 +626,11 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="jTextFieldGruppeDirektPraefix" pref="56" max="32767" attributes="0"/>
+                              <Component id="jTextFieldGruppeDirektPraefix" pref="51" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="jTextFieldGruppeDirektSuffix" pref="55" max="32767" attributes="0"/>
+                              <Component id="jTextFieldGruppeDirektSuffix" pref="50" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -645,7 +645,7 @@
                                   <Component id="jLabel5" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="jTextFieldGruppeDirektSuffix" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="20" max="32767" attributes="0"/>
+                              <EmptySpace pref="25" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -653,7 +653,7 @@
                   <SubComponents>
                     <Component class="javax.swing.JLabel" name="jLabel10">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="direkter Download, Pr&#xe4;fix ( zB. http ):"/>
+                        <Property name="text" type="java.lang.String" value="direkter Download, Pr&#xe4;fix ( z.B. http ):"/>
                       </Properties>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -664,7 +664,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel5">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Suffix ( zB. mp4,mp3):"/>
+                        <Property name="text" type="java.lang.String" value="Suffix ( z.B. mp4,mp3):"/>
                       </Properties>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -683,7 +683,7 @@
                     </Property>
                     <Property name="columns" type="int" value="20"/>
                     <Property name="rows" type="int" value="4"/>
-                    <Property name="text" type="java.lang.String" value="Filme deren URL mit &quot;Pr&#xe4;fix&quot; beginnt und mit &quot;Suffix&quot; endet, werden nicht&#xa;mit einem Hilfsprogramm gespeichert, sondern direkt geladen.&#xa;&#xa;Eine geringere Aufl&#xf6;sung ist nicht bei jedem Sender m&#xf6;glich, es wird dann in der gleichen&#xa;Aufl&#xf6;sung geladen."/>
+                    <Property name="text" type="java.lang.String" value="Filme, deren URL mit &quot;Pr&#xe4;fix&quot; beginnt und mit &quot;Suffix&quot; endet, werden nicht&#xa;mit einem Hilfsprogramm gespeichert, sondern direkt geladen.&#xa;&#xa;Eine geringere Aufl&#xf6;sung ist nicht bei jedem Sender m&#xf6;glich, es wird dann in der gleichen&#xa;Aufl&#xf6;sung geladen."/>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="null"/>
                     </Property>
@@ -724,7 +724,7 @@
                               <Component id="jRadioButtonAufloesungKlein" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="16" max="32767" attributes="0"/>
+                              <EmptySpace pref="21" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -757,7 +757,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel14">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Wenn es die Aufl&#xf6;sung nicht gibt, wird die n&#xe4;chst kleinere genommen."/>
+                        <Property name="text" type="java.lang.String" value="Wenn es die Aufl&#xf6;sung nicht gibt, wird die n&#xe4;chstkleinere genommen."/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -786,7 +786,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="14" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -996,7 +996,7 @@
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="jTextFieldProgSuffix" pref="112" max="32767" attributes="2"/>
+                                              <Component id="jTextFieldProgSuffix" pref="110" max="32767" attributes="2"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -1005,7 +1005,7 @@
                                           <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="jTextFieldProgZielDateiName" max="32767" attributes="0"/>
                                           <Component id="jTextFieldProgName" max="32767" attributes="0"/>
@@ -1098,7 +1098,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel3">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Pr&#xe4;fix ( zB. http ):"/>
+                        <Property name="text" type="java.lang.String" value="Pr&#xe4;fix (z.B. http):"/>
                       </Properties>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -1109,7 +1109,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel4">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Suffix ( zB. mp4,mp3):"/>
+                        <Property name="text" type="java.lang.String" value="Suffix ( z.B. mp4,mp3):"/>
                       </Properties>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -1120,7 +1120,7 @@
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="jCheckBoxRestart">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="fehlgeschlagene Downloads wieder Starten"/>
+                        <Property name="text" type="java.lang.String" value="fehlgeschlagene Downloads wieder starten"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel9">
