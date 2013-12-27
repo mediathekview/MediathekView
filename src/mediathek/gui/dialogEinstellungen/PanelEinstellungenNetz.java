@@ -71,7 +71,7 @@ public class PanelEinstellungenNetz extends PanelVorlage {
         Daten.system[Konstanten.SYSTEM_HTTP_PROXY_USER_NR] = jTextFieldPUser.getText();
         Daten.system[Konstanten.SYSTEM_HTTP_PROXY_PWD_NR] = jTextFieldPPwd.getText();
         //system setzen
-        GuiFunktionen.setProxy();
+//        GuiFunktionen.setProxy();
     }
 
     /** This method is called from within the constructor to

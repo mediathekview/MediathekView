@@ -43,7 +43,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     public boolean ok = false;
     private PanelEinstellungen panelEinstellungen;
     private PanelEinstellungenErweitert panelEinstellungenErweitert;
-    private PanelEinstellungenNetz panelEinstellungenNetz;
+//    private PanelEinstellungenNetz panelEinstellungenNetz;
     private PanelFilmlisteLaden panelImportFilme;
     private PanelExportFilmliste panelExportFilmliste;
     private PanelBlacklist panelBlacklist;
@@ -91,7 +91,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private void init() {
         panelEinstellungen = new PanelEinstellungen(ddaten, parentComponent);
         panelEinstellungenErweitert = new PanelEinstellungenErweitert(ddaten, parentComponent);
-        panelEinstellungenNetz = new PanelEinstellungenNetz(ddaten, parentComponent);
+//        panelEinstellungenNetz = new PanelEinstellungenNetz(ddaten, parentComponent);
         panelImportFilme = new PanelFilmlisteLaden(ddaten, parentComponent);
         panelExportFilmliste = new PanelExportFilmliste(ddaten, parentComponent);
         panelBlacklist = new PanelBlacklist(ddaten, parentComponent, PanelBlacklist.class.getName());
@@ -113,7 +113,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private void initTree() {
         final String NAME_allgemeineEinstellungen = "Allgemein";
         final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
-        final String NAME_netzwerk = "Netzwerk";
+//        final String NAME_netzwerk = "Netzwerk";
         final String NAME_filmListeLaden = "Filmliste laden";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";
@@ -138,9 +138,9 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         // erweiterte Einstellungen
         DefaultMutableTreeNode treeNodeAllgemeineEinstellungenEreweitert = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenErweitert);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
-        // Netzwerk
-        DefaultMutableTreeNode treeNodeNetzwerk = new DefaultMutableTreeNode(NAME_netzwerk);
-        treeNodeEinstellungen.add(treeNodeNetzwerk);
+//        // Netzwerk
+//        DefaultMutableTreeNode treeNodeNetzwerk = new DefaultMutableTreeNode(NAME_netzwerk);
+//        treeNodeEinstellungen.add(treeNodeNetzwerk);
         treeNodeStart.add(treeNodeEinstellungen);
         // ===============================================================================
         // ######## Filme ###############
@@ -205,9 +205,9 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                     } else if (name.equals(NAME_allgemeineEinstellungenErweitert)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungenErweitert);
-                    } else if (name.equals(NAME_netzwerk)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelEinstellungenNetz);
+//                    } else if (name.equals(NAME_netzwerk)) {
+//                        jPanelExtra.removeAll();
+//                        jPanelExtra.add(panelEinstellungenNetz);
                     } else if (name.equals(NAME_filmListeLaden)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelImportFilme);
