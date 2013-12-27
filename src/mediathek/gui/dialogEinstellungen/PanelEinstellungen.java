@@ -61,7 +61,7 @@ public class PanelEinstellungen extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 new DialogHilfe(null, true, "\n"
                         + "Hier kann angegeben werden, wie viele\n"
-                        + "Downloads gleichzeitig gestartet werden.\n"
+                        + "Downloads gleichzeitig gestartet werden können.\n"
                         + "Es gibt jedoch noch eine Begrenzung \n"
                         + "auf 2 Downloads pro Server\n"
                         + "die trotzdem nicht überschritten wird.").setVisible(true);
@@ -249,13 +249,13 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jLabel3.setText("Download(s) gleichzeitig Laden");
+        jLabel3.setText("Download(s) gleichzeitig laden");
 
         jSpinnerDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
 
         jCheckBoxEchtzeit.setText("Echtzeitsuche im Filter");
 
-        jButtonHilfeAnzahl.setText("Hilfe");
+        jButtonHilfeAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
 
         jCheckBoxNotification.setText("Benachrichtigungen anzeigen");
 
@@ -453,7 +453,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

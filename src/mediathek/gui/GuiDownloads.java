@@ -843,7 +843,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             //ändern
-            JMenuItem itemAendern = new JMenuItem("Download Ändern");
+            JMenuItem itemAendern = new JMenuItem("Download ändern");
             itemAendern.setIcon(GetIcon.getIcon("configure_16.png"));
             jPopupMenu.add(itemAendern);
             itemAendern.addActionListener(new ActionListener() {
@@ -893,7 +893,7 @@ public class GuiDownloads extends PanelVorlage {
                     downloadsAktualisieren();
                 }
             });
-            JMenuItem itemAufraeumen = new JMenuItem("Liste Aufräumen");
+            JMenuItem itemAufraeumen = new JMenuItem("Liste aufräumen");
             itemAufraeumen.setIcon(GetIcon.getIcon("download_clear_16.png"));
             jPopupMenu.add(itemAufraeumen);
             itemAufraeumen.addActionListener(new ActionListener() {
@@ -973,7 +973,7 @@ public class GuiDownloads extends PanelVorlage {
             jPopupMenu.add(itemUrl);
 
             // Infos
-            JMenuItem itemInfo = new JMenuItem("Infos anzeigen");
+            JMenuItem itemInfo = new JMenuItem("Filminformation anzeigen");
             itemInfo.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

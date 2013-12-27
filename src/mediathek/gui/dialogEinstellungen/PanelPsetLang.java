@@ -707,7 +707,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -854,7 +854,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(349, Short.MAX_VALUE))
+                .addContainerGap(352, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Aussehen", jPanel10);
@@ -949,16 +949,16 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(299, Short.MAX_VALUE))
+                .addContainerGap(302, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Speicherziel", jPanel9);
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("direkt speichern"));
 
-        jLabel10.setText("direkter Download, Präfix ( zB. http ):");
+        jLabel10.setText("direkter Download, Präfix ( z.B. http ):");
 
-        jLabel5.setText("Suffix ( zB. mp4,mp3):");
+        jLabel5.setText("Suffix ( z.B. mp4,mp3):");
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -968,11 +968,11 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldGruppeDirektPraefix, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
+                .addComponent(jTextFieldGruppeDirektPraefix, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldGruppeDirektSuffix, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+                .addComponent(jTextFieldGruppeDirektSuffix, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -984,14 +984,14 @@ public class PanelPsetLang extends PanelVorlage {
                     .addComponent(jTextFieldGruppeDirektPraefix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
                     .addComponent(jTextFieldGruppeDirektSuffix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         jTextArea1.setEditable(false);
         jTextArea1.setBackground(new java.awt.Color(238, 238, 238));
         jTextArea1.setColumns(20);
         jTextArea1.setRows(4);
-        jTextArea1.setText("Filme deren URL mit \"Präfix\" beginnt und mit \"Suffix\" endet, werden nicht\nmit einem Hilfsprogramm gespeichert, sondern direkt geladen.\n\nEine geringere Auflösung ist nicht bei jedem Sender möglich, es wird dann in der gleichen\nAuflösung geladen.");
+        jTextArea1.setText("Filme, deren URL mit \"Präfix\" beginnt und mit \"Suffix\" endet, werden nicht\nmit einem Hilfsprogramm gespeichert, sondern direkt geladen.\n\nEine geringere Auflösung ist nicht bei jedem Sender möglich, es wird dann in der gleichen\nAuflösung geladen.");
         jTextArea1.setBorder(null);
 
         jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder("Auflösung"));
@@ -1006,7 +1006,7 @@ public class PanelPsetLang extends PanelVorlage {
         buttonGroup1.add(jRadioButtonAufloesungHD);
         jRadioButtonAufloesungHD.setText("Film in HD laden");
 
-        jLabel14.setText("Wenn es die Auflösung nicht gibt, wird die nächst kleinere genommen.");
+        jLabel14.setText("Wenn es die Auflösung nicht gibt, wird die nächstkleinere genommen.");
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
@@ -1032,7 +1032,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addComponent(jRadioButtonAufloesungKlein)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel14)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         jPanel13.setBorder(javax.swing.BorderFactory.createTitledBorder("Infodatei"));
@@ -1053,7 +1053,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jCheckBoxInfodatei)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
@@ -1080,7 +1080,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Download", jPanel11);
@@ -1150,11 +1150,11 @@ public class PanelPsetLang extends PanelVorlage {
 
         jLabel2.setText("Beschreibung:");
 
-        jLabel3.setText("Präfix ( zB. http ):");
+        jLabel3.setText("Präfix (z.B. http):");
 
-        jLabel4.setText("Suffix ( zB. mp4,mp3):");
+        jLabel4.setText("Suffix ( z.B. mp4,mp3):");
 
-        jCheckBoxRestart.setText("fehlgeschlagene Downloads wieder Starten");
+        jCheckBoxRestart.setText("fehlgeschlagene Downloads wieder starten");
 
         jLabel9.setText("Zieldateiname:");
 
@@ -1183,12 +1183,12 @@ public class PanelPsetLang extends PanelVorlage {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldProgSuffix, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE))))
+                                .addComponent(jTextFieldProgSuffix, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))))
                     .addGroup(jPanelProgrammDetailsLayout.createSequentialGroup()
                         .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jLabel9))
-                        .addGap(27, 27, 27)
+                        .addGap(24, 24, 24)
                         .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextFieldProgZielDateiName)
                             .addComponent(jTextFieldProgName))))
@@ -1243,7 +1243,7 @@ public class PanelPsetLang extends PanelVorlage {
             jPanelProgrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProgrammeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1299,7 +1299,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButtonGruppeAuf)

@@ -910,7 +910,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         // Downloads
         jMenuAnsicht.add(new JSeparator());
         jCheckBoxDownloadAnzeigen.setText("Downloads anzeigen");
-        jCheckBoxDownloadExtrafenster.setText("im Extrafenster");
+        jCheckBoxDownloadExtrafenster.setText("in Extrafenster");
         jCheckBoxDownloadExtrafenster.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 5, 1));
         jMenuAnsicht.add(jCheckBoxDownloadAnzeigen);
         jMenuAnsicht.add(jCheckBoxDownloadExtrafenster);
@@ -937,7 +937,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         // Abos
         jMenuAnsicht.add(new JSeparator());
         jCheckBoxAboAnzeigen.setText("Abos anzeigen");
-        jCheckBoxAboExtrafenster.setText("im Extrafenster");
+        jCheckBoxAboExtrafenster.setText("in Extrafenster");
         jCheckBoxAboExtrafenster.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 5, 1));
         jMenuAnsicht.add(jCheckBoxAboAnzeigen);
         jMenuAnsicht.add(jCheckBoxAboExtrafenster);
@@ -964,7 +964,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         // Meldungen
         jMenuAnsicht.add(new JSeparator());
         jCheckBoxMeldungenAnzeigen.setText("Meldungen anzeigen");
-        jCheckBoxMeldungenExtrafenster.setText("im Extrafenster");
+        jCheckBoxMeldungenExtrafenster.setText("in Extrafenster");
         jCheckBoxMeldungenExtrafenster.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 5, 1));
         jCheckBoxMeldungenAnzeigen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_VIS_MELDUNGEN_NR]));
         jCheckBoxMeldungenAnzeigen.addActionListener(new ActionListener() {

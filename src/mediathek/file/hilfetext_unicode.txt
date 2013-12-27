@@ -11,7 +11,7 @@ können, zu ersetzen.
 
 * "nur ASCII-Zeichen erlauben"
 Dabei wird noch strenger vorgegangen. Es werden
-auch zB. Umlaute "ö -> oe" ersetzt.
+auch z.B. Umlaute "ö -> oe" ersetzt.
 
 
 * "keine Veränderungen vornehmen ..."

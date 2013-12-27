@@ -1,10 +1,9 @@
 Beim Filter wird zuerst mit der Angabe
-"Zeitraum", eine verkürzte Liste erstellt.
+"Zeitraum" eine verkürzte Liste erstellt.
 Auf diese Liste werden dann die anderen
 Filter angewandt. Das Arbeiten kann also
 beschleunigt werden, wenn man den Zeitraum der
 Filmliste einschränkt.
-
 
 Dabei müssen der "Sender" und das "Thema" exakt
 passen. Beim "Titel" muss die Eingabe im
@@ -15,14 +14,13 @@ Im Filter "Irgendwo" werden zum Titel und Thema
 auch die Beschreibung und die Stichwörter geprüft.
 
 Ein Filterwort kann auch Leerzeichen enthalten,
-mehrere Filterwörter werden durch "," getrennt 
-zB: "Hallo ich,Tatort", dann wird nach Filmen
-gesucht die im entsprechenden Feld 
+mehrere Filterwörter werden durch "," getrennt,
+z.B.: "Hallo ich,Tatort", dann wird nach Filmen
+gesucht, die im entsprechenden Feld 
 "Hallo ich" ODER "Tatort" enthalten.
 
 Groß- und Kleinschreibung wird beim Filtern
 nicht beachtet.
-
 
 In den Filtern kann auch mit regulären Ausdrücken
 gesucht werden. Diese müssen mit "#:" eingeleitet
@@ -30,7 +28,7 @@ werden und werden dann auf die entsprechenden
 Felder des Films angewandt.
 
 #:Abend.*
-Das bedeutet zB.: Es werden alle Filme gefunden die 
+Das bedeutet z.B.: Es werden alle Filme gefunden, die 
 im jeweiligen Feld mit "Abend" beginnen.
 
 Auch bei den regulären Ausdrücken spielt Groß- und 
