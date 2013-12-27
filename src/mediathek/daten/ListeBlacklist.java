@@ -123,6 +123,21 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         return object;
     }
 
+//    public boolean blockSender(String sender) {
+//        // für die Senderliste im Panel Filter
+//        // Sender die komplett geblockt sind, dort nicht anzeigen
+//        ListIterator<DatenBlacklist> iterator = this.listIterator();
+//        while (iterator.hasNext()) {
+//            DatenBlacklist datenBlacklist = iterator.next();
+//            if (datenBlacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR].equals(sender)
+//                    && datenBlacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR].isEmpty()
+//                    && datenBlacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR].isEmpty()
+//                    && datenBlacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].isEmpty()) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
     public void filterListe(ListeFilme listeFilme, ListeFilme listeRet) {
         listeRet.clear();
         setFilter();
@@ -144,32 +159,18 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         }
     }
 
-    public boolean blockSender(String sender) {
-        // für die Senderliste im Panel Filter
-        // Sender die komplett geblockt sind, dort nicht anzeigen
-        ListIterator<DatenBlacklist> iterator = this.listIterator();
-        while (iterator.hasNext()) {
-            DatenBlacklist datenBlacklist = iterator.next();
-            if (datenBlacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR].equals(sender)
-                    && datenBlacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR].isEmpty()
-                    && datenBlacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR].isEmpty()
-                    && datenBlacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].isEmpty()) {
-                return true;
-            }
-        }
-        return false;
+    public boolean checkBlackOkFilme_Downloads(DatenFilm film) {
+        // true wenn Film angezeigt wird!!
+        // hier werden die Filme für Downloads gesucht, Zeit ist "0"
+        // ob die Blackliste dafür verwendet werden soll, ist schon geklärt
+        setFilter();
+        tage = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
+        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR]);
+        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]);
+        jetzt = DatumZeit.Morgen_0_Uhr;
+        return checkFilm(film);
     }
 
-//    public boolean checkBlackOkFilme_Downloads(DatenFilm film) {
-//        // hier werden die Filme für Downloads gesucht
-//        // ob die Blackliste dafür verwendet werden soll, ist schon geklärt
-//        setFilter();
-//        tage = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
-//        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR]);
-//        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]);
-//        jetzt = DatumZeit.getMorgen_0_Uhr();
-//        return checkFilm(film);
-//    }
     private void setFilter() {
         try {
             if (Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR].equals("") || Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR].equals("0")) {

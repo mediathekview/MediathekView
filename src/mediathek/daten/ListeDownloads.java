@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import mediathek.controller.starter.Start;
+import static mediathek.daten.DatenDownload.DOWNLOAD_URL_NR;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVMessageDialog;
@@ -408,36 +409,49 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
         boolean checkWithBlackList = !Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR])
                 && Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUCH_ABO_NR]);
-        if (checkWithBlackList) {
-            itFilm = Daten.listeFilmeNachBlackList.listIterator();
-        } else {
-            itFilm = Daten.listeFilme.listIterator();
-        }
+        itFilm = Daten.listeFilme.listIterator();
         while (itFilm.hasNext()) {
             film = itFilm.next();
             abo = Daten.listeAbo.getAboFuerFilm_schnell(film, true /*auch die Länge überprüfen*/);
             if (abo == null) {
+                // dann gibts dafür kein Abo
                 continue;
             }
             if (!abo.aboIstEingeschaltet()) {
                 continue;
             }
+            if (checkWithBlackList) {
+                //Blacklist auch bei Abos anwenden
+                if (!Daten.listeBlacklist.checkBlackOkFilme_Downloads(film)) {
+                    continue;
+                }
+            }
             if (ddaten.erledigteAbos.urlPruefen(film.getUrlHistory())) {
-                // ist schon im Logfile, weiter
+                // ist schon mal geladen worden
                 continue;
             }
-            if (checkUrlExists(film.arr[DatenFilm.FILM_URL_NR])) {
-                // haben wir schon in der Downloadliste
-                continue;
-            }
-            //diesen Film in die Downloadliste eintragen
-            abo.arr[DatenAbo.ABO_DOWN_DATUM_NR] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
-            //wenn nicht doppelt, dann in die Liste schreiben
+//            if (checkUrlExists(film.arr[DatenFilm.FILM_URL_NR])) {
+//                // haben wir schon in der Downloadliste
+//                continue;
+//            }
+//            //diesen Film in die Downloadliste eintragen
+//            abo.arr[DatenAbo.ABO_DOWN_DATUM_NR] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+//            //wenn nicht doppelt, dann in die Liste schreiben
             DatenPset pSet = ddaten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET_NR]);
             if (pSet != null) {
+                // mit der tatsächlichen URL prüfen, ob die URL schon in der Downloadliste ist
+                String urlDownload = film.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]);
+                if (checkUrlExists(urlDownload)) {
+                    // haben wir schon in der Downloadliste
+                    continue;
+                }
+                //diesen Film in die Downloadliste eintragen
+                abo.arr[DatenAbo.ABO_DOWN_DATUM_NR] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
                 if (!abo.arr[DatenAbo.ABO_PSET_NR].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR])) {
+                    // nur den Namen anpassen, falls geändert
                     abo.arr[DatenAbo.ABO_PSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
                 }
+                //dann in die Liste schreiben
                 add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
                 gefunden = true;
             } else if (parent != null) {
