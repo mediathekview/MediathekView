@@ -108,10 +108,10 @@ public class MVFilmInformation implements ChangeListener {
 //        }
         viewImage.setDoubleBuffered(true);
         buttonBild.setOpaque(false);
-        if (!SystemInfo.isMacOSX()) {
-            buttonBild.setBackground(background);
-            buttonBild.setForeground(foreground);
-        }
+//        if (!SystemInfo.isMacOSX()) {
+////            buttonBild.setBackground(background);
+////            buttonBild.setForeground(foreground);
+//        }
         buttonBild.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
