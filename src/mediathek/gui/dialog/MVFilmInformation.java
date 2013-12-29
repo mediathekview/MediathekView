@@ -3,9 +3,9 @@ package mediathek.gui.dialog;
 import com.explodingpixels.macwidgets.HudWidgetFactory;
 import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.plaf.HudPaintingUtils;
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -108,8 +108,10 @@ public class MVFilmInformation implements ChangeListener {
 //        }
         viewImage.setDoubleBuffered(true);
         buttonBild.setOpaque(false);
-        buttonBild.setBackground(background);
-        buttonBild.setForeground(foreground);
+        if (!SystemInfo.isMacOSX()) {
+            buttonBild.setBackground(background);
+            buttonBild.setForeground(foreground);
+        }
         buttonBild.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
