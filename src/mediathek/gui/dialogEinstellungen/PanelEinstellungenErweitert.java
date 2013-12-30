@@ -41,7 +41,7 @@ import mediathek.controller.Log;
 import mediathek.tool.MVMessageDialog;
 
 public class PanelEinstellungenErweitert extends PanelVorlage {
-
+    
     public PanelEinstellungenErweitert(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
@@ -116,28 +116,28 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 jRadioButtonNameUnicode.setSelected(true);
         }
         jRadioButtonNamenNormal.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_NORMAL;
             }
         });
         jRadioButtonNameAscii.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_ASCII;
             }
         });
         jRadioButtonNameUnicode.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_UNICODE;
             }
         });
         jRadioButtonNameNix.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_NIX;
@@ -198,7 +198,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     } catch (Exception ignored) {
                     }
                 }
-
+                
             }
         });
         jButtonProgrammVideoplayer.addActionListener(new ActionListener() {
@@ -248,7 +248,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     } catch (Exception ignored) {
                     }
                 }
-
+                
             }
         });
         jButtonProgrammUrl.addActionListener(new ActionListener() {
@@ -298,7 +298,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     } catch (Exception ignored) {
                     }
                 }
-
+                
             }
         });
         jButtonHilfeProgrammDateimanager.addActionListener(new ActionListener() {
@@ -353,68 +353,71 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         + "dem URLs geöffnet werden sollen.").setVisible(true);
             }
         });
+        jTextFieldProgrammDateimanager.setText(Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR]);
         jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             @Override
             public void changedUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             private void tus() {
                 Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = jTextFieldProgrammDateimanager.getText();
             }
         });
+        jTextFieldVideoplayer.setText(Daten.system[Konstanten.SYSTEM_PLAYER_ABSPIELEN_NR]);
         jTextFieldVideoplayer.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             @Override
             public void changedUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             private void tus() {
                 Daten.system[Konstanten.SYSTEM_PLAYER_ABSPIELEN_NR] = jTextFieldVideoplayer.getText();
             }
         });
+        jTextFieldProgrammUrl.setText(Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR]);
         jTextFieldProgrammUrl.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             @Override
             public void changedUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             private void tus() {
                 Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR] = jTextFieldProgrammUrl.getText();
             }
         });
     }
-
+    
     private void init() {
         // UserAgent
         jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
@@ -428,7 +431,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jTextFieldProgrammDateimanager.setText(Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR]);
         jTextFieldProgrammUrl.setText(Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR]);
     }
-
+    
     private void setUserAgent() {
         if (jRadioButtonAuto.isSelected()) {
             Daten.setUserAgentAuto();
@@ -786,22 +789,22 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     // End of variables declaration//GEN-END:variables
 
     private class BeobUserAgent implements DocumentListener {
-
+        
         @Override
         public void insertUpdate(DocumentEvent e) {
             tus();
         }
-
+        
         @Override
         public void removeUpdate(DocumentEvent e) {
             tus();
         }
-
+        
         @Override
         public void changedUpdate(DocumentEvent e) {
             tus();
         }
-
+        
         private void tus() {
             Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
         }
