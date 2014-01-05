@@ -95,7 +95,6 @@ public class GuiFilme extends PanelVorlage {
     private JButton buttonArray[];
     private final String[] COMBO_ZEIT = new String[]{"alles", "1 Tag", "2 Tage", "3 Tage", "4 Tage", "5 Tage", "10 Tage", "15 Tage", "20 Tage", "30 Tage"};
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 4, 5, 10, 15, 20, 30};
-    private BeobMausTabelle beobMausTabelle;
     private MVFilmInformation filmInfoHud;
 //    private String[] sender;
 //    private String[][] themenPerSender;
@@ -261,7 +260,7 @@ public class GuiFilme extends PanelVorlage {
         });
 
         tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
-        beobMausTabelle = new BeobMausTabelle();
+        BeobMausTabelle beobMausTabelle = new BeobMausTabelle();
         tabelle.addMouseListener(beobMausTabelle);
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         tabelle.setDefaultRenderer(Object.class, new CellRendererFilme(daten));
@@ -447,7 +446,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void filmSpeichern_(DatenPset pSet) {
-        if (daten.listePset.getListeSpeichern().size() == 0) {
+        if (daten.listePset.getListeSpeichern().isEmpty()) {
             MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen\" ein Programm zum Aufzeichnen festlegen.",
                     "fehlende Einstellungen zum Speichern!", JOptionPane.INFORMATION_MESSAGE);
             // Satz mit x, war wohl nix
@@ -609,9 +608,9 @@ public class GuiFilme extends PanelVorlage {
                     jComboBoxFilterSender.setPopupVisible(senderOpen);
                     // Filter Thema
                     if (filterSender.equals("")) {
-                        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen("")));
+                        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
                     } else {
-                        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<String>(getThemen(filterSender)));
+                        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen(filterSender)));
                     }
                     // wenn Thema bei dem Sender vorhanden, dann wieder setzen
                     // ist wohl ein Bug beim Combo, klappt nur richtig wenn editable?!
@@ -891,9 +890,9 @@ public class GuiFilme extends PanelVorlage {
 
         jComboBoxZeitraum.setMaximumRowCount(10);
 
-        jCheckBoxKeineGesehenen.setText("keine gesehenen");
+        jCheckBoxKeineGesehenen.setText("gesehene ausblenden");
 
-        jCheckBoxKeineAbos.setText("keine Abos");
+        jCheckBoxKeineAbos.setText("Abos nicht anzeigen");
 
         jToggleButtonLivestram.setText("Livestreams");
 
@@ -902,7 +901,7 @@ public class GuiFilme extends PanelVorlage {
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
 
-        jCheckBoxNurHd.setText("HD");
+        jCheckBoxNurHd.setText("nur HD anzeigen");
 
         jToggleButtonNeue.setText("Neue");
 
@@ -917,11 +916,11 @@ public class GuiFilme extends PanelVorlage {
                 .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jCheckBoxKeineGesehenen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxKeineAbos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addComponent(jCheckBoxNurHd)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jToggleButtonNeue)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToggleButtonLivestram)
@@ -1243,11 +1242,6 @@ public class GuiFilme extends PanelVorlage {
         private BeobBlacklist boeobBlacklistSender = new BeobBlacklist(true, false);
         private BeobBlacklist boeobBlacklistSenderThema = new BeobBlacklist(true, true);
         private Point p;
-        JPanel panelNurAbo = new JPanel();
-        JPanel panelKeineAbo = new JPanel();
-        JPanel panelKeineGesehenen = new JPanel();
-        JPanel panel24Stunden = new JPanel();
-        JPanel panelLive = new JPanel();
 
         public BeobMausTabelle() {
         }
@@ -1645,7 +1639,7 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (daten.listePset.getListeAbo().size() == 0) {
+                if (daten.listePset.getListeAbo().isEmpty()) {
                     MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                             "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                 } else {
@@ -1657,15 +1651,15 @@ public class GuiFilme extends PanelVorlage {
                         DatenFilm film = getFilm(nr);
                         DatenAbo datenAbo;
                         if (film != null) {
-                            if ((datenAbo = daten.listeAbo.getAboFuerFilm_schnell(film, false /*ohne Länge*/)) != null) {
+                            if ((datenAbo = Daten.listeAbo.getAboFuerFilm_schnell(film, false /*ohne Länge*/)) != null) {
                                 //gibts schon, dann löschen
-                                daten.listeAbo.aboLoeschen(datenAbo);
+                                Daten.listeAbo.aboLoeschen(datenAbo);
                             } else {
                                 //neues Abo anlegen
                                 if (mitTitel) {
-                                    daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR]);
+                                    Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR]);
                                 } else {
-                                    daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], "");
+                                    Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], "");
                                 }
                             }
                         }
@@ -1679,7 +1673,7 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (daten.listePset.getListeAbo().size() == 0) {
+                if (daten.listePset.getListeAbo().isEmpty()) {
                     MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                             "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                 } else {
@@ -1690,7 +1684,7 @@ public class GuiFilme extends PanelVorlage {
                         String thema = film.arr[DatenFilm.FILM_THEMA_NR];
                         //neues Abo anlegen
                         //ddaten.listeAbo.addAbo(filmSender, filmThema, filmTitel);
-                        daten.listeAbo.addAbo(jComboBoxFilterSender.getSelectedItem().toString(), jComboBoxFilterThema.getSelectedItem().toString(),
+                        Daten.listeAbo.addAbo(jComboBoxFilterSender.getSelectedItem().toString(), jComboBoxFilterThema.getSelectedItem().toString(),
                                 jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(),
                                 jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue(), thema);
                         stopBeob = false;
@@ -1719,11 +1713,11 @@ public class GuiFilme extends PanelVorlage {
                     // Blackliste für alle Fälle einschalten, notify kommt beim add()
                     Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR] = Boolean.toString(false);
                     if (!sender) {
-                        daten.listeBlacklist.add(new DatenBlacklist("", th, "" /*Titel*/, "" /*Thema-Titel*/));
+                        Daten.listeBlacklist.add(new DatenBlacklist("", th, "" /*Titel*/, "" /*Thema-Titel*/));
                     } else if (!thema) {
-                        daten.listeBlacklist.add(new DatenBlacklist(se, "", "" /*Titel*/, "" /*Thema-Titel*/));
+                        Daten.listeBlacklist.add(new DatenBlacklist(se, "", "" /*Titel*/, "" /*Thema-Titel*/));
                     } else {
-                        daten.listeBlacklist.add(new DatenBlacklist(se, th, "" /*Titel*/, "" /*Thema-Titel*/));
+                        Daten.listeBlacklist.add(new DatenBlacklist(se, th, "" /*Titel*/, "" /*Thema-Titel*/));
                     }
                 }
             }
