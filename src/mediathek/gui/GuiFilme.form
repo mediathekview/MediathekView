@@ -341,11 +341,11 @@
                           <Component id="jComboBoxZeitraum" min="-2" pref="131" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jCheckBoxKeineGesehenen" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="jCheckBoxKeineAbos" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace pref="33" max="32767" attributes="0"/>
                           <Component id="jCheckBoxNurHd" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="139" max="32767" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jToggleButtonNeue" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jToggleButtonLivestram" min="-2" max="-2" attributes="0"/>
@@ -400,12 +400,12 @@
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="jCheckBoxKeineGesehenen">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="keine gesehenen"/>
+                    <Property name="text" type="java.lang.String" value="gesehene ausblenden"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="jCheckBoxKeineAbos">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="keine Abos"/>
+                    <Property name="text" type="java.lang.String" value="Abos nicht anzeigen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JToggleButton" name="jToggleButtonLivestram">
@@ -430,7 +430,7 @@
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="jCheckBoxNurHd">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="HD"/>
+                    <Property name="text" type="java.lang.String" value="nur HD anzeigen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JToggleButton" name="jToggleButtonNeue">
