@@ -536,7 +536,8 @@ public final class MVTable extends JTable {
                             || i == DatenFilm.FILM_ZEIT_NR
                             || i == DatenFilm.FILM_SENDER_NR
                             || i == DatenFilm.FILM_GROESSE_NR
-                            || i == DatenFilm.FILM_DAUER_NR) {
+                            || i == DatenFilm.FILM_DAUER_NR
+                            || i == DatenFilm.FILM_GEO_NR) {
                         breite[i] = 100;
                     } else if (i == DatenFilm.FILM_URL_NR) {
                         breite[i] = 500;
