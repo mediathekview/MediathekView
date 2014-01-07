@@ -43,6 +43,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     public boolean ok = false;
     private PanelEinstellungen panelEinstellungen;
     private PanelEinstellungenErweitert panelEinstellungenErweitert;
+    private PanelEinstellungenGeo panelEinstellungenGeo;
 //    private PanelEinstellungenNetz panelEinstellungenNetz;
     private PanelFilmlisteLaden panelImportFilme;
     private PanelExportFilmliste panelExportFilmliste;
@@ -91,6 +92,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private void init() {
         panelEinstellungen = new PanelEinstellungen(ddaten, parentComponent);
         panelEinstellungenErweitert = new PanelEinstellungenErweitert(ddaten, parentComponent);
+        panelEinstellungenGeo = new PanelEinstellungenGeo(ddaten, parentComponent);
 //        panelEinstellungenNetz = new PanelEinstellungenNetz(ddaten, parentComponent);
         panelImportFilme = new PanelFilmlisteLaden(ddaten, parentComponent);
         panelExportFilmliste = new PanelExportFilmliste(ddaten, parentComponent);
@@ -113,6 +115,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private void initTree() {
         final String NAME_allgemeineEinstellungen = "Allgemein";
         final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
+        final String NAME_allgemeineEinstellungenGeo = "Geo";
 //        final String NAME_netzwerk = "Netzwerk";
         final String NAME_filmListeLaden = "Filmliste laden";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
@@ -138,6 +141,8 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         // erweiterte Einstellungen
         DefaultMutableTreeNode treeNodeAllgemeineEinstellungenEreweitert = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenErweitert);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
+        DefaultMutableTreeNode treeNodeAllgemeineEinstellungenGeo = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenGeo);
+        treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenGeo);
 //        // Netzwerk
 //        DefaultMutableTreeNode treeNodeNetzwerk = new DefaultMutableTreeNode(NAME_netzwerk);
 //        treeNodeEinstellungen.add(treeNodeNetzwerk);
@@ -205,6 +210,9 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                     } else if (name.equals(NAME_allgemeineEinstellungenErweitert)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungenErweitert);
+                    } else if (name.equals(NAME_allgemeineEinstellungenGeo)) {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelEinstellungenGeo);
 //                    } else if (name.equals(NAME_netzwerk)) {
 //                        jPanelExtra.removeAll();
 //                        jPanelExtra.add(panelEinstellungenNetz);
