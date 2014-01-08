@@ -54,6 +54,7 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_BANDBREITE = 27;
     public static final int EREIGNIS_REIHENFOLGE_DOWNLOAD = 28;
     public static final int EREIGNIS_TIMER = 29;
+    public static final int EREIGNIS_GEO = 30;
     public int[] mvEreignis = {-1};
     public String klasse = "";
     private static EventListenerList listeners = new EventListenerList();

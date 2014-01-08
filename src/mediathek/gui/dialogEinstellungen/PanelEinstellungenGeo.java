@@ -19,9 +19,15 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JFrame;
+import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
+import msearch.daten.DatenFilm;
 
 public class PanelEinstellungenGeo extends PanelVorlage {
 
@@ -33,6 +39,65 @@ public class PanelEinstellungenGeo extends PanelVorlage {
     }
 
     private void init() {
+        switch (Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR]) {
+            case DatenFilm.GEO_CH:
+                jRadioButtonCH.setSelected(true);
+                break;
+            case DatenFilm.GEO_AT:
+                jRadioButtonAt.setSelected(true);
+                break;
+            case DatenFilm.GEO_EU:
+                jRadioButtonEu.setSelected(true);
+                break;
+            default:
+                jRadioButtonDe.setSelected(true);
+        }
+        jRadioButtonDe.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR] = DatenFilm.GEO_DE;
+                melden();
+            }
+        });
+        jRadioButtonCH.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR] = DatenFilm.GEO_CH;
+                melden();
+            }
+        });
+        jRadioButtonAt.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR] = DatenFilm.GEO_AT;
+                melden();
+            }
+        });
+        jRadioButtonEu.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR] = DatenFilm.GEO_EU;
+                melden();
+            }
+        });
+        jCheckBoxMarkieren.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_GEO_MELDEN_NR]));
+        jCheckBoxMarkieren.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_GEO_MELDEN_NR] = String.valueOf(jCheckBoxMarkieren.isSelected());
+                melden();
+            }
+        });
+    }
+
+    private void melden() {
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_GEO, PanelEinstellungenGeo.class.getName());
+
     }
 
     /** This method is called from within the constructor to
@@ -44,19 +109,32 @@ public class PanelEinstellungenGeo extends PanelVorlage {
     private void initComponents() {
 
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
-        buttonGroup2 = new javax.swing.ButtonGroup();
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
+        jCheckBoxMarkieren = new javax.swing.JCheckBox();
+        jRadioButtonDe = new javax.swing.JRadioButton();
+        jLabel1 = new javax.swing.JLabel();
+        jRadioButtonCH = new javax.swing.JRadioButton();
+        jRadioButtonAt = new javax.swing.JRadioButton();
+        jRadioButtonEu = new javax.swing.JRadioButton();
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Filme die Geogeblockt sind"));
 
-        jRadioButton1.setText("nichts tun");
+        jCheckBoxMarkieren.setText("geblockte Filme markieren");
 
-        jRadioButton2.setText("ausblenden");
+        buttonGroup1.add(jRadioButtonDe);
+        jRadioButtonDe.setSelected(true);
+        jRadioButtonDe.setText("DE - Deutschland");
 
-        jRadioButton3.setText("rot markieren");
+        jLabel1.setText("Mein Standort:");
+
+        buttonGroup1.add(jRadioButtonCH);
+        jRadioButtonCH.setText("CH - Schweiz");
+
+        buttonGroup1.add(jRadioButtonAt);
+        jRadioButtonAt.setText("AT - Österreich");
+
+        buttonGroup1.add(jRadioButtonEu);
+        jRadioButtonEu.setText("EU");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -65,21 +143,30 @@ public class PanelEinstellungenGeo extends PanelVorlage {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton3))
-                .addContainerGap(378, Short.MAX_VALUE))
+                    .addComponent(jRadioButtonEu)
+                    .addComponent(jCheckBoxMarkieren)
+                    .addComponent(jLabel1)
+                    .addComponent(jRadioButtonDe)
+                    .addComponent(jRadioButtonCH)
+                    .addComponent(jRadioButtonAt))
+                .addContainerGap(284, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jRadioButton1)
+                .addComponent(jCheckBoxMarkieren)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton2)
+                .addComponent(jRadioButtonDe)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton3)
-                .addContainerGap(193, Short.MAX_VALUE))
+                .addComponent(jRadioButtonCH)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jRadioButtonAt)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jRadioButtonEu)
+                .addContainerGap(102, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -96,14 +183,16 @@ public class PanelEinstellungenGeo extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(358, Short.MAX_VALUE))
+                .addContainerGap(357, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
+    private javax.swing.JCheckBox jCheckBoxMarkieren;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JRadioButton jRadioButtonAt;
+    private javax.swing.JRadioButton jRadioButtonCH;
+    private javax.swing.JRadioButton jRadioButtonDe;
+    private javax.swing.JRadioButton jRadioButtonEu;
     // End of variables declaration//GEN-END:variables
 
 }

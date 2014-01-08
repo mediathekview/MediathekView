@@ -43,7 +43,8 @@ public class MVMemoryUsageButton extends JButton {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        final long maxMem = rt.maxMemory();
+        //final long maxMem = rt.maxMemory();
+        final long maxMem = rt.totalMemory();
         final long totalMemory = rt.totalMemory();
         final long freeMemory = rt.freeMemory();
         final long usedMem = totalMemory - freeMemory;

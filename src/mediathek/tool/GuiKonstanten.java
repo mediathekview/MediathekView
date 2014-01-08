@@ -48,6 +48,9 @@ public class GuiKonstanten {
     public static Color FARBE_GRAU = new Color(225, 225, 225);
     public static Color FARBE_GRAU_SEL = new Color(190, 190, 190);
     public static Color FARBE_FILM_NEU_FORGROUND = new Color(0, 0, 240);
+    public static Color FARBE_FILM_GEOBLOCK_FORGROUND = new Color(255, 0, 30);
+    public static Color FARBE_FILM_GEOBLOCK_BACKGROUND = new Color(255, 254, 230);
+    public static Color FARBE_FILM_GEOBLOCK_BACKGROUND_SEL = new Color(255, 251, 179);
     // Tabelle Abos
     public static Color ANSEHEN = new Color(0, 125, 0);
     public static Color ABO_FOREGROUND = new Color(138, 67, 0);
