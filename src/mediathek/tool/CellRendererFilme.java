@@ -145,6 +145,20 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     }
                 }
             }
+            if (!start) {
+                if (Daten.system[Konstanten.SYSTEM_GEO_MELDEN_NR].equals(Boolean.TRUE.toString())) {
+                    if (!datenFilm.arr[DatenFilm.FILM_GEO_NR].isEmpty()) {
+                        if (!datenFilm.arr[DatenFilm.FILM_GEO_NR].contains(Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR])) {
+                            //setForeground(GuiKonstanten.FARBE_FILM_GEOBLOCK_FORGROUND);
+                            if (isSelected) {
+                                setBackground(GuiKonstanten.FARBE_FILM_GEOBLOCK_BACKGROUND_SEL);
+                            } else {
+                                setBackground(GuiKonstanten.FARBE_FILM_GEOBLOCK_BACKGROUND);
+                            }
+                        }
+                    }
+                }
+            }
             if (isSelected) {
                 setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
             } else {

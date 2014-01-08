@@ -380,6 +380,13 @@ public class GuiFilme extends PanelVorlage {
                 setInfo();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_GEO, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                tabelle.fireTableDataChanged(true /*setSpalten*/);
+                setInfo();
+            }
+        });
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{/*ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT,*/
             ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, GuiFilme.class.getSimpleName()) {
             @Override
