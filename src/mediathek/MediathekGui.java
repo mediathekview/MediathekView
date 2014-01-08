@@ -40,7 +40,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ListIterator;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBoxMenuItem;
@@ -96,7 +95,6 @@ import org.simplericity.macify.eawt.DefaultApplication;
 public final class MediathekGui extends javax.swing.JFrame implements ApplicationListener {
 
     private Daten daten;
-//    private BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     private DialogEinstellungen dialogEinstellungen;
     private JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
     JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
@@ -105,7 +103,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     JSplitPane splitPane = null;
     private final MVToolBar mVToolBar;
     private MVStatusBar statusBar;
-    private Duration duration = new Duration(MediathekGui.class.getSimpleName());
     private MVFrame[] frames = new MVFrame[3]; // Downloads, Abos, Meldungen
     private JCheckBoxMenuItem jCheckBoxDownloadAnzeigen = new JCheckBoxMenuItem();
     private JCheckBoxMenuItem jCheckBoxDownloadExtrafenster = new JCheckBoxMenuItem();
@@ -121,7 +118,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         if (SystemInfo.isMacOSX()) {
             statusBar = new MVStatusBar_Mac();
         } else {
-            statusBar = new MVStatusBar_Win_Linux(daten);
+            statusBar = new MVStatusBar_Mac();//
+//            statusBar = new MVStatusBar_Win_Linux(daten);
         }
         jPanelInfo.add(statusBar.getComponent(), BorderLayout.CENTER);
     }
@@ -201,9 +199,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     public MediathekGui(String[] ar) {
         initializeSplashScreen();
 
-        //we must check if we were started with enough memory, do it as early as possible
-        checkMemoryRequirements();
-
         String pfad = "";
         boolean max = false;
         initComponents();
@@ -231,6 +226,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
 
         updateSplashScreenText("Anwendungsdaten laden...");
+        Duration duration = new Duration(MediathekGui.class.getSimpleName());
         duration.ping("Start");
 
         daten = new Daten(pfad, this);
@@ -260,7 +256,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         setOrgTitel();
         setLookAndFeel();
         duration.ping("LookAndFeel");
-        //GuiFunktionen.setLook(this);
         init();
         duration.ping("init");
         setSize(max);
@@ -306,14 +301,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
 
-////        this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK), "f");
-////        this.getRootPane().getActionMap().put("f", new AbstractAction() {
-////            @Override
-////            public void actionPerformed(ActionEvent e) {
-////                setFocusSuchfeld();
-////            }
-////        });
-////        // für den Mac
+        // für den Mac
         this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-f");
         this.getRootPane().getActionMap().put("mac-f", new AbstractAction() {
             @Override
@@ -358,26 +346,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         } catch (Exception ignored) {
             //update the LAF parameter, just in case we tried to load a non-existing LAF before
             Daten.system[Konstanten.SYSTEM_LOOK_NR] = UIManager.getSystemLookAndFeelClassName();
-        }
-    }
-
-    /**
-     * This function will check if we have enough memory.
-     * Experience showed that default memory allocation for java RT is not enough
-     */
-    protected void checkMemoryRequirements() {
-        if (SystemInfo.isMacOSX()) {
-            //all values in bytes
-            final long TO_MBYTES = (1024 * 1024);
-            long totalMemory = Runtime.getRuntime().maxMemory() / TO_MBYTES;
-            //if we have less than 1GB, show warning
-            //JDK7 reports less than 1000MBytes free memory...
-            if (totalMemory < 900) {
-                final String strMessage = "<html>Sie haben MediathekView wahrscheinlich nicht mit dem Startscript gestartet.<br>"
-                        + "Dadurch kann das Laden der Filmliste wegen zuwenig Arbeitsspeicher fehlschlagen.<br><br>"
-                        + "<b>Bitte nutzen Sie die Startscripte!</b></html>";
-                MVMessageDialog.showMessageDialog(this, strMessage, "Arbeitsspeicher", JOptionPane.WARNING_MESSAGE);
-            }
         }
     }
 
@@ -486,7 +454,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             if (divider > 0) {
                 splitPane.setDividerLocation(divider);
             }
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException ignored) {
         }
     }
 
@@ -543,15 +511,19 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     public void hideFrame(String state) {
-        if (state.equals(MVToolBar.TOOLBAR_TAB_DOWNLOADS)) {
-            jCheckBoxDownloadAnzeigen.setSelected(false);
-            Daten.system[Konstanten.SYSTEM_VIS_DOWNLOAD_NR] = Boolean.toString(false);
-        } else if (state.equals(MVToolBar.TOOLBAR_TAB_ABOS)) {
-            jCheckBoxAboAnzeigen.setSelected(false);
-            Daten.system[Konstanten.SYSTEM_VIS_ABO_NR] = Boolean.toString(false);
-        } else if (state.equals(MVToolBar.TOOLBAR_TAB_MELDUNGEN)) {
-            jCheckBoxMeldungenAnzeigen.setSelected(false);
-            Daten.system[Konstanten.SYSTEM_VIS_MELDUNGEN_NR] = Boolean.toString(false);
+        switch (state) {
+            case MVToolBar.TOOLBAR_TAB_DOWNLOADS:
+                jCheckBoxDownloadAnzeigen.setSelected(false);
+                Daten.system[Konstanten.SYSTEM_VIS_DOWNLOAD_NR] = Boolean.toString(false);
+                break;
+            case MVToolBar.TOOLBAR_TAB_ABOS:
+                jCheckBoxAboAnzeigen.setSelected(false);
+                Daten.system[Konstanten.SYSTEM_VIS_ABO_NR] = Boolean.toString(false);
+                break;
+            case MVToolBar.TOOLBAR_TAB_MELDUNGEN:
+                jCheckBoxMeldungenAnzeigen.setSelected(false);
+                Daten.system[Konstanten.SYSTEM_VIS_MELDUNGEN_NR] = Boolean.toString(false);
+                break;
         }
         initFrames();
     }
@@ -661,8 +633,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         panelMeldungen.setLayout(new BorderLayout());
         panelMeldungen.add(splitPane, BorderLayout.CENTER);
         if (Daten.debug) {
-            jTabbedPane.addTab("Debug", new GuiDebug(daten, daten.mediathekGui));
-            jTabbedPane.addTab("Starts", new PanelInfoStarts(daten, daten.mediathekGui));
+            jTabbedPane.addTab("Debug", new GuiDebug(daten));
+            jTabbedPane.addTab("Starts", new PanelInfoStarts());
         }
         initFrames();
     }
@@ -1065,9 +1037,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         daten.guiAbo.tabelleSpeichern();
         if (Daten.listeDownloads != null) {
             // alle laufenden Downloads/Programme stoppen
-            ListIterator<DatenDownload> it = Daten.listeDownloads.listIterator();
-            while (it.hasNext()) {
-                Start s = it.next().start;
+            for (DatenDownload download : Daten.listeDownloads) {
+                Start s = download.start;
                 if (s != null) {
                     s.stoppen = true;
                 }
@@ -1102,8 +1073,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jPanelInfo = new javax.swing.JPanel();
         jTabbedPane = new javax.swing.JTabbedPane();
         jPanelToolBar = new javax.swing.JPanel();
@@ -1113,25 +1084,25 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemEinstellungen = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItemBeenden = new javax.swing.JMenuItem();
-        jMenuFilme = new javax.swing.JMenu();
+        javax.swing.JMenu jMenuFilme = new javax.swing.JMenu();
         jMenuItemFilmAbspielen = new javax.swing.JMenuItem();
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
         jMenuDownload = new javax.swing.JMenu();
         jMenuItemDownloadsAlleStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadWartendeStoppen = new javax.swing.JMenuItem();
         jMenuItemDownloadAlleStoppen = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        javax.swing.JPopupMenu.Separator jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItemDownloadStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadStoppen = new javax.swing.JMenuItem();
         jMenuItemDownloadVorziehen = new javax.swing.JMenuItem();
         jMenuItemDownloadsZurueckstellen = new javax.swing.JMenuItem();
         jMenuItemDownloadsLoeschen = new javax.swing.JMenuItem();
         jMenuItemDownloadAendern = new javax.swing.JMenuItem();
-        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        javax.swing.JPopupMenu.Separator jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jMenuItemDownloadAbspielen = new javax.swing.JMenuItem();
         jMenuItemDownloadsAktualisieren = new javax.swing.JMenuItem();
         jMenuItemDownloadsAufraeumen = new javax.swing.JMenuItem();
-        jMenuAbos = new javax.swing.JMenu();
+        javax.swing.JMenu jMenuAbos = new javax.swing.JMenu();
         jMenuItemAbosEinschalten = new javax.swing.JMenuItem();
         jMenuItemAbosAusschalten = new javax.swing.JMenuItem();
         jMenuItemAbosLoeschen = new javax.swing.JMenuItem();
@@ -1354,11 +1325,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemFilterAnzeigen;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
-    private javax.swing.JMenu jMenuAbos;
     private javax.swing.JMenu jMenuAnsicht;
     private javax.swing.JMenu jMenuDatei;
     private javax.swing.JMenu jMenuDownload;
-    private javax.swing.JMenu jMenuFilme;
     private javax.swing.JMenu jMenuHilfe;
     private javax.swing.JMenuItem jMenuItemAbosAendern;
     private javax.swing.JMenuItem jMenuItemAbosAusschalten;
@@ -1383,13 +1352,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JMenuItem jMenuItemFilmAbspielen;
     private javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
     private javax.swing.JMenuItem jMenuItemFilmlisteLaden;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelInfo;
     private javax.swing.JPanel jPanelToolBar;
-    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JTabbedPane jTabbedPane;
     // End of variables declaration//GEN-END:variables

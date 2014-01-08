@@ -3,7 +3,6 @@ package mediathek.gui.dialog;
 import com.explodingpixels.macwidgets.HudWidgetFactory;
 import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.plaf.HudPaintingUtils;
-import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;

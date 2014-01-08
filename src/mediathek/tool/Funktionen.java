@@ -23,6 +23,7 @@ import mediathek.controller.Log;
 import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.security.CodeSource;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import mediathek.Main;
 
@@ -144,4 +145,29 @@ public class Funktionen {
         }
         return msg;
     }
+
+//    public enum ReleaseType { DEBUG, RELEASE}
+//    public static ReleaseType getReleaseType()
+//    {
+//        ReleaseType releaseType;
+//        try {
+//            ResourceBundle.clearCache();
+//            ResourceBundle rb = ResourceBundle.getBundle("version");
+//            String msg = rb.getString("TYPE");
+//            switch(msg) {
+//                case "DEBUG":
+//                    releaseType = ReleaseType.DEBUG;
+//                    break;
+//                default:
+//                    releaseType = ReleaseType.RELEASE;
+//                    break;
+//            }
+//        } catch (Exception ex) {
+//            //in case of an exception always pretend we are in Release mode...
+//            ex.printStackTrace();
+//            releaseType = ReleaseType.DEBUG;////////////////
+//        }
+//
+//        return releaseType;
+//    }
 }

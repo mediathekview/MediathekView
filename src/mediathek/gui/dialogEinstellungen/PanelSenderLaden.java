@@ -19,45 +19,41 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
-import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
-public class PanelSenderLaden extends PanelVorlage {
+public class PanelSenderLaden extends JPanel {
 
     private JButton[] buttonSender;
-    private String[] sender;
+    private String[] senderArray;
 
-    public PanelSenderLaden(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+    public PanelSenderLaden() {
+        super();
         initComponents();
         jButtonStop.setIcon(GetIcon.getIcon("stop_16.png"));
-        daten = d;
         init();
         jSpinnerWarten.addChangeListener(new BeobSpinnerWarten());
     }
 
     private void init() {
-        sender = Daten.filmeLaden.getSenderNamen();
-        buttonSender = new JButton[sender.length];
+        senderArray = Daten.filmeLaden.getSenderNamen();
+        buttonSender = new JButton[senderArray.length];
         for (int i = 0; i < Daten.filmeLaden.getSenderNamen().length; ++i) {
-            buttonSender[i] = new JButton(sender[i]);
-            buttonSender[i].addActionListener(new BeobSenderLaden(sender[i]));
+            buttonSender[i] = new JButton(senderArray[i]);
+            buttonSender[i].addActionListener(new BeobSenderLaden(senderArray[i]));
         }
+        addSender();
+
         if (Daten.system[Konstanten.SYSTEM_WARTEN_NR].equals("")) {
             jSpinnerWarten.setValue(1);
             Daten.system[Konstanten.SYSTEM_WARTEN_NR] = "1";
@@ -70,7 +66,7 @@ public class PanelSenderLaden extends PanelVorlage {
                 Daten.filmeLaden.setStop(true);
             }
         });
-        addSender();
+
         Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public void progress(MSearchListenerFilmeLadenEvent event) {
@@ -98,49 +94,24 @@ public class PanelSenderLaden extends PanelVorlage {
                 jProgressBar1.setValue(0);
                 jProgressBar1.setStringPainted(false);
                 jLabelProgress.setText("");
-                for (int i = 0; i < buttonSender.length; ++i) {
-                    buttonSender[i].setEnabled(true);
-                }
+
+                for (JButton button : buttonSender)
+                    button.setEnabled(true);
             }
         });
     }
 
     private void addSender() {
         panelSender.removeAll();
-        GridBagLayout gridbag = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
-        c.weightx = 0;
-        panelSender.setLayout(gridbag);
-        c.gridx = 0;
-        c.gridy = 0;
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.BOTH;
+        panelSender.setLayout(new GridLayout(0,5));
         int nr = 0;
-        int y = 0;
-        int halbe = sender.length / 2;
-        halbe += sender.length % 2;
-        for (String aSender : sender) {
-            c.gridy = y;
-            addPanel(gridbag, c, aSender, nr);
+        for (String sender : senderArray) {
+            JButton btn = buttonSender[nr];
+            btn.setText(sender);
+            panelSender.add(btn);
             ++nr;
-            ++y;
-            if (y >= halbe) {
-                y = 0;
-                c.gridx = 1;
-            }
         }
-        JLabel label = new JLabel();
-        c.gridx = 4;
-        c.weightx = 2;
-        gridbag.setConstraints(label, c);
-        panelSender.add(label);
-        panelSender.updateUI();
-    }
-
-    private void addPanel(GridBagLayout gridbag, GridBagConstraints c, String sender, int nr) {
-        c.insets = new Insets(2, 10, 2, 2);
-        gridbag.setConstraints(buttonSender[nr], c);
-        panelSender.add(buttonSender[nr]);
+        panelSender.repaint();
     }
 
     /** This method is called from within the constructor to
@@ -151,13 +122,11 @@ public class PanelSenderLaden extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        jLayeredPane1 = new javax.swing.JLayeredPane();
         panelSender = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
         jSpinnerWarten = new javax.swing.JSpinner();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
         jLabelProgress = new javax.swing.JLabel();
         jButtonStop = new javax.swing.JButton();
@@ -243,20 +212,15 @@ public class PanelSenderLaden extends PanelVorlage {
                     .addComponent(jButtonStop))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelProgress)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonStop, jProgressBar1});
 
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonStop;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabelProgress;
-    private javax.swing.JLayeredPane jLayeredPane1;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JSpinner jSpinnerWarten;
     private javax.swing.JPanel panelSender;
