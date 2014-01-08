@@ -19,20 +19,14 @@
  */
 package mediathek.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.*;
+
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
@@ -44,22 +38,26 @@ import msearch.daten.MSearchConfig;
 import msearch.io.MSearchFilmlisteLesen;
 import msearch.io.MSearchFilmlisteSchreiben;
 
-public class GuiDebug extends PanelVorlage {
+public class GuiDebug extends JPanel {
 
     private JButton[] buttonSender;
     private String[] sender;
+    private Daten daten;
 
-    public GuiDebug(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+    public GuiDebug(Daten d) {
+        super();
         initComponents();
         daten = d;
         sender = Daten.filmeLaden.getSenderNamen();
         buttonSender = new JButton[sender.length];
+
+        //Tab1 Sender löschen Panel füllen
         for (int i = 0; i < Daten.filmeLaden.getSenderNamen().length; ++i) {
             buttonSender[i] = new JButton(sender[i]);
             buttonSender[i].addActionListener(new BeobSenderLoeschen(sender[i]));
         }
         addSender();
+
         jToggleButtonAllesLaden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -109,10 +107,12 @@ public class GuiDebug extends PanelVorlage {
                 //Daten.STOP_DATEIGROESSE = jCheckBoxDateiGroesse.isSelected();
             }
         });
-        jPanelSenderLaden.setLayout(new BorderLayout());
-        jPanelSenderLaden.add(new PanelSenderLaden(daten, daten.mediathekGui));
-        jPanelListen.setLayout(new BorderLayout());
+
+        jPanelSenderLaden.add(new PanelSenderLaden());
+
         jPanelListen.add(new PanelListeFilmlistenServer(d, daten.mediathekGui));
+
+
         jButtonCheckUrl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -165,14 +165,14 @@ public class GuiDebug extends PanelVorlage {
         jButtonListeSchreiben.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Date startZeit = null;
-                Date stopZeit = null;
+                Date startZeit;
+                Date stopZeit;
                 startZeit = new Date(System.currentTimeMillis());
 
                 new MSearchFilmlisteSchreiben().filmlisteSchreibenXml(Daten.getDateiFilmliste(), Daten.listeFilme);
 
                 stopZeit = new Date(System.currentTimeMillis());
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+
                 int sekunden;
                 try {
                     sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
@@ -187,15 +187,15 @@ public class GuiDebug extends PanelVorlage {
         jButtonListeLesen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Date startZeit = null;
-                Date stopZeit = null;
+                Date startZeit;
+                Date stopZeit;
                 Daten.listeFilme.clear();
                 startZeit = new Date(System.currentTimeMillis());
 
                 new MSearchFilmlisteLesen().filmlisteLesenXml(Daten.getDateiFilmliste(), Daten.listeFilme);
 
                 stopZeit = new Date(System.currentTimeMillis());
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+
                 int sekunden;
                 try {
                     sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
@@ -205,16 +205,16 @@ public class GuiDebug extends PanelVorlage {
                 System.out.println("======================================");
                 System.out.println("     ->    Dauer[ms]: " + sekunden);
                 System.out.println("======================================");
-                daten.listeAbo.aenderungMelden();
+                Daten.listeAbo.aenderungMelden();
 
             }
         });
         jButtonJsonSchreiben.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Date startZeit = null;
-                Date stopZeit = null;
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                Date startZeit;
+                Date stopZeit;
+
                 int sekunden;
                 startZeit = new Date(System.currentTimeMillis());
                 new MSearchFilmlisteSchreiben().filmlisteSchreibenJson(Daten.getDateiFilmliste() + ".json", Daten.listeFilme);
@@ -245,9 +245,9 @@ public class GuiDebug extends PanelVorlage {
         jButtonjSonLesen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Date startZeit = null;
-                Date stopZeit = null;
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                Date startZeit;
+                Date stopZeit;
+
                 int sekunden;
 
                 Daten.listeFilme.clear();
@@ -293,7 +293,7 @@ public class GuiDebug extends PanelVorlage {
                 System.out.println(" bz2 ");
                 System.out.println("     ->    Dauer[ms]: " + sekunden);
                 System.out.println("======================================");
-                daten.listeAbo.aenderungMelden();
+                Daten.listeAbo.aenderungMelden();
 
             }
         });
@@ -301,41 +301,17 @@ public class GuiDebug extends PanelVorlage {
 
     private void addSender() {
         jPanelSender.removeAll();
-        GridBagLayout gridbag = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
-        c.weightx = 0;
-        jPanelSender.setLayout(gridbag);
-        c.gridx = 0;
-        c.gridy = 0;
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.BOTH;
+        jPanelSender.setLayout(new GridLayout(0,5));
         int nr = 0;
-        int y = 0;
-        int halbe = sender.length / 2;
-        halbe += sender.length % 2;
         for (String aSender : sender) {
-            c.gridy = y;
-            addPanel(gridbag, c, aSender, nr);
+            JButton btn = buttonSender[nr];
+            btn.setText(aSender);
+            jPanelSender.add(btn);
             ++nr;
-            ++y;
-            if (y >= halbe) {
-                y = 0;
-                c.gridx = 1;
-            }
         }
-        JLabel label = new JLabel();
-        c.gridx = 4;
-        c.weightx = 2;
-        gridbag.setConstraints(label, c);
-        jPanelSender.add(label);
-        jPanelSender.updateUI();
+        jPanelSender.repaint();
     }
 
-    private void addPanel(GridBagLayout gridbag, GridBagConstraints c, String sender, int nr) {
-        c.insets = new Insets(2, 10, 2, 2);
-        gridbag.setConstraints(buttonSender[nr], c);
-        jPanelSender.add(buttonSender[nr]);
-    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -346,7 +322,7 @@ public class GuiDebug extends PanelVorlage {
         jPanelSender = new javax.swing.JPanel();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         jPanelListen = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
         jButtonCheckUrl = new javax.swing.JButton();
         jTextFieldUrl = new javax.swing.JTextField();
         javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
@@ -367,17 +343,7 @@ public class GuiDebug extends PanelVorlage {
         jButtonjSonLesen = new javax.swing.JButton();
 
         jPanelSenderLaden.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender starten"));
-
-        javax.swing.GroupLayout jPanelSenderLadenLayout = new javax.swing.GroupLayout(jPanelSenderLaden);
-        jPanelSenderLaden.setLayout(jPanelSenderLadenLayout);
-        jPanelSenderLadenLayout.setHorizontalGroup(
-            jPanelSenderLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 823, Short.MAX_VALUE)
-        );
-        jPanelSenderLadenLayout.setVerticalGroup(
-            jPanelSenderLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 444, Short.MAX_VALUE)
-        );
+        jPanelSenderLaden.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -408,7 +374,7 @@ public class GuiDebug extends PanelVorlage {
         );
         jPanelSenderLayout.setVerticalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 444, Short.MAX_VALUE)
+            .addGap(0, 445, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -430,16 +396,7 @@ public class GuiDebug extends PanelVorlage {
 
         jTabbedPane1.addTab("tab1", jPanel1);
 
-        javax.swing.GroupLayout jPanelListenLayout = new javax.swing.GroupLayout(jPanelListen);
-        jPanelListen.setLayout(jPanelListenLayout);
-        jPanelListenLayout.setHorizontalGroup(
-            jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 837, Short.MAX_VALUE)
-        );
-        jPanelListenLayout.setVerticalGroup(
-            jPanelListenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 468, Short.MAX_VALUE)
-        );
+        jPanelListen.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -626,7 +583,6 @@ public class GuiDebug extends PanelVorlage {
     private javax.swing.JButton jButtonNotify;
     private javax.swing.JButton jButtonjSonLesen;
     private javax.swing.JCheckBox jCheckBoxDateiGroesse;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelListen;
     private javax.swing.JPanel jPanelSender;
     private javax.swing.JPanel jPanelSenderLaden;

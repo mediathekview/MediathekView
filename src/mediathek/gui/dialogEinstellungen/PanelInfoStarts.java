@@ -21,24 +21,23 @@ package mediathek.gui.dialogEinstellungen;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JFrame;
+import javax.swing.*;
+
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.gui.PanelVorlage;
 import mediathek.tool.TModel;
 import msearch.daten.DatenFilm;
 
-public class PanelInfoStarts extends PanelVorlage {
+public class PanelInfoStarts extends JPanel {
 
-    TModel tModel;
+    private TModel tModel;
 
     /**
      * Creates new form GuiFeed
      *
-     * @param d
      */
-    public PanelInfoStarts(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+    public PanelInfoStarts() {
+        super();
         initComponents();
 //        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, PanelInfoStarts.class.getSimpleName()) {
 //            @Override
@@ -58,7 +57,6 @@ public class PanelInfoStarts extends PanelVorlage {
 //                init();
 //            }
 //        });
-        daten = d;
         jButtonAuffrischen.addActionListener(new BeobLaden());
         tModel = getEmptyModel();
         jTable1.setModel(tModel);
@@ -77,8 +75,8 @@ public class PanelInfoStarts extends PanelVorlage {
                 titel[i] = "Art";
             }
         }
-        TModel model = new TModel(new Object[][]{}, titel);
-        return model;
+
+        return new TModel(new Object[][]{}, titel);
     }
 
     private synchronized void init() {

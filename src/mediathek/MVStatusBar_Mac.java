@@ -3,18 +3,16 @@ package mediathek;
 import com.explodingpixels.macwidgets.BottomBar;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+
 import mediathek.daten.Daten;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.res.GetIcon;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 /**
@@ -30,24 +28,32 @@ public final class MVStatusBar_Mac extends MVStatusBar {
     private JButton stopButton;
     private BottomBar bottomBar;
 
-    /**
-     * This contains all the strings that will be displayed according to selected index.
-     */
-//    private EnumMap<StatusbarIndex, String> displayListForLeftLabel = new EnumMap<StatusbarIndex, String>(StatusbarIndex.class);
-//    private StatusbarIndex currentIndex = StatusbarIndex.NONE;
     public MVStatusBar_Mac() {
         bottomBar = new BottomBar(BottomBarSize.LARGE);
+
         lblCenter = MacWidgetFactory.createEmphasizedLabel("");
         bottomBar.addComponentToLeft(lblCenter);
 
+        if (Daten.debug)
+            bottomBar.addComponentToCenter(new MVMemoryUsageButton());
+
+        //Progress controls and Filminfo must be packed in a panel
+        JPanel progressPanel = new JPanel();
+        progressPanel.setBackground(bottomBar.getComponent().getBackground());
+        progressPanel.setLayout(new FlowLayout());
+        progressPanel.setOpaque(false);
+
         lblRechts = MacWidgetFactory.createEmphasizedLabel("");
-        bottomBar.addComponentToRight(lblRechts);
+        progressPanel.add(lblRechts);
 
         progress = new JProgressBar();
-        bottomBar.addComponentToRight(progress);
+        progressPanel.add(progress);
 
         stopButton = new JButton();
-        stopButton.setIcon(new ImageIcon(getClass().getResource("/com/explodingpixels/macwidgets/images/close.png")));
+        //stopButton.setIcon(new ImageIcon(getClass().getResource("/com/explodingpixels/macwidgets/images/close.png")));
+        stopButton.setIcon(GetIcon.getIcon("close.png"));
+                
+        
         stopButton.setToolTipText("Abbrechen");
         stopButton.addActionListener(new ActionListener() {
             @Override
@@ -55,7 +61,9 @@ public final class MVStatusBar_Mac extends MVStatusBar {
                 Daten.filmeLaden.setStop(true);
             }
         });
-        bottomBar.addComponentToRight(stopButton);
+
+        progressPanel.add(stopButton);
+        bottomBar.addComponentToRight(progressPanel);
 
         hideProgressIndicators();
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TIMER, MVStatusBar_Mac.class.getSimpleName()) {
@@ -110,7 +118,7 @@ public final class MVStatusBar_Mac extends MVStatusBar {
             progress.setStringPainted(true);
         }
         if (Daten.debug) {
-            lblRechts.setText(GuiFunktionen.textLaenge(60, event.text, true /* mitte */, true /*addVorne*/));
+            lblRechts.setText(event.text);
         } else {
             lblRechts.setVisible(false);
         }

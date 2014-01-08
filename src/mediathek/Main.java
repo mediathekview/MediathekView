@@ -20,15 +20,17 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-import javax.swing.JOptionPane;
+
+import javax.swing.*;
+
+import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import mediathek.daten.Daten;
 import mediathek.controller.Log;
+import mediathek.tool.Funktionen;
 import mediathek.tool.MVSingleInstance;
 
 public class Main {
 
-    public static final String STARTP_ALLES = "-alles";
-    public static final String STARTP_USER_AGENT = "-agent";
     public static final String STARTP_LOGFILE = "-log";
     public static final String STARTP_MAXIMIERT = "-M";
 
@@ -38,7 +40,6 @@ public class Main {
      *
      * Programmschalter:
      *
-     * -D Debugmode
      * -M Fenster maximiert starten
      * -A Automodus
      * -noGui ohne GUI starten und die Filmliste laden
@@ -67,25 +68,29 @@ public class Main {
                         if (s.equalsIgnoreCase("-auto")) {
                             state = StartupMode.AUTO;
                         }
-                        if (s.equalsIgnoreCase("-d")) {
-                            Daten.debug = true; //fürs release
-                            if (SystemInfo.isMacOSX()) {
-                                //prevent startup of multiple instances...useful during debugging :(
-                                MVSingleInstance singleInstanceWatcher = new MVSingleInstance();
-                                if (singleInstanceWatcher.isAppAlreadyActive()) {
-                                    JOptionPane.showMessageDialog(null, "MediathekView is already running!");
-                                    System.exit(1);
-                                }
-                                // use for debugging EDT violations
-                                // RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
-                            }
-                        }
+
                         if (s.equalsIgnoreCase("-v")) {
                             Log.versionsMeldungen(this.getClass().getName());
                             System.exit(0);
                         }
+                        if (s.equalsIgnoreCase("-d")) {
+                            Daten.debug = true;
+                        }
                     }
                 }
+                if (Daten.debug) {
+                    if (SystemInfo.isMacOSX()) {
+                        //prevent startup of multiple instances...useful during debugging :(
+                        MVSingleInstance singleInstanceWatcher = new MVSingleInstance();
+                        if (singleInstanceWatcher.isAppAlreadyActive()) {
+                            JOptionPane.showMessageDialog(null, "MediathekView is already running!");
+                            System.exit(1);
+                        }
+                        // use for debugging EDT violations
+                        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+                    }
+                }
+
                 switch (state) {
                     case AUTO:
                         new MediathekAuto(args).starten();

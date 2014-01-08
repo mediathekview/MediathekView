@@ -45,7 +45,7 @@ import msearch.daten.DatenFilm;
 
 public final class MVTable extends JTable {
 
-    public static final String TABELLEN = "Tabellen";
+    //public static final String TABELLEN = "Tabellen";
     public static final int TABELLE_STANDARD = -1;
     public static final int TABELLE_TAB_FILME = 0;
     public static final int TABELLE_TAB_DOWNLOADS = 1;
@@ -59,7 +59,6 @@ public final class MVTable extends JTable {
     int[] breite;
     int[] reihe;
     private int indexSpalte = 0;
-    private int selRow = -1;
     private int[] selRows;
     private String[] indexWertSelection = null;
     private int[] selIndexes = null;
@@ -142,7 +141,7 @@ public final class MVTable extends JTable {
         protected Transferable createTransferable(JComponent c) {
             assert (c == table);
             transferedRows = table.getSelectedRows();
-            return new DataHandler(new Integer(table.getSelectedRow()), localObjectFlavor.getMimeType());
+            return new DataHandler(table.getSelectedRow(), localObjectFlavor.getMimeType());
         }
 
         @Override
@@ -208,11 +207,11 @@ public final class MVTable extends JTable {
         }
         // Downloads zum Verschieben suchen
         LinkedList<DatenDownload> liste = new LinkedList<>();
-        for (int i = 0; i < rowFrom.length; ++i) {
-            if (index > rowFrom[i]) {
+        for (int row : rowFrom) {
+            if (index > row) {
                 --index;
             }
-            DatenDownload d = ((DatenDownload) tModel.getValueAt(this.convertRowIndexToModel(rowFrom[i]), DatenDownload.DOWNLOAD_REF_NR));
+            DatenDownload d = ((DatenDownload) tModel.getValueAt(this.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR));
             liste.add(d);
             Daten.listeDownloads.remove(d);
         }
@@ -372,7 +371,7 @@ public final class MVTable extends JTable {
 
     public void getSelected() {
         // Einstellungen der Tabelle merken
-        selRow = this.getSelectedRow();
+        int selRow = this.getSelectedRow();
         selRows = this.getSelectedRows();
         switch (tabelle) {
             case TABELLE_TAB_DOWNLOADS:
@@ -427,9 +426,9 @@ public final class MVTable extends JTable {
                 if (selRows != null) {
                     if (selRows.length > 0) {
                         this.selectionModel.setValueIsAdjusting(true);
-                        for (int i = 0; i < selRows.length; ++i) {
-                            if (selRows[i] < this.getRowCount()) {
-                                this.addRowSelectionInterval(selRows[i], selRows[i]);
+                        for (int selectedRow : selRows) {
+                            if (selectedRow < this.getRowCount()) {
+                                this.addRowSelectionInterval(selectedRow, selectedRow);
                             }
                         }
                         this.selectionModel.setValueIsAdjusting(false);
