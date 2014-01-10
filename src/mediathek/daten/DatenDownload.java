@@ -103,11 +103,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 29;
     public static final String DOWNLOAD_INFODATEI = "Infodatei";
     public static final int DOWNLOAD_INFODATEI_NR = 30;
+    public static final String DOWNLOAD_GEO = "Geo";
+    public static final int DOWNLOAD_GEO_NR = 31;
     public static final String DOWNLOAD_REF = "Ref";
-    public static final int DOWNLOAD_REF_NR = 31;
+    public static final int DOWNLOAD_REF_NR = 32;
     //
     public static final String DOWNLOAD = "Downlad";
-    public static final int MAX_ELEM = 32;
+    public static final int MAX_ELEM = 33;
     public static final String[] COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         DOWNLOAD_BUTTON_START, DOWNLOAD_BUTTON_DEL,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, DOWNLOAD_GROESSE,
@@ -115,7 +117,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT,
-        DOWNLOAD_INFODATEI, DOWNLOAD_REF};
+        DOWNLOAD_INFODATEI, DOWNLOAD_GEO, DOWNLOAD_REF};
     public static final String[] COLUMN_NAMES_ = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         "Button-Start"/*DOWNLOAD_BUTTON_START*/, "Button-Del"/*DOWNLOAD_BUTTON_DEL*/,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, "Groesse"/*DOWNLOAD_GROESSE*/,
@@ -123,7 +125,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT,
-        DOWNLOAD_INFODATEI, DOWNLOAD_REF};
+        DOWNLOAD_INFODATEI, DOWNLOAD_GEO, DOWNLOAD_REF};
     public Datum datumFilm = new Datum(0);
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
@@ -158,6 +160,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[DOWNLOAD_URL_RTMP_NR] = ffilm.getUrlRtmpFuerAufloesung(aufloesung);
         }
         arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI_NR];
+        arr[DatenDownload.DOWNLOAD_GEO_NR] = ffilm.arr[DatenFilm.FILM_GEO_NR];
         // und jetzt noch die Dateigröße für die entsp. URL
         film = ffilm;
         if (film.arr[DatenFilm.FILM_URL_NR].equals(arr[DOWNLOAD_URL_NR])) {

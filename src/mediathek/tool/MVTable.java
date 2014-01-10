@@ -567,7 +567,8 @@ public final class MVTable extends JTable {
                             || i == DatenDownload.DOWNLOAD_SENDER_NR
                             || i == DatenDownload.DOWNLOAD_PROGRESS_NR
                             || i == DatenDownload.DOWNLOAD_RESTZEIT_NR
-                            || i == DatenDownload.DOWNLOAD_DAUER_NR) {
+                            || i == DatenDownload.DOWNLOAD_DAUER_NR
+                            || i == DatenDownload.DOWNLOAD_GEO_NR) {
                         breite[i] = 100;
                     }
                     break;

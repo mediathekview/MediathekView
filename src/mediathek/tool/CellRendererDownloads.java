@@ -34,6 +34,7 @@ import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.starter.Start;
+import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 
@@ -51,6 +52,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     private static ImageIcon download_clear_sw_tab = null;
     private static ImageIcon download_del_tab = null;
     private static ImageIcon download_del_sw_tab = null;
+    private boolean geoMelden = false;
 
     public CellRendererDownloads() {
         ja_16 = GetIcon.getIcon("ja_16.png");
@@ -65,6 +67,13 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         download_clear_sw_tab = GetIcon.getIcon("download_clear_sw_tab.png");
         download_del_tab = GetIcon.getIcon("download_del_tab.png");
         download_del_sw_tab = GetIcon.getIcon("download_del_sw_tab.png");
+        geoMelden = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_GEO_MELDEN_NR]);
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_GEO, CellRendererDownloads.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                geoMelden = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_GEO_MELDEN_NR]);
+            }
+        });
     }
 
     @Override
@@ -89,7 +98,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (datenDownload.start != null) {
-                    setColor(this, datenDownload.start, isSelected);
                     if (1 < datenDownload.start.percent && datenDownload.start.percent < Start.PROGRESS_FERTIG) {
                         JProgressBar progressBar = new JProgressBar(0, 1000);
                         progressBar.setBorder(BorderFactory.createEmptyBorder());
@@ -123,7 +131,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             } else if (c == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (datenDownload.start != null) {
-                    setColor(this, datenDownload.start, isSelected);
                     if (datenDownload.start.beginnAnschauen) {
                         setForeground(GuiKonstanten.ANSEHEN);
                     }
@@ -133,26 +140,14 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     this.setText("");
                 }
                 setHorizontalAlignment(SwingConstants.CENTER);
-                if (datenDownload.start != null) {
-                    setColor(this, datenDownload.start, isSelected);
-                }
             } else if (c == DatenDownload.DOWNLOAD_NR_NR || c == DatenDownload.DOWNLOAD_DATUM_NR
                     || c == DatenDownload.DOWNLOAD_ZEIT_NR || c == DatenDownload.DOWNLOAD_DAUER_NR
                     || c == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
-                if (datenDownload.start != null) {
-                    setColor(this, datenDownload.start, isSelected);
-                }
             } else if (c == DatenDownload.DOWNLOAD_GROESSE_NR) {
                 setHorizontalAlignment(SwingConstants.RIGHT);
-                if (datenDownload.start != null) {
-                    setColor(this, datenDownload.start, isSelected);
-                }
             } else if (c == DatenDownload.DOWNLOAD_ABO_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
-                if (datenDownload.start != null) {
-                    setColor(this, datenDownload.start, isSelected);
-                }
                 if (!datenDownload.arr[DatenDownload.DOWNLOAD_ABO_NR].equals("")) {
                     setForeground(GuiKonstanten.ABO_FOREGROUND);
                 } else {
@@ -162,9 +157,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 }
             } else if (c == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
-                if (datenDownload.start != null) {
-                    setColor(this, datenDownload.start, isSelected);
-                }
                 if (datenDownload.isRestart()) {
                     setIcon(ja_16);
                 } else {
@@ -172,9 +164,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 }
             } else if (c == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
-                if (datenDownload.start != null) {
-                    setColor(this, datenDownload.start, isSelected);
-                }
                 if (isSelected) {
                     if (datenDownload.start != null) {
                         if (datenDownload.start.status == Start.STATUS_FERTIG) {
@@ -211,7 +200,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             } else if (c == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (datenDownload.start != null) {
-                    setColor(this, datenDownload.start, isSelected);
                     if (datenDownload.start.status >= Start.STATUS_FERTIG) {
                         if (isSelected) {
                             setIcon(download_clear_tab);
@@ -234,9 +222,20 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     setIcon(download_del_sw_tab);
                     setToolTipText("Download löschen");
                 }
-            } else {
-                if (datenDownload.start != null) {
-                    setColor(this, datenDownload.start, isSelected);
+            }
+            setColor(this, datenDownload.start, isSelected);
+            if (datenDownload.start == null) {
+                if (geoMelden) {
+                    if (!datenDownload.arr[DatenDownload.DOWNLOAD_GEO_NR].isEmpty()) {
+                        if (!datenDownload.arr[DatenDownload.DOWNLOAD_GEO_NR].contains(Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR])) {
+                            //setForeground(GuiKonstanten.FARBE_FILM_GEOBLOCK_FORGROUND);
+                            if (isSelected) {
+                                setBackground(GuiKonstanten.FARBE_FILM_GEOBLOCK_BACKGROUND_SEL);
+                            } else {
+                                setBackground(GuiKonstanten.FARBE_FILM_GEOBLOCK_BACKGROUND);
+                            }
+                        }
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -251,35 +250,37 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     }
 
     private void setColor(Component c, Start s, boolean isSelected) {
-        switch (s.status) {
-            case Start.STATUS_INIT:
-                if (isSelected) {
-                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
-                } else {
-                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
-                }
-                break;
-            case Start.STATUS_RUN:
-                if (isSelected) {
-                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
-                } else {
-                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
-                }
-                break;
-            case Start.STATUS_FERTIG:
-                if (isSelected) {
-                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
-                } else {
-                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
-                }
-                break;
-            case Start.STATUS_ERR:
-                if (isSelected) {
-                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
-                } else {
-                    c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
-                }
-                break;
+        if (s != null) {
+            switch (s.status) {
+                case Start.STATUS_INIT:
+                    if (isSelected) {
+                        c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT_SEL);
+                    } else {
+                        c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_WAIT);
+                    }
+                    break;
+                case Start.STATUS_RUN:
+                    if (isSelected) {
+                        c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN_SEL);
+                    } else {
+                        c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_RUN);
+                    }
+                    break;
+                case Start.STATUS_FERTIG:
+                    if (isSelected) {
+                        c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG_SEL);
+                    } else {
+                        c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_FERTIG);
+                    }
+                    break;
+                case Start.STATUS_ERR:
+                    if (isSelected) {
+                        c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR_SEL);
+                    } else {
+                        c.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+                    }
+                    break;
+            }
         }
     }
 }
