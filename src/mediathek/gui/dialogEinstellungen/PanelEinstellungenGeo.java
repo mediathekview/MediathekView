@@ -22,7 +22,6 @@ package mediathek.gui.dialogEinstellungen;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
-import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.Konstanten;
@@ -97,7 +96,6 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
     private void melden() {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_GEO, PanelEinstellungenGeo.class.getName());
-
     }
 
     /** This method is called from within the constructor to
