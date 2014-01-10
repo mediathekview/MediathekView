@@ -4,8 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import mediathek.tool.Funktionen;
 
 public class MVMemoryUsageButton extends JButton {
+
     private final Runtime rt = Runtime.getRuntime();
     private final String MEMORY_STRING;
 
@@ -42,9 +44,12 @@ public class MVMemoryUsageButton extends JButton {
     public void paintComponent(final Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        final long maxMem = rt.maxMemory();
-//        final long maxMem = rt.totalMemory();
+        final long maxMem;
+        if (Funktionen.getOs() == Funktionen.OS_LINUX) {
+            maxMem = rt.totalMemory();
+        } else {
+            maxMem = rt.maxMemory();
+        }
         final long totalMemory = rt.totalMemory();
         final long freeMemory = rt.freeMemory();
         final long usedMem = totalMemory - freeMemory;

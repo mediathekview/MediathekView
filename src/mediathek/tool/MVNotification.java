@@ -23,6 +23,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -71,8 +72,9 @@ public class MVNotification {
 //            TelegraphQueue queue = new TelegraphQueue();
 //            queue.add(telegraph);
 
-            JFrame messageFrame = new JFrame();
-            messageFrame.setUndecorated(true);
+            JWindow messageFrame = new JWindow();
+//            JFrame messageFrame = new JFrame();
+//            messageFrame.setUndecorated(true);
             messageFrame.setLayout(new BorderLayout());
             JXPanel panel = new JXPanel();
             panel.setBackground(Color.BLACK);
