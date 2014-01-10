@@ -70,17 +70,11 @@ public class DefaultApplication implements Application {
             }
 
             Class appClass = Class.forName("com.apple.eawt.Application");
-            application = appClass.getMethod("getApplication", new Class[0]).invoke(null, new Object[0]);
+            application = appClass.getMethod("getApplication", new Class[0]).invoke(null);
             applicationListenerClass = Class.forName("com.apple.eawt.ApplicationListener");
         } catch (ClassNotFoundException e) {
             application = null;
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (MalformedURLException e) {
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | MalformedURLException e) {
             throw new RuntimeException(e);
         }
 
@@ -152,11 +146,7 @@ public class DefaultApplication implements Application {
             try {
                 Method method = application.getClass().getMethod("getMouseLocationOnScreen", new Class[0]);
               return (Point) method.invoke(null);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
         } else {
@@ -240,17 +230,11 @@ public class DefaultApplication implements Application {
             Field informational = application.getClass().getField("UserAttentionRequestInformational");
             Field actual = type == REQUEST_USER_ATTENTION_TYPE_CRITICAL ? critical : informational;
 
-          return (Integer) application.getClass().getMethod("requestUserAttention", new Class[]{Integer.TYPE}).invoke(application, new Object[]{actual.get(null)});
+          return (Integer) application.getClass().getMethod("requestUserAttention", new Class[]{Integer.TYPE}).invoke(application, actual.get(null));
 
         } catch (ClassNotFoundException e) {
             return -1;
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchFieldException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
     }
@@ -259,14 +243,10 @@ public class DefaultApplication implements Application {
     public void cancelUserAttentionRequest(int request) {
         try {
             Object application = getNSApplication();
-            application.getClass().getMethod("cancelUserAttentionRequest", new Class[]{Integer.TYPE}).invoke(application, new Object[]{new Integer(request)});
+            application.getClass().getMethod("cancelUserAttentionRequest", new Class[]{Integer.TYPE}).invoke(application, request);
         } catch (ClassNotFoundException e) {
             // Nada
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
@@ -274,12 +254,8 @@ public class DefaultApplication implements Application {
     private Object getNSApplication() throws ClassNotFoundException {
         try {
             Class applicationClass = Class.forName("com.apple.cocoa.application.NSApplication");
-            return applicationClass.getMethod("sharedApplication", new Class[0]).invoke(null, new Object[0]);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
+            return applicationClass.getMethod("sharedApplication", new Class[0]).invoke(null);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
@@ -292,8 +268,7 @@ public class DefaultApplication implements Application {
 
                 try {
                     setDockIconImage.invoke(application, image);
-                } catch (IllegalAccessException ignored) {
-                } catch (InvocationTargetException ignored) {
+                } catch (IllegalAccessException | InvocationTargetException ignored) {
                 }
             } catch (NoSuchMethodException mnfe) {
 
@@ -307,25 +282,19 @@ public class DefaultApplication implements Application {
 
                 try {
                     Class nsDataClass = Class.forName("com.apple.cocoa.foundation.NSData");
-                    Constructor constructor = nsDataClass.getConstructor(new Class[]{new byte[0].getClass()});
+                    Constructor constructor = nsDataClass.getConstructor(new Class[]{byte[].class});
 
                     Object nsData = constructor.newInstance(new Object[]{stream.toByteArray()});
 
                     Class nsImageClass = Class.forName("com.apple.cocoa.application.NSImage");
-                    Object nsImage = nsImageClass.getConstructor(new Class[]{nsDataClass}).newInstance(new Object[]{nsData});
+                    Object nsImage = nsImageClass.getConstructor(new Class[]{nsDataClass}).newInstance(nsData);
 
                     Object application = getNSApplication();
 
-                    application.getClass().getMethod("setApplicationIconImage", new Class[]{nsImageClass}).invoke(application, new Object[]{nsImage});
+                    application.getClass().getMethod("setApplicationIconImage", new Class[]{nsImageClass}).invoke(application, nsImage);
 
                 } catch (ClassNotFoundException ignored) {
-                } catch (NoSuchMethodException e) {
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                } catch (InstantiationException e) {
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
                     throw new RuntimeException(e);
                 }
 
@@ -342,8 +311,7 @@ public class DefaultApplication implements Application {
                 Method getDockIconImage = application.getClass().getMethod("getDockIconImage");
                 try {
                     return (BufferedImage) getDockIconImage.invoke(application);
-                } catch (IllegalAccessException ignored) {
-                } catch (InvocationTargetException ignored) {
+                } catch (IllegalAccessException | InvocationTargetException ignored) {
                 }
             } catch (NoSuchMethodException nsme) {
 
@@ -353,23 +321,17 @@ public class DefaultApplication implements Application {
                     Object application = getNSApplication();
                     Object nsImage = application.getClass().getMethod("applicationIconImage", new Class[0]).invoke(application, new Object[0]);
 
-                    Object nsData = nsImageClass.getMethod("TIFFRepresentation", new Class[0]).invoke(nsImage, new Object[0]);
+                    Object nsData = nsImageClass.getMethod("TIFFRepresentation", new Class[0]).invoke(nsImage);
 
-                    Integer length = (Integer) nsDataClass.getMethod("length", new Class[0]).invoke(nsData, new Object[0]);
-                    byte[] bytes = (byte[]) nsDataClass.getMethod("bytes", new Class[]{Integer.TYPE, Integer.TYPE}).invoke(nsData, new Object[]{Integer.valueOf(0), length});
+                    Integer length = (Integer) nsDataClass.getMethod("length", new Class[0]).invoke(nsData);
+                    byte[] bytes = (byte[]) nsDataClass.getMethod("bytes", new Class[]{Integer.TYPE, Integer.TYPE}).invoke(nsData, 0, length);
 
                     BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
                     return image;
 
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                } catch (IOException e) {
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -398,11 +360,7 @@ public class DefaultApplication implements Application {
             }
             Method addListnerMethod = object.getClass().getMethod(methodname, classes);
             return addListnerMethod.invoke(object, arguments);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
@@ -421,7 +379,7 @@ public class DefaultApplication implements Application {
             ApplicationEvent event = createApplicationEvent(objects[0]);
             try {
                 Method method = applicationListener.getClass().getMethod(appleMethod.getName(), new Class[]{ApplicationEvent.class});
-                return method.invoke(applicationListener, new Object[]{event});
+                return method.invoke(applicationListener, event);
             } catch (NoSuchMethodException e) {
                 if (appleMethod.getName().equals("equals") && objects.length == 1) {
                     return object == objects[0];
