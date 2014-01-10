@@ -39,6 +39,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -58,6 +59,7 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 import mediathek.controller.CheckUpdate;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.starter.Start;
@@ -84,7 +86,6 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
 import mediathek.tool.MVFrame;
-import mediathek.tool.MVMessageDialog;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 import org.simplericity.macify.eawt.Application;
@@ -648,6 +649,24 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
     }
 
+    /**
+     * Enables OS X fullscreen mode for a given {@link java.awt.Window}.
+     * @param window The window where to enable the fullscreen capability
+     */
+    public void enableOsxFullScreenMode(Window window) {
+        String className = "com.apple.eawt.FullScreenUtilities";
+        String methodName = "setWindowCanFullScreen";
+
+        try {
+            Class<?> clazz = Class.forName(className);
+            Method method = clazz.getMethod(methodName, Window.class, boolean.class);
+            method.invoke(null, window, true);
+        } catch (Throwable t) {
+            System.err.println("Full screen mode is not supported");
+            t.printStackTrace();
+        }
+    }
+
     private void setupUserInterfaceForOsx() {
         //OS X specific menu initializations
         Application application = new DefaultApplication();
@@ -678,6 +697,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             jMenuHilfe.remove(jMenuItemAbout);
         }
 
+        enableOsxFullScreenMode(this);
     }
 
     private void initMenue() {
