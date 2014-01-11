@@ -396,7 +396,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     public void filterAnzeigen(boolean anz) {
-        jCheckBoxMenuItemFilterAnzeigen.setSelected(!anz);
+//        jCheckBoxMenuItemFilterAnzeigen.setSelected(!anz);
         mVToolBar.filterAnzeigen(anz);
     }
 
@@ -756,20 +756,20 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 daten.guiFilme.filmSpeichern();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_L_ANZEIGEN, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+                jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR]));
             }
         });
 
-        jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+        jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR]));
         jCheckBoxMenuItemFilterAnzeigen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemFilterAnzeigen.isSelected());
-                filterAnzeigen(daten.guiFilme.isVisible() && !Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getName());
+                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR] = String.valueOf(jCheckBoxMenuItemFilterAnzeigen.isSelected());
+                //filterAnzeigen(daten.guiFilme.isVisible() && !Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_L_ANZEIGEN, MediathekGui.class.getName());
             }
         });
 
