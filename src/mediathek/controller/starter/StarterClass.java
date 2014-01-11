@@ -47,6 +47,8 @@ import mediathek.tool.MVNotification;
 import mediathek.tool.MVUrlDateiGroesse;
 import msearch.daten.DatenFilm;
 
+import javax.swing.*;
+
 public class StarterClass {
     //Tags Filme
 
@@ -511,7 +513,7 @@ public class StarterClass {
         Log.systemMeldung(text.toArray(new String[]{}));
     }
 
-    private void fertigmeldung(DatenDownload datenDownload, Start start) {
+    private void fertigmeldung(final DatenDownload datenDownload, final Start start) {
         ArrayList<String> text = new ArrayList<>();
         if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
             //Daten.listeDownloads.listePutzen();
@@ -544,7 +546,12 @@ public class StarterClass {
         Log.systemMeldung(text.toArray(new String[]{}));
         if (!start.stoppen) {
             if (datenDownload.getQuelle() != Start.QUELLE_BUTTON) {
-                MVNotification.addNotification(daten, datenDownload, start.status != Start.STATUS_ERR);
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        MVNotification.addNotification(daten, datenDownload, start.status != Start.STATUS_ERR);
+                    }
+                });
             }
         }
     }
