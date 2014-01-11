@@ -96,9 +96,6 @@ public class GuiFilme extends PanelVorlage {
     private final String[] COMBO_ZEIT = new String[]{"alles", "1 Tag", "2 Tage", "3 Tage", "4 Tage", "5 Tage", "10 Tage", "15 Tage", "20 Tage", "30 Tage"};
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 4, 5, 10, 15, 20, 30};
     private MVFilmInformation filmInfoHud;
-//    private String[] sender;
-//    private String[][] themenPerSender;
-    //private String[] alleThemen;
     private PanelBeschreibung panelBeschreibung;
 
     public GuiFilme(Daten d, JFrame parentComponent) {
@@ -152,7 +149,7 @@ public class GuiFilme extends PanelVorlage {
         jButtonBlacklist.setIcon(GetIcon.getIcon("blacklist_16.png"));
         jButtonFilterLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
         jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
-//        checkBlacklist();
+        panelFilterLSetzen();
         panelBeschreibungSetzen();
         jPanelFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
         jComboBoxZeitraum.setModel(new DefaultComboBoxModel<>(COMBO_ZEIT));
@@ -300,13 +297,19 @@ public class GuiFilme extends PanelVorlage {
         jTextFieldFilterThemaTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
         jTextFieldFilterIrgendwo.addActionListener(new BeobFilter());
         jTextFieldFilterIrgendwo.getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        jSliderMinuten.setValue(0);
+        try {
+            jSliderMinuten.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_FILTER_DAUER_NR]));
+        } catch (Exception ex) {
+            jSliderMinuten.setValue(0);
+            Daten.system[Konstanten.SYSTEM_FILTER_DAUER_NR] = "0";
+        }
         jTextFieldFilterMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
         jSliderMinuten.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 jTextFieldFilterMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
                 if (!jSliderMinuten.getValueIsAdjusting()) {
+                    Daten.system[Konstanten.SYSTEM_FILTER_DAUER_NR] = String.valueOf(jSliderMinuten.getValue());
                     tabelleLaden();
                 }
             }
@@ -336,6 +339,15 @@ public class GuiFilme extends PanelVorlage {
                 Daten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR] = Boolean.FALSE.toString();
                 daten.mediathekGui.videoplayerAnzeigen(true);
                 panelVideoplayerSetzen();
+            }
+        });
+        jCheckBoxFilterL.setIcon(GetIcon.getIcon("close_15.png"));
+        jCheckBoxFilterL.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR] = Boolean.FALSE.toString();
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_L_ANZEIGEN, GuiFilme.class.getName());
+                panelFilterLSetzen();
             }
         });
     }
@@ -400,6 +412,12 @@ public class GuiFilme extends PanelVorlage {
                 panelFilterSetzen();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_L_ANZEIGEN, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                panelFilterLSetzen();
+            }
+        });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -426,6 +444,10 @@ public class GuiFilme extends PanelVorlage {
         jPanelFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
         MVListeFilme.checkBlacklist();
         tabelleLaden();
+    }
+
+    private void panelFilterLSetzen() {
+        jPanelFilterL.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR]));
     }
 
     private String[] getThemen(String ssender) {
@@ -688,7 +710,7 @@ public class GuiFilme extends PanelVorlage {
         jTextFieldFilterTitel.setText("");
         jTextFieldFilterThemaTitel.setText("");
         jTextFieldFilterIrgendwo.setText("");
-        jSliderMinuten.setValue(0);
+        //jSliderMinuten.setValue(0);
         //neu laden
         tabelleLaden();
     }
@@ -769,32 +791,17 @@ public class GuiFilme extends PanelVorlage {
         jPanel4 = new javax.swing.JPanel();
         jPanelFilter = new javax.swing.JPanel();
         jCheckBoxFilter = new javax.swing.JCheckBox();
-        jPanel3 = new javax.swing.JPanel();
-        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox<String>();
-        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
-        jComboBoxFilterThema = new javax.swing.JComboBox<String>();
-        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
-        jTextFieldFilterTitel = new javax.swing.JTextField();
         javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jTextFieldFilterThemaTitel = new javax.swing.JTextField();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
+        jComboBoxFilterThema = new javax.swing.JComboBox<String>();
         jLabel7 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
+        jTextFieldFilterTitel = new javax.swing.JTextField();
         jTextFieldFilterIrgendwo = new javax.swing.JTextField();
-        jSliderMinuten = new javax.swing.JSlider();
-        jLabel8 = new javax.swing.JLabel();
-        jTextFieldFilterMinuten = new javax.swing.JTextField();
         jButtonFilterLoeschen = new javax.swing.JButton();
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jComboBoxZeitraum = new javax.swing.JComboBox<String>();
-        jCheckBoxKeineGesehenen = new javax.swing.JCheckBox();
-        jCheckBoxKeineAbos = new javax.swing.JCheckBox();
-        jToggleButtonLivestram = new javax.swing.JToggleButton();
-        jButtonBlacklist = new javax.swing.JButton();
-        jButtonHilfe = new javax.swing.JButton();
-        jCheckBoxNurHd = new javax.swing.JCheckBox();
-        jToggleButtonNeue = new javax.swing.JToggleButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
         jPanelExtra = new javax.swing.JPanel();
@@ -802,6 +809,20 @@ public class GuiFilme extends PanelVorlage {
         jPanelExtraInnen = new javax.swing.JPanel();
         jPanelBeschreibung = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
+        jPanelFilterL = new javax.swing.JPanel();
+        jCheckBoxFilterL = new javax.swing.JCheckBox();
+        jButtonHilfe = new javax.swing.JButton();
+        jButtonBlacklist = new javax.swing.JButton();
+        jComboBoxZeitraum = new javax.swing.JComboBox<String>();
+        jLabel8 = new javax.swing.JLabel();
+        jSliderMinuten = new javax.swing.JSlider();
+        jTextFieldFilterMinuten = new javax.swing.JTextField();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
+        jToggleButtonLivestram = new javax.swing.JToggleButton();
+        jToggleButtonNeue = new javax.swing.JToggleButton();
+        jCheckBoxKeineGesehenen = new javax.swing.JCheckBox();
+        jCheckBoxKeineAbos = new javax.swing.JCheckBox();
+        jCheckBoxNurHd = new javax.swing.JCheckBox();
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -818,177 +839,22 @@ public class GuiFilme extends PanelVorlage {
 
         jCheckBoxFilter.setToolTipText("Filter ausblenden");
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-
         jLabel2.setText("Sender:");
 
         jComboBoxFilterSender.setMaximumRowCount(25);
+
+        jLabel6.setText("Thema oder Titel:");
 
         jLabel3.setText("Thema:");
 
         jComboBoxFilterThema.setMaximumRowCount(25);
 
-        jLabel5.setText("Titel:");
-
-        jLabel6.setText("Thema oder Titel:");
-
         jLabel7.setText("Irgendwo:");
 
-        jLabel8.setText("Mindestlänge [min]:");
-
-        jTextFieldFilterMinuten.setEditable(false);
-        jTextFieldFilterMinuten.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextFieldFilterMinuten.setText("100");
+        jLabel5.setText("Titel:");
 
         jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
         jButtonFilterLoeschen.setToolTipText("Filter löschen");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxFilterSender, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxFilterThema, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel7)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jTextFieldFilterTitel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jTextFieldFilterIrgendwo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonFilterLoeschen)))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel2)
-                    .addComponent(jComboBoxFilterSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(jComboBoxFilterThema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
-                    .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel6)
-                    .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7)
-                    .addComponent(jTextFieldFilterIrgendwo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonFilterLoeschen))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonFilterLoeschen, jTextFieldFilterIrgendwo, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-
-        jLabel1.setText("Zeitraum:");
-
-        jComboBoxZeitraum.setMaximumRowCount(10);
-
-        jCheckBoxKeineGesehenen.setText("gesehene ausblenden");
-
-        jCheckBoxKeineAbos.setText("Abos nicht anzeigen");
-
-        jToggleButtonLivestram.setText("Livestreams");
-
-        jButtonBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/blacklist_16.png"))); // NOI18N
-        jButtonBlacklist.setToolTipText("Blacklist öffnen");
-
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
-
-        jCheckBoxNurHd.setText("nur HD anzeigen");
-
-        jToggleButtonNeue.setText("Neue");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBoxKeineGesehenen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxKeineAbos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                .addComponent(jCheckBoxNurHd)
-                .addGap(18, 18, 18)
-                .addComponent(jToggleButtonNeue)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButtonLivestram)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonBlacklist)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonHilfe)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel1)
-                    .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jCheckBoxKeineGesehenen)
-                    .addComponent(jCheckBoxKeineAbos)
-                    .addComponent(jCheckBoxNurHd)
-                    .addComponent(jToggleButtonLivestram)
-                    .addComponent(jButtonBlacklist)
-                    .addComponent(jButtonHilfe)
-                    .addComponent(jToggleButtonNeue))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, 0))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
 
         javax.swing.GroupLayout jPanelFilterLayout = new javax.swing.GroupLayout(jPanelFilter);
         jPanelFilter.setLayout(jPanelFilterLayout);
@@ -996,9 +862,34 @@ public class GuiFilme extends PanelVorlage {
             jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelFilterLayout.createSequentialGroup()
                 .addComponent(jCheckBoxFilter)
-                .addGap(5, 5, 5)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(5, 5, 5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelFilterLayout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxFilterSender, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxFilterThema, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelFilterLayout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelFilterLayout.createSequentialGroup()
+                        .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+                        .addGap(62, 62, 62))
+                    .addGroup(jPanelFilterLayout.createSequentialGroup()
+                        .addComponent(jTextFieldFilterIrgendwo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonFilterLoeschen)))
+                .addContainerGap())
         );
         jPanelFilterLayout.setVerticalGroup(
             jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1006,10 +897,25 @@ public class GuiFilme extends PanelVorlage {
                 .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jCheckBoxFilter)
                     .addGroup(jPanelFilterLayout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(5, 5, 5))
+                        .addContainerGap()
+                        .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel2)
+                            .addComponent(jComboBoxFilterSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)
+                            .addComponent(jComboBoxFilterThema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel6)
+                            .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7)
+                            .addComponent(jTextFieldFilterIrgendwo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonFilterLoeschen))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jPanelFilterLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonFilterLoeschen, jTextFieldFilterIrgendwo, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new TModel());
@@ -1082,40 +988,143 @@ public class GuiFilme extends PanelVorlage {
             .addGap(0, 5, Short.MAX_VALUE)
         );
 
+        jPanelFilterL.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+
+        jButtonBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/blacklist_16.png"))); // NOI18N
+        jButtonBlacklist.setToolTipText("Blacklist öffnen");
+
+        jComboBoxZeitraum.setMaximumRowCount(10);
+
+        jLabel8.setText("Mindestlänge [min]:");
+
+        jTextFieldFilterMinuten.setEditable(false);
+        jTextFieldFilterMinuten.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextFieldFilterMinuten.setText("100");
+
+        jLabel1.setText("Zeitraum:");
+
+        jToggleButtonLivestram.setText("Livestreams");
+
+        jToggleButtonNeue.setText("Neue");
+
+        jCheckBoxKeineGesehenen.setText("gesehene ausblenden");
+
+        jCheckBoxKeineAbos.setText("Abos nicht anzeigen");
+
+        jCheckBoxNurHd.setText("nur HD anzeigen");
+
+        javax.swing.GroupLayout jPanelFilterLLayout = new javax.swing.GroupLayout(jPanelFilterL);
+        jPanelFilterL.setLayout(jPanelFilterLLayout);
+        jPanelFilterLLayout.setHorizontalGroup(
+            jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFilterLLayout.createSequentialGroup()
+                .addGroup(jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelFilterLLayout.createSequentialGroup()
+                        .addComponent(jCheckBoxFilterL)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanelFilterLLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBoxZeitraum, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanelFilterLLayout.createSequentialGroup()
+                                .addGroup(jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addGroup(jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilterLLayout.createSequentialGroup()
+                                            .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jLabel8))
+                                    .addComponent(jToggleButtonLivestram)
+                                    .addComponent(jToggleButtonNeue)
+                                    .addComponent(jCheckBoxNurHd)
+                                    .addComponent(jCheckBoxKeineAbos)
+                                    .addComponent(jCheckBoxKeineGesehenen))
+                                .addGap(0, 8, Short.MAX_VALUE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilterLLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonBlacklist)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonHilfe)))
+                .addContainerGap())
+        );
+
+        jPanelFilterLLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jToggleButtonLivestram, jToggleButtonNeue});
+
+        jPanelFilterLLayout.setVerticalGroup(
+            jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFilterLLayout.createSequentialGroup()
+                .addComponent(jCheckBoxFilterL)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jToggleButtonLivestram)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToggleButtonNeue)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBoxKeineGesehenen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxKeineAbos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxNurHd)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
+                .addGroup(jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonHilfe)
+                    .addComponent(jButtonBlacklist, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelFilter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanelFilterL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jPanelFilter, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanelFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelExtra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanelFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanelExtra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanelFilterL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBlacklist;
     private javax.swing.JButton jButtonFilterLoeschen;
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JCheckBox jCheckBoxFilter;
+    private javax.swing.JCheckBox jCheckBoxFilterL;
     private javax.swing.JCheckBox jCheckBoxKeineAbos;
     private javax.swing.JCheckBox jCheckBoxKeineGesehenen;
     private javax.swing.JCheckBox jCheckBoxNurHd;
@@ -1125,13 +1134,13 @@ public class GuiFilme extends PanelVorlage {
     private javax.swing.JComboBox<String> jComboBoxZeitraum;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JPanel jPanelExtraInnen;
     private javax.swing.JPanel jPanelFilter;
+    private javax.swing.JPanel jPanelFilterL;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSlider jSliderMinuten;
     private javax.swing.JTextField jTextFieldFilterIrgendwo;
