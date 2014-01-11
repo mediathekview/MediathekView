@@ -15,6 +15,7 @@ package org.simplericity.macify.eawt;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@SuppressWarnings("unused")
 public class ApplicationAdapter implements ApplicationListener {
 
     public void handleQuit(ApplicationEvent event) {

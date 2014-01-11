@@ -15,6 +15,7 @@ package org.simplericity.macify.eawt;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@SuppressWarnings("unused")
 public interface ApplicationListener {
 
     void handleAbout(ApplicationEvent event);

@@ -669,39 +669,36 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     private void setupUserInterfaceForOsx() {
-        if (SystemInfo.isMacOSX()) {
-            // sonst gibts eine Exception
-            //OS X specific menu initializations
-            Application application = new DefaultApplication();
-            application.addApplicationListener(this);
-            application.addAboutMenuItem();
-            application.addPreferencesMenuItem();
-            application.setEnabledAboutMenu(true);
-            application.setEnabledPreferencesMenu(true);
+        //OS X specific menu initializations
+        Application application = new DefaultApplication();
+        application.addApplicationListener(this);
+        application.addAboutMenuItem();
+        application.addPreferencesMenuItem();
+        application.setEnabledAboutMenu(true);
+        application.setEnabledPreferencesMenu(true);
 
-            //setup the MediathekView Dock Icon
-            try {
-                URL url = this.getClass().getResource("res/MediathekView.png");
-                BufferedImage appImage = ImageIO.read(url);
-                application.setApplicationIconImage(appImage);
-            } catch (IOException ex) {
-                System.err.println("Application image could not be loaded");
-            }
-
-            //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
-            if (application.isMac()) {
-                //Datei->Beenden
-                jMenuDatei.remove(jSeparator2);
-                jMenuDatei.remove(jMenuItemBeenden);
-                //Datei->Einstellungen
-                jMenuDatei.remove(jMenuItemEinstellungen);
-                //Hilfe->Über
-                jMenuHilfe.remove(jSeparator4);
-                jMenuHilfe.remove(jMenuItemAbout);
-            }
-
-            enableOsxFullScreenMode(this);
+        //setup the MediathekView Dock Icon
+        try {
+            URL url = this.getClass().getResource("res/MediathekView.png");
+            BufferedImage appImage = ImageIO.read(url);
+            application.setApplicationIconImage(appImage);
+        } catch (IOException ex) {
+            System.err.println("Application image could not be loaded");
         }
+
+        //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
+        if (application.isMac()) {
+            //Datei->Beenden
+            jMenuDatei.remove(jSeparator2);
+            jMenuDatei.remove(jMenuItemBeenden);
+            //Datei->Einstellungen
+            jMenuDatei.remove(jMenuItemEinstellungen);
+            //Hilfe->Über
+            jMenuHilfe.remove(jSeparator4);
+            jMenuHilfe.remove(jMenuItemAbout);
+        }
+
+        enableOsxFullScreenMode(this);
     }
 
     private void initMenue() {
@@ -999,7 +996,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 showAboutDialog();
             }
         });
-        setupUserInterfaceForOsx();
+        if (SystemInfo.isMacOSX()) {
+            // sonst gibts eine Exception
+            setupUserInterfaceForOsx();
+        }
     }
 
     /**
