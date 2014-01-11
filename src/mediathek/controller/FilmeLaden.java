@@ -141,12 +141,13 @@ public class FilmeLaden {
             Daten.listeFilme.clear();
             Daten.listeFilmeNachBlackList.clear();
             System.gc();
-//            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, FilmeLaden.class.getSimpleName());
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
+                Log.systemMeldung("Aktuelle Filmliste laden");
                 mSearchImportFilmliste.filmeImportierenAuto(Daten.getDateiFilmliste(), Daten.listeFilme);
             } else {
                 // Filme als Liste importieren, feste URL/Datei
+                Log.systemMeldung("Filmliste laden von: " + dateiUrl);
                 mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.getDateiFilmliste(), Daten.listeFilme);
             }
         }
