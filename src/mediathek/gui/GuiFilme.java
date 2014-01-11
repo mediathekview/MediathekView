@@ -658,15 +658,22 @@ public class GuiFilme extends PanelVorlage {
     private synchronized void listeInModellLaden() {
         if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
             // normal mit den Filtern aus dem Filterpanel suchen
-            MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle, jComboBoxFilterSender.getSelectedItem().toString(),
-                    jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(),
-                    jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue(),
+            MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle,
+                    jComboBoxFilterSender.getSelectedItem().toString(), jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(),
+                    jTextFieldFilterThemaTitel.getText(),
+                    jTextFieldFilterIrgendwo.getText(),
+                    jSliderMinuten.getValue(),
                     jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected(), jToggleButtonNeue.isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
-            MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle, "",
-                    "", "", daten.mediathekGui.getFilterTextFromSearchField(), "", 0,
-                    false, false, false, false, false);
+            MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle,
+                    "", "", "",
+                    daten.mediathekGui.getFilterTextFromSearchField(),
+                    "",
+                    jSliderMinuten.getValue(),
+                    jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected(), jToggleButtonNeue.isSelected());
+//                    0,
+//                    false, false, false, false, false);
         }
     }
     // ####################################
