@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import mediathek.controller.starter.Start;
-import static mediathek.daten.DatenDownload.DOWNLOAD_URL_NR;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVMessageDialog;
@@ -41,7 +40,7 @@ import msearch.daten.DatenFilm;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
 
-    private Daten ddaten;
+    private final Daten ddaten;
 
     /**
      *
@@ -194,18 +193,18 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-    public synchronized DatenDownload getDownloadByNr(int nr) {
-        DatenDownload ret = null;
-        ListIterator<DatenDownload> it = this.listIterator();
-        while (it.hasNext()) {
-            DatenDownload d = it.next();
-            if (d.nr == nr) {
-                ret = d;
-                break;
-            }
-        }
-        return ret;
-    }
+//    public synchronized DatenDownload getDownloadByNr(int nr) {
+//        DatenDownload ret = null;
+//        ListIterator<DatenDownload> it = this.listIterator();
+//        while (it.hasNext()) {
+//            DatenDownload d = it.next();
+//            if (d.nr == nr) {
+//                ret = d;
+//                break;
+//            }
+//        }
+//        return ret;
+//    }
 
     public synchronized void delDownloadByUrl(String url, boolean nurStart) {
         ListIterator<DatenDownload> it = this.listIterator();

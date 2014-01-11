@@ -466,6 +466,16 @@ public class GuiFilme extends PanelVorlage {
                 for (int selRow : selRows) {
                     // film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selRow, DatenFilm.FILM_URL_NR).toString());
                     film = (DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selRow), DatenFilm.FILM_REF_NR);
+                    // erst mal schauen obs den schon gibt
+                    DatenDownload datenDownload = Daten.listeDownloads.getDownloadUrlFilm(film.arr[DatenFilm.FILM_URL_NR]);
+                    if (datenDownload != null) {
+                        int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
+                                + "Nochmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
+                        if (ret != JOptionPane.OK_OPTION) {
+                            continue;
+                        }
+                    }
+                    // weiter
                     String aufloesung = "";
                     if (jCheckBoxNurHd.isSelected()) {
                         aufloesung = DatenFilm.AUFLOESUNG_HD;
