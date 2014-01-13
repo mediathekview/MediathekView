@@ -62,19 +62,14 @@ import javax.swing.event.ChangeListener;
 
 import mediathek.controller.CheckUpdate;
 import mediathek.controller.IoXmlLesen;
-import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
-import mediathek.daten.DatenDownload;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.DialogStarteinstellungen;
-import mediathek.gui.dialog.MVAboutDialog;
 import mediathek.gui.dialog.MVFilmInformation;
-import mediathek.gui.dialog.PanelHilfe;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
@@ -85,6 +80,13 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.controller.starter.Start;
+import mediathek.daten.DatenDownload;
+import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialog.DialogOk;
+import mediathek.gui.dialog.MVAboutDialog;
+import mediathek.gui.dialog.PanelHilfe;
+import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.tool.MVFrame;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
@@ -756,6 +758,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 daten.guiFilme.filmSpeichern();
             }
         });
+        jMenuItemBlacklist.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DialogLeer dialog = new DialogLeer(daten.mediathekGui, true);
+                dialog.init("Blacklist", new PanelBlacklist(daten, daten.mediathekGui, PanelBlacklist.class.getName() + "_2"));
+                dialog.setVisible(true);
+            }
+        });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_L_ANZEIGEN, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -1111,6 +1122,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         javax.swing.JMenu jMenuFilme = new javax.swing.JMenu();
         jMenuItemFilmAbspielen = new javax.swing.JMenuItem();
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
+        jMenuItemBlacklist = new javax.swing.JMenuItem();
         jMenuDownload = new javax.swing.JMenu();
         jMenuItemDownloadsAlleStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadWartendeStoppen = new javax.swing.JMenuItem();
@@ -1206,6 +1218,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemFilmAufzeichnen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/film_rec_16.png"))); // NOI18N
         jMenuItemFilmAufzeichnen.setText("Film aufzeichnen");
         jMenuFilme.add(jMenuItemFilmAufzeichnen);
+
+        jMenuItemBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/blacklist_16.png"))); // NOI18N
+        jMenuItemBlacklist.setText("Blacklist öffnen");
+        jMenuFilme.add(jMenuItemBlacklist);
 
         jMenuBar.add(jMenuFilme);
 
@@ -1360,6 +1376,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JMenuItem jMenuItemAbout;
     private javax.swing.JMenuItem jMenuItemAnleitung;
     private javax.swing.JMenuItem jMenuItemBeenden;
+    private javax.swing.JMenuItem jMenuItemBlacklist;
     private javax.swing.JMenuItem jMenuItemDownloadAbspielen;
     private javax.swing.JMenuItem jMenuItemDownloadAendern;
     private javax.swing.JMenuItem jMenuItemDownloadAlleStoppen;

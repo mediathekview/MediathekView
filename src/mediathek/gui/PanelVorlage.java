@@ -19,7 +19,6 @@
  */
 package mediathek.gui;
 
-import java.awt.Frame;
 import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.tool.MVTable;

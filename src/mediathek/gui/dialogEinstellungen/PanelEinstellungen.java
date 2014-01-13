@@ -19,13 +19,19 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.*;
+import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.util.ArrayList;
-import javax.swing.*;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.ProgrammUpdateSuchen;
@@ -84,7 +90,29 @@ public class PanelEinstellungen extends PanelVorlage {
                 fillIconList();
             }
         });
+        bandwidthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            @Override
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                bandwidthSpinnerStateChanged(evt);
+            }
+        });
+        cbxIconPackages.addItemListener(new java.awt.event.ItemListener() {
+            @Override
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxIconPackagesItemStateChanged(evt);
+            }
+        });
+        cbLimitBandwidth.addItemListener(new java.awt.event.ItemListener() {
+            @Override
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbLimitBandwidthItemStateChanged(evt);
+            }
+        });
         setUpIconList();
+    }
+
+    private void cbxIconPackagesItemStateChanged(java.awt.event.ItemEvent evt) {
+        JOptionPane.showMessageDialog(this, "Sie müssen die Applikation neu starten damit die Icons genutzt werden können.", "MediathekView", JOptionPane.WARNING_MESSAGE);
     }
 
     private void init() {
@@ -103,8 +131,7 @@ public class PanelEinstellungen extends PanelVorlage {
         setupBandwidthLimit();
     }
 
-    private void setupBandwidthLimit()
-    {
+    private void setupBandwidthLimit() {
         int bandwidth;
         try {
             bandwidth = Integer.parseInt(Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR]);
@@ -114,15 +141,12 @@ public class PanelEinstellungen extends PanelVorlage {
         }
 
         //if bandwidth is 0 then we are disabled...
-        if (bandwidth == 0)
-        {
+        if (bandwidth == 0) {
             lblBandwidth.setEnabled(false);
             bandwidthSpinner.setEnabled(false);
             bandwidthSpinner.setValue(0);
             cbLimitBandwidth.setSelected(false);
-        }
-        else
-        {
+        } else {
             lblBandwidth.setEnabled(true);
             bandwidthSpinner.setEnabled(true);
             bandwidthSpinner.setValue(bandwidth);
@@ -139,8 +163,9 @@ public class PanelEinstellungen extends PanelVorlage {
 
             //fill in the combobox model
             ArrayList<String> themeList = new ArrayList<>();
-            for (UIManager.LookAndFeelInfo i : info)
+            for (UIManager.LookAndFeelInfo i : info) {
                 themeList.add(i.getName());
+            }
 
             DefaultComboBoxModel model = new DefaultComboBoxModel(themeList.toArray());
             cbxLookAndFeel.setModel(model);
@@ -216,6 +241,35 @@ public class PanelEinstellungen extends PanelVorlage {
         }
     }
 
+    private void bandwidthSpinnerStateChanged(ChangeEvent evt) {
+        if (cbLimitBandwidth.isSelected()) {
+            final int b = (int) bandwidthSpinner.getValue();
+            Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = String.valueOf(b);
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
+        }
+    }
+
+    private void cbLimitBandwidthItemStateChanged(java.awt.event.ItemEvent evt) {
+        System.out.println("cbLimitBandwidthItemStateChanged");
+        switch (evt.getStateChange()) {
+            case ItemEvent.SELECTED:
+                lblBandwidth.setEnabled(true);
+                bandwidthSpinner.setEnabled(true);
+                final int b = (int) bandwidthSpinner.getValue();
+                Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = String.valueOf(b);
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
+                break;
+
+            case ItemEvent.DESELECTED:
+                lblBandwidth.setEnabled(false);
+                bandwidthSpinner.setEnabled(false);
+                bandwidthSpinner.setValue(0);
+                Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = "0";
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
+                break;
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -285,12 +339,6 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jLabel1.setText("Icon-Pack:");
 
-        cbxIconPackages.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cbxIconPackagesItemStateChanged(evt);
-            }
-        });
-
         jButtonRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/icons_refresh_16.png"))); // NOI18N
         jButtonRefresh.setToolTipText("neue Icons suchen");
 
@@ -335,18 +383,8 @@ public class PanelEinstellungen extends PanelVorlage {
 
         cbLimitBandwidth.setText("Downloadgeschwindigkeit begrenzen auf:");
         cbLimitBandwidth.setToolTipText("Maximum ist 1000 KB/s");
-        cbLimitBandwidth.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cbLimitBandwidthItemStateChanged(evt);
-            }
-        });
 
         bandwidthSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 1000, 10));
-        bandwidthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                bandwidthSpinnerStateChanged(evt);
-            }
-        });
 
         lblBandwidth.setText("KB/s");
 
@@ -427,41 +465,6 @@ public class PanelEinstellungen extends PanelVorlage {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    @SuppressWarnings("unused")
-    private void bandwidthSpinnerStateChanged(ChangeEvent evt) {//GEN-FIRST:event_bandwidthSpinnerStateChanged
-        if (cbLimitBandwidth.isSelected()){
-            final int b = (int)bandwidthSpinner.getValue();
-            Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = String.valueOf(b);
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
-        }
-    }//GEN-LAST:event_bandwidthSpinnerStateChanged
-
-    private void cbLimitBandwidthItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbLimitBandwidthItemStateChanged
-        System.out.println("cbLimitBandwidthItemStateChanged");
-        switch (evt.getStateChange())
-        {
-            case ItemEvent.SELECTED:
-                lblBandwidth.setEnabled(true);
-                bandwidthSpinner.setEnabled(true);
-                final int b = (int)bandwidthSpinner.getValue();
-                Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = String.valueOf(b);
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
-                break;
-
-            case ItemEvent.DESELECTED:
-                lblBandwidth.setEnabled(false);
-                bandwidthSpinner.setEnabled(false);
-                bandwidthSpinner.setValue(0);
-                Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = "0";
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
-                break;
-        }
-    }//GEN-LAST:event_cbLimitBandwidthItemStateChanged
-
-    @SuppressWarnings("unused")
-    private void cbxIconPackagesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxIconPackagesItemStateChanged
-        JOptionPane.showMessageDialog(this,"Sie müssen die Applikation neu starten damit die Icons genutzt werden können.","MediathekView",JOptionPane.WARNING_MESSAGE);
-    }//GEN-LAST:event_cbxIconPackagesItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner bandwidthSpinner;
@@ -485,8 +488,8 @@ public class PanelEinstellungen extends PanelVorlage {
 
         @Override
         public void stateChanged(ChangeEvent arg0) {
-            Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] =
-                    String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue());
+            Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR]
+                    = String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue());
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
         }
     }

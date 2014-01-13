@@ -97,6 +97,7 @@ public class GuiFilme extends PanelVorlage {
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 4, 5, 10, 15, 20, 30};
     private MVFilmInformation filmInfoHud;
     private PanelBeschreibung panelBeschreibung;
+    private MVFrameFilter frameFilter;
 
     public GuiFilme(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -105,6 +106,7 @@ public class GuiFilme extends PanelVorlage {
         jScrollPane1.setViewportView(tabelle);
         panelVideoplayerSetzen();
         panelBeschreibung = new PanelBeschreibung(daten.mediathekGui, daten);
+        frameFilter = new MVFrameFilter(d);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
         filmInfoHud = daten.filmInfoHud;
@@ -145,28 +147,27 @@ public class GuiFilme extends PanelVorlage {
     //===================================
 
     private void init() {
-        jToggleButtonNeue.setEnabled(false);
-        jButtonBlacklist.setIcon(GetIcon.getIcon("blacklist_16.png"));
-        jButtonFilterLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
-        jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
-        panelFilterLSetzen();
+        frameFilter.jToggleButtonNeue.setEnabled(false);
+        frameFilter.jButtonFilterLoeschen.setIcon(GetIcon.getIcon("clear_16.png"));
+//////        panelFilterLSetzen();
         panelBeschreibungSetzen();
-        jPanelFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
-        jComboBoxZeitraum.setModel(new DefaultComboBoxModel<>(COMBO_ZEIT));
+        frameFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+        frameFilter.jComboBoxZeitraum.setModel(new DefaultComboBoxModel<>(COMBO_ZEIT));
         try {
-            jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
-            jCheckBoxKeineGesehenen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR]));
-            jCheckBoxNurHd.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_NUR_HD_NR]));
-            jComboBoxZeitraum.setSelectedIndex(Integer.parseInt(Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR]));
+            frameFilter.jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
+            frameFilter.jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
+            frameFilter.jCheckBoxKeineGesehenen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR]));
+            frameFilter.jCheckBoxNurHd.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_NUR_HD_NR]));
+            frameFilter.jComboBoxZeitraum.setSelectedIndex(Integer.parseInt(Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR]));
         } catch (Exception ex) {
-            jComboBoxZeitraum.setSelectedIndex(6);
+            frameFilter.jComboBoxZeitraum.setSelectedIndex(6);
             Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = "6";
         }
-        jComboBoxZeitraum.addActionListener(new ActionListener() {
+        frameFilter.jComboBoxZeitraum.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!stopBeob) {
-                    Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(jComboBoxZeitraum.getSelectedIndex());
+                    Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(frameFilter.jComboBoxZeitraum.getSelectedIndex());
 //                    checkBlacklist();
                     MVListeFilme.checkBlacklist();
                     tabelleLaden();
@@ -176,29 +177,15 @@ public class GuiFilme extends PanelVorlage {
         Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public void start(MSearchListenerFilmeLadenEvent event) {
-                jToggleButtonNeue.setEnabled(false);
+                frameFilter.jToggleButtonNeue.setEnabled(false);
                 tabelleLaden();
             }
 
             @Override
             public void fertig(MSearchListenerFilmeLadenEvent event) {
 //                checkBlacklist();
-                jToggleButtonNeue.setEnabled(Daten.listeFilmeNachBlackList.neueFilme);
+                frameFilter.jToggleButtonNeue.setEnabled(Daten.listeFilmeNachBlackList.neueFilme);
                 tabelleLaden();
-            }
-        });
-        jButtonHilfe.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
-            }
-        });
-        jButtonBlacklist.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DialogLeer dialog = new DialogLeer(daten.mediathekGui, true);
-                dialog.init("Blacklist", new PanelBlacklist(daten, daten.mediathekGui, PanelBlacklist.class.getName() + "_2"));
-                dialog.setVisible(true);
             }
         });
         daten.mediathekGui.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "sender");
@@ -272,66 +259,67 @@ public class GuiFilme extends PanelVorlage {
                 });
 
         //beobachter Filter
-        jToggleButtonLivestram.addActionListener(new ActionListener() {
+        frameFilter.jToggleButtonLivestram.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!stopBeob) {
                     stopBeob = true;
                     //auch die Filter löschen
-                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
-                    jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
-                    jTextFieldFilterTitel.setText("");
+                    frameFilter.jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
+                    frameFilter.jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+                    frameFilter.jTextFieldFilterTitel.setText("");
                 }
                 tabelleLaden();
             }
         });
         //Combo Sender
-        jButtonFilterLoeschen.addActionListener(new BeobFilterLoeschen());
-        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
-        jComboBoxFilterSender.addActionListener(new BeobFilterSender());
-        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
-        jComboBoxFilterThema.addActionListener(new BeobFilter());
-        jTextFieldFilterTitel.addActionListener(new BeobFilter());
-        jTextFieldFilterTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        jTextFieldFilterThemaTitel.addActionListener(new BeobFilter());
-        jTextFieldFilterThemaTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        jTextFieldFilterIrgendwo.addActionListener(new BeobFilter());
-        jTextFieldFilterIrgendwo.getDocument().addDocumentListener(new BeobFilterTitelDoc());
+        frameFilter.jButtonFilterLoeschen.addActionListener(new BeobFilterLoeschen());
+        frameFilter.jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
+        frameFilter.jComboBoxFilterSender.addActionListener(new BeobFilterSender());
+        frameFilter.jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+        frameFilter.jComboBoxFilterThema.addActionListener(new BeobFilter());
+        frameFilter.jTextFieldFilterTitel.addActionListener(new BeobFilter());
+        frameFilter.jTextFieldFilterTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
+        frameFilter.jTextFieldFilterThemaTitel.addActionListener(new BeobFilter());
+        frameFilter.jTextFieldFilterThemaTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
+        frameFilter.jTextFieldFilterIrgendwo.addActionListener(new BeobFilter());
+        frameFilter.jTextFieldFilterIrgendwo.getDocument().addDocumentListener(new BeobFilterTitelDoc());
         try {
-            jSliderMinuten.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_FILTER_DAUER_NR]));
+            frameFilter.jSliderMinuten.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_FILTER_DAUER_NR]));
         } catch (Exception ex) {
-            jSliderMinuten.setValue(0);
+            frameFilter.jSliderMinuten.setValue(0);
             Daten.system[Konstanten.SYSTEM_FILTER_DAUER_NR] = "0";
         }
-        jTextFieldFilterMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
-        jSliderMinuten.addChangeListener(new ChangeListener() {
+        frameFilter.jTextFieldFilterMinuten.setText(String.valueOf(frameFilter.jSliderMinuten.getValue()));
+        frameFilter.jSliderMinuten.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                jTextFieldFilterMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
-                if (!jSliderMinuten.getValueIsAdjusting()) {
-                    Daten.system[Konstanten.SYSTEM_FILTER_DAUER_NR] = String.valueOf(jSliderMinuten.getValue());
+                frameFilter.jTextFieldFilterMinuten.setText(String.valueOf(frameFilter.jSliderMinuten.getValue()));
+                if (!frameFilter.jSliderMinuten.getValueIsAdjusting()) {
+                    Daten.system[Konstanten.SYSTEM_FILTER_DAUER_NR] = String.valueOf(frameFilter.jSliderMinuten.getValue());
                     tabelleLaden();
                 }
             }
         });
-        jCheckBoxKeineAbos.addActionListener(new BeobFilter());
-        jCheckBoxKeineGesehenen.addActionListener(new BeobFilter());
-        jCheckBoxNurHd.addActionListener(new BeobFilter());
-        jToggleButtonNeue.addActionListener(new BeobFilter());
+        frameFilter.jCheckBoxKeineAbos.addActionListener(new BeobFilter());
+        frameFilter.jCheckBoxKeineAbos.addActionListener(new BeobFilter());
+        frameFilter.jCheckBoxKeineGesehenen.addActionListener(new BeobFilter());
+        frameFilter.jCheckBoxNurHd.addActionListener(new BeobFilter());
+        frameFilter.jToggleButtonNeue.addActionListener(new BeobFilter());
         //restliche Filter
 //        jScrollPane1.addMouseListener(new BeobMausLaufendeProgramme());
 //        daten.mediathekGui.getStatusBar().getComponent().addMouseListener(new BeobMausLaufendeProgramme());
         // Filter erst mal ausblenden
         //jCheckBoxFilter.addActionListener(new BeobMpanel(jCheckBoxFilter, jPanelFilter, "Filter"));
-        jCheckBoxFilter.setIcon(GetIcon.getIcon("close_15.png"));
-        jCheckBoxFilter.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.FALSE.toString();
-                daten.mediathekGui.filterAnzeigen(true);
-                panelFilterSetzen();
-            }
-        });
+//////        frameFilter.jCheckBoxFilter.setIcon(GetIcon.getIcon("close_15.png"));
+//////        frameFilter.jCheckBoxFilter.addActionListener(new ActionListener() {
+//////            @Override
+//////            public void actionPerformed(ActionEvent e) {
+//////                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.FALSE.toString();
+//////                daten.mediathekGui.filterAnzeigen(true);
+//////                panelFilterSetzen();
+//////            }
+//////        });
         jCheckBoxProgamme.setIcon(GetIcon.getIcon("close_15.png"));
         jCheckBoxProgamme.addActionListener(new ActionListener() {
             @Override
@@ -341,15 +329,15 @@ public class GuiFilme extends PanelVorlage {
                 panelVideoplayerSetzen();
             }
         });
-        jCheckBoxFilterL.setIcon(GetIcon.getIcon("close_15.png"));
-        jCheckBoxFilterL.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR] = Boolean.FALSE.toString();
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_L_ANZEIGEN, GuiFilme.class.getName());
-                panelFilterLSetzen();
-            }
-        });
+//////        jCheckBoxFilterL.setIcon(GetIcon.getIcon("close_15.png"));
+//////        jCheckBoxFilterL.addActionListener(new ActionListener() {
+//////            @Override
+//////            public void actionPerformed(ActionEvent e) {
+//////                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR] = Boolean.FALSE.toString();
+//////                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_L_ANZEIGEN, GuiFilme.class.getName());
+//////                panelFilterLSetzen();
+//////            }
+//////        });
     }
 
     private void addListenerMediathekView() {
@@ -364,7 +352,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
-                    if (jCheckBoxKeineGesehenen.isSelected()) {
+                    if (frameFilter.jCheckBoxKeineGesehenen.isSelected()) {
                         tabelleLaden();
                     } else {
                         tabelle.fireTableDataChanged(true);
@@ -415,7 +403,7 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_L_ANZEIGEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                panelFilterLSetzen();
+//////                panelFilterLSetzen();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
@@ -428,8 +416,8 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
-                    jTextFieldFilterThemaTitel.requestFocus();
-                    jTextFieldFilterThemaTitel.setCaretPosition(0);
+                    frameFilter.jTextFieldFilterThemaTitel.requestFocus();
+                    frameFilter.jTextFieldFilterThemaTitel.setCaretPosition(0);
                 }
             }
         });
@@ -439,16 +427,22 @@ public class GuiFilme extends PanelVorlage {
         jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR]));
     }
 
+//////    private void panelFilterSetzen() {
+//////        // Panel anzeigen und die Filmliste anpassen
+//////        jPanelFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+//////        MVListeFilme.checkBlacklist();
+//////        tabelleLaden();
+//////    }
     private void panelFilterSetzen() {
         // Panel anzeigen und die Filmliste anpassen
-        jPanelFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+        frameFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
         MVListeFilme.checkBlacklist();
         tabelleLaden();
     }
-
-    private void panelFilterLSetzen() {
-        jPanelFilterL.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR]));
-    }
+//////
+//////    private void panelFilterLSetzen() {
+//////        jPanelFilterL.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR]));
+//////    }
 
     private String[] getThemen(String ssender) {
         for (int i = 1; i < Daten.listeFilmeNachBlackList.themenPerSender.length; ++i) {
@@ -499,7 +493,7 @@ public class GuiFilme extends PanelVorlage {
                     }
                     // weiter
                     String aufloesung = "";
-                    if (jCheckBoxNurHd.isSelected()) {
+                    if (frameFilter.jCheckBoxNurHd.isSelected()) {
                         aufloesung = DatenFilm.AUFLOESUNG_HD;
                     }
                     DialogAddDownload dialog = new DialogAddDownload(daten.mediathekGui, daten, film, pSet, aufloesung);
@@ -521,7 +515,7 @@ public class GuiFilme extends PanelVorlage {
             // mit dem flvstreamer immer nur einen Filme starten
             //DatenFilm datenFilm = Daten.listeFilmeNachBlackList.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
             String aufloesung = "";
-            if (jCheckBoxNurHd.isSelected()) {
+            if (frameFilter.jCheckBoxNurHd.isSelected()) {
                 aufloesung = DatenFilm.AUFLOESUNG_HD;
             }
             daten.starterClass.urlMitProgrammStarten(pSet, getSelFilm(), aufloesung);
@@ -615,52 +609,52 @@ public class GuiFilme extends PanelVorlage {
                 boolean themaNichtDa = false;
                 stopBeob = true;
                 tabelle.getSpalten();
-                String filterThema = jComboBoxFilterThema.getSelectedItem().toString();
-                String filterSender = jComboBoxFilterSender.getSelectedItem().toString();
-                boolean themaOpen = jComboBoxFilterThema.isPopupVisible();
-                boolean senderOpen = jComboBoxFilterSender.isPopupVisible();
+                String filterThema = frameFilter.jComboBoxFilterThema.getSelectedItem().toString();
+                String filterSender = frameFilter.jComboBoxFilterSender.getSelectedItem().toString();
+                boolean themaOpen = frameFilter.jComboBoxFilterThema.isPopupVisible();
+                boolean senderOpen = frameFilter.jComboBoxFilterSender.isPopupVisible();
                 if (Daten.listeFilmeNachBlackList.isEmpty()) {
                     //jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(Daten.listeFilmeNachBlackList.getModelOfFieldSender()));
                     //jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(Daten.listeFilmeNachBlackList.getModelOfFieldThema("")));
-                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
-                    jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
-                    jComboBoxFilterSender.setSelectedIndex(0);
-                    jComboBoxFilterThema.setSelectedIndex(0);
+                    frameFilter.jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
+                    frameFilter.jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+                    frameFilter.jComboBoxFilterSender.setSelectedIndex(0);
+                    frameFilter.jComboBoxFilterThema.setSelectedIndex(0);
                     listeInModellLaden(); // zum löschen der Tabelle
                 } else {
                     //Filme neu laden
                     listeInModellLaden();
                     //Filter Sender
-                    jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
-                    jComboBoxFilterSender.setSelectedIndex(0);
+                    frameFilter.jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
+                    frameFilter.jComboBoxFilterSender.setSelectedIndex(0);
                     if (!filterSender.equals("")) {
                         // ist wohl ein Bug beim Combo, klappt nur richtig wenn editable?!
-                        jComboBoxFilterSender.setEditable(true);
-                        jComboBoxFilterSender.setSelectedItem(filterSender);
-                        jComboBoxFilterSender.setEditable(false);
-                        if (jComboBoxFilterSender.getSelectedIndex() == 0) {
+                        frameFilter.jComboBoxFilterSender.setEditable(true);
+                        frameFilter.jComboBoxFilterSender.setSelectedItem(filterSender);
+                        frameFilter.jComboBoxFilterSender.setEditable(false);
+                        if (frameFilter.jComboBoxFilterSender.getSelectedIndex() == 0) {
                             // war wohl nix, der gewählte Sender wurde in die Blacklist eingetragen
                             filterSender = "";
                             listeInModellLaden();
                         }
                     }
-                    jComboBoxFilterSender.setPopupVisible(senderOpen);
+                    frameFilter.jComboBoxFilterSender.setPopupVisible(senderOpen);
                     // Filter Thema
                     if (filterSender.equals("")) {
-                        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+                        frameFilter.jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
                     } else {
-                        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen(filterSender)));
+                        frameFilter.jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen(filterSender)));
                     }
                     // wenn Thema bei dem Sender vorhanden, dann wieder setzen
                     // ist wohl ein Bug beim Combo, klappt nur richtig wenn editable?!
-                    jComboBoxFilterThema.setEditable(true);
-                    jComboBoxFilterThema.setSelectedItem(filterThema);
-                    jComboBoxFilterThema.setEditable(false);
-                    if (!filterThema.equals("") && jComboBoxFilterThema.getSelectedIndex() == 0) {
+                    frameFilter.jComboBoxFilterThema.setEditable(true);
+                    frameFilter.jComboBoxFilterThema.setSelectedItem(filterThema);
+                    frameFilter.jComboBoxFilterThema.setEditable(false);
+                    if (!filterThema.equals("") && frameFilter.jComboBoxFilterThema.getSelectedIndex() == 0) {
                         // war wohl nix
                         themaNichtDa = true;
                     }
-                    jComboBoxFilterThema.setPopupVisible(themaOpen);
+                    frameFilter.jComboBoxFilterThema.setPopupVisible(themaOpen);
                 }
                 setInfo();
                 tabelle.setSpalten();
@@ -681,19 +675,23 @@ public class GuiFilme extends PanelVorlage {
         if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
             // normal mit den Filtern aus dem Filterpanel suchen
             MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle,
-                    jComboBoxFilterSender.getSelectedItem().toString(), jComboBoxFilterThema.getSelectedItem().toString(), jTextFieldFilterTitel.getText(),
-                    jTextFieldFilterThemaTitel.getText(),
-                    jTextFieldFilterIrgendwo.getText(),
-                    jSliderMinuten.getValue(),
-                    jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected(), jToggleButtonNeue.isSelected());
+                    frameFilter.jComboBoxFilterSender.getSelectedItem().toString(),
+                    frameFilter.jComboBoxFilterThema.getSelectedItem().toString(), frameFilter.jTextFieldFilterTitel.getText(),
+                    frameFilter.jTextFieldFilterThemaTitel.getText(),
+                    frameFilter.jTextFieldFilterIrgendwo.getText(),
+                    frameFilter.jSliderMinuten.getValue(),
+                    //jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected(), jToggleButtonNeue.isSelected());
+                    frameFilter.jCheckBoxKeineAbos.isSelected(), frameFilter.jCheckBoxKeineGesehenen.isSelected(),
+                    frameFilter.jCheckBoxNurHd.isSelected(), frameFilter.jToggleButtonLivestram.isSelected(), frameFilter.jToggleButtonNeue.isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
             MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle,
                     "", "", "",
                     daten.mediathekGui.getFilterTextFromSearchField(),
                     "",
-                    jSliderMinuten.getValue(),
-                    jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected(), jToggleButtonNeue.isSelected());
+                    frameFilter.jSliderMinuten.getValue(),
+                    frameFilter.jCheckBoxKeineAbos.isSelected(), frameFilter.jCheckBoxKeineGesehenen.isSelected(),
+                    frameFilter.jCheckBoxNurHd.isSelected(), frameFilter.jToggleButtonLivestram.isSelected(), frameFilter.jToggleButtonNeue.isSelected());
 //                    0,
 //                    false, false, false, false, false);
         }
@@ -705,11 +703,11 @@ public class GuiFilme extends PanelVorlage {
     private void filterLoeschen() {
         stopBeob = true;
         //ComboModels neu aufbauen
-        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
-        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
-        jTextFieldFilterTitel.setText("");
-        jTextFieldFilterThemaTitel.setText("");
-        jTextFieldFilterIrgendwo.setText("");
+        frameFilter.jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
+        frameFilter.jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+        frameFilter.jTextFieldFilterTitel.setText("");
+        frameFilter.jTextFieldFilterThemaTitel.setText("");
+        frameFilter.jTextFieldFilterIrgendwo.setText("");
         //jSliderMinuten.setValue(0);
         //neu laden
         tabelleLaden();
@@ -789,19 +787,6 @@ public class GuiFilme extends PanelVorlage {
     private void initComponents() {
 
         jPanel4 = new javax.swing.JPanel();
-        jPanelFilter = new javax.swing.JPanel();
-        jCheckBoxFilter = new javax.swing.JCheckBox();
-        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        jComboBoxFilterSender = new javax.swing.JComboBox<String>();
-        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
-        jTextFieldFilterThemaTitel = new javax.swing.JTextField();
-        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
-        jComboBoxFilterThema = new javax.swing.JComboBox<String>();
-        jLabel7 = new javax.swing.JLabel();
-        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
-        jTextFieldFilterTitel = new javax.swing.JTextField();
-        jTextFieldFilterIrgendwo = new javax.swing.JTextField();
-        jButtonFilterLoeschen = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
         jPanelExtra = new javax.swing.JPanel();
@@ -809,20 +794,6 @@ public class GuiFilme extends PanelVorlage {
         jPanelExtraInnen = new javax.swing.JPanel();
         jPanelBeschreibung = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
-        jPanelFilterL = new javax.swing.JPanel();
-        jCheckBoxFilterL = new javax.swing.JCheckBox();
-        jButtonHilfe = new javax.swing.JButton();
-        jButtonBlacklist = new javax.swing.JButton();
-        jComboBoxZeitraum = new javax.swing.JComboBox<String>();
-        jLabel8 = new javax.swing.JLabel();
-        jSliderMinuten = new javax.swing.JSlider();
-        jTextFieldFilterMinuten = new javax.swing.JTextField();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jToggleButtonLivestram = new javax.swing.JToggleButton();
-        jToggleButtonNeue = new javax.swing.JToggleButton();
-        jCheckBoxKeineGesehenen = new javax.swing.JCheckBox();
-        jCheckBoxKeineAbos = new javax.swing.JCheckBox();
-        jCheckBoxNurHd = new javax.swing.JCheckBox();
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -834,88 +805,6 @@ public class GuiFilme extends PanelVorlage {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
-
-        jPanelFilter.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-
-        jCheckBoxFilter.setToolTipText("Filter ausblenden");
-
-        jLabel2.setText("Sender:");
-
-        jComboBoxFilterSender.setMaximumRowCount(25);
-
-        jLabel6.setText("Thema oder Titel:");
-
-        jLabel3.setText("Thema:");
-
-        jComboBoxFilterThema.setMaximumRowCount(25);
-
-        jLabel7.setText("Irgendwo:");
-
-        jLabel5.setText("Titel:");
-
-        jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
-        jButtonFilterLoeschen.setToolTipText("Filter löschen");
-
-        javax.swing.GroupLayout jPanelFilterLayout = new javax.swing.GroupLayout(jPanelFilter);
-        jPanelFilter.setLayout(jPanelFilterLayout);
-        jPanelFilterLayout.setHorizontalGroup(
-            jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelFilterLayout.createSequentialGroup()
-                .addComponent(jCheckBoxFilter)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelFilterLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxFilterSender, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxFilterThema, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanelFilterLayout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelFilterLayout.createSequentialGroup()
-                        .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
-                        .addGap(62, 62, 62))
-                    .addGroup(jPanelFilterLayout.createSequentialGroup()
-                        .addComponent(jTextFieldFilterIrgendwo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonFilterLoeschen)))
-                .addContainerGap())
-        );
-        jPanelFilterLayout.setVerticalGroup(
-            jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelFilterLayout.createSequentialGroup()
-                .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBoxFilter)
-                    .addGroup(jPanelFilterLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jLabel2)
-                            .addComponent(jComboBoxFilterSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)
-                            .addComponent(jComboBoxFilterThema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5)
-                            .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jLabel6)
-                            .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7)
-                            .addComponent(jTextFieldFilterIrgendwo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButtonFilterLoeschen))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanelFilterLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonFilterLoeschen, jTextFieldFilterIrgendwo, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new TModel());
@@ -988,167 +877,41 @@ public class GuiFilme extends PanelVorlage {
             .addGap(0, 5, Short.MAX_VALUE)
         );
 
-        jPanelFilterL.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
-
-        jButtonBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/blacklist_16.png"))); // NOI18N
-        jButtonBlacklist.setToolTipText("Blacklist öffnen");
-
-        jComboBoxZeitraum.setMaximumRowCount(10);
-
-        jLabel8.setText("Mindestlänge [min]:");
-
-        jTextFieldFilterMinuten.setEditable(false);
-        jTextFieldFilterMinuten.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextFieldFilterMinuten.setText("100");
-
-        jLabel1.setText("Zeitraum:");
-
-        jToggleButtonLivestram.setText("Livestreams");
-
-        jToggleButtonNeue.setText("Neue");
-
-        jCheckBoxKeineGesehenen.setText("gesehene ausblenden");
-
-        jCheckBoxKeineAbos.setText("Abos nicht anzeigen");
-
-        jCheckBoxNurHd.setText("nur HD anzeigen");
-
-        javax.swing.GroupLayout jPanelFilterLLayout = new javax.swing.GroupLayout(jPanelFilterL);
-        jPanelFilterL.setLayout(jPanelFilterLLayout);
-        jPanelFilterLLayout.setHorizontalGroup(
-            jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelFilterLLayout.createSequentialGroup()
-                .addGroup(jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelFilterLLayout.createSequentialGroup()
-                        .addComponent(jCheckBoxFilterL)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanelFilterLLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBoxZeitraum, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanelFilterLLayout.createSequentialGroup()
-                                .addGroup(jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addGroup(jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilterLLayout.createSequentialGroup()
-                                            .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(jLabel8))
-                                    .addComponent(jToggleButtonLivestram)
-                                    .addComponent(jToggleButtonNeue)
-                                    .addComponent(jCheckBoxNurHd)
-                                    .addComponent(jCheckBoxKeineAbos)
-                                    .addComponent(jCheckBoxKeineGesehenen))
-                                .addGap(0, 8, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilterLLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonBlacklist)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonHilfe)))
-                .addContainerGap())
-        );
-
-        jPanelFilterLLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jToggleButtonLivestram, jToggleButtonNeue});
-
-        jPanelFilterLLayout.setVerticalGroup(
-            jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelFilterLLayout.createSequentialGroup()
-                .addComponent(jCheckBoxFilterL)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jToggleButtonLivestram)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButtonNeue)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBoxKeineGesehenen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxKeineAbos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxNurHd)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
-                .addGroup(jPanelFilterLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonHilfe)
-                    .addComponent(jButtonBlacklist, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanelFilterL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jPanelFilter, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 839, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanelFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanelExtra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanelFilterL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelExtra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonBlacklist;
-    private javax.swing.JButton jButtonFilterLoeschen;
-    private javax.swing.JButton jButtonHilfe;
-    private javax.swing.JCheckBox jCheckBoxFilter;
-    private javax.swing.JCheckBox jCheckBoxFilterL;
-    private javax.swing.JCheckBox jCheckBoxKeineAbos;
-    private javax.swing.JCheckBox jCheckBoxKeineGesehenen;
-    private javax.swing.JCheckBox jCheckBoxNurHd;
     private javax.swing.JCheckBox jCheckBoxProgamme;
-    private javax.swing.JComboBox<String> jComboBoxFilterSender;
-    private javax.swing.JComboBox<String> jComboBoxFilterThema;
-    private javax.swing.JComboBox<String> jComboBoxZeitraum;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JPanel jPanelExtraInnen;
-    private javax.swing.JPanel jPanelFilter;
-    private javax.swing.JPanel jPanelFilterL;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSlider jSliderMinuten;
-    private javax.swing.JTextField jTextFieldFilterIrgendwo;
-    private javax.swing.JTextField jTextFieldFilterMinuten;
-    private javax.swing.JTextField jTextFieldFilterThemaTitel;
-    private javax.swing.JTextField jTextFieldFilterTitel;
-    private javax.swing.JToggleButton jToggleButtonLivestram;
-    private javax.swing.JToggleButton jToggleButtonNeue;
     // End of variables declaration//GEN-END:variables
 
     private class BeobOpen implements ActionListener {
@@ -1181,9 +944,9 @@ public class GuiFilme extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
-                Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = String.valueOf(jCheckBoxKeineAbos.isSelected());
-                Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = String.valueOf(jCheckBoxKeineGesehenen.isSelected());
-                Daten.system[Konstanten.SYSTEM_FILTER_NUR_HD_NR] = String.valueOf(jCheckBoxNurHd.isSelected());
+                Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = String.valueOf(frameFilter.jCheckBoxKeineAbos.isSelected());
+                Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = String.valueOf(frameFilter.jCheckBoxKeineGesehenen.isSelected());
+                Daten.system[Konstanten.SYSTEM_FILTER_NUR_HD_NR] = String.valueOf(frameFilter.jCheckBoxNurHd.isSelected());
                 tabelleLaden();
             }
         }
@@ -1564,8 +1327,8 @@ public class GuiFilme extends PanelVorlage {
                     DatenFilm film = getFilm(nr);
                     String thema = film.arr[DatenFilm.FILM_THEMA_NR];
                     //thema = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
-                    jComboBoxFilterThema.setSelectedIndex(0);
-                    jComboBoxFilterThema.setSelectedItem(thema);
+                    frameFilter.jComboBoxFilterThema.setSelectedIndex(0);
+                    frameFilter.jComboBoxFilterThema.setSelectedItem(thema);
                     stopBeob = false;
                     tabelleLaden();
                 }
@@ -1581,8 +1344,8 @@ public class GuiFilme extends PanelVorlage {
                     stopBeob = true;
                     DatenFilm film = getFilm(nr);
                     String sen = film.arr[DatenFilm.FILM_SENDER_NR];
-                    jComboBoxFilterSender.setSelectedIndex(0);
-                    jComboBoxFilterSender.setSelectedItem(sen);
+                    frameFilter.jComboBoxFilterSender.setSelectedIndex(0);
+                    frameFilter.jComboBoxFilterSender.setSelectedItem(sen);
                     stopBeob = false;
                     tabelleLaden();
                 }
@@ -1598,14 +1361,14 @@ public class GuiFilme extends PanelVorlage {
                     stopBeob = true;
                     DatenFilm film = getFilm(nr);
                     String sen = film.arr[DatenFilm.FILM_SENDER_NR];
-                    jComboBoxFilterSender.setSelectedIndex(0);
-                    jComboBoxFilterSender.setSelectedItem(sen);
+                    frameFilter.jComboBoxFilterSender.setSelectedIndex(0);
+                    frameFilter.jComboBoxFilterSender.setSelectedItem(sen);
                     String thema = film.arr[DatenFilm.FILM_THEMA_NR];
-                    jComboBoxFilterThema.setSelectedIndex(0);
-                    jComboBoxFilterThema.setSelectedItem(thema);
-                    if (jComboBoxFilterThema.getSelectedIndex() == 0) {
+                    frameFilter.jComboBoxFilterThema.setSelectedIndex(0);
+                    frameFilter.jComboBoxFilterThema.setSelectedItem(thema);
+                    if (frameFilter.jComboBoxFilterThema.getSelectedIndex() == 0) {
                         String themaFilter = getThemaFilter(sen, thema);
-                        jComboBoxFilterThema.setSelectedItem(themaFilter);
+                        frameFilter.jComboBoxFilterThema.setSelectedItem(themaFilter);
                     }
                     stopBeob = false;
                     tabelleLaden();
@@ -1622,17 +1385,17 @@ public class GuiFilme extends PanelVorlage {
                     stopBeob = true;
                     DatenFilm film = getFilm(nr);
                     String sen = film.arr[DatenFilm.FILM_SENDER_NR];
-                    jComboBoxFilterSender.setSelectedIndex(0);
-                    jComboBoxFilterSender.setSelectedItem(sen);
+                    frameFilter.jComboBoxFilterSender.setSelectedIndex(0);
+                    frameFilter.jComboBoxFilterSender.setSelectedItem(sen);
                     String thema = film.arr[DatenFilm.FILM_THEMA_NR];
-                    jComboBoxFilterThema.setSelectedIndex(0);
-                    jComboBoxFilterThema.setSelectedItem(thema);
-                    if (jComboBoxFilterThema.getSelectedIndex() == 0) {
+                    frameFilter.jComboBoxFilterThema.setSelectedIndex(0);
+                    frameFilter.jComboBoxFilterThema.setSelectedItem(thema);
+                    if (frameFilter.jComboBoxFilterThema.getSelectedIndex() == 0) {
                         String themaFilter = getThemaFilter(sen, thema);
-                        jComboBoxFilterThema.setSelectedItem(themaFilter);
+                        frameFilter.jComboBoxFilterThema.setSelectedItem(themaFilter);
                     }
                     String tit = film.arr[DatenFilm.FILM_TITEL_NR];
-                    jTextFieldFilterTitel.setText(tit);
+                    frameFilter.jTextFieldFilterTitel.setText(tit);
                     stopBeob = false;
                     tabelleLaden();
                 }
@@ -1717,9 +1480,10 @@ public class GuiFilme extends PanelVorlage {
                         String thema = film.arr[DatenFilm.FILM_THEMA_NR];
                         //neues Abo anlegen
                         //ddaten.listeAbo.addAbo(filmSender, filmThema, filmTitel);
-                        Daten.listeAbo.addAbo(jComboBoxFilterSender.getSelectedItem().toString(), jComboBoxFilterThema.getSelectedItem().toString(),
-                                jTextFieldFilterTitel.getText(), jTextFieldFilterThemaTitel.getText(),
-                                jTextFieldFilterIrgendwo.getText(), jSliderMinuten.getValue(), thema);
+                        Daten.listeAbo.addAbo(frameFilter.jComboBoxFilterSender.getSelectedItem().toString(),
+                                frameFilter.jComboBoxFilterThema.getSelectedItem().toString(),
+                                frameFilter.jTextFieldFilterTitel.getText(), frameFilter.jTextFieldFilterThemaTitel.getText(),
+                                frameFilter.jTextFieldFilterIrgendwo.getText(), frameFilter.jSliderMinuten.getValue(), thema);
                         stopBeob = false;
                     }
                 }
@@ -1775,8 +1539,8 @@ public class GuiFilme extends PanelVorlage {
         }
 
         private void tus() {
-            Filter.checkPattern1(jTextFieldFilterThemaTitel);
-            Filter.checkPattern1(jTextFieldFilterTitel);
+            Filter.checkPattern1(frameFilter.jTextFieldFilterThemaTitel);
+            Filter.checkPattern1(frameFilter.jTextFieldFilterTitel);
             if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
                 tabelleLaden();
             }
