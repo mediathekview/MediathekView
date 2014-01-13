@@ -194,9 +194,6 @@
               <StringArray count="0"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cbxIconPackagesItemStateChanged"/>
-          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
@@ -292,9 +289,6 @@
             <Property name="text" type="java.lang.String" value="Downloadgeschwindigkeit begrenzen auf:"/>
             <Property name="toolTipText" type="java.lang.String" value="Maximum ist 1000 KB/s"/>
           </Properties>
-          <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cbLimitBandwidthItemStateChanged"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JSpinner" name="bandwidthSpinner">
           <Properties>
@@ -302,9 +296,9 @@
               <SpinnerModel initial="0" maximum="1000" minimum="0" numberType="java.lang.Integer" stepSize="10" type="number"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="bandwidthSpinnerStateChanged"/>
-          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="PanelEinstellungen_bandwidthSpinner"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JLabel" name="lblBandwidth">
           <Properties>
