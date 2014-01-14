@@ -197,16 +197,20 @@ public final class MVToolBar extends JToolBar {
         }
         if (!extern) {
             this.add(filler__trenner);
-            jButtonFilterPanel.setToolTipText("Erweiterte Suche / Filter anzeigen");
-            jButtonFilterPanel.setBorder(null);
-            jButtonFilterPanel.setBorderPainted(false);
-            jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-            jButtonFilterPanel.setMaximumSize(new java.awt.Dimension(40, 40));
-            jButtonFilterPanel.setMinimumSize(new java.awt.Dimension(40, 40));
-            jButtonFilterPanel.setOpaque(false);
-            jButtonFilterPanel.setPreferredSize(new java.awt.Dimension(40, 40));
-            jButtonFilterPanel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-            this.add(jButtonFilterPanel);
+//            // Button Filter
+//            jButtonFilterPanel.setToolTipText("Erweiterte Suche / Filter anzeigen");
+//            jButtonFilterPanel.setBorder(null);
+//            jButtonFilterPanel.setBorderPainted(false);
+//            jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+//            jButtonFilterPanel.setMaximumSize(new java.awt.Dimension(40, 40));
+//            jButtonFilterPanel.setMinimumSize(new java.awt.Dimension(40, 40));
+//            jButtonFilterPanel.setOpaque(false);
+//            jButtonFilterPanel.setPreferredSize(new java.awt.Dimension(40, 40));
+//            jButtonFilterPanel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+//            jButtonFilterPanel.setIcon(GetIcon.getIcon("filter_anzeigen_22.png"));
+//            this.add(jButtonFilterPanel);
+
+            // Searchfield
             jTextFieldFilter.setBackground(new java.awt.Color(230, 230, 230));
             jTextFieldFilter.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
             jTextFieldFilter.setToolTipText("Thema/Titel suchen");
@@ -215,10 +219,6 @@ public final class MVToolBar extends JToolBar {
             jTextFieldFilter.setName("Thema/Titel");
             jTextFieldFilter.setPreferredSize(new java.awt.Dimension(300, 25));
             jTextFieldFilter.setPrompt("Thema/Titel");
-            this.add(jTextFieldFilter);
-            this.add(filler__10);
-            // Searchfield
-            jButtonFilterPanel.setIcon(GetIcon.getIcon("filter_anzeigen_22.png"));
             jTextFieldFilter.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
             jTextFieldFilter.setSearchMode(JXSearchField.SearchMode.INSTANT);
             jTextFieldFilter.setUseNativeSearchFieldIfPossible(true);
@@ -232,6 +232,22 @@ public final class MVToolBar extends JToolBar {
             });
             //looks like you need to explicitly set this on Linux...
             jTextFieldFilter.setInstantSearchDelay(150);
+            this.add(jTextFieldFilter);
+
+            // Button Filter
+            jButtonFilterPanel.setToolTipText("Erweiterte Suche / Filter anzeigen");
+            jButtonFilterPanel.setBorder(null);
+            jButtonFilterPanel.setBorderPainted(false);
+            jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+            jButtonFilterPanel.setMaximumSize(new java.awt.Dimension(40, 40));
+            jButtonFilterPanel.setMinimumSize(new java.awt.Dimension(40, 40));
+            jButtonFilterPanel.setOpaque(false);
+            jButtonFilterPanel.setPreferredSize(new java.awt.Dimension(40, 40));
+            jButtonFilterPanel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+            jButtonFilterPanel.setIcon(GetIcon.getIcon("filter_anzeigen_22.png"));
+            this.add(jButtonFilterPanel);
+
+            this.add(filler__10);
         }
         // Icons
         if (nrIconKlein > 0) {
@@ -270,11 +286,7 @@ public final class MVToolBar extends JToolBar {
     public void setToolbar(String sstate) {
         state = sstate;
         boolean ok;
-        if (sstate.equals(TOOLBAR_TAB_FILME)) {
-            filterAnzeigen(!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
-        } else {
-            filterAnzeigen(false);
-        }
+        filterAnzeigen();
         if (sstate.equals(TOOLBAR_NIX)) {
             for (MVButton b : buttonListToUse) {
                 if (extern) {
@@ -310,9 +322,21 @@ public final class MVToolBar extends JToolBar {
         }
     }
 
-    public void filterAnzeigen(boolean anz) {
-        jTextFieldFilter.setVisible(anz);
-        jButtonFilterPanel.setVisible(anz);
+    public void filterAnzeigen() {
+//        if (state.equals(TOOLBAR_TAB_FILME)) {
+//            jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+//            // jButtonFilterPanel.setVisible(anz);
+//        } else {
+//            jTextFieldFilter.setVisible(false);
+//            // jButtonFilterPanel.setVisible(anz);
+//        }
+        if (!extern) {
+            jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+            // jButtonFilterPanel.setVisible(anz);
+        } else {
+            jTextFieldFilter.setVisible(false);
+            // jButtonFilterPanel.setVisible(anz);
+        }
     }
 
     public void loadVisible() {
@@ -345,6 +369,12 @@ public final class MVToolBar extends JToolBar {
     }
 
     private void initListener() {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                    filterAnzeigen();
+            }
+        });
         addMouseListener(beobMausToolBar);
         Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
@@ -471,9 +501,10 @@ public final class MVToolBar extends JToolBar {
         jButtonFilterPanel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.TRUE.toString();
-                filterAnzeigen(false);
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getName());
+                boolean b = !Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]);
+                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.toString(b);
+                filterAnzeigen();
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getName());
             }
         });
     }

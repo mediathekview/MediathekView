@@ -59,7 +59,7 @@ public class MVFrameFilter extends javax.swing.JFrame {
 //        }
 
         Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.FALSE.toString();
-        daten.mediathekGui.filterAnzeigen(true);
+//        daten.mediathekGui.filterAnzeigen(true);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVFrameFilter.class.getName());
 
         super.dispose();

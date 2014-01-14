@@ -400,12 +400,6 @@ public class GuiFilme extends PanelVorlage {
                 panelFilterSetzen();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_L_ANZEIGEN, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-//////                panelFilterLSetzen();
-            }
-        });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {

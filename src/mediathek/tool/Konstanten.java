@@ -86,7 +86,7 @@ public class Konstanten {
     public static final String SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN = "system-panel-beschreibung-anzeigen";
     public static final int SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR = 11;
     public static final String SYSTEM_PANEL_FILTER_L_ANZEIGEN = "system-panel-filter-2-anzeigen";
-    public static final int SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR = 12;
+//    public static final int SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR = 12;
     //proxy
     public static final String SYSTEM_HTTP_PROXY_SERVER = "proxy-server";
     public static final int SYSTEM_HTTP_PROXY_SERVER_NR = 13;
