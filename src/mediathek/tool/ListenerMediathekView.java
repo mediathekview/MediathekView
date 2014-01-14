@@ -48,7 +48,7 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL = 21;
     public static final int EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR = 22;
     public static final int EREIGNIS_PANEL_FILTER_ANZEIGEN = 23;
-    public static final int EREIGNIS_PANEL_FILTER_L_ANZEIGEN = 24;
+    //public static final int EREIGNIS_PANEL_FILTER_L_ANZEIGEN = 24;
     public static final int EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN = 25;
     public static final int EREIGNIS_SUCHFELD_FOCUS_SETZEN = 26;
     public static final int EREIGNIS_BLACKLIST_AUCH_FUER_ABOS = 27;
