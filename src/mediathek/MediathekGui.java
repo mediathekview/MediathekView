@@ -706,7 +706,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             jMenuHilfe.remove(jMenuItemAbout);
         }
 
-        enableOsxFullScreenMode(this);
+        //WORKAROUND: Versions below 10.9 donÂ´t seem to work correctly...
+        String strOsVersion =  SystemInfo.getOSVersion();
+        if (strOsVersion.startsWith("10.9"))
+            enableOsxFullScreenMode(this);
+        else
+            Log.debugMeldung("OS X Fullscreen Support NOT enabled.");
     }
 
     private void initMenue() {
