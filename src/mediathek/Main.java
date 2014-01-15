@@ -84,7 +84,7 @@ public class Main {
                         MVSingleInstance singleInstanceWatcher = new MVSingleInstance();
                         if (singleInstanceWatcher.isAppAlreadyActive()) {
                             JOptionPane.showMessageDialog(null, "MediathekView is already running!");
-                            System.exit(1);
+                            //System.exit(1);
                         }
                         // use for debugging EDT violations
                         RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
