@@ -89,6 +89,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             setForeground(null);
             setFont(null);
             setIcon(null);
+            setToolTipText(null);
             setHorizontalAlignment(SwingConstants.LEADING);
             super.getTableCellRendererComponent(
                     table, value, isSelected, hasFocus, row, column);
