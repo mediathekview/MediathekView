@@ -19,6 +19,8 @@
  */
 package mediathek.gui;
 
+import com.jidesoft.popup.JidePopup;
+import com.jidesoft.swing.JideMenu;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -43,6 +45,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -65,11 +68,7 @@ import mediathek.daten.DatenBlacklist;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
-import mediathek.file.GetFile;
-import mediathek.gui.dialog.DialogHilfe;
-import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.MVFilmInformation;
-import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererFilme;
@@ -148,8 +147,6 @@ public class GuiFilme extends PanelVorlage {
 
     private void init() {
         frameFilter.jToggleButtonNeue.setEnabled(false);
-        frameFilter.jButtonFilterLoeschen.setIcon(GetIcon.getIcon("clear_16.png"));
-//////        panelFilterLSetzen();
         panelBeschreibungSetzen();
         frameFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
         frameFilter.jComboBoxZeitraum.setModel(new DefaultComboBoxModel<>(COMBO_ZEIT));
@@ -168,7 +165,6 @@ public class GuiFilme extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 if (!stopBeob) {
                     Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(frameFilter.jComboBoxZeitraum.getSelectedIndex());
-//                    checkBlacklist();
                     MVListeFilme.checkBlacklist();
                     tabelleLaden();
                 }
@@ -183,7 +179,6 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void fertig(MSearchListenerFilmeLadenEvent event) {
-//                checkBlacklist();
                 frameFilter.jToggleButtonNeue.setEnabled(Daten.listeFilmeNachBlackList.neueFilme);
                 tabelleLaden();
             }
@@ -306,20 +301,6 @@ public class GuiFilme extends PanelVorlage {
         frameFilter.jCheckBoxKeineGesehenen.addActionListener(new BeobFilter());
         frameFilter.jCheckBoxNurHd.addActionListener(new BeobFilter());
         frameFilter.jToggleButtonNeue.addActionListener(new BeobFilter());
-        //restliche Filter
-//        jScrollPane1.addMouseListener(new BeobMausLaufendeProgramme());
-//        daten.mediathekGui.getStatusBar().getComponent().addMouseListener(new BeobMausLaufendeProgramme());
-        // Filter erst mal ausblenden
-        //jCheckBoxFilter.addActionListener(new BeobMpanel(jCheckBoxFilter, jPanelFilter, "Filter"));
-//////        frameFilter.jCheckBoxFilter.setIcon(GetIcon.getIcon("close_15.png"));
-//////        frameFilter.jCheckBoxFilter.addActionListener(new ActionListener() {
-//////            @Override
-//////            public void actionPerformed(ActionEvent e) {
-//////                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.FALSE.toString();
-//////                daten.mediathekGui.filterAnzeigen(true);
-//////                panelFilterSetzen();
-//////            }
-//////        });
         jCheckBoxProgamme.setIcon(GetIcon.getIcon("close_15.png"));
         jCheckBoxProgamme.addActionListener(new ActionListener() {
             @Override
@@ -329,15 +310,6 @@ public class GuiFilme extends PanelVorlage {
                 panelVideoplayerSetzen();
             }
         });
-//////        jCheckBoxFilterL.setIcon(GetIcon.getIcon("close_15.png"));
-//////        jCheckBoxFilterL.addActionListener(new ActionListener() {
-//////            @Override
-//////            public void actionPerformed(ActionEvent e) {
-//////                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR] = Boolean.FALSE.toString();
-//////                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_L_ANZEIGEN, GuiFilme.class.getName());
-//////                panelFilterLSetzen();
-//////            }
-//////        });
     }
 
     private void addListenerMediathekView() {
@@ -421,22 +393,12 @@ public class GuiFilme extends PanelVorlage {
         jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR]));
     }
 
-//////    private void panelFilterSetzen() {
-//////        // Panel anzeigen und die Filmliste anpassen
-//////        jPanelFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
-//////        MVListeFilme.checkBlacklist();
-//////        tabelleLaden();
-//////    }
     private void panelFilterSetzen() {
         // Panel anzeigen und die Filmliste anpassen
         frameFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
         MVListeFilme.checkBlacklist();
         tabelleLaden();
     }
-//////
-//////    private void panelFilterLSetzen() {
-//////        jPanelFilterL.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR]));
-//////    }
 
     private String[] getThemen(String ssender) {
         for (int i = 1; i < Daten.listeFilmeNachBlackList.themenPerSender.length; ++i) {
@@ -674,7 +636,6 @@ public class GuiFilme extends PanelVorlage {
                     frameFilter.jTextFieldFilterThemaTitel.getText(),
                     frameFilter.jTextFieldFilterIrgendwo.getText(),
                     frameFilter.jSliderMinuten.getValue(),
-                    //jCheckBoxKeineAbos.isSelected(), jCheckBoxKeineGesehenen.isSelected(), jCheckBoxNurHd.isSelected(), jToggleButtonLivestram.isSelected(), jToggleButtonNeue.isSelected());
                     frameFilter.jCheckBoxKeineAbos.isSelected(), frameFilter.jCheckBoxKeineGesehenen.isSelected(),
                     frameFilter.jCheckBoxNurHd.isSelected(), frameFilter.jToggleButtonLivestram.isSelected(), frameFilter.jToggleButtonNeue.isSelected());
         } else {
@@ -686,8 +647,6 @@ public class GuiFilme extends PanelVorlage {
                     frameFilter.jSliderMinuten.getValue(),
                     frameFilter.jCheckBoxKeineAbos.isSelected(), frameFilter.jCheckBoxKeineGesehenen.isSelected(),
                     frameFilter.jCheckBoxNurHd.isSelected(), frameFilter.jToggleButtonLivestram.isSelected(), frameFilter.jToggleButtonNeue.isSelected());
-//                    0,
-//                    false, false, false, false, false);
         }
     }
     // ####################################
@@ -713,7 +672,6 @@ public class GuiFilme extends PanelVorlage {
             DatenFilm film = getSelFilm();
             if (film != null) {
                 aktFilm = film;
-//                aktFilm.neuerFilm = false;
             }
             filmInfoHud.updateCurrentFilm(aktFilm);
             // Beschreibung setzen
@@ -964,58 +922,6 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-//    public class BeobMausLaufendeProgramme extends MouseAdapter {
-//        //rechhte Maustaste im Rahmen um die Tabelle
-//        @Override
-//        public void mousePressed(MouseEvent arg0) {
-//            if (arg0.isPopupTrigger()) {
-//                showMenu(arg0);
-//            }
-//        }
-//
-//        @Override
-//        public void mouseReleased(MouseEvent arg0) {
-//            if (arg0.isPopupTrigger()) {
-//                showMenu(arg0);
-//            }
-//        }
-//
-//        private void showMenu(MouseEvent evt) {
-//            LinkedList<DatenDownload> liste = Daten.listeDownloads.getListteStartsNotFinished(Start.QUELLE_BUTTON);
-//            if (liste.size() > 0) {
-//                JPopupMenu jPopupMenu = new JPopupMenu();
-//                JMenuItem item;
-//                for (DatenDownload s : liste) {
-//                    // dann läuft er noch
-//                    item = new JMenuItem("Beenden: [" + s.arr[DatenDownload.DOWNLOAD_SENDER_NR] + "]  " + s.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
-//                    item.addActionListener(new BeobProgramm(s));
-//                    jPopupMenu.add(item);
-//                }
-//                //anzeigen
-//                jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-//            }
-//        }
-//
-//        private class BeobProgramm implements ActionListener {
-//
-//            DatenDownload datenDownload;
-//
-//            public BeobProgramm(DatenDownload d) {
-//                datenDownload = d;
-//            }
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                try {
-//                    if (datenDownload.start != null) {
-//                        Daten.listeDownloads.delDownloadByUrl(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR], false /*nurStart*/);
-//                    }
-//                } catch (Exception ex) {
-//                    System.err.println("GuiFilme.BeobProgramm: " + ex);
-//                }
-//            }
-//        }
-//    }
     public class BeobMausTabelle extends MouseAdapter {
         //rechhte Maustaste in der Tabelle
 
@@ -1099,9 +1005,7 @@ public class GuiFilme extends PanelVorlage {
                 tabelle.setRowSelectionInterval(nr, nr);
             }
             //int selectedModelRow = tabelle.convertRowIndexToModel(nr);
-            //DatenFilm film = Daten.listeFilme.getFilmByNr(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_NR_NR).toString());
             DatenFilm film = getFilm(nr);
-            //(DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_REF_NR);
             JPopupMenu jPopupMenu = new JPopupMenu();
 
             //Thema laden
@@ -1257,13 +1161,6 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
 
-//        private class BeobSenderLaden implements ActionListener {
-//
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                senderLaden();
-//            }
-//        }
         private class BeobUrl implements ActionListener {
 
             @Override
@@ -1320,7 +1217,6 @@ public class GuiFilme extends PanelVorlage {
                     stopBeob = true;
                     DatenFilm film = getFilm(nr);
                     String thema = film.arr[DatenFilm.FILM_THEMA_NR];
-                    //thema = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenFilm.FILM_THEMA_NR).toString();
                     frameFilter.jComboBoxFilterThema.setSelectedIndex(0);
                     frameFilter.jComboBoxFilterThema.setSelectedItem(thema);
                     stopBeob = false;
@@ -1436,8 +1332,6 @@ public class GuiFilme extends PanelVorlage {
                     int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {
                         stopBeob = true;
-//                        int selectedModelRow = tabelle.convertRowIndexToModel(nr);
-                        //DatenFilm film = Daten.listeFilme.getFilmByUrl(tabelle.getModel().getValueAt(selectedModelRow, DatenFilm.FILM_URL_NR).toString());
                         DatenFilm film = getFilm(nr);
                         DatenAbo datenAbo;
                         if (film != null) {
@@ -1473,7 +1367,6 @@ public class GuiFilme extends PanelVorlage {
                         DatenFilm film = getFilm(nr);
                         String thema = film.arr[DatenFilm.FILM_THEMA_NR];
                         //neues Abo anlegen
-                        //ddaten.listeAbo.addAbo(filmSender, filmThema, filmTitel);
                         Daten.listeAbo.addAbo(frameFilter.jComboBoxFilterSender.getSelectedItem().toString(),
                                 frameFilter.jComboBoxFilterThema.getSelectedItem().toString(),
                                 frameFilter.jTextFieldFilterTitel.getText(), frameFilter.jTextFieldFilterThemaTitel.getText(),
