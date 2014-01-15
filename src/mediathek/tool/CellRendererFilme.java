@@ -30,7 +30,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.gui.GuiFilme;
 import mediathek.res.GetIcon;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
@@ -78,6 +77,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             setForeground(null);
             setFont(null);
             setIcon(null);
+            setToolTipText(null);
             setHorizontalAlignment(SwingConstants.LEADING);
             super.getTableCellRendererComponent(
                     table, value, isSelected, hasFocus, row, column);
