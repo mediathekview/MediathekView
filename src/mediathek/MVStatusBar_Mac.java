@@ -13,6 +13,7 @@ import mediathek.daten.Daten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
 import mediathek.res.GetIcon;
+import mediathek.tool.GuiFunktionen;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 /**
@@ -34,8 +35,9 @@ public final class MVStatusBar_Mac extends MVStatusBar {
         lblCenter = MacWidgetFactory.createEmphasizedLabel("");
         bottomBar.addComponentToLeft(lblCenter);
 
-        if (Daten.debug)
+        if (Daten.debug) {
             bottomBar.addComponentToCenter(new MVMemoryUsageButton());
+        }
 
         //Progress controls and Filminfo must be packed in a panel
         JPanel progressPanel = new JPanel();
@@ -52,8 +54,7 @@ public final class MVStatusBar_Mac extends MVStatusBar {
         stopButton = new JButton();
         //stopButton.setIcon(new ImageIcon(getClass().getResource("/com/explodingpixels/macwidgets/images/close.png")));
         stopButton.setIcon(GetIcon.getIcon("close.png"));
-                
-        
+
         stopButton.setToolTipText("Abbrechen");
         stopButton.addActionListener(new ActionListener() {
             @Override
@@ -118,7 +119,7 @@ public final class MVStatusBar_Mac extends MVStatusBar {
             progress.setStringPainted(true);
         }
         if (Daten.debug) {
-            lblRechts.setText(event.text);
+            lblRechts.setText(GuiFunktionen.textLaenge(60, event.text, true /* mitte */, true /*addVorne*/));
         } else {
             lblRechts.setVisible(false);
         }
