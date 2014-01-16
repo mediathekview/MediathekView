@@ -243,10 +243,12 @@ public class MVFrameFilter extends javax.swing.JFrame {
 
         jLabel2.setText("Sender:");
 
+        jComboBoxFilterSender.setMaximumRowCount(20);
         jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel4.setText("Thema:");
 
+        jComboBoxFilterThema.setMaximumRowCount(20);
         jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel5.setText("Titel:");
