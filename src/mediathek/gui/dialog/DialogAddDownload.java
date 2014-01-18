@@ -58,10 +58,12 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private final DatenFilm datenFilm;
     private Component parentComponent = null;
     private String orgPfad = "";
-    String aufloesung = "";
-    String dateiGroesse_HD = "";
-    String dateiGroesse_Hoch = "";
-    String dateiGroesse_Klein = "";
+    private String aufloesung = "";
+    private String dateiGroesse_HD = "";
+    private String dateiGroesse_Hoch = "";
+    private String dateiGroesse_Klein = "";
+    private boolean nameGeaendert = false;
+    private boolean stopBeob = false;
 
     public DialogAddDownload(java.awt.Frame parent, Daten dd, DatenFilm film, DatenPset ppSet, String aaufloesung) {
         super(parent, true);
@@ -117,17 +119,22 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 beenden();
             }
         });
-        jComboBoxPgr.setModel(new javax.swing.DefaultComboBoxModel<>(daten.listePset.getListeSpeichern().getObjectDataCombo()));
+        jComboBoxPset.setModel(new javax.swing.DefaultComboBoxModel<>(daten.listePset.getListeSpeichern().getObjectDataCombo()));
         if (pSet != null) {
-            jComboBoxPgr.setSelectedItem(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
+            jComboBoxPset.setSelectedItem(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
         } else {
-            pSet = daten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
+            pSet = daten.listePset.getListeSpeichern().get(jComboBoxPset.getSelectedIndex());
         }
         if (daten.listePset.getListeSpeichern().size() == 1) {
             // macht dann keinen Sinn
-            jComboBoxPgr.setEnabled(false);
+            jComboBoxPset.setEnabled(false);
         } else {
-            jComboBoxPgr.addActionListener(new BeobComboProgramm());
+            jComboBoxPset.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setCombo();
+                }
+            });
         }
         jTextFieldSender.setText(datenFilm.arr[DatenFilm.FILM_SENDER_NR]);
         jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL_NR]);
@@ -169,27 +176,31 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 Daten.system[Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN_NR] = Boolean.toString(jCheckBoxPfadSpeichern.isSelected());
             }
         });
-
         setCombo();
+        nameGeaendert = false;
     }
 
     private void setNameFilm() {
         // beim ersten mal werden die Standardpfade gesucht
-        // datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, "", "", "" /*Aufloesung*/);
-        datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, "", "", getAufloesung());
-        if (datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR].equals("")) {
-            jTextFieldName.setEnabled(false);
-            jComboBoxPfad.setEnabled(false);
-            jButtonZiel.setEnabled(false);
-            jTextFieldName.setText("");
-            setModelPfad("");
-        } else {
-            jTextFieldName.setEnabled(true);
-            jComboBoxPfad.setEnabled(true);
-            jButtonZiel.setEnabled(true);
-            jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR]);
-            setModelPfad(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
-            orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
+        if (!nameGeaendert) {
+            // nur wenn vom Benutzer noch nicht geänert!
+            stopBeob = true;
+            datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, "", "", getAufloesung());
+            if (datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR].equals("")) {
+                jTextFieldName.setEnabled(false);
+                jComboBoxPfad.setEnabled(false);
+                jButtonZiel.setEnabled(false);
+                jTextFieldName.setText("");
+                setModelPfad("");
+            } else {
+                jTextFieldName.setEnabled(true);
+                jComboBoxPfad.setEnabled(true);
+                jButtonZiel.setEnabled(true);
+                jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR]);
+                setModelPfad(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
+                orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
+            }
+            stopBeob = false;
         }
     }
 
@@ -239,7 +250,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
 
     private void setCombo() {
         // stellt den Namen/Radios passend zum Combo ein
-        pSet = daten.listePset.getListeSpeichern().get(jComboBoxPgr.getSelectedIndex());
+        pSet = daten.listePset.getListeSpeichern().get(jComboBoxPset.getSelectedIndex());
         if (aufloesung.equals(DatenFilm.AUFLOESUNG_HD) && !datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty() /* Dann wurde im Filter HD ausgewählt und wird voreingestellt */
                 || pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_HD) && !datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty()) {
             jRadioButtonAufloesungHd.setSelected(true);
@@ -337,7 +348,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jCheckBoxPfadSpeichern = new javax.swing.JCheckBox();
         jCheckBoxInfodatei = new javax.swing.JCheckBox();
         javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
-        jComboBoxPgr = new javax.swing.JComboBox<String>();
+        jComboBoxPset = new javax.swing.JComboBox<String>();
         jPanel2 = new javax.swing.JPanel();
         jRadioButtonAufloesungHd = new javax.swing.JRadioButton();
         jRadioButtonAufloesungHoch = new javax.swing.JRadioButton();
@@ -469,14 +480,14 @@ public class DialogAddDownload extends javax.swing.JDialog {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBoxPgr, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jComboBoxPset, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBoxPgr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jComboBoxPset, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -568,7 +579,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private javax.swing.JCheckBox jCheckBoxPfadSpeichern;
     private javax.swing.JCheckBox jCheckBoxStarten;
     private javax.swing.JComboBox<String> jComboBoxPfad;
-    private javax.swing.JComboBox<String> jComboBoxPgr;
+    private javax.swing.JComboBox<String> jComboBoxPset;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JRadioButton jRadioButtonAufloesungHd;
     private javax.swing.JRadioButton jRadioButtonAufloesungHoch;
@@ -596,27 +607,29 @@ public class DialogAddDownload extends javax.swing.JDialog {
         }
 
         private void checkPfadName() {
-            if (!jTextFieldName.getText().equals(GuiFunktionen.replaceLeerDateiname(jTextFieldName.getText(), true/* istDatei */, true /* leerEntfernen */))) {
-                jTextFieldName.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
-            } else {
-                jTextFieldName.setBackground(Color.WHITE);
-            }
-            if (!jComboBoxPfad.getSelectedItem().toString().equals(GuiFunktionen.replaceLeerDateiname(jComboBoxPfad.getSelectedItem().toString(), false/* istDatei */, true /* leerEntfernen */))) {
-                jComboBoxPfad.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
-            } else {
-                jComboBoxPfad.setBackground(Color.WHITE);
+            if (!stopBeob) {
+                nameGeaendert = true;
+                if (!jTextFieldName.getText().equals(GuiFunktionen.replaceLeerDateiname(jTextFieldName.getText(), true/* istDatei */, true /* leerEntfernen */))) {
+                    jTextFieldName.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+                } else {
+                    jTextFieldName.setBackground(Color.WHITE);
+                }
+                if (!jComboBoxPfad.getSelectedItem().toString().equals(GuiFunktionen.replaceLeerDateiname(jComboBoxPfad.getSelectedItem().toString(), false/* istDatei */, true /* leerEntfernen */))) {
+                    jComboBoxPfad.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+                } else {
+                    jComboBoxPfad.setBackground(Color.WHITE);
+                }
             }
         }
     }
 
-    private class BeobComboProgramm implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setCombo();
-        }
-    }
-
+//    private class BeobComboPset implements ActionListener {
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            setCombo();
+//        }
+//    }
     private class BeobRadio implements ActionListener {
 
         @Override
