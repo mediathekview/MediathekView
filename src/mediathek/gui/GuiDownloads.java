@@ -731,7 +731,7 @@ public class GuiDownloads extends PanelVorlage {
         private void buttonTable(int row, int column) {
             if (row != -1) {
                 DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
-                if (column == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
+                if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
                     // filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */)
                     if (datenDownload.start != null) {
                         if (datenDownload.start.status == Start.STATUS_FERTIG) {
@@ -747,7 +747,7 @@ public class GuiDownloads extends PanelVorlage {
                         // Download starten
                         filmStartenWiederholenStoppen(false, true /*starten*/);
                     }
-                } else if (column == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
+                } else if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
                     if (datenDownload.start != null) {
                         if (datenDownload.start.status >= Start.STATUS_FERTIG) {
                             downloadsAufraeumen(datenDownload);

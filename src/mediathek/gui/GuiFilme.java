@@ -977,7 +977,7 @@ public class GuiFilme extends PanelVorlage {
 
         private void buttonTable(int row, int column) {
             if (row != -1) {
-                if (column == DatenFilm.FILM_ABSPIELEN_NR) {
+                if (tabelle.convertColumnIndexToModel(column) == DatenFilm.FILM_ABSPIELEN_NR) {
                     DatenFilm datenFilm = getSelFilm();
                     boolean stop = false;
                     DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL_NR]);
@@ -992,7 +992,7 @@ public class GuiFilme extends PanelVorlage {
                     if (!stop) {
                         filmAbspielen_();
                     }
-                } else if (column == DatenFilm.FILM_AUFZEICHNEN_NR) {
+                } else if (tabelle.convertColumnIndexToModel(column) == DatenFilm.FILM_AUFZEICHNEN_NR) {
                     filmSpeichern_();
                 }
             }
