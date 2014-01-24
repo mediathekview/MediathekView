@@ -317,7 +317,7 @@ public class GuiAbo extends PanelVorlage {
 
         private void buttonTable(int row, int column) {
             if (row != -1) {
-                if (column == DatenAbo.ABO_EINGESCHALTET_NR) {
+                if (tabelle.convertColumnIndexToModel(column) == DatenAbo.ABO_EINGESCHALTET_NR) {
                     DatenAbo akt = Daten.listeAbo.getAboNr(tabelle.convertRowIndexToModel(row));
                     akt.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(!Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET_NR]));
                     tabelle.getSpalten();
