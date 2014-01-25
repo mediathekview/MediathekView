@@ -156,7 +156,6 @@ public class Daten {
         system[Konstanten.SYSTEM_BLACKLIST_FILMLAENGE_NR] = "0";
         system[Konstanten.SYSTEM_ICON_PFAD_NR] = Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss";
         Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = String.valueOf(0);
-        Daten.system[Konstanten.SYSTEM_FILMLISTE_UMBENENNEN_NR] = Boolean.FALSE.toString();
         Daten.system[Konstanten.SYSTEM_NOTIFICATION_NR] = Boolean.TRUE.toString();
         Daten.system[Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN_NR] = Boolean.TRUE.toString();
         Daten.system[Konstanten.SYSTEM_TOOLBAR_ALLES_ANZEIGEN_NR] = Boolean.TRUE.toString();

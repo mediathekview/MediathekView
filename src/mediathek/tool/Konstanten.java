@@ -89,15 +89,15 @@ public class Konstanten {
 //    public static final int SYSTEM_PANEL_FILTER_L_ANZEIGEN_NR = 12;
     //proxy
     public static final String SYSTEM_HTTP_PROXY_SERVER = "proxy-server";
-    public static final int SYSTEM_HTTP_PROXY_SERVER_NR = 13;
+//    public static final int SYSTEM_HTTP_PROXY_SERVER_NR = 13;
     public static final String SYSTEM_HTTP_PROXY_PORT = "proxy-port";
-    public static final int SYSTEM_HTTP_PROXY_PORT_NR = 14;
+//    public static final int SYSTEM_HTTP_PROXY_PORT_NR = 14;
     public static final String SYSTEM_HTTP_PROXY_USER = "proxy-benutzer";
-    public static final int SYSTEM_HTTP_PROXY_USER_NR = 15;
+//    public static final int SYSTEM_HTTP_PROXY_USER_NR = 15;
     public static final String SYSTEM_HTTP_PROXY_PWD = "proxy-passwort";
-    public static final int SYSTEM_HTTP_PROXY_PWD_NR = 16;
+//    public static final int SYSTEM_HTTP_PROXY_PWD_NR = 16;
     public static final String SYSTEM_HTTP_PROXY_ON = "proxy-an";
-    public static final int SYSTEM_HTTP_PROXY_ON_NR = 17;
+//    public static final int SYSTEM_HTTP_PROXY_ON_NR = 17;
     //Einstellungen Sender
     public static final String SYSTEM_MAX_DOWNLOAD = "maxDownload";
     public static final int SYSTEM_MAX_DOWNLOAD_NR = 18;
@@ -194,7 +194,7 @@ public class Konstanten {
     public static final String SYSTEM_BANDBREITE = "Bandbreite";
     public static final int SYSTEM_BANDBREITE_KBYTE_NR = 60;
     public static final String SYSTEM_FILMLISTE_UMBENENNEN = "Filmliste-umbenennen";
-    public static final int SYSTEM_FILMLISTE_UMBENENNEN_NR = 61;
+//    public static final int SYSTEM_FILMLISTE_UMBENENNEN_NR = 61;
     public static final String SYSTEM_DOWNLOAD_SOFORT_STARTEN = "Download-sofort-starten";
     public static final int SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR = 62;
     public static final String SYSTEM_NOTIFICATION = "Notification-anzeigen";
