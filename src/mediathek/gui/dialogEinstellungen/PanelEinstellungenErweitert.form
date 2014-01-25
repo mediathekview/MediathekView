@@ -52,7 +52,7 @@
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="50" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -77,19 +77,11 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jCheckBoxAboSuchen" min="-2" max="-2" attributes="0"/>
-                              <Component id="jCheckBoxDownloadSofortStarten" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="jButtonHilfeNeuladen" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <Component id="jCheckBoxUmbenennen" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="jCheckBoxAboSuchen" min="-2" max="-2" attributes="0"/>
+                      <Component id="jCheckBoxDownloadSofortStarten" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="jButtonHilfeNeuladen" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -104,9 +96,7 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jCheckBoxDownloadSofortStarten" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jCheckBoxUmbenennen" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="17" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -120,11 +110,6 @@
         <Component class="javax.swing.JCheckBox" name="jCheckBoxDownloadSofortStarten">
           <Properties>
             <Property name="text" type="java.lang.String" value="Downloads sofort starten"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="jCheckBoxUmbenennen">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="alte Filmliste vorher umbenennen"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfeNeuladen">

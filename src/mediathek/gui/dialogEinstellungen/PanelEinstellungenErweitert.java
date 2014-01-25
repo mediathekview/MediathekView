@@ -144,13 +144,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             }
         });
         // ====================================
-        jCheckBoxUmbenennen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILMLISTE_UMBENENNEN_NR]));
-        jCheckBoxUmbenennen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_FILMLISTE_UMBENENNEN_NR] = Boolean.toString(jCheckBoxUmbenennen.isSelected());
-            }
-        });
         jButtonProgrammDateimanager.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -454,7 +447,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         jCheckBoxAboSuchen = new javax.swing.JCheckBox();
         jCheckBoxDownloadSofortStarten = new javax.swing.JCheckBox();
-        jCheckBoxUmbenennen = new javax.swing.JCheckBox();
         jButtonHilfeNeuladen = new javax.swing.JButton();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jTextFieldUserAgent = new javax.swing.JTextField();
@@ -488,8 +480,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jCheckBoxDownloadSofortStarten.setText("Downloads sofort starten");
 
-        jCheckBoxUmbenennen.setText("alte Filmliste vorher umbenennen");
-
         jButtonHilfeNeuladen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -499,15 +489,10 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBoxAboSuchen)
-                            .addComponent(jCheckBoxDownloadSofortStarten))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonHilfeNeuladen))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jCheckBoxUmbenennen)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(jCheckBoxAboSuchen)
+                    .addComponent(jCheckBoxDownloadSofortStarten))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonHilfeNeuladen)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -519,9 +504,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jButtonHilfeNeuladen))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxDownloadSofortStarten)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxUmbenennen)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("User-Agent"));
@@ -754,7 +737,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -770,7 +753,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private javax.swing.JButton jButtonZielname;
     private javax.swing.JCheckBox jCheckBoxAboSuchen;
     private javax.swing.JCheckBox jCheckBoxDownloadSofortStarten;
-    private javax.swing.JCheckBox jCheckBoxUmbenennen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel2;
