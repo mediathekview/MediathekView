@@ -2,24 +2,21 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>MediathekView.jar</jar>
-  <outfile>/mnt/daten/software/Mediathek/Mediathek/bin/MediathekView.exe</outfile>
+  <outfile>/mnt/daten/software/Mediathek/Mediathek/res/MediathekView.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir></chdir>
   <priority>normal</priority>
   <downloadUrl>https://www.java.com/de/</downloadUrl>
   <supportUrl></supportUrl>
-  <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon>/mnt/daten/software/Mediathek/Mediathek/bin/MediathekView.ico</icon>
+  <icon>/mnt/daten/software/Mediathek/Mediathek/res/info/MediathekView.ico</icon>
   <jre>
     <path></path>
-    <minVersion>1.6.0</minVersion>
+    <bundledJre64Bit>false</bundledJre64Bit>
+    <minVersion>1.7.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
-    <initialHeapSize>128</initialHeapSize>
-    <maxHeapSize>1024</maxHeapSize>
-    <maxHeapPercent>75</maxHeapPercent>
   </jre>
 </launch4jConfig>
