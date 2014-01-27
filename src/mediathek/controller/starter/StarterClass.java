@@ -26,7 +26,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -47,7 +46,6 @@ import mediathek.tool.MVInputStream;
 import mediathek.tool.MVNotification;
 import mediathek.tool.MVUrlDateiGroesse;
 import msearch.daten.DatenFilm;
-
 
 public class StarterClass {
     //Tags Filme
@@ -310,11 +308,9 @@ public class StarterClass {
             notifyStartEvent(datenDownload);
         }
 
-        @Override
-        public void run() {
+        public void run__() {
             startmeldung(datenDownload, start);
             MVInputStream input;
-            OutputStream destStream;
             try {
                 int len;
                 new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
@@ -327,33 +323,125 @@ public class StarterClass {
                     URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                     conn = (HttpURLConnection) url.openConnection();
                     File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-//                    int downloaded = 0;
-//                    if (file.exists()) {
-//                        downloaded = (int) file.length();
-//                        conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
-//                        conn.connect();
-//                    } else {
+                    int downloaded = 0;
+                    if (file.exists()) {
+                        downloaded = (int) file.length();
+                        conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
+                    } else {
+                        conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
+                    }
                     conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+                    conn.setDoInput(true);
+                    conn.setDoOutput(true);
                     conn.connect();
-//                    }
-//                    RandomAccessFile outFile = new RandomAccessFile(start.datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR], "rw");
-//                    if (downloaded > 0) {
-//                        outFile.seek(downloaded);
-//                    }
                     if (conn.getResponseCode() >= 400) {
                         Log.fehlerMeldung(915236798, Log.FEHLER_ART_PROG, "StartetClass", "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
                     }
                     input = new MVInputStream(conn.getInputStream());
                     start.mVInputStream = input;
                     srcBuffer = new BufferedInputStream(input);
-//                    FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
-//                    destBuffer = new BufferedOutputStream(fos, 1024);
+                    FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
+                    destBuffer = new BufferedOutputStream(fos, 1024);
+                    datenDownload.mVFilmSize.addAktSize(downloaded);
+                    byte[] buffer = new byte[1024];
+                    long p, pp = 0;
+                    while ((len = srcBuffer.read(buffer)) != -1 && !start.stoppen) {
+                        downloaded += len;
+                        destBuffer.write(buffer, 0, len);
+                        datenDownload.mVFilmSize.addAktSize(len);
+                        if (datenDownload.mVFilmSize.getSize() > 0) {
+                            p = (datenDownload.mVFilmSize.getAktSize() * (long) 1000) / datenDownload.mVFilmSize.getSize();
+                            // p muss zwischen 1 und 999 liegen
+                            if (p == 0) {
+                                p = Start.PROGRESS_GESTARTET;
+                            } else if (p >= 1000) {
+                                p = 999;
+                            }
+                            start.percent = (int) p;
+                            if (p != pp) {
+                                pp = p;
+                                // Restzeit ermitteln
+                                if (p > 2) {
+                                    // sonst macht es noch keinen Sinn
+                                    start.bandbreite = input.getBandbreite();
+                                    int diffZeit = start.startZeit.diffInSekunden();
+                                    int restProzent = 1000 - (int) p;
+                                    start.restSekunden = (diffZeit * restProzent / p);
+                                    // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
+                                    // als die bereits geladene Speilzeit des Films
+                                    bereitsAnschauen(datenDownload);
+                                }
+                                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+                            }
+                        }
+                    }
+                    Log.systemMeldung(input.toString());
+                } catch (Exception ex) {
+                    Log.fehlerMeldung(316598941, Log.FEHLER_ART_PROG, "StartetClass.leeresFileLoeschen", ex, "Fehler");
+                } finally {
+                    try {
+                        if (srcBuffer != null) {
+                            srcBuffer.close();
+                        }
+                        if (destBuffer != null) {
+                            destBuffer.close();
+                        }
+                        if (conn != null) {
+                            conn.disconnect();
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(502039078, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload-1", ex);
+            }
+            if (!start.stoppen) {
+                if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
+                    // direkter Start mit dem Button
+                    start.status = Start.STATUS_FERTIG;
+                } else if (pruefen(datenDownload, start)) {
+                    //Anzeige ändern - fertig
+                    start.status = Start.STATUS_FERTIG;
+                } else {
+                    //Anzeige ändern - bei Fehler fehlt der Eintrag
+                    start.status = Start.STATUS_ERR;
+                }
+            }
+            leeresFileLoeschen(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
+            fertigmeldung(datenDownload, start);
+            start.restSekunden = -1;
+            start.percent = Start.PROGRESS_FERTIG;
+            datenDownload.mVFilmSize.setAktSize(-1);
+            notifyStartEvent(datenDownload);
+        }
+
+        public void run() {
+            startmeldung(datenDownload, start);
+            MVInputStream input;
+            try {
+                int len;
+                new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
+                datenDownload.mVFilmSize.setSize(MVUrlDateiGroesse.laenge(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]));
+                datenDownload.mVFilmSize.setAktSize(0);
+                BufferedInputStream srcBuffer = null;
+                BufferedOutputStream destBuffer = null;
+                HttpURLConnection conn = null;
+                try {
+                    URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                    conn = (HttpURLConnection) url.openConnection();
+                    File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                    conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+                    conn.connect();
+                    if (conn.getResponseCode() >= 400) {
+                        Log.fehlerMeldung(915236798, Log.FEHLER_ART_PROG, "StartetClass", "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
+                    }
+                    input = new MVInputStream(conn.getInputStream());
+                    start.mVInputStream = input;
+                    srcBuffer = new BufferedInputStream(input);
                     destBuffer = new BufferedOutputStream(new FileOutputStream(file), 1024);
                     byte[] buffer = new byte[1024];
                     long p, pp = 0;
                     while ((len = srcBuffer.read(buffer)) != -1 && !start.stoppen) {
-//                        outFile.write(buffer, downloaded, len);
-//                        downloaded += len;
                         destBuffer.write(buffer, 0, len);
                         datenDownload.mVFilmSize.addAktSize(len);
                         if (datenDownload.mVFilmSize.getSize() > 0) {
