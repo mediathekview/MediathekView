@@ -35,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.swing.SwingUtilities;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
@@ -47,7 +48,6 @@ import mediathek.tool.MVNotification;
 import mediathek.tool.MVUrlDateiGroesse;
 import msearch.daten.DatenFilm;
 
-import javax.swing.*;
 
 public class StarterClass {
     //Tags Filme
