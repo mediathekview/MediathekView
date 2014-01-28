@@ -61,60 +61,60 @@ public class Konstanten {
     // Tags System
     // ################################
     public static final String SYSTEM_ECHTZEITSUCHE = "Echtzeitsuche";
-    public static final int SYSTEM_ECHTZEITSUCHE_NR = 0;
+//    public static final int SYSTEM_ECHTZEITSUCHE_NR = 0;
     public static final String SYSTEM_LOOK = "System-look";
-    public static final int SYSTEM_LOOK_NR = 1;
+//    public static final int SYSTEM_LOOK_NR = 1;
     public static final String SYSTEM_USER_AGENT_AUTO = "User-Agent-Auto";
-    public static final int SYSTEM_USER_AGENT_AUTO_NR = 2;
+//    public static final int SYSTEM_USER_AGENT_AUTO_NR = 2;
     public static final String SYSTEM_USER_AGENT = "User-Agent";
-    public static final int SYSTEM_USER_AGENT_NR = 3;
+//    public static final int SYSTEM_USER_AGENT_NR = 3;
     // Fenstereinstellungen
     public static final String SYSTEM_GROESSE = "Groesse";
-    public static final int SYSTEM_GROESSE_NR = 4;
+//    public static final int SYSTEM_GROESSE_NR = 4;
     public static final String SYSTEM_GROESSE_EINSTELLUNGEN = "Groesse-Einstellungen";
-    public static final int SYSTEM_GROESSE_EINSTELLUNGEN_NR = 5;
+//    public static final int SYSTEM_GROESSE_EINSTELLUNGEN_NR = 5;
     public static final String SYSTEM_FENSTER_MAX = "programmfenster-maximieren";
-    public static final int SYSTEM_FENSTER_MAX_NR = 6;
+//    public static final int SYSTEM_FENSTER_MAX_NR = 6;
     public static final String SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN = "system-panel-videoplayer-anzeigen";
-    public static final int SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR = 7;
+//    public static final int SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR = 7;
     public static final String SYSTEM_PANEL_MELDUNGEN_ANZEIGEN = "system-panel-meldungen-anzeigen";
-    public static final int SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR = 8;
+//    public static final int SYSTEM_PANEL_MELDUNGEN_ANZEIGEN_NR = 8;
     public static final String SYSTEM_PANEL_FILTER_ANZEIGEN = "system-panel-filter-anzeigen";
-    public static final int SYSTEM_PANEL_FILTER_ANZEIGEN_NR = 9;
+//    public static final int SYSTEM_PANEL_FILTER_ANZEIGEN_NR = 9;
     public static final String SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN = "system-panel-beschreibung-anzeigen";
-    public static final int SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR = 10;
+//    public static final int SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR = 10;
     //Einstellungen Sender
     public static final String SYSTEM_MAX_DOWNLOAD = "maxDownload";
-    public static final int SYSTEM_MAX_DOWNLOAD_NR = 11;
-    public static final String SYSTEM_LEITUNG_LOW = "Leitung";
-    public static final int SYSTEM_LEITUNG_LOW_NR = 12;
-    public static final String SYSTEM_SWR_LISTE = "nr-in-liste";
-    public static final int SYSTEM_SWR_LISTE_NR = 13;
+//    public static final int SYSTEM_MAX_DOWNLOAD_NR = 11;
+//    public static final String SYSTEM_LEITUNG_LOW = "Leitung";
+//    public static final int SYSTEM_LEITUNG_LOW_NR = 12;
+//    public static final String SYSTEM_SWR_LISTE = "nr-in-liste";
+//    public static final int SYSTEM_SWR_LISTE_NR = 13;
     //Einstellungen Im-Export
-    public static final String SYSTEM_PFAD_EXPORT_ABOS = "Pfad_Export_Abos";
-    public static final int SYSTEM_PFAD_EXPORT_ABOS_NR = 14;
-    public static final String SYSTEM_IMPORT_DATEI = "system-import-datei";
-    public static final int SYSTEM_IMPORT_DATEI_NR = 15;
+//    public static final String SYSTEM_PFAD_EXPORT_ABOS = "Pfad_Export_Abos";
+//    public static final int SYSTEM_PFAD_EXPORT_ABOS_NR = 14;
+//    public static final String SYSTEM_IMPORT_DATEI = "system-import-datei";
+//    public static final int SYSTEM_IMPORT_DATEI_NR = 15;
     public static final String SYSTEM_URL_FILMLISTEN = "system-url-filmlisten";
-    public static final int SYSTEM_URL_FILMLISTEN_NR = 16;
+//    public static final int SYSTEM_URL_FILMLISTEN_NR = 16;
     public static final String SYSTEM_IMPORT_URL_MANUELL = "system-import-url-manuell";
-    public static final int SYSTEM_IMPORT_URL_MANUELL_NR = 17;
+//    public static final int SYSTEM_IMPORT_URL_MANUELL_NR = 17;
     public static final String SYSTEM_EXPORT_DATEI = "system-export-datei";
-    public static final int SYSTEM_EXPORT_DATEI_NR = 18;
+//    public static final int SYSTEM_EXPORT_DATEI_NR = 18;
     //##############
     public static final String SYSTEM_WARTEN = "warten";
-    public static final int SYSTEM_WARTEN_NR = 19;
-    public static final String SYSTEM_UDATE_SUCHEN = "update-suchen";
-    public static final int SYSTEM_UPDATE_SUCHEN_NR = 20;
+//    public static final int SYSTEM_WARTEN_NR = 19;
+    public static final String SYSTEM_UPDATE_SUCHEN = "update-suchen";
+//    public static final int SYSTEM_UPDATE_SUCHEN_NR = 20;
     public static final String SYSTEM_UPDATE_DATUM = "update-datum";
-    public static final int SYSTEM_UPDATE_DATUM_NR = 21;
+//    public static final int SYSTEM_UPDATE_DATUM_NR = 21;
     public static final String SYSTEM_IMPORT_ART_FILME = "update-filme"; // url automatisch suchen - oder nur manuell
-    public static final int SYSTEM_IMPORT_ART_FILME_NR = 22;
+//    public static final int SYSTEM_IMPORT_ART_FILME_NR = 22;
     // Filter
     public static final String SYSTEM_FILTER_DAUER = "system-filter-dauer";
-    public static final int SYSTEM_FILTER_DAUER_NR = 23;
+//    public static final int SYSTEM_FILTER_DAUER_NR = 23;
     public static final String SYSTEM_FILTER_TAGE = "system-filter-tage"; // index im Array GuiFilme.COMBO_ZEIT_INT
-    public static final int SYSTEM_FILTER_TAGE_NR = 24;
+//    public static final int SYSTEM_FILTER_TAGE_NR = 24;
     public static final String SYSTEM_FILTER_KEINE_ABO = "system-filter-abo";
     public static final int SYSTEM_FILTER_KEINE_ABO_NR = 25;
     public static final String SYSTEM_FILTER_KEINE_GESEHENE = "system-filter-gesehen";
@@ -174,7 +174,7 @@ public class Konstanten {
     public static final int SYSTEM_ICON_PFAD_NR = 51;
     public static final String SYSTEM_BREITE_MELDUNGEN = "breite-Meldungen";
     public static final int SYSTEM_BREITE_MELDUNGEN_NR = 52;
-    public static final String SYSTEM_BANDBREITE = "Bandbreite";
+    public static final String SYSTEM_BANDBREITE_KBYTE = "Bandbreite";
     public static final int SYSTEM_BANDBREITE_KBYTE_NR = 53;
     public static final String SYSTEM_DOWNLOAD_SOFORT_STARTEN = "Download-sofort-starten";
     public static final int SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR = 54;
@@ -235,9 +235,9 @@ public class Konstanten {
         SYSTEM_GROESSE, SYSTEM_GROESSE_EINSTELLUNGEN,
         SYSTEM_FENSTER_MAX, SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, SYSTEM_PANEL_MELDUNGEN_ANZEIGEN, SYSTEM_PANEL_FILTER_ANZEIGEN,
         SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN,
-        SYSTEM_MAX_DOWNLOAD, SYSTEM_LEITUNG_LOW,
-        SYSTEM_SWR_LISTE, SYSTEM_PFAD_EXPORT_ABOS, SYSTEM_IMPORT_DATEI, SYSTEM_URL_FILMLISTEN, SYSTEM_IMPORT_URL_MANUELL,
-        SYSTEM_EXPORT_DATEI, SYSTEM_WARTEN, SYSTEM_UDATE_SUCHEN, SYSTEM_UPDATE_DATUM, SYSTEM_IMPORT_ART_FILME,
+        SYSTEM_MAX_DOWNLOAD,
+        SYSTEM_URL_FILMLISTEN, SYSTEM_IMPORT_URL_MANUELL,
+        SYSTEM_EXPORT_DATEI, SYSTEM_WARTEN, SYSTEM_UPDATE_SUCHEN, SYSTEM_UPDATE_DATUM, SYSTEM_IMPORT_ART_FILME,
         SYSTEM_FILTER_DAUER,
         SYSTEM_FILTER_TAGE, SYSTEM_FILTER_KEINE_ABO, SYSTEM_FILTER_KEINE_GESEHENE, SYSTEM_FILTER_NUR_HD,
         SYSTEM_PFAD_VLC, SYSTEM_PFAD_FLVSTREAMER, SYSTEM_PFAD_FFMPEG, SYSTEM_PFAD_MPLAYER,
@@ -247,7 +247,7 @@ public class Konstanten {
         SYSTEM_BLACKLIST_ZUKUNFT__NICHT_ANZEIGEN, SYSTEM_BLACKLIST_AUCH_ABO, SYSTEM_BLACKLIST_AUSGESCHALTET, SYSTEM_BLACKLIST_IST_WHITELIST, SYSTEM_BLACKLIST_FILMLAENGE,
         SYSTEM_VERSION_PROGRAMMSET,
         SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN, SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN, SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN,
-        SYSTEM_ANSICHT_SET_LANG, SYSTEM_ICON_STANARD, SYSTEM_ICON_PFAD, SYSTEM_BREITE_MELDUNGEN, SYSTEM_BANDBREITE, SYSTEM_DOWNLOAD_SOFORT_STARTEN,
+        SYSTEM_ANSICHT_SET_LANG, SYSTEM_ICON_STANARD, SYSTEM_ICON_PFAD, SYSTEM_BREITE_MELDUNGEN, SYSTEM_BANDBREITE_KBYTE, SYSTEM_DOWNLOAD_SOFORT_STARTEN,
         SYSTEM_NOTIFICATION, SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, SYSTEM_PLAYER_ABSPIELEN, SYSTEM_PFADE_SPEICHERN, SYSTEM_LETZTEN_PFAD_ANZEIGEN,
         SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN,
         SYSTEM_TOOLBAR_ALLES_ANZEIGEN,

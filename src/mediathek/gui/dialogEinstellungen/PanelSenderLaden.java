@@ -54,11 +54,11 @@ public class PanelSenderLaden extends JPanel {
         }
         addSender();
 
-        if (Daten.system[Konstanten.SYSTEM_WARTEN_NR].equals("")) {
+        if (Daten.mVConfig.get(Konstanten.SYSTEM_WARTEN).equals("")) {
             jSpinnerWarten.setValue(1);
-            Daten.system[Konstanten.SYSTEM_WARTEN_NR] = "1";
+            Daten.mVConfig.add(Konstanten.SYSTEM_WARTEN, "1");
         } else {
-            jSpinnerWarten.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_WARTEN_NR]));
+            jSpinnerWarten.setValue(Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_WARTEN)));
         }
         jButtonStop.addActionListener(new ActionListener() {
             @Override
@@ -248,8 +248,8 @@ public class PanelSenderLaden extends JPanel {
 
         @Override
         public void stateChanged(ChangeEvent arg0) {
-            Daten.system[Konstanten.SYSTEM_WARTEN_NR] =
-                    String.valueOf(((Number) jSpinnerWarten.getModel().getValue()).intValue());
+            Daten.mVConfig.add(Konstanten.SYSTEM_WARTEN,
+                    String.valueOf(((Number) jSpinnerWarten.getModel().getValue()).intValue()));
         }
     }
 }

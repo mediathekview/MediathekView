@@ -75,7 +75,7 @@ public class ProgrammUpdateSuchen {
                     release = ret[1];
                     downloadUrlProgramm = ret[2];
                     if (!version.equals("")) {
-                        Daten.system[Konstanten.SYSTEM_UPDATE_DATUM_NR] = DatumZeit.getHeute_yyyyMMdd();
+                        Daten.mVConfig.add(Konstanten.SYSTEM_UPDATE_DATUM, DatumZeit.getHeute_yyyyMMdd());
                         if (checkObNeueVersion(version, Konstanten.VERSION)) {
                             neueVersion = true;
                             // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, Daten ddaten) {

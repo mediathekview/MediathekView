@@ -51,7 +51,7 @@ public class PanelExportFilmliste extends PanelVorlage {
 
     private void init() {
         jButtonExportPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        jTextFieldPfad.setText(Daten.system[Konstanten.SYSTEM_EXPORT_DATEI_NR]);
+        jTextFieldPfad.setText(Daten.mVConfig.get(Konstanten.SYSTEM_EXPORT_DATEI));
         jTextFieldPfad.getDocument().addDocumentListener(new BeobTextFeld());
         jButtonExportieren.addActionListener(new BeobExport());
         jButtonExportPfad.addActionListener(new BeobPfad());
@@ -59,7 +59,7 @@ public class PanelExportFilmliste extends PanelVorlage {
 
     private void filmeExportieren() {
         int ret;
-        String exporDatei = Daten.system[Konstanten.SYSTEM_EXPORT_DATEI_NR];
+        String exporDatei = Daten.mVConfig.get(Konstanten.SYSTEM_EXPORT_DATEI);
         if (exporDatei.equals("")) {
             MVMessageDialog.showMessageDialog(parentComponent, "Keine Datei angegeben", "Pfad", JOptionPane.INFORMATION_MESSAGE);
         } else {
@@ -195,7 +195,7 @@ public class PanelExportFilmliste extends PanelVorlage {
         }
 
         void tusEinfach(DocumentEvent e) {
-            Daten.system[Konstanten.SYSTEM_EXPORT_DATEI_NR] = jTextFieldPfad.getText();
+            Daten.mVConfig.add(Konstanten.SYSTEM_EXPORT_DATEI, jTextFieldPfad.getText());
         }
     }
 

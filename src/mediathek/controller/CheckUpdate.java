@@ -46,8 +46,8 @@ public class CheckUpdate {
         @Override
         public synchronized void run() {
             try {
-                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR])) {
-                    if (!Daten.system[Konstanten.SYSTEM_UPDATE_DATUM_NR].equals(DatumZeit.getHeute_yyyyMMdd())) {
+                if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_UPDATE_SUCHEN))) {
+                    if (!Daten.mVConfig.get(Konstanten.SYSTEM_UPDATE_DATUM).equals(DatumZeit.getHeute_yyyyMMdd())) {
                         final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
                         if (pgrUpdate.checkVersion(daten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
                             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());

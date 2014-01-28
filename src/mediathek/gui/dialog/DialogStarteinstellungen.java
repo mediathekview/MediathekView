@@ -68,7 +68,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             }
         });
         jCheckBoxSuchen.setSelected(true);
-        Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
+        Daten.mVConfig.add(Konstanten.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
         jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
         // setzt die Standardpfade für die wichtigsten Programme
         Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = GuiFunktionenProgramme.getMusterPfadMplayer();
@@ -292,7 +292,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.toString(jCheckBoxSuchen.isSelected());
+            Daten.mVConfig.add(Konstanten.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected()));
         }
     }
 }

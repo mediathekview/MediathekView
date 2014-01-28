@@ -331,7 +331,7 @@ public final class MVToolBar extends JToolBar {
 //            // jButtonFilterPanel.setVisible(anz);
 //        }
         if (!extern) {
-            jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+            jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN)));
             // jButtonFilterPanel.setVisible(anz);
         } else {
             jTextFieldFilter.setVisible(false);
@@ -372,7 +372,7 @@ public final class MVToolBar extends JToolBar {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getSimpleName()) {
             @Override
             public void ping() {
-                    filterAnzeigen();
+                filterAnzeigen();
             }
         });
         addMouseListener(beobMausToolBar);
@@ -501,8 +501,8 @@ public final class MVToolBar extends JToolBar {
         jButtonFilterPanel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean b = !Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]);
-                Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.toString(b);
+                boolean b = !Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN));
+                Daten.mVConfig.add(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN, Boolean.toString(b));
                 filterAnzeigen();
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getName());
             }

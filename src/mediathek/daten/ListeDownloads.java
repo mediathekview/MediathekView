@@ -682,7 +682,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
         DatenDownload ret = null;
-        if (this.size() > 0 && getDown(Integer.parseInt(Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR]))) {
+        if (this.size() > 0 && getDown(Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_MAX_DOWNLOAD)))) {
             DatenDownload datenDownload = naechsterStart();
             if (datenDownload != null) {
                 if (datenDownload.start != null) {

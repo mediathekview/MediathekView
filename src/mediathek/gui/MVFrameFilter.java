@@ -49,7 +49,6 @@ public class MVFrameFilter extends javax.swing.JFrame {
         f = this;
         dispose();
         setUndecorated(true);
-        
 
         mouseDownCompCoords = null;
         setBounds(0, 0, 400, 400);
@@ -119,7 +118,7 @@ public class MVFrameFilter extends javax.swing.JFrame {
 //            GuiFunktionen.getSize(nrGroesse, this);
 //        }
 
-        Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR] = Boolean.FALSE.toString();
+        Daten.mVConfig.add(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN, Boolean.FALSE.toString());
 //        daten.mediathekGui.filterAnzeigen(true);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVFrameFilter.class.getName());
 
