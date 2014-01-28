@@ -65,7 +65,7 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
             }
         });
         jTable1.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
-        jTextFieldUrl.setText(Daten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR]);
+        jTextFieldUrl.setText(Daten.mVConfig.get(Konstanten.SYSTEM_URL_FILMLISTEN));
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_FILMLISTEN_SERVER, PanelListeFilmlistenServer.class.getSimpleName()) {
             @Override
@@ -263,7 +263,7 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
         }
 
         private void tus() {
-            Daten.system[Konstanten.SYSTEM_URL_FILMLISTEN_NR] = jTextFieldUrl.getText();
+            Daten.mVConfig.add(Konstanten.SYSTEM_URL_FILMLISTEN, jTextFieldUrl.getText());
         }
     }
 }

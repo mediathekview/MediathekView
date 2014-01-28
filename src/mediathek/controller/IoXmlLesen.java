@@ -43,6 +43,7 @@ import mediathek.daten.ListeBlacklist;
 import mediathek.daten.ListePset;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
+import mediathek.tool.MVConfig;
 import msearch.filmeLaden.DatenFilmlistenServer;
 import msearch.filmeLaden.DatenUrlFilmliste;
 import msearch.filmeLaden.MSearchFilmlistenSuchen;
@@ -204,7 +205,8 @@ public class IoXmlLesen {
                         //String t = parser.getLocalName();
                         if (parser.getLocalName().equals(Konstanten.SYSTEM)) {
                             //System
-                            get(parser, event, Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system);
+//                            get(parser, event, Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system);
+                            getConfig(parser, Konstanten.SYSTEM, Daten.mVConfig, true);
                         } else if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
                             //Programmgruppen
                             datenPset = new DatenPset();
@@ -298,6 +300,31 @@ public class IoXmlLesen {
             ret = false;
             if (log) {
                 Log.fehlerMeldung(739530149, Log.FEHLER_ART_PROG, "IoXmlLesen.get", ex);
+            }
+        }
+        return ret;
+    }
+
+    private static boolean getConfig(XMLStreamReader parser, String xmlElem, MVConfig mVConfig, boolean log) {
+        boolean ret = true;
+        try {
+            while (parser.hasNext()) {
+                int event = parser.next();
+                if (event == XMLStreamConstants.END_ELEMENT) {
+                    if (parser.getLocalName().equals(xmlElem)) {
+                        break;
+                    }
+                }
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    String s = parser.getLocalName();
+                    String n = parser.getElementText();
+                    mVConfig.add(s, n);
+                }
+            }
+        } catch (Exception ex) {
+            ret = false;
+            if (log) {
+                Log.fehlerMeldung(945120369, Log.FEHLER_ART_PROG, "IoXmlLesen.getConfig", ex);
             }
         }
         return ret;

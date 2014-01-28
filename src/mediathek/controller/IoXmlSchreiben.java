@@ -84,6 +84,7 @@ public class IoXmlSchreiben {
             xmlSchreibenStart();
             //System schreibem
             xmlSchreibenDaten(Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system, true);
+//            xmlSchreibenConfig(Konstanten.SYSTEM, Daten.mVConfig.getAll(), true);
             //Senderliste
             xmlSchreibenProg(daten);
             xmlSchreibenDownloads(daten);
@@ -228,6 +229,33 @@ public class IoXmlSchreiben {
             writer.writeCharacters("\n"); //neue Zeile
         } catch (Exception ex) {
             Log.fehlerMeldung(198325017, Log.FEHLER_ART_PROG, "IoXmlSchreiben.xmlSchreibenDaten", ex);
+        }
+    }
+
+    private void xmlSchreibenConfig(String xmlName, String[][] xmlSpalten, boolean newLine) {
+        int xmlMax = xmlSpalten.length;
+        try {
+            writer.writeStartElement(xmlName);
+            if (newLine) {
+                writer.writeCharacters("\n"); //neue Zeile
+            }
+            for (int i = 0; i < xmlMax; ++i) {
+                if (!xmlSpalten[i][1].equals("")) {
+                    if (newLine) {
+                        writer.writeCharacters("\t"); //Tab
+                    }
+                    writer.writeStartElement(xmlSpalten[i][0]);
+                    writer.writeCharacters(xmlSpalten[i][1]);
+                    writer.writeEndElement();
+                    if (newLine) {
+                        writer.writeCharacters("\n"); //neue Zeile
+                    }
+                }
+            }
+            writer.writeEndElement();
+            writer.writeCharacters("\n"); //neue Zeile
+        } catch (Exception ex) {
+            Log.fehlerMeldung(951230478, Log.FEHLER_ART_PROG, "IoXmlSchreiben.xmlSchreibenConfig", ex);
         }
     }
 

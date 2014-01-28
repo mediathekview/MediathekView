@@ -117,15 +117,15 @@ public class PanelEinstellungen extends PanelVorlage {
 
     private void init() {
         jCheckBoxNotification.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_NOTIFICATION_NR]));
-        jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR]));
-        jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR]));
+        jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_UPDATE_SUCHEN)));
+        jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_ECHTZEITSUCHE)));
         // UserAgent
         // Rest
-        if (Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR].equals("")) {
+        if (Daten.mVConfig.get(Konstanten.SYSTEM_MAX_DOWNLOAD).equals("")) {
             jSpinnerDownload.setValue(1);
-            Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] = "1";
+            Daten.mVConfig.add(Konstanten.SYSTEM_MAX_DOWNLOAD, "1");
         } else {
-            jSpinnerDownload.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR]));
+            jSpinnerDownload.setValue(Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_MAX_DOWNLOAD)));
         }
 
         setupBandwidthLimit();
@@ -198,7 +198,7 @@ public class PanelEinstellungen extends PanelVorlage {
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-                    Daten.system[Konstanten.SYSTEM_LOOK_NR] = lafClass;  //
+                    Daten.mVConfig.add(Konstanten.SYSTEM_LOOK, lafClass);  //
                 }
             };
             cbxLookAndFeel.addActionListener(lst);
@@ -488,8 +488,8 @@ public class PanelEinstellungen extends PanelVorlage {
 
         @Override
         public void stateChanged(ChangeEvent arg0) {
-            Daten.system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR]
-                    = String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue());
+            Daten.mVConfig.add(Konstanten.SYSTEM_MAX_DOWNLOAD,
+                     String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue()));
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
         }
     }
@@ -498,7 +498,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR] = Boolean.toString(jCheckBoxEchtzeit.isSelected());
+            Daten.mVConfig.add(Konstanten.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected()));
         }
     }
 
@@ -506,7 +506,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Daten.system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.toString(jCheckBoxSuchen.isSelected());
+            Daten.mVConfig.add(Konstanten.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected()));
         }
     }
 

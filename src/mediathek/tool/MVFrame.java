@@ -34,7 +34,7 @@ public class MVFrame extends javax.swing.JFrame {
     private final MVToolBar mVToolBar;
     private final Daten daten;
     private final String state;
-    private int nrGroesse = -1;
+    private String nrGroesse = "";
 
     public MVFrame(Daten ddaten, PanelVorlage jPanel, String sstate, String titel) {
         initComponents();
@@ -63,13 +63,13 @@ public class MVFrame extends javax.swing.JFrame {
 
     @Override
     public void dispose() {
-        if (nrGroesse != -1) {
+        if (!nrGroesse.isEmpty()) {
             GuiFunktionen.getSize(nrGroesse, this);
         }
         super.dispose();
     }
 
-    public void setSize(int nr) {
+    public void setSize(String nr) {
         nrGroesse = nr;
         GuiFunktionen.setSize(nr, this, daten.mediathekGui);
     }

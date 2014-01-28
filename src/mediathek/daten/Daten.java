@@ -45,6 +45,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
 import msearch.daten.ListeFilme;
@@ -56,6 +57,7 @@ public class Daten {
 
     //alle Programmeinstellungen
     public static String[] system = new String[Konstanten.SYSTEM_MAX_ELEM];
+    public static MVConfig mVConfig = new MVConfig();
     // flags
     public static boolean debug = false; // Debugmodus
     public static boolean auto = false; // Version: MediathekAuto
@@ -140,30 +142,55 @@ public class Daten {
         for (int i = 0; i < system.length; ++i) {
             system[i] = "";
         }
+//        //initialisieren
+//        system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] = "1";
+//        system[Konstanten.SYSTEM_WARTEN_NR] = "1";
+//        system[Konstanten.SYSTEM_USER_AGENT_NR] = Konstanten.USER_AGENT_DEFAULT;
+//        system[Konstanten.SYSTEM_WARTEN_NR] = "1";
+//        system[Konstanten.SYSTEM_LOOK_NR] = "0";
+//        system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
+//        system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR] = Boolean.TRUE.toString();
+//        system[Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR] = Boolean.FALSE.toString();
+//        system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_UNICODE;
+//        system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR] = Boolean.TRUE.toString();
+//        system[Konstanten.SYSTEM_ICON_STANDARD_NR] = Boolean.TRUE.toString();
+//        system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR] = Boolean.TRUE.toString();
+//        system[Konstanten.SYSTEM_BLACKLIST_FILMLAENGE_NR] = "0";
+//        system[Konstanten.SYSTEM_ICON_PFAD_NR] = Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss";
+//        Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = String.valueOf(0);
+//        Daten.system[Konstanten.SYSTEM_NOTIFICATION_NR] = Boolean.TRUE.toString();
+//        Daten.system[Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN_NR] = Boolean.TRUE.toString();
+//        Daten.system[Konstanten.SYSTEM_TOOLBAR_ALLES_ANZEIGEN_NR] = Boolean.TRUE.toString();
+//        Daten.system[Konstanten.SYSTEM_VIS_DOWNLOAD_NR] = Boolean.TRUE.toString();
+//        Daten.system[Konstanten.SYSTEM_VIS_ABO_NR] = Boolean.TRUE.toString();
+//
+//        if (Daten.debug) {
+//            Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUS);
+//        }
+        //MVConfig
         //initialisieren
-        system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] = "1";
-        system[Konstanten.SYSTEM_WARTEN_NR] = "1";
-        system[Konstanten.SYSTEM_USER_AGENT_NR] = Konstanten.USER_AGENT_DEFAULT;
-        system[Konstanten.SYSTEM_WARTEN_NR] = "1";
-        system[Konstanten.SYSTEM_LOOK_NR] = "0";
-        system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
-        system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR] = Boolean.TRUE.toString();
-        system[Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR] = Boolean.FALSE.toString();
-        system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_UNICODE;
-        system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR] = Boolean.TRUE.toString();
-        system[Konstanten.SYSTEM_ICON_STANDARD_NR] = Boolean.TRUE.toString();
-        system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR] = Boolean.TRUE.toString();
-        system[Konstanten.SYSTEM_BLACKLIST_FILMLAENGE_NR] = "0";
-        system[Konstanten.SYSTEM_ICON_PFAD_NR] = Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss";
-        Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = String.valueOf(0);
-        Daten.system[Konstanten.SYSTEM_NOTIFICATION_NR] = Boolean.TRUE.toString();
-        Daten.system[Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN_NR] = Boolean.TRUE.toString();
-        Daten.system[Konstanten.SYSTEM_TOOLBAR_ALLES_ANZEIGEN_NR] = Boolean.TRUE.toString();
-        Daten.system[Konstanten.SYSTEM_VIS_DOWNLOAD_NR] = Boolean.TRUE.toString();
-        Daten.system[Konstanten.SYSTEM_VIS_ABO_NR] = Boolean.TRUE.toString();
-
+        mVConfig.add(Konstanten.SYSTEM_MAX_DOWNLOAD, "1");
+        mVConfig.add(Konstanten.SYSTEM_WARTEN, "1");
+        mVConfig.add(Konstanten.SYSTEM_USER_AGENT, Konstanten.USER_AGENT_DEFAULT);
+        mVConfig.add(Konstanten.SYSTEM_WARTEN, "1");
+        mVConfig.add(Konstanten.SYSTEM_LOOK, "0");
+        mVConfig.add(Konstanten.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
+        mVConfig.add(Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.TRUE.toString());
+        mVConfig.add(Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.FALSE.toString());
+        mVConfig.add(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_UNICODE);
+        mVConfig.add(Konstanten.SYSTEM_ECHTZEITSUCHE, Boolean.TRUE.toString());
+        mVConfig.add(Konstanten.SYSTEM_ICON_STANARD, Boolean.TRUE.toString());
+        mVConfig.add(Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
+        mVConfig.add(Konstanten.SYSTEM_BLACKLIST_FILMLAENGE, "0");
+        mVConfig.add(Konstanten.SYSTEM_ICON_PFAD, Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
+        mVConfig.add(Konstanten.SYSTEM_BANDBREITE_KBYTE, String.valueOf(0));
+        mVConfig.add(Konstanten.SYSTEM_NOTIFICATION, Boolean.TRUE.toString());
+        mVConfig.add(Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, Boolean.TRUE.toString());
+        mVConfig.add(Konstanten.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());
+        mVConfig.add(Konstanten.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
+        mVConfig.add(Konstanten.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
         if (Daten.debug) {
-            Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUS);
+            mVConfig.add(Konstanten.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
         }
     }
 
@@ -180,21 +207,21 @@ public class Daten {
 
     public static void setUserAgentAuto() {
         // Useragent wird vom Programm verwaltet
-        system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.TRUE.toString();
+        Daten.mVConfig.add(Konstanten.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
     }
 
     public static void setUserAgentManuel(String ua) {
         // Useragent den der Benutzer vorgegeben hat
-        system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.FALSE.toString();
-        system[Konstanten.SYSTEM_USER_AGENT_NR] = ua;
+        Daten.mVConfig.add(Konstanten.SYSTEM_USER_AGENT_AUTO, Boolean.FALSE.toString());
+        Daten.mVConfig.add(Konstanten.SYSTEM_USER_AGENT,ua);
     }
 
     public static boolean isUserAgentAuto() {
-        if (system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR].equals("")) {
-            system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR] = Boolean.TRUE.toString();
+        if (Daten.mVConfig.get(Konstanten.SYSTEM_USER_AGENT_AUTO).equals("")) {
+            Daten.mVConfig.add(Konstanten.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
             return true;
         } else {
-            return Boolean.parseBoolean(system[Konstanten.SYSTEM_USER_AGENT_AUTO_NR]);
+            return Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_USER_AGENT_AUTO));
         }
     }
 
@@ -202,7 +229,7 @@ public class Daten {
         if (isUserAgentAuto()) {
             return Konstanten.USER_AGENT_DEFAULT;
         } else {
-            return system[Konstanten.SYSTEM_USER_AGENT_NR];
+            return Daten.mVConfig.get(Konstanten.SYSTEM_USER_AGENT);
         }
     }
 

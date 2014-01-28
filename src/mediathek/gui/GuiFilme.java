@@ -148,23 +148,23 @@ public class GuiFilme extends PanelVorlage {
     private void init() {
         frameFilter.jToggleButtonNeue.setEnabled(false);
         panelBeschreibungSetzen();
-        frameFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+        frameFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN)));
         frameFilter.jComboBoxZeitraum.setModel(new DefaultComboBoxModel<>(COMBO_ZEIT));
         try {
             frameFilter.jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
             frameFilter.jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
             frameFilter.jCheckBoxKeineGesehenen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR]));
             frameFilter.jCheckBoxNurHd.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_NUR_HD_NR]));
-            frameFilter.jComboBoxZeitraum.setSelectedIndex(Integer.parseInt(Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR]));
+            frameFilter.jComboBoxZeitraum.setSelectedIndex(Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_FILTER_TAGE)));
         } catch (Exception ex) {
             frameFilter.jComboBoxZeitraum.setSelectedIndex(6);
-            Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = "6";
+            Daten.mVConfig.add(Konstanten.SYSTEM_FILTER_TAGE, "6");
         }
         frameFilter.jComboBoxZeitraum.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!stopBeob) {
-                    Daten.system[Konstanten.SYSTEM_FILTER_TAGE_NR] = String.valueOf(frameFilter.jComboBoxZeitraum.getSelectedIndex());
+                    Daten.mVConfig.add(Konstanten.SYSTEM_FILTER_TAGE, String.valueOf(frameFilter.jComboBoxZeitraum.getSelectedIndex()));
                     MVListeFilme.checkBlacklist();
                     tabelleLaden();
                 }
@@ -280,10 +280,10 @@ public class GuiFilme extends PanelVorlage {
         frameFilter.jTextFieldFilterIrgendwo.addActionListener(new BeobFilter());
         frameFilter.jTextFieldFilterIrgendwo.getDocument().addDocumentListener(new BeobFilterTitelDoc());
         try {
-            frameFilter.jSliderMinuten.setValue(Integer.parseInt(Daten.system[Konstanten.SYSTEM_FILTER_DAUER_NR]));
+            frameFilter.jSliderMinuten.setValue(Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_FILTER_DAUER)));
         } catch (Exception ex) {
             frameFilter.jSliderMinuten.setValue(0);
-            Daten.system[Konstanten.SYSTEM_FILTER_DAUER_NR] = "0";
+            Daten.mVConfig.add(Konstanten.SYSTEM_FILTER_DAUER, "0");
         }
         frameFilter.jTextFieldFilterMinuten.setText(String.valueOf(frameFilter.jSliderMinuten.getValue()));
         frameFilter.jSliderMinuten.addChangeListener(new ChangeListener() {
@@ -291,7 +291,7 @@ public class GuiFilme extends PanelVorlage {
             public void stateChanged(ChangeEvent e) {
                 frameFilter.jTextFieldFilterMinuten.setText(String.valueOf(frameFilter.jSliderMinuten.getValue()));
                 if (!frameFilter.jSliderMinuten.getValueIsAdjusting()) {
-                    Daten.system[Konstanten.SYSTEM_FILTER_DAUER_NR] = String.valueOf(frameFilter.jSliderMinuten.getValue());
+                    Daten.mVConfig.add(Konstanten.SYSTEM_FILTER_DAUER, String.valueOf(frameFilter.jSliderMinuten.getValue()));
                     tabelleLaden();
                 }
             }
@@ -305,7 +305,7 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxProgamme.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR] = Boolean.FALSE.toString();
+                Daten.mVConfig.add(Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, Boolean.FALSE.toString());
                 daten.mediathekGui.videoplayerAnzeigen(true);
                 panelVideoplayerSetzen();
             }
@@ -323,7 +323,7 @@ public class GuiFilme extends PanelVorlage {
             ListenerMediathekView.EREIGNIS_LISTE_ABOS}, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+                if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN))) {
                     if (frameFilter.jCheckBoxKeineGesehenen.isSelected()) {
                         tabelleLaden();
                     } else {
@@ -381,7 +381,7 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_SUCHFELD_FOCUS_SETZEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+                if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN))) {
                     frameFilter.jTextFieldFilterThemaTitel.requestFocus();
                     frameFilter.jTextFieldFilterThemaTitel.setCaretPosition(0);
                 }
@@ -390,12 +390,12 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void panelBeschreibungSetzen() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR]));
+        jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
     }
 
     private void panelFilterSetzen() {
         // Panel anzeigen und die Filmliste anpassen
-        frameFilter.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
+        frameFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN)));
         MVListeFilme.checkBlacklist();
         tabelleLaden();
     }
@@ -518,7 +518,7 @@ public class GuiFilme extends PanelVorlage {
         gridbag.setConstraints(label, c);
         jPanelExtraInnen.add(label);
         // und jetzt noch anzeigen
-        jPanelExtra.setVisible(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN_NR]));
+        jPanelExtra.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
     }
 
     private Component addExtraFeld(int i, int spalte, int zeile, GridBagLayout gridbag, GridBagConstraints c, JPanel panel, ListePset liste) {
@@ -552,7 +552,7 @@ public class GuiFilme extends PanelVorlage {
 
     private synchronized void tabelleLaden() {
         try {
-            if (!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+            if (!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN))) {
                 // Filtern mit dem Filter in der Toolbar
                 stopBeob = true;
                 tabelle.getSpalten();
@@ -628,7 +628,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void listeInModellLaden() {
-        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+        if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN))) {
             // normal mit den Filtern aus dem Filterpanel suchen
             MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle,
                     frameFilter.jComboBoxFilterSender.getSelectedItem().toString(),
@@ -1032,7 +1032,7 @@ public class GuiFilme extends PanelVorlage {
             //##Trenner##
             jPopupMenu.addSeparator();
             //##Trenner##
-            if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR])) {
+            if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN))) {
                 // nur dann ist das Filterpanel sichtbar
                 JMenu submenueFilter = new JMenu("Filter");
                 jPopupMenu.add(submenueFilter);
@@ -1428,7 +1428,7 @@ public class GuiFilme extends PanelVorlage {
         private void tus() {
             Filter.checkPattern1(frameFilter.jTextFieldFilterThemaTitel);
             Filter.checkPattern1(frameFilter.jTextFieldFilterTitel);
-            if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR])) {
+            if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_ECHTZEITSUCHE))) {
                 tabelleLaden();
             }
         }

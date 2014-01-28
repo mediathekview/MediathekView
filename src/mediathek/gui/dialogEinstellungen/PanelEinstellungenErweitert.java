@@ -414,7 +414,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private void init() {
         // UserAgent
         jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
-        jTextFieldUserAgent.setText(Daten.system[Konstanten.SYSTEM_USER_AGENT_NR]);
+        jTextFieldUserAgent.setText(Daten.mVConfig.get(Konstanten.SYSTEM_USER_AGENT));
         if (Daten.isUserAgentAuto()) {
             jRadioButtonAuto.setSelected(true);
         } else {

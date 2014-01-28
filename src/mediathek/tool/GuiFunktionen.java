@@ -35,20 +35,20 @@ public class GuiFunktionen extends Funktionen {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
     }
 
-    public static void getSize(int nr, JFrame jFrame) {
-        Daten.system[nr] = String.valueOf(jFrame.getSize().width) + ":"
+    public static void getSize(String nr, JFrame jFrame) {
+        Daten.mVConfig.add(nr, String.valueOf(jFrame.getSize().width) + ":"
                 + String.valueOf(jFrame.getSize().height) + ":"
                 + String.valueOf(jFrame.getLocation().x) + ":"
-                + String.valueOf(jFrame.getLocation().y);
+                + String.valueOf(jFrame.getLocation().y));
     }
 
-    public static void setSize(int nr, JFrame jFrame, JFrame relativFrame) {
+    public static void setSize(String nr, JFrame jFrame, JFrame relativFrame) {
         int breite, hoehe, posX, posY;
         breite = 0;
         hoehe = 0;
         posX = 0;
         posY = 0;
-        String[] arr = Daten.system[nr].split(":");
+        String[] arr = Daten.mVConfig.get(nr).split(":");
         try {
             if (arr.length == 4) {
                 breite = Integer.parseInt(arr[0]);
@@ -86,7 +86,6 @@ public class GuiFunktionen extends Funktionen {
 //            System.setProperty("proxySet", "false");
 //        }
 //    }
-
     public static String replaceLeerDateiname(String pfad, boolean istDatei, boolean leerEntfernen) {
         // aus einem Pfadnamen/Dateinamen werden verbotene Zeichen entfernt
         // "istDatei" kennzeichnet einen Dateinamen, sonst Pfadnamen
@@ -384,9 +383,9 @@ public class GuiFunktionen extends Funktionen {
     public static int getImportArtFilme() {
         int ret;
         try {
-            ret = Integer.parseInt(Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR]);
+            ret = Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_IMPORT_ART_FILME));
         } catch (Exception ex) {
-            Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO);
+            Daten.mVConfig.add(Konstanten.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO));
             ret = GuiKonstanten.UPDATE_FILME_AUTO;
         }
         return ret;
