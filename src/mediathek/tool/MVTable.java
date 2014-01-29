@@ -64,7 +64,7 @@ public final class MVTable extends JTable {
     private int[] selIndexes = null;
     private boolean[] spaltenAnzeigen;
     //
-    int nrDatenSystem = 0;
+    String nrDatenSystem = "";
     int tabelle;
     String[] spaltenTitel;
     int maxSpalten;
@@ -80,7 +80,7 @@ public final class MVTable extends JTable {
                 maxSpalten = DatenFilm.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenFilm.spaltenAnzeigen, DatenFilm.MAX_ELEM);
                 indexSpalte = DatenFilm.FILM_NR_NR;
-                nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME_NR;
+                nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
                 this.setModel(new TModelFilm(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_DOWNLOADS:
@@ -89,7 +89,7 @@ public final class MVTable extends JTable {
                 spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
                 indexSpalte = DatenDownload.DOWNLOAD_NR_NR;
                 //indexSpalte = DatenDownload.DOWNLOAD_URL_NR;
-                nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS_NR;
+                nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS;
                 this.setDragEnabled(true);
                 this.setDropMode(DropMode.INSERT_ROWS);
                 this.setTransferHandler(new TableRowTransferHandlerDownload(this));
@@ -100,7 +100,7 @@ public final class MVTable extends JTable {
                 maxSpalten = DatenAbo.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenAbo.spaltenAnzeigen, DatenAbo.MAX_ELEM);
                 indexSpalte = DatenAbo.ABO_NR_NR;
-                nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS_NR;
+                nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS;
                 this.setModel(new TModelAbo(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_PSET:
@@ -108,7 +108,7 @@ public final class MVTable extends JTable {
                 maxSpalten = DatenPset.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenPset.spaltenAnzeigen, DatenPset.MAX_ELEM);
                 indexSpalte = 0;
-                nrDatenSystem = -1;
+                nrDatenSystem = "";
                 this.setModel(new TModel(new Object[][]{}, spaltenTitel));
                 this.setRowSorter(null);
                 this.setAutoCreateRowSorter(false); // Reihenfolge ist die Anzeige der Button!
@@ -118,7 +118,7 @@ public final class MVTable extends JTable {
                 maxSpalten = DatenProg.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenProg.spaltenAnzeigen, DatenProg.MAX_ELEM);
                 indexSpalte = 0;
-                nrDatenSystem = -1;
+                nrDatenSystem = "";
                 this.setModel(new TModel(new Object[][]{}, spaltenTitel));
                 break;
         }
@@ -231,24 +231,24 @@ public final class MVTable extends JTable {
         // den Standardwerten
         // erst die Breite, dann die Reihenfolge
         try {
-            if (nrDatenSystem == -1) {
+            if (nrDatenSystem.isEmpty()) {
                 // wird nur für eingerichtete Tabellen gemacht
                 return;
             }
             String b = "", r = "", s = "", upDown = "";
             boolean ok = false;
-            if (!Daten.system[nrDatenSystem].equals("")) {
+            if (!Daten.mVConfig.get(nrDatenSystem).equals("")) {
                 ok = true;
                 int f1, f2, f3;
                 //String d = Daten.system[nrDatenSystem];
-                if ((f1 = Daten.system[nrDatenSystem].indexOf(FELDTRENNER)) != -1) {
-                    b = Daten.system[nrDatenSystem].substring(0, f1);
-                    if ((f2 = Daten.system[nrDatenSystem].indexOf(FELDTRENNER, f1 + 1)) != -1) {
-                        r = Daten.system[nrDatenSystem].substring(f1 + 1, f2);
+                if ((f1 = Daten.mVConfig.get(nrDatenSystem).indexOf(FELDTRENNER)) != -1) {
+                    b = Daten.mVConfig.get(nrDatenSystem).substring(0, f1);
+                    if ((f2 = Daten.mVConfig.get(nrDatenSystem).indexOf(FELDTRENNER, f1 + 1)) != -1) {
+                        r = Daten.mVConfig.get(nrDatenSystem).substring(f1 + 1, f2);
                     }
-                    if ((f3 = Daten.system[nrDatenSystem].indexOf(FELDTRENNER, f2 + 1)) != -1) {
-                        s = Daten.system[nrDatenSystem].substring(f2 + 1, f3);
-                        upDown = Daten.system[nrDatenSystem].substring(f3 + 1);
+                    if ((f3 = Daten.mVConfig.get(nrDatenSystem).indexOf(FELDTRENNER, f2 + 1)) != -1) {
+                        s = Daten.mVConfig.get(nrDatenSystem).substring(f2 + 1, f3);
+                        upDown = Daten.mVConfig.get(nrDatenSystem).substring(f3 + 1);
                     }
                 }
                 if (!arrLesen(b, breite)) {
@@ -671,7 +671,7 @@ public final class MVTable extends JTable {
                 upDown = sk.getSortOrder().equals(SortOrder.ASCENDING) ? SORT_ASCENDING : SORT_DESCENDING;
             }
         }
-        Daten.system[nrDatenSystem] = b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown;
+        Daten.mVConfig.add(nrDatenSystem, b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown);
     }
 
     private int[] getArray(int anzahl) {

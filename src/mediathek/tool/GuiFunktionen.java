@@ -91,7 +91,7 @@ public class GuiFunktionen extends Funktionen {
         // "istDatei" kennzeichnet einen Dateinamen, sonst Pfadnamen
         // verbotene Zeichen entfernen
         // < > ? " : | \ / *
-        if (Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR].equals(Konstanten.ZIELNAMEN_ANPASSEN_NIX)) {
+        if (Daten.mVConfig.get(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_NIX)) {
             // dann wars das!
             return pfad;
         }
@@ -135,9 +135,9 @@ public class GuiFunktionen extends Funktionen {
         ret = ret.replace(":", "_");
         ret = ret.replace("'", "_");
         ret = ret.replace("|", "_");
-        if (Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR].equals(Konstanten.ZIELNAMEN_ANPASSEN_UNICODE)) {
+        if (Daten.mVConfig.get(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_UNICODE)) {
             ret = cleanUnicode(ret, "_");
-        } else if (Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR].equals(Konstanten.ZIELNAMEN_ANPASSEN_ASCII)) {
+        } else if (Daten.mVConfig.get(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_ASCII)) {
             ret = getAscii(ret);
         }
         if (winPfad) {

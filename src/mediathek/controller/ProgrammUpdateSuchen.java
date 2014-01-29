@@ -109,10 +109,10 @@ public class ProgrammUpdateSuchen {
             try {
                 StringBuilder text = new StringBuilder();
                 int angezeigt = 0;
-                if (Daten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR].equals("")) {
-                    Daten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR] = Integer.toString(-1);
+                if (Daten.mVConfig.get(Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT).equals("")) {
+                    Daten.mVConfig.add(Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT,Integer.toString(-1));
                 } else {
-                    angezeigt = Integer.parseInt(Daten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR]);
+                    angezeigt = Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT));
                 }
                 for (int i = 0; i < listInfos.size(); ++i) {
                     String[] h = listInfos.get(i);
@@ -125,7 +125,7 @@ public class ProgrammUpdateSuchen {
                 }
                 if (text.length() > 0) {
                     new DialogHinweisUpdate(null, true, daten, "Infos", text.toString()).setVisible(true);
-                    Daten.system[Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT_NR] = Integer.toString(listInfos.size());
+                    Daten.mVConfig.add(Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(listInfos.size()));
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(693298731, Log.FEHLER_ART_PROG, "ProgrammUpdateSuchen.checkVersion", ex);

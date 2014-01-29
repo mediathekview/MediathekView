@@ -64,7 +64,7 @@ public class UrlHyperlinkAction extends AbstractAction {
             } catch (Exception ex) {
                 try {
                     String programm = "";
-                    if (Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR].equals("")) {
+                    if (Daten.mVConfig.get(Konstanten.SYSTEM_URL_OEFFNEN).equals("")) {
                         String text = "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen.";
                         DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(jFrameParent, true, "", "Browser suchen", text);
                         dialog.setVisible(true);
@@ -72,13 +72,13 @@ public class UrlHyperlinkAction extends AbstractAction {
                             programm = dialog.ziel;
                         }
                     } else {
-                        programm = Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR];
+                        programm = Daten.mVConfig.get(Konstanten.SYSTEM_URL_OEFFNEN);
                     }
                     Runtime.getRuntime().exec(programm + " " + url);
-                    Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR] = programm;
+                    Daten.mVConfig.add(Konstanten.SYSTEM_URL_OEFFNEN, programm);
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, UrlHyperlinkAction.class.getSimpleName());
                 } catch (Exception eex) {
-                    Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR] = ""; // dann wars wohl nix
+                    Daten.mVConfig.add(Konstanten.SYSTEM_URL_OEFFNEN, ""); // dann wars wohl nix
                     Log.fehlerMeldung(316497658, Log.FEHLER_ART_PROG, UrlHyperlinkAction.class.getName(), eex, "URL öffnen: " + url);
                 }
             }

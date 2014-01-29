@@ -165,8 +165,8 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         // ob die Blackliste dafür verwendet werden soll, ist schon geklärt
         setFilter();
         tage = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
-        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR]);
-        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]);
+        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET));
+        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         jetzt = DatumZeit.Morgen_0_Uhr;
         return checkFilm(film);
     }
@@ -183,12 +183,12 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             tage = 0;
         }
         try {
-            filmlaengeSoll = Long.valueOf(Daten.system[Konstanten.SYSTEM_BLACKLIST_FILMLAENGE_NR]) * 60; // Minuten
+            filmlaengeSoll = Long.valueOf(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
         } catch (Exception ex) {
             filmlaengeSoll = 0;
         }
-        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR]);
-        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN_NR]);
+        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET));
+        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         jetzt = DatumZeit.Morgen_0_Uhr;
     }
 
@@ -222,14 +222,14 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                     Filter.isPattern(blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR])
                     ? new String[]{blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase()} : blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase().split(","),
                     new String[]{""}, 0, film, true /*auch die Länge prüfen*/)) {
-                if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST_NR])) {
+                if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST))) {
                     return true;
                 } else {
                     return false;
                 }
             }
         }
-        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST_NR])) {
+        if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST))) {
             // nur anzeigen wenn ein Filter passt
             return false;
         } else {

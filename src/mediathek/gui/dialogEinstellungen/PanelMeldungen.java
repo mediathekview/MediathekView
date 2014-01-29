@@ -81,7 +81,7 @@ public class PanelMeldungen extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!stopBeob) {
-                    Daten.system[getNrSystem()] = String.valueOf(jCheckBoxUmbrechen.isSelected());
+                    Daten.mVConfig.add(getNrSystem(), String.valueOf(jCheckBoxUmbrechen.isSelected()));
                     ListenerMediathekView.notify(logArt, PanelMeldungen.class.getName() + String.valueOf(panelNr));
                     setLineWrab();
                 }
@@ -103,24 +103,24 @@ public class PanelMeldungen extends PanelVorlage {
 
     private void setLineWrab() {
         stopBeob = true;
-        jCheckBoxUmbrechen.setSelected(Boolean.parseBoolean(Daten.system[getNrSystem()]));
+        jCheckBoxUmbrechen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(getNrSystem())));
         jTextArea.setLineWrap(jCheckBoxUmbrechen.isSelected());
         jTextArea.setWrapStyleWord(false);
         setText();
         stopBeob = false;
     }
 
-    private int getNrSystem() {
-        int nr = Konstanten.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN_NR;
+    private String getNrSystem() {
+        String nr = Konstanten.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
         switch (logArt) {
             case ListenerMediathekView.EREIGNIS_LOG_FEHLER:
-                nr = Konstanten.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN_NR;
+                nr = Konstanten.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN;
                 break;
             case ListenerMediathekView.EREIGNIS_LOG_SYSTEM:
-                nr = Konstanten.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN_NR;
+                nr = Konstanten.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
                 break;
             case ListenerMediathekView.EREIGNIS_LOG_PLAYER:
-                nr = Konstanten.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN_NR;
+                nr = Konstanten.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN;
                 break;
         }
         return nr;

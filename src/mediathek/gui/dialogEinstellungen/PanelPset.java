@@ -35,11 +35,11 @@ public class PanelPset extends PanelVorlage {
         jCheckBoxAlleEinstellungen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_ANSICHT_SET_LANG_NR] = Boolean.toString(jCheckBoxAlleEinstellungen.isSelected());
+                Daten.mVConfig.add(Konstanten.SYSTEM_ANSICHT_SET_LANG, Boolean.toString(jCheckBoxAlleEinstellungen.isSelected()));
                 pset();
             }
         });
-        jCheckBoxAlleEinstellungen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ANSICHT_SET_LANG_NR]));
+        jCheckBoxAlleEinstellungen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_ANSICHT_SET_LANG)));
         pset();
     }
 

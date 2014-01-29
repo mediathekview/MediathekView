@@ -67,8 +67,8 @@ public final class MVToolBar extends JToolBar {
     MVButton jButtonInfo;
     JXSearchField jTextFieldFilter;
 
-    private int nrToolbar = -1;
-    private int nrIconKlein = -1;
+    private String nrToolbar = "";
+    private String nrIconKlein = "";
     private final Daten daten;
     BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     LinkedList<MVButton> buttonListAlles = new LinkedList<>();
@@ -85,18 +85,18 @@ public final class MVToolBar extends JToolBar {
         state = sstate;
         switch (sstate) {
             case TOOLBAR_TAB_DOWNLOADS:
-                nrToolbar = Konstanten.SYSTEM_TOOLBAR_DOWNLOAD_EXTERN_NR;
-                nrIconKlein = Konstanten.SYSTEM_ICON_KLEIN_DOWNLOADS_EXTERN_NR;
+                nrToolbar = Konstanten.SYSTEM_TOOLBAR_DOWNLOAD_EXTERN;
+                nrIconKlein = Konstanten.SYSTEM_ICON_KLEIN_DOWNLOADS_EXTERN;
                 buttonListToUse = buttonListDownloads;
                 break;
             case TOOLBAR_TAB_ABOS:
-                nrToolbar = Konstanten.SYSTEM_TOOLBAR_ABO_EXTERN_NR;
-                nrIconKlein = Konstanten.SYSTEM_ICON_KLEIN_ABOS_EXTERN_NR;
+                nrToolbar = Konstanten.SYSTEM_TOOLBAR_ABO_EXTERN;
+                nrIconKlein = Konstanten.SYSTEM_ICON_KLEIN_ABOS_EXTERN;
                 buttonListToUse = buttonListAbos;
                 break;
             default:
-                nrToolbar = -1;
-                nrIconKlein = -1;
+                nrToolbar = "";
+                nrIconKlein = "";
                 buttonListToUse = new LinkedList<>();
         }
         startup();
@@ -106,8 +106,8 @@ public final class MVToolBar extends JToolBar {
     public MVToolBar(Daten ddaten) {
         // für die Toolbar im Hauptfenster
         daten = ddaten;
-        nrToolbar = Konstanten.SYSTEM_TOOLBAR_ALLES_NR;
-        nrIconKlein = Konstanten.SYSTEM_ICON_KLEIN_ALLES_NR;
+        nrToolbar = Konstanten.SYSTEM_TOOLBAR_ALLES;
+        nrIconKlein = Konstanten.SYSTEM_ICON_KLEIN_ALLES;
         buttonListToUse = buttonListAlles;
         startup();
     }
@@ -250,15 +250,15 @@ public final class MVToolBar extends JToolBar {
             this.add(filler__10);
         }
         // Icons
-        if (nrIconKlein > 0) {
-            setIcon(Boolean.parseBoolean(Daten.system[nrIconKlein]));
+        if (!nrIconKlein.isEmpty()) {
+            setIcon(Boolean.parseBoolean(Daten.mVConfig.get(nrIconKlein)));
         }
         loadVisible();
         initListener();
     }
 
     public final void setIcon(boolean klein) {
-        Daten.system[nrIconKlein] = Boolean.toString(klein);
+        Daten.mVConfig.add(nrIconKlein, Boolean.toString(klein));
         beobMausToolBar.itemKlein.setSelected(klein);
         jButtonFilmeLaden.setIcon();
         jButtonFilmAbspielen.setIcon();
@@ -307,11 +307,11 @@ public final class MVToolBar extends JToolBar {
                     if (extern) {
                         b.setVisible(false);
                     } else {
-                        if (!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_VIS_DOWNLOAD_NR]) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)
-                                || Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_DOWNLOAD_NR]) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)) {
+                        if (!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_VIS_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)
+                                || Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FENSTER_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)) {
                             b.setVisible(false);
-                        } else if (!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_VIS_ABO_NR]) && b.sparte.contains(TOOLBAR_TAB_ABOS)
-                                || Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FENSTER_ABO_NR]) && b.sparte.contains(TOOLBAR_TAB_ABOS)) {
+                        } else if (!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_VIS_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)
+                                || Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FENSTER_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)) {
                             b.setVisible(false);
                         } else {
                             b.setEnabled(false);
@@ -340,8 +340,8 @@ public final class MVToolBar extends JToolBar {
     }
 
     public void loadVisible() {
-        if (nrToolbar > 0) {
-            String[] b = Daten.system[nrToolbar].split(":");
+        if (!nrToolbar.isEmpty()) {
+            String[] b = Daten.mVConfig.get(nrToolbar).split(":");
             if (buttonListToUse.size() == b.length) {
                 // ansonsten gibt es neue Button: dann alle anzeigen
                 for (int i = 0; i < b.length; ++i) {
@@ -351,19 +351,19 @@ public final class MVToolBar extends JToolBar {
             }
         }
         setToolbar();
-        if (nrIconKlein > 0) {
-            setIcon(Boolean.parseBoolean(Daten.system[nrIconKlein]));
+        if (!nrIconKlein.isEmpty()) {
+            setIcon(Boolean.parseBoolean(Daten.mVConfig.get(nrIconKlein)));
         }
     }
 
     private void storeVisible() {
-        if (nrToolbar > 0) {
-            Daten.system[nrToolbar] = "";
+        if (!nrToolbar.isEmpty()) {
+            Daten.mVConfig.add(nrToolbar, "");
             for (MVButton b : buttonListToUse) {
-                if (!Daten.system[nrToolbar].isEmpty()) {
-                    Daten.system[nrToolbar] += ":";
+                if (!Daten.mVConfig.get(nrToolbar).isEmpty()) {
+                    Daten.mVConfig.add(nrToolbar, Daten.mVConfig.get(nrToolbar) + ":");
                 }
-                Daten.system[nrToolbar] += Boolean.toString(b.anzeigen);
+                Daten.mVConfig.add(nrToolbar, Daten.mVConfig.get(nrToolbar) + Boolean.toString(b.anzeigen));
             }
         }
     }
@@ -533,8 +533,8 @@ public final class MVToolBar extends JToolBar {
         }
 
         void setIcon() {
-            if (nrIconKlein > 0) {
-                if (Boolean.parseBoolean(Daten.system[nrIconKlein])) {
+            if (!nrIconKlein.isEmpty()) {
+                if (Boolean.parseBoolean(Daten.mVConfig.get(nrIconKlein))) {
                     this.setIcon(GetIcon.getIcon(imageIconKlein));
                 } else {
                     this.setIcon(GetIcon.getIcon(imageIconNormal));
@@ -550,8 +550,8 @@ public final class MVToolBar extends JToolBar {
         JCheckBoxMenuItem[] box;
 
         public BeobMausToolBar() {
-            if (nrIconKlein > 0) {
-                itemKlein.setSelected(Boolean.parseBoolean(Daten.system[nrIconKlein]));
+            if (!nrIconKlein.isEmpty()) {
+                itemKlein.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(nrIconKlein)));
             }
         }
 

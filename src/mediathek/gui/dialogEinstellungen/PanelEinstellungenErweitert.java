@@ -41,7 +41,7 @@ import mediathek.controller.Log;
 import mediathek.tool.MVMessageDialog;
 
 public class PanelEinstellungenErweitert extends PanelVorlage {
-    
+
     public PanelEinstellungenErweitert(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
@@ -83,23 +83,23 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 init();
             }
         });
-        jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR]));
+        jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN)));
         jCheckBoxAboSuchen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR] = Boolean.toString(jCheckBoxAboSuchen.isSelected());
+                Daten.mVConfig.add(Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.toString(jCheckBoxAboSuchen.isSelected()));
             }
         });
-        jCheckBoxDownloadSofortStarten.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR]));
+        jCheckBoxDownloadSofortStarten.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN)));
         jCheckBoxDownloadSofortStarten.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR] = Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected());
+                Daten.mVConfig.add(Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected()));
             }
         });
         // ============================
         // Zeildateiname
-        switch (Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR]) {
+        switch (Daten.mVConfig.get(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN)) {
             case Konstanten.ZIELNAMEN_ANPASSEN_NORMAL:
                 jRadioButtonNamenNormal.setSelected(true);
                 break;
@@ -116,31 +116,31 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 jRadioButtonNameUnicode.setSelected(true);
         }
         jRadioButtonNamenNormal.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_NORMAL;
+                Daten.mVConfig.add(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_NORMAL);
             }
         });
         jRadioButtonNameAscii.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_ASCII;
+                Daten.mVConfig.add(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_ASCII);
             }
         });
         jRadioButtonNameUnicode.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_UNICODE;
+                Daten.mVConfig.add(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_UNICODE);
             }
         });
         jRadioButtonNameNix.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_NIX;
+                Daten.mVConfig.add(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_NIX);
             }
         });
         // ====================================
@@ -179,7 +179,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     }
                 }
                 // merken und prüfen
-                Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = jTextFieldProgrammDateimanager.getText();
+                Daten.mVConfig.add(Konstanten.SYSTEM_ORDNER_OEFFNEN,jTextFieldProgrammDateimanager.getText());
                 String programm = jTextFieldProgrammDateimanager.getText();
                 if (!programm.equals("")) {
                     try {
@@ -191,7 +191,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     } catch (Exception ignored) {
                     }
                 }
-                
+
             }
         });
         jButtonProgrammVideoplayer.addActionListener(new ActionListener() {
@@ -229,7 +229,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     }
                 }
                 // merken und prüfen
-                Daten.system[Konstanten.SYSTEM_PLAYER_ABSPIELEN_NR] = jTextFieldVideoplayer.getText();
+                Daten.mVConfig.add(Konstanten.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer.getText());
                 String programm = jTextFieldVideoplayer.getText();
                 if (!programm.equals("")) {
                     try {
@@ -241,7 +241,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     } catch (Exception ignored) {
                     }
                 }
-                
+
             }
         });
         jButtonProgrammUrl.addActionListener(new ActionListener() {
@@ -279,7 +279,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     }
                 }
                 // merken und prüfen
-                Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR] = jTextFieldProgrammUrl.getText();
+                Daten.mVConfig.add(Konstanten.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl.getText());
                 String programm = jTextFieldProgrammUrl.getText();
                 if (!programm.equals("")) {
                     try {
@@ -291,7 +291,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     } catch (Exception ignored) {
                     }
                 }
-                
+
             }
         });
         jButtonHilfeProgrammDateimanager.addActionListener(new ActionListener() {
@@ -346,71 +346,71 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         + "dem URLs geöffnet werden sollen.").setVisible(true);
             }
         });
-        jTextFieldProgrammDateimanager.setText(Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR]);
+        jTextFieldProgrammDateimanager.setText(Daten.mVConfig.get(Konstanten.SYSTEM_ORDNER_OEFFNEN));
         jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             @Override
             public void changedUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             private void tus() {
-                Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR] = jTextFieldProgrammDateimanager.getText();
+                Daten.mVConfig.add(Konstanten.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager.getText());
             }
         });
-        jTextFieldVideoplayer.setText(Daten.system[Konstanten.SYSTEM_PLAYER_ABSPIELEN_NR]);
+        jTextFieldVideoplayer.setText(Daten.mVConfig.get(Konstanten.SYSTEM_PLAYER_ABSPIELEN));
         jTextFieldVideoplayer.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             @Override
             public void changedUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             private void tus() {
-                Daten.system[Konstanten.SYSTEM_PLAYER_ABSPIELEN_NR] = jTextFieldVideoplayer.getText();
+                Daten.mVConfig.add(Konstanten.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer.getText());
             }
         });
-        jTextFieldProgrammUrl.setText(Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR]);
+        jTextFieldProgrammUrl.setText(Daten.mVConfig.get(Konstanten.SYSTEM_URL_OEFFNEN));
         jTextFieldProgrammUrl.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             @Override
             public void changedUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             private void tus() {
-                Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR] = jTextFieldProgrammUrl.getText();
+                Daten.mVConfig.add(Konstanten.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl.getText());
             }
         });
     }
-    
+
     private void init() {
         // UserAgent
         jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
@@ -421,10 +421,10 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             jRadioButtonManuel.setSelected(true);
         }
         jTextFieldUserAgent.setEditable(jRadioButtonManuel.isSelected());
-        jTextFieldProgrammDateimanager.setText(Daten.system[Konstanten.SYSTEM_ORDNER_OEFFNEN_NR]);
-        jTextFieldProgrammUrl.setText(Daten.system[Konstanten.SYSTEM_URL_OEFFNEN_NR]);
+        jTextFieldProgrammDateimanager.setText(Daten.mVConfig.get(Konstanten.SYSTEM_ORDNER_OEFFNEN));
+        jTextFieldProgrammUrl.setText(Daten.mVConfig.get(Konstanten.SYSTEM_URL_OEFFNEN));
     }
-    
+
     private void setUserAgent() {
         if (jRadioButtonAuto.isSelected()) {
             Daten.setUserAgentAuto();
@@ -771,22 +771,22 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     // End of variables declaration//GEN-END:variables
 
     private class BeobUserAgent implements DocumentListener {
-        
+
         @Override
         public void insertUpdate(DocumentEvent e) {
             tus();
         }
-        
+
         @Override
         public void removeUpdate(DocumentEvent e) {
             tus();
         }
-        
+
         @Override
         public void changedUpdate(DocumentEvent e) {
             tus();
         }
-        
+
         private void tus() {
             Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
         }

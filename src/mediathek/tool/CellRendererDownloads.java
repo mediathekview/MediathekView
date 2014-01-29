@@ -67,11 +67,11 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         download_clear_sw_tab = GetIcon.getIcon("download_clear_sw_tab.png");
         download_del_tab = GetIcon.getIcon("download_del_tab.png");
         download_del_sw_tab = GetIcon.getIcon("download_del_sw_tab.png");
-        geoMelden = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_GEO_MELDEN_NR]);
+        geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_GEO_MELDEN));
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_GEO, CellRendererDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                geoMelden = Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_GEO_MELDEN_NR]);
+                geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_GEO_MELDEN));
             }
         });
     }
@@ -228,7 +228,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             if (datenDownload.start == null) {
                 if (geoMelden) {
                     if (!datenDownload.arr[DatenDownload.DOWNLOAD_GEO_NR].isEmpty()) {
-                        if (!datenDownload.arr[DatenDownload.DOWNLOAD_GEO_NR].contains(Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR])) {
+                        if (!datenDownload.arr[DatenDownload.DOWNLOAD_GEO_NR].contains(Daten.mVConfig.get(Konstanten.SYSTEM_GEO_STANDORT))) {
                             //setForeground(GuiKonstanten.FARBE_FILM_GEOBLOCK_FORGROUND);
                             if (isSelected) {
                                 setBackground(GuiKonstanten.FARBE_FILM_GEOBLOCK_BACKGROUND_SEL);
