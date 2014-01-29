@@ -151,10 +151,10 @@ public class GuiFilme extends PanelVorlage {
         frameFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN)));
         frameFilter.jComboBoxZeitraum.setModel(new DefaultComboBoxModel<>(COMBO_ZEIT));
         try {
-            frameFilter.jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
-            frameFilter.jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR]));
-            frameFilter.jCheckBoxKeineGesehenen.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR]));
-            frameFilter.jCheckBoxNurHd.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_FILTER_NUR_HD_NR]));
+            frameFilter.jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FILTER_KEINE_ABO)));
+            frameFilter.jCheckBoxKeineAbos.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FILTER_KEINE_ABO)));
+            frameFilter.jCheckBoxKeineGesehenen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FILTER_KEINE_GESEHENE)));
+            frameFilter.jCheckBoxNurHd.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FILTER_NUR_HD)));
             frameFilter.jComboBoxZeitraum.setSelectedIndex(Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_FILTER_TAGE)));
         } catch (Exception ex) {
             frameFilter.jComboBoxZeitraum.setSelectedIndex(6);
@@ -896,9 +896,9 @@ public class GuiFilme extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
-                Daten.system[Konstanten.SYSTEM_FILTER_KEINE_ABO_NR] = String.valueOf(frameFilter.jCheckBoxKeineAbos.isSelected());
-                Daten.system[Konstanten.SYSTEM_FILTER_KEINE_GESEHENE_NR] = String.valueOf(frameFilter.jCheckBoxKeineGesehenen.isSelected());
-                Daten.system[Konstanten.SYSTEM_FILTER_NUR_HD_NR] = String.valueOf(frameFilter.jCheckBoxNurHd.isSelected());
+                Daten.mVConfig.add(Konstanten.SYSTEM_FILTER_KEINE_ABO, String.valueOf(frameFilter.jCheckBoxKeineAbos.isSelected()));
+                Daten.mVConfig.add(Konstanten.SYSTEM_FILTER_KEINE_GESEHENE,String.valueOf(frameFilter.jCheckBoxKeineGesehenen.isSelected()));
+                Daten.mVConfig.add(Konstanten.SYSTEM_FILTER_NUR_HD, String.valueOf(frameFilter.jCheckBoxNurHd.isSelected()));
                 tabelleLaden();
             }
         }
@@ -1395,7 +1395,7 @@ public class GuiFilme extends PanelVorlage {
                     String th = film.arr[DatenFilm.FILM_THEMA_NR];
                     String se = film.arr[DatenFilm.FILM_SENDER_NR];
                     // Blackliste für alle Fälle einschalten, notify kommt beim add()
-                    Daten.system[Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET_NR] = Boolean.toString(false);
+                    Daten.mVConfig.add(Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET, Boolean.toString(false));
                     if (!sender) {
                         Daten.listeBlacklist.add(new DatenBlacklist("", th, "" /*Titel*/, "" /*Thema-Titel*/));
                     } else if (!thema) {

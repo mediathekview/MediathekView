@@ -62,7 +62,7 @@ public class MVNotification {
     }
 
     private static void add(String titel, String[] mmeldung, boolean fehler) {
-        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_NOTIFICATION_NR])) {
+        if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_NOTIFICATION))) {
             String meldung = "<html><head></head><body><p>";
             for (String s : mmeldung) {
                 meldung += s + "<br />";

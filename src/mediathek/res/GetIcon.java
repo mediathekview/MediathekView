@@ -31,12 +31,12 @@ public class GetIcon {
     private final static String PFAD_INTERN = "/mediathek/res/";
 
     public static ImageIcon getIcon(String strIcon) {
-        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_ICON_STANDARD_NR])) {
+        if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_ICON_STANDARD))) {
             return getStandard(strIcon);
         } else {
             ImageIcon icon;
             try {
-                String pfad = GuiFunktionen.addsPfad(Daten.system[Konstanten.SYSTEM_ICON_PFAD_NR], strIcon);
+                String pfad = GuiFunktionen.addsPfad(Daten.mVConfig.get(Konstanten.SYSTEM_ICON_PFAD), strIcon);
 //                System.out.println(new File(pfad).getAbsolutePath());
                 if (new File(pfad).exists()) {
                     icon = new ImageIcon(pfad);

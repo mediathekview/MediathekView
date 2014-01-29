@@ -38,7 +38,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
     }
 
     private void init() {
-        switch (Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR]) {
+        switch (Daten.mVConfig.get(Konstanten.SYSTEM_GEO_STANDORT)) {
             case DatenFilm.GEO_CH:
                 jRadioButtonCH.setSelected(true);
                 break;
@@ -55,7 +55,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR] = DatenFilm.GEO_DE;
+                Daten.mVConfig.add(Konstanten.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
                 melden();
             }
         });
@@ -63,7 +63,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR] = DatenFilm.GEO_CH;
+                Daten.mVConfig.add(Konstanten.SYSTEM_GEO_STANDORT, DatenFilm.GEO_CH);
                 melden();
             }
         });
@@ -71,7 +71,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR] = DatenFilm.GEO_AT;
+                Daten.mVConfig.add(Konstanten.SYSTEM_GEO_STANDORT, DatenFilm.GEO_AT);
                 melden();
             }
         });
@@ -79,16 +79,16 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_GEO_STANDORT_NR] = DatenFilm.GEO_EU;
+                Daten.mVConfig.add(Konstanten.SYSTEM_GEO_STANDORT, DatenFilm.GEO_EU);
                 melden();
             }
         });
-        jCheckBoxMarkieren.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_GEO_MELDEN_NR]));
+        jCheckBoxMarkieren.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_GEO_MELDEN)));
         jCheckBoxMarkieren.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_GEO_MELDEN_NR] = String.valueOf(jCheckBoxMarkieren.isSelected());
+                Daten.mVConfig.add(Konstanten.SYSTEM_GEO_MELDEN, String.valueOf(jCheckBoxMarkieren.isSelected()));
                 melden();
             }
         });

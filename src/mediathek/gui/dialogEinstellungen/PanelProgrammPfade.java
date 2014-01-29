@@ -71,22 +71,22 @@ public class PanelProgrammPfade extends JPanel {
         jPanelFlv.setVisible(flvstreamer);
         jPanelMplayer.setVisible(mplayer);
         jPanelFFmpeg.setVisible(ffmpeg);
-        if (Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR].equals("")) {
-            Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = GuiFunktionenProgramme.getMusterPfadMplayer();
+        if (Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_MPLAYER).equals("")) {
+          Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
         }
-        if (Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR].equals("")) {
-            Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = GuiFunktionenProgramme.getMusterPfadVlc();
+        if (Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_VLC).equals("")) {
+            Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
         }
-        if (Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR].equals("")) {
-            Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = GuiFunktionenProgramme.getMusterPfadFlv();
+        if (Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_FLVSTREAMER).equals("")) {
+            Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
         }
-        if (Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR].equals("")) {
-            Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR] = GuiFunktionenProgramme.getMusterPfadFFmpeg();
+        if (Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_FFMPEG).equals("")) {
+            Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
         }
-        jTextFieldVlc.setText(Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR]);
-        jTextFieldFlv.setText(Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR]);
-        jTextFieldFFmpeg.setText(Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR]);
-        jTextFieldMplayer.setText(Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR]);
+        jTextFieldVlc.setText(Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_VLC));
+        jTextFieldFlv.setText(Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_FLVSTREAMER));
+        jTextFieldFFmpeg.setText(Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_FFMPEG));
+        jTextFieldMplayer.setText(Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_MPLAYER));
     }
 
     private void initBeob() {
@@ -108,28 +108,28 @@ public class PanelProgrammPfade extends JPanel {
         jButtonMplayerSuchen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = "";
+              Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_MPLAYER, "");
                 jTextFieldMplayer.setText(GuiFunktionenProgramme.getMusterPfadMplayer());
             }
         });
         jButtonVlcSuchen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = "";
+                Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_VLC, "");
                 jTextFieldVlc.setText(GuiFunktionenProgramme.getMusterPfadVlc());
             }
         });
         jButtonFlvSuchen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = "";
+                Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_FLVSTREAMER, "");
                 jTextFieldFlv.setText(GuiFunktionenProgramme.getMusterPfadFlv());
             }
         });
         jButtonFFmpegSuchen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR] = "";
+                Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_FFMPEG,"");
                 jTextFieldFFmpeg.setText(GuiFunktionenProgramme.getMusterPfadFFmpeg());
             }
         });
@@ -142,14 +142,14 @@ public class PanelProgrammPfade extends JPanel {
     }
 
     private void check() {
-        Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR] = jTextFieldMplayer.getText();
-        Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR] = jTextFieldVlc.getText();
-        Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR] = jTextFieldFlv.getText();
-        Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR] = jTextFieldFFmpeg.getText();
+        Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_MPLAYER, jTextFieldMplayer.getText());
+        Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_VLC, jTextFieldVlc.getText());
+        Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_FLVSTREAMER, jTextFieldFlv.getText());
+        Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_FFMPEG,jTextFieldFFmpeg.getText());
         try {
             if (jTextFieldMplayer.getText().equals("")) {
                 jTextFieldMplayer.setBackground(new Color(255, 200, 200));
-            } else if (!new File(Daten.system[Konstanten.SYSTEM_PFAD_MPLAYER_NR]).exists()) {
+            } else if (!new File(Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_MPLAYER)).exists()) {
                 jTextFieldMplayer.setBackground(new Color(255, 200, 200));
             } else {
                 jTextFieldMplayer.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
@@ -160,7 +160,7 @@ public class PanelProgrammPfade extends JPanel {
         try {
             if (jTextFieldVlc.getText().equals("")) {
                 jTextFieldVlc.setBackground(new Color(255, 200, 200));
-            } else if (!new File(Daten.system[Konstanten.SYSTEM_PFAD_VLC_NR]).exists()) {
+            } else if (!new File(Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_VLC)).exists()) {
                 jTextFieldVlc.setBackground(new Color(255, 200, 200));
             } else {
                 jTextFieldVlc.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
@@ -171,7 +171,7 @@ public class PanelProgrammPfade extends JPanel {
         try {
             if (jTextFieldFlv.getText().equals("")) {
                 jTextFieldFlv.setBackground(new Color(255, 200, 200));
-            } else if (!new File(Daten.system[Konstanten.SYSTEM_PFAD_FLVSTREAMER_NR]).exists()) {
+            } else if (!new File(Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_FLVSTREAMER)).exists()) {
                 jTextFieldFlv.setBackground(new Color(255, 200, 200));
             } else {
                 jTextFieldFlv.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
@@ -182,7 +182,7 @@ public class PanelProgrammPfade extends JPanel {
         try {
             if (jTextFieldFFmpeg.getText().equals("")) {
                 jTextFieldFFmpeg.setBackground(new Color(255, 200, 200));
-            } else if (!new File(Daten.system[Konstanten.SYSTEM_PFAD_FFMPEG_NR]).exists()) {
+            } else if (!new File(Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_FFMPEG)).exists()) {
                 jTextFieldFFmpeg.setBackground(new Color(255, 200, 200));
             } else {
                 jTextFieldFFmpeg.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));

@@ -82,11 +82,11 @@ public class DialogAddDownload extends javax.swing.JDialog {
     }
 
     private void init() {
-        jCheckBoxStarten.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN_NR]));
+        jCheckBoxStarten.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
         jCheckBoxStarten.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN_NR] = String.valueOf(jCheckBoxStarten.isSelected());
+                Daten.mVConfig.add(Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected()));
             }
         });
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
@@ -165,15 +165,15 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jButtonDelHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_PFADE_SPEICHERN_NR] = "";
+                Daten.mVConfig.add(Konstanten.SYSTEM_PFADE_SPEICHERN, "");
                 jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));
             }
         });
-        jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN_NR]));
+        jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN)));
         jCheckBoxPfadSpeichern.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.system[Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN_NR] = Boolean.toString(jCheckBoxPfadSpeichern.isSelected());
+                Daten.mVConfig.add(Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected()));
             }
         });
         setCombo();
@@ -207,15 +207,15 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private void setModelPfad(String pfad) {
         ArrayList<String> pfade = new ArrayList<>();
         // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
-        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN_NR])) {
-            if (!Daten.system[Konstanten.SYSTEM_LETZTER_PFAD_SPEICHERN_NR].isEmpty()) {
-                pfade.add(Daten.system[Konstanten.SYSTEM_LETZTER_PFAD_SPEICHERN_NR]);
+        if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN))) {
+            if (!Daten.mVConfig.get(Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN).isEmpty()) {
+                pfade.add(Daten.mVConfig.get(Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN));
             }
         }
         // dann den Rest
         pfade.add(pfad);
-        if (!Daten.system[Konstanten.SYSTEM_PFADE_SPEICHERN_NR].isEmpty()) {
-            String[] p = Daten.system[Konstanten.SYSTEM_PFADE_SPEICHERN_NR].split("<>");
+        if (!Daten.mVConfig.get(Konstanten.SYSTEM_PFADE_SPEICHERN).isEmpty()) {
+            String[] p = Daten.mVConfig.get(Konstanten.SYSTEM_PFADE_SPEICHERN).split("<>");
             if (p.length != 0) {
                 pfade.addAll(Arrays.asList(p));
             }
@@ -225,11 +225,11 @@ public class DialogAddDownload extends javax.swing.JDialog {
 
     private void saveComboPfad() {
         String akt = jComboBoxPfad.getSelectedItem().toString();
-        Daten.system[Konstanten.SYSTEM_LETZTER_PFAD_SPEICHERN_NR] = akt;
+        Daten.mVConfig.add(Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN, akt);
 
         ArrayList<String> pfade = new ArrayList<>();
-        if (!Daten.system[Konstanten.SYSTEM_PFADE_SPEICHERN_NR].isEmpty()) {
-            String[] p = Daten.system[Konstanten.SYSTEM_PFADE_SPEICHERN_NR].split("<>");
+        if (!Daten.mVConfig.get(Konstanten.SYSTEM_PFADE_SPEICHERN).isEmpty()) {
+            String[] p = Daten.mVConfig.get(Konstanten.SYSTEM_PFADE_SPEICHERN).split("<>");
             if (p.length != 0) {
                 pfade.addAll(Arrays.asList(p));
             }
@@ -237,12 +237,12 @@ public class DialogAddDownload extends javax.swing.JDialog {
         if (!pfade.contains(akt) && !akt.equals(orgPfad)) {
             pfade.add(0, akt);
         }
-        Daten.system[Konstanten.SYSTEM_PFADE_SPEICHERN_NR] = "";
+        Daten.mVConfig.add(Konstanten.SYSTEM_PFADE_SPEICHERN, "");
         if (pfade.size() > 0) {
-            Daten.system[Konstanten.SYSTEM_PFADE_SPEICHERN_NR] = pfade.get(0);
+            Daten.mVConfig.add(Konstanten.SYSTEM_PFADE_SPEICHERN, pfade.get(0));
             for (int i = 1; i < 5 && i < pfade.size(); ++i) {
                 if (!pfade.get(i).isEmpty() && !pfade.get(i).equals(orgPfad)) {
-                    Daten.system[Konstanten.SYSTEM_PFADE_SPEICHERN_NR] += "<>" + pfade.get(i);
+                    Daten.mVConfig.add(Konstanten.SYSTEM_PFADE_SPEICHERN, Daten.mVConfig.get(Konstanten.SYSTEM_PFADE_SPEICHERN) + "<>" + pfade.get(i));
                 }
             }
         }

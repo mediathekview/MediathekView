@@ -54,7 +54,80 @@ public class IoXmlLesen {
     BZip2CompressorOutputStream bZip2CompressorOutputStream = null;
 
     public void datenLesen(Daten daten) {
-        xmlDatenLesen(daten);
+        Path xmlFilePath = null;
+        xmlFilePath = Daten.getMediathekXmlFilePath();
+        if (Files.exists(xmlFilePath)) {
+            int event;
+            XMLInputFactory inFactory = XMLInputFactory.newInstance();
+            inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+            DatenPset datenPset = null;
+            try (InputStreamReader in = new InputStreamReader(Files.newInputStream(xmlFilePath), Konstanten.KODIERUNG_UTF)) {
+                XMLStreamReader parser = inFactory.createXMLStreamReader(in);
+                while (parser.hasNext()) {
+                    event = parser.next();
+                    if (event == XMLStreamConstants.START_ELEMENT) {
+                        //String t = parser.getLocalName();
+                        if (parser.getLocalName().equals(Konstanten.SYSTEM)) {
+                            //System
+//                            get(parser, event, Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system);
+                            getConfig(parser, Konstanten.SYSTEM, Daten.mVConfig, true);
+                        } else if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
+                            //Programmgruppen
+                            datenPset = new DatenPset();
+                            if (get(parser, event, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
+                                daten.listePset.add(datenPset);
+                            }
+                        } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
+                            DatenProg datenProg = new DatenProg();
+                            if (get(parser, event, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr)) {
+                                if (datenPset != null) {
+                                    datenPset.addProg(datenProg);
+                                }
+                            }
+                            //ende Programgruppen
+                        } else if (parser.getLocalName().equals(DatenAbo.ABO)) {
+                            //Abo
+                            DatenAbo datenAbo = new DatenAbo();
+                            if (get(parser, event, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
+                                Daten.listeAbo.addAbo(datenAbo);
+                            }
+                        } else if (parser.getLocalName().equals(DatenDownload.DOWNLOAD)) {
+                            //Downloads
+                            DatenDownload d = new DatenDownload();
+                            if (get(parser, event, DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr)) {
+                                d.init();
+                                Daten.listeDownloads.add(d);
+                            }
+                        } else if (parser.getLocalName().equals(DatenBlacklist.BLACKLIST)) {
+                            //Blacklist
+                            ListeBlacklist blacklist = Daten.listeBlacklist;
+                            DatenBlacklist datenBlacklist = new DatenBlacklist();
+                            if (get(parser, event, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
+                                blacklist.add(datenBlacklist);
+                            }
+                        } else if (parser.getLocalName().equals(MSearchFilmlistenSuchen.FILM_UPDATE_SERVER)) {
+                            //Urls Filmlisten
+                            DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
+                            if (get(parser, event, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
+                                Daten.filmeLaden.getDownloadUrlsFilmlisten(false).addWithCheck(datenUrlFilmliste);
+                            }
+                        } else if (parser.getLocalName().equals(DatenFilmlistenServer.FILM_LISTEN_SERVER)) {
+                            //Filmlisteserver
+                            DatenFilmlistenServer datenFilmlistenServer = new DatenFilmlistenServer();
+                            if (get(parser, event, DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, datenFilmlistenServer.arr)) {
+                                Daten.filmeLaden.getListeFilmlistnServer().add(datenFilmlistenServer);
+                            }
+                        }
+                    }
+                }
+                parser.close();
+            } catch (XMLStreamException | IOException ex) {
+                Log.fehlerMeldung(392840096, Log.FEHLER_ART_PROG, "IoXml.xmlDatenLesen", ex);
+            }
+            Daten.listeDownloads.listeNummerieren();
+            //ListeFilmUpdateServer aufbauen
+            Daten.filmeLaden.getDownloadUrlsFilmlisten(false).sort();
+        }
     }
 
     public static boolean einstellungenExistieren() {
@@ -189,83 +262,6 @@ public class IoXmlLesen {
     // ##############################
     // private
     // ##############################
-    private void xmlDatenLesen(Daten ddaten) {
-        Path xmlFilePath = null;
-        xmlFilePath = Daten.getMediathekXmlFilePath();
-        if (Files.exists(xmlFilePath)) {
-            int event;
-            XMLInputFactory inFactory = XMLInputFactory.newInstance();
-            inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-            DatenPset datenPset = null;
-            try (InputStreamReader in = new InputStreamReader(Files.newInputStream(xmlFilePath), Konstanten.KODIERUNG_UTF)) {
-                XMLStreamReader parser = inFactory.createXMLStreamReader(in);
-                while (parser.hasNext()) {
-                    event = parser.next();
-                    if (event == XMLStreamConstants.START_ELEMENT) {
-                        //String t = parser.getLocalName();
-                        if (parser.getLocalName().equals(Konstanten.SYSTEM)) {
-                            //System
-//                            get(parser, event, Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system);
-                            getConfig(parser, Konstanten.SYSTEM, Daten.mVConfig, true);
-                        } else if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
-                            //Programmgruppen
-                            datenPset = new DatenPset();
-                            if (get(parser, event, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
-                                ddaten.listePset.add(datenPset);
-                            }
-                        } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
-                            DatenProg datenProg = new DatenProg();
-                            if (get(parser, event, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr)) {
-                                if (datenPset != null) {
-                                    datenPset.addProg(datenProg);
-                                }
-                            }
-                            //ende Programgruppen
-                        } else if (parser.getLocalName().equals(DatenAbo.ABO)) {
-                            //Abo
-                            DatenAbo datenAbo = new DatenAbo();
-                            if (get(parser, event, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
-                                Daten.listeAbo.addAbo(datenAbo);
-                            }
-                        } else if (parser.getLocalName().equals(DatenDownload.DOWNLOAD)) {
-                            //Downloads
-                            DatenDownload d = new DatenDownload();
-                            if (get(parser, event, DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr)) {
-                                d.init();
-                                Daten.listeDownloads.add(d);
-                            }
-                        } else if (parser.getLocalName().equals(DatenBlacklist.BLACKLIST)) {
-                            //Blacklist
-                            ListeBlacklist blacklist = Daten.listeBlacklist;
-                            DatenBlacklist datenBlacklist = new DatenBlacklist();
-                            if (get(parser, event, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
-                                blacklist.add(datenBlacklist);
-                            }
-                        } else if (parser.getLocalName().equals(MSearchFilmlistenSuchen.FILM_UPDATE_SERVER)) {
-                            //Urls Filmlisten
-                            DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
-                            if (get(parser, event, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
-                                Daten.filmeLaden.getDownloadUrlsFilmlisten(false).addWithCheck(datenUrlFilmliste);
-                            }
-                        } else if (parser.getLocalName().equals(DatenFilmlistenServer.FILM_LISTEN_SERVER)) {
-                            //Filmlisteserver
-                            DatenFilmlistenServer datenFilmlistenServer = new DatenFilmlistenServer();
-                            if (get(parser, event, DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, datenFilmlistenServer.arr)) {
-                                Daten.filmeLaden.getListeFilmlistnServer().add(datenFilmlistenServer);
-                            }
-                        }
-                    }
-                }
-                parser.close();
-            } catch (XMLStreamException | IOException ex) {
-                Log.fehlerMeldung(392840096, Log.FEHLER_ART_PROG, "IoXml.xmlDatenLesen", ex);
-            }
-            Daten.listeDownloads.listeNummerieren();
-            //ListeFilmUpdateServer aufbauen
-            Daten.filmeLaden.getDownloadUrlsFilmlisten(false).sort();
-        }
-    }
-
     private static boolean get(XMLStreamReader parser, int event, String xmlElem, String[] xmlNames, String[] strRet) {
         return get(parser, xmlElem, xmlNames, strRet, true);
     }

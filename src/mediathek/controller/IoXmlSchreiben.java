@@ -83,8 +83,8 @@ public class IoXmlSchreiben {
             Log.systemMeldung("Daten Schreiben");
             xmlSchreibenStart();
             //System schreibem
-            xmlSchreibenDaten(Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system, true);
-//            xmlSchreibenConfig(Konstanten.SYSTEM, Daten.mVConfig.getAll(), true);
+//            xmlSchreibenDaten(Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system, true);
+            xmlSchreibenConfig(Konstanten.SYSTEM, Daten.mVConfig.getAll(), true);
             //Senderliste
             xmlSchreibenProg(daten);
             xmlSchreibenDownloads(daten);

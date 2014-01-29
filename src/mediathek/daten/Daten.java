@@ -179,7 +179,7 @@ public class Daten {
         mVConfig.add(Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.FALSE.toString());
         mVConfig.add(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_UNICODE);
         mVConfig.add(Konstanten.SYSTEM_ECHTZEITSUCHE, Boolean.TRUE.toString());
-        mVConfig.add(Konstanten.SYSTEM_ICON_STANARD, Boolean.TRUE.toString());
+        mVConfig.add(Konstanten.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
         mVConfig.add(Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
         mVConfig.add(Konstanten.SYSTEM_BLACKLIST_FILMLAENGE, "0");
         mVConfig.add(Konstanten.SYSTEM_ICON_PFAD, Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");

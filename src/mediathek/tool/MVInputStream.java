@@ -40,15 +40,15 @@ public class MVInputStream extends InputStream {
     public MVInputStream(InputStream in) {
         iStream = in;
         try {
-            maxBytePerSec = Long.parseLong(Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR]) * 1024;
+            maxBytePerSec = Long.parseLong(Daten.mVConfig.get(Konstanten.SYSTEM_BANDBREITE_KBYTE)) * 1024;
         } catch (Exception ex) {
             maxBytePerSec = 0;
-            Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = "0";
+            Daten.mVConfig.add(Konstanten.SYSTEM_BANDBREITE_KBYTE, "0");
         }
     }
 
     public void setBandbreite() {
-        maxBytePerSec = Long.parseLong(Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR]) * 1024;
+        maxBytePerSec = Long.parseLong(Daten.mVConfig.get(Konstanten.SYSTEM_BANDBREITE_KBYTE)) * 1024;
         startZeit = System.currentTimeMillis();
         bytesGelesen = 0;
     }

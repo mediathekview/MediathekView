@@ -34,7 +34,8 @@ public class MVConfig {
     }
 
     public synchronized String get(String key) {
-        return hashmap.get(key);
+        String s = hashmap.get(key);
+        return s == null ? "" : s;
     }
 
     public synchronized String[][] getAll() {

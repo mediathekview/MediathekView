@@ -146,7 +146,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
 
         @Override
         public synchronized void run() {
-            String version = Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR];
+            String version = Daten.mVConfig.get(Konstanten.SYSTEM_VERSION_PROGRAMMSET);
             if (lp != null) {
                 if (!version.equals(lp.version)) {
                     String titel = "Das Standardset wurde aktualisert";
@@ -174,7 +174,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                     DialogOkCancel dialogOkCancel = new DialogOkCancel(parent, ddaten, true, titel, text);
                     dialogOkCancel.setVisible(true);
                     if (dialogOkCancel.ok) {
-                        Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = lp.version;
+                        Daten.mVConfig.add(Konstanten.SYSTEM_VERSION_PROGRAMMSET, lp.version);
                         // die Zielpafade anpassen
                         ListePset org = ddaten.listePset.getListeSpeichern();
                         for (DatenPset ps : lp.getListeSpeichern()) {
@@ -193,7 +193,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                         ddaten.listePset.addPset(lp);
                     } else if (!dialogOkCancel.morgen) {
                         // dann auch die Versionsnummer aktualisieren
-                        Daten.system[Konstanten.SYSTEM_VERSION_PROGRAMMSET_NR] = lp.version;
+                        Daten.mVConfig.add(Konstanten.SYSTEM_VERSION_PROGRAMMSET, lp.version);
                     }
                 }
             }
