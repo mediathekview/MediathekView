@@ -43,7 +43,6 @@ import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
 import mediathek.tool.MVConfig;
