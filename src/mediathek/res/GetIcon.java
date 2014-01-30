@@ -25,18 +25,19 @@ import mediathek.daten.Daten;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.controller.Log;
+import mediathek.tool.MVConfig;
 
 public class GetIcon {
 
     private final static String PFAD_INTERN = "/mediathek/res/";
 
     public static ImageIcon getIcon(String strIcon) {
-        if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_ICON_STANDARD))) {
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
             return getStandard(strIcon);
         } else {
             ImageIcon icon;
             try {
-                String pfad = GuiFunktionen.addsPfad(Daten.mVConfig.get(Konstanten.SYSTEM_ICON_PFAD), strIcon);
+                String pfad = GuiFunktionen.addsPfad(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD), strIcon);
 //                System.out.println(new File(pfad).getAbsolutePath());
                 if (new File(pfad).exists()) {
                     icon = new ImageIcon(pfad);

@@ -202,34 +202,34 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
 
     public static String getPfadMplayer(JFrame parent, Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_MPLAYER).equals("")) {
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_MPLAYER).equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, dd, false /* vlc */, false /* flvstreamer */, true /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
-        return Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_MPLAYER);
+        return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_MPLAYER);
     }
 
     public static String getPfadVlc(JFrame parent, Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_VLC).equals("")) {
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC).equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, dd, true /* vlc */, false /* flvstreamer */, false /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
-        return Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_VLC);
+        return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC);
     }
 
     public static String getPfadFlv(JFrame parent, Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_FLVSTREAMER).equals("")) {
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER).equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, dd, false /* vlc */, true /* flvstreamer */, false /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
-        return Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_FLVSTREAMER);
+        return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER);
     }
 
     public static String getPfadFFmpeg(JFrame parent, Daten dd) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_FFMPEG).equals("")) {
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG).equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, dd, false /* vlc */, false /* flvstreamer */, false /* mplayer */, true /*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
-        return Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_FFMPEG);
+        return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG);
     }
 
     public static boolean addVorlagen(PanelVorlage parent, Daten ddaten, ListePset pSet, boolean auto) {

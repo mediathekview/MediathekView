@@ -91,7 +91,7 @@ public class GuiFunktionen extends Funktionen {
         // "istDatei" kennzeichnet einen Dateinamen, sonst Pfadnamen
         // verbotene Zeichen entfernen
         // < > ? " : | \ / *
-        if (Daten.mVConfig.get(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_NIX)) {
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_NIX)) {
             // dann wars das!
             return pfad;
         }
@@ -135,9 +135,9 @@ public class GuiFunktionen extends Funktionen {
         ret = ret.replace(":", "_");
         ret = ret.replace("'", "_");
         ret = ret.replace("|", "_");
-        if (Daten.mVConfig.get(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_UNICODE)) {
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_UNICODE)) {
             ret = cleanUnicode(ret, "_");
-        } else if (Daten.mVConfig.get(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_ASCII)) {
+        } else if (Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_ASCII)) {
             ret = getAscii(ret);
         }
         if (winPfad) {
@@ -383,9 +383,9 @@ public class GuiFunktionen extends Funktionen {
     public static int getImportArtFilme() {
         int ret;
         try {
-            ret = Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_IMPORT_ART_FILME));
+            ret = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_IMPORT_ART_FILME));
         } catch (Exception ex) {
-            Daten.mVConfig.add(Konstanten.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO));
+            Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO));
             ret = GuiKonstanten.UPDATE_FILME_AUTO;
         }
         return ret;

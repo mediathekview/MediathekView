@@ -36,6 +36,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 import org.jdesktop.swingx.JXSearchField;
@@ -85,13 +86,13 @@ public final class MVToolBar extends JToolBar {
         state = sstate;
         switch (sstate) {
             case TOOLBAR_TAB_DOWNLOADS:
-                nrToolbar = Konstanten.SYSTEM_TOOLBAR_DOWNLOAD_EXTERN;
-                nrIconKlein = Konstanten.SYSTEM_ICON_KLEIN_DOWNLOADS_EXTERN;
+                nrToolbar = MVConfig.SYSTEM_TOOLBAR_DOWNLOAD_EXTERN;
+                nrIconKlein = MVConfig.SYSTEM_ICON_KLEIN_DOWNLOADS_EXTERN;
                 buttonListToUse = buttonListDownloads;
                 break;
             case TOOLBAR_TAB_ABOS:
-                nrToolbar = Konstanten.SYSTEM_TOOLBAR_ABO_EXTERN;
-                nrIconKlein = Konstanten.SYSTEM_ICON_KLEIN_ABOS_EXTERN;
+                nrToolbar = MVConfig.SYSTEM_TOOLBAR_ABO_EXTERN;
+                nrIconKlein = MVConfig.SYSTEM_ICON_KLEIN_ABOS_EXTERN;
                 buttonListToUse = buttonListAbos;
                 break;
             default:
@@ -106,8 +107,8 @@ public final class MVToolBar extends JToolBar {
     public MVToolBar(Daten ddaten) {
         // für die Toolbar im Hauptfenster
         daten = ddaten;
-        nrToolbar = Konstanten.SYSTEM_TOOLBAR_ALLES;
-        nrIconKlein = Konstanten.SYSTEM_ICON_KLEIN_ALLES;
+        nrToolbar = MVConfig.SYSTEM_TOOLBAR_ALLES;
+        nrIconKlein = MVConfig.SYSTEM_ICON_KLEIN_ALLES;
         buttonListToUse = buttonListAlles;
         startup();
     }
@@ -307,11 +308,11 @@ public final class MVToolBar extends JToolBar {
                     if (extern) {
                         b.setVisible(false);
                     } else {
-                        if (!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_VIS_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)
-                                || Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FENSTER_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)) {
+                        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)
+                                || Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)) {
                             b.setVisible(false);
-                        } else if (!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_VIS_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)
-                                || Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FENSTER_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)) {
+                        } else if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)
+                                || Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)) {
                             b.setVisible(false);
                         } else {
                             b.setEnabled(false);
@@ -331,7 +332,7 @@ public final class MVToolBar extends JToolBar {
 //            // jButtonFilterPanel.setVisible(anz);
 //        }
         if (!extern) {
-            jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN)));
+            jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN)));
             // jButtonFilterPanel.setVisible(anz);
         } else {
             jTextFieldFilter.setVisible(false);
@@ -501,8 +502,8 @@ public final class MVToolBar extends JToolBar {
         jButtonFilterPanel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean b = !Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN));
-                Daten.mVConfig.add(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN, Boolean.toString(b));
+                boolean b = !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN));
+                Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN, Boolean.toString(b));
                 filterAnzeigen();
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getName());
             }

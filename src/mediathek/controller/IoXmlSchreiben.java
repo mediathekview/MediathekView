@@ -41,6 +41,7 @@ import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
+import mediathek.tool.MVConfig;
 import msearch.filmeLaden.DatenFilmlistenServer;
 import msearch.filmeLaden.DatenUrlFilmliste;
 import msearch.filmeLaden.MSearchFilmlistenSuchen;
@@ -84,7 +85,7 @@ public class IoXmlSchreiben {
             xmlSchreibenStart();
             //System schreibem
 //            xmlSchreibenDaten(Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system, true);
-            xmlSchreibenConfig(Konstanten.SYSTEM, Daten.mVConfig.getAll(), true);
+            xmlSchreibenConfig(MVConfig.SYSTEM, Daten.mVConfig.getAll(), true);
             //Senderliste
             xmlSchreibenProg(daten);
             xmlSchreibenDownloads(daten);

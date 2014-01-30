@@ -46,6 +46,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 import msearch.daten.DatenFilm;
 
@@ -82,11 +83,11 @@ public class DialogAddDownload extends javax.swing.JDialog {
     }
 
     private void init() {
-        jCheckBoxStarten.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
+        jCheckBoxStarten.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
         jCheckBoxStarten.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected()));
             }
         });
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
@@ -165,15 +166,15 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jButtonDelHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_PFADE_SPEICHERN, "");
+                Daten.mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
                 jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));
             }
         });
-        jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN)));
+        jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
         jCheckBoxPfadSpeichern.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected()));
             }
         });
         setCombo();
@@ -207,45 +208,47 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private void setModelPfad(String pfad) {
         ArrayList<String> pfade = new ArrayList<>();
         // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
-        if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN))) {
-            if (!Daten.mVConfig.get(Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN).isEmpty()) {
-                pfade.add(Daten.mVConfig.get(Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN));
+        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN))) {
+            // sonst kommt der Pfad des Sets an den Anfang
+            if (!pfad.isEmpty()) {
+                pfade.add(pfad);
             }
         }
-        // dann den Rest
-        pfade.add(pfad);
-        if (!Daten.mVConfig.get(Konstanten.SYSTEM_PFADE_SPEICHERN).isEmpty()) {
-            String[] p = Daten.mVConfig.get(Konstanten.SYSTEM_PFADE_SPEICHERN).split("<>");
+        if (!Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
+            String[] p = Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
             if (p.length != 0) {
                 pfade.addAll(Arrays.asList(p));
+            }
+        }
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN))) {
+            if (!pfad.isEmpty()) {
+                pfade.add(pfad);
             }
         }
         jComboBoxPfad.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[]{})));
     }
 
     private void saveComboPfad() {
-        String akt = jComboBoxPfad.getSelectedItem().toString();
-        Daten.mVConfig.add(Konstanten.SYSTEM_DIALOG_DOWNLOAD_PFAD_SPEICHERN, akt);
-
         ArrayList<String> pfade = new ArrayList<>();
-        if (!Daten.mVConfig.get(Konstanten.SYSTEM_PFADE_SPEICHERN).isEmpty()) {
-            String[] p = Daten.mVConfig.get(Konstanten.SYSTEM_PFADE_SPEICHERN).split("<>");
-            if (p.length != 0) {
-                pfade.addAll(Arrays.asList(p));
+        String s = jComboBoxPfad.getSelectedItem().toString();
+        if (!s.equals(orgPfad)) {
+            pfade.add(s);
+        }
+        for (int i = 0; i < jComboBoxPfad.getItemCount(); ++i) {
+            s = jComboBoxPfad.getItemAt(i);
+            if (!s.equals(orgPfad) && !pfade.contains(s)) {
+                pfade.add(s);
             }
         }
-        if (!pfade.contains(akt) && !akt.equals(orgPfad)) {
-            pfade.add(0, akt);
-        }
-        Daten.mVConfig.add(Konstanten.SYSTEM_PFADE_SPEICHERN, "");
         if (pfade.size() > 0) {
-            Daten.mVConfig.add(Konstanten.SYSTEM_PFADE_SPEICHERN, pfade.get(0));
-            for (int i = 1; i < 5 && i < pfade.size(); ++i) {
-                if (!pfade.get(i).isEmpty() && !pfade.get(i).equals(orgPfad)) {
-                    Daten.mVConfig.add(Konstanten.SYSTEM_PFADE_SPEICHERN, Daten.mVConfig.get(Konstanten.SYSTEM_PFADE_SPEICHERN) + "<>" + pfade.get(i));
+            s = pfade.get(0);
+            for (int i = 1; i < 10 && i < pfade.size(); ++i) {
+                if (!pfade.get(i).isEmpty()) {
+                    s += "<>" + pfade.get(i);
                 }
             }
         }
+        Daten.mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
     }
 
     private void setCombo() {

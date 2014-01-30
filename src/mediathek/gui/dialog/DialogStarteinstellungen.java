@@ -35,6 +35,7 @@ import static mediathek.tool.Funktionen.OS_WIN_64BIT;
 import static mediathek.tool.Funktionen.getOs;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
+import mediathek.tool.MVConfig;
 
 public class DialogStarteinstellungen extends javax.swing.JDialog {
 
@@ -68,13 +69,13 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             }
         });
         jCheckBoxSuchen.setSelected(true);
-        Daten.mVConfig.add(Konstanten.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
+        Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
         jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
         // setzt die Standardpfade für die wichtigsten Programme
-        Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
-        Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
-        Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
-        Daten.mVConfig.add(Konstanten.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
+        Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
+        Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
+        Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
+        Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
     }
 
     private void weiter() {
@@ -96,9 +97,9 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
 
     private void statusStart() {
         jButtonStandard.setText("Weiter");
-        if (Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_VLC).equals("")
-                || Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_FLVSTREAMER).equals("")
-                || Daten.mVConfig.get(Konstanten.SYSTEM_PFAD_FFMPEG).equals("")) {
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC).equals("")
+                || Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER).equals("")
+                || Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG).equals("")) {
             // ein Programm (VLC, flvstreamer) wurde nicht gefunden, muss der Benutzer eintragen
             status = STAT_PFAD;
         } else if (jCheckBoxAnpassen.isSelected()) {
@@ -110,7 +111,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             ListePset pSet = ListePsetVorlagen.getStandarset(parentComponent, ddaten, Funktionen.getOsString());
             if (pSet != null) {
                 ddaten.listePset.addPset(pSet);
-                Daten.mVConfig.add(Konstanten.SYSTEM_VERSION_PROGRAMMSET,pSet.version);
+                Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET,pSet.version);
                 status = STAT_FERTIG;
             } else {
                 status = STAT_PSET;
@@ -147,7 +148,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             ListePset pSet = ListePsetVorlagen.getStandarset(parentComponent, ddaten, Funktionen.getOsString());
             if (pSet != null) {
                 ddaten.listePset.addPset(pSet);
-                Daten.mVConfig.add(Konstanten.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
+                Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
             }
         }
         if (jCheckBoxAlleEinstellungen.isSelected()) {
@@ -292,7 +293,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Daten.mVConfig.add(Konstanten.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected()));
+            Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected()));
         }
     }
 }

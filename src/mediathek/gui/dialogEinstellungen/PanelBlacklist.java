@@ -44,6 +44,7 @@ import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.TModel;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
@@ -87,16 +88,16 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private void init_() {
-        jCheckBoxAbo.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_AUCH_ABO)));
-        jCheckBoxBlacklistEingeschaltet.setSelected(!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET)));
+        jCheckBoxAbo.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO)));
+        jCheckBoxBlacklistEingeschaltet.setSelected(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET)));
         jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
         jCheckBoxBlacklistEingeschaltet.setText(jCheckBoxBlacklistEingeschaltet.isSelected() ? "Blacklist eingeschaltet" : "Blacklist ausgeschaltet");
-        jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
+        jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
         try {
-            jSliderMinuten.setValue(Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_FILMLAENGE)));
+            jSliderMinuten.setValue(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE)));
         } catch (Exception ex) {
             jSliderMinuten.setValue(0);
-            Daten.mVConfig.add(Konstanten.SYSTEM_BLACKLIST_FILMLAENGE, "0");
+            Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
         }
         setPanelBlacklist();
         tabelleLaden();
@@ -105,32 +106,32 @@ public class PanelBlacklist extends PanelVorlage {
     private void init() {
         jTableBlacklist.addMouseListener(new BeobMausTabelle());
         jTableBlacklist.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
-        jRadioButtonWhitelist.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST)));
+        jRadioButtonWhitelist.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST)));
         jRadioButtonWhitelist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
                 notifyBlack();
             }
         });
         jRadioButtonBlacklist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
                 notifyBlack();
             }
         });
         jCheckBoxZukunftNichtAnzeigen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected()));
                 notifyBlack();
             }
         });
         jCheckBoxAbo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_BLACKLIST_AUCH_ABO, Boolean.toString(jCheckBoxAbo.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO, Boolean.toString(jCheckBoxAbo.isSelected()));
                 // bei den Downloads melden
                 // damit die Änderungen im Eigenschaftendialog auch übernommen werden
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name);
@@ -141,7 +142,7 @@ public class PanelBlacklist extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
                 jCheckBoxBlacklistEingeschaltet.setText(jCheckBoxBlacklistEingeschaltet.isSelected() ? "Blacklist eingeschaltet" : "Blacklist ausgeschaltet");
-                Daten.mVConfig.add(Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET, Boolean.toString(!jCheckBoxBlacklistEingeschaltet.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET, Boolean.toString(!jCheckBoxBlacklistEingeschaltet.isSelected()));
                 notifyBlack();
                 setPanelBlacklist();
             }
@@ -206,10 +207,10 @@ public class PanelBlacklist extends PanelVorlage {
         jTextFieldTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
         jTextFieldThemaTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
         try {
-            jSliderMinuten.setValue(Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_FILMLAENGE)));
+            jSliderMinuten.setValue(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE)));
         } catch (Exception ex) {
             jSliderMinuten.setValue(0);
-            Daten.mVConfig.add(Konstanten.SYSTEM_BLACKLIST_FILMLAENGE, "0");
+            Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
         }
         jTextFieldMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
         jSliderMinuten.addChangeListener(new ChangeListener() {
@@ -217,7 +218,7 @@ public class PanelBlacklist extends PanelVorlage {
             public void stateChanged(ChangeEvent e) {
                 jTextFieldMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
                 if (!jSliderMinuten.getValueIsAdjusting()) {
-                    Daten.mVConfig.add(Konstanten.SYSTEM_BLACKLIST_FILMLAENGE, String.valueOf(jSliderMinuten.getValue()));
+                    Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, String.valueOf(jSliderMinuten.getValue()));
                     notifyBlack();
                 }
             }

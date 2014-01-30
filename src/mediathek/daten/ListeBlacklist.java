@@ -29,6 +29,7 @@ import mediathek.tool.Filter;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
@@ -165,30 +166,30 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         // ob die Blackliste dafür verwendet werden soll, ist schon geklärt
         setFilter();
         tage = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
-        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET));
-        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
+        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET));
+        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         jetzt = DatumZeit.Morgen_0_Uhr;
         return checkFilm(film);
     }
 
     private void setFilter() {
         try {
-            if (Daten.mVConfig.get(Konstanten.SYSTEM_FILTER_TAGE).equals("") || Daten.mVConfig.get(Konstanten.SYSTEM_FILTER_TAGE).equals("0")) {
+            if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("") || Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("0")) {
                 tage = 0;
             } else {
-                long max = 1000L * 60L * 60L * 24L * GuiFilme.COMBO_ZEIT_INT[Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_FILTER_TAGE))];
+                long max = 1000L * 60L * 60L * 24L * GuiFilme.COMBO_ZEIT_INT[Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE))];
                 tage = new Date().getTime() - max;
             }
         } catch (Exception ex) {
             tage = 0;
         }
         try {
-            filmlaengeSoll = Long.valueOf(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
+            filmlaengeSoll = Long.valueOf(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
         } catch (Exception ex) {
             filmlaengeSoll = 0;
         }
-        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET));
-        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
+        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET));
+        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         jetzt = DatumZeit.Morgen_0_Uhr;
     }
 
@@ -222,14 +223,14 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                     Filter.isPattern(blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR])
                     ? new String[]{blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase()} : blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase().split(","),
                     new String[]{""}, 0, film, true /*auch die Länge prüfen*/)) {
-                if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST))) {
+                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST))) {
                     return true;
                 } else {
                     return false;
                 }
             }
         }
-        if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_IST_WHITELIST))) {
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST))) {
             // nur anzeigen wenn ein Filter passt
             return false;
         } else {

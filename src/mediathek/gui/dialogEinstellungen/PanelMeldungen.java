@@ -29,6 +29,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.tool.MVConfig;
 
 public class PanelMeldungen extends PanelVorlage {
 
@@ -111,16 +112,16 @@ public class PanelMeldungen extends PanelVorlage {
     }
 
     private String getNrSystem() {
-        String nr = Konstanten.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
+        String nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
         switch (logArt) {
             case ListenerMediathekView.EREIGNIS_LOG_FEHLER:
-                nr = Konstanten.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN;
+                nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN;
                 break;
             case ListenerMediathekView.EREIGNIS_LOG_SYSTEM:
-                nr = Konstanten.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
+                nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
                 break;
             case ListenerMediathekView.EREIGNIS_LOG_PLAYER:
-                nr = Konstanten.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN;
+                nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN;
                 break;
         }
         return nr;

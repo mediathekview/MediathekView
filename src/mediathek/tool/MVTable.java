@@ -80,7 +80,7 @@ public final class MVTable extends JTable {
                 maxSpalten = DatenFilm.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenFilm.spaltenAnzeigen, DatenFilm.MAX_ELEM);
                 indexSpalte = DatenFilm.FILM_NR_NR;
-                nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
+                nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
                 this.setModel(new TModelFilm(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_DOWNLOADS:
@@ -89,7 +89,7 @@ public final class MVTable extends JTable {
                 spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
                 indexSpalte = DatenDownload.DOWNLOAD_NR_NR;
                 //indexSpalte = DatenDownload.DOWNLOAD_URL_NR;
-                nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS;
+                nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS;
                 this.setDragEnabled(true);
                 this.setDropMode(DropMode.INSERT_ROWS);
                 this.setTransferHandler(new TableRowTransferHandlerDownload(this));
@@ -100,7 +100,7 @@ public final class MVTable extends JTable {
                 maxSpalten = DatenAbo.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenAbo.spaltenAnzeigen, DatenAbo.MAX_ELEM);
                 indexSpalte = DatenAbo.ABO_NR_NR;
-                nrDatenSystem = Konstanten.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS;
+                nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS;
                 this.setModel(new TModelAbo(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_PSET:

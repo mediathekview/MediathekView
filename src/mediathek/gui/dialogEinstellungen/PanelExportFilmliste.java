@@ -36,6 +36,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Duration;
 import mediathek.tool.Konstanten;
 import mediathek.controller.Log;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 import msearch.io.MSearchFilmlisteSchreiben;
 
@@ -51,7 +52,7 @@ public class PanelExportFilmliste extends PanelVorlage {
 
     private void init() {
         jButtonExportPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        jTextFieldPfad.setText(Daten.mVConfig.get(Konstanten.SYSTEM_EXPORT_DATEI));
+        jTextFieldPfad.setText(Daten.mVConfig.get(MVConfig.SYSTEM_EXPORT_DATEI));
         jTextFieldPfad.getDocument().addDocumentListener(new BeobTextFeld());
         jButtonExportieren.addActionListener(new BeobExport());
         jButtonExportPfad.addActionListener(new BeobPfad());
@@ -59,7 +60,7 @@ public class PanelExportFilmliste extends PanelVorlage {
 
     private void filmeExportieren() {
         int ret;
-        String exporDatei = Daten.mVConfig.get(Konstanten.SYSTEM_EXPORT_DATEI);
+        String exporDatei = Daten.mVConfig.get(MVConfig.SYSTEM_EXPORT_DATEI);
         if (exporDatei.equals("")) {
             MVMessageDialog.showMessageDialog(parentComponent, "Keine Datei angegeben", "Pfad", JOptionPane.INFORMATION_MESSAGE);
         } else {
@@ -195,7 +196,7 @@ public class PanelExportFilmliste extends PanelVorlage {
         }
 
         void tusEinfach(DocumentEvent e) {
-            Daten.mVConfig.add(Konstanten.SYSTEM_EXPORT_DATEI, jTextFieldPfad.getText());
+            Daten.mVConfig.add(MVConfig.SYSTEM_EXPORT_DATEI, jTextFieldPfad.getText());
         }
     }
 

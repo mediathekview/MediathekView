@@ -33,6 +33,7 @@ import javax.swing.JOptionPane;
 import mediathek.controller.starter.Start;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
@@ -406,8 +407,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         DatenAbo abo;
         ListIterator<DatenFilm> itFilm;
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
-        boolean checkWithBlackList = !Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_AUSGESCHALTET))
-                && Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_AUCH_ABO));
+        boolean checkWithBlackList = !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET))
+                && Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO));
         itFilm = Daten.listeFilme.listIterator();
         while (itFilm.hasNext()) {
             film = itFilm.next();
@@ -682,7 +683,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
         DatenDownload ret = null;
-        if (this.size() > 0 && getDown(Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_MAX_DOWNLOAD)))) {
+        if (this.size() > 0 && getDown(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD)))) {
             DatenDownload datenDownload = naechsterStart();
             if (datenDownload != null) {
                 if (datenDownload.start != null) {

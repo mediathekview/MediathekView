@@ -43,6 +43,7 @@ import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.tool.MVConfig;
 
 public class PanelEinstellungen extends PanelVorlage {
 
@@ -78,7 +79,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxNotification.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_NOTIFICATION, Boolean.toString(jCheckBoxNotification.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.toString(jCheckBoxNotification.isSelected()));
             }
         });
         jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
@@ -116,16 +117,16 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void init() {
-        jCheckBoxNotification.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_NOTIFICATION)));
-        jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_UPDATE_SUCHEN)));
-        jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_ECHTZEITSUCHE)));
+        jCheckBoxNotification.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_NOTIFICATION)));
+        jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN)));
+        jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
         // UserAgent
         // Rest
-        if (Daten.mVConfig.get(Konstanten.SYSTEM_MAX_DOWNLOAD).equals("")) {
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
             jSpinnerDownload.setValue(1);
-            Daten.mVConfig.add(Konstanten.SYSTEM_MAX_DOWNLOAD, "1");
+            Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
         } else {
-            jSpinnerDownload.setValue(Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_MAX_DOWNLOAD)));
+            jSpinnerDownload.setValue(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD)));
         }
 
         setupBandwidthLimit();
@@ -134,10 +135,10 @@ public class PanelEinstellungen extends PanelVorlage {
     private void setupBandwidthLimit() {
         int bandwidth;
         try {
-            bandwidth = Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_BANDBREITE_KBYTE));
+            bandwidth = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
         } catch (NumberFormatException ex) {
             bandwidth = 0;
-            Daten.mVConfig.add(Konstanten.SYSTEM_BANDBREITE_KBYTE, "0");
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, "0");
         }
 
         //if bandwidth is 0 then we are disabled...
@@ -198,7 +199,7 @@ public class PanelEinstellungen extends PanelVorlage {
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-                    Daten.mVConfig.add(Konstanten.SYSTEM_LOOK, lafClass);  //
+                    Daten.mVConfig.add(MVConfig.SYSTEM_LOOK, lafClass);  //
                 }
             };
             cbxLookAndFeel.addActionListener(lst);
@@ -233,9 +234,9 @@ public class PanelEinstellungen extends PanelVorlage {
         }
         DefaultComboBoxModel model = new DefaultComboBoxModel(iconList.toArray());
         cbxIconPackages.setModel(model);
-        if (!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_ICON_STANDARD))) {
-            if (!Daten.mVConfig.get(Konstanten.SYSTEM_ICON_PFAD).equals("")) {
-                File f = new File(Daten.mVConfig.get(Konstanten.SYSTEM_ICON_PFAD));
+        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
+            if (!Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD).equals("")) {
+                File f = new File(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD));
                 cbxIconPackages.setSelectedItem(f.getName());
             }
         }
@@ -244,7 +245,7 @@ public class PanelEinstellungen extends PanelVorlage {
     private void bandwidthSpinnerStateChanged(ChangeEvent evt) {
         if (cbLimitBandwidth.isSelected()) {
             final int b = (int) bandwidthSpinner.getValue();
-            Daten.mVConfig.add(Konstanten.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
         }
     }
@@ -256,7 +257,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 lblBandwidth.setEnabled(true);
                 bandwidthSpinner.setEnabled(true);
                 final int b = (int) bandwidthSpinner.getValue();
-                Daten.mVConfig.add(Konstanten.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
+                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
                 break;
 
@@ -264,7 +265,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 lblBandwidth.setEnabled(false);
                 bandwidthSpinner.setEnabled(false);
                 bandwidthSpinner.setValue(0);
-                Daten.mVConfig.add(Konstanten.SYSTEM_BANDBREITE_KBYTE, "0");
+                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, "0");
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
                 break;
         }
@@ -488,7 +489,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         @Override
         public void stateChanged(ChangeEvent arg0) {
-            Daten.mVConfig.add(Konstanten.SYSTEM_MAX_DOWNLOAD,
+            Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD,
                     String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue()));
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
         }
@@ -498,7 +499,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Daten.mVConfig.add(Konstanten.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected()));
+            Daten.mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected()));
         }
     }
 
@@ -506,7 +507,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Daten.mVConfig.add(Konstanten.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected()));
+            Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected()));
         }
     }
 
@@ -530,24 +531,24 @@ public class PanelEinstellungen extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             String iconName = cbxIconPackages.getModel().getElementAt(cbxIconPackages.getSelectedIndex());
             if (iconName.equals(ICONSET_STANDARD)) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
-                Daten.mVConfig.add(Konstanten.SYSTEM_ICON_PFAD, "");
+                Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
+                Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
             } else {
-                Daten.mVConfig.add(Konstanten.SYSTEM_ICON_STANDARD, Boolean.FALSE.toString());
+                Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.FALSE.toString());
             }
             try {
                 File[] files = new File(Funktionen.getPfadIcons()).listFiles();
                 if (files != null) {
                     for (File file : files) {
                         if (file.isDirectory() && file.getName().equals(iconName)) {
-                            Daten.mVConfig.add(Konstanten.SYSTEM_ICON_PFAD, file.getAbsolutePath());
+                            Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, file.getAbsolutePath());
                             break;
                         }
                     }
                 }
             } catch (Exception ex) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
-                Daten.mVConfig.add(Konstanten.SYSTEM_ICON_PFAD, "");
+                Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
+                Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
                 Log.fehlerMeldung(829304789, Log.FEHLER_ART_PROG, "PanelEinstellungen", ex);
             }
         }
