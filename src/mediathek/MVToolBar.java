@@ -324,19 +324,10 @@ public final class MVToolBar extends JToolBar {
     }
 
     public void filterAnzeigen() {
-//        if (state.equals(TOOLBAR_TAB_FILME)) {
-//            jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
-//            // jButtonFilterPanel.setVisible(anz);
-//        } else {
-//            jTextFieldFilter.setVisible(false);
-//            // jButtonFilterPanel.setVisible(anz);
-//        }
         if (!extern) {
             jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN)));
-            // jButtonFilterPanel.setVisible(anz);
         } else {
             jTextFieldFilter.setVisible(false);
-            // jButtonFilterPanel.setVisible(anz);
         }
     }
 

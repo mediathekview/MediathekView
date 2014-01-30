@@ -370,7 +370,10 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                panelFilterSetzen();
+                // Panel anzeigen und die Filmliste anpassen
+                frameFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN)));
+                MVListeFilme.checkBlacklist();
+                tabelleLaden();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
@@ -392,13 +395,6 @@ public class GuiFilme extends PanelVorlage {
 
     private void panelBeschreibungSetzen() {
         jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
-    }
-
-    private void panelFilterSetzen() {
-        // Panel anzeigen und die Filmliste anpassen
-        frameFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN)));
-        MVListeFilme.checkBlacklist();
-        tabelleLaden();
     }
 
     private String[] getThemen(String ssender) {
@@ -898,7 +894,7 @@ public class GuiFilme extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_KEINE_ABO, String.valueOf(frameFilter.jCheckBoxKeineAbos.isSelected()));
-                Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_KEINE_GESEHENE,String.valueOf(frameFilter.jCheckBoxKeineGesehenen.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_KEINE_GESEHENE, String.valueOf(frameFilter.jCheckBoxKeineGesehenen.isSelected()));
                 Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_NUR_HD, String.valueOf(frameFilter.jCheckBoxNurHd.isSelected()));
                 tabelleLaden();
             }

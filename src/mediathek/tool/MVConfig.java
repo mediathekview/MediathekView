@@ -19,7 +19,9 @@
  */
 package mediathek.tool;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class MVConfig {
 
@@ -41,6 +43,8 @@ public class MVConfig {
     public static final String SYSTEM_URL_OEFFNEN = "Programm-Url-oeffnen";
     public static final String SYSTEM_NOTIFICATION = "Notification-anzeigen";
     public static final String SYSTEM_PLAYER_ABSPIELEN = "Player-zum-Abspielen";
+    public static final String SYSTEM_GEO_MELDEN = "Geo-melden";
+    public static final String SYSTEM_GEO_STANDORT = "Geo-Standort";
     // Fenstereinstellungen
     public static final String SYSTEM_GROESSE = "Groesse";
     public static final String SYSTEM_GROESSE_EINSTELLUNGEN = "Groesse-Einstellungen";
@@ -77,8 +81,7 @@ public class MVConfig {
     public static final String SYSTEM_FENSTER_MELDUNGEN = "Fenster-Meldungen";
     public static final String SYSTEM_VIS_MELDUNGEN = "Vis-Meldungen";
     public static final String SYSTEM_GROESSE_MELDUNGEN = "Groesse-Meldungen";
-    public static final String SYSTEM_GEO_MELDEN = "Geo-melden";
-    public static final String SYSTEM_GEO_STANDORT = "Geo-Standort";
+    public static final String SYSTEM_GROESSE_FILTER = "Groesse-Filter";
     //Einstellungen Filmliste
     public static final String SYSTEM_IMPORT_ART_FILME = "update-filme"; // url automatisch suchen - oder nur manuell
     public static final String SYSTEM_URL_FILMLISTEN = "system-url-filmlisten";
@@ -122,12 +125,36 @@ public class MVConfig {
     }
 
     public synchronized String[][] getAll() {
-        String[][] ret = new String[hashmap.size()][2];
+        LinkedList<String[]> liste = new LinkedList<>();
         String[] setArray = hashmap.keySet().toArray(new String[]{});
         for (int i = 0; i < setArray.length; ++i) {
-            ret[i][0] = setArray[i];
-            ret[i][1] = hashmap.get(setArray[i]);
+            String[] s = new String[2];
+            s[0] = setArray[i];
+            s[1] = hashmap.get(setArray[i]);
+            liste.add(s);
         }
-        return ret;
+        listeSort(liste, 0);
+        return liste.toArray(new String[][]{});
+    }
+
+    private void listeSort(LinkedList<String[]> liste, int stelle) {
+        //Stringliste alphabetisch sortieren
+        msearch.tool.GermanStringSorter sorter = msearch.tool.GermanStringSorter.getInstance();
+        if (liste != null) {
+            String str1;
+            String str2;
+            for (int i = 1; i < liste.size(); ++i) {
+                for (int k = i; k > 0; --k) {
+                    str1 = liste.get(k - 1)[stelle];
+                    str2 = liste.get(k)[stelle];
+                    // if (str1.compareToIgnoreCase(str2) > 0) {
+                    if (sorter.compare(str1, str2) > 0) {
+                        liste.add(k - 1, liste.remove(k));
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
