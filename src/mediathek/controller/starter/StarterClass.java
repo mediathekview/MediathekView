@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -308,7 +309,7 @@ public class StarterClass {
             notifyStartEvent(datenDownload);
         }
 
-        public void run__() {
+        public void run() {
             startmeldung(datenDownload, start);
             MVInputStream input;
             try {
@@ -325,11 +326,14 @@ public class StarterClass {
                     File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                     int downloaded = 0;
                     if (file.exists()) {
-                        downloaded = (int) file.length();
-                        conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
-                    } else {
-                        conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
+                        int ret = JOptionPane.showConfirmDialog(null, "Filmdatei existiert bereits.\n"
+                                + "Datei weiterführen?\n"
+                                + "(Ansonsten Datei überschreiben und von Anfang beginnen)", "Weiterführen?", JOptionPane.YES_NO_OPTION);
+                        if (ret == JOptionPane.OK_OPTION) {
+                            downloaded = (int) file.length();
+                        }
                     }
+                    conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
                     conn.setRequestProperty("User-Agent", Daten.getUserAgent());
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
@@ -415,7 +419,7 @@ public class StarterClass {
             notifyStartEvent(datenDownload);
         }
 
-        public void run() {
+        public void run__() {
             startmeldung(datenDownload, start);
             MVInputStream input;
             try {
