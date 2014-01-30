@@ -87,6 +87,7 @@ import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.MVAboutDialog;
 import mediathek.gui.dialog.PanelHilfe;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVFrame;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
@@ -300,13 +301,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
+                jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN)));
+                jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN)));
             }
         });
 
@@ -324,7 +325,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
     private void setFocusSuchfeld() {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_SUCHFELD_FOCUS_SETZEN, MediathekGui.class.getName());
-        if (!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN))) {
+        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN))) {
             mVToolBar.jTextFieldFilter.requestFocus();
             mVToolBar.jTextFieldFilter.setCaretPosition(0);
         }
@@ -336,13 +337,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      */
     private void setLookAndFeel() {
         try {
-            String laf = Daten.mVConfig.get(Konstanten.SYSTEM_LOOK);
+            String laf = Daten.mVConfig.get(MVConfig.SYSTEM_LOOK);
             //if we have the old values, reset to System LAF
             if (laf.equals("") || laf.length() == 1) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } else {
                 //otherwise set the requested UI
-                laf = Daten.mVConfig.get(Konstanten.SYSTEM_LOOK);
+                laf = Daten.mVConfig.get(MVConfig.SYSTEM_LOOK);
                 UIManager.setLookAndFeel(laf);
             }
             SwingUtilities.updateComponentTreeUI(this);
@@ -354,7 +355,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         } catch (Exception ignored) {
             //update the LAF parameter, just in case we tried to load a non-existing LAF before
-            Daten.mVConfig.add(Konstanten.SYSTEM_LOOK, UIManager.getSystemLookAndFeelClassName());
+            Daten.mVConfig.add(MVConfig.SYSTEM_LOOK, UIManager.getSystemLookAndFeelClassName());
         }
     }
 
@@ -452,13 +453,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     private void setSize(boolean max) {
-        if (max || Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FENSTER_MAX))) {
+        if (max || Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_MAX))) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else {
-            GuiFunktionen.setSize(Konstanten.SYSTEM_GROESSE, this, null);
+            GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE, this, null);
         }
         try {
-            int divider = Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_BREITE_MELDUNGEN));
+            int divider = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BREITE_MELDUNGEN));
             if (divider > 0) {
                 splitPane.setDividerLocation(divider);
             }
@@ -522,15 +523,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         switch (state) {
             case MVToolBar.TOOLBAR_TAB_DOWNLOADS:
                 jCheckBoxDownloadAnzeigen.setSelected(false);
-                Daten.mVConfig.add(Konstanten.SYSTEM_VIS_DOWNLOAD, Boolean.toString(false));
+                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.toString(false));
                 break;
             case MVToolBar.TOOLBAR_TAB_ABOS:
                 jCheckBoxAboAnzeigen.setSelected(false);
-                Daten.mVConfig.add(Konstanten.SYSTEM_VIS_ABO, Boolean.toString(false));
+                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.toString(false));
                 break;
             case MVToolBar.TOOLBAR_TAB_MELDUNGEN:
                 jCheckBoxMeldungenAnzeigen.setSelected(false);
-                Daten.mVConfig.add(Konstanten.SYSTEM_VIS_MELDUNGEN, Boolean.toString(false));
+                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_MELDUNGEN, Boolean.toString(false));
                 break;
         }
         initFrames();
@@ -539,31 +540,31 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     public void initFrames() {
         // Downloads
         int nr = 1;
-        if (!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_VIS_DOWNLOAD))) {
+        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD))) {
             hide(0, daten.guiDownloads);
         } else {
-            if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FENSTER_DOWNLOAD))) {
-                setFrame(0, Konstanten.SYSTEM_GROESSE_DOWNLOAD, daten.guiDownloads, MVToolBar.TOOLBAR_TAB_DOWNLOADS, "Downloads");
+            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD))) {
+                setFrame(0, MVConfig.SYSTEM_GROESSE_DOWNLOAD, daten.guiDownloads, MVToolBar.TOOLBAR_TAB_DOWNLOADS, "Downloads");
             } else {
                 setTab(0, daten.guiDownloads, "Downloads", nr++);
             }
         }
         // Abos
-        if (!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_VIS_ABO))) {
+        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_ABO))) {
             hide(1, daten.guiAbo);
         } else {
-            if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FENSTER_ABO))) {
-                setFrame(1, Konstanten.SYSTEM_GROESSE_ABO, daten.guiAbo, MVToolBar.TOOLBAR_TAB_ABOS, "Abos");
+            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_ABO))) {
+                setFrame(1, MVConfig.SYSTEM_GROESSE_ABO, daten.guiAbo, MVToolBar.TOOLBAR_TAB_ABOS, "Abos");
             } else {
                 setTab(1, daten.guiAbo, "Abos", nr++);
             }
         }
         // Meldungen
-        if (!Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_VIS_MELDUNGEN))) {
+        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_MELDUNGEN))) {
             hide(2, panelMeldungen);
         } else {
-            if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FENSTER_MELDUNGEN))) {
-                setFrame(2, Konstanten.SYSTEM_GROESSE_MELDUNGEN, panelMeldungen, MVToolBar.TOOLBAR_TAB_MELDUNGEN, "Meldungen");
+            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_MELDUNGEN))) {
+                setFrame(2, MVConfig.SYSTEM_GROESSE_MELDUNGEN, panelMeldungen, MVToolBar.TOOLBAR_TAB_MELDUNGEN, "Meldungen");
             } else {
                 setTab(2, panelMeldungen, "Meldungen", nr++);
             }
@@ -648,11 +649,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     private void initSpinner() {
-        if (Daten.mVConfig.get(Konstanten.SYSTEM_MAX_DOWNLOAD).equals("")) {
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
             jSpinnerAnzahl.setValue(1);
-            Daten.mVConfig.add(Konstanten.SYSTEM_MAX_DOWNLOAD, "1");
+            Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
         } else {
-            jSpinnerAnzahl.setValue(Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_MAX_DOWNLOAD)));
+            jSpinnerAnzahl.setValue(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD)));
         }
     }
 
@@ -724,7 +725,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jSpinnerAnzahl.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent arg0) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_MAX_DOWNLOAD,
+                Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD,
                         String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue()));
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
             }
@@ -779,11 +780,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
 
-        jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN)));
+        jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN)));
         jCheckBoxMenuItemFilterAnzeigen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN, String.valueOf(jCheckBoxMenuItemFilterAnzeigen.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN, String.valueOf(jCheckBoxMenuItemFilterAnzeigen.isSelected()));
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
             }
         });
@@ -889,28 +890,28 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         });
 
         // Ansicht
-        jCheckBoxMenuItemToolBar.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
+        jCheckBoxMenuItemToolBar.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
         mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
         jCheckBoxMenuItemToolBar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.toString(jCheckBoxMenuItemToolBar.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.toString(jCheckBoxMenuItemToolBar.isSelected()));
                 mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
             }
         });
-        jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
+        jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
         jCheckBoxMenuItemVideoplayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(jCheckBoxMenuItemVideoplayer.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(jCheckBoxMenuItemVideoplayer.isSelected()));
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
             }
         });
-        jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
+        jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
         jCheckBoxMenuItemBeschreibung.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemBeschreibung.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemBeschreibung.isSelected()));
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
             }
         });
@@ -922,21 +923,21 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxDownloadExtrafenster.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 5, 1));
         jMenuAnsicht.add(jCheckBoxDownloadAnzeigen);
         jMenuAnsicht.add(jCheckBoxDownloadExtrafenster);
-        jCheckBoxDownloadAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_VIS_DOWNLOAD)));
+        jCheckBoxDownloadAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD)));
         jCheckBoxDownloadAnzeigen.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_VIS_DOWNLOAD, Boolean.toString(jCheckBoxDownloadAnzeigen.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.toString(jCheckBoxDownloadAnzeigen.isSelected()));
                 initFrames();
             }
         });
-        jCheckBoxDownloadExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FENSTER_DOWNLOAD)));
+        jCheckBoxDownloadExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD)));
         jCheckBoxDownloadExtrafenster.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(jCheckBoxDownloadExtrafenster.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(jCheckBoxDownloadExtrafenster.isSelected()));
                 initFrames();
             }
         });
@@ -949,21 +950,21 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxAboExtrafenster.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 5, 1));
         jMenuAnsicht.add(jCheckBoxAboAnzeigen);
         jMenuAnsicht.add(jCheckBoxAboExtrafenster);
-        jCheckBoxAboAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_VIS_ABO)));
+        jCheckBoxAboAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_ABO)));
         jCheckBoxAboAnzeigen.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_VIS_ABO,Boolean.toString(jCheckBoxAboAnzeigen.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_ABO,Boolean.toString(jCheckBoxAboAnzeigen.isSelected()));
                 initFrames();
             }
         });
-        jCheckBoxAboExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FENSTER_ABO)));
+        jCheckBoxAboExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_ABO)));
         jCheckBoxAboExtrafenster.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_FENSTER_ABO, Boolean.toString(jCheckBoxAboExtrafenster.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_ABO, Boolean.toString(jCheckBoxAboExtrafenster.isSelected()));
                 initFrames();
             }
         });
@@ -974,21 +975,21 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMeldungenAnzeigen.setText("Meldungen anzeigen");
         jCheckBoxMeldungenExtrafenster.setText("in Extrafenster");
         jCheckBoxMeldungenExtrafenster.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 5, 1));
-        jCheckBoxMeldungenAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_VIS_MELDUNGEN)));
+        jCheckBoxMeldungenAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_MELDUNGEN)));
         jCheckBoxMeldungenAnzeigen.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_VIS_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenAnzeigen.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenAnzeigen.isSelected()));
                 initFrames();
             }
         });
-        jCheckBoxMeldungenExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_FENSTER_MELDUNGEN)));
+        jCheckBoxMeldungenExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_MELDUNGEN)));
         jCheckBoxMeldungenExtrafenster.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_FENSTER_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenExtrafenster.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenExtrafenster.isSelected()));
                 initFrames();
             }
         });
@@ -1084,24 +1085,24 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         }
         if (this.getExtendedState() == JFrame.MAXIMIZED_BOTH) {
-            Daten.mVConfig.add(Konstanten.SYSTEM_FENSTER_MAX, Boolean.TRUE.toString());
+            Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_MAX, Boolean.TRUE.toString());
         } else {
-            Daten.mVConfig.add(Konstanten.SYSTEM_FENSTER_MAX, Boolean.FALSE.toString());
+            Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_MAX, Boolean.FALSE.toString());
         }
         // Hauptfenster
-        GuiFunktionen.getSize(Konstanten.SYSTEM_GROESSE, this);
+        GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE, this);
         // Dialog Einstellungen
-        GuiFunktionen.getSize(Konstanten.SYSTEM_GROESSE_EINSTELLUNGEN, dialogEinstellungen);
-        Daten.mVConfig.add(Konstanten.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
+        GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_EINSTELLUNGEN, dialogEinstellungen);
+        Daten.mVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
         // Frames
         if (frames[0] != null) {
-            GuiFunktionen.getSize(Konstanten.SYSTEM_GROESSE_DOWNLOAD, frames[0]);
+            GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_DOWNLOAD, frames[0]);
         }
         if (frames[1] != null) {
-            GuiFunktionen.getSize(Konstanten.SYSTEM_GROESSE_ABO, frames[1]);
+            GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_ABO, frames[1]);
         }
         if (frames[2] != null) {
-            GuiFunktionen.getSize(Konstanten.SYSTEM_GROESSE_MELDUNGEN, frames[2]);
+            GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_MELDUNGEN, frames[2]);
         }
         daten.allesSpeichern();
         Log.printEndeMeldung();

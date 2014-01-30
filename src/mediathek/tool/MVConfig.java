@@ -23,11 +23,94 @@ import java.util.HashMap;
 
 public class MVConfig {
 
+    // ################################
+    // Tags System
+    // ################################
+    public static final String SYSTEM = "system";
+    // allgemein
+    public static final String SYSTEM_ECHTZEITSUCHE = "Echtzeitsuche";
+    public static final String SYSTEM_LOOK = "System-look";
+    public static final String SYSTEM_USER_AGENT_AUTO = "User-Agent-Auto";
+    public static final String SYSTEM_USER_AGENT = "User-Agent";
+    public static final String SYSTEM_UPDATE_SUCHEN = "update-suchen";
+    public static final String SYSTEM_UPDATE_DATUM = "update-datum";
+    public static final String SYSTEM_ABOS_SOFORT_SUCHEN = "Abos-sofort-suchen";
+    public static final String SYSTEM_ZIELNAMEN_ANPASSEN = "Zielnamen-anpassen";
+    public static final String SYSTEM_HINWEIS_NR_ANGEZEIGT = "Hinweis-Nr-angezeigt";
+    public static final String SYSTEM_ORDNER_OEFFNEN = "Download-Ordner-oeffnen";
+    public static final String SYSTEM_URL_OEFFNEN = "Programm-Url-oeffnen";
+    public static final String SYSTEM_NOTIFICATION = "Notification-anzeigen";
+    public static final String SYSTEM_PLAYER_ABSPIELEN = "Player-zum-Abspielen";
+    // Fenstereinstellungen
+    public static final String SYSTEM_GROESSE = "Groesse";
+    public static final String SYSTEM_GROESSE_EINSTELLUNGEN = "Groesse-Einstellungen";
+    public static final String SYSTEM_FENSTER_MAX = "programmfenster-maximieren";
+    public static final String SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN = "system-panel-videoplayer-anzeigen";
+    public static final String SYSTEM_PANEL_MELDUNGEN_ANZEIGEN = "system-panel-meldungen-anzeigen";
+    public static final String SYSTEM_PANEL_FILTER_ANZEIGEN = "system-panel-filter-anzeigen";
+    public static final String SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN = "system-panel-beschreibung-anzeigen";
+    public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_FILME = "Eigenschaften-Tabellen-Filme";
+    public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS = "Eigenschaften-Tabellen-Downloads";
+    public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS = "Eigenschaften-Tabellen-Abos";
+    public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN = "Meldungsfenster-Systemmeldungen";
+    public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN = "Meldungsfenster-Fehlermeldungen";
+    public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN = "Meldungsfenster-Playermeldungen";
+    public static final String SYSTEM_ANSICHT_SET_LANG = "Ansicht-Set-lang";
+    public static final String SYSTEM_ICON_STANDARD = "Icon-Standard";
+    public static final String SYSTEM_ICON_PFAD = "Icon-Pfad";
+    public static final String SYSTEM_BREITE_MELDUNGEN = "breite-Meldungen";
+    public static final String SYSTEM_TOOLBAR_ALLES_ANZEIGEN = "Toolbar-Alles-anzeigen";
+    public static final String SYSTEM_TOOLBAR_ALLES = "Toolbar-Alles";
+    public static final String SYSTEM_TOOLBAR_DOWNLOAD_EXTERN = "Toolbar-Download-Extern";
+    public static final String SYSTEM_TOOLBAR_ABO_EXTERN = "Toolbar-Abo-Extern";
+    public static final String SYSTEM_TOOLBAR_MELDUNGEN = "Toolbar-Meldungen";
+    public static final String SYSTEM_ICON_KLEIN_ALLES = "system-icon-groesse-alles";
+    public static final String SYSTEM_ICON_KLEIN_DOWNLOADS_EXTERN = "system-icon-groesse-Download-Extern";
+    public static final String SYSTEM_ICON_KLEIN_ABOS_EXTERN = "system-icon-groesse-Abos-Extern";
+    // Extrafenster
+    public static final String SYSTEM_FENSTER_DOWNLOAD = "Fenster-Download";
+    public static final String SYSTEM_VIS_DOWNLOAD = "Vis-Download";
+    public static final String SYSTEM_GROESSE_DOWNLOAD = "Groesse-Download";
+    public static final String SYSTEM_FENSTER_ABO = "Fenster-Abo";
+    public static final String SYSTEM_VIS_ABO = "Vis-Abo";
+    public static final String SYSTEM_GROESSE_ABO = "Groesse-Abo";
+    public static final String SYSTEM_FENSTER_MELDUNGEN = "Fenster-Meldungen";
+    public static final String SYSTEM_VIS_MELDUNGEN = "Vis-Meldungen";
+    public static final String SYSTEM_GROESSE_MELDUNGEN = "Groesse-Meldungen";
+    public static final String SYSTEM_GEO_MELDEN = "Geo-melden";
+    public static final String SYSTEM_GEO_STANDORT = "Geo-Standort";
+    //Einstellungen Filmliste
+    public static final String SYSTEM_IMPORT_ART_FILME = "update-filme"; // url automatisch suchen - oder nur manuell
+    public static final String SYSTEM_URL_FILMLISTEN = "system-url-filmlisten";
+    public static final String SYSTEM_IMPORT_URL_MANUELL = "system-import-url-manuell";
+    public static final String SYSTEM_EXPORT_DATEI = "system-export-datei";
+    // Filter
+    public static final String SYSTEM_FILTER_DAUER = "system-filter-dauer";
+    public static final String SYSTEM_FILTER_TAGE = "system-filter-tage"; // index im Array GuiFilme.COMBO_ZEIT_INT
+    public static final String SYSTEM_FILTER_KEINE_ABO = "system-filter-abo";
+    public static final String SYSTEM_FILTER_KEINE_GESEHENE = "system-filter-gesehen";
+    public static final String SYSTEM_FILTER_NUR_HD = "system-filter-hd";
+    // Programmpfade
+    public static final String SYSTEM_PFAD_VLC = "pfad-vlc";
+    public static final String SYSTEM_PFAD_FLVSTREAMER = "pfad-flvstreamer";
+    public static final String SYSTEM_PFAD_FFMPEG = "pfad-ffmpeg";
+    public static final String SYSTEM_PFAD_MPLAYER = "pfad-mplayer";
+    public static final String SYSTEM_VERSION_PROGRAMMSET = "Version-Programmset";
+    // Blacklist
+    public static final String SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN = "Blacklist-Zukunft-nicht-anzeigen";
+    public static final String SYSTEM_BLACKLIST_AUCH_ABO = "Blacklist-auch-Abo";
+    public static final String SYSTEM_BLACKLIST_AUSGESCHALTET = "Blacklist-ausgeschaltet";
+    public static final String SYSTEM_BLACKLIST_IST_WHITELIST = "Blacklist-ist-Whitelist";
+    public static final String SYSTEM_BLACKLIST_FILMLAENGE = "Blacklist-Filmlaenge";
+    // Download
+    public static final String SYSTEM_DIALOG_DOWNLOAD_D_STARTEN = "Dialog-Download-D-Starten"; // DialogDownload: Download sofort starten
+    public static final String SYSTEM_DOWNLOAD_SOFORT_STARTEN = "Download-sofort-starten";
+    public static final String SYSTEM_BANDBREITE_KBYTE = "Bandbreite";
+    public static final String SYSTEM_MAX_DOWNLOAD = "maxDownload";
+    public static final String SYSTEM__DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN = "Pfade-zum-Speichern"; // gesammelten Downloadpfade im Downloaddialog
+    public static final String SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN = "Letzen-Pfad-anzeigen";
+
     private final HashMap<String, String> hashmap = new HashMap<>();
-
-    public MVConfig() {
-
-    }
 
     public synchronized void add(String key, String value) {
         hashmap.put(key, value);

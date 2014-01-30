@@ -60,6 +60,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVTable;
 import mediathek.tool.MVMessageDialog;
@@ -216,7 +217,7 @@ public class GuiDownloads extends PanelVorlage {
         Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public void fertig(MSearchListenerFilmeLadenEvent event) {
-                if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN))) {
+                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
                 }
             }
@@ -227,8 +228,8 @@ public class GuiDownloads extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN))
-                        && Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_BLACKLIST_AUCH_ABO))) {
+                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))
+                        && Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO))) {
                     // nur auf Blacklist reagieren, wenn auch für Abos eingeschaltet
                     downloadsAktualisieren();
                 }
@@ -238,7 +239,7 @@ public class GuiDownloads extends PanelVorlage {
             ListenerMediathekView.EREIGNIS_LISTE_ABOS}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN))) {
+                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
                 }
             }
@@ -285,7 +286,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void panelBeschreibungSetzen() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
+        jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
     }
 
     private synchronized void tabelleLaden() {
@@ -317,7 +318,7 @@ public class GuiDownloads extends PanelVorlage {
         Daten.listeDownloads.abosLoschenWennNochNichtGestartet();
         Daten.listeDownloads.abosSuchen(parentComponent);
         tabelleLaden();
-        if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
             // und wenn gewollt auch gleich starten
             filmStartenWiederholenStoppen(true /*alle*/, true /*starten*/);
         }

@@ -67,10 +67,10 @@ public class IoXmlLesen {
                     event = parser.next();
                     if (event == XMLStreamConstants.START_ELEMENT) {
                         //String t = parser.getLocalName();
-                        if (parser.getLocalName().equals(Konstanten.SYSTEM)) {
+                        if (parser.getLocalName().equals(MVConfig.SYSTEM)) {
                             //System
 //                            get(parser, event, Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system);
-                            getConfig(parser, Konstanten.SYSTEM, Daten.mVConfig, true);
+                            getConfig(parser, MVConfig.SYSTEM, Daten.mVConfig, true);
                         } else if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
                             //Programmgruppen
                             datenPset = new DatenPset();

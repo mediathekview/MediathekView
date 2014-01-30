@@ -23,12 +23,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
@@ -42,7 +39,6 @@ public class PanelSenderLaden extends JPanel {
         initComponents();
         jButtonStop.setIcon(GetIcon.getIcon("stop_16.png"));
         init();
-        jSpinnerWarten.addChangeListener(new BeobSpinnerWarten());
     }
 
     private void init() {
@@ -54,12 +50,6 @@ public class PanelSenderLaden extends JPanel {
         }
         addSender();
 
-        if (Daten.mVConfig.get(Konstanten.SYSTEM_WARTEN).equals("")) {
-            jSpinnerWarten.setValue(1);
-            Daten.mVConfig.add(Konstanten.SYSTEM_WARTEN, "1");
-        } else {
-            jSpinnerWarten.setValue(Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_WARTEN)));
-        }
         jButtonStop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -123,9 +113,6 @@ public class PanelSenderLaden extends JPanel {
     private void initComponents() {
 
         panelSender = new javax.swing.JPanel();
-        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
-        jSpinnerWarten = new javax.swing.JSpinner();
-        javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
         jLabelProgress = new javax.swing.JLabel();
@@ -144,33 +131,6 @@ public class PanelSenderLaden extends JPanel {
             .addGap(0, 28, Short.MAX_VALUE)
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jSpinnerWarten.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
-
-        jLabel7.setText("Laden um den Faktor bremsen");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSpinnerWarten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
-                .addContainerGap(202, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jSpinnerWarten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         jLabel1.setText("Filme von den Websiten der Sender laden, kann etwas dauern!");
 
         jLabelProgress.setText(" ");
@@ -185,7 +145,6 @@ public class PanelSenderLaden extends JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelSender, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabelProgress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
@@ -204,9 +163,7 @@ public class PanelSenderLaden extends JPanel {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(panelSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(78, 78, 78)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonStop))
@@ -222,7 +179,6 @@ public class PanelSenderLaden extends JPanel {
     private javax.swing.JButton jButtonStop;
     private javax.swing.JLabel jLabelProgress;
     private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JSpinner jSpinnerWarten;
     private javax.swing.JPanel panelSender;
     // End of variables declaration//GEN-END:variables
 
@@ -244,12 +200,4 @@ public class PanelSenderLaden extends JPanel {
         }
     }
 
-    private class BeobSpinnerWarten implements ChangeListener {
-
-        @Override
-        public void stateChanged(ChangeEvent arg0) {
-            Daten.mVConfig.add(Konstanten.SYSTEM_WARTEN,
-                    String.valueOf(((Number) jSpinnerWarten.getModel().getValue()).intValue()));
-        }
-    }
 }

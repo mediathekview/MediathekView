@@ -37,6 +37,7 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 
 public class MVFrameFilter extends javax.swing.JFrame {
 
@@ -118,7 +119,7 @@ public class MVFrameFilter extends javax.swing.JFrame {
 //            GuiFunktionen.getSize(nrGroesse, this);
 //        }
 
-        Daten.mVConfig.add(Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN, Boolean.FALSE.toString());
+        Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN, Boolean.FALSE.toString());
 //        daten.mediathekGui.filterAnzeigen(true);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVFrameFilter.class.getName());
 

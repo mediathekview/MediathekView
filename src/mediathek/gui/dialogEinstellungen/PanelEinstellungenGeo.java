@@ -26,6 +26,7 @@ import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 import msearch.daten.DatenFilm;
 
 public class PanelEinstellungenGeo extends PanelVorlage {
@@ -38,7 +39,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
     }
 
     private void init() {
-        switch (Daten.mVConfig.get(Konstanten.SYSTEM_GEO_STANDORT)) {
+        switch (Daten.mVConfig.get(MVConfig.SYSTEM_GEO_STANDORT)) {
             case DatenFilm.GEO_CH:
                 jRadioButtonCH.setSelected(true);
                 break;
@@ -55,7 +56,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
+                Daten.mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
                 melden();
             }
         });
@@ -63,7 +64,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_GEO_STANDORT, DatenFilm.GEO_CH);
+                Daten.mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_CH);
                 melden();
             }
         });
@@ -71,7 +72,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_GEO_STANDORT, DatenFilm.GEO_AT);
+                Daten.mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_AT);
                 melden();
             }
         });
@@ -79,16 +80,16 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_GEO_STANDORT, DatenFilm.GEO_EU);
+                Daten.mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_EU);
                 melden();
             }
         });
-        jCheckBoxMarkieren.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_GEO_MELDEN)));
+        jCheckBoxMarkieren.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN)));
         jCheckBoxMarkieren.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_GEO_MELDEN, String.valueOf(jCheckBoxMarkieren.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, String.valueOf(jCheckBoxMarkieren.isSelected()));
                 melden();
             }
         });

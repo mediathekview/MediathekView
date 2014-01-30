@@ -26,6 +26,7 @@ import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 
 public class CheckUpdate {
 
@@ -46,8 +47,8 @@ public class CheckUpdate {
         @Override
         public synchronized void run() {
             try {
-                if (Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_UPDATE_SUCHEN))) {
-                    if (!Daten.mVConfig.get(Konstanten.SYSTEM_UPDATE_DATUM).equals(DatumZeit.getHeute_yyyyMMdd())) {
+                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN))) {
+                    if (!Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_DATUM).equals(DatumZeit.getHeute_yyyyMMdd())) {
                         final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
                         if (pgrUpdate.checkVersion(daten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
                             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());

@@ -29,13 +29,15 @@ import mediathek.daten.Daten;
 
 public class AsxLesen {
 
+    public static final int STRING_BUFFER_START_BUFFER = 10 * 1024 * 8; // 10 KiB
+
     public static String lesen(String datei) {
         if (!datei.toLowerCase().endsWith(".asx")) {
             // dann ist es keine "asx" URL
             return datei;
         }
         String url = datei;
-        StringBuilder seite = new StringBuilder(Konstanten.STRING_BUFFER_START_BUFFER);
+        StringBuilder seite = new StringBuilder(STRING_BUFFER_START_BUFFER);
         String kodierung = Konstanten.KODIERUNG_UTF;
         int timeout = 20000; //10 Sekunden
         char[] zeichen = new char[1];

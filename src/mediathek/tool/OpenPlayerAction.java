@@ -43,8 +43,8 @@ public class OpenPlayerAction {
             return;
         }
         try {
-            if (!Daten.mVConfig.get(Konstanten.SYSTEM_PLAYER_ABSPIELEN).isEmpty()) {
-                String programm = Daten.mVConfig.get(Konstanten.SYSTEM_PLAYER_ABSPIELEN);
+            if (!Daten.mVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN).isEmpty()) {
+                String programm = Daten.mVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN);
                 Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
                 gut = true;
             } else {
@@ -68,7 +68,7 @@ public class OpenPlayerAction {
                 }
                 if (sFile != null) {
                     Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
-                    Daten.mVConfig.add(Konstanten.SYSTEM_PLAYER_ABSPIELEN, programm);
+                    Daten.mVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, programm);
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                     gut = true;
                 }
@@ -77,7 +77,7 @@ public class OpenPlayerAction {
             }
         } finally {
             if (!gut) {
-                Daten.mVConfig.add(Konstanten.SYSTEM_PLAYER_ABSPIELEN, "");
+                Daten.mVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, "");
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                 MVMessageDialog.showMessageDialog(parent, "Kann den Videoplayer nicht öffnen!",
                         "Fehler", JOptionPane.ERROR_MESSAGE);

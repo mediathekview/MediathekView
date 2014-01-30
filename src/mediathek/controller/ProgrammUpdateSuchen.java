@@ -34,6 +34,7 @@ import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogHinweisUpdate;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
+import mediathek.tool.MVConfig;
 
 public class ProgrammUpdateSuchen {
 
@@ -75,7 +76,7 @@ public class ProgrammUpdateSuchen {
                     release = ret[1];
                     downloadUrlProgramm = ret[2];
                     if (!version.equals("")) {
-                        Daten.mVConfig.add(Konstanten.SYSTEM_UPDATE_DATUM, DatumZeit.getHeute_yyyyMMdd());
+                        Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_DATUM, DatumZeit.getHeute_yyyyMMdd());
                         if (checkObNeueVersion(version, Konstanten.VERSION)) {
                             neueVersion = true;
                             // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, Daten ddaten) {
@@ -109,10 +110,10 @@ public class ProgrammUpdateSuchen {
             try {
                 StringBuilder text = new StringBuilder();
                 int angezeigt = 0;
-                if (Daten.mVConfig.get(Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT).equals("")) {
-                    Daten.mVConfig.add(Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT,Integer.toString(-1));
+                if (Daten.mVConfig.get(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT).equals("")) {
+                    Daten.mVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT,Integer.toString(-1));
                 } else {
-                    angezeigt = Integer.parseInt(Daten.mVConfig.get(Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT));
+                    angezeigt = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT));
                 }
                 for (int i = 0; i < listInfos.size(); ++i) {
                     String[] h = listInfos.get(i);
@@ -125,7 +126,7 @@ public class ProgrammUpdateSuchen {
                 }
                 if (text.length() > 0) {
                     new DialogHinweisUpdate(null, true, daten, "Infos", text.toString()).setVisible(true);
-                    Daten.mVConfig.add(Konstanten.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(listInfos.size()));
+                    Daten.mVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(listInfos.size()));
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(693298731, Log.FEHLER_ART_PROG, "ProgrammUpdateSuchen.checkVersion", ex);

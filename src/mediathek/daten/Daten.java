@@ -56,7 +56,7 @@ public class Daten {
     // Konstanten, Systemeinstellungen und alles was wichtig
 
     //alle Programmeinstellungen
-    public static String[] system = new String[Konstanten.SYSTEM_MAX_ELEM];
+//    public static String[] system = new String[Konstanten.SYSTEM_MAX_ELEM];
     public static MVConfig mVConfig = new MVConfig();
     // flags
     public static boolean debug = false; // Debugmodus
@@ -139,9 +139,9 @@ public class Daten {
     }
 
     private void init() {
-        for (int i = 0; i < system.length; ++i) {
-            system[i] = "";
-        }
+//        for (int i = 0; i < system.length; ++i) {
+//            system[i] = "";
+//        }
 //        //initialisieren
 //        system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] = "1";
 //        system[Konstanten.SYSTEM_WARTEN_NR] = "1";
@@ -169,28 +169,26 @@ public class Daten {
 //        }
         //MVConfig
         //initialisieren
-        mVConfig.add(Konstanten.SYSTEM_MAX_DOWNLOAD, "1");
-        mVConfig.add(Konstanten.SYSTEM_WARTEN, "1");
-        mVConfig.add(Konstanten.SYSTEM_USER_AGENT, Konstanten.USER_AGENT_DEFAULT);
-        mVConfig.add(Konstanten.SYSTEM_WARTEN, "1");
-        mVConfig.add(Konstanten.SYSTEM_LOOK, "0");
-        mVConfig.add(Konstanten.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
-        mVConfig.add(Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.TRUE.toString());
-        mVConfig.add(Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.FALSE.toString());
-        mVConfig.add(Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_UNICODE);
-        mVConfig.add(Konstanten.SYSTEM_ECHTZEITSUCHE, Boolean.TRUE.toString());
-        mVConfig.add(Konstanten.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
-        mVConfig.add(Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
-        mVConfig.add(Konstanten.SYSTEM_BLACKLIST_FILMLAENGE, "0");
-        mVConfig.add(Konstanten.SYSTEM_ICON_PFAD, Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
-        mVConfig.add(Konstanten.SYSTEM_BANDBREITE_KBYTE, String.valueOf(0));
-        mVConfig.add(Konstanten.SYSTEM_NOTIFICATION, Boolean.TRUE.toString());
-        mVConfig.add(Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, Boolean.TRUE.toString());
-        mVConfig.add(Konstanten.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());
-        mVConfig.add(Konstanten.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
-        mVConfig.add(Konstanten.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
+        mVConfig.add(MVConfig.SYSTEM_USER_AGENT, Konstanten.USER_AGENT_DEFAULT);
+        mVConfig.add(MVConfig.SYSTEM_LOOK, "0");
+        mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.FALSE.toString());
+        mVConfig.add(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_UNICODE);
+        mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
+        mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
+        mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(0));
+        mVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
         if (Daten.debug) {
-            mVConfig.add(Konstanten.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
+            mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
         }
     }
 
@@ -207,21 +205,21 @@ public class Daten {
 
     public static void setUserAgentAuto() {
         // Useragent wird vom Programm verwaltet
-        Daten.mVConfig.add(Konstanten.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
+        Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
     }
 
     public static void setUserAgentManuel(String ua) {
         // Useragent den der Benutzer vorgegeben hat
-        Daten.mVConfig.add(Konstanten.SYSTEM_USER_AGENT_AUTO, Boolean.FALSE.toString());
-        Daten.mVConfig.add(Konstanten.SYSTEM_USER_AGENT,ua);
+        Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.FALSE.toString());
+        Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT,ua);
     }
 
     public static boolean isUserAgentAuto() {
-        if (Daten.mVConfig.get(Konstanten.SYSTEM_USER_AGENT_AUTO).equals("")) {
-            Daten.mVConfig.add(Konstanten.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_USER_AGENT_AUTO).equals("")) {
+            Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
             return true;
         } else {
-            return Boolean.parseBoolean(Daten.mVConfig.get(Konstanten.SYSTEM_USER_AGENT_AUTO));
+            return Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USER_AGENT_AUTO));
         }
     }
 
@@ -229,7 +227,7 @@ public class Daten {
         if (isUserAgentAuto()) {
             return Konstanten.USER_AGENT_DEFAULT;
         } else {
-            return Daten.mVConfig.get(Konstanten.SYSTEM_USER_AGENT);
+            return Daten.mVConfig.get(MVConfig.SYSTEM_USER_AGENT);
         }
     }
 
