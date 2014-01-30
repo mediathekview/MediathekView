@@ -35,7 +35,7 @@ import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mediathek.tool.Konstanten;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
@@ -48,35 +48,40 @@ public class MVFrameFilter extends javax.swing.JFrame {
     public MVFrameFilter(Daten d) {
         initComponents();
         f = this;
-        dispose();
-        setUndecorated(true);
-
+        daten = d;
         mouseDownCompCoords = null;
         setBounds(0, 0, 400, 400);
 
         addMouseListener(new MouseListener() {
+            @Override
             public void mouseReleased(MouseEvent e) {
                 mouseDownCompCoords = null;
             }
 
+            @Override
             public void mousePressed(MouseEvent e) {
                 mouseDownCompCoords = e.getPoint();
             }
 
+            @Override
             public void mouseExited(MouseEvent e) {
             }
 
+            @Override
             public void mouseEntered(MouseEvent e) {
             }
 
+            @Override
             public void mouseClicked(MouseEvent e) {
             }
         });
 
         addMouseMotionListener(new MouseMotionListener() {
+            @Override
             public void mouseMoved(MouseEvent e) {
             }
 
+            @Override
             public void mouseDragged(MouseEvent e) {
                 Point currCoords = e.getLocationOnScreen();
                 f.setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
@@ -86,7 +91,7 @@ public class MVFrameFilter extends javax.swing.JFrame {
         setVisible(true);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
         this.setTitle("Filter");
-        daten = d;
+        GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_FILTER, this, daten.mediathekGui);
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -109,30 +114,17 @@ public class MVFrameFilter extends javax.swing.JFrame {
                 new DialogHilfe(null, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
             }
         });
-
         pack();
     }
 
     @Override
     public void dispose() {
-//        if (nrGroesse != -1) {
-//            GuiFunktionen.getSize(nrGroesse, this);
-//        }
-
+        GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, this);
         Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN, Boolean.FALSE.toString());
-//        daten.mediathekGui.filterAnzeigen(true);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVFrameFilter.class.getName());
-
         super.dispose();
-
     }
 
-    public void setSize(int nr) {
-//        nrGroesse = nr;
-//        GuiFunktionen.setSize(nr, this, daten.mediathekGui);
-    }
-
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -164,6 +156,7 @@ public class MVFrameFilter extends javax.swing.JFrame {
         jButtonOk = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         setResizable(false);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));

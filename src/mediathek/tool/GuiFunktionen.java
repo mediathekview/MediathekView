@@ -72,20 +72,6 @@ public class GuiFunktionen extends Funktionen {
         }
     }
 
-//    public static void setProxy() {
-////        System.setProperty("proxySet", "true");
-////        System.setProperty("http.proxyHost", "127.0.0.1");
-////        System.setProperty("http.proxyPort", "3128");
-//        if (Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_HTTP_PROXY_ON_NR])) {
-//            System.setProperty("proxySet", "true");
-//            System.setProperty("http.proxyHost", Daten.system[Konstanten.SYSTEM_HTTP_PROXY_SERVER_NR]);
-//            System.setProperty("http.proxyPort", Daten.system[Konstanten.SYSTEM_HTTP_PROXY_PORT_NR]);
-//            System.setProperty("http.proxyUser", Daten.system[Konstanten.SYSTEM_HTTP_PROXY_USER_NR]);
-//            System.setProperty("http.proxyPassword", Daten.system[Konstanten.SYSTEM_HTTP_PROXY_PWD_NR]);
-//        } else {
-//            System.setProperty("proxySet", "false");
-//        }
-//    }
     public static String replaceLeerDateiname(String pfad, boolean istDatei, boolean leerEntfernen) {
         // aus einem Pfadnamen/Dateinamen werden verbotene Zeichen entfernt
         // "istDatei" kennzeichnet einen Dateinamen, sonst Pfadnamen
