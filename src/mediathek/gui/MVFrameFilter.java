@@ -28,7 +28,13 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
@@ -39,7 +45,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
-public class MVFrameFilter extends javax.swing.JFrame {
+public class MVFrameFilter extends javax.swing.JFrame implements MVFilter {
 
     Daten daten;
     static Point mouseDownCompCoords;
@@ -48,7 +54,7 @@ public class MVFrameFilter extends javax.swing.JFrame {
     public MVFrameFilter(Daten d) {
         initComponents();
         f = this;
-        daten = d;
+        setDaten(d);
         mouseDownCompCoords = null;
         setBounds(0, 0, 400, 400);
 
@@ -115,6 +121,11 @@ public class MVFrameFilter extends javax.swing.JFrame {
             }
         });
         pack();
+    }
+
+    @Override
+    public void setDaten(Daten d) {
+        daten = d;
     }
 
     @Override
@@ -389,4 +400,80 @@ public class MVFrameFilter extends javax.swing.JFrame {
     public javax.swing.JToggleButton jToggleButtonLivestram;
     public javax.swing.JToggleButton jToggleButtonNeue;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public JButton get_jButtonFilterLoeschen() {
+        return jButtonFilterLoeschen;
+    }
+
+    @Override
+    public JButton get_jButtonHilfe() {
+        return jButtonHilfe;
+    }
+
+    @Override
+    public JCheckBox get_jCheckBoxKeineAbos() {
+        return jCheckBoxKeineAbos;
+    }
+
+    @Override
+    public JCheckBox get_jCheckBoxKeineGesehenen() {
+        return jCheckBoxKeineGesehenen;
+    }
+
+    @Override
+    public JCheckBox get_jCheckBoxNurHd() {
+        return jCheckBoxNurHd;
+    }
+
+    @Override
+    public JComboBox get_jComboBoxFilterSender() {
+        return jComboBoxFilterSender;
+    }
+
+    @Override
+    public JComboBox get_jComboBoxFilterThema() {
+        return jComboBoxFilterThema;
+    }
+
+    @Override
+    public JComboBox get_jComboBoxZeitraum() {
+        return jComboBoxZeitraum;
+    }
+
+    @Override
+    public JSlider get_jSliderMinuten() {
+        return jSliderMinuten;
+    }
+
+    @Override
+    public JTextField get_jTextFieldFilterIrgendwo() {
+        return jTextFieldFilterIrgendwo;
+    }
+
+    @Override
+    public JTextField get_jTextFieldFilterMinuten() {
+        return jTextFieldFilterMinuten;
+    }
+
+    @Override
+    public JTextField get_jTextFieldFilterThemaTitel() {
+        return jTextFieldFilterThemaTitel;
+    }
+
+    @Override
+    public JTextField get_jTextFieldFilterTitel() {
+        return jTextFieldFilterTitel;
+    }
+
+    @Override
+    public JToggleButton get_jToggleButtonLivestram() {
+        return jToggleButtonLivestram;
+    }
+
+    @Override
+    public JToggleButton get_jToggleButtonNeue() {
+        return jToggleButtonNeue;
+    }
+
 }
