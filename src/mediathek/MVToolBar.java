@@ -325,7 +325,7 @@ public final class MVToolBar extends JToolBar {
 
     public void filterAnzeigen() {
         if (!extern) {
-            jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN)));
+            jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
         } else {
             jTextFieldFilter.setVisible(false);
         }
@@ -493,8 +493,8 @@ public final class MVToolBar extends JToolBar {
         jButtonFilterPanel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean b = !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN));
-                Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN, Boolean.toString(b));
+                boolean b = !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER));
+                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(b));
                 filterAnzeigen();
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getName());
             }

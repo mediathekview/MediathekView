@@ -108,6 +108,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private final MVToolBar mVToolBar;
     private MVStatusBar statusBar;
     private MVFrame[] frames = new MVFrame[3]; // Downloads, Abos, Meldungen
+    private JCheckBoxMenuItem jCheckBoxFilterAnzeigen = new JCheckBoxMenuItem();
+    private JCheckBoxMenuItem jCheckBoxFilterExtrafenster = new JCheckBoxMenuItem();
     private JCheckBoxMenuItem jCheckBoxDownloadAnzeigen = new JCheckBoxMenuItem();
     private JCheckBoxMenuItem jCheckBoxDownloadExtrafenster = new JCheckBoxMenuItem();
     private JCheckBoxMenuItem jCheckBoxAboAnzeigen = new JCheckBoxMenuItem();
@@ -307,7 +309,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN)));
+                jCheckBoxFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
+                jCheckBoxFilterExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD)));
             }
         });
 
@@ -325,7 +328,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
     private void setFocusSuchfeld() {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_SUCHFELD_FOCUS_SETZEN, MediathekGui.class.getName());
-        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN))) {
+        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER))) {
             mVToolBar.jTextFieldFilter.requestFocus();
             mVToolBar.jTextFieldFilter.setCaretPosition(0);
         }
@@ -372,8 +375,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 buttonAus();
                 jMenuItemFilmAbspielen.setEnabled(true);
                 jMenuItemFilmAufzeichnen.setEnabled(true);
-                jCheckBoxMenuItemFilterAnzeigen.setEnabled(true);
-//                filterAnzeigen(!Boolean.parseBoolean(Daten.system[Konstanten.SYSTEM_PANEL_FILTER_ANZEIGEN_NR]));
                 break;
             case MVToolBar.TOOLBAR_TAB_DOWNLOADS:
                 buttonAus();
@@ -391,7 +392,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jMenuItemDownloadVorziehen.setEnabled(true);
                 jSpinnerAnzahl.setEnabled(true);
                 jLabelAnzahl.setEnabled(true);
-//                filterAnzeigen(false);
                 break;
             case MVToolBar.TOOLBAR_TAB_ABOS:
                 buttonAus();
@@ -399,15 +399,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jMenuItemAbosAusschalten.setEnabled(true);
                 jMenuItemAbosLoeschen.setEnabled(true);
                 jMenuItemAbosAendern.setEnabled(true);
-//                filterAnzeigen(false);
                 break;
         }
     }
 
-//    public void filterAnzeigen(boolean anz) {
-//        jCheckBoxMenuItemFilterAnzeigen.setSelected(!anz);
-//        mVToolBar.filterAnzeigen(anz);
-//    }
     public void videoplayerAnzeigen(boolean anz) {
         jCheckBoxMenuItemVideoplayer.setSelected(!anz);
     }
@@ -431,7 +426,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         // Menü
         jMenuItemFilmAbspielen.setEnabled(false);
         jMenuItemFilmAufzeichnen.setEnabled(false);
-        jCheckBoxMenuItemFilterAnzeigen.setEnabled(false);
         jMenuItemDownloadsAktualisieren.setEnabled(false);
         jMenuItemDownloadAbspielen.setEnabled(false);
         jMenuItemDownloadsAufraeumen.setEnabled(false);
@@ -780,15 +774,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
 
-        jCheckBoxMenuItemFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN)));
-        jCheckBoxMenuItemFilterAnzeigen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN, String.valueOf(jCheckBoxMenuItemFilterAnzeigen.isSelected()));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
-            }
-        });
-
         // Downloads
         jMenuItemDownloadsAktualisieren.addActionListener(new ActionListener() {
             @Override
@@ -916,6 +901,32 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
         // ============================
+        // Filter
+        jMenuAnsicht.add(new JSeparator());
+        jCheckBoxFilterAnzeigen.setText("Filter anzeigen");
+        jCheckBoxFilterExtrafenster.setText("in Extrafenster");
+        jCheckBoxFilterExtrafenster.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 5, 1));
+        jMenuAnsicht.add(jCheckBoxFilterAnzeigen);
+        jMenuAnsicht.add(jCheckBoxFilterExtrafenster);
+        jCheckBoxFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
+        jCheckBoxFilterAnzeigen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(jCheckBoxFilterAnzeigen.isSelected()));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
+            }
+        });
+        jCheckBoxFilterExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_FILTER)));
+        jCheckBoxFilterExtrafenster.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_FILTER, Boolean.toString(jCheckBoxFilterExtrafenster.isSelected()));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
+            }
+        });
+        // ============================
         // Downloads
         jMenuAnsicht.add(new JSeparator());
         jCheckBoxDownloadAnzeigen.setText("Downloads anzeigen");
@@ -955,7 +966,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_ABO,Boolean.toString(jCheckBoxAboAnzeigen.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.toString(jCheckBoxAboAnzeigen.isSelected()));
                 initFrames();
             }
         });
@@ -1150,7 +1161,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAbosAendern = new javax.swing.JMenuItem();
         jMenuAnsicht = new javax.swing.JMenu();
         jCheckBoxMenuItemToolBar = new javax.swing.JCheckBoxMenuItem();
-        jCheckBoxMenuItemFilterAnzeigen = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemBeschreibung = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemVideoplayer = new javax.swing.JCheckBoxMenuItem();
         jMenuHilfe = new javax.swing.JMenu();
@@ -1320,10 +1330,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemToolBar.setText("Toolbar");
         jMenuAnsicht.add(jCheckBoxMenuItemToolBar);
 
-        jCheckBoxMenuItemFilterAnzeigen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, 0));
-        jCheckBoxMenuItemFilterAnzeigen.setText("Filter anzeigen");
-        jMenuAnsicht.add(jCheckBoxMenuItemFilterAnzeigen);
-
         jCheckBoxMenuItemBeschreibung.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
         jCheckBoxMenuItemBeschreibung.setText("Beschreibung anzeigen");
         jMenuAnsicht.add(jCheckBoxMenuItemBeschreibung);
@@ -1367,7 +1373,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemFilterAnzeigen;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
     private javax.swing.JMenu jMenuAnsicht;
