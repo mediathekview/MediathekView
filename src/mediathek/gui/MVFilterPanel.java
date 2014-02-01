@@ -28,6 +28,7 @@ import javax.swing.JComboBox;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
@@ -112,24 +113,26 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jCheckBoxNurHd)
-                                .addComponent(jCheckBoxKeineAbos))
-                            .addGap(15, 15, 15))
-                        .addComponent(jCheckBoxKeineGesehenen, javax.swing.GroupLayout.Alignment.TRAILING))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel3)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jSliderMinuten, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .addComponent(jToggleButtonNeue, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jToggleButtonLivestram))
-                .addContainerGap(8, Short.MAX_VALUE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jCheckBoxNurHd)
+                                        .addComponent(jCheckBoxKeineAbos))
+                                    .addGap(15, 15, 15))
+                                .addComponent(jCheckBoxKeineGesehenen, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(jLabel1)
+                            .addComponent(jToggleButtonNeue, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jToggleButtonLivestram))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jComboBoxZeitraum, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jSliderMinuten, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldFilterMinuten)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,19 +191,16 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBoxFilterSender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jComboBoxFilterThema, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextFieldFilterThemaTitel)
-                    .addComponent(jTextFieldFilterIrgendwo)
-                    .addComponent(jTextFieldFilterTitel)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel5))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jComboBoxFilterSender, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxFilterThema, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldFilterIrgendwo, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel5)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonHilfe)
@@ -228,15 +228,14 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextFieldFilterIrgendwo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldFilterIrgendwo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonFilterLoeschen))
+                    .addComponent(jButtonFilterLoeschen)
                     .addComponent(jButtonHilfe))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxFilterSender, jComboBoxFilterThema, jTextFieldFilterIrgendwo, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
@@ -245,8 +244,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -358,6 +357,55 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     @Override
     public JToggleButton get_jToggleButtonNeue() {
         return jToggleButtonNeue;
+    }
+
+    @Override
+    public void removeAllListener() {
+        for (ActionListener a : jButtonFilterLoeschen.getActionListeners()) {
+            jButtonFilterLoeschen.removeActionListener(a);
+        }
+        for (ActionListener a : jButtonHilfe.getActionListeners()) {
+            jButtonHilfe.removeActionListener(a);
+        }
+        for (ActionListener a : jCheckBoxKeineAbos.getActionListeners()) {
+            jCheckBoxKeineAbos.removeActionListener(a);
+        }
+        for (ActionListener a : jCheckBoxKeineGesehenen.getActionListeners()) {
+            jCheckBoxKeineGesehenen.removeActionListener(a);
+        }
+        for (ActionListener a : jCheckBoxNurHd.getActionListeners()) {
+            jCheckBoxNurHd.removeActionListener(a);
+        }
+        for (ActionListener a : jComboBoxFilterSender.getActionListeners()) {
+            jComboBoxFilterSender.removeActionListener(a);
+        }
+        for (ActionListener a : jComboBoxFilterThema.getActionListeners()) {
+            jComboBoxFilterThema.removeActionListener(a);
+        }
+        for (ActionListener a : jComboBoxZeitraum.getActionListeners()) {
+            jComboBoxZeitraum.removeActionListener(a);
+        }
+        for (ChangeListener a : jSliderMinuten.getChangeListeners()) {
+            jSliderMinuten.removeChangeListener(a);
+        }
+        for (ActionListener a : jTextFieldFilterIrgendwo.getActionListeners()) {
+            jTextFieldFilterIrgendwo.removeActionListener(a);
+        }
+        for (ActionListener a : jTextFieldFilterMinuten.getActionListeners()) {
+            jTextFieldFilterMinuten.removeActionListener(a);
+        }
+        for (ActionListener a : jTextFieldFilterThemaTitel.getActionListeners()) {
+            jTextFieldFilterThemaTitel.removeActionListener(a);
+        }
+        for (ActionListener a : jTextFieldFilterTitel.getActionListeners()) {
+            jTextFieldFilterTitel.removeActionListener(a);
+        }
+        for (ActionListener a : jToggleButtonLivestram.getActionListeners()) {
+            jToggleButtonLivestram.removeActionListener(a);
+        }
+        for (ActionListener a : jToggleButtonNeue.getActionListeners()) {
+            jToggleButtonNeue.removeActionListener(a);
+        }
     }
 
 }

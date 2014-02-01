@@ -51,7 +51,7 @@ public class MVConfig {
     public static final String SYSTEM_FENSTER_MAX = "programmfenster-maximieren";
     public static final String SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN = "system-panel-videoplayer-anzeigen";
     public static final String SYSTEM_PANEL_MELDUNGEN_ANZEIGEN = "system-panel-meldungen-anzeigen";
-    public static final String SYSTEM_PANEL_FILTER_ANZEIGEN = "system-panel-filter-anzeigen";
+    //public static final String SYSTEM_PANEL_FILTER_ANZEIGEN = "system-panel-filter-anzeigen";
     public static final String SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN = "system-panel-beschreibung-anzeigen";
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_FILME = "Eigenschaften-Tabellen-Filme";
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS = "Eigenschaften-Tabellen-Downloads";
@@ -81,6 +81,8 @@ public class MVConfig {
     public static final String SYSTEM_FENSTER_MELDUNGEN = "Fenster-Meldungen";
     public static final String SYSTEM_VIS_MELDUNGEN = "Vis-Meldungen";
     public static final String SYSTEM_GROESSE_MELDUNGEN = "Groesse-Meldungen";
+    public static final String SYSTEM_FENSTER_FILTER = "Fenster-Filter";
+    public static final String SYSTEM_VIS_FILTER = "Vis-Filter";
     public static final String SYSTEM_GROESSE_FILTER = "Groesse-Filter";
     //Einstellungen Filmliste
     public static final String SYSTEM_IMPORT_ART_FILME = "update-filme"; // url automatisch suchen - oder nur manuell

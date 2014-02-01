@@ -33,6 +33,8 @@ import mediathek.daten.Daten;
  */
 public interface MVFilter {
 
+    public void removeAllListener();
+
     public JButton get_jButtonFilterLoeschen();
 
     public JButton get_jButtonHilfe();

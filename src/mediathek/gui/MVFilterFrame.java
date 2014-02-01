@@ -19,8 +19,10 @@
  */
 package mediathek.gui;
 
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -35,7 +37,9 @@ import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeListener;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
@@ -131,7 +135,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     @Override
     public void dispose() {
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, this);
-        Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILTER_ANZEIGEN, Boolean.FALSE.toString());
+        Daten.mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.FALSE.toString());
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVFilterFrame.class.getName());
         super.dispose();
     }
@@ -474,6 +478,55 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     @Override
     public JToggleButton get_jToggleButtonNeue() {
         return jToggleButtonNeue;
+    }
+
+    @Override
+    public void removeAllListener() {
+        for (ActionListener a : jButtonFilterLoeschen.getActionListeners()) {
+            jButtonFilterLoeschen.removeActionListener(a);
+        }
+        for (ActionListener a : jButtonHilfe.getActionListeners()) {
+            jButtonHilfe.removeActionListener(a);
+        }
+        for (ActionListener a : jCheckBoxKeineAbos.getActionListeners()) {
+            jCheckBoxKeineAbos.removeActionListener(a);
+        }
+        for (ActionListener a : jCheckBoxKeineGesehenen.getActionListeners()) {
+            jCheckBoxKeineGesehenen.removeActionListener(a);
+        }
+        for (ActionListener a : jCheckBoxNurHd.getActionListeners()) {
+            jCheckBoxNurHd.removeActionListener(a);
+        }
+        for (ActionListener a : jComboBoxFilterSender.getActionListeners()) {
+            jComboBoxFilterSender.removeActionListener(a);
+        }
+        for (ActionListener a : jComboBoxFilterThema.getActionListeners()) {
+            jComboBoxFilterThema.removeActionListener(a);
+        }
+        for (ActionListener a : jComboBoxZeitraum.getActionListeners()) {
+            jComboBoxZeitraum.removeActionListener(a);
+        }
+        for (ChangeListener a : jSliderMinuten.getChangeListeners()) {
+            jSliderMinuten.removeChangeListener(a);
+        }
+        for (ActionListener a : jTextFieldFilterIrgendwo.getActionListeners()) {
+            jTextFieldFilterIrgendwo.removeActionListener(a);
+        }
+        for (ActionListener a : jTextFieldFilterMinuten.getActionListeners()) {
+            jTextFieldFilterMinuten.removeActionListener(a);
+        }
+        for (ActionListener a : jTextFieldFilterThemaTitel.getActionListeners()) {
+            jTextFieldFilterThemaTitel.removeActionListener(a);
+        }
+        for (ActionListener a : jTextFieldFilterTitel.getActionListeners()) {
+            jTextFieldFilterTitel.removeActionListener(a);
+        }
+        for (ActionListener a : jToggleButtonLivestram.getActionListeners()) {
+            jToggleButtonLivestram.removeActionListener(a);
+        }
+        for (ActionListener a : jToggleButtonNeue.getActionListeners()) {
+            jToggleButtonNeue.removeActionListener(a);
+        }
     }
 
 }
