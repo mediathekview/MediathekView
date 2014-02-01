@@ -310,7 +310,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             @Override
             public void ping() {
                 jCheckBoxFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
-                jCheckBoxFilterExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD)));
+                jCheckBoxFilterExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_FILTER)));
             }
         });
 
