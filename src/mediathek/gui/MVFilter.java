@@ -25,7 +25,6 @@ import javax.swing.JComboBox;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import mediathek.daten.Daten;
 
 /**
  *
@@ -64,8 +63,6 @@ public interface MVFilter {
     public JToggleButton get_jToggleButtonLivestram();
 
     public JToggleButton get_jToggleButtonNeue();
-
-    public void setDaten(Daten d);
 
     public void setVisible(boolean v);
 

@@ -56,7 +56,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.MVStatusBar_Mac;
+import mediathek.MVStatusBar;
 import mediathek.MVToolBar;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
@@ -94,7 +94,7 @@ public class GuiFilme extends PanelVorlage {
     private MVFilmInformation filmInfoHud;
     private PanelBeschreibung panelBeschreibung;
     private MVFilter mVFilter;
-    private MVFilterFrame mVFilterFrame;
+    public MVFilterFrame mVFilterFrame;
     private MVFilterPanel mVFilterPanel;
 
     public GuiFilme(Daten d, JFrame parentComponent) {
@@ -104,7 +104,7 @@ public class GuiFilme extends PanelVorlage {
         jScrollPane1.setViewportView(tabelle);
         panelVideoplayerSetzen();
         panelBeschreibung = new PanelBeschreibung(daten.mediathekGui, daten);
-        mVFilterPanel = new MVFilterPanel(d);
+        mVFilterPanel = new MVFilterPanel();
         mVFilterFrame = new MVFilterFrame(d);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
@@ -128,7 +128,7 @@ public class GuiFilme extends PanelVorlage {
     public void isShown() {
         super.isShown();
         daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_TAB_FILME);
-        daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.FILME);
+        daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.FILME);
         aktFilmSetzen();
         setInfo();
     }
@@ -749,7 +749,7 @@ public class GuiFilme extends PanelVorlage {
         textLinks += TRENNER;
         textLinks += Daten.listeDownloads.getInfo(false /*mitAbo*/);
         // Infopanel setzen
-        daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.FILME, textLinks);
+        daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar.StatusbarIndex.FILME, textLinks);
     }
 
     /**

@@ -42,7 +42,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.MVStatusBar_Mac;
+import mediathek.MVStatusBar;
 import mediathek.MVToolBar;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
@@ -58,7 +58,6 @@ import mediathek.tool.DirOpenAction;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFilmSize;
@@ -110,7 +109,7 @@ public class GuiDownloads extends PanelVorlage {
         super.isShown();
         if (!solo) {
             daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_TAB_DOWNLOADS);
-            daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD);
+            daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
         }
         aktFilmSetzen();
     }
@@ -539,7 +538,7 @@ public class GuiDownloads extends PanelVorlage {
     private void setInfo() {
         String textLinks = Daten.listeDownloads.getInfo(true /*mitAbo*/);
         // Infopanel setzen
-        daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar_Mac.StatusbarIndex.DOWNLOAD, textLinks);
+        daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar.StatusbarIndex.DOWNLOAD, textLinks);
     }
 
     private void aktFilmSetzen() {

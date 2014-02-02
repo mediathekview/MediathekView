@@ -19,10 +19,8 @@
  */
 package mediathek.gui;
 
-import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -37,7 +35,6 @@ import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeListener;
 import mediathek.MediathekGui;
@@ -48,6 +45,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
+import org.simplericity.macify.eawt.ApplicationEvent;
 
 public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
@@ -58,10 +56,10 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     public MVFilterFrame(Daten d) {
         initComponents();
         f = this;
-        setDaten(d);
+        daten = d;
         mouseDownCompCoords = null;
         setBounds(0, 0, 400, 400);
-
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addMouseListener(new MouseListener() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -97,12 +95,9 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 f.setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
             }
         });
-
-        setVisible(true);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
         this.setTitle("Filter");
         GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_FILTER, this, daten.mediathekGui);
-        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
@@ -125,11 +120,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             }
         });
         pack();
-    }
-
-    @Override
-    public void setDaten(Daten d) {
-        daten = d;
     }
 
     @Override
@@ -170,7 +160,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jButtonHilfe = new javax.swing.JButton();
         jButtonOk = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
 
