@@ -121,12 +121,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Legt die statusbar an.
      */
     private void createStatusBar() {
-        if (SystemInfo.isMacOSX()) {
-            statusBar = new MVStatusBar_Mac();
-        } else {
-            statusBar = new MVStatusBar_Mac();//
-//            statusBar = new MVStatusBar_Win_Linux(daten);
-        }
+        statusBar = new MVStatusBar();
         jPanelInfo.add(statusBar.getComponent(), BorderLayout.CENTER);
     }
 
@@ -626,7 +621,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             public void isShown() {
                 if (!solo) {
                     setToolbar(MVToolBar.TOOLBAR_NIX);
-                    statusBar.setIndexForCenterDisplay(MVStatusBar_Mac.StatusbarIndex.FILME);
+                    statusBar.setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.FILME);
                 }
             }
         };
@@ -1115,6 +1110,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         if (frames[2] != null) {
             GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_MELDUNGEN, frames[2]);
         }
+        // FilterFrame
+        GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, daten.guiFilme.mVFilterFrame);
         daten.allesSpeichern();
         Log.printEndeMeldung();
         this.dispose();

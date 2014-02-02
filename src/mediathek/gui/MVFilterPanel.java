@@ -29,19 +29,16 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeListener;
-import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 
 public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
-    Daten daten;
     static Point mouseDownCompCoords;
 
-    public MVFilterPanel(Daten d) {
+    public MVFilterPanel() {
         initComponents();
-        setDaten(d);
         mouseDownCompCoords = null;
         setBounds(0, 0, 400, 400);
 
@@ -54,11 +51,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 new DialogHilfe(null, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
             }
         });
-    }
-
-    @Override
-    public void setDaten(Daten d) {
-        daten = d;
     }
 
 
