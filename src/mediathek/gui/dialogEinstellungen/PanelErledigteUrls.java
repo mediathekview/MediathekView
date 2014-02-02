@@ -29,8 +29,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
+import msearch.daten.DatenFilm;
 
 public class PanelErledigteUrls extends PanelVorlage {
 
@@ -162,14 +164,9 @@ public class PanelErledigteUrls extends PanelVorlage {
         //rechhte Maustaste in der Tabelle
 
         BeobLoeschen beobLoeschen = new BeobLoeschen();
+        BeobUrl beobUrl = new BeobUrl();
         private Point p;
 
-//        @Override
-//        public void mouseClicked(MouseEvent arg0) {
-//            if (arg0.getButton() == MouseEvent.BUTTON3) {
-//                showMenu(arg0);
-//            }
-//        }
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
@@ -195,8 +192,29 @@ public class PanelErledigteUrls extends PanelVorlage {
             JMenuItem item = new JMenuItem("Url aus der Liste löschen");
             item.addActionListener(beobLoeschen);
             jPopupMenu.add(item);
+            //Url
+            item = new JMenuItem("URL kopieren");
+            item.addActionListener(beobUrl);
+            jPopupMenu.add(item);
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
+        private class BeobUrl implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedTableRow = jTable1.getSelectedRow();
+                if (selectedTableRow >= 0) {
+                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), 0).toString();
+                    if (abo) {
+                        GuiFunktionen.copyToClipboard(del);
+                    } else {
+                        GuiFunktionen.copyToClipboard(del);
+                    }
+                }
+
+            }
         }
 
         private class BeobLoeschen implements ActionListener {
