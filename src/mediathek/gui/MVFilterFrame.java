@@ -35,7 +35,6 @@ import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.WindowConstants;
 import javax.swing.event.ChangeListener;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
@@ -45,7 +44,6 @@ import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
-import org.simplericity.macify.eawt.ApplicationEvent;
 
 public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
