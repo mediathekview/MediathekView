@@ -427,8 +427,8 @@ public class GuiDownloads extends PanelVorlage {
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // bei !starten wird der Film gestoppt
         String[] urls;
-        ArrayList<String> urlsDownloadLoeschen = new ArrayList<>();
-        ArrayList<DatenDownload> downloadsStarten = new ArrayList<>();
+        ArrayList<String> listeUrlsDownloadLoeschen = new ArrayList<>();
+        ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
         // ==========================
         // erst mal die Liste nach der Tabelle sortieren
         if (starten && alle) {
@@ -486,14 +486,14 @@ public class GuiDownloads extends PanelVorlage {
                             // weiter mit der nächsten URL
                             continue;
                         }
-                        urlsDownloadLoeschen.add(url);
+                        listeUrlsDownloadLoeschen.add(url);
                         if (download.istAbo()) {
                             // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                             daten.erledigteAbos.urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
                         }
                     }
                 }
-                downloadsStarten.add(download);
+                listeDownloadsStarten.add(download);
             } else {
                 // ==========================================
                 // stoppen
@@ -501,18 +501,18 @@ public class GuiDownloads extends PanelVorlage {
                     // wenn kein s -> dann gibts auch nichts zum stoppen oder wieder-starten
                     if (download.start.status <= Start.STATUS_RUN) {
                         // löschen -> nur wenn noch läuft, sonst gibts nichts mehr zum löschen
-                        urlsDownloadLoeschen.add(url);
+                        listeUrlsDownloadLoeschen.add(url);
                     }
                 }
             }
         }
         // ========================
         // jetzt noch die Starts stoppen
-        Daten.listeDownloads.delDownloadByUrl(urlsDownloadLoeschen, true /*nurStart*/);
+        Daten.listeDownloads.delDownloadByUrl(listeUrlsDownloadLoeschen, true /*nurStart*/);
         // und die Downloads starten oder stoppen
         if (starten) {
             //alle Downloads starten/wiederstarten
-            DatenDownload.startenDownloads(daten, downloadsStarten);
+            DatenDownload.startenDownloads(daten, listeDownloadsStarten);
             //tabelle.fireTableDataChanged(true);
             tabelleLaden();
         } else {
