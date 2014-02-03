@@ -212,6 +212,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         // Start erstellen und zur Liste hinzufügen
         this.start = new Start();
         // gestartete Filme (originalURL des Films) auch in die History eintragen
+        Daten.listeFilmeHistory.add(film);
         ddaten.history.add(arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
     }

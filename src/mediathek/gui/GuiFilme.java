@@ -83,6 +83,7 @@ import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelFilm;
 import msearch.daten.DatenFilm;
+import msearch.daten.ListeFilme;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
@@ -144,10 +145,10 @@ public class GuiFilme extends PanelVorlage {
     public void filtern() {
         tabelleLaden();
     }
+
     //===================================
     // Private
     //===================================
-
     private void init() {
         panelBeschreibungSetzen();
         Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
@@ -334,7 +335,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jCheckBoxKeineGesehenen().addActionListener(new BeobFilter());
         mVFilter.get_jCheckBoxNurHd().addActionListener(new BeobFilter());
         mVFilter.get_jToggleButtonNeue().addActionListener(new BeobFilter());
-
+        mVFilter.get_jToggleButtonHistory().addActionListener(new BeobFilter());
     }
 
     private void addListenerMediathekView() {
@@ -650,9 +651,15 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void listeInModellLaden() {
+        ListeFilme lf;
+        if (mVFilter.get_jToggleButtonHistory().isSelected()) {
+            lf = Daten.listeFilmeHistory;
+        } else {
+            lf = Daten.listeFilmeNachBlackList;
+        }
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER))) {
             // normal mit den Filtern aus dem Filterpanel suchen
-            MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle,
+            MVListeFilme.getModelTabFilme(lf, daten, tabelle,
                     mVFilter.get_jComboBoxFilterSender().getSelectedItem().toString(),
                     mVFilter.get_jComboBoxFilterThema().getSelectedItem().toString(), mVFilter.get_jTextFieldFilterTitel().getText(),
                     mVFilter.get_jTextFieldFilterThemaTitel().getText(),
@@ -662,7 +669,7 @@ public class GuiFilme extends PanelVorlage {
                     mVFilter.get_jCheckBoxNurHd().isSelected(), mVFilter.get_jToggleButtonLivestram().isSelected(), mVFilter.get_jToggleButtonNeue().isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
-            MVListeFilme.getModelTabFilme(Daten.listeFilmeNachBlackList, daten, tabelle,
+            MVListeFilme.getModelTabFilme(lf, daten, tabelle,
                     "", "", "",
                     daten.mediathekGui.getFilterTextFromSearchField(),
                     "",
@@ -1218,6 +1225,7 @@ public class GuiFilme extends PanelVorlage {
                     DatenFilm film = getFilm(nr);
                     if (eintragen) {
                         daten.history.add(film.getUrlHistory());
+                        Daten.listeFilmeHistory.add(film);
                     } else {
                         daten.history.remove(film.getUrlHistory());
                     }

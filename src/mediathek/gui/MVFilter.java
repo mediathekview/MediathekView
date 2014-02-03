@@ -64,6 +64,8 @@ public interface MVFilter {
 
     public JToggleButton get_jToggleButtonNeue();
 
+    public JToggleButton get_jToggleButtonHistory();
+
     public void setVisible(boolean v);
 
 }

@@ -71,6 +71,7 @@ public class Daten {
     public static String proxyUrl = "";
     public static int proxyPort = -1;
     public static ListeFilme listeFilmeNachBlackList = null;
+    public static ListeFilme listeFilmeHistory = null; // für die HEUTIGE HISTORY
     public static ListeDownloads listeDownloads = null; // Filme die als "Download: Tab Download" geladen werden sollen
     public static ListeDownloads listeDownloadsButton = null; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     public static ListeBlacklist listeBlacklist = null;
@@ -100,6 +101,7 @@ public class Daten {
 
         listeFilme = new ListeFilme();
         filmeLaden = new FilmeLaden();
+        listeFilmeHistory = new ListeFilme();
 
         updateSplashScreen("Lade Blacklist...");
         listeFilmeNachBlackList = new ListeFilme();
@@ -211,7 +213,7 @@ public class Daten {
     public static void setUserAgentManuel(String ua) {
         // Useragent den der Benutzer vorgegeben hat
         Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.FALSE.toString());
-        Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT,ua);
+        Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT, ua);
     }
 
     public static boolean isUserAgentAuto() {
