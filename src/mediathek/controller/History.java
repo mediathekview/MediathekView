@@ -37,7 +37,7 @@ import mediathek.tool.ListenerMediathekView;
 public class History extends HashSet<String> {
 
     private Path historyFilePath = null;
-    
+
     public History() {
         try {
             historyFilePath = getHistoryFilePath();
@@ -45,22 +45,26 @@ public class History extends HashSet<String> {
             ex.printStackTrace();
         }
     }
-    
+
     @Override
     public boolean add(String url) {
         boolean ret = super.add(url);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
         return ret;
     }
-    
+
     public void add(ArrayList<DatenDownload> ad) {
         for (DatenDownload d : ad) {
-            Daten.listeFilmeHistory.add(d.film);
+            if (d.film != null) {
+                Daten.listeFilmeHistory.add(d.film);
+            }else{
+                System.out.print("Mist");
+            }
             super.add(d.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
         }
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
     }
-    
+
     @Override
     public boolean remove(Object url) {
         boolean ret = super.remove(url);
@@ -76,17 +80,17 @@ public class History extends HashSet<String> {
     private Path getHistoryFilePath() throws IOException {
         Path historyFilePath = null;
         historyFilePath = Daten.getSettingsDirectory().resolve("history.txt");
-        
+
         return historyFilePath;
     }
-    
+
     public void laden() {
         clear();
-        
+
         if (Files.notExists(historyFilePath)) {
             return;
         }
-        
+
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new DataInputStream(Files.newInputStream(historyFilePath))))) {
             String strLine;
             while ((strLine = br.readLine()) != null) {
@@ -99,34 +103,34 @@ public class History extends HashSet<String> {
             Log.fehlerMeldung(303049876, Log.FEHLER_ART_PROG, History.class.getName(), e);
         }
     }
-    
+
     public void speichern() {
         try (BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(historyFilePath))))) {
             for (String h : this) {
                 br.write(h + "\n");
             }
-            
+
             br.flush();
             br.close();
         } catch (Exception e) {//Catch exception if any
             Log.fehlerMeldung(978786563, Log.FEHLER_ART_PROG, History.class.getName(), e);
         }
     }
-    
+
     public void loeschen() {
         this.clear();
-        
+
         if (Files.notExists(historyFilePath)) {
             return;
         }
-        
+
         try {
             Files.delete(historyFilePath);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, History.class.getSimpleName());
         } catch (IOException ignored) {
         }
     }
-    
+
     public Object[][] getObjectData() {
         Object[][] object;
         int i = 0;

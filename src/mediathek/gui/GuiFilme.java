@@ -345,17 +345,20 @@ public class GuiFilme extends PanelVorlage {
                 panelVideoplayerSetzen();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT,
-            ListenerMediathekView.EREIGNIS_LISTE_ABOS}, GuiFilme.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER))) {
-                    if (mVFilter.get_jCheckBoxKeineGesehenen().isSelected()) {
-                        tabelleLaden();
-                    } else {
-                        tabelle.fireTableDataChanged(true);
-                    }
+                if (mVFilter.get_jCheckBoxKeineGesehenen().isSelected() || mVFilter.get_jToggleButtonHistory().isSelected()) {
+                    tabelleLaden();
+                } else {
+                    tabelle.fireTableDataChanged(true);
                 }
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                tabelleLaden();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName()) {
