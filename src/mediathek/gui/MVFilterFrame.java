@@ -143,6 +143,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jCheckBoxKeineGesehenen = new javax.swing.JCheckBox();
         jCheckBoxKeineAbos = new javax.swing.JCheckBox();
         jCheckBoxNurHd = new javax.swing.JCheckBox();
+        jToggleButtonHistory = new javax.swing.JToggleButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox();
@@ -182,6 +183,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         jCheckBoxNurHd.setText("nur HD anzeigen");
 
+        jToggleButtonHistory.setText("aktuelle History");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -203,10 +206,14 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                             .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(jToggleButtonNeue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jToggleButtonLivestram, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(jToggleButtonLivestram, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jToggleButtonHistory))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jToggleButtonHistory, jToggleButtonLivestram, jToggleButtonNeue});
+
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -224,7 +231,9 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 .addComponent(jToggleButtonLivestram)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToggleButtonNeue)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToggleButtonHistory)
+                .addGap(9, 9, 9)
                 .addComponent(jCheckBoxKeineGesehenen)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxKeineAbos)
@@ -389,6 +398,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     public javax.swing.JTextField jTextFieldFilterMinuten;
     public javax.swing.JTextField jTextFieldFilterThemaTitel;
     public javax.swing.JTextField jTextFieldFilterTitel;
+    private javax.swing.JToggleButton jToggleButtonHistory;
     public javax.swing.JToggleButton jToggleButtonLivestram;
     public javax.swing.JToggleButton jToggleButtonNeue;
     // End of variables declaration//GEN-END:variables
@@ -469,6 +479,11 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     }
 
     @Override
+    public JToggleButton get_jToggleButtonHistory() {
+        return jToggleButtonHistory;
+    }
+
+    @Override
     public void removeAllListener() {
         for (ActionListener a : jButtonFilterLoeschen.getActionListeners()) {
             jButtonFilterLoeschen.removeActionListener(a);
@@ -514,6 +529,9 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         }
         for (ActionListener a : jToggleButtonNeue.getActionListeners()) {
             jToggleButtonNeue.removeActionListener(a);
+        }
+        for (ActionListener a : jToggleButtonHistory.getActionListeners()) {
+            jToggleButtonHistory.removeActionListener(a);
         }
     }
 

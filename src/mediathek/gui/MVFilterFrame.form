@@ -118,9 +118,10 @@
                                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                                   <Component id="jSliderMinuten" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="jToggleButtonNeue" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="jToggleButtonLivestram" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="jToggleButtonNeue" linkSize="3" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="jToggleButtonLivestram" linkSize="3" alignment="0" max="32767" attributes="0"/>
                                   </Group>
+                                  <Component id="jToggleButtonHistory" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -147,7 +148,9 @@
                       <Component id="jToggleButtonLivestram" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jToggleButtonNeue" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jToggleButtonHistory" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
                       <Component id="jCheckBoxKeineGesehenen" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jCheckBoxKeineAbos" min="-2" max="-2" attributes="0"/>
@@ -233,6 +236,11 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JToggleButton" name="jToggleButtonHistory">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="aktuelle History"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>
