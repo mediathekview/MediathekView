@@ -82,6 +82,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.MVAboutDialog;
@@ -1070,10 +1071,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     public void beenden() {
-        if (Daten.listeDownloads.nochNichtFertigeDownloads()) {
+        if (Daten.listeDownloads.nochNichtFertigeDownloads()>0) {
             // erst mal prüfen ob noch Downloads laufen
-            int ret = JOptionPane.showConfirmDialog(this, "Laufende Downloads abbrechen?", "Abbrechen?", JOptionPane.YES_NO_OPTION);
-            if (ret != JOptionPane.OK_OPTION) {
+            DialogBeenden dialogBeenden = new DialogBeenden(this, "Laufende Downloads abbrechen?");
+            dialogBeenden.setVisible(true);
+            if (!dialogBeenden.beenden) {
                 return;
             }
         }

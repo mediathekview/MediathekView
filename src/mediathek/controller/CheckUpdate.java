@@ -24,7 +24,6 @@ import mediathek.daten.Daten;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
