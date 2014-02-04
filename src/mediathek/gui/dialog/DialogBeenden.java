@@ -28,6 +28,7 @@ import mediathek.tool.EscBeenden;
 public class DialogBeenden extends javax.swing.JDialog {
 
     public boolean beenden = false;
+    public boolean shutdown = false;
     private Component parentComponent = null;
 
     /**
@@ -43,6 +44,13 @@ public class DialogBeenden extends javax.swing.JDialog {
         jButtonWarten.addActionListener(new BeobWarten());
         jButtonAbbrechen.addActionListener(new BeobAbbrechen());
         jButtonSofort.addActionListener(new BeobSofort());
+        jCheckBoxShutdown.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                shutdown = jCheckBoxShutdown.isSelected();
+            }
+        });
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
@@ -85,7 +93,7 @@ public class DialogBeenden extends javax.swing.JDialog {
                 beenden = true;
                 beenden();
             } catch (Exception ex) {
-                beenden = true;
+                beenden = false;
                 beenden();
             }
         }
@@ -108,7 +116,7 @@ public class DialogBeenden extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jButtonSofort = new javax.swing.JButton();
         jButtonWarten = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBoxShutdown = new javax.swing.JCheckBox();
         jProgressBar1 = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -124,7 +132,7 @@ public class DialogBeenden extends javax.swing.JDialog {
 
         jButtonWarten.setText("Warten bis Downloads fertig");
 
-        jCheckBox1.setText("und dann auch den Rechner herunterfahren");
+        jCheckBoxShutdown.setText("und dann auch den Rechner herunterfahren");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -138,7 +146,7 @@ public class DialogBeenden extends javax.swing.JDialog {
                     .addComponent(jButtonWarten, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(12, 12, 12)
-                        .addComponent(jCheckBox1)))
+                        .addComponent(jCheckBoxShutdown)))
                 .addContainerGap(12, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -146,7 +154,7 @@ public class DialogBeenden extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jCheckBox1, jProgressBar1});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jCheckBoxShutdown, jProgressBar1});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -158,7 +166,7 @@ public class DialogBeenden extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addComponent(jButtonWarten)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBox1)
+                .addComponent(jCheckBoxShutdown)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -193,7 +201,7 @@ public class DialogBeenden extends javax.swing.JDialog {
     private javax.swing.JButton jButtonAbbrechen;
     private javax.swing.JButton jButtonSofort;
     private javax.swing.JButton jButtonWarten;
-    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBoxShutdown;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;

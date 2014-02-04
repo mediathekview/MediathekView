@@ -1071,9 +1071,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     public void beenden() {
-        if (Daten.listeDownloads.nochNichtFertigeDownloads()>0) {
+        DialogBeenden dialogBeenden = null;
+        if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
-            DialogBeenden dialogBeenden = new DialogBeenden(this, "Laufende Downloads abbrechen?");
+            dialogBeenden = new DialogBeenden(this, "Laufende Downloads abbrechen?");
             dialogBeenden.setVisible(true);
             if (!dialogBeenden.beenden) {
                 return;
@@ -1116,8 +1117,32 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, daten.guiFilme.mVFilterFrame);
         daten.allesSpeichern();
         Log.printEndeMeldung();
+        if (dialogBeenden != null) {
+            if (dialogBeenden.shutdown) {
+                shutdown();
+            }
+        }
         this.dispose();
         System.exit(0);
+    }
+
+    private void shutdown() {
+        try {
+            String shutdownCommand;
+            String osName = System.getProperty("os.name");
+            if (osName.startsWith("Win")) {
+                shutdownCommand = "shutdown.exe -s -t 0";
+            } else if (osName.startsWith("Linux") || osName.startsWith("Mac")) {
+                shutdownCommand = "shutdown -h now";
+            } else {
+                Log.fehlerMeldung(465321789, Log.FEHLER_ART_PROG, MediathekGui.class.getSimpleName(), "Shutdown unsupported operating system ...");
+                return;
+            }
+            Log.systemMeldung("Shutdown: " + shutdownCommand);
+            Runtime.getRuntime().exec(shutdownCommand);
+        } catch (Exception ex) {
+            Log.fehlerMeldung(915263047, Log.FEHLER_ART_PROG, "StarterClass.Starten.run", ex);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
