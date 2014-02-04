@@ -300,7 +300,7 @@ public class Daten {
         updateSplashScreen("Lade Filmliste...");
         new MSearchFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste(), "", Daten.listeFilme);
         Daten.listeFilme.themenLaden();
-        Daten.listeAbo.setAboFuerFilm(Daten.listeFilme);
+        Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
         MVListeFilme.checkBlacklist();
     }
 

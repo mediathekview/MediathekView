@@ -200,7 +200,7 @@ public class FilmeLaden {
         // beim Ändern von Abos gemacht wird
         searchHash(Daten.listeFilme);
         Daten.listeFilme.themenLaden();
-        Daten.listeAbo.setAboFuerFilm(Daten.listeFilme);
+        Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false/*aboLoeschen*/);
         istAmLaufen = false;
         notifyFertig(event);
     }
