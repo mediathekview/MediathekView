@@ -134,20 +134,19 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized boolean nochNichtFertigeDownloads() {
+    public synchronized int nochNichtFertigeDownloads() {
         // es wird nach noch nicht fertigen gestarteten Downloads gesucht
-        boolean gefunden = false;
+        int ret = 0;
         Iterator<DatenDownload> it = this.iterator();
         while (it.hasNext()) {
             DatenDownload datenDownload = it.next();
             if (datenDownload.start != null) {
                 if (datenDownload.start.status < Start.STATUS_FERTIG) {
-                    gefunden = true;
-                    break;
+                    ++ret;
                 }
             }
         }
-        return gefunden;
+        return ret;
     }
 
     public synchronized void downloadsVorziehen(String[] urls) {
@@ -206,7 +205,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 //        }
 //        return ret;
 //    }
-
     public synchronized void delDownloadByUrl(String url, boolean nurStart) {
         ListIterator<DatenDownload> it = this.listIterator();
         DatenDownload datenDownload;
