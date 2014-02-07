@@ -23,7 +23,6 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
@@ -40,7 +39,6 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
 import mediathek.tool.MVConfig;
@@ -58,7 +56,6 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxEchtzeit.addActionListener(new BeobCheckBox());
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
         setupLookAndFeelComboBox();
-
         jButtonHilfeAnzahl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -91,22 +88,28 @@ public class PanelEinstellungen extends PanelVorlage {
                 fillIconList();
             }
         });
-        bandwidthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            @Override
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                bandwidthSpinnerStateChanged(evt);
-            }
-        });
         cbxIconPackages.addItemListener(new java.awt.event.ItemListener() {
             @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cbxIconPackagesItemStateChanged(evt);
             }
         });
-        cbLimitBandwidth.addItemListener(new java.awt.event.ItemListener() {
+        int bandbreite;
+        try {
+            bandbreite = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
+        } catch (Exception ex) {
+            bandbreite = 0;
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, "0");
+        }
+        jSliderBandbreite.setValue(bandbreite / 10);
+        jLabelBandwidth.setText(bandbreite + " kByte/s");
+        jSliderBandbreite.addChangeListener(new ChangeListener() {
             @Override
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cbLimitBandwidthItemStateChanged(evt);
+            public void stateChanged(ChangeEvent e) {
+                int b = jSliderBandbreite.getValue() * 10;
+                jLabelBandwidth.setText(b + " kByte/s");
+                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
             }
         });
         setUpIconList();
@@ -127,31 +130,6 @@ public class PanelEinstellungen extends PanelVorlage {
             Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
         } else {
             jSpinnerDownload.setValue(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD)));
-        }
-
-        setupBandwidthLimit();
-    }
-
-    private void setupBandwidthLimit() {
-        int bandwidth;
-        try {
-            bandwidth = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
-        } catch (NumberFormatException ex) {
-            bandwidth = 0;
-            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, "0");
-        }
-
-        //if bandwidth is 0 then we are disabled...
-        if (bandwidth == 0) {
-            lblBandwidth.setEnabled(false);
-            bandwidthSpinner.setEnabled(false);
-            bandwidthSpinner.setValue(0);
-            cbLimitBandwidth.setSelected(false);
-        } else {
-            lblBandwidth.setEnabled(true);
-            bandwidthSpinner.setEnabled(true);
-            bandwidthSpinner.setValue(bandwidth);
-            cbLimitBandwidth.setSelected(true);
         }
     }
 
@@ -242,35 +220,6 @@ public class PanelEinstellungen extends PanelVorlage {
         }
     }
 
-    private void bandwidthSpinnerStateChanged(ChangeEvent evt) {
-        if (cbLimitBandwidth.isSelected()) {
-            final int b = (int) bandwidthSpinner.getValue();
-            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
-        }
-    }
-
-    private void cbLimitBandwidthItemStateChanged(java.awt.event.ItemEvent evt) {
-        System.out.println("cbLimitBandwidthItemStateChanged");
-        switch (evt.getStateChange()) {
-            case ItemEvent.SELECTED:
-                lblBandwidth.setEnabled(true);
-                bandwidthSpinner.setEnabled(true);
-                final int b = (int) bandwidthSpinner.getValue();
-                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
-                break;
-
-            case ItemEvent.DESELECTED:
-                lblBandwidth.setEnabled(false);
-                bandwidthSpinner.setEnabled(false);
-                bandwidthSpinner.setValue(0);
-                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, "0");
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
-                break;
-        }
-    }
-
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -292,12 +241,13 @@ public class PanelEinstellungen extends PanelVorlage {
         jPanel2 = new javax.swing.JPanel();
         jCheckBoxEchtzeit = new javax.swing.JCheckBox();
         jCheckBoxNotification = new javax.swing.JCheckBox();
-        cbLimitBandwidth = new javax.swing.JCheckBox();
-        bandwidthSpinner = new javax.swing.JSpinner();
-        lblBandwidth = new javax.swing.JLabel();
+        jLabelBandwidth = new javax.swing.JLabel();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jSpinnerDownload = new javax.swing.JSpinner();
         jButtonHilfeAnzahl = new javax.swing.JButton();
+        jSliderBandbreite = new javax.swing.JSlider();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
 
         setMinimumSize(getPreferredSize());
 
@@ -331,7 +281,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addGroup(pnlProgramUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSuchen)
                     .addComponent(jButtonInfos))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -382,18 +332,23 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jCheckBoxNotification.setText("Benachrichtigungen anzeigen");
 
-        cbLimitBandwidth.setText("Downloadgeschwindigkeit begrenzen auf:");
-        cbLimitBandwidth.setToolTipText("Maximum ist 1000 KB/s");
+        jLabelBandwidth.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelBandwidth.setText("1000 kByte/s");
 
-        bandwidthSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 1000, 10));
-
-        lblBandwidth.setText("KB/s");
-
-        jLabel3.setText("gleichzeitige Downloads laden");
+        jLabel3.setText("gleichzeitige Downloads laden:");
 
         jSpinnerDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
 
         jButtonHilfeAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+
+        jSliderBandbreite.setMajorTickSpacing(10);
+        jSliderBandbreite.setMinorTickSpacing(5);
+        jSliderBandbreite.setToolTipText("");
+        jSliderBandbreite.setValue(0);
+
+        jLabel4.setText("Downloadgeschwindigkeit begrenzen:");
+
+        jLabel5.setText("(nur für direkte Downloads, bei \"0\" gibt es keine Begrenzung)");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -402,42 +357,52 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBoxEchtzeit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jCheckBoxNotification, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel5)
+                        .addGap(111, 111, 111))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(cbLimitBandwidth)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(bandwidthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jCheckBoxEchtzeit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jCheckBoxNotification, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblBandwidth))
+                                .addComponent(jButtonHilfeAnzahl))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3)
+                                .addComponent(jLabelBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonHilfeAnzahl)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                                .addComponent(jSliderBandbreite, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)))
+                        .addContainerGap())
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(6, 6, 6)
+                        .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jCheckBoxEchtzeit)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxNotification)
-                .addGap(2, 2, 2)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbLimitBandwidth)
-                    .addComponent(bandwidthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblBandwidth))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel3)
-                    .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jCheckBoxEchtzeit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jCheckBoxNotification))
                     .addComponent(jButtonHilfeAnzahl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabelBandwidth)
+                    .addComponent(jSliderBandbreite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -445,11 +410,11 @@ public class PanelEinstellungen extends PanelVorlage {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(pnlProgramUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -462,14 +427,12 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlProgramUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(178, Short.MAX_VALUE))
+                .addContainerGap(144, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSpinner bandwidthSpinner;
-    private javax.swing.JCheckBox cbLimitBandwidth;
     private javax.swing.JComboBox<String> cbxIconPackages;
     private javax.swing.JComboBox<String> cbxLookAndFeel;
     private javax.swing.JButton jButtonHilfeAnzahl;
@@ -479,10 +442,13 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
     private javax.swing.JCheckBox jCheckBoxNotification;
     private javax.swing.JCheckBox jCheckBoxSuchen;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabelBandwidth;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JSlider jSliderBandbreite;
     private javax.swing.JSpinner jSpinnerDownload;
-    private javax.swing.JLabel lblBandwidth;
     // End of variables declaration//GEN-END:variables
 
     private class BeobSpinnerDownload implements ChangeListener {
