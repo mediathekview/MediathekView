@@ -141,36 +141,7 @@ public class Daten {
     }
 
     private void init() {
-//        for (int i = 0; i < system.length; ++i) {
-//            system[i] = "";
-//        }
-//        //initialisieren
-//        system[Konstanten.SYSTEM_MAX_DOWNLOAD_NR] = "1";
-//        system[Konstanten.SYSTEM_WARTEN_NR] = "1";
-//        system[Konstanten.SYSTEM_USER_AGENT_NR] = Konstanten.USER_AGENT_DEFAULT;
-//        system[Konstanten.SYSTEM_WARTEN_NR] = "1";
-//        system[Konstanten.SYSTEM_LOOK_NR] = "0";
-//        system[Konstanten.SYSTEM_UPDATE_SUCHEN_NR] = Boolean.TRUE.toString();
-//        system[Konstanten.SYSTEM_ABOS_SOFORT_SUCHEN_NR] = Boolean.TRUE.toString();
-//        system[Konstanten.SYSTEM_DOWNLOAD_SOFORT_STARTEN_NR] = Boolean.FALSE.toString();
-//        system[Konstanten.SYSTEM_ZIELNAMEN_ANPASSEN_NR] = Konstanten.ZIELNAMEN_ANPASSEN_UNICODE;
-//        system[Konstanten.SYSTEM_ECHTZEITSUCHE_NR] = Boolean.TRUE.toString();
-//        system[Konstanten.SYSTEM_ICON_STANDARD_NR] = Boolean.TRUE.toString();
-//        system[Konstanten.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN_NR] = Boolean.TRUE.toString();
-//        system[Konstanten.SYSTEM_BLACKLIST_FILMLAENGE_NR] = "0";
-//        system[Konstanten.SYSTEM_ICON_PFAD_NR] = Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss";
-//        Daten.system[Konstanten.SYSTEM_BANDBREITE_KBYTE_NR] = String.valueOf(0);
-//        Daten.system[Konstanten.SYSTEM_NOTIFICATION_NR] = Boolean.TRUE.toString();
-//        Daten.system[Konstanten.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN_NR] = Boolean.TRUE.toString();
-//        Daten.system[Konstanten.SYSTEM_TOOLBAR_ALLES_ANZEIGEN_NR] = Boolean.TRUE.toString();
-//        Daten.system[Konstanten.SYSTEM_VIS_DOWNLOAD_NR] = Boolean.TRUE.toString();
-//        Daten.system[Konstanten.SYSTEM_VIS_ABO_NR] = Boolean.TRUE.toString();
-//
-//        if (Daten.debug) {
-//            Daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(GuiKonstanten.UPDATE_FILME_AUS);
-//        }
-        //MVConfig
-        //initialisieren
+        //MVConfig initialisieren
         mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
         mVConfig.add(MVConfig.SYSTEM_USER_AGENT, Konstanten.USER_AGENT_DEFAULT);
         mVConfig.add(MVConfig.SYSTEM_LOOK, "0");
@@ -189,6 +160,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, "240");
         if (Daten.debug) {
             mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
         }
