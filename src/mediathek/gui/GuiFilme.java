@@ -33,6 +33,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.LinkedList;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -47,6 +49,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
@@ -88,7 +91,7 @@ import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
 
 public class GuiFilme extends PanelVorlage {
-    
+
     private JButton buttonArray[];
     private final String[] COMBO_ZEIT = new String[]{"alles", "1 Tag", "2 Tage", "3 Tage", "4 Tage", "5 Tage", "10 Tage", "15 Tage", "20 Tage", "30 Tage"};
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 4, 5, 10, 15, 20, 30};
@@ -97,7 +100,7 @@ public class GuiFilme extends PanelVorlage {
     private MVFilter mVFilter;
     public MVFilterFrame mVFilterFrame;
     private MVFilterPanel mVFilterPanel;
-    
+
     public GuiFilme(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
@@ -133,15 +136,15 @@ public class GuiFilme extends PanelVorlage {
         aktFilmSetzen();
         setInfo();
     }
-    
+
     public void filmAbspielen() {
         filmAbspielen_();
     }
-    
+
     public void filmSpeichern() {
         filmSpeichern_();
     }
-    
+
     public void filtern() {
         tabelleLaden();
     }
@@ -157,7 +160,7 @@ public class GuiFilme extends PanelVorlage {
                 mVFilter.get_jToggleButtonNeue().setEnabled(false);
                 tabelleLaden();
             }
-            
+
             @Override
             public void fertig(MSearchListenerFilmeLadenEvent event) {
                 mVFilter.get_jToggleButtonNeue().setEnabled(Daten.listeFilmeNachBlackList.neueFilme);
@@ -168,7 +171,7 @@ public class GuiFilme extends PanelVorlage {
         daten.mediathekGui.getRootPane().getActionMap().put("sender", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
                 SortKey sk = new SortKey(DatenFilm.FILM_SENDER_NR, SortOrder.ASCENDING);
                 LinkedList<SortKey> listSortKeys = new LinkedList<>();
                 listSortKeys.add(sk);
@@ -212,13 +215,13 @@ public class GuiFilme extends PanelVorlage {
         InputMap im = tabelle.getInputMap();
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "film_starten");
         am.put("film_starten", new AbstractAction() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 filmAbspielen_();
             }
         });
-        
+
         tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
         BeobMausTabelle beobMausTabelle = new BeobMausTabelle();
         tabelle.addMouseListener(beobMausTabelle);
@@ -233,7 +236,7 @@ public class GuiFilme extends PanelVorlage {
                         tabelleLaden();
                     }
                 });
-        
+
         jCheckBoxProgamme.setIcon(GetIcon.getIcon("close_15.png"));
         jCheckBoxProgamme.addActionListener(new ActionListener() {
             @Override
@@ -243,8 +246,27 @@ public class GuiFilme extends PanelVorlage {
                 panelVideoplayerSetzen();
             }
         });
+        setSplitPane();
+        jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY,
+                new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent pce) {
+                        if (jPanelFilter.isVisible()) {
+                            Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, String.valueOf(jSplitPane1.getDividerLocation()));
+                        }
+                    }
+                });
     }
-    
+
+    private void setSplitPane() {
+        try {
+            jSplitPane1.setDividerLocation(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILME_DIVIDER)));
+        } catch (Exception ignore) {
+            jSplitPane1.setDividerLocation(240);
+            Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, "240");
+        }
+    }
+
     private void setFilterPanel() {
         boolean history = false;
         if (mVFilter != null) {
@@ -252,6 +274,7 @@ public class GuiFilme extends PanelVorlage {
             history = mVFilter.get_jToggleButtonHistory().isSelected();
         }
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_FILTER))) {
+            jScrollPaneFilter.setVisible(false);
             jPanelFilter.setVisible(false);
             jPanelFilter.removeAll();
             mVFilter = mVFilterFrame;
@@ -260,8 +283,13 @@ public class GuiFilme extends PanelVorlage {
             mVFilterFrame.setVisible(false);
             mVFilter = mVFilterPanel;
             jPanelFilter.add(mVFilterPanel, BorderLayout.CENTER);
+            jScrollPaneFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
             jPanelFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
+            if (jPanelFilter.isVisible()) {
+                setSplitPane();
+            }
         }
+//        updateUI();
         // einrichten
         mVFilter.get_jToggleButtonNeue().setEnabled(false);
         mVFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
@@ -286,7 +314,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
         mVFilter.get_jToggleButtonHistory().setSelected(history);
     }
-    
+
     private void setFilterAction() {
         mVFilter.get_jComboBoxZeitraum().addActionListener(new ActionListener() {
             @Override
@@ -338,7 +366,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jToggleButtonNeue().addActionListener(new BeobFilter());
         mVFilter.get_jToggleButtonHistory().addActionListener(new BeobFilter());
     }
-    
+
     private void addListenerMediathekView() {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
@@ -422,11 +450,11 @@ public class GuiFilme extends PanelVorlage {
             }
         });
     }
-    
+
     private void panelBeschreibungSetzen() {
         jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
     }
-    
+
     private String[] getThemen(String ssender) {
         for (int i = 1; i < Daten.listeFilmeNachBlackList.themenPerSender.length; ++i) {
             if (Daten.listeFilmeNachBlackList.sender[i].equals(ssender)) {
@@ -436,7 +464,7 @@ public class GuiFilme extends PanelVorlage {
         return Daten.listeFilmeNachBlackList.themenPerSender[0];
         //return alleThemen;
     }
-    
+
     private synchronized void filmAbspielen_() {
         DatenPset pset = daten.listePset.getPsetAbspielen();
         if (pset != null) {
@@ -446,11 +474,11 @@ public class GuiFilme extends PanelVorlage {
                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    
+
     private synchronized void filmSpeichern_() {
         filmSpeichern_(null);
     }
-    
+
     private synchronized void filmSpeichern_(DatenPset pSet) {
         if (daten.listePset.getListeSpeichern().isEmpty()) {
             MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen\" ein Programm zum Aufzeichnen festlegen.",
@@ -485,7 +513,7 @@ public class GuiFilme extends PanelVorlage {
             }
         }
     }
-    
+
     private void playerStarten(DatenPset pSet) {
         // Url mit Prognr. starten
         if (tabelle.getSelectedRow() == -1) {
@@ -547,7 +575,7 @@ public class GuiFilme extends PanelVorlage {
         // und jetzt noch anzeigen
         jPanelExtra.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
     }
-    
+
     private Component addExtraFeld(int i, int spalte, int zeile, GridBagLayout gridbag, GridBagConstraints c, JPanel panel, ListePset liste) {
         Component ret;
         JButton button;
@@ -576,7 +604,7 @@ public class GuiFilme extends PanelVorlage {
         }
         return ret;
     }
-    
+
     private synchronized void tabelleLaden() {
         try {
             if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER))) {
@@ -653,7 +681,7 @@ public class GuiFilme extends PanelVorlage {
             Log.fehlerMeldung(558965421, Log.FEHLER_ART_PROG, "GuiFilme.tabelleBauen", ex);
         }
     }
-    
+
     private synchronized void listeInModellLaden() {
         ListeFilme lf;
         if (mVFilter.get_jToggleButtonHistory().isSelected()) {
@@ -698,7 +726,7 @@ public class GuiFilme extends PanelVorlage {
         //neu laden
         tabelleLaden();
     }
-    
+
     private void aktFilmSetzen() {
         if (this.isShowing()) {
             DatenFilm aktFilm = new DatenFilm();
@@ -711,7 +739,7 @@ public class GuiFilme extends PanelVorlage {
             panelBeschreibung.setAktFilm(aktFilm);
         }
     }
-    
+
     private DatenFilm getSelFilm() {
         int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
@@ -719,14 +747,14 @@ public class GuiFilme extends PanelVorlage {
         }
         return null;
     }
-    
+
     private DatenFilm getFilm(int zeileTabelle) {
         if (zeileTabelle >= 0 && zeileTabelle < tabelle.getRowCount()) {
             return (DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(zeileTabelle), DatenFilm.FILM_REF_NR);
         }
         return null;
     }
-    
+
     private void setInfo() {
         String textLinks;
         final String TRENNER = "  ||  ";
@@ -771,19 +799,51 @@ public class GuiFilme extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel5 = new javax.swing.JPanel();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
+        jPanelBeschreibung = new javax.swing.JPanel();
         jPanelExtra = new javax.swing.JPanel();
         jCheckBoxProgamme = new javax.swing.JCheckBox();
         jPanelExtraInnen = new javax.swing.JPanel();
-        jPanelBeschreibung = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
+        jScrollPaneFilter = new javax.swing.JScrollPane();
         jPanelFilter = new javax.swing.JPanel();
+
+        jPanel5.setMaximumSize(new java.awt.Dimension(32767, 5));
+        jPanel5.setMinimumSize(new java.awt.Dimension(100, 5));
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 5, Short.MAX_VALUE)
+        );
+
+        jSplitPane1.setDividerLocation(240);
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new TModel());
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
+
+        jPanelBeschreibung.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+
+        javax.swing.GroupLayout jPanelBeschreibungLayout = new javax.swing.GroupLayout(jPanelBeschreibung);
+        jPanelBeschreibung.setLayout(jPanelBeschreibungLayout);
+        jPanelBeschreibungLayout.setHorizontalGroup(
+            jPanelBeschreibungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanelBeschreibungLayout.setVerticalGroup(
+            jPanelBeschreibungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 128, Short.MAX_VALUE)
+        );
 
         jPanelExtra.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
@@ -824,45 +884,40 @@ public class GuiFilme extends PanelVorlage {
                 .addGap(5, 5, 5))
         );
 
-        jPanelBeschreibung.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-
-        javax.swing.GroupLayout jPanelBeschreibungLayout = new javax.swing.GroupLayout(jPanelBeschreibung);
-        jPanelBeschreibung.setLayout(jPanelBeschreibungLayout);
-        jPanelBeschreibungLayout.setHorizontalGroup(
-            jPanelBeschreibungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
         );
-        jPanelBeschreibungLayout.setVerticalGroup(
-            jPanelBeschreibungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 128, Short.MAX_VALUE)
-        );
-
-        jPanel5.setMaximumSize(new java.awt.Dimension(32767, 5));
-        jPanel5.setMinimumSize(new java.awt.Dimension(100, 5));
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 5, Short.MAX_VALUE)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelExtra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanelFilter.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        jSplitPane1.setRightComponent(jPanel1);
 
         javax.swing.GroupLayout jPanelFilterLayout = new javax.swing.GroupLayout(jPanelFilter);
         jPanelFilter.setLayout(jPanelFilterLayout);
         jPanelFilterLayout.setHorizontalGroup(
             jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 23, Short.MAX_VALUE)
+            .addGap(0, 236, Short.MAX_VALUE)
         );
         jPanelFilterLayout.setVerticalGroup(
             jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 481, Short.MAX_VALUE)
         );
+
+        jScrollPaneFilter.setViewportView(jPanelFilter);
+
+        jSplitPane1.setLeftComponent(jScrollPaneFilter);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -871,26 +926,14 @@ public class GuiFilme extends PanelVorlage {
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanelFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 808, Short.MAX_VALUE))
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 839, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanelExtra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanelFilter, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jSplitPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -898,31 +941,34 @@ public class GuiFilme extends PanelVorlage {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox jCheckBoxProgamme;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JPanel jPanelExtraInnen;
     private javax.swing.JPanel jPanelFilter;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPaneFilter;
+    private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables
 
     private class BeobOpen implements ActionListener {
         //ext. Programme starten
 
         DatenPset pset;
-        
+
         public BeobOpen(DatenPset p) {
             pset = p;
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             playerStarten(pset);
         }
     }
-    
+
     private class BeobFilterSender implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
@@ -930,9 +976,9 @@ public class GuiFilme extends PanelVorlage {
             }
         }
     }
-    
+
     private class BeobFilter implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
@@ -943,17 +989,17 @@ public class GuiFilme extends PanelVorlage {
             }
         }
     }
-    
+
     private class BeobFilterLoeschen implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             filterLoeschen();
         }
     }
-    
+
     private class BeobachterTableSelect implements ListSelectionListener {
-        
+
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (!event.getValueIsAdjusting() && !stopBeob) {
@@ -961,7 +1007,7 @@ public class GuiFilme extends PanelVorlage {
             }
         }
     }
-    
+
     public class BeobMausTabelle extends MouseAdapter {
         //rechhte Maustaste in der Tabelle
 
@@ -978,10 +1024,10 @@ public class GuiFilme extends PanelVorlage {
         private BeobBlacklist boeobBlacklistSender = new BeobBlacklist(true, false);
         private BeobBlacklist boeobBlacklistSenderThema = new BeobBlacklist(true, true);
         private Point p;
-        
+
         public BeobMausTabelle() {
         }
-        
+
         @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
@@ -1000,21 +1046,21 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         }
-        
+
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
-        
+
         @Override
         public void mouseReleased(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
-        
+
         private void buttonTable(int row, int column) {
             if (row != -1) {
                 if (tabelle.convertColumnIndexToModel(column) == DatenFilm.FILM_ABSPIELEN_NR) {
@@ -1037,7 +1083,7 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         }
-        
+
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
             int nr = tabelle.rowAtPoint(p);
@@ -1200,9 +1246,9 @@ public class GuiFilme extends PanelVorlage {
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
-        
+
         private class BeobUrl implements ActionListener {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int nr = tabelle.rowAtPoint(p);
@@ -1213,15 +1259,15 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         }
-        
+
         private class BeobHistory implements ActionListener {
-            
+
             boolean eintragen;
-            
+
             public BeobHistory(boolean eeintragen) {
                 eintragen = eeintragen;
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int nr = tabelle.rowAtPoint(p);
@@ -1236,9 +1282,9 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         }
-        
+
         private class BeobPrint implements ActionListener {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -1248,9 +1294,9 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         }
-        
+
         private class BeobFilterThema implements ActionListener {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int nr = tabelle.rowAtPoint(p);
@@ -1265,9 +1311,9 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         }
-        
+
         private class BeobFilterSender implements ActionListener {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int nr = tabelle.rowAtPoint(p);
@@ -1282,9 +1328,9 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         }
-        
+
         private class BeobFilterSenderThema implements ActionListener {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int nr = tabelle.rowAtPoint(p);
@@ -1306,9 +1352,9 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         }
-        
+
         private class BeobFilterSenderThemaTitel implements ActionListener {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int nr = tabelle.rowAtPoint(p);
@@ -1332,7 +1378,7 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         }
-        
+
         private String getThemaFilter(String sender, String thema) {
             // Thema für den Filter suchen bei zB: "Hallo" und "hallo" steht nur eines im FilterThema
             String ret = "";
@@ -1347,23 +1393,23 @@ public class GuiFilme extends PanelVorlage {
             }
             return ret;
         }
-        
+
         private class BeobFilterLoeschen implements ActionListener {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 filterLoeschen();
             }
         }
-        
+
         private class BeobAbo implements ActionListener {
-            
+
             boolean mitTitel = false;
-            
+
             public BeobAbo(boolean mmitTitel) {
                 mitTitel = mmitTitel;
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (daten.listePset.getListeAbo().isEmpty()) {
@@ -1393,9 +1439,9 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         }
-        
+
         private class BeobAboFilter implements ActionListener {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (daten.listePset.getListeAbo().isEmpty()) {
@@ -1417,17 +1463,17 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         }
-        
+
         private class BeobBlacklist implements ActionListener {
-            
+
             boolean sender;
             boolean thema;
-            
+
             public BeobBlacklist(boolean ssender, boolean tthema) {
                 sender = ssender;
                 thema = tthema;
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int nr = tabelle.rowAtPoint(p);
@@ -1448,24 +1494,24 @@ public class GuiFilme extends PanelVorlage {
             }
         }
     }
-    
+
     private class BeobFilterTitelDoc implements DocumentListener {
-        
+
         @Override
         public void insertUpdate(DocumentEvent e) {
             tus();
         }
-        
+
         @Override
         public void removeUpdate(DocumentEvent e) {
             tus();
         }
-        
+
         @Override
         public void changedUpdate(DocumentEvent e) {
             tus();
         }
-        
+
         private void tus() {
             Filter.checkPattern1(mVFilter.get_jTextFieldFilterThemaTitel());
             Filter.checkPattern1(mVFilter.get_jTextFieldFilterTitel());
