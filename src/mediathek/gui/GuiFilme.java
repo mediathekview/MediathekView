@@ -251,7 +251,7 @@ public class GuiFilme extends PanelVorlage {
                 new PropertyChangeListener() {
                     @Override
                     public void propertyChange(PropertyChangeEvent pce) {
-                        if (jPanelFilter.isVisible()) {
+                        if (jScrollPaneFilter.isVisible()) {
                             Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, String.valueOf(jSplitPane1.getDividerLocation()));
                         }
                     }
@@ -275,7 +275,7 @@ public class GuiFilme extends PanelVorlage {
         }
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_FILTER))) {
             jScrollPaneFilter.setVisible(false);
-            jPanelFilter.setVisible(false);
+//            jPanelFilter.setVisible(false);
             jPanelFilter.removeAll();
             mVFilter = mVFilterFrame;
             mVFilterFrame.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
@@ -284,8 +284,8 @@ public class GuiFilme extends PanelVorlage {
             mVFilter = mVFilterPanel;
             jPanelFilter.add(mVFilterPanel, BorderLayout.CENTER);
             jScrollPaneFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
-            jPanelFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
-            if (jPanelFilter.isVisible()) {
+//            jPanelFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
+            if (jScrollPaneFilter.isVisible()) {
                 setSplitPane();
             }
         }
