@@ -276,6 +276,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(395623710, Log.FEHLER_ART_PROG, "StarterClass.StartenProgramm-2", ex);
+                JOptionPane.showMessageDialog(null, ex.getLocalizedMessage(), "Downloadfehler", JOptionPane.ERROR_MESSAGE);
             }
             leeresFileLoeschen(file);
             fertigmeldung(datenDownload, start);
@@ -383,6 +384,7 @@ public class StarterClass {
                     Log.systemMeldung(input.toString());
                 } catch (Exception ex) {
                     Log.fehlerMeldung(316598941, Log.FEHLER_ART_PROG, "StartetClass.leeresFileLoeschen", ex, "Fehler");
+                    JOptionPane.showMessageDialog(null, ex.getLocalizedMessage(), "Downloadfehler", JOptionPane.ERROR_MESSAGE);
                 } finally {
                     try {
                         if (srcBuffer != null) {
