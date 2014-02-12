@@ -230,7 +230,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private void saveComboPfad() {
         ArrayList<String> pfade = new ArrayList<>();
         String s = jComboBoxPfad.getSelectedItem().toString();
-        if (!s.equals(orgPfad)) {
+        if (!s.equals(orgPfad) || jCheckBoxPfadSpeichern.isSelected()) {
             pfade.add(s);
         }
         for (int i = 0; i < jComboBoxPfad.getItemCount(); ++i) {
@@ -625,13 +625,6 @@ public class DialogAddDownload extends javax.swing.JDialog {
         }
     }
 
-//    private class BeobComboPset implements ActionListener {
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            setCombo();
-//        }
-//    }
     private class BeobRadio implements ActionListener {
 
         @Override

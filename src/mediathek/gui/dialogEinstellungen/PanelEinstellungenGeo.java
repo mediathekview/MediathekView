@@ -49,6 +49,9 @@ public class PanelEinstellungenGeo extends PanelVorlage {
             case DatenFilm.GEO_EU:
                 jRadioButtonEu.setSelected(true);
                 break;
+            case DatenFilm.GEO_WELT:
+                jRadioButtonSonst.setSelected(true);
+                break;
             default:
                 jRadioButtonDe.setSelected(true);
         }
@@ -84,6 +87,14 @@ public class PanelEinstellungenGeo extends PanelVorlage {
                 melden();
             }
         });
+        jRadioButtonSonst.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_WELT);
+                melden();
+            }
+        });
         jCheckBoxMarkieren.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN)));
         jCheckBoxMarkieren.addActionListener(new ActionListener() {
 
@@ -115,6 +126,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
         jRadioButtonCH = new javax.swing.JRadioButton();
         jRadioButtonAt = new javax.swing.JRadioButton();
         jRadioButtonEu = new javax.swing.JRadioButton();
+        jRadioButtonSonst = new javax.swing.JRadioButton();
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Filme die Geogeblockt sind"));
 
@@ -133,7 +145,10 @@ public class PanelEinstellungenGeo extends PanelVorlage {
         jRadioButtonAt.setText("AT - Österreich");
 
         buttonGroup1.add(jRadioButtonEu);
-        jRadioButtonEu.setText("EU");
+        jRadioButtonEu.setText("EU (EBU - European Broadcasting Union)");
+
+        buttonGroup1.add(jRadioButtonSonst);
+        jRadioButtonSonst.setText("sonst");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -142,13 +157,14 @@ public class PanelEinstellungenGeo extends PanelVorlage {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jRadioButtonSonst)
                     .addComponent(jRadioButtonEu)
                     .addComponent(jCheckBoxMarkieren)
                     .addComponent(jLabel1)
                     .addComponent(jRadioButtonDe)
                     .addComponent(jRadioButtonCH)
                     .addComponent(jRadioButtonAt))
-                .addContainerGap(284, Short.MAX_VALUE))
+                .addContainerGap(188, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,7 +181,9 @@ public class PanelEinstellungenGeo extends PanelVorlage {
                 .addComponent(jRadioButtonAt)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jRadioButtonEu)
-                .addContainerGap(102, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jRadioButtonSonst)
+                .addContainerGap(75, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -182,7 +200,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(357, Short.MAX_VALUE))
+                .addContainerGap(356, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -192,6 +210,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
     private javax.swing.JRadioButton jRadioButtonCH;
     private javax.swing.JRadioButton jRadioButtonDe;
     private javax.swing.JRadioButton jRadioButtonEu;
+    private javax.swing.JRadioButton jRadioButtonSonst;
     // End of variables declaration//GEN-END:variables
 
 }

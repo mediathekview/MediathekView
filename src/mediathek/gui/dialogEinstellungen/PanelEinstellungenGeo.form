@@ -36,7 +36,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="357" max="32767" attributes="0"/>
+              <EmptySpace pref="356" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -61,6 +61,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jRadioButtonSonst" min="-2" max="-2" attributes="0"/>
                       <Component id="jRadioButtonEu" min="-2" max="-2" attributes="0"/>
                       <Component id="jCheckBoxMarkieren" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -68,7 +69,7 @@
                       <Component id="jRadioButtonCH" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="jRadioButtonAt" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="284" max="32767" attributes="0"/>
+                  <EmptySpace pref="188" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -87,7 +88,9 @@
                   <Component id="jRadioButtonAt" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jRadioButtonEu" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="102" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="jRadioButtonSonst" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="75" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -133,7 +136,15 @@
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="EU"/>
+            <Property name="text" type="java.lang.String" value="EU (EBU - European Broadcasting Union)"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JRadioButton" name="jRadioButtonSonst">
+          <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="buttonGroup1"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="sonst"/>
           </Properties>
         </Component>
       </SubComponents>
