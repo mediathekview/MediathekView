@@ -300,16 +300,16 @@ public class GuiDebug extends JPanel {
     }
 
     private void addSender() {
-        jPanelSender.removeAll();
-        jPanelSender.setLayout(new GridLayout(0,5));
+        jPanelLoeschen.removeAll();
+        jPanelLoeschen.setLayout(new GridLayout(0,5));
         int nr = 0;
         for (String aSender : sender) {
             JButton btn = buttonSender[nr];
             btn.setText(aSender);
-            jPanelSender.add(btn);
+            jPanelLoeschen.add(btn);
             ++nr;
         }
-        jPanelSender.repaint();
+        jPanelLoeschen.repaint();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -320,6 +320,7 @@ public class GuiDebug extends JPanel {
         jPanelSenderLaden = new javax.swing.JPanel();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jPanelSender = new javax.swing.JPanel();
+        jPanelLoeschen = new javax.swing.JPanel();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         jPanelListen = new javax.swing.JPanel();
         javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
@@ -366,15 +367,32 @@ public class GuiDebug extends JPanel {
 
         jPanelSender.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender löschen"));
 
+        javax.swing.GroupLayout jPanelLoeschenLayout = new javax.swing.GroupLayout(jPanelLoeschen);
+        jPanelLoeschen.setLayout(jPanelLoeschenLayout);
+        jPanelLoeschenLayout.setHorizontalGroup(
+            jPanelLoeschenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 35, Short.MAX_VALUE)
+        );
+        jPanelLoeschenLayout.setVerticalGroup(
+            jPanelLoeschenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 111, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanelSenderLayout = new javax.swing.GroupLayout(jPanelSender);
         jPanelSender.setLayout(jPanelSenderLayout);
         jPanelSenderLayout.setHorizontalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 823, Short.MAX_VALUE)
+            .addGroup(jPanelSenderLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanelLoeschen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(776, Short.MAX_VALUE))
         );
         jPanelSenderLayout.setVerticalGroup(
             jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 445, Short.MAX_VALUE)
+            .addGroup(jPanelSenderLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanelLoeschen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(322, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -584,6 +602,7 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonjSonLesen;
     private javax.swing.JCheckBox jCheckBoxDateiGroesse;
     private javax.swing.JPanel jPanelListen;
+    private javax.swing.JPanel jPanelLoeschen;
     private javax.swing.JPanel jPanelSender;
     private javax.swing.JPanel jPanelSenderLaden;
     private javax.swing.JTextField jTextFieldUrl;

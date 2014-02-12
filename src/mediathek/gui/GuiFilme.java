@@ -157,12 +157,14 @@ public class GuiFilme extends PanelVorlage {
         Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public void start(MSearchListenerFilmeLadenEvent event) {
-                mVFilter.get_jToggleButtonNeue().setEnabled(false);
                 tabelleLaden();
             }
 
             @Override
             public void fertig(MSearchListenerFilmeLadenEvent event) {
+                if (!Daten.listeFilmeNachBlackList.neueFilme) {
+                    mVFilter.get_jToggleButtonNeue().setSelected(false);
+                }
                 mVFilter.get_jToggleButtonNeue().setEnabled(Daten.listeFilmeNachBlackList.neueFilme);
                 tabelleLaden();
             }
