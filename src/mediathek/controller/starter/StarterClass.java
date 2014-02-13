@@ -43,6 +43,7 @@ import mediathek.tool.Datum;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.gui.dialog.DialogDownloadfehler;
 import mediathek.tool.MVInputStream;
 import mediathek.tool.MVNotification;
 import mediathek.tool.MVUrlDateiGroesse;
@@ -276,7 +277,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(395623710, Log.FEHLER_ART_PROG, "StarterClass.StartenProgramm-2", ex);
-                JOptionPane.showMessageDialog(null, ex.getLocalizedMessage(), "Downloadfehler", JOptionPane.ERROR_MESSAGE);
+                new DialogDownloadfehler(null, ex.getLocalizedMessage()).setVisible(true);
             }
             leeresFileLoeschen(file);
             fertigmeldung(datenDownload, start);
@@ -384,7 +385,7 @@ public class StarterClass {
                     Log.systemMeldung(input.toString());
                 } catch (Exception ex) {
                     Log.fehlerMeldung(316598941, Log.FEHLER_ART_PROG, "StartetClass.leeresFileLoeschen", ex, "Fehler");
-                    JOptionPane.showMessageDialog(null, ex.getLocalizedMessage(), "Downloadfehler", JOptionPane.ERROR_MESSAGE);
+                    new DialogDownloadfehler(null, ex.getLocalizedMessage()).setVisible(true);
                 } finally {
                     try {
                         if (srcBuffer != null) {
