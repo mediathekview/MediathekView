@@ -70,7 +70,7 @@
                               <Component id="jToggleButtonLivestram" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jToggleButtonHistory" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="14" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -199,11 +199,11 @@
               <Group type="102" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jComboBoxFilterSender" alignment="0" pref="184" max="32767" attributes="0"/>
-                      <Component id="jComboBoxFilterThema" alignment="0" pref="184" max="32767" attributes="0"/>
-                      <Component id="jTextFieldFilterThemaTitel" alignment="0" pref="184" max="32767" attributes="0"/>
-                      <Component id="jTextFieldFilterIrgendwo" alignment="0" pref="184" max="32767" attributes="0"/>
-                      <Component id="jTextFieldFilterTitel" pref="184" max="32767" attributes="0"/>
+                      <Component id="jComboBoxFilterSender" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jComboBoxFilterThema" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jTextFieldFilterThemaTitel" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jTextFieldFilterIrgendwo" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jTextFieldFilterTitel" max="32767" attributes="0"/>
                       <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -270,6 +270,9 @@
                 <StringItem index="3" value="Item 4"/>
               </StringArray>
             </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[184, 24]"/>
+            </Property>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
@@ -291,6 +294,9 @@
                 <StringItem index="3" value="Item 4"/>
               </StringArray>
             </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[184, 24]"/>
+            </Property>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
@@ -302,6 +308,11 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldFilterTitel">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[184, 24]"/>
+            </Property>
+          </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
           </AuxValues>
@@ -312,6 +323,11 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldFilterThemaTitel">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[184, 24]"/>
+            </Property>
+          </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
           </AuxValues>
@@ -322,6 +338,11 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldFilterIrgendwo">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[184, 24]"/>
+            </Property>
+          </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
           </AuxValues>

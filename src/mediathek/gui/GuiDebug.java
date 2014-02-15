@@ -19,13 +19,13 @@
  */
 package mediathek.gui;
 
-import java.awt.*;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Date;
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
@@ -35,8 +35,6 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
 import mediathek.tool.MVNotification;
 import msearch.daten.MSearchConfig;
-import msearch.io.MSearchFilmlisteLesen;
-import msearch.io.MSearchFilmlisteSchreiben;
 
 public class GuiDebug extends JPanel {
 
@@ -101,17 +99,10 @@ public class GuiDebug extends JPanel {
                 }).start();
             }
         });
-        jCheckBoxDateiGroesse.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Daten.STOP_DATEIGROESSE = jCheckBoxDateiGroesse.isSelected();
-            }
-        });
 
         jPanelSenderLaden.add(new PanelSenderLaden());
 
         jPanelListen.add(new PanelListeFilmlistenServer(d, daten.mediathekGui));
-
 
         jButtonCheckUrl.addActionListener(new ActionListener() {
             @Override
@@ -124,20 +115,6 @@ public class GuiDebug extends JPanel {
                     ex.printStackTrace();
                 }
                 System.out.println("Byte: " + l);
-            }
-        });
-        jButtonDoppelt.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.listeFilme.nurDoppelteAnzeigen(false);
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
-            }
-        });
-        jButtonDoppeltIndex.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.listeFilme.nurDoppelteAnzeigen(true);
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
             }
         });
         jButtonGc.addActionListener(new ActionListener() {
@@ -162,146 +139,11 @@ public class GuiDebug extends JPanel {
                         + "</html>");
             }
         });
-        jButtonListeSchreiben.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Date startZeit;
-                Date stopZeit;
-                startZeit = new Date(System.currentTimeMillis());
-
-                new MSearchFilmlisteSchreiben().filmlisteSchreibenXml(Daten.getDateiFilmliste(), Daten.listeFilme);
-
-                stopZeit = new Date(System.currentTimeMillis());
-
-                int sekunden;
-                try {
-                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-                } catch (Exception ex) {
-                    sekunden = -1;
-                }
-                System.out.println("======================================");
-                System.out.println("     ->    Dauer[ms]: " + sekunden);
-                System.out.println("======================================");
-            }
-        });
-        jButtonListeLesen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Date startZeit;
-                Date stopZeit;
-                Daten.listeFilme.clear();
-                startZeit = new Date(System.currentTimeMillis());
-
-                new MSearchFilmlisteLesen().filmlisteLesenXml(Daten.getDateiFilmliste(), Daten.listeFilme);
-
-                stopZeit = new Date(System.currentTimeMillis());
-
-                int sekunden;
-                try {
-                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-                } catch (Exception ex) {
-                    sekunden = -1;
-                }
-                System.out.println("======================================");
-                System.out.println("     ->    Dauer[ms]: " + sekunden);
-                System.out.println("======================================");
-                Daten.listeAbo.aenderungMelden();
-
-            }
-        });
-        jButtonJsonSchreiben.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Date startZeit;
-                Date stopZeit;
-
-                int sekunden;
-                startZeit = new Date(System.currentTimeMillis());
-                new MSearchFilmlisteSchreiben().filmlisteSchreibenJson(Daten.getDateiFilmliste() + ".json", Daten.listeFilme);
-                stopZeit = new Date(System.currentTimeMillis());
-                try {
-                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-                } catch (Exception ex) {
-                    sekunden = -1;
-                }
-                System.out.println("======================================");
-                System.out.println(" normal");
-                System.out.println("     ->    Dauer[ms]: " + sekunden);
-                System.out.println("======================================");
-                startZeit = new Date(System.currentTimeMillis());
-                new MSearchFilmlisteSchreiben().filmlisteSchreibenJson(Daten.getDateiFilmliste() + "_json.bz2", Daten.listeFilme);
-                stopZeit = new Date(System.currentTimeMillis());
-                try {
-                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-                } catch (Exception ex) {
-                    sekunden = -1;
-                }
-                System.out.println("======================================");
-                System.out.println(" bz2 ");
-                System.out.println("     ->    Dauer[ms]: " + sekunden);
-                System.out.println("======================================");
-            }
-        });
-        jButtonjSonLesen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Date startZeit;
-                Date stopZeit;
-
-                int sekunden;
-
-                Daten.listeFilme.clear();
-                startZeit = new Date(System.currentTimeMillis());
-                //http://176.28.8.161/mediathek1/filme_json.zip
-                //new MSearchFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste() + "_json", "", Daten.listeFilme);
-                new MSearchFilmlisteLesen().filmlisteLesenJson("http://176.28.8.161/mediathek1/filme_json.bz2", Daten.getDateiFilmliste() + "_json---", Daten.listeFilme);
-                stopZeit = new Date(System.currentTimeMillis());
-                try {
-                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-                } catch (Exception ex) {
-                    sekunden = -1;
-                }
-                System.out.println("======================================");
-                System.out.println(" web ");
-                System.out.println("     ->    Dauer[ms]: " + sekunden);
-                System.out.println("======================================");
-
-                Daten.listeFilme.clear();
-                startZeit = new Date(System.currentTimeMillis());
-                new MSearchFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste() + ".json", Daten.getDateiFilmliste() + "_json---", Daten.listeFilme);
-                stopZeit = new Date(System.currentTimeMillis());
-                try {
-                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-                } catch (Exception ex) {
-                    sekunden = -1;
-                }
-                System.out.println("======================================");
-                System.out.println(" normal ");
-                System.out.println("     ->    Dauer[ms]: " + sekunden);
-                System.out.println("======================================");
-
-                Daten.listeFilme.clear();
-                startZeit = new Date(System.currentTimeMillis());
-                new MSearchFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste() + "_json.bz2", Daten.getDateiFilmliste() + "_json---", Daten.listeFilme);
-                stopZeit = new Date(System.currentTimeMillis());
-                try {
-                    sekunden = Math.round(stopZeit.getTime() - startZeit.getTime());
-                } catch (Exception ex) {
-                    sekunden = -1;
-                }
-                System.out.println("======================================");
-                System.out.println(" bz2 ");
-                System.out.println("     ->    Dauer[ms]: " + sekunden);
-                System.out.println("======================================");
-                Daten.listeAbo.aenderungMelden();
-
-            }
-        });
     }
 
     private void addSender() {
         jPanelLoeschen.removeAll();
-        jPanelLoeschen.setLayout(new GridLayout(0,5));
+        jPanelLoeschen.setLayout(new GridLayout(0, 5));
         int nr = 0;
         for (String aSender : sender) {
             JButton btn = buttonSender[nr];
@@ -333,15 +175,8 @@ public class GuiDebug extends JPanel {
         jButtonFehler = new javax.swing.JButton();
         jButtonCheck = new javax.swing.JButton();
         jButtonAlleLaden = new javax.swing.JButton();
-        jCheckBoxDateiGroesse = new javax.swing.JCheckBox();
-        jButtonDoppelt = new javax.swing.JButton();
-        jButtonDoppeltIndex = new javax.swing.JButton();
         jButtonGc = new javax.swing.JButton();
         jButtonNotify = new javax.swing.JButton();
-        jButtonListeSchreiben = new javax.swing.JButton();
-        jButtonListeLesen = new javax.swing.JButton();
-        jButtonJsonSchreiben = new javax.swing.JButton();
-        jButtonjSonLesen = new javax.swing.JButton();
 
         jPanelSenderLaden.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender starten"));
         jPanelSenderLaden.setLayout(new java.awt.BorderLayout());
@@ -474,26 +309,11 @@ public class GuiDebug extends JPanel {
 
         jButtonCheck.setText("Check");
 
-        jButtonAlleLaden.setText("alle S. laden");
-
-        jCheckBoxDateiGroesse.setText("Stop Dateigröße");
-        jCheckBoxDateiGroesse.setEnabled(false);
-
-        jButtonDoppelt.setText("nur doppelte URLs");
-
-        jButtonDoppeltIndex.setText("nur doppelte URLs, index");
+        jButtonAlleLaden.setText("alle Sender laden");
 
         jButtonGc.setText("Gc");
 
         jButtonNotify.setText("Notify");
-
-        jButtonListeSchreiben.setText("ListeSchreiben");
-
-        jButtonListeLesen.setText("ListeLesen");
-
-        jButtonJsonSchreiben.setText("jSon schreiben");
-
-        jButtonjSonLesen.setText("jSon lesen");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -503,15 +323,13 @@ public class GuiDebug extends JPanel {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jCheckBoxDateiGroesse)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButtonDoppelt)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonDoppeltIndex)
+                        .addComponent(jButtonAlleLaden)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonGc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonNotify))
+                        .addComponent(jButtonNotify)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonCheck))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jToggleButtonAllesLaden)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -519,19 +337,7 @@ public class GuiDebug extends JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonAllesSpeichern)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonFehler)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonCheck)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonAlleLaden))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jButtonListeSchreiben)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonListeLesen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonJsonSchreiben)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonjSonLesen)))
+                        .addComponent(jButtonFehler)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -545,23 +351,14 @@ public class GuiDebug extends JPanel {
                     .addComponent(jToggleButtonAllesLaden)
                     .addComponent(jButtonFilmlisteLoeschen)
                     .addComponent(jButtonAllesSpeichern)
-                    .addComponent(jButtonFehler)
-                    .addComponent(jButtonCheck)
-                    .addComponent(jButtonAlleLaden))
+                    .addComponent(jButtonFehler))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxDateiGroesse)
-                    .addComponent(jButtonDoppelt)
-                    .addComponent(jButtonDoppeltIndex)
                     .addComponent(jButtonGc)
-                    .addComponent(jButtonNotify))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonListeSchreiben)
-                    .addComponent(jButtonListeLesen)
-                    .addComponent(jButtonJsonSchreiben)
-                    .addComponent(jButtonjSonLesen))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButtonNotify)
+                    .addComponent(jButtonAlleLaden)
+                    .addComponent(jButtonCheck))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -590,17 +387,10 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonAllesSpeichern;
     private javax.swing.JButton jButtonCheck;
     private javax.swing.JButton jButtonCheckUrl;
-    private javax.swing.JButton jButtonDoppelt;
-    private javax.swing.JButton jButtonDoppeltIndex;
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonGc;
-    private javax.swing.JButton jButtonJsonSchreiben;
-    private javax.swing.JButton jButtonListeLesen;
-    private javax.swing.JButton jButtonListeSchreiben;
     private javax.swing.JButton jButtonNotify;
-    private javax.swing.JButton jButtonjSonLesen;
-    private javax.swing.JCheckBox jCheckBoxDateiGroesse;
     private javax.swing.JPanel jPanelListen;
     private javax.swing.JPanel jPanelLoeschen;
     private javax.swing.JPanel jPanelSender;

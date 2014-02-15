@@ -19,7 +19,6 @@
  */
 package mediathek.gui;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -35,12 +34,8 @@ import mediathek.res.GetIcon;
 
 public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
-    static Point mouseDownCompCoords;
-
     public MVFilterPanel() {
         initComponents();
-        mouseDownCompCoords = null;
-        setBounds(0, 0, 400, 400);
 
         setVisible(true);
         jButtonFilterLoeschen.setIcon(GetIcon.getIcon("clear_16.png"));
@@ -128,7 +123,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                             .addComponent(jToggleButtonNeue, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jToggleButtonLivestram)
                             .addComponent(jToggleButtonHistory))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 14, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -168,17 +163,25 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         jComboBoxFilterSender.setMaximumRowCount(20);
         jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxFilterSender.setPreferredSize(new java.awt.Dimension(184, 24));
 
         jLabel4.setText("Thema:");
 
         jComboBoxFilterThema.setMaximumRowCount(20);
         jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxFilterThema.setPreferredSize(new java.awt.Dimension(184, 24));
 
         jLabel5.setText("Titel:");
 
+        jTextFieldFilterTitel.setPreferredSize(new java.awt.Dimension(184, 24));
+
         jLabel6.setText("Thema oder Titel:");
 
+        jTextFieldFilterThemaTitel.setPreferredSize(new java.awt.Dimension(184, 24));
+
         jLabel7.setText("Irgendwo:");
+
+        jTextFieldFilterIrgendwo.setPreferredSize(new java.awt.Dimension(184, 24));
 
         jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/clear_16.png"))); // NOI18N
         jButtonFilterLoeschen.setToolTipText("Filter löschen");
@@ -193,11 +196,11 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBoxFilterSender, 0, 184, Short.MAX_VALUE)
-                    .addComponent(jComboBoxFilterThema, 0, 184, Short.MAX_VALUE)
-                    .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
-                    .addComponent(jTextFieldFilterIrgendwo, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
-                    .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                    .addComponent(jComboBoxFilterSender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jComboBoxFilterThema, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTextFieldFilterIrgendwo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel4)
                     .addComponent(jLabel6)
