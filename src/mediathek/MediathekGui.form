@@ -100,12 +100,15 @@
                 <Property name="text" type="java.lang.String" value="Film aufzeichnen"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemBlacklist">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilterLoeschen">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/blacklist_16.png"/>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="F8"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Blacklist &#xf6;ffnen"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/clear_16.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Filter l&#xf6;schen"/>
               </Properties>
             </MenuItem>
           </SubComponents>
@@ -310,6 +313,14 @@
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItemVideoplayer">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Buttons anzeigen"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemBlacklist">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/blacklist_16.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Blacklist &#xf6;ffnen"/>
               </Properties>
             </MenuItem>
           </SubComponents>

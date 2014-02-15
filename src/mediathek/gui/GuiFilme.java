@@ -145,6 +145,10 @@ public class GuiFilme extends PanelVorlage {
         filmSpeichern_();
     }
 
+    public void filterLoeschen() {
+        filterLoeschen_();
+    }
+
     public void filtern() {
         tabelleLaden();
     }
@@ -716,7 +720,7 @@ public class GuiFilme extends PanelVorlage {
     // Ende Tabelle asynchron füllen
     // ####################################
 
-    private void filterLoeschen() {
+    private void filterLoeschen_() {
         stopBeob = true;
         //ComboModels neu aufbauen
         mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
