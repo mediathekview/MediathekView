@@ -21,6 +21,7 @@ package mediathek.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -39,6 +40,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         setVisible(true);
         jButtonFilterLoeschen.setIcon(GetIcon.getIcon("clear_16.png"));
+        jButtonFilterLoeschen.setMnemonic(KeyEvent.VK_F8);
         jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
