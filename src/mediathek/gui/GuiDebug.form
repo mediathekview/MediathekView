@@ -295,15 +295,13 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="jCheckBoxDateiGroesse" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="jButtonDoppelt" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButtonDoppeltIndex" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonAlleLaden" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonGc" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonNotify" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButtonCheck" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="jToggleButtonAllesLaden" linkSize="1" min="-2" max="-2" attributes="0"/>
@@ -313,19 +311,6 @@
                           <Component id="jButtonAllesSpeichern" linkSize="1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonFehler" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButtonCheck" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButtonAlleLaden" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="jButtonListeSchreiben" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButtonListeLesen" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButtonJsonSchreiben" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButtonjSonLesen" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
@@ -341,25 +326,15 @@
                       <Component id="jButtonFilmlisteLoeschen" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonAllesSpeichern" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonFehler" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonCheck" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonAlleLaden" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jCheckBoxDateiGroesse" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonDoppelt" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonDoppeltIndex" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonGc" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonNotify" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonAlleLaden" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonCheck" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButtonListeSchreiben" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonListeLesen" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonJsonSchreiben" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonjSonLesen" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="43" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -392,23 +367,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonAlleLaden">
           <Properties>
-            <Property name="text" type="java.lang.String" value="alle S. laden"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="jCheckBoxDateiGroesse">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Stop Dateigr&#xf6;&#xdf;e"/>
-            <Property name="enabled" type="boolean" value="false"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonDoppelt">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="nur doppelte URLs"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonDoppeltIndex">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="nur doppelte URLs, index"/>
+            <Property name="text" type="java.lang.String" value="alle Sender laden"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonGc">
@@ -419,26 +378,6 @@
         <Component class="javax.swing.JButton" name="jButtonNotify">
           <Properties>
             <Property name="text" type="java.lang.String" value="Notify"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonListeSchreiben">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="ListeSchreiben"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonListeLesen">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="ListeLesen"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonJsonSchreiben">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jSon schreiben"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonjSonLesen">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jSon lesen"/>
           </Properties>
         </Component>
       </SubComponents>
