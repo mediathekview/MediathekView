@@ -371,6 +371,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jMenuItemFilmAbspielen.setEnabled(true);
                 jMenuItemFilmAufzeichnen.setEnabled(true);
                 jMenuItemFilterLoeschen.setEnabled(true);
+                jMenuItemBlacklist.setEnabled(true);
                 break;
             case MVToolBar.TOOLBAR_TAB_DOWNLOADS:
                 buttonAus();
@@ -423,6 +424,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemFilmAbspielen.setEnabled(false);
         jMenuItemFilmAufzeichnen.setEnabled(false);
         jMenuItemFilterLoeschen.setEnabled(false);
+        jMenuItemBlacklist.setEnabled(false);
         jMenuItemDownloadsAktualisieren.setEnabled(false);
         jMenuItemDownloadAbspielen.setEnabled(false);
         jMenuItemDownloadsAufraeumen.setEnabled(false);
@@ -464,6 +466,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemBeenden.setIcon(GetIcon.getIcon("beenden_16.png"));
         jMenuItemFilmAbspielen.setIcon(GetIcon.getIcon("film_start_16.png"));
         jMenuItemFilmAufzeichnen.setIcon(GetIcon.getIcon("film_rec_16.png"));
+        jMenuItemBlacklist.setIcon(GetIcon.getIcon("blacklist_16.png"));
         jMenuItemFilterLoeschen.setIcon(GetIcon.getIcon("clear_16.png"));
         jMenuItemDownloadsAlleStarten.setIcon(GetIcon.getIcon("download_alleStarten_16.png"));
         jMenuItemDownloadAlleStoppen.setIcon(GetIcon.getIcon("download_stop_16.png"));
@@ -1172,6 +1175,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemFilmAbspielen = new javax.swing.JMenuItem();
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
         jMenuItemFilterLoeschen = new javax.swing.JMenuItem();
+        jMenuItemBlacklist = new javax.swing.JMenuItem();
         jMenuDownload = new javax.swing.JMenu();
         jMenuItemDownloadsAlleStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadWartendeStoppen = new javax.swing.JMenuItem();
@@ -1196,7 +1200,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemToolBar = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemBeschreibung = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemVideoplayer = new javax.swing.JCheckBoxMenuItem();
-        jMenuItemBlacklist = new javax.swing.JMenuItem();
         jMenuHilfe = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -1272,6 +1275,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/clear_16.png"))); // NOI18N
         jMenuItemFilterLoeschen.setText("Filter löschen");
         jMenuFilme.add(jMenuItemFilterLoeschen);
+
+        jMenuItemBlacklist.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
+        jMenuItemBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/blacklist_16.png"))); // NOI18N
+        jMenuItemBlacklist.setText("Blacklist öffnen");
+        jMenuFilme.add(jMenuItemBlacklist);
 
         jMenuBar.add(jMenuFilme);
 
@@ -1365,16 +1373,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemToolBar.setText("Toolbar");
         jMenuAnsicht.add(jCheckBoxMenuItemToolBar);
 
-        jCheckBoxMenuItemBeschreibung.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
+        jCheckBoxMenuItemBeschreibung.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F10, 0));
         jCheckBoxMenuItemBeschreibung.setText("Beschreibung anzeigen");
         jMenuAnsicht.add(jCheckBoxMenuItemBeschreibung);
 
+        jCheckBoxMenuItemVideoplayer.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, 0));
         jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
         jMenuAnsicht.add(jCheckBoxMenuItemVideoplayer);
-
-        jMenuItemBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/blacklist_16.png"))); // NOI18N
-        jMenuItemBlacklist.setText("Blacklist öffnen");
-        jMenuAnsicht.add(jMenuItemBlacklist);
 
         jMenuBar.add(jMenuAnsicht);
 
