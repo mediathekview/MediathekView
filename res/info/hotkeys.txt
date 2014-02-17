@@ -11,21 +11,23 @@ alt+h		Hilfe
 
 Menüpunkte
 ===========
-Einstellungen					F4
-neue Filmliste					F5
+Einstellungen			F4
+neue Filmliste			F5
 
-Film abspielen					F6
-Film aufzeichnen				F7
+Film abspielen			F6
+Film aufzeichnen		F7
+Filter löschen                  F8
+Blacklist anzeigen              F9
 
-Download zurückstellen			Rücktaste
-Download dauerhaft löschen		Entf
-Downloads aktualisieren			Leertaste
+Download zurückstellen		Rücktaste
+Download dauerhaft löschen	Entf
+Downloads aktualisieren		Leertaste
 
-Abos löschen					Entf
-Abos ändern						Return
+Abos löschen			Entf
+Abos ändern			Return
 
-Filter anzeigen					F8
-Beschreibung anzeigen			F9
+Beschreibung anzeigen		F10
+Buttons anzeigen                F11
 
 
 
