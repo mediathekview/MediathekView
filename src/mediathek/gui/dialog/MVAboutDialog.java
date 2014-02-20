@@ -21,6 +21,7 @@ package mediathek.gui.dialog;
 import com.jidesoft.swing.MarqueePane;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Desktop.Action;
 import java.awt.Dialog.ModalityType;
 import java.awt.FlowLayout;
@@ -45,10 +46,14 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
+import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.hyperlink.HyperlinkAction;
 
@@ -63,6 +68,7 @@ public class MVAboutDialog extends JDialog {
     private final JLabel lblJavaVersion = new JLabel();
     private final JLabel lblVmType = new JLabel();
     private MarqueePane marqueePane;
+    private JFrame parentFrame;
 
     private void setupVersionString() {
         String strVersion = "Version ";
@@ -152,6 +158,7 @@ public class MVAboutDialog extends JDialog {
 
     public MVAboutDialog(JFrame parent, final Boolean isRunningOnMac) {
         super(parent);
+        parentFrame = parent;
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.isRunningOnMac = isRunningOnMac;
@@ -201,8 +208,7 @@ public class MVAboutDialog extends JDialog {
             e.printStackTrace();
         }
         hprlnkDonation.setText("Spende");
-      
-        
+
         JXHyperlink hprlnkAnleitung = new JXHyperlink();
         hprlnkAnleitung.setHorizontalAlignment(SwingConstants.LEFT);
         try {
@@ -405,47 +411,67 @@ public class MVAboutDialog extends JDialog {
         pack();
     }
 
-    private class WebsiteHyperlinkAction extends HyperlinkAction {
-
-        private final static String WEBSITE_URL = "http://zdfmediathk.sourceforge.net";
+    private class WebsiteHyperlinkAction extends AbstractAction {
 
         public WebsiteHyperlinkAction() throws URISyntaxException {
-            super(new URI(WEBSITE_URL), Action.BROWSE);
-            putValue(SHORT_DESCRIPTION, WEBSITE_URL);
-            putValue(LONG_DESCRIPTION, WEBSITE_URL);
+            putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_WEBSITE);
+            putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_WEBSITE);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                UrlHyperlinkAction.urlOeffnen(parentFrame, Konstanten.ADRESSE_WEBSITE);
+            } catch (URISyntaxException ignored) {
+            }
         }
     }
 
-    private class DonationHyperlinkAction extends HyperlinkAction {
-
-        private final static String DONATION_URL = "http://zdfmediathk.sourceforge.net/index.html#donate";
+    private class DonationHyperlinkAction extends AbstractAction {
 
         public DonationHyperlinkAction() throws URISyntaxException {
-            super(new URI(DONATION_URL), Action.BROWSE);
-            putValue(SHORT_DESCRIPTION, DONATION_URL);
-            putValue(LONG_DESCRIPTION, DONATION_URL);
+            putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_DONATION);
+            putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_DONATION);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                UrlHyperlinkAction.urlOeffnen(parentFrame, Konstanten.ADRESSE_DONATION);
+            } catch (URISyntaxException ignored) {
+            }
         }
     }
 
-    private class ForumHyperlinkAction extends HyperlinkAction {
-
-        private final static String FORUM_URL = "http://sourceforge.net/apps/phpbb/zdfmediathk/";
+    private class ForumHyperlinkAction extends AbstractAction {
 
         public ForumHyperlinkAction() throws URISyntaxException {
-            super(new URI(FORUM_URL), Action.BROWSE);
-            putValue(SHORT_DESCRIPTION, FORUM_URL);
-            putValue(LONG_DESCRIPTION, FORUM_URL);
+            putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_FORUM);
+            putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_FORUM);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                UrlHyperlinkAction.urlOeffnen(parentFrame, Konstanten.ADRESSE_FORUM);
+            } catch (URISyntaxException ignored) {
+            }
         }
     }
 
-    private class AnleitungHyperlinkAction extends HyperlinkAction {
-
-        private final static String ANLEITUNG_URL = "http://sourceforge.net/p/zdfmediathk/wiki/Home/";
+    private class AnleitungHyperlinkAction extends AbstractAction {
 
         public AnleitungHyperlinkAction() throws URISyntaxException {
-            super(new URI(ANLEITUNG_URL), Action.BROWSE);
-            putValue(SHORT_DESCRIPTION, ANLEITUNG_URL);
-            putValue(LONG_DESCRIPTION, ANLEITUNG_URL);
+            putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_ANLEITUNG);
+            putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_ANLEITUNG);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                UrlHyperlinkAction.urlOeffnen(parentFrame, Konstanten.ADRESSE_ANLEITUNG);
+            } catch (URISyntaxException ignored) {
+            }
         }
     }
 

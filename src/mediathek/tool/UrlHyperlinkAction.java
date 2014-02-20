@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.Log;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.net.URI;
@@ -27,6 +26,7 @@ import java.net.URISyntaxException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
@@ -41,19 +41,19 @@ public class UrlHyperlinkAction extends AbstractAction {
         url = uurl;
         jFrameParent = jjFrameParent;
         super.putValue(Action.NAME, uurl);
-//        super.putValue(SHORT_DESCRIPTION, url);
+        super.putValue(SHORT_DESCRIPTION, url);
 //        super.putValue(LONG_DESCRIPTION, url);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            urlOeffnen(daten, e.getActionCommand());
+            urlOeffnen(jFrameParent, e.getActionCommand());
         } catch (URISyntaxException ignored) {
         }
     }
 
-    private boolean urlOeffnen(Daten ddaten, String url) throws URISyntaxException {
+    public static boolean urlOeffnen(JFrame paFrame, String url) throws URISyntaxException {
         if (Desktop.isDesktopSupported()) {
             Desktop d = Desktop.getDesktop();
             try {
@@ -66,7 +66,7 @@ public class UrlHyperlinkAction extends AbstractAction {
                     String programm = "";
                     if (Daten.mVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN).equals("")) {
                         String text = "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen.";
-                        DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(jFrameParent, true, "", "Browser suchen", text);
+                        DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(paFrame, true, "", "Browser suchen", text);
                         dialog.setVisible(true);
                         if (dialog.ok) {
                             programm = dialog.ziel;

@@ -34,6 +34,7 @@ public class Konstanten {
     public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen4/programmgruppen.xml";
     public static final String ADRESSE_WEBSITE = "http://zdfmediathk.sourceforge.net/";
     public static final String ADRESSE_FORUM = "http://sourceforge.net/apps/phpbb/zdfmediathk/";
+    public static final String ADRESSE_DONATION = "http://zdfmediathk.sourceforge.net/index.html#donate";
     // ProgrammUrls
     public static final String ADRESSE_WEBSITE_MPLAYER = "http://sourceforge.net/projects/smplayer";
     public static final String ADRESSE_WEBSITE_VLC = "http://www.videolan.org";
