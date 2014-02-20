@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URISyntaxException;
+import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -35,6 +36,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.controller.IoXmlLesen;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
@@ -43,7 +45,6 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.controller.Log;
 import mediathek.tool.TModel;
 import mediathek.tool.UrlHyperlinkAction;
 
@@ -117,6 +118,12 @@ public class PanelPsetImport extends PanelVorlage {
                 GuiFunktionenProgramme.addVorlagen(me, daten, ListePsetVorlagen.getStandarset(parentComponent, daten, Funktionen.getOsString()), false /* auto */);
             }
         });
+
+        jXHyperlinkInfos.setText("");
+        try {
+            jXHyperlinkInfos.setAction(new UrlHyperlinkAction(parentComponent, daten, ""));
+        } catch (URISyntaxException ignored) {
+        }
         setHyperLink(""); // zum löschen
     }
 
@@ -160,14 +167,15 @@ public class PanelPsetImport extends PanelVorlage {
         setHyperLink(vorlage[ListePsetVorlagen.PGR_INFO_NR]);
     }
 
-    private void setHyperLink(String url) {
-        if (!url.equals("")) {
+    private void setHyperLink(String uurl) {
+        if (!uurl.equals("")) {
             jLabel8.setVisible(true);
             jXHyperlinkInfos.setVisible(true);
-            try {
-                jXHyperlinkInfos.setAction(new UrlHyperlinkAction(parentComponent, daten, url));
-            } catch (URISyntaxException ignored) {
-            }
+            jXHyperlinkInfos.setText(uurl);
+//            try {
+//                jXHyperlinkInfos.setAction(new UrlHyperlinkAction(parentComponent, daten, url));
+//            } catch (URISyntaxException ignored) {
+//            }
         } else {
             jLabel8.setVisible(false);
             jXHyperlinkInfos.setVisible(false);
