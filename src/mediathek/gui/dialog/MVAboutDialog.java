@@ -21,13 +21,10 @@ package mediathek.gui.dialog;
 import com.jidesoft.swing.MarqueePane;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Desktop;
-import java.awt.Desktop.Action;
 import java.awt.Dialog.ModalityType;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import javax.swing.AbstractAction;
@@ -46,16 +43,12 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVConfig;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
-import org.jdesktop.swingx.hyperlink.HyperlinkAction;
 
 @SuppressWarnings("serial")
 public class MVAboutDialog extends JDialog {
