@@ -34,7 +34,7 @@ import mediathek.gui.dialogEinstellungen.PanelSenderLaden;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
 import mediathek.tool.MVNotification;
-import msearch.daten.MSearchConfig;
+import msearch.daten.MSConfig;
 
 public class GuiDebug extends JPanel {
 
@@ -59,7 +59,7 @@ public class GuiDebug extends JPanel {
         jToggleButtonAllesLaden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MSearchConfig.senderAllesLaden = jToggleButtonAllesLaden.isSelected();
+                MSConfig.senderAllesLaden = jToggleButtonAllesLaden.isSelected();
             }
         });
         jButtonAllesSpeichern.addActionListener(new ActionListener() {

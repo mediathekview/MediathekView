@@ -15,7 +15,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
-import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
+import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 /**
  * User: crystalpalace1977
@@ -106,7 +106,7 @@ public final class MVStatusBar extends JPanel {
         setInfoRechts();
     }
 
-    public void updateProgressBar(MSearchListenerFilmeLadenEvent event) {
+    public void updateProgressBar(MSListenerFilmeLadenEvent event) {
         stopTimer = true;
         if (!progress.isVisible()) {
             progress.setVisible(true);

@@ -89,8 +89,8 @@ import mediathek.gui.dialog.PanelHilfe;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFrame;
-import msearch.filmeSuchen.MSearchListenerFilmeLaden;
-import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
+import msearch.filmeSuchen.MSListenerFilmeLaden;
+import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 import org.simplericity.macify.eawt.Application;
 import org.simplericity.macify.eawt.ApplicationEvent;
 import org.simplericity.macify.eawt.ApplicationListener;
@@ -488,19 +488,19 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         initTabs();
         initMenue();
         mVToolBar.loadVisible(); // erst jetzt sind die Einstellungen geladen!
-        Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
             @Override
-            public void start(MSearchListenerFilmeLadenEvent event) {
+            public void start(MSListenerFilmeLadenEvent event) {
                 jMenuItemFilmlisteLaden.setEnabled(false);
             }
 
             @Override
-            public void progress(MSearchListenerFilmeLadenEvent event) {
+            public void progress(MSListenerFilmeLadenEvent event) {
                 getStatusBar().updateProgressBar(event);
             }
 
             @Override
-            public void fertig(MSearchListenerFilmeLadenEvent event) {
+            public void fertig(MSListenerFilmeLadenEvent event) {
                 getStatusBar().hideProgressIndicators();
                 jMenuItemFilmlisteLaden.setEnabled(true);
                 daten.allesSpeichern(); // damit nichts verlorengeht

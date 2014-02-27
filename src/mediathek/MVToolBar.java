@@ -37,8 +37,8 @@ import mediathek.tool.Filter;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
-import msearch.filmeSuchen.MSearchListenerFilmeLaden;
-import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
+import msearch.filmeSuchen.MSListenerFilmeLaden;
+import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 import org.jdesktop.swingx.JXSearchField;
 
 public final class MVToolBar extends JToolBar {
@@ -368,19 +368,19 @@ public final class MVToolBar extends JToolBar {
             }
         });
         addMouseListener(beobMausToolBar);
-        Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
             @Override
-            public void start(MSearchListenerFilmeLadenEvent event) {
+            public void start(MSListenerFilmeLadenEvent event) {
                 //ddaten.infoPanel.setProgress();
                 jButtonFilmeLaden.setEnabled(false);
             }
 
             @Override
-            public void progress(MSearchListenerFilmeLadenEvent event) {
+            public void progress(MSListenerFilmeLadenEvent event) {
             }
 
             @Override
-            public void fertig(MSearchListenerFilmeLadenEvent event) {
+            public void fertig(MSListenerFilmeLadenEvent event) {
                 jButtonFilmeLaden.setEnabled(true);
             }
         });

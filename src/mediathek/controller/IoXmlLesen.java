@@ -46,7 +46,7 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
 import msearch.filmeLaden.DatenFilmlistenServer;
 import msearch.filmeLaden.DatenUrlFilmliste;
-import msearch.filmeLaden.MSearchFilmlistenSuchen;
+import msearch.filmeLaden.MSFilmlistenSuchen;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 public class IoXmlLesen {
@@ -105,10 +105,10 @@ public class IoXmlLesen {
                             if (get(parser, event, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
                                 blacklist.add(datenBlacklist);
                             }
-                        } else if (parser.getLocalName().equals(MSearchFilmlistenSuchen.FILM_UPDATE_SERVER)) {
+                        } else if (parser.getLocalName().equals(MSFilmlistenSuchen.FILM_UPDATE_SERVER)) {
                             //Urls Filmlisten
                             DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
-                            if (get(parser, event, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
+                            if (get(parser, event, MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
                                 Daten.filmeLaden.getDownloadUrlsFilmlisten(false).addWithCheck(datenUrlFilmliste);
                             }
                         } else if (parser.getLocalName().equals(DatenFilmlistenServer.FILM_LISTEN_SERVER)) {
