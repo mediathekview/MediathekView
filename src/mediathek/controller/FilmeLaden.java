@@ -35,7 +35,6 @@ import msearch.daten.ListeFilme;
 import msearch.daten.MSearchConfig;
 import msearch.filmeLaden.ListeDownloadUrlsFilmlisten;
 import msearch.filmeLaden.ListeFilmlistenServer;
-import msearch.filmeLaden.MSearchImportFilmliste;
 import msearch.filmeSuchen.MSearchFilmeSuchen;
 import msearch.filmeSuchen.MSearchListenerFilmeLaden;
 import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
@@ -56,7 +55,7 @@ public class FilmeLaden {
     };
     // private
     private MSearchFilmeSuchen mSearchFilmeSuchen;
-    private MSearchImportFilmliste mSearchImportFilmliste;
+    private MVImportFilmliste mSearchImportFilmliste;
     private EventListenerList listeners = new EventListenerList();
     private boolean istAmLaufen = false;
 
@@ -80,7 +79,7 @@ public class FilmeLaden {
                 undEnde(event);
             }
         });
-        mSearchImportFilmliste = new MSearchImportFilmliste();
+        mSearchImportFilmliste = new MVImportFilmliste();
         mSearchImportFilmliste.addAdListener(new MSearchListenerFilmeLaden() {
             @Override
             public synchronized void start(MSearchListenerFilmeLadenEvent event) {
