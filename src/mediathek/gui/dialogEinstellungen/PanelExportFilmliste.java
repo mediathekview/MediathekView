@@ -38,7 +38,7 @@ import mediathek.tool.Konstanten;
 import mediathek.controller.Log;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
-import msearch.io.MSearchFilmlisteSchreiben;
+import msearch.io.MSFilmlisteSchreiben;
 
 public class PanelExportFilmliste extends PanelVorlage {
 
@@ -76,7 +76,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                     updateUI();
                     Duration duration = new Duration(PanelExportFilmliste.class.getSimpleName());
                     duration.start("Filmliste schreiben: " + exporDatei);
-                    new MSearchFilmlisteSchreiben().filmlisteSchreibenJson(exporDatei, Daten.listeFilme);
+                    new MSFilmlisteSchreiben().filmlisteSchreibenJson(exporDatei, Daten.listeFilme);
                     duration.stop("fertig");
                     if (!new File(exporDatei).exists()) {
                         MVMessageDialog.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);

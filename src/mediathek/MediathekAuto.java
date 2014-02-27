@@ -25,8 +25,8 @@ import mediathek.controller.IoXmlLesen;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.controller.Log;
-import msearch.filmeSuchen.MSearchListenerFilmeLaden;
-import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
+import msearch.filmeSuchen.MSListenerFilmeLaden;
+import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 public class MediathekAuto {
 
@@ -52,9 +52,9 @@ public class MediathekAuto {
         Log.startMeldungen(this.getClass().getName());
         if (IoXmlLesen.einstellungenExistieren()) {
             daten.allesLaden();
-            Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
+            Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
                 @Override
-                public void fertig(MSearchListenerFilmeLadenEvent event) {
+                public void fertig(MSListenerFilmeLadenEvent event) {
                     filmeLaden();
                 }
             });

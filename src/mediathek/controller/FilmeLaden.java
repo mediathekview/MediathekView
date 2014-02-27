@@ -32,12 +32,12 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.MVListeFilme;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
-import msearch.daten.MSearchConfig;
+import msearch.daten.MSConfig;
 import msearch.filmeLaden.ListeDownloadUrlsFilmlisten;
 import msearch.filmeLaden.ListeFilmlistenServer;
-import msearch.filmeSuchen.MSearchFilmeSuchen;
-import msearch.filmeSuchen.MSearchListenerFilmeLaden;
-import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
+import msearch.filmeSuchen.MSFilmeSuchen;
+import msearch.filmeSuchen.MSListenerFilmeLaden;
+import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 public class FilmeLaden {
 
@@ -54,45 +54,45 @@ public class FilmeLaden {
         START, PROGRESS, FINISHED
     };
     // private
-    private MSearchFilmeSuchen mSearchFilmeSuchen;
+    private MSFilmeSuchen mSearchFilmeSuchen;
     private MVImportFilmliste mSearchImportFilmliste;
     private EventListenerList listeners = new EventListenerList();
     private boolean istAmLaufen = false;
 
     public FilmeLaden() {
-        mSearchFilmeSuchen = new MSearchFilmeSuchen();
-        mSearchFilmeSuchen.addAdListener(new MSearchListenerFilmeLaden() {
+        mSearchFilmeSuchen = new MSFilmeSuchen();
+        mSearchFilmeSuchen.addAdListener(new MSListenerFilmeLaden() {
             @Override
-            public synchronized void start(MSearchListenerFilmeLadenEvent event) {
+            public synchronized void start(MSListenerFilmeLadenEvent event) {
                 notifyStart(event);
             }
 
             @Override
-            public synchronized void progress(MSearchListenerFilmeLadenEvent event) {
+            public synchronized void progress(MSListenerFilmeLadenEvent event) {
                 notifyProgress(event);
             }
 
             @Override
-            public synchronized void fertig(MSearchListenerFilmeLadenEvent event) {
+            public synchronized void fertig(MSListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
                 Daten.listeFilme = mSearchFilmeSuchen.listeFilmeNeu;
                 undEnde(event);
             }
         });
         mSearchImportFilmliste = new MVImportFilmliste();
-        mSearchImportFilmliste.addAdListener(new MSearchListenerFilmeLaden() {
+        mSearchImportFilmliste.addAdListener(new MSListenerFilmeLaden() {
             @Override
-            public synchronized void start(MSearchListenerFilmeLadenEvent event) {
+            public synchronized void start(MSListenerFilmeLadenEvent event) {
                 notifyStart(event);
             }
 
             @Override
-            public synchronized void progress(MSearchListenerFilmeLadenEvent event) {
+            public synchronized void progress(MSListenerFilmeLadenEvent event) {
                 notifyProgress(event);
             }
 
             @Override
-            public synchronized void fertig(MSearchListenerFilmeLadenEvent event) {
+            public synchronized void fertig(MSListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
                 duration.stop("Filme laden, ende");
                 //Daten.filmlisteSpeichern();
@@ -103,7 +103,7 @@ public class FilmeLaden {
 
     // ###########################
     public synchronized void setStop(boolean set) {
-        MSearchConfig.setStop(set);
+        MSConfig.setStop(set);
     }
 
     public String[] getSenderNamen() {
@@ -164,9 +164,9 @@ public class FilmeLaden {
             Daten.listeFilme.neueFilme = false;
             Daten.listeFilmeNachBlackList.neueFilme = false;
             fillHash(Daten.listeFilme);
-            MSearchConfig.senderAllesLaden = senderAllesLaden;
-            MSearchConfig.updateFilmliste = filmlisteUpdate;
-            MSearchConfig.debug = Daten.debug;
+            MSConfig.senderAllesLaden = senderAllesLaden;
+            MSConfig.updateFilmliste = filmlisteUpdate;
+            MSConfig.debug = Daten.debug;
             mSearchFilmeSuchen.filmeBeimSenderLaden(Daten.listeFilme);
         }
     }
@@ -180,8 +180,8 @@ public class FilmeLaden {
             Daten.listeFilme.neueFilme = false;
             Daten.listeFilmeNachBlackList.neueFilme = false;
             fillHash(Daten.listeFilme);
-            MSearchConfig.senderAllesLaden = senderAllesLaden;
-            MSearchConfig.debug = Daten.debug;
+            MSConfig.senderAllesLaden = senderAllesLaden;
+            MSConfig.debug = Daten.debug;
             mSearchFilmeSuchen.updateSender(sender, Daten.listeFilme);
         }
     }
@@ -194,7 +194,7 @@ public class FilmeLaden {
         return mSearchImportFilmliste.getDownloadUrls_Filmlisten(update);
     }
 
-    private void undEnde(MSearchListenerFilmeLadenEvent event) {
+    private void undEnde(MSListenerFilmeLadenEvent event) {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
         searchHash(Daten.listeFilme);
@@ -226,35 +226,35 @@ public class FilmeLaden {
     // Listener
     // ###########################
 
-    public void addAdListener(MSearchListenerFilmeLaden listener) {
-        listeners.add(MSearchListenerFilmeLaden.class, listener);
+    public void addAdListener(MSListenerFilmeLaden listener) {
+        listeners.add(MSListenerFilmeLaden.class, listener);
     }
 
-    private void notifyStart(MSearchListenerFilmeLadenEvent event) {
-        for (MSearchListenerFilmeLaden l : listeners.getListeners(MSearchListenerFilmeLaden.class)) {
+    private void notifyStart(MSListenerFilmeLadenEvent event) {
+        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
             run_(new Start(l, event, ListenerMelden.START));
         }
     }
 
-    private void notifyProgress(MSearchListenerFilmeLadenEvent event) {
-        for (MSearchListenerFilmeLaden l : listeners.getListeners(MSearchListenerFilmeLaden.class)) {
+    private void notifyProgress(MSListenerFilmeLadenEvent event) {
+        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
             run_(new Start(l, event, ListenerMelden.PROGRESS));
         }
     }
 
-    private void notifyFertig(MSearchListenerFilmeLadenEvent event) {
-        for (MSearchListenerFilmeLaden l : listeners.getListeners(MSearchListenerFilmeLaden.class)) {
+    private void notifyFertig(MSListenerFilmeLadenEvent event) {
+        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
             run_(new Start(l, event, ListenerMelden.FINISHED));
         }
     }
 
     private class Start implements Runnable {
 
-        private MSearchListenerFilmeLaden listenerFilmeLaden;
-        private MSearchListenerFilmeLadenEvent event;
+        private MSListenerFilmeLaden listenerFilmeLaden;
+        private MSListenerFilmeLadenEvent event;
         private ListenerMelden listenerMelden;
 
-        public Start(MSearchListenerFilmeLaden llistenerFilmeLaden, MSearchListenerFilmeLadenEvent eevent, ListenerMelden lliListenerMelden) {
+        public Start(MSListenerFilmeLaden llistenerFilmeLaden, MSListenerFilmeLadenEvent eevent, ListenerMelden lliListenerMelden) {
             listenerFilmeLaden = llistenerFilmeLaden;
             event = eevent;
             listenerMelden = lliListenerMelden;

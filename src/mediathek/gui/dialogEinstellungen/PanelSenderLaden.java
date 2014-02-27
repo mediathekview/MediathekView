@@ -26,8 +26,8 @@ import javax.swing.*;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
-import msearch.filmeSuchen.MSearchListenerFilmeLaden;
-import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
+import msearch.filmeSuchen.MSListenerFilmeLaden;
+import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 public class PanelSenderLaden extends JPanel {
 
@@ -57,9 +57,9 @@ public class PanelSenderLaden extends JPanel {
             }
         });
 
-        Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
             @Override
-            public void progress(MSearchListenerFilmeLadenEvent event) {
+            public void progress(MSListenerFilmeLadenEvent event) {
                 if (event.max == 0) {
                     jProgressBar1.setIndeterminate(true);
                     jProgressBar1.setMaximum(0);
@@ -77,7 +77,7 @@ public class PanelSenderLaden extends JPanel {
             }
 
             @Override
-            public void fertig(MSearchListenerFilmeLadenEvent event) {
+            public void fertig(MSListenerFilmeLadenEvent event) {
                 jProgressBar1.setIndeterminate(false);
                 jProgressBar1.setMaximum(0);
                 jProgressBar1.setMinimum(0);

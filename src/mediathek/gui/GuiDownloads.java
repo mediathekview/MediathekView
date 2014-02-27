@@ -66,8 +66,8 @@ import mediathek.tool.MVMessageDialog;
 import mediathek.tool.OpenPlayerAction;
 import mediathek.tool.TModelDownload;
 import msearch.daten.DatenFilm;
-import msearch.filmeSuchen.MSearchListenerFilmeLaden;
-import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
+import msearch.filmeSuchen.MSListenerFilmeLaden;
+import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 public class GuiDownloads extends PanelVorlage {
 
@@ -213,9 +213,9 @@ public class GuiDownloads extends PanelVorlage {
         jRadioButtonAlles.addActionListener(new BeobAnzeige());
         jRadioButtonAbos.addActionListener(new BeobAnzeige());
         jRadioButtonDownloads.addActionListener(new BeobAnzeige());
-        Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
             @Override
-            public void fertig(MSearchListenerFilmeLadenEvent event) {
+            public void fertig(MSListenerFilmeLadenEvent event) {
                 if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
                 }

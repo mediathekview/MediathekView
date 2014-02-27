@@ -46,7 +46,7 @@ import mediathek.controller.Log;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 import msearch.filmeLaden.DatenUrlFilmliste;
-import msearch.filmeLaden.MSearchFilmlistenSuchen;
+import msearch.filmeLaden.MSFilmlistenSuchen;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
 
@@ -117,13 +117,13 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten(false).getTableObjectData(), MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
+        jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten(false).getTableObjectData(), MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
-            if (i == MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR) {
+            if (i == MSFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(10);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(350);
-            } else if (!Daten.debug && i == MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR) {
+            } else if (!Daten.debug && i == MSFilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(0);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(0);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(0);
@@ -141,12 +141,12 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         int selectedTableRow = jTable1.getSelectedRow();
         if (selectedTableRow >= 0) {
             datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten(false).getDatenUrlFilmliste(jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow),
-                    MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR).toString());
+                    MSFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR).toString());
         }
         if (datenUrlFilmliste != null) {
             //jRadioButtonUpdateAus.setSelected(true);
             //daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(Konstanten.UPDATE_FILME_AUS);
-            jTextFieldUrl.setText(datenUrlFilmliste.arr[MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR]);
+            jTextFieldUrl.setText(datenUrlFilmliste.arr[MSFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR]);
             if (doppel) {
                 // dann wars ein Doppelklick, gleich laden
                 Daten.filmeLaden.importFilmliste(jTextFieldUrl.getText());

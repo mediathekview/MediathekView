@@ -49,8 +49,8 @@ import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
 import msearch.daten.ListeFilme;
-import msearch.io.MSearchFilmlisteLesen;
-import msearch.io.MSearchFilmlisteSchreiben;
+import msearch.io.MSFilmlisteLesen;
+import msearch.io.MSFilmlisteSchreiben;
 
 public class Daten {
     // Konstanten, Systemeinstellungen und alles was wichtig
@@ -270,14 +270,14 @@ public class Daten {
 
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
-        new MSearchFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste(), "", Daten.listeFilme);
+        new MSFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste(), "", Daten.listeFilme);
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
         MVListeFilme.checkBlacklist();
     }
 
     public static void filmlisteSpeichern() {
-        new MSearchFilmlisteSchreiben().filmlisteSchreibenJson(getDateiFilmliste(), listeFilme);
+        new MSFilmlisteSchreiben().filmlisteSchreibenJson(getDateiFilmliste(), listeFilme);
     }
 
     public void allesSpeichern() {

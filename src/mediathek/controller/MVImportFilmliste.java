@@ -24,47 +24,47 @@ import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import mediathek.tool.MVMessageDialog;
 import msearch.daten.ListeFilme;
-import msearch.daten.MSearchConfig;
+import msearch.daten.MSConfig;
 import msearch.filmeLaden.ListeDownloadUrlsFilmlisten;
 import msearch.filmeLaden.ListeFilmlistenServer;
-import msearch.filmeLaden.MSearchFilmlistenSuchen;
-import msearch.filmeSuchen.MSearchListenerFilmeLaden;
-import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
-import msearch.io.MSearchFilmlisteLesen;
-import msearch.tool.MSearchLog;
+import msearch.filmeLaden.MSFilmlistenSuchen;
+import msearch.filmeSuchen.MSListenerFilmeLaden;
+import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import msearch.io.MSFilmlisteLesen;
+import msearch.tool.MSLog;
 
 public class MVImportFilmliste {
 
     private EventListenerList listeners = new EventListenerList();
-    private MSearchFilmlisteLesen ioXmlFilmlisteLesen = null;
-    public MSearchFilmlistenSuchen filmlistenSuchen = new MSearchFilmlistenSuchen();
+    private MSFilmlisteLesen ioXmlFilmlisteLesen = null;
+    public MSFilmlistenSuchen filmlistenSuchen = new MSFilmlistenSuchen();
 
     public MVImportFilmliste() {
-        ioXmlFilmlisteLesen = new MSearchFilmlisteLesen();
-        ioXmlFilmlisteLesen.addAdListener(new MSearchListenerFilmeLaden() {
+        ioXmlFilmlisteLesen = new MSFilmlisteLesen();
+        ioXmlFilmlisteLesen.addAdListener(new MSListenerFilmeLaden() {
             @Override
-            public synchronized void start(MSearchListenerFilmeLadenEvent event) {
-                for (MSearchListenerFilmeLaden l : listeners.getListeners(MSearchListenerFilmeLaden.class)) {
+            public synchronized void start(MSListenerFilmeLadenEvent event) {
+                for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
                     l.start(event);
                 }
             }
 
             @Override
-            public synchronized void progress(MSearchListenerFilmeLadenEvent event) {
-                for (MSearchListenerFilmeLaden l : listeners.getListeners(MSearchListenerFilmeLaden.class)) {
+            public synchronized void progress(MSListenerFilmeLadenEvent event) {
+                for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
                     l.progress(event);
 
                 }
             }
 
             @Override
-            public synchronized void fertig(MSearchListenerFilmeLadenEvent event) {
+            public synchronized void fertig(MSListenerFilmeLadenEvent event) {
             }
         });
     }
 
-    public void addAdListener(MSearchListenerFilmeLaden listener) {
-        listeners.add(MSearchListenerFilmeLaden.class, listener);
+    public void addAdListener(MSListenerFilmeLaden listener) {
+        listeners.add(MSListenerFilmeLaden.class, listener);
     }
 
     // #######################################
@@ -85,7 +85,7 @@ public class MVImportFilmliste {
     // Filmeliste importieren, URL automatisch wählen
     // #########################################################
     public void filmeImportierenAuto(String dateiZiel, ListeFilme listeFilme) {
-        MSearchConfig.setStop(false);
+        MSConfig.setStop(false);
         new Thread(new FilmeImportierenAutoThread(dateiZiel, listeFilme)).start();
     }
 
@@ -112,14 +112,14 @@ public class MVImportFilmliste {
                         // hat geklappt, nix wie weiter
                         ret = true; // keine Fehlermeldung
                         if (i < 3 && listeFilme.filmlisteIstAelter(5 * 60 * 60 /*sekunden*/)) {
-                            MSearchLog.systemMeldung("Filmliste zu alt, neuer Versuch");
+                            MSLog.systemMeldung("Filmliste zu alt, neuer Versuch");
                         } else {
                             // 3 Versuche mit einer alten Liste sind genug
                             break;
                         }
                     } else {
                         // nur wenn nicht abgebrochen, weitermachen
-                        if (MSearchConfig.getStop()) {
+                        if (MSConfig.getStop()) {
                             break;
                         }
                     }
@@ -129,7 +129,7 @@ public class MVImportFilmliste {
             }
             if (!ret /* listeFilme ist schon wieder null -> "FilmeLaden" */) {
                 MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                MSearchLog.fehlerMeldung(951235497, MSearchLog.FEHLER_ART_PROG, "Filme laden", "Es konnten keine Filme geladen werden!");
+                MSLog.fehlerMeldung(951235497, MSLog.FEHLER_ART_PROG, "Filme laden", "Es konnten keine Filme geladen werden!");
             }
             fertigMelden();
         }
@@ -139,7 +139,7 @@ public class MVImportFilmliste {
     // Filmeliste importieren, mit fester URL/Pfad
     // #######################################
     public void filmeImportierenDatei(String pfad, String dateiZiel, ListeFilme listeFilme) {
-        MSearchConfig.setStop(false);
+        MSConfig.setStop(false);
         new Thread(new FilmeImportierenDateiThread(pfad, dateiZiel, listeFilme)).start();
     }
 
@@ -171,18 +171,18 @@ public class MVImportFilmliste {
         boolean ret = false;
         try {
             if (!dateiUrl.equals("")) {
-                MSearchLog.systemMeldung("Filmliste laden von: " + dateiUrl);
+                MSLog.systemMeldung("Filmliste laden von: " + dateiUrl);
                 ret = ioXmlFilmlisteLesen.filmlisteLesenJson(dateiUrl, dateiZiel, listeFilme);
             }
         } catch (Exception ex) {
-            MSearchLog.fehlerMeldung(965412378, MSearchLog.FEHLER_ART_PROG, "ImportListe.urlLaden: ", ex);
+            MSLog.fehlerMeldung(965412378, MSLog.FEHLER_ART_PROG, "ImportListe.urlLaden: ", ex);
         }
         return ret;
     }
 
     private synchronized void fertigMelden() {
-        for (MSearchListenerFilmeLaden l : listeners.getListeners(MSearchListenerFilmeLaden.class)) {
-            l.fertig(new MSearchListenerFilmeLadenEvent("", "", 0, 0));
+        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+            l.fertig(new MSListenerFilmeLadenEvent("", "", 0, 0));
         }
     }
 }

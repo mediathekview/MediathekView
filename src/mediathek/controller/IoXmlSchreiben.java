@@ -44,7 +44,7 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
 import msearch.filmeLaden.DatenFilmlistenServer;
 import msearch.filmeLaden.DatenUrlFilmliste;
-import msearch.filmeLaden.MSearchFilmlistenSuchen;
+import msearch.filmeLaden.MSFilmlistenSuchen;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 public class IoXmlSchreiben {
@@ -196,7 +196,7 @@ public class IoXmlSchreiben {
         iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten(false).iterator();
         while (iterator.hasNext()) {
             datenUrlFilmliste = iterator.next();
-            xmlSchreibenDaten(MSearchFilmlistenSuchen.FILM_UPDATE_SERVER, MSearchFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
+            xmlSchreibenDaten(MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
         Iterator<DatenFilmlistenServer> it;
         it = Daten.filmeLaden.getListeFilmlistnServer().iterator();

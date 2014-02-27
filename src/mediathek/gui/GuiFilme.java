@@ -87,8 +87,8 @@ import mediathek.tool.TModel;
 import mediathek.tool.TModelFilm;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
-import msearch.filmeSuchen.MSearchListenerFilmeLaden;
-import msearch.filmeSuchen.MSearchListenerFilmeLadenEvent;
+import msearch.filmeSuchen.MSListenerFilmeLaden;
+import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 public class GuiFilme extends PanelVorlage {
 
@@ -158,14 +158,14 @@ public class GuiFilme extends PanelVorlage {
     //===================================
     private void init() {
         panelBeschreibungSetzen();
-        Daten.filmeLaden.addAdListener(new MSearchListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
             @Override
-            public void start(MSearchListenerFilmeLadenEvent event) {
+            public void start(MSListenerFilmeLadenEvent event) {
                 tabelleLaden();
             }
 
             @Override
-            public void fertig(MSearchListenerFilmeLadenEvent event) {
+            public void fertig(MSListenerFilmeLadenEvent event) {
                 if (!Daten.listeFilmeNachBlackList.neueFilme) {
                     mVFilter.get_jToggleButtonNeue().setSelected(false);
                 }
