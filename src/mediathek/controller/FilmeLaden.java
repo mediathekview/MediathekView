@@ -19,8 +19,10 @@
  */
 package mediathek.controller;
 
+import msearch.filmeLaden.MSImportFilmliste;
 import java.util.HashSet;
 import java.util.Iterator;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import mediathek.daten.Daten;
@@ -30,6 +32,7 @@ import mediathek.tool.Duration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.MVListeFilme;
+import mediathek.tool.MVMessageDialog;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 import msearch.daten.MSConfig;
@@ -55,7 +58,7 @@ public class FilmeLaden {
     };
     // private
     private MSFilmeSuchen mSearchFilmeSuchen;
-    private MVImportFilmliste mSearchImportFilmliste;
+    private MSImportFilmliste mSearchImportFilmliste;
     private EventListenerList listeners = new EventListenerList();
     private boolean istAmLaufen = false;
 
@@ -79,7 +82,7 @@ public class FilmeLaden {
                 undEnde(event);
             }
         });
-        mSearchImportFilmliste = new MVImportFilmliste();
+        mSearchImportFilmliste = new MSImportFilmliste();
         mSearchImportFilmliste.addAdListener(new MSListenerFilmeLaden() {
             @Override
             public synchronized void start(MSListenerFilmeLadenEvent event) {
@@ -201,6 +204,9 @@ public class FilmeLaden {
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false/*aboLoeschen*/);
         istAmLaufen = false;
+        if (event.fehler) {
+            MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
+        }
         notifyFertig(event);
     }
 
