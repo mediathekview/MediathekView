@@ -26,11 +26,15 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mediathek.controller.ProgrammLog;
 import mediathek.daten.Daten;
+import mediathek.daten.ListePsetVorlagen;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
+import mediathek.gui.dialogEinstellungen.PanelPsetLang;
 import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
+import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.UrlHyperlinkAction;
 
 public class PanelHilfe extends PanelVorlage {
@@ -75,6 +79,16 @@ public class PanelHilfe extends PanelVorlage {
                 new DialogHilfe(daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true);
             }
         });
+        jButtonSets.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                daten.listePset.clear();
+                //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
+                GuiFunktionenProgramme.addVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, daten, Funktionen.getOsString()), false /* auto */);
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelHilfe.class.getSimpleName());
+            }
+        });
         jButtonReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -114,6 +128,10 @@ public class PanelHilfe extends PanelVorlage {
         jButtonHilfeReset = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jButtonSets = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -181,7 +199,7 @@ public class PanelHilfe extends PanelVorlage {
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldPfad)
+                            .addComponent(jTextFieldPfad, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
                             .addComponent(jTextFieldVersion)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -238,6 +256,12 @@ public class PanelHilfe extends PanelVorlage {
 
         jLabel4.setText("Buttons, Abos und die Blacklists gelöscht.");
 
+        jButtonSets.setText("Einstellungen zum Abspielen/Speichern zurücksetzen");
+
+        jLabel8.setText("Es werden die Programmsets zum Abspielen und Aufzeichnen");
+
+        jLabel10.setText("gelöschen und die Standardsets wieder angelegt.");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -246,24 +270,36 @@ public class PanelHilfe extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButtonReset)
+                        .addComponent(jButtonSets)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonHilfeReset))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonReset)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel3))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonReset)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonSets)
                     .addComponent(jButtonHilfeReset))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonReset)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
@@ -306,11 +342,15 @@ public class PanelHilfe extends PanelVorlage {
     private javax.swing.JButton jButtonHilfeReset;
     private javax.swing.JButton jButtonLogErstellen;
     private javax.swing.JButton jButtonReset;
+    private javax.swing.JButton jButtonSets;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextFieldPfad;
     private javax.swing.JTextField jTextFieldVersion;
     private org.jdesktop.swingx.JXHyperlink jXHyperlinkAnleitung;

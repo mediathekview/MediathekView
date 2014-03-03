@@ -1,8 +1,22 @@
-Mit "Alle Einstellungen zurücksetzen" wird
-das Programm in den Ursprungszustand
-zurückgesetzt.
+"Einstellungen zum Abspielen/Speichern zurücksetzen"
 
-Es gehen alle Änderungen verloren.
+Damit werden alle Sets die zum Speichern und zum
+Abspielen der Filme gebraucht werden gelöscht.
+Anschließend werden die aktuellen Standardsets
+eingerichtet. Es kann dann direkt damit 
+weitergearbeitet werden.
+
+Das sollte vor dem kompletten zurücksetzen
+des Programms versucht werden.
+
+
+= oder ==============================
+
+"Alle Einstellungen zurücksetzen"
+Damit wird das Programm in den
+Ursprungszustand zurückgesetzt.
+
+Es gehen ALLE Einstellungen verloren.
 
 Das Programm beendet sich und muss neu
 gestartet werden. Der neue Start beginnt
