@@ -83,14 +83,36 @@ public class IoXmlSchreiben {
         try {
             Log.systemMeldung("Daten Schreiben");
             xmlSchreibenStart();
-            //System schreibem
-//            xmlSchreibenDaten(Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system, true);
-            xmlSchreibenConfig(MVConfig.SYSTEM, Daten.mVConfig.getAll(), true);
-            //Senderliste
-            xmlSchreibenProg(daten);
-            xmlSchreibenDownloads(daten);
+
+            writer.writeCharacters("\n\n");
+            writer.writeComment("Abos");
+            writer.writeCharacters("\n");
             xmlSchreibenAbo(daten);
+
+            writer.writeCharacters("\n\n");
+            writer.writeComment("Blacklist");
+            writer.writeCharacters("\n");
             xmlSchreibenBlackList(daten);
+
+            writer.writeCharacters("\n\n");
+            writer.writeComment("Programmeinstellungen");
+            writer.writeCharacters("\n");
+            xmlSchreibenConfig(MVConfig.SYSTEM, Daten.mVConfig.getAll(), true);
+            writer.writeCharacters("\n");
+
+            writer.writeCharacters("\n\n");
+            writer.writeComment("Programmsets");
+            writer.writeCharacters("\n");
+            xmlSchreibenProg(daten);
+
+            writer.writeCharacters("\n\n");
+            writer.writeComment("Downloads");
+            writer.writeCharacters("\n");
+            xmlSchreibenDownloads(daten);
+
+            writer.writeCharacters("\n\n");
+            writer.writeComment("Update Filmliste");
+            writer.writeCharacters("\n");
             xmlSchreibenFilmUpdateServer();
             xmlSchreibenEnde();
         } catch (Exception ex) {
