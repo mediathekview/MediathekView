@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URISyntaxException;
-import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -51,11 +50,9 @@ import mediathek.tool.UrlHyperlinkAction;
 public class PanelPsetImport extends PanelVorlage {
 
     ListePsetVorlagen listeVorlagen = new ListePsetVorlagen();
-    PanelVorlage me;
 
     public PanelPsetImport(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
-        me = this;
         initComponents();
         init();
     }
@@ -63,7 +60,7 @@ public class PanelPsetImport extends PanelVorlage {
     private void init() {
         jButtonAktualisieren.setIcon(GetIcon.getIcon("view-refresh_16.png"));
         jButtonPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        jComboBoxBs.setModel(new DefaultComboBoxModel<String>(ListePsetVorlagen.BS));
+        jComboBoxBs.setModel(new DefaultComboBoxModel<>(ListePsetVorlagen.BS));
         jComboBoxBs.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -115,7 +112,7 @@ public class PanelPsetImport extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
-                GuiFunktionenProgramme.addVorlagen(me, daten, ListePsetVorlagen.getStandarset(parentComponent, daten, Funktionen.getOsString()), false /* auto */);
+                GuiFunktionenProgramme.addVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, daten, Funktionen.getOsString()), false /* auto */);
             }
         });
 
@@ -131,12 +128,12 @@ public class PanelPsetImport extends PanelVorlage {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         ListePset pSet = IoXmlLesen.importPset(parentComponent, daten, datei, true);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        GuiFunktionenProgramme.addVorlagen(me, daten, pSet, false /* auto */);
+        GuiFunktionenProgramme.addVorlagen(parentComponent, daten, pSet, false /* auto */);
     }
 
     private void importText() {
         ListePset pSet = IoXmlLesen.importPsetText(parentComponent, daten, jTextAreaImport.getText(), true);
-        GuiFunktionenProgramme.addVorlagen(me, daten, pSet, false /* auto */);
+        GuiFunktionenProgramme.addVorlagen(parentComponent, daten, pSet, false /* auto */);
     }
 
     private void tabelleLaden() {

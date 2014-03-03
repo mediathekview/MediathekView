@@ -232,7 +232,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG);
     }
 
-    public static boolean addVorlagen(PanelVorlage parent, Daten ddaten, ListePset pSet, boolean auto) {
+    public static boolean addVorlagen(JFrame parent, Daten ddaten, ListePset pSet, boolean auto) {
         // Standardgruppen laden
         if (pSet != null) {
             parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
