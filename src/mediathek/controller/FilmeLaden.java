@@ -19,7 +19,6 @@
  */
 package mediathek.controller;
 
-import msearch.filmeLaden.MSImportFilmliste;
 import java.util.HashSet;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
@@ -38,6 +37,7 @@ import msearch.daten.ListeFilme;
 import msearch.daten.MSConfig;
 import msearch.filmeLaden.ListeDownloadUrlsFilmlisten;
 import msearch.filmeLaden.ListeFilmlistenServer;
+import msearch.filmeLaden.MSImportFilmliste;
 import msearch.filmeSuchen.MSFilmeSuchen;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
@@ -51,6 +51,7 @@ public class FilmeLaden {
     public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
     private Duration duration = new Duration(FilmeLaden.class.getSimpleName());
     private HashSet<String> hashSet = new HashSet<>();
+    private ListeFilme diffListe = new ListeFilme();
 
     private static enum ListenerMelden {
 
@@ -132,7 +133,7 @@ public class FilmeLaden {
     // Filme als Liste importieren
     // #########################################################
     public void importFilmliste(String dateiUrl) {
-        // damit wird die filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
+        // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
         duration.start("Filme laden, start");
         if (!istAmLaufen) {
             // nicht doppelt starten
@@ -152,6 +153,25 @@ public class FilmeLaden {
                 Log.systemMeldung("Filmliste laden von: " + dateiUrl);
                 mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.getDateiFilmliste(), Daten.listeFilme);
             }
+        }
+    }
+
+    public void updateFilmliste(String dateiUrl) {
+        // damit wird die Filmliste mit einer weiteren aktualisiert (die bestehende bleibt
+        // erhalten) UND auch gleich im Konfig-Ordner gespeichert
+        duration.start("Filme laden (Update), start");
+        if (!istAmLaufen) {
+            // nicht doppelt starten
+            istAmLaufen = true;
+            // Hash mit URLs füllen
+            hashSet.clear();
+            fillHash(Daten.listeFilme);
+            //Daten.listeFilme.clear();
+            Daten.listeFilmeNachBlackList.clear();
+            System.gc();
+            // Filme als Liste importieren, feste URL/Datei
+            Log.systemMeldung("Filmliste laden von: " + dateiUrl);
+            mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.getDateiFilmliste(), diffListe);
         }
     }
 
@@ -200,6 +220,14 @@ public class FilmeLaden {
     private void undEnde(MSListenerFilmeLadenEvent event) {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
+
+        // wenn nur ein Update
+        if (!diffListe.isEmpty()) {
+            Daten.listeFilme.updateListe(diffListe, false /* nur URL vergleichen */, true /*ersetzen*/);
+            Daten.listeFilme.metaDaten = diffListe.metaDaten;
+            Daten.listeFilme.sort(); // jetzt sollte alles passen
+        }
+
         searchHash(Daten.listeFilme);
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false/*aboLoeschen*/);

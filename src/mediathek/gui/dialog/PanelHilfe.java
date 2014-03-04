@@ -260,7 +260,7 @@ public class PanelHilfe extends PanelVorlage {
 
         jLabel8.setText("Es werden die Programmsets zum Abspielen und Aufzeichnen");
 
-        jLabel10.setText("gelöschen und die Standardsets wieder angelegt.");
+        jLabel10.setText("gelöscht und die Standardsets wieder angelegt.");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
