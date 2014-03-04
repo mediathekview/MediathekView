@@ -141,16 +141,23 @@ public class FilmeLaden {
             // Hash mit URLs füllen
             hashSet.clear();
             fillHash(Daten.listeFilme);
-            Daten.listeFilme.clear();
             Daten.listeFilmeNachBlackList.clear();
             System.gc();
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 Log.systemMeldung("Aktuelle Filmliste laden");
-                mSearchImportFilmliste.filmeImportierenAuto(Daten.getDateiFilmliste(), Daten.listeFilme);
+                if (Daten.listeFilme.filmlisteDiffZuAlt()) {
+                    // dann eine komplette Liste laden
+                    Daten.listeFilme.clear();
+                    mSearchImportFilmliste.filmeImportierenAuto(Daten.getDateiFilmliste(), Daten.listeFilme, false /*diff*/);
+                } else {
+                    // es reicht ein Update mit einer Diff-Liste
+                    mSearchImportFilmliste.filmeImportierenAuto(Daten.getDateiFilmliste(), diffListe, true /*diff*/);
+                }
             } else {
                 // Filme als Liste importieren, feste URL/Datei
                 Log.systemMeldung("Filmliste laden von: " + dateiUrl);
+                Daten.listeFilme.clear();
                 mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.getDateiFilmliste(), Daten.listeFilme);
             }
         }
@@ -223,9 +230,10 @@ public class FilmeLaden {
 
         // wenn nur ein Update
         if (!diffListe.isEmpty()) {
-            Daten.listeFilme.updateListe(diffListe, false /* nur URL vergleichen */, true /*ersetzen*/);
+            Daten.listeFilme.updateListe(diffListe, true/* Vergleich über Index, sonst nur URL */, true /*ersetzen*/);
             Daten.listeFilme.metaDaten = diffListe.metaDaten;
             Daten.listeFilme.sort(); // jetzt sollte alles passen
+            diffListe.clear();
         }
 
         searchHash(Daten.listeFilme);
