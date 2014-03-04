@@ -23,7 +23,6 @@ import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FileDialog;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -40,7 +39,6 @@ import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
 import mediathek.tool.MVConfig;
@@ -75,7 +73,11 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jButtonFilmeLaden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.filmeLaden.importFilmliste(jTextFieldUrl.getText());
+                if (jCheckBoxUpdate.isSelected()) {
+//                    Daten.filmeLaden.updateFilmliste(jTextFieldUrl.getText());
+                } else {
+                    Daten.filmeLaden.importFilmliste(jTextFieldUrl.getText());
+                }
             }
         });
         jRadioButtonUpdateAus.addActionListener(new BeobOption());
@@ -183,6 +185,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private void initComponents() {
 
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
+        jCheckBox1 = new javax.swing.JCheckBox();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTextAreaAuto = new javax.swing.JTextArea();
@@ -197,8 +200,11 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jButtonFilmeLaden = new javax.swing.JButton();
         javax.swing.JScrollPane jScrollPane3 = new javax.swing.JScrollPane();
         jTextAreaManuell = new javax.swing.JTextArea();
+        jCheckBoxUpdate = new javax.swing.JCheckBox();
         jRadioButtonAuto = new javax.swing.JRadioButton();
         jRadioButtonUpdateAus = new javax.swing.JRadioButton();
+
+        jCheckBox1.setText("jCheckBox1");
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Die Filmliste automatisch laden"));
 
@@ -250,6 +256,8 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jTextAreaManuell.setMargin(new java.awt.Insets(4, 4, 4, 4));
         jScrollPane3.setViewportView(jTextAreaManuell);
 
+        jCheckBoxUpdate.setText("alte Filmliste nicht löschen, nur erweitern");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -266,13 +274,14 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                         .addComponent(jButtonDateiAuswaehlen))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonListeFilmlisten))
-                            .addComponent(jButtonFilmeLaden, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addComponent(jScrollPane3))
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonListeFilmlisten))
+                    .addComponent(jScrollPane3)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jCheckBoxUpdate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonFilmeLaden)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -284,14 +293,16 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     .addComponent(jLabel2)
                     .addComponent(jButtonListeFilmlisten))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
                     .addComponent(jButtonDateiAuswaehlen))
                 .addGap(18, 18, 18)
-                .addComponent(jButtonFilmeLaden)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonFilmeLaden)
+                    .addComponent(jCheckBoxUpdate))
                 .addContainerGap())
         );
 
@@ -336,6 +347,8 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private javax.swing.JButton jButtonDateiAuswaehlen;
     private javax.swing.JButton jButtonFilmeLaden;
     private javax.swing.JButton jButtonListeFilmlisten;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBoxUpdate;
     private javax.swing.JRadioButton jRadioButtonAuto;
     private javax.swing.JRadioButton jRadioButtonUpdateAus;
     private javax.swing.JTable jTable1;
@@ -358,7 +371,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
                 if (jRadioButtonUpdateAus.isSelected()) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME,String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
+                    Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
                 } else {
                     Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO));
                 }                // den Dialog gibts 2x
