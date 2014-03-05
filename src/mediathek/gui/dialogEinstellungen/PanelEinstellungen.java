@@ -88,10 +88,13 @@ public class PanelEinstellungen extends PanelVorlage {
                 fillIconList();
             }
         });
-        cbxIconPackages.addItemListener(new java.awt.event.ItemListener() {
+        fillIconList();
+        jComboBoxIcons.addItemListener(new java.awt.event.ItemListener() {
             @Override
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cbxIconPackagesItemStateChanged(evt);
+                if (evt.getStateChange() == 1) {
+                    cbxIconPackagesItemStateChanged(evt);
+                }
             }
         });
         int bandbreite;
@@ -112,11 +115,32 @@ public class PanelEinstellungen extends PanelVorlage {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
             }
         });
-        setUpIconList();
     }
 
     private void cbxIconPackagesItemStateChanged(java.awt.event.ItemEvent evt) {
         JOptionPane.showMessageDialog(this, "Sie müssen die Applikation neu starten damit die Icons genutzt werden können.", "MediathekView", JOptionPane.WARNING_MESSAGE);
+        String iconName = jComboBoxIcons.getModel().getElementAt(jComboBoxIcons.getSelectedIndex());
+        if (iconName.equals(ICONSET_STANDARD)) {
+            Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
+            Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
+        } else {
+            Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.FALSE.toString());
+        }
+        try {
+            File[] files = new File(Funktionen.getPfadIcons()).listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory() && file.getName().equals(iconName)) {
+                        Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, file.getAbsolutePath());
+                        break;
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
+            Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
+            Log.fehlerMeldung(829304789, Log.FEHLER_ART_PROG, "PanelEinstellungen", ex);
+        }
     }
 
     private void init() {
@@ -147,15 +171,15 @@ public class PanelEinstellungen extends PanelVorlage {
             }
 
             DefaultComboBoxModel model = new DefaultComboBoxModel(themeList.toArray());
-            cbxLookAndFeel.setModel(model);
+            jComboBoxLookAndFeel.setModel(model);
             //select the current
             LookAndFeel laf = UIManager.getLookAndFeel();
             int index = model.getIndexOf(laf.getName());
-            cbxLookAndFeel.setSelectedIndex(index);
+            jComboBoxLookAndFeel.setSelectedIndex(index);
             ActionListener lst = new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    String lafName = cbxLookAndFeel.getModel().getElementAt(cbxLookAndFeel.getSelectedIndex());
+                    String lafName = jComboBoxLookAndFeel.getModel().getElementAt(jComboBoxLookAndFeel.getSelectedIndex());
                     String lafClass = "";
                     //retrieve class name for selected LAF
                     for (UIManager.LookAndFeelInfo i : info) {
@@ -180,16 +204,11 @@ public class PanelEinstellungen extends PanelVorlage {
                     Daten.mVConfig.add(MVConfig.SYSTEM_LOOK, lafClass);  //
                 }
             };
-            cbxLookAndFeel.addActionListener(lst);
+            jComboBoxLookAndFeel.addActionListener(lst);
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    private void setUpIconList() {
-        fillIconList();
-        cbxIconPackages.addActionListener(new BeobIcon());
     }
 
     private void fillIconList() {
@@ -210,11 +229,11 @@ public class PanelEinstellungen extends PanelVorlage {
             Log.fehlerMeldung(636875409, Log.FEHLER_ART_PROG, "PanelEinstellungen", ex);
         }
         DefaultComboBoxModel model = new DefaultComboBoxModel(iconList.toArray());
-        cbxIconPackages.setModel(model);
+        jComboBoxIcons.setModel(model);
         if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
             if (!Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD).equals("")) {
                 File f = new File(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD));
-                cbxIconPackages.setSelectedItem(f.getName());
+                jComboBoxIcons.setSelectedItem(f.getName());
             }
         }
     }
@@ -228,9 +247,9 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonInfos = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        cbxLookAndFeel = new javax.swing.JComboBox<String>();
+        jComboBoxLookAndFeel = new javax.swing.JComboBox<String>();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        cbxIconPackages = new javax.swing.JComboBox<String>();
+        jComboBoxIcons = new javax.swing.JComboBox<String>();
         jButtonRefresh = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jCheckBoxEchtzeit = new javax.swing.JCheckBox();
@@ -298,8 +317,8 @@ public class PanelEinstellungen extends PanelVorlage {
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(cbxIconPackages, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cbxLookAndFeel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jComboBoxIcons, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jComboBoxLookAndFeel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonRefresh)
                 .addContainerGap())
@@ -309,12 +328,12 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbxLookAndFeel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxLookAndFeel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(cbxIconPackages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jComboBoxIcons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel1))
                     .addComponent(jButtonRefresh))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -427,8 +446,6 @@ public class PanelEinstellungen extends PanelVorlage {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> cbxIconPackages;
-    private javax.swing.JComboBox<String> cbxLookAndFeel;
     private javax.swing.JButton jButtonHilfeAnzahl;
     private javax.swing.JButton jButtonInfos;
     private javax.swing.JButton jButtonRefresh;
@@ -436,6 +453,8 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
     private javax.swing.JCheckBox jCheckBoxNotification;
     private javax.swing.JCheckBox jCheckBoxSuchen;
+    private javax.swing.JComboBox<String> jComboBoxIcons;
+    private javax.swing.JComboBox<String> jComboBoxLookAndFeel;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabelBandwidth;
@@ -485,32 +504,4 @@ public class PanelEinstellungen extends PanelVorlage {
         }
     }
 
-    private class BeobIcon implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String iconName = cbxIconPackages.getModel().getElementAt(cbxIconPackages.getSelectedIndex());
-            if (iconName.equals(ICONSET_STANDARD)) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
-                Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
-            } else {
-                Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.FALSE.toString());
-            }
-            try {
-                File[] files = new File(Funktionen.getPfadIcons()).listFiles();
-                if (files != null) {
-                    for (File file : files) {
-                        if (file.isDirectory() && file.getName().equals(iconName)) {
-                            Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, file.getAbsolutePath());
-                            break;
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
-                Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
-                Log.fehlerMeldung(829304789, Log.FEHLER_ART_PROG, "PanelEinstellungen", ex);
-            }
-        }
-    }
 }
