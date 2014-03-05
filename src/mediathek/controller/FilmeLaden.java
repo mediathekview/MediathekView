@@ -254,12 +254,15 @@ public class FilmeLaden {
     }
 
     private void searchHash(ListeFilme listeFilme) {
+        listeFilme.neueFilme = false;
         Iterator<DatenFilm> it = listeFilme.iterator();
         while (it.hasNext()) {
             DatenFilm datenFilm = it.next();
             if (!hashSet.contains(datenFilm.arr[DatenFilm.FILM_URL_NR])) {
                 datenFilm.neuerFilm = true;
                 listeFilme.neueFilme = true;
+            } else {
+                datenFilm.neuerFilm = false;
             }
         }
         hashSet.clear();
