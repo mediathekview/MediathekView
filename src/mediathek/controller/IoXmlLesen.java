@@ -109,7 +109,7 @@ public class IoXmlLesen {
                             //Urls Filmlisten
                             DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
                             if (get(parser, event, MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
-                                Daten.filmeLaden.getDownloadUrlsFilmlisten(false).addWithCheck(datenUrlFilmliste);
+                                Daten.filmeLaden.getDownloadUrlsFilmlisten(false, false /*diffs*/).addWithCheck(datenUrlFilmliste);
                             }
                         } else if (parser.getLocalName().equals(DatenFilmlistenServer.FILM_LISTEN_SERVER)) {
                             //Filmlisteserver
@@ -126,7 +126,7 @@ public class IoXmlLesen {
             }
             Daten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
-            Daten.filmeLaden.getDownloadUrlsFilmlisten(false).sort();
+            Daten.filmeLaden.getDownloadUrlsFilmlisten(false, false /*diffs*/).sort();
         }
     }
 
