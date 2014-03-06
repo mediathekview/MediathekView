@@ -146,14 +146,7 @@ public class FilmeLaden {
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 Log.systemMeldung("Aktuelle Filmliste laden");
-                if (Daten.listeFilme.filmlisteDiffZuAlt()) {
-                    // dann eine komplette Liste laden
-                    Daten.listeFilme.clear();
-                    mSearchImportFilmliste.filmeImportierenAuto(Daten.getDateiFilmliste(), Daten.listeFilme, false /*diff*/);
-                } else {
-                    // es reicht ein Update mit einer Diff-Liste
-                    mSearchImportFilmliste.filmeImportierenAuto(Daten.getDateiFilmliste(), diffListe, true /*diff*/);
-                }
+                mSearchImportFilmliste.filmeImportierenAuto(Daten.getDateiFilmliste(), Daten.listeFilme, diffListe);
             } else {
                 // Filme als Liste importieren, feste URL/Datei
                 Log.systemMeldung("Filmliste laden von: " + dateiUrl);
@@ -220,8 +213,8 @@ public class FilmeLaden {
         return mSearchImportFilmliste.getListe_FilmlistenServer();
     }
 
-    public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten(boolean update) {
-        return mSearchImportFilmliste.getDownloadUrls_Filmlisten(update);
+    public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten(boolean update, boolean diff /*ListeDiffs*/) {
+        return mSearchImportFilmliste.getDownloadUrls_Filmlisten(update, diff);
     }
 
     private void undEnde(MSListenerFilmeLadenEvent event) {
