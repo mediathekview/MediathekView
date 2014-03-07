@@ -92,6 +92,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                jCheckBoxUpdate.setSelected(jRadioButtonDiffs.isSelected());
                 tabelleLaden();
             }
         });
@@ -99,6 +100,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                jCheckBoxUpdate.setSelected(jRadioButtonDiffs.isSelected());
                 tabelleLaden();
             }
         });
@@ -131,7 +133,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
     private void listeFilmlistenSuchen() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        Daten.filmeLaden.getDownloadUrlsFilmlisten(true, !jRadioButtonKomplett.isSelected() /*diffs*/); // Liste neu laden und eine URL auswählen
+        Daten.filmeLaden.getDownloadUrlsFilmlisten(true, jRadioButtonDiffs.isSelected() /*diffs*/); // Liste neu laden und eine URL auswählen
         stopBeob = true;
         tabelleLaden();
         stopBeob = false;
@@ -139,7 +141,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten(false, !jRadioButtonKomplett.isSelected() /*diffs*/).getTableObjectData(), MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
+        jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten(false, jRadioButtonDiffs.isSelected() /*diffs*/).getTableObjectData(), MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
             if (i == MSFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(10);
@@ -155,6 +157,17 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(100);
             }
         }
+        if (jRadioButtonDiffs.isSelected() /*diffs*/) {
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR)).setMinWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR)).setPreferredWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR)).setMaxWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR)).setMinWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR)).setPreferredWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR)).setMaxWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR)).setMinWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR)).setPreferredWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR)).setMaxWidth(0);
+        }
     }
 
     private void table1Select(boolean doppel) {
@@ -162,7 +175,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         DatenUrlFilmliste datenUrlFilmliste = null;
         int selectedTableRow = jTable1.getSelectedRow();
         if (selectedTableRow >= 0) {
-            datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten(false, !jRadioButtonKomplett.isSelected() /*diffs*/).getDatenUrlFilmliste(jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow),
+            datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten(false, jRadioButtonDiffs.isSelected() /*diffs*/).getDatenUrlFilmliste(jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow),
                     MSFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR).toString());
         }
         if (datenUrlFilmliste != null) {
@@ -325,16 +338,14 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                        .addComponent(jLabel2)
-                        .addComponent(jButtonAkualisieren))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jRadioButtonKomplett)
-                        .addComponent(jRadioButtonDiffs)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jRadioButtonKomplett)
+                    .addComponent(jRadioButtonDiffs)
+                    .addComponent(jLabel2)
+                    .addComponent(jButtonAkualisieren))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
