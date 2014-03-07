@@ -146,12 +146,12 @@ public class FilmeLaden {
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 Log.systemMeldung("Aktuelle Filmliste laden");
-                mSearchImportFilmliste.filmeImportierenAuto(Daten.getDateiFilmliste(), Daten.listeFilme, diffListe);
+                mSearchImportFilmliste.filmeImportierenAuto("", Daten.listeFilme, diffListe);
             } else {
                 // Filme als Liste importieren, feste URL/Datei
                 Log.systemMeldung("Filmliste laden von: " + dateiUrl);
                 Daten.listeFilme.clear();
-                mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.getDateiFilmliste(), Daten.listeFilme);
+                mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, "", Daten.listeFilme);
             }
         }
     }
@@ -171,7 +171,7 @@ public class FilmeLaden {
             System.gc();
             // Filme als Liste importieren, feste URL/Datei
             Log.systemMeldung("Filmliste laden von: " + dateiUrl);
-            mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.getDateiFilmliste(), diffListe);
+            mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, "", diffListe);
         }
     }
 
@@ -235,8 +235,11 @@ public class FilmeLaden {
         istAmLaufen = false;
         if (event.fehler) {
             MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Daten.filmlisteSpeichern();
         }
         notifyFertig(event);
+        System.gc();
     }
 
     private void fillHash(ListeFilme listeFilme) {
