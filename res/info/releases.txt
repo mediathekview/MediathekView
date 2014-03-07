@@ -18,7 +18,14 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
+	# Version 5
+	- Anordnung der Filter
+	- Beenden wenn noch Downloads noch laufen: sofrt - warten ( und anschließend Rechner heruterfahen) - Abbrechen
+	- Geoblocking: Geblockte Filme werden markiert
+	- aktuelle History im Filter: alle in der aktuellen Sitzung gestarteten Filme anzeigen lassen (und evtl. nochmal starten ..)
+	- http-Downloads können unterbrochen und fortgesetzt werden
+	- Diff: es gibt "Diffs" der Filmliste, so braucht nur ein Diff-File und nicht die ganze Liste geladen werden
+	
 	# Version 4
 	- Das Dateiformat der Filmliste ist auf "json" geändert worden, die Liste zum Download wird mit den XZ Utils mit "LZMA2" komprimiert
 	- Die Tabelle Download kann mit der Maus sortiert werden, die Downloads werden dann in der Reihenfolge gestartet
