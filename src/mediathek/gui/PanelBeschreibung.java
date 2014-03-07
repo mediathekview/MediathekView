@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import mediathek.daten.Daten;
+import mediathek.daten.ListeAbo;
 import mediathek.gui.dialog.DialogBeschreibung;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
@@ -73,6 +74,8 @@ public class PanelBeschreibung extends JPanel {
                     new DialogBeschreibung(parent, aktFilm).setVisible(true);
                     setText();
                     Daten.filmlisteSpeichern();
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BESCHREIBUNG, PanelBeschreibung.class.getSimpleName());
+
                 }
             }
         });

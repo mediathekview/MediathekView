@@ -396,6 +396,12 @@ public class GuiFilme extends PanelVorlage {
                 tabelleLaden();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BESCHREIBUNG, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                tabelleLaden();
+            }
+        });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
