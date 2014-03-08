@@ -71,11 +71,14 @@ public class PanelBeschreibung extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (aktFilm != null) {
+                    String akt = aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
                     new DialogBeschreibung(parent, aktFilm).setVisible(true);
-                    setText();
-                    Daten.filmlisteSpeichern();
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BESCHREIBUNG, PanelBeschreibung.class.getSimpleName());
-
+                    if (!aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals(akt)) {
+                        // dann hat sich die Beschreibung geändert
+                        setText();
+                        Daten.filmlisteSpeichern();
+                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BESCHREIBUNG, PanelBeschreibung.class.getSimpleName());
+                    }
                 }
             }
         });
