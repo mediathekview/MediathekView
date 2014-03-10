@@ -25,7 +25,6 @@ import java.net.URISyntaxException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import mediathek.daten.Daten;
-import mediathek.daten.ListeAbo;
 import mediathek.gui.dialog.DialogBeschreibung;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;

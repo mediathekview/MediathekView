@@ -288,7 +288,12 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (start != null) {
             if (start.status < Start.STATUS_FERTIG && start.status >= Start.STATUS_RUN) {
                 if (start.bandbreite > 1000 * 1000) {
-                    return String.valueOf(start.bandbreite / (1000 * 1000)) + " MB/s";
+                    String s = String.valueOf(start.bandbreite / 1000);
+                    if (s.length() >= 4) {
+                        s = s.substring(0, s.length() - 3) + "," + s.substring(s.length() - 3);
+                    }
+                    return s + " MB/s";
+                    //return String.valueOf(start.bandbreite / (1000 * 1000)) + "," + (start.bandbreite / 1000 % 1000) + " MB/s";
                 } else if (start.bandbreite > 1000) {
                     return String.valueOf(start.bandbreite / (1000)) + " kB/s";
                 } else if (start.bandbreite > 1) {
