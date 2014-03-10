@@ -94,6 +94,7 @@ public class MVNotification {
 
             messageFrame.getContentPane().add(meldungsLabel, BorderLayout.CENTER);
             messageFrame.pack();
+            messageFrame.setFocusableWindowState(false);
 
             Notification notification = new Notification(messageFrame, WindowPosition.BOTTOMRIGHT, 20, 20, 6000);
             NotificationQueue q = new NotificationQueue();
