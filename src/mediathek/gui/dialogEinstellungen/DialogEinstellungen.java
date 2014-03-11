@@ -46,7 +46,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private PanelEinstellungen panelEinstellungen;
     private PanelEinstellungenErweitert panelEinstellungenErweitert;
     private PanelEinstellungenGeo panelEinstellungenGeo;
-//    private PanelEinstellungenNetz panelEinstellungenNetz;
+    private PanelEinstellungenColor panelEinstellungenColor;
     private PanelFilmlisteLaden panelImportFilme;
     private PanelExportFilmliste panelExportFilmliste;
     private PanelBlacklist panelBlacklist;
@@ -95,7 +95,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         panelEinstellungen = new PanelEinstellungen(ddaten, parentComponent);
         panelEinstellungenErweitert = new PanelEinstellungenErweitert(ddaten, parentComponent);
         panelEinstellungenGeo = new PanelEinstellungenGeo(ddaten, parentComponent);
-//        panelEinstellungenNetz = new PanelEinstellungenNetz(ddaten, parentComponent);
+        panelEinstellungenColor = new PanelEinstellungenColor(ddaten, parentComponent);
         panelImportFilme = new PanelFilmlisteLaden(ddaten, parentComponent);
         panelExportFilmliste = new PanelExportFilmliste(ddaten, parentComponent);
         panelBlacklist = new PanelBlacklist(ddaten, parentComponent, PanelBlacklist.class.getName());
@@ -118,7 +118,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         final String NAME_allgemeineEinstellungen = "Allgemein";
         final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
         final String NAME_allgemeineEinstellungenGeo = "Geo";
-//        final String NAME_netzwerk = "Netzwerk";
+        final String NAME_allgemeineEinstellungenColor = "Color";
         final String NAME_filmListeLaden = "Filmliste laden";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";
@@ -145,9 +145,8 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
         DefaultMutableTreeNode treeNodeAllgemeineEinstellungenGeo = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenGeo);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenGeo);
-//        // Netzwerk
-//        DefaultMutableTreeNode treeNodeNetzwerk = new DefaultMutableTreeNode(NAME_netzwerk);
-//        treeNodeEinstellungen.add(treeNodeNetzwerk);
+        DefaultMutableTreeNode treeNodeAllgemeineEinstellungenColor = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenColor);
+        treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenColor);
         treeNodeStart.add(treeNodeEinstellungen);
         // ===============================================================================
         // ######## Filme ###############
@@ -216,9 +215,9 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                     } else if (name.equals(NAME_allgemeineEinstellungenGeo)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungenGeo);
-//                    } else if (name.equals(NAME_netzwerk)) {
-//                        jPanelExtra.removeAll();
-//                        jPanelExtra.add(panelEinstellungenNetz);
+                    } else if (name.equals(NAME_allgemeineEinstellungenColor)) {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelEinstellungenColor);
                     } else if (name.equals(NAME_filmListeLaden)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelImportFilme);
