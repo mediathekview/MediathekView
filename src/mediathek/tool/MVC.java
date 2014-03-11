@@ -25,19 +25,24 @@ public class MVC {
 
     String name = "";
     String text = "";
-    Color color = new Color(0);
+    public Color color = new Color(0);
+    Color colorReset = new Color(0);
 
-    public MVC(Color ccolor, String nname, String ttext) {
-        name = nname;
+    public MVC(Color ccolor, String ttext) {
+        name = ttext.replace(" ", "");
+        if (name.length() > 15) {
+            name = name.substring(0, 15);
+        }
         text = ttext;
         color = ccolor;
+        colorReset = ccolor;
     }
 
     public void set(Color c) {
         color = c;
     }
-//
-//    Color get() {
-//        return color;
-//    }
+
+    public void reset() {
+        color = colorReset;
+    }
 }

@@ -194,8 +194,8 @@ public class GuiDownloads extends PanelVorlage {
             }
         });
         panelBeschreibungSetzen();
-        jRadioButtonAbos.setForeground(MVColor.ABO_FOREGROUND);
-        jRadioButtonDownloads.setForeground(MVColor.DOWNLOAD_FOREGROUND);
+        jRadioButtonAbos.setForeground(MVColor.DOWNLOAD_IST_ABO.color);
+        jRadioButtonDownloads.setForeground(MVColor.DOWNLOAD_IST_DIREKTER_DOWNLOAD.color);
         tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads());
         tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads());
         tabelle.setDefaultRenderer(MVFilmSize.class, new CellRendererDownloads());

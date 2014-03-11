@@ -20,48 +20,41 @@
 package mediathek.tool;
 
 import java.awt.Color;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import mediathek.daten.Daten;
 
 public class MVColor {
 
-    public static Color DOWNLOAD_FARBE_ABO = new Color(0, 50, 120);
-    public static Color DOWNLOAD_FARBE_ERR = new Color(241, 188, 221);
+    // Tabelle Filme
+    public static MVC FILM_LIVESTREAM = new MVC(new Color(130, 0, 0), "Filme, Livestreams");
+    public static MVC FILM_HISTORY = new MVC(new Color(225, 225, 225), "Filme, gesehen");
+    public static MVC FILM_NEU = new MVC(new Color(0, 0, 240), "Filme, neue");
+    public static MVC FILM_GEOBLOCK_BACKGROUND = new MVC(new Color(255, 254, 230), "Film, geogeblockt");
+    public static MVC FILM_GEOBLOCK_BACKGROUND_SEL = new MVC(new Color(255, 251, 179), "Film, geogeblockt, selektiert");
+
     // Tabelle Downloads
-    public static Color DOWNLOAD_FARBE_WAIT = new Color(239, 244, 255);
-    public static Color ABO = new Color(255, 245, 229);
-    public static Color ABO_FOREGROUND = new Color(138, 67, 0);
-    // Filter wenn RegEx
-    public static Color FILTER_REGEX = new Color(153, 214, 255);
-    //
-    // Farben
-    public static MVC FARBE_GRAU = new MVC(new Color(225, 225, 225), "Text", "Text");
-    public static MVC FARBE_GRAU_SEL = new MVC(new Color(190, 190, 190), "Text", "text");
-    public static Color DOWNLOAD_FARBE_WAIT_SEL = new Color(199, 206, 222);
-    // kann bereits angesehen werden
-    //    public static Color DOWNLOAD_FARBE_RUN_ANSEHEHN = new Color(241, 216, 140);
-    //    public static Color DOWNLOAD_FARBE_RUN_ANSEHEN_SEL = new Color(206, 168, 52);
-    // und ist jetzt fertig
-    public static Color DOWNLOAD_FARBE_FERTIG = new Color(188, 241, 195);
-    public static Color FARBE_FILM_GEOBLOCK_FORGROUND = new Color(255, 0, 30);
-    public static Color DOWNLOAD = new Color(229, 239, 255);
-    public static Color DOWNLOAD_FOREGROUND = new Color(0, 72, 138);
-    public static Color DOWNLOAD_FARBE_FERTIG_SEL = new Color(115, 206, 92);
-    public static Color DOWNLOAD_SEL = new Color(127, 178, 255);
+    public static MVC DOWNLOAD_IST_ABO = new MVC(new Color(138, 67, 0), "Download ist ein Abo");
+    public static MVC DOWNLOAD_IST_DIREKTER_DOWNLOAD = new MVC(new Color(0, 72, 138), "Download ist ein direkter Download");
+    public static MVC DOWNLOAD_ANSEHEN = new MVC(new Color(0, 125, 0), "Download kann schon angesehen werden");
+    // status Downloads
+    public static MVC DOWNLOAD_WAIT = new MVC(new Color(239, 244, 255), "Download, noch nicht gestartet");
+    public static MVC DOWNLOAD_WAIT_SEL = new MVC(new Color(199, 206, 222), "Download, noch nicht gestartet, seleltiert");
+    public static MVC DOWNLOAD_RUN = new MVC(new Color(241, 228, 188), "Download, läuft");
+    public static MVC DOWNLOAD_RUN_SEL = new MVC(new Color(206, 178, 92), "Download, läuft, selektiert");
+    public static MVC DOWNLOAD_FERTIG = new MVC(new Color(188, 241, 195), "Download, fertig");
+    public static MVC DOWNLOAD_FERTIG_SEL = new MVC(new Color(115, 206, 92), "Download, fertig, selektiert");
+    public static MVC DOWNLOAD_FEHLER = new MVC(new Color(241, 188, 221), "Download, fehlerhaft");
+    public static MVC DOWNLOAD_FEHLER_SEL = new MVC(new Color(206, 92, 128), "Download, fehlerhaft, selektiert");
+
     // Tabelle Abos
-    public static Color ANSEHEN = new Color(0, 125, 0);
-    public static Color FARBE_FILM_GEOBLOCK_BACKGROUND_SEL = new Color(255, 251, 179);
-    public static Color DOWNLOAD_FARBE_LIVE = new Color(130, 0, 0);
-    public static Color DOWNLOAD_FARBE_ERR_SEL = new Color(206, 92, 128);
-    public static Color ABO_SEL = new Color(255, 204, 127);
-    // Download läuft
-    public static Color DOWNLOAD_FARBE_RUN = new Color(241, 228, 188);
-    // Filter wenn RegEx, bei einem Fehler
-    public static Color FILTER_REGEX_FEHLER = Color.RED;
-    public static Color DOWNLOAD_FARBE_DOWNLOAD = new Color(0, 90, 0);
-    public static Color DOWNLOAD_FARBE_RUN_SEL = new Color(206, 178, 92);
-    public static Color FARBE_FILM_GEOBLOCK_BACKGROUND = new Color(255, 254, 230);
-    public static Color FARBE_FILM_NEU_FORGROUND = new Color(0, 0, 240);
+    public static MVC ABO_AUSGESCHALTET = new MVC(new Color(225, 225, 225), "Abo, ausgeschaltet");
+    public static MVC ABO_AUSGESCHALTET_SEL = new MVC(new Color(190, 190, 190), "Abo, ausgeschaltet, selektiert");
+
+    // Filter wenn RegEx
+    public static MVC FILTER_REGEX = new MVC(new Color(153, 214, 255), "Filter ist RegEx");
+    public static MVC FILTER_REGEX_FEHLER = new MVC(Color.RED, "Filter ist Regex, fehlerhaft");
 
     public LinkedList<MVC> liste = new LinkedList<>();
     public static final int MVC_TEXT = 0;
@@ -69,9 +62,26 @@ public class MVColor {
     public static final int MVC_MAX = 2;
 
     public MVColor() {
-        liste.add(new MVC(DOWNLOAD_FARBE_RUN, "DOWNLOAD_FARBE_RUN", "DOWNLOAD_FARBE_RUN"));
-        liste.add(FARBE_GRAU);
-        liste.add(FARBE_GRAU_SEL);
+        liste.add(FILM_LIVESTREAM);
+        liste.add(FILM_HISTORY);
+        liste.add(FILM_NEU);
+        liste.add(FILM_GEOBLOCK_BACKGROUND);
+        liste.add(FILM_GEOBLOCK_BACKGROUND_SEL);
+        liste.add(DOWNLOAD_IST_ABO);
+        liste.add(DOWNLOAD_IST_DIREKTER_DOWNLOAD);
+        liste.add(DOWNLOAD_ANSEHEN);
+        liste.add(DOWNLOAD_WAIT);
+        liste.add(DOWNLOAD_WAIT_SEL);
+        liste.add(DOWNLOAD_RUN);
+        liste.add(DOWNLOAD_RUN_SEL);
+        liste.add(DOWNLOAD_FERTIG);
+        liste.add(DOWNLOAD_FERTIG_SEL);
+        liste.add(DOWNLOAD_FEHLER);
+        liste.add(DOWNLOAD_FEHLER_SEL);
+        liste.add(ABO_AUSGESCHALTET);
+        liste.add(ABO_AUSGESCHALTET_SEL);
+        liste.add(FILTER_REGEX);
+        liste.add(FILTER_REGEX_FEHLER);
     }
 
     public TModel getModel() {
@@ -89,4 +99,11 @@ public class MVColor {
         return tModel;
     }
 
+    public void reset(Daten daten) {
+        Iterator<MVC> it = liste.iterator();
+        while (it.hasNext()) {
+            it.next().reset();
+        }
+        GuiFunktionen.updateGui(daten.mediathekGui);
+    }
 }

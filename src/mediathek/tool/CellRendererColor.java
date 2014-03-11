@@ -20,13 +20,11 @@
 package mediathek.tool;
 
 import java.awt.Component;
-import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
-import mediathek.res.GetIcon;
 
 public class CellRendererColor extends DefaultTableCellRenderer {
 
@@ -51,7 +49,7 @@ public class CellRendererColor extends DefaultTableCellRenderer {
             MVC color = Daten.mVColor.liste.get(r);
             if (c == MVColor.MVC_COLOR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
-                setIcon(GetIcon.getIcon("edit_16.png"));
+                //setIcon(GetIcon.getIcon("edit_16.png"));
                 setBackground(color.color);
                 setText("");
             }
