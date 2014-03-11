@@ -31,6 +31,7 @@ public class MVC {
     public MVC(Color ccolor, String ttext) {
         name = "FARBE__" + ttext.replace(" ", "");
         name = name.replace(",", "");
+        name = name.replace("-", "");
         text = ttext;
         color = ccolor;
         colorReset = ccolor;

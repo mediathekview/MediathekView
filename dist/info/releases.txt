@@ -25,6 +25,7 @@
 	- aktuelle History im Filter: alle in der aktuellen Sitzung gestarteten Filme anzeigen lassen (und evtl. nochmal starten ..)
 	- http-Downloads können unterbrochen und fortgesetzt werden
 	- Diff: es gibt "Diffs" der Filmliste, so braucht nur ein Diff-File und nicht die ganze Liste geladen werden
+	- verwendete Farben können in den Einstellungen verändert werden
 	
 	# Version 4
 	- Das Dateiformat der Filmliste ist auf "json" geändert worden, die Liste zum Download wird mit den XZ Utils mit "LZMA2" komprimiert

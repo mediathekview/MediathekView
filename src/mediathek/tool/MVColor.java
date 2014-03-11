@@ -58,6 +58,7 @@ public class MVColor {
 
     // ProgrammGui
     public static final MVC BUTTON_SET_ABSPIELEN = new MVC(new Color(205, 255, 191), "Einstellungen Sets, Button Abspielen");
+    public static final MVC FILMLISTE_LADEN_AKTIV = new MVC(new Color(205, 255, 191), "Einstellungen Filmliste, Auto-Manuell");
 
     public LinkedList<MVC> liste = new LinkedList<>();
     public static final int MVC_TEXT = 0;
@@ -86,6 +87,7 @@ public class MVColor {
         liste.add(FILTER_REGEX);
         liste.add(FILTER_REGEX_FEHLER);
         liste.add(BUTTON_SET_ABSPIELEN);
+        liste.add(FILMLISTE_LADEN_AKTIV);
     }
 
     public final void load() {
