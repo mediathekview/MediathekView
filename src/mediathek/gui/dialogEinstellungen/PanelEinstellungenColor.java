@@ -19,22 +19,38 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.CellRendererColor;
+import mediathek.tool.MVC;
 import mediathek.tool.MVColor;
 
 public class PanelEinstellungenColor extends PanelVorlage {
-    
+
     public PanelEinstellungenColor(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
         daten = d;
         init();
     }
-    
+
     private void init() {
-        jTable1.setModel(MVColor.getModel());
+        jTable1.addMouseListener(new BeobMausTabelle());
+        jTable1.setDefaultRenderer(MVC.class, new CellRendererColor());
+        jTable1.setModel(Daten.mVColor.getModel());
+    }
+
+    private void getColor(MVC mvc) {
+        DialogFarbe dialog = new DialogFarbe(null, true);
+        dialog.setVisible(true);
+        if (dialog.farbe != null) {
+            mvc.set(dialog.farbe);
+            jTable1.setModel(Daten.mVColor.getModel());
+        }
     }
 
     /** This method is called from within the constructor to
@@ -84,4 +100,26 @@ public class PanelEinstellungenColor extends PanelVorlage {
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
+    public class BeobMausTabelle extends MouseAdapter {
+
+        private Point p;
+
+        @Override
+        public void mouseClicked(MouseEvent arg0) {
+            if (arg0.getButton() == MouseEvent.BUTTON1) {
+                if (arg0.getClickCount() == 1) {
+                    p = arg0.getPoint();
+                    int row = jTable1.rowAtPoint(p);
+                    int column = jTable1.columnAtPoint(p);
+                    if (row >= 0) {
+                        MVC mvc = (MVC) jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(row), MVColor.MVC_COLOR);
+                        if (jTable1.convertColumnIndexToModel(column) == MVColor.MVC_COLOR) {
+                            getColor(mvc);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
 }

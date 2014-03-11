@@ -147,7 +147,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 } else {
                     if (history.contains(datenFilm.getUrlHistory())) {
                         if (!isSelected) {
-                            setBackground(MVColor.FARBE_GRAU);
+                            setBackground(MVColor.FARBE_GRAU.color);
                         }
                     } else if (datenFilm.neuerFilm) {
                         setForeground(MVColor.FARBE_FILM_NEU_FORGROUND);
