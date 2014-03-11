@@ -34,6 +34,7 @@ import mediathek.controller.FilmeLaden;
 import mediathek.controller.History;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
+import mediathek.controller.Log;
 import mediathek.controller.starter.StarterClass;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDownloads;
@@ -44,7 +45,7 @@ import mediathek.tool.Funktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.controller.Log;
+import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
@@ -65,6 +66,7 @@ public class Daten {
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis = "";
     // zentrale Klassen
+    public static MVColor mVColor = new MVColor();
     public static FilmeLaden filmeLaden;
     public static ListeFilme listeFilme = null;
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");

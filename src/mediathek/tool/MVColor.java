@@ -35,8 +35,8 @@ public class MVColor {
     public static Color FILTER_REGEX = new Color(153, 214, 255);
     //
     // Farben
-    public static Color FARBE_GRAU = new Color(225, 225, 225);
-    public static Color FARBE_GRAU_SEL = new Color(190, 190, 190);
+    public static MVC FARBE_GRAU = new MVC(new Color(225, 225, 225), "Text", "Text");
+    public static MVC FARBE_GRAU_SEL = new MVC(new Color(190, 190, 190), "Text", "text");
     public static Color DOWNLOAD_FARBE_WAIT_SEL = new Color(199, 206, 222);
     // kann bereits angesehen werden
     //    public static Color DOWNLOAD_FARBE_RUN_ANSEHEHN = new Color(241, 216, 140);
@@ -63,46 +63,30 @@ public class MVColor {
     public static Color FARBE_FILM_GEOBLOCK_BACKGROUND = new Color(255, 254, 230);
     public static Color FARBE_FILM_NEU_FORGROUND = new Color(0, 0, 240);
 
-    private static LinkedList<MVC> liste = new LinkedList<>();
+    public LinkedList<MVC> liste = new LinkedList<>();
+    public static final int MVC_TEXT = 0;
+    public static final int MVC_COLOR = 1;
+    public static final int MVC_MAX = 2;
 
     public MVColor() {
         liste.add(new MVC(DOWNLOAD_FARBE_RUN, "DOWNLOAD_FARBE_RUN", "DOWNLOAD_FARBE_RUN"));
+        liste.add(FARBE_GRAU);
+        liste.add(FARBE_GRAU_SEL);
     }
 
-    public static TModel getModel() {
+    public TModel getModel() {
         Object[] object;
-        TModel tModel = new TModelDownload(new Object[][]{}, new String[]{"Farbe, Beschreibung", ""});
+        TModelColor tModel = new TModelColor(new Object[][]{}, new String[]{"Beschreibung", "Farbe"});
         tModel.setRowCount(0);
         ListIterator<MVC> iterator = liste.listIterator();
         while (iterator.hasNext()) {
             MVC mvc = iterator.next();
-            object = new Object[3];
-            for (int i = 0; i < 3; ++i) {
-                object[i] = "";
-            }
+            object = new Object[MVC_MAX];
+            object[MVC_TEXT] = mvc.text;
+            object[MVC_COLOR] = mvc;
             tModel.addRow(object);
         }
         return tModel;
     }
 
-    private class MVC {
-
-        String name = "";
-        String text = "";
-        Color color = new Color(0);
-
-        public MVC(Color ccolor, String nname, String ttext) {
-            name = nname;
-            text = ttext;
-            color = ccolor;
-        }
-
-        void set(int r, int g, int b) {
-            color = new Color(r, g, b);
-        }
-
-        Color get() {
-            return color;
-        }
-    }
 }

@@ -26,10 +26,9 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
-import mediathek.daten.DatenAbo;
 import mediathek.res.GetIcon;
 
-public class CellRendererAbo extends DefaultTableCellRenderer {
+public class CellRendererColor extends DefaultTableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(
@@ -49,26 +48,12 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
         try {
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
-            DatenAbo abo = Daten.listeAbo.getAboNr(r);
-            boolean eingeschaltet = abo.aboIstEingeschaltet();
-            if (c == DatenAbo.ABO_NR_NR) {
+            MVC color = Daten.mVColor.liste.get(r);
+            if (c == MVColor.MVC_COLOR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
-            }
-            if (!eingeschaltet) {
-                setFont(new java.awt.Font("Dialog", Font.ITALIC, 12));
-                if (isSelected) {
-                    setBackground(MVColor.FARBE_GRAU_SEL.color);
-                } else {
-                    setBackground(MVColor.FARBE_GRAU.color);
-                }
-            }
-            if (c == DatenAbo.ABO_EINGESCHALTET_NR) {
-                setHorizontalAlignment(SwingConstants.CENTER);
-                if (eingeschaltet) {
-                    setIcon(GetIcon.getIcon("ja_16.png"));
-                } else {
-                    setIcon(GetIcon.getIcon("nein_12.png"));
-                }
+                setIcon(GetIcon.getIcon("edit_16.png"));
+                setBackground(color.color);
+                setText("");
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(630365892, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
