@@ -59,6 +59,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVTable;
@@ -194,8 +195,8 @@ public class GuiDownloads extends PanelVorlage {
             }
         });
         panelBeschreibungSetzen();
-        jRadioButtonAbos.setForeground(GuiKonstanten.ABO_FOREGROUND);
-        jRadioButtonDownloads.setForeground(GuiKonstanten.DOWNLOAD_FOREGROUND);
+        jRadioButtonAbos.setForeground(MVColor.ABO_FOREGROUND);
+        jRadioButtonDownloads.setForeground(MVColor.DOWNLOAD_FOREGROUND);
         tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads());
         tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads());
         tabelle.setDefaultRenderer(MVFilmSize.class, new CellRendererDownloads());

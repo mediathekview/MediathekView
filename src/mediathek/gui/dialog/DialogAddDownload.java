@@ -45,6 +45,7 @@ import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 import msearch.daten.DatenFilm;
@@ -612,12 +613,12 @@ public class DialogAddDownload extends javax.swing.JDialog {
             if (!stopBeob) {
                 nameGeaendert = true;
                 if (!jTextFieldName.getText().equals(GuiFunktionen.replaceLeerDateiname(jTextFieldName.getText(), true/* istDatei */, true /* leerEntfernen */))) {
-                    jTextFieldName.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+                    jTextFieldName.setBackground(MVColor.DOWNLOAD_FARBE_ERR);
                 } else {
                     jTextFieldName.setBackground(Color.WHITE);
                 }
                 if (!jComboBoxPfad.getSelectedItem().toString().equals(GuiFunktionen.replaceLeerDateiname(jComboBoxPfad.getSelectedItem().toString(), false/* istDatei */, true /* leerEntfernen */))) {
-                    jComboBoxPfad.setBackground(GuiKonstanten.DOWNLOAD_FARBE_ERR);
+                    jComboBoxPfad.setBackground(MVColor.DOWNLOAD_FARBE_ERR);
                 } else {
                     jComboBoxPfad.setBackground(Color.WHITE);
                 }
