@@ -56,6 +56,9 @@ public class MVColor {
     public static MVC FILTER_REGEX = new MVC(new Color(153, 214, 255), "Filter ist RegEx");
     public static MVC FILTER_REGEX_FEHLER = new MVC(Color.RED, "Filter ist Regex, fehlerhaft");
 
+    // ProgrammGui
+    public static final MVC BUTTON_SET_ABSPIELEN = new MVC(new Color(205, 255, 191), "Einstellungen Sets, Button Abspielen");
+
     public LinkedList<MVC> liste = new LinkedList<>();
     public static final int MVC_TEXT = 0;
     public static final int MVC_COLOR = 1;
@@ -82,6 +85,28 @@ public class MVColor {
         liste.add(ABO_AUSGESCHALTET_SEL);
         liste.add(FILTER_REGEX);
         liste.add(FILTER_REGEX_FEHLER);
+        liste.add(BUTTON_SET_ABSPIELEN);
+    }
+
+    public final void load() {
+        ListIterator<MVC> iterator = liste.listIterator();
+        while (iterator.hasNext()) {
+            MVC mvc = iterator.next();
+            if (!Daten.mVConfig.get(mvc.name).isEmpty()) {
+                try {
+                    mvc.color = new Color(Integer.parseInt(Daten.mVConfig.get(mvc.name)));
+                } catch (Exception ex) {
+                }
+            }
+        }
+    }
+
+    public final void save() {
+        ListIterator<MVC> iterator = liste.listIterator();
+        while (iterator.hasNext()) {
+            MVC mvc = iterator.next();
+            Daten.mVConfig.add(mvc.name, String.valueOf(mvc.color.getRGB()));
+        }
     }
 
     public TModel getModel() {
@@ -105,5 +130,6 @@ public class MVColor {
             it.next().reset();
         }
         GuiFunktionen.updateGui(daten.mediathekGui);
+        Daten.mVColor.save();
     }
 }

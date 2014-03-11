@@ -53,6 +53,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.tool.MVColor;
 import mediathek.tool.MVTable;
 import mediathek.tool.TModel;
 import msearch.daten.DatenFilm;
@@ -65,7 +66,6 @@ public class PanelPsetLang extends PanelVorlage {
     private MVTable tabellePset;
     private MVTable tabelleProgramme;
     private boolean modalHilfe = false;
-    private final static Color COLOR_ABSPIELEN = new Color(205, 255, 191);
 
     public PanelPsetLang(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -139,7 +139,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonAbspielen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                jButtonAbspielen.setBackground(COLOR_ABSPIELEN);
+                jButtonAbspielen.setBackground(MVColor.BUTTON_SET_ABSPIELEN.color);
                 DatenPset pset = getPset();
                 if (pset != null) {
                     pset.setAbspielen(daten);
@@ -364,7 +364,7 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxSpeichern.setSelected(pSet.istSpeichern());
             jCheckBoxButton.setSelected(pSet.istButton());
             jCheckBoxAbo.setSelected(pSet.istAbo());
-            jButtonAbspielen.setBackground(pSet.istAbspielen() ? COLOR_ABSPIELEN : null);
+            jButtonAbspielen.setBackground(pSet.istAbspielen() ? MVColor.BUTTON_SET_ABSPIELEN.color : null);
             if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_HD)) {
                 jRadioButtonAufloesungHD.setSelected(true);
             } else if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_KLEIN)) {
@@ -372,8 +372,6 @@ public class PanelPsetLang extends PanelVorlage {
             } else {
                 jRadioButtonAufloesungNormal.setSelected(true);
             }
-//            jButtonAbspielen.setForeground(pSet.istAbspielen() ? Color.BLACK : null);
-//            jButtonAbspielen.setEnabled(pSet.istAbspielen() ? false : true);
         } else {
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTabbedPane.setTitleAt(0, "Sets");

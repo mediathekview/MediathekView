@@ -29,10 +29,8 @@ public class MVC {
     Color colorReset = new Color(0);
 
     public MVC(Color ccolor, String ttext) {
-        name = ttext.replace(" ", "");
-        if (name.length() > 15) {
-            name = name.substring(0, 15);
-        }
+        name = "FARBE__" + ttext.replace(" ", "");
+        name = name.replace(",", "");
         text = ttext;
         color = ccolor;
         colorReset = ccolor;
