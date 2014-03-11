@@ -41,6 +41,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 import msearch.filmeLaden.DatenUrlFilmliste;
@@ -198,18 +199,12 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void setPanelTabelle(boolean manuell) {
-//        jButtonUpdate.setEnabled(manuell);
-//        jTextFieldUrl.setEnabled(manuell);
-//        jTable1.setEnabled(manuell);
-//        jButtonDateiAuswaehlen.setEnabled(manuell);
-//        jButtonFilmeLaden.setEnabled(manuell);
-        Color COLOR_AKTIV = new Color(205, 255, 191);
         if (manuell) {
-            jTextAreaManuell.setBackground(COLOR_AKTIV);
+            jTextAreaManuell.setBackground(MVColor.FILMLISTE_LADEN_AKTIV.color);
             jTextAreaAuto.setBackground(null);
         } else {
             jTextAreaManuell.setBackground(null);
-            jTextAreaAuto.setBackground(COLOR_AKTIV);
+            jTextAreaAuto.setBackground(MVColor.FILMLISTE_LADEN_AKTIV.color);
         }
     }
 
