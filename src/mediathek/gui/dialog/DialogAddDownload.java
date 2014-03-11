@@ -613,12 +613,12 @@ public class DialogAddDownload extends javax.swing.JDialog {
             if (!stopBeob) {
                 nameGeaendert = true;
                 if (!jTextFieldName.getText().equals(GuiFunktionen.replaceLeerDateiname(jTextFieldName.getText(), true/* istDatei */, true /* leerEntfernen */))) {
-                    jTextFieldName.setBackground(MVColor.DOWNLOAD_FARBE_ERR);
+                    jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                 } else {
                     jTextFieldName.setBackground(Color.WHITE);
                 }
                 if (!jComboBoxPfad.getSelectedItem().toString().equals(GuiFunktionen.replaceLeerDateiname(jComboBoxPfad.getSelectedItem().toString(), false/* istDatei */, true /* leerEntfernen */))) {
-                    jComboBoxPfad.setBackground(MVColor.DOWNLOAD_FARBE_ERR);
+                    jComboBoxPfad.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                 } else {
                     jComboBoxPfad.setBackground(Color.WHITE);
                 }

@@ -118,7 +118,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         final String NAME_allgemeineEinstellungen = "Allgemein";
         final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
         final String NAME_allgemeineEinstellungenGeo = "Geo";
-        final String NAME_allgemeineEinstellungenColor = "Color";
+        final String NAME_allgemeineEinstellungenColor = "Farben";
         final String NAME_filmListeLaden = "Filmliste laden";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";

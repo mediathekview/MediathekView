@@ -20,12 +20,15 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.CellRendererColor;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVC;
 import mediathek.tool.MVColor;
 
@@ -42,14 +45,24 @@ public class PanelEinstellungenColor extends PanelVorlage {
         jTable1.addMouseListener(new BeobMausTabelle());
         jTable1.setDefaultRenderer(MVC.class, new CellRendererColor());
         jTable1.setModel(Daten.mVColor.getModel());
+        jButtonReset.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.mVColor.reset(daten);
+            }
+        });
     }
 
     private void getColor(MVC mvc) {
         DialogFarbe dialog = new DialogFarbe(null, true);
         dialog.setVisible(true);
         if (dialog.farbe != null) {
-            mvc.set(dialog.farbe);
-            jTable1.setModel(Daten.mVColor.getModel());
+            if (!dialog.farbe.equals(mvc.color)) {
+                mvc.set(dialog.farbe);
+                jTable1.setModel(Daten.mVColor.getModel());
+                GuiFunktionen.updateGui(daten.mediathekGui);
+            }
         }
     }
 
@@ -64,6 +77,7 @@ public class PanelEinstellungenColor extends PanelVorlage {
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButtonReset = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -78,24 +92,33 @@ public class PanelEinstellungenColor extends PanelVorlage {
         ));
         jScrollPane1.setViewportView(jTable1);
 
+        jButtonReset.setText("Farben zurücksetzen");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonReset)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 643, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonReset)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonReset;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables

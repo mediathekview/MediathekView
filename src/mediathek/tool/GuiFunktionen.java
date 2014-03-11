@@ -19,17 +19,35 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.Log;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import mediathek.MediathekGui;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 
 public class GuiFunktionen extends Funktionen {
+
+    public static void updateGui(MediathekGui mediathekGui) {
+        try {
+            SwingUtilities.updateComponentTreeUI(mediathekGui);
+            for (Frame f : Frame.getFrames()) {
+                SwingUtilities.updateComponentTreeUI(f);
+                for (Window w : f.getOwnedWindows()) {
+                    SwingUtilities.updateComponentTreeUI(w);
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+    }
 
     public static void copyToClipboard(String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);

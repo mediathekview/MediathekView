@@ -155,9 +155,9 @@ public class Filter {
         if (Filter.isPattern(text)) {
             if (Filter.makePattern(text) == null) {
                 //soll Pattern sein, ist aber falsch
-                tf.setBackground(MVColor.FILTER_REGEX_FEHLER);
+                tf.setBackground(MVColor.FILTER_REGEX_FEHLER.color);
             } else {
-                tf.setBackground(MVColor.FILTER_REGEX);
+                tf.setBackground(MVColor.FILTER_REGEX.color);
             }
         } else {
             tf.setBackground(Color.WHITE);

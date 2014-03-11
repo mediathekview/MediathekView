@@ -57,9 +57,9 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
             if (!eingeschaltet) {
                 setFont(new java.awt.Font("Dialog", Font.ITALIC, 12));
                 if (isSelected) {
-                    setBackground(MVColor.FARBE_GRAU_SEL.color);
+                    setBackground(MVColor.ABO_AUSGESCHALTET_SEL.color);
                 } else {
-                    setBackground(MVColor.FARBE_GRAU.color);
+                    setBackground(MVColor.ABO_AUSGESCHALTET.color);
                 }
             }
             if (c == DatenAbo.ABO_EINGESCHALTET_NR) {

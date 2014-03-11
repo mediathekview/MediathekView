@@ -133,7 +133,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (datenDownload.start != null) {
                     if (datenDownload.start.beginnAnschauen) {
-                        setForeground(MVColor.ANSEHEN);
+                        setForeground(MVColor.DOWNLOAD_ANSEHEN.color);
                     }
                 }
             } else if (c == DatenDownload.DOWNLOAD_FILM_NR_NR) {
@@ -150,9 +150,9 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             } else if (c == DatenDownload.DOWNLOAD_ABO_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (!datenDownload.arr[DatenDownload.DOWNLOAD_ABO_NR].equals("")) {
-                    setForeground(MVColor.ABO_FOREGROUND);
+                    setForeground(MVColor.DOWNLOAD_IST_ABO.color);
                 } else {
-                    setForeground(MVColor.DOWNLOAD_FOREGROUND);
+                    setForeground(MVColor.DOWNLOAD_IST_DIREKTER_DOWNLOAD.color);
                     setText("Download");
                     //setIcon(GetIcon.getIcon("nein_12.png"));
                 }
@@ -231,9 +231,9 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                         if (!datenDownload.arr[DatenDownload.DOWNLOAD_GEO_NR].contains(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
                             //setForeground(GuiKonstanten.FARBE_FILM_GEOBLOCK_FORGROUND);
                             if (isSelected) {
-                                setBackground(MVColor.FARBE_FILM_GEOBLOCK_BACKGROUND_SEL);
+                                setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
                             } else {
-                                setBackground(MVColor.FARBE_FILM_GEOBLOCK_BACKGROUND);
+                                setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND.color);
                             }
                         }
                     }
@@ -255,30 +255,30 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             switch (s.status) {
                 case Start.STATUS_INIT:
                     if (isSelected) {
-                        c.setBackground(MVColor.DOWNLOAD_FARBE_WAIT_SEL);
+                        c.setBackground(MVColor.DOWNLOAD_WAIT_SEL.color);
                     } else {
-                        c.setBackground(MVColor.DOWNLOAD_FARBE_WAIT);
+                        c.setBackground(MVColor.DOWNLOAD_WAIT.color);
                     }
                     break;
                 case Start.STATUS_RUN:
                     if (isSelected) {
-                        c.setBackground(MVColor.DOWNLOAD_FARBE_RUN_SEL);
+                        c.setBackground(MVColor.DOWNLOAD_RUN_SEL.color);
                     } else {
-                        c.setBackground(MVColor.DOWNLOAD_FARBE_RUN);
+                        c.setBackground(MVColor.DOWNLOAD_RUN.color);
                     }
                     break;
                 case Start.STATUS_FERTIG:
                     if (isSelected) {
-                        c.setBackground(MVColor.DOWNLOAD_FARBE_FERTIG_SEL);
+                        c.setBackground(MVColor.DOWNLOAD_FERTIG_SEL.color);
                     } else {
-                        c.setBackground(MVColor.DOWNLOAD_FARBE_FERTIG);
+                        c.setBackground(MVColor.DOWNLOAD_FERTIG.color);
                     }
                     break;
                 case Start.STATUS_ERR:
                     if (isSelected) {
-                        c.setBackground(MVColor.DOWNLOAD_FARBE_ERR_SEL);
+                        c.setBackground(MVColor.DOWNLOAD_FEHLER_SEL.color);
                     } else {
-                        c.setBackground(MVColor.DOWNLOAD_FARBE_ERR);
+                        c.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                     }
                     break;
             }
