@@ -35,12 +35,14 @@ public class BeobTableHeader extends MouseAdapter {
     boolean[] spaltenAnzeigen;
     JCheckBoxMenuItem[] box;
     int[] ausblenden;
+    int[] button;
 
-    public BeobTableHeader(MVTable tabelle, String[] columns, boolean[] spalten, int[] aausblenden) {
+    public BeobTableHeader(MVTable tabelle, String[] columns, boolean[] spalten, int[] aausblenden, int[] bbutton) {
         this.tabelle = tabelle;
         this.columns = columns;
         spaltenAnzeigen = spalten;
         this.ausblenden = aausblenden;
+        button = bbutton;
     }
 
     @Override
@@ -84,18 +86,35 @@ public class BeobTableHeader extends MouseAdapter {
             });
             jPopupMenu.add(box[i]);
         }
+        // jetzt evtl. noch die Button
+        if (button.length > 0) {
+            //##Trenner##
+            jPopupMenu.addSeparator();
+            //##Trenner##
+            final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("Button anzeigen");
+            item2.setSelected(anzeigen(button[0])); //entweder alle oder keiner!
+            item2.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    for (int i : button) {
+                        setSpalten(i, item2.isSelected());
+                    }
+                }
+            });
+            jPopupMenu.add(item2);
+        }
         //##Trenner##
         jPopupMenu.addSeparator();
         //##Trenner##
         // Tabellenspalten zurücksetzen
-        JMenuItem item = new JMenuItem("Spalten zurücksetzen");
-        item.addActionListener(new ActionListener() {
+        JMenuItem item1 = new JMenuItem("Spalten zurücksetzen");
+        item1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabelle.resetTabelle();
             }
         });
-        jPopupMenu.add(item);
+        jPopupMenu.add(item1);
         //anzeigen
         jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
     }
@@ -114,6 +133,12 @@ public class BeobTableHeader extends MouseAdapter {
                 spaltenAnzeigen[i] = box[i].isSelected();
             }
         }
+        tabelle.spaltenEinAus();
+        tabelleLaden_();
+    }
+
+    private void setSpalten(int k, boolean anz) {
+        spaltenAnzeigen[k] = anz;
         tabelle.spaltenEinAus();
         tabelleLaden_();
     }

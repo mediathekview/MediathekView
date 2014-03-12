@@ -286,7 +286,6 @@ public final class MVTable extends JTable {
     }
 
     private boolean[] getSpaltenEinAus(boolean[] spaltenAnzeigen, int MAX_ELEM) {
-//        spaltenAnzeigen = new boolean[MAX_ELEM];
         for (int i = 0; i < MAX_ELEM; ++i) {
             spaltenAnzeigen[i] = true;
         }
@@ -294,7 +293,6 @@ public final class MVTable extends JTable {
     }
 
     public void fireTableDataChanged(boolean setSpalten) {
-//        this.selectionModel.setValueIsAdjusting(true);
         if (setSpalten) {
             getSelected();
         }
@@ -302,49 +300,8 @@ public final class MVTable extends JTable {
         if (setSpalten) {
             setSelected();
         }
-//        this.selectionModel.setValueIsAdjusting(false);
     }
 
-//    public void clearSelected() {
-//        clearSelection();
-//        modelRowCount = -1;
-//        modelSelections = null;
-//    }
-//    public void getSelected() {
-//        // Einstellungen der Tabelle merken
-//        if (this.getSelectedRow() >= 0) {
-//            selection = this.getSelectedRows();
-//            modelSelections = new int[selection.length];
-//            for (int i = 0; i < selection.length; ++i) {
-//                modelSelections[i] = this.convertRowIndexToModel(selection[i]);
-//            }
-//            modelRowCount = this.getRowCount();
-//        } else {
-//            modelSelections = null;
-//            modelRowCount = -1;
-//        }
-//    }
-//    public void setSelected() {
-//        // gemerkte Einstellungen der Tabelle wieder setzten
-//        stopBeob = true;
-//        this.getSelectionModel().setValueIsAdjusting(true);
-//        if (modelSelections != null && modelRowCount >= 0 && modelRowCount == this.getRowCount()) {
-//            int b;
-//            b = this.convertRowIndexToView(modelSelections[0]);
-//            this.setRowSelectionInterval(b, b);
-//            for (int i = 1; i < modelSelections.length; ++i) {
-//                b = this.convertRowIndexToView(modelSelections[i]);
-//                this.addRowSelectionInterval(b, b);
-//            }
-//        } else {
-//            this.clearSelection();
-//            if (this.getRowCount() > 0) {
-//                this.setRowSelectionInterval(0, 0);
-//            }
-//        }
-//        this.getSelectionModel().setValueIsAdjusting(false);
-//        stopBeob = false;
-//    }
     public void requestFocusSelelct(JScrollPane jScrollPane) {
         requestFocus();
         if (getRowCount() > 0) {
@@ -601,7 +558,6 @@ public final class MVTable extends JTable {
             switch (tabelle) {
                 case TABELLE_TAB_FILME:
                     if (i == DatenFilm.FILM_BESCHREIBUNG_NR
-                            //                            || i == DatenFilm.FILM_KEYWORDS_NR
                             || i == DatenFilm.FILM_WEBSEITE_NR
                             || i == DatenFilm.FILM_IMAGE_URL_NR
                             || i == DatenFilm.FILM_URL_RTMP_NR
