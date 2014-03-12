@@ -40,7 +40,7 @@ public class MVColor {
     public static MVC DOWNLOAD_ANSEHEN = new MVC(new Color(0, 125, 0), "Download kann schon angesehen werden");
     // status Downloads
     public static MVC DOWNLOAD_WAIT = new MVC(new Color(239, 244, 255), "Download, noch nicht gestartet");
-    public static MVC DOWNLOAD_WAIT_SEL = new MVC(new Color(199, 206, 222), "Download, noch nicht gestartet, seleltiert");
+    public static MVC DOWNLOAD_WAIT_SEL = new MVC(new Color(199, 206, 222), "Download, noch nicht gestartet, selektiert");
     public static MVC DOWNLOAD_RUN = new MVC(new Color(241, 228, 188), "Download, läuft");
     public static MVC DOWNLOAD_RUN_SEL = new MVC(new Color(206, 178, 92), "Download, läuft, selektiert");
     public static MVC DOWNLOAD_FERTIG = new MVC(new Color(188, 241, 195), "Download, fertig");

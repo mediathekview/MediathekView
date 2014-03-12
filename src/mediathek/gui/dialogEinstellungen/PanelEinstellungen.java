@@ -33,6 +33,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import mediathek.controller.Log;
 import mediathek.controller.ProgrammUpdateSuchen;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
@@ -40,15 +41,14 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.controller.Log;
 import mediathek.tool.MVConfig;
 
 public class PanelEinstellungen extends PanelVorlage {
 
     private final String ICONSET_STANDARD = "Standard";
 
-    public PanelEinstellungen(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+    public PanelEinstellungen(Daten d, JFrame parent) {
+        super(d, parent);
         initComponents();
         jButtonInfos.setIcon(GetIcon.getIcon("icons_refresh_16.png"));
         daten = d;
@@ -59,7 +59,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonHilfeAnzahl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, true, "\n"
+                new DialogHilfe(parentComponent, true, "\n"
                         + "Hier kann angegeben werden, wie viele\n"
                         + "Downloads gleichzeitig gestartet werden können.\n"
                         + "Es gibt jedoch noch eine Begrenzung \n"
