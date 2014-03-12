@@ -48,7 +48,6 @@ public class PanelHilfe extends PanelVorlage {
     public PanelHilfe(Daten dd, JFrame p) {
         super(dd, p);
         initComponents();
-        jButtonHilfeReset.setIcon(GetIcon.getIcon("help_16.png"));
         //init
         try {
             jTextFieldVersion.setText(Funktionen.getProgVersionString() + " vom: " + Funktionen.getCompileDate());
@@ -73,6 +72,7 @@ public class PanelHilfe extends PanelVorlage {
                 ProgrammLog.LogDateiSchreiben(daten, parentComponent);
             }
         });
+        jButtonHilfeReset.setIcon(GetIcon.getIcon("help_16.png"));
         jButtonHilfeReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

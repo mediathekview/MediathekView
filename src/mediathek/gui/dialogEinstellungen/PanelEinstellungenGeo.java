@@ -142,7 +142,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Filme die Geogeblockt sind"));
 
-        jCheckBoxMarkieren.setText("geblockte Filme markieren");
+        jCheckBoxMarkieren.setText("geblockte Sendungen gelb markieren");
 
         buttonGroup1.add(jRadioButtonDe);
         jRadioButtonDe.setSelected(true);
