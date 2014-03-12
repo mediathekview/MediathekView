@@ -105,7 +105,7 @@
       <SubComponents>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxMarkieren">
           <Properties>
-            <Property name="text" type="java.lang.String" value="geblockte Filme markieren"/>
+            <Property name="text" type="java.lang.String" value="geblockte Sendungen gelb markieren"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="jRadioButtonDe">

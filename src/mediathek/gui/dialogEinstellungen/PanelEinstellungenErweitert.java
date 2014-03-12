@@ -50,12 +50,14 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonProgrammUrl.setIcon(GetIcon.getIcon("fileopen_16.png"));
         daten = d;
         init();
-        jButtonZielname.addActionListener(new ActionListener() {
+        jButtonHilfeZielname.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonHilfeZielname.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_UNICODE)).setVisible(true);
             }
         });
+        jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -295,6 +297,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
             }
         });
+        jButtonHilfeProgrammDateimanager.setIcon(GetIcon.getIcon("help_16.png"));
         jButtonHilfeProgrammDateimanager.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -306,6 +309,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
             }
         });
+        jButtonHilfeNeuladen.setIcon(GetIcon.getIcon("help_16.png"));
         jButtonHilfeNeuladen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -326,6 +330,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         + "Ansonsten wir sie überschrieben.").setVisible(true);
             }
         });
+        jButtonHilfeVideoplayer.setIcon(GetIcon.getIcon("help_16.png"));
         jButtonHilfeVideoplayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -337,6 +342,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
             }
         });
+        jButtonHilfeProgrammUrl.setIcon(GetIcon.getIcon("help_16.png"));
         jButtonHilfeProgrammUrl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -456,7 +462,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jRadioButtonManuel = new javax.swing.JRadioButton();
         jTextFieldAuto = new javax.swing.JTextField();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
-        jButtonZielname = new javax.swing.JButton();
+        jButtonHilfeZielname = new javax.swing.JButton();
         jRadioButtonNamenNormal = new javax.swing.JRadioButton();
         jRadioButtonNameUnicode = new javax.swing.JRadioButton();
         jRadioButtonNameAscii = new javax.swing.JRadioButton();
@@ -557,7 +563,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Dateiname der gespeicherten Filme"));
 
-        jButtonZielname.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfeZielname.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
 
         buttonGroup2.add(jRadioButtonNamenNormal);
         jRadioButtonNamenNormal.setText("einfache Prüfung");
@@ -583,7 +589,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jRadioButtonNamenNormal)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonZielname))
+                        .addComponent(jButtonHilfeZielname))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jRadioButtonNameNix)
@@ -599,7 +605,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonZielname)
+                    .addComponent(jButtonHilfeZielname)
                     .addComponent(jRadioButtonNamenNormal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -748,10 +754,10 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private javax.swing.JButton jButtonHilfeProgrammDateimanager;
     private javax.swing.JButton jButtonHilfeProgrammUrl;
     private javax.swing.JButton jButtonHilfeVideoplayer;
+    private javax.swing.JButton jButtonHilfeZielname;
     private javax.swing.JButton jButtonProgrammDateimanager;
     private javax.swing.JButton jButtonProgrammUrl;
     private javax.swing.JButton jButtonProgrammVideoplayer;
-    private javax.swing.JButton jButtonZielname;
     private javax.swing.JCheckBox jCheckBoxAboSuchen;
     private javax.swing.JCheckBox jCheckBoxDownloadSofortStarten;
     private javax.swing.JLabel jLabel1;

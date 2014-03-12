@@ -56,6 +56,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxEchtzeit.addActionListener(new BeobCheckBox());
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
         setupLookAndFeelComboBox();
+        jButtonHilfeAnzahl.setIcon(GetIcon.getIcon("help_16.png"));
         jButtonHilfeAnzahl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
