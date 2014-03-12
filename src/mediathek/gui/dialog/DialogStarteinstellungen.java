@@ -40,7 +40,7 @@ import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVConfig;
 
 public class DialogStarteinstellungen extends javax.swing.JDialog {
-
+    
     Daten ddaten;
     private final int STAT_START = 1;
     private final int STAT_PFAD = 2;
@@ -49,7 +49,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private int status = STAT_START;
     private final JFrame parentComponent;
     JCheckBox jCheckBox = new JCheckBox("Einmal am Tag nach einer neuen Programmversion suchen");
-
+    
     public DialogStarteinstellungen(JFrame parent, boolean modal, Daten dd) {
         super(parent, modal);
         parentComponent = parent;
@@ -77,9 +77,10 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
         Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
         Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
-
+        
         PanelEinstellungenGeo panelEinstellungenGeo = new PanelEinstellungenGeo(dd, parentComponent);
         jCheckBox = new JCheckBox("Einmal am Tag nach einer neuen Programmversion suchen");
+        jCheckBox.setSelected(true);
         jCheckBox.addActionListener(new BeobCheckBoxSuchen());
         GroupLayout extraLayout = new javax.swing.GroupLayout(jPanelExtra);
         jPanelExtra.setLayout(extraLayout);
@@ -93,7 +94,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                         )
                         .addContainerGap()
                 ));
-
+        
         extraLayout.setVerticalGroup(
                 extraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(extraLayout.createSequentialGroup()
@@ -103,9 +104,9 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                         .addComponent(jCheckBox)
                         .addContainerGap())
         );
-
+        
     }
-
+    
     private void weiter() {
         switch (status) {
             case STAT_START:
@@ -122,7 +123,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                 break;
         }
     }
-
+    
     private void statusStart() {
         jButtonStandard.setText("Weiter");
         if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC).equals("")
@@ -147,7 +148,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         }
         weiter();
     }
-
+    
     private void statusPfade() {
         // erst Programmpfad prüfen
         jCheckBoxAnpassen.setVisible(false);
@@ -166,7 +167,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         status = STAT_PSET;
         jButtonStandard.setText("Weiter");
     }
-
+    
     private void statusPset() {
         // Einstellungen zum Ansehen und Speichern der Filme anpassen
         jCheckBoxAnpassen.setVisible(false);
@@ -187,7 +188,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         status = STAT_FERTIG;
         jButtonStandard.setText("Weiter");
     }
-
+    
     private void beenden() {
         this.dispose();
     }
@@ -286,7 +287,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private class BeobCheckBoxSuchen implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBox.isSelected()));
