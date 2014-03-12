@@ -105,7 +105,8 @@ public class GuiAbo extends PanelVorlage {
         tabelle.setDefaultRenderer(Integer.class, new CellRendererAbo());
         tabelle.setModel(new TModelAbo(new Object[][]{}, DatenAbo.COLUMN_NAMES));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenAbo.COLUMN_NAMES, DatenAbo.spaltenAnzeigen,
-                new int[]{DatenAbo.ABO_EINGESCHALTET_NR}) {
+                new int[]{DatenAbo.ABO_EINGESCHALTET_NR},
+                new int[]{}) {
                     @Override
                     public void tabelleLaden_() {
                         tabelleLaden();
