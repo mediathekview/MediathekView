@@ -25,6 +25,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -35,9 +36,11 @@ import mediathek.res.GetIcon;
 
 public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
-    public MVFilterPanel() {
-        initComponents();
+    JFrame f;
 
+    public MVFilterPanel(JFrame jFrame) {
+        initComponents();
+        f = jFrame;
         setVisible(true);
         jButtonFilterLoeschen.setIcon(GetIcon.getIcon("clear_16.png"));
         jButtonFilterLoeschen.setMnemonic(KeyEvent.VK_F8);
@@ -45,7 +48,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
+                new DialogHilfe(f, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
             }
         });
     }

@@ -108,7 +108,7 @@ public class GuiFilme extends PanelVorlage {
         jScrollPane1.setViewportView(tabelle);
         panelVideoplayerSetzen();
         panelBeschreibung = new PanelBeschreibung(daten.mediathekGui, daten);
-        mVFilterPanel = new MVFilterPanel();
+        mVFilterPanel = new MVFilterPanel(parentComponent);
         mVFilterFrame = new MVFilterFrame(d);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);

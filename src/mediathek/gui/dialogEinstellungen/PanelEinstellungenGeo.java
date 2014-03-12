@@ -24,6 +24,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.gui.dialog.DialogHilfe;
+import mediathek.res.GetIcon;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import msearch.daten.DatenFilm;
@@ -103,6 +105,16 @@ public class PanelEinstellungenGeo extends PanelVorlage {
                 melden();
             }
         });
+        jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonHilfe.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(parentComponent, true, "\n"
+                        + "Nicht alle Filme lassen sich im Ausland abrufen.\n"
+                        + "Wenn geblockete Filme markiert werden sollen\n"
+                        + "kann man hier seinen Standort angeben").setVisible(true);
+            }
+        });
     }
 
     private void melden() {
@@ -126,6 +138,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
         jRadioButtonAt = new javax.swing.JRadioButton();
         jRadioButtonEu = new javax.swing.JRadioButton();
         jRadioButtonSonst = new javax.swing.JRadioButton();
+        jButtonHilfe = new javax.swing.JButton();
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Filme die Geogeblockt sind"));
 
@@ -149,6 +162,8 @@ public class PanelEinstellungenGeo extends PanelVorlage {
         buttonGroup1.add(jRadioButtonSonst);
         jRadioButtonSonst.setText("sonst");
 
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -163,7 +178,11 @@ public class PanelEinstellungenGeo extends PanelVorlage {
                     .addComponent(jRadioButtonDe)
                     .addComponent(jRadioButtonCH)
                     .addComponent(jRadioButtonAt))
-                .addContainerGap(188, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonHilfe)
+                .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -182,7 +201,9 @@ public class PanelEinstellungenGeo extends PanelVorlage {
                 .addComponent(jRadioButtonEu)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jRadioButtonSonst)
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addComponent(jButtonHilfe)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -199,10 +220,11 @@ public class PanelEinstellungenGeo extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(356, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonHilfe;
     private javax.swing.JCheckBox jCheckBoxMarkieren;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JRadioButton jRadioButtonAt;

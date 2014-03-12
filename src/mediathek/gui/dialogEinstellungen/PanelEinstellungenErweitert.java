@@ -53,13 +53,13 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonZielname.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_UNICODE)).setVisible(true);
+                new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_UNICODE)).setVisible(true);
             }
         });
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(null, true, "\n"
+                new DialogHilfe(parentComponent, true, "\n"
                         + "Dieser Text wird als User-Agent\n"
                         + "an den Webserver übertragen. Das entspricht\n"
                         + "der Kennung, die auch die Browser senden.").setVisible(true);
