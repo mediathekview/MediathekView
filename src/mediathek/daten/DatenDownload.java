@@ -71,40 +71,40 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_ZEIT_NR = 13;
     public static final String DOWNLOAD_DAUER = "Dauer";
     public static final int DOWNLOAD_DAUER_NR = 14;
-    public static final String DOWNLOAD_FILM_URL = "Film-URL";
-    public static final int DOWNLOAD_FILM_URL_NR = 15;
-    public static final String DOWNLOAD_HISTORY_URL = "History-URL";
-    public static final int DOWNLOAD_HISTORY_URL_NR = 16;
-    public static final String DOWNLOAD_URL = "URL";
-    public static final int DOWNLOAD_URL_NR = 17;
-    public static final String DOWNLOAD_URL_RTMP = "URL-rtmp";
-    public static final int DOWNLOAD_URL_RTMP_NR = 18;
-    public static final String DOWNLOAD_URL_AUTH = "URL-Auth";
-    public static final int DOWNLOAD_URL_AUTH_NR = 19;
-    public static final String DOWNLOAD_PROGRAMMSET = "Programmset";
-    public static final int DOWNLOAD_PROGRAMMSET_NR = 20;
-    public static final String DOWNLOAD_PROGRAMM = "Programm";
-    public static final int DOWNLOAD_PROGRAMM_NR = 21;
-    public static final String DOWNLOAD_PROGRAMM_AUFRUF = "Programmaufruf";
-    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 22;
-    public static final String DOWNLOAD_PROGRAMM_RESTART = "Restart";
-    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 23;
-    public static final String DOWNLOAD_ZIEL_DATEINAME = "Dateiname";
-    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 24;
-    public static final String DOWNLOAD_ZIEL_PFAD = "Pfad";
-    public static final int DOWNLOAD_ZIEL_PFAD_NR = 25;
-    public static final String DOWNLOAD_ZIEL_PFAD_DATEINAME = "Pfad-Dateiname";
-    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 26;
-    public static final String DOWNLOAD_ART = "Art"; //Art des Downloads: direkter Dateidownload oder über ein Programm
-    public static final int DOWNLOAD_ART_NR = 27;
-    public static final String DOWNLOAD_QUELLE = "Quelle"; //Quelle: gestartet über einen Button, Download, Abo
-    public static final int DOWNLOAD_QUELLE_NR = 28;
-    public static final String DOWNLOAD_ZURUECKGESTELLT = "Zurueckgestellt";
-    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 29;
-    public static final String DOWNLOAD_INFODATEI = "Infodatei";
-    public static final int DOWNLOAD_INFODATEI_NR = 30;
     public static final String DOWNLOAD_GEO = "Geo";
-    public static final int DOWNLOAD_GEO_NR = 31;
+    public static final int DOWNLOAD_GEO_NR = 15;
+    public static final String DOWNLOAD_FILM_URL = "Film-URL";
+    public static final int DOWNLOAD_FILM_URL_NR = 16;
+    public static final String DOWNLOAD_HISTORY_URL = "History-URL";
+    public static final int DOWNLOAD_HISTORY_URL_NR = 17;
+    public static final String DOWNLOAD_URL = "URL";
+    public static final int DOWNLOAD_URL_NR = 18;
+    public static final String DOWNLOAD_URL_RTMP = "URL-rtmp";
+    public static final int DOWNLOAD_URL_RTMP_NR = 19;
+    public static final String DOWNLOAD_URL_AUTH = "URL-Auth";
+    public static final int DOWNLOAD_URL_AUTH_NR = 20;
+    public static final String DOWNLOAD_PROGRAMMSET = "Programmset";
+    public static final int DOWNLOAD_PROGRAMMSET_NR = 21;
+    public static final String DOWNLOAD_PROGRAMM = "Programm";
+    public static final int DOWNLOAD_PROGRAMM_NR = 22;
+    public static final String DOWNLOAD_PROGRAMM_AUFRUF = "Programmaufruf";
+    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 23;
+    public static final String DOWNLOAD_PROGRAMM_RESTART = "Restart";
+    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 24;
+    public static final String DOWNLOAD_ZIEL_DATEINAME = "Dateiname";
+    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 25;
+    public static final String DOWNLOAD_ZIEL_PFAD = "Pfad";
+    public static final int DOWNLOAD_ZIEL_PFAD_NR = 26;
+    public static final String DOWNLOAD_ZIEL_PFAD_DATEINAME = "Pfad-Dateiname";
+    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 27;
+    public static final String DOWNLOAD_ART = "Art"; //Art des Downloads: direkter Dateidownload oder über ein Programm
+    public static final int DOWNLOAD_ART_NR = 28;
+    public static final String DOWNLOAD_QUELLE = "Quelle"; //Quelle: gestartet über einen Button, Download, Abo
+    public static final int DOWNLOAD_QUELLE_NR = 29;
+    public static final String DOWNLOAD_ZURUECKGESTELLT = "Zurueckgestellt";
+    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 30;
+    public static final String DOWNLOAD_INFODATEI = "Infodatei";
+    public static final int DOWNLOAD_INFODATEI_NR = 31;
     public static final String DOWNLOAD_REF = "Ref";
     public static final int DOWNLOAD_REF_NR = 32;
     //
@@ -113,19 +113,19 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final String[] COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         DOWNLOAD_BUTTON_START, DOWNLOAD_BUTTON_DEL,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, DOWNLOAD_GROESSE,
-        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER,
+        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_GEO,
         DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT,
-        DOWNLOAD_INFODATEI, DOWNLOAD_GEO, DOWNLOAD_REF};
+        DOWNLOAD_INFODATEI, DOWNLOAD_REF};
     public static final String[] COLUMN_NAMES_ = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         "Button-Start"/*DOWNLOAD_BUTTON_START*/, "Button-Del"/*DOWNLOAD_BUTTON_DEL*/,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, "Groesse"/*DOWNLOAD_GROESSE*/,
-        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER,
+        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_GEO,
         DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT,
-        DOWNLOAD_INFODATEI, DOWNLOAD_GEO, DOWNLOAD_REF};
+        DOWNLOAD_INFODATEI, DOWNLOAD_REF};
     public Datum datumFilm = new Datum(0);
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
