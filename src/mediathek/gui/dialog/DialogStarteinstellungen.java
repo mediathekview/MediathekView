@@ -21,10 +21,13 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.GroupLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
+import mediathek.gui.dialogEinstellungen.PanelEinstellungenGeo;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.PanelPsetLang;
@@ -34,7 +37,6 @@ import static mediathek.tool.Funktionen.OS_WIN_32BIT;
 import static mediathek.tool.Funktionen.OS_WIN_64BIT;
 import static mediathek.tool.Funktionen.getOs;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
 
 public class DialogStarteinstellungen extends javax.swing.JDialog {
@@ -46,6 +48,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private final int STAT_FERTIG = 4;
     private int status = STAT_START;
     private final JFrame parentComponent;
+    JCheckBox jCheckBox = new JCheckBox("Einmal am Tag nach einer neuen Programmversion suchen");
 
     public DialogStarteinstellungen(JFrame parent, boolean modal, Daten dd) {
         super(parent, modal);
@@ -68,14 +71,39 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                 weiter();
             }
         });
-        jCheckBoxSuchen.setSelected(true);
         Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
-        jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
         // setzt die Standardpfade für die wichtigsten Programme
         Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
         Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
         Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
         Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
+
+        PanelEinstellungenGeo panelEinstellungenGeo = new PanelEinstellungenGeo(dd, parentComponent);
+        jCheckBox = new JCheckBox("Einmal am Tag nach einer neuen Programmversion suchen");
+        jCheckBox.addActionListener(new BeobCheckBoxSuchen());
+        GroupLayout extraLayout = new javax.swing.GroupLayout(jPanelExtra);
+        jPanelExtra.setLayout(extraLayout);
+        extraLayout.setHorizontalGroup(
+                extraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(extraLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(extraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(panelEinstellungenGeo)
+                                .addComponent(jCheckBox)
+                        )
+                        .addContainerGap()
+                ));
+
+        extraLayout.setVerticalGroup(
+                extraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(extraLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(panelEinstellungenGeo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jCheckBox)
+                        .addContainerGap())
+        );
+
     }
 
     private void weiter() {
@@ -111,7 +139,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             ListePset pSet = ListePsetVorlagen.getStandarset(parentComponent, ddaten, Funktionen.getOsString());
             if (pSet != null) {
                 ddaten.listePset.addPset(pSet);
-                Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET,pSet.version);
+                Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
                 status = STAT_FERTIG;
             } else {
                 status = STAT_PSET;
@@ -172,14 +200,12 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         jButtonStandard = new javax.swing.JButton();
         jCheckBoxAlleEinstellungen = new javax.swing.JCheckBox();
         jCheckBoxAnpassen = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanelExtra = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
-        jCheckBoxSuchen = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -215,42 +241,15 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Programmupdate"));
-
-        jCheckBoxSuchen.setSelected(true);
-        jCheckBoxSuchen.setText("Einmal am Tag nach einer neuen Programmversion suchen");
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jCheckBoxSuchen)
-                .addContainerGap(324, Short.MAX_VALUE))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addComponent(jCheckBoxSuchen)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
         jPanelExtra.setLayout(jPanelExtraLayout);
         jPanelExtraLayout.setHorizontalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelExtraLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGap(0, 679, Short.MAX_VALUE)
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExtraLayout.createSequentialGroup()
-                .addContainerGap(675, Short.MAX_VALUE)
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGap(0, 510, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(jPanelExtra);
@@ -282,9 +281,6 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private javax.swing.JButton jButtonStandard;
     private javax.swing.JCheckBox jCheckBoxAlleEinstellungen;
     private javax.swing.JCheckBox jCheckBoxAnpassen;
-    private javax.swing.JCheckBox jCheckBoxSuchen;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
@@ -293,7 +289,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected()));
+            Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBox.isSelected()));
         }
     }
 }
