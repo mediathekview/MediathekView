@@ -51,10 +51,11 @@ public class Konstanten {
     public static final String KODIERUNG_ISO15 = "ISO-8859-15";
     public static final String XML_START = "Mediathek";
     public static final int MAX_SENDER_FILME_LADEN = 2; //es können maximal soviele Filme eines Senders/Servers gleichzeitig geladen werden
-    
+    public static final int DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN = 60; //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
 
     public static final String ZIELNAMEN_ANPASSEN_NORMAL = "normal";
     public static final String ZIELNAMEN_ANPASSEN_ASCII = "ascii";
     public static final String ZIELNAMEN_ANPASSEN_UNICODE = "unicode";
     public static final String ZIELNAMEN_ANPASSEN_NIX = "NIX";
+    public static final String ZIELNAMEN_ANPASSEN_ERSETZUNGSTABELLE = "Ersetzungstabelle";
 }

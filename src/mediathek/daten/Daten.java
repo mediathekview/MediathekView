@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import mediathek.MediathekGui;
@@ -49,6 +51,7 @@ import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MVReplaceList;
 import msearch.daten.ListeFilme;
 import msearch.io.MSFilmlisteLesen;
 import msearch.io.MSFilmlisteSchreiben;
@@ -67,6 +70,7 @@ public class Daten {
     private static String basisverzeichnis = "";
     // zentrale Klassen
     public static MVColor mVColor = new MVColor();
+    public static MVReplaceList mVReplaceList = new MVReplaceList();
     public static FilmeLaden filmeLaden;
     public static ListeFilme listeFilme = null;
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -270,6 +274,7 @@ public class Daten {
         updateSplashScreen("Lade History...");
         history.laden();
         mVColor.load(); // Farben einrichten
+        mVReplaceList.load(); // Ersetzungstabelle für Dateinamen laden
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
         new MSFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste(), "", Daten.listeFilme);
