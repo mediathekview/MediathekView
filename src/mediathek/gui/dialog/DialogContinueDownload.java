@@ -80,38 +80,30 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         public synchronized void run() {
             try {
                 for (w = Konstanten.DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN; w > 0; --w) {
-                    try {
-                        if (SwingUtilities.isEventDispatchThread()) {
-                            jLabel.setText("weiterführen in: " + w + " s");
-                        } else {
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    jLabel.setText("weiterführen in: " + w + " s");
-                                }
-                            });
-                        }
-                    } catch (Exception ex) {
-                        Log.fehlerMeldung(698989743, Log.FEHLER_ART_PROG, "ListenerMediathekView.pingen", ex);
-                    }
-                    this.wait(1000);
-                }
-                try {
                     if (SwingUtilities.isEventDispatchThread()) {
-                        beenden();
+                        jLabel.setText("weiterführen in: " + w + " s");
                     } else {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                beenden();
+                                jLabel.setText("weiterführen in: " + w + " s");
                             }
                         });
                     }
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(698989743, Log.FEHLER_ART_PROG, "ListenerMediathekView.pingen", ex);
+                    this.wait(1000);
+                }
+                if (SwingUtilities.isEventDispatchThread()) {
+                    beenden();
+                } else {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            beenden();
+                        }
+                    });
                 }
             } catch (Exception ex) {
-                System.out.println("wait: " + ex.getMessage());
+                Log.fehlerMeldung(698989743, Log.FEHLER_ART_PROG, "ListenerMediathekView.pingen", ex);
             }
         }
     }
@@ -151,7 +143,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
 
         jButtonJa.setText("Ja");
 
-        jLabelWait.setText("jLabel1");
+        jLabelWait.setText("0");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

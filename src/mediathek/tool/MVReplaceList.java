@@ -21,17 +21,19 @@ package mediathek.tool;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import mediathek.daten.Daten;
 
 public final class MVReplaceList {
 
     public final static String REPLACELIST = "Ersetzungstabelle";
-    LinkedList<String[]> liste = new LinkedList<>();
+    public final static String VON = "von";
+    public final static String NACH = "nach";
+    public final static String[] COLUMN_NAMES = {VON, NACH};
+    public static final int MAX_ELEM = 2;
 
-    public MVReplaceList() {
-    }
+    public static LinkedList<String[]> liste = new LinkedList<>();
 
     public void init() {
+        // vor dem ersetzen wenn leer:
         liste.add(new String[]{" ", "_"});
         liste.add(new String[]{"\n", "_"});
         liste.add(new String[]{"\"", "_"});
@@ -42,40 +44,52 @@ public final class MVReplaceList {
         liste.add(new String[]{":", "_"});
         liste.add(new String[]{"'", "_"});
         liste.add(new String[]{"|", "_"});
-        save();
     }
 
-    public String save() {
-        String ret = "";
-        Iterator<String[]> it = liste.iterator();
-        while (it.hasNext()) {
-            String[] s = it.next();
-            if (!ret.isEmpty()) {
-                ret += ":";
-                ret += s[0] + s[1];
-            } else {
-                ret += s[0] + s[1];
-            }
-        }
-        Daten.mVConfig.add(REPLACELIST, ret);
-        return ret;
-    }
-
-    public void load() {
-        if (!Daten.mVConfig.get(REPLACELIST).isEmpty()) {
-            try {
-                String s = Daten.mVConfig.get(REPLACELIST);
-                for (int i = 0; i < s.length(); ++i) {
-                    String[] sa = new String[2];
-                    sa[0] = s.substring(i, i + 1);
-                    ++i;
-                    sa[1] = s.substring(i, i + 1);
-                    liste.add(sa);
-                }
-            } catch (Exception ex) {
-            }
-        } else {
+    public String replace(String str) {
+        if (liste.isEmpty()) {
             init();
         }
+        Iterator<String[]> it = liste.iterator();
+        while (it.hasNext()) {
+            String[] sa = it.next();
+            str = str.replace(sa[0], sa[1]);
+        }
+        return str;
     }
+
+//    public void save() {
+//        String ret = "";
+//        try {
+//            Iterator<String[]> it = liste.iterator();
+//            while (it.hasNext()) {
+//                String[] s = it.next();
+//                ret += s[0] + s[1];
+//            }
+//            Daten.mVConfig.add(REPLACELIST, ret);
+//        } catch (Exception ex) {
+//            Log.fehlerMeldung(784512096, Log.FEHLER_ART_PROG, "MVReplaceList.save", ex);
+//            Daten.mVConfig.add(REPLACELIST, "");
+//        }
+//    }
+//
+//    public void load() {
+//        if (!Daten.mVConfig.get(REPLACELIST).isEmpty()) {
+//            try {
+//                String s = Daten.mVConfig.get(REPLACELIST);
+//                for (int i = 0; i < s.length(); ++i) {
+//                    String[] sa = new String[2];
+//                    sa[0] = s.substring(i, i + 1);
+//                    ++i;
+//                    sa[1] = s.substring(i, i + 1);
+//                    liste.add(sa);
+//                }
+//            } catch (Exception ex) {
+//                Log.fehlerMeldung(915263607, Log.FEHLER_ART_PROG, "MVReplaceList.load", ex);
+//                init();
+//            }
+//        } else {
+//            init();
+//        }
+//    }
 }
