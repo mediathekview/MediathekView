@@ -167,6 +167,8 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 }
             }
             if (isSelected) {
+                // setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize() < 12 ? 12 : getFont().getSize()));
+                // setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
                 setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
             } else {
                 setFont(new java.awt.Font(null));

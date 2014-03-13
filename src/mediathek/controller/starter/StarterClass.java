@@ -36,14 +36,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
+import mediathek.gui.dialog.DialogContinueDownload;
+import mediathek.gui.dialog.DialogDownloadfehler;
 import mediathek.tool.Datum;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.controller.Log;
-import mediathek.gui.dialog.DialogDownloadfehler;
 import mediathek.tool.MVInputStream;
 import mediathek.tool.MVNotification;
 import mediathek.tool.MVUrlDateiGroesse;
@@ -312,6 +313,7 @@ public class StarterClass {
             notifyStartEvent(datenDownload);
         }
 
+        @Override
         public void run() {
             startmeldung(datenDownload, start);
             MVInputStream input;
@@ -329,11 +331,9 @@ public class StarterClass {
                     File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                     int downloaded = 0;
                     if (file.exists()) {
-                        int ret = JOptionPane.showConfirmDialog(null, "\"" + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR] + "\"\n\n"
-                                + "Filmdatei existiert bereits.\n"
-                                + "Datei weiterführen?\n"
-                                + "(Ansonsten Datei überschreiben und von Anfang beginnen)", "Weiterführen?", JOptionPane.YES_NO_OPTION);
-                        if (ret == JOptionPane.OK_OPTION) {
+                        DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(null, datenDownload);
+                        dialogContinueDownload.setVisible(true);
+                        if (dialogContinueDownload.weiter) {
                             downloaded = (int) file.length();
                         }
                     }
