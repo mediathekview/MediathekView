@@ -86,7 +86,7 @@ public class IoXmlLesen {
                                 }
                             }
                             //ende Programgruppen
-                        } else if (parser.getLocalName().equals(DatenAbo.ABO)) {
+                        } else if (parser.getLocalName().equals(MVReplaceList.REPLACELIST)) {
                             // Ersetzungstabelle
                             String[] sa = new String[MVReplaceList.MAX_ELEM];
                             if (get(parser, event, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
