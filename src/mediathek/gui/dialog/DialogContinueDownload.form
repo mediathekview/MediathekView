@@ -105,7 +105,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelWait">
       <Properties>
-        <Property name="text" type="java.lang.String" value="jLabel1"/>
+        <Property name="text" type="java.lang.String" value="0"/>
       </Properties>
     </Component>
   </SubComponents>

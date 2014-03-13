@@ -42,6 +42,7 @@ import mediathek.daten.DatenPset;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
+import mediathek.tool.MVReplaceList;
 import msearch.filmeLaden.DatenFilmlistenServer;
 import msearch.filmeLaden.DatenUrlFilmliste;
 import msearch.filmeLaden.MSFilmlistenSuchen;
@@ -106,6 +107,11 @@ public class IoXmlSchreiben {
             xmlSchreibenProg(daten);
 
             writer.writeCharacters("\n\n");
+            writer.writeComment("Ersetzungstabelle");
+            writer.writeCharacters("\n");
+            xmlSchreibenErsetzungstabelle();
+
+            writer.writeCharacters("\n\n");
             writer.writeComment("Downloads");
             writer.writeCharacters("\n");
             xmlSchreibenDownloads(daten);
@@ -141,6 +147,15 @@ public class IoXmlSchreiben {
         writer.writeCharacters("\n");//neue Zeile
         writer.writeStartElement(Konstanten.XML_START);
         writer.writeCharacters("\n");//neue Zeile
+    }
+
+    private void xmlSchreibenErsetzungstabelle() {
+        ListIterator<String[]> iterator;
+        iterator = Daten.mVReplaceList.liste.listIterator();
+        while (iterator.hasNext()) {
+            String[] sa = iterator.next();
+            xmlSchreibenDaten(MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa, false);
+        }
     }
 
     private void xmlSchreibenProg(Daten daten) {

@@ -274,7 +274,6 @@ public class Daten {
         updateSplashScreen("Lade History...");
         history.laden();
         mVColor.load(); // Farben einrichten
-        mVReplaceList.load(); // Ersetzungstabelle für Dateinamen laden
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
         new MSFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste(), "", Daten.listeFilme);

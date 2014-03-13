@@ -44,6 +44,7 @@ import mediathek.daten.ListePset;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
+import mediathek.tool.MVReplaceList;
 import msearch.filmeLaden.DatenFilmlistenServer;
 import msearch.filmeLaden.DatenUrlFilmliste;
 import msearch.filmeLaden.MSFilmlistenSuchen;
@@ -85,6 +86,12 @@ public class IoXmlLesen {
                                 }
                             }
                             //ende Programgruppen
+                        } else if (parser.getLocalName().equals(DatenAbo.ABO)) {
+                            // Ersetzungstabelle
+                            String[] sa = new String[MVReplaceList.MAX_ELEM];
+                            if (get(parser, event, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
+                                Daten.mVReplaceList.liste.add(sa);
+                            }
                         } else if (parser.getLocalName().equals(DatenAbo.ABO)) {
                             //Abo
                             DatenAbo datenAbo = new DatenAbo();
