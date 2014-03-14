@@ -90,6 +90,33 @@ public class GuiFunktionen extends Funktionen {
         }
     }
 
+    public static String checkDateiname(String name) {
+        // aus einem Pfadnamen/Dateinamen werden verbotene Zeichen entfernt
+        // "istDatei" kennzeichnet einen Dateinamen, sonst Pfadnamen
+        // verbotene Zeichen entfernen
+        // < > ? " : | \ / *
+        String ret = name;
+        if (Funktionen.getOs() == Funktionen.OS_WIN_32BIT || Funktionen.getOs() == Funktionen.OS_WIN_64BIT) {
+            // win verträgt keine Pfadnamen/Dateinamen mit einem "." am Schluß
+            while (ret.length() > 0 && ret.endsWith(".")) {
+                ret = ret.substring(0, ret.length() - 1);
+            }
+        }
+        ret = ret.replace("\\", "-");
+        ret = ret.replace("/", "-");
+        ret = ret.replace(" ", "_");
+        ret = ret.replace("\n", "_");
+        ret = ret.replace("\"", "_");
+        ret = ret.replace("*", "_");
+        ret = ret.replace("?", "_");
+        ret = ret.replace("<", "_");
+        ret = ret.replace(">", "_");
+        ret = ret.replace(":", "_");
+        ret = ret.replace("'", "_");
+        ret = ret.replace("|", "_");
+        return ret;
+    }
+
     public static String replaceLeerDateiname(String pfad, boolean istDatei, boolean leerEntfernen) {
         // aus einem Pfadnamen/Dateinamen werden verbotene Zeichen entfernt
         // "istDatei" kennzeichnet einen Dateinamen, sonst Pfadnamen
