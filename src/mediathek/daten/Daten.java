@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import mediathek.MediathekGui;
@@ -57,46 +55,46 @@ import msearch.io.MSFilmlisteLesen;
 import msearch.io.MSFilmlisteSchreiben;
 
 public class Daten {
-    // Konstanten, Systemeinstellungen und alles was wichtig
 
-    //alle Programmeinstellungen
-//    public static String[] system = new String[Konstanten.SYSTEM_MAX_ELEM];
-    public static MVConfig mVConfig = new MVConfig();
     // flags
     public static boolean debug = false; // Debugmodus
     public static boolean auto = false; // Version: MediathekAuto
     public static boolean RESET = false; // Programm auf Starteinstellungen zurücksetzen
+
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis = "";
+
+    //alle Programmeinstellungen
+    public static MVConfig mVConfig = new MVConfig();
+
+
     // zentrale Klassen
-    public static MVColor mVColor = new MVColor();
-    public static MVReplaceList mVReplaceList = new MVReplaceList();
-    public static FilmeLaden filmeLaden;
+    public static MVColor mVColor = new MVColor(); // verwendete Farben
+    public static MVReplaceList mVReplaceList = new MVReplaceList(); // Ersetzungsliste für die Namen der Downloads
+    public static FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     public static ListeFilme listeFilme = null;
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    public static String proxyUrl = "";
-    public static int proxyPort = -1;
-    public static ListeFilme listeFilmeNachBlackList = null;
+    public static ListeFilme listeFilmeNachBlackList = null; // ist DIE Filmliste
     public static ListeFilme listeFilmeHistory = null; // für die HEUTIGE HISTORY
     public static ListeDownloads listeDownloads = null; // Filme die als "Download: Tab Download" geladen werden sollen
     public static ListeDownloads listeDownloadsButton = null; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     public static ListeBlacklist listeBlacklist = null;
     public ListePset listePset = null;
     public static ListeAbo listeAbo = null;
-    public History history = null;
-    public ErledigteAbos erledigteAbos = null;
-    // globale Objekte
-    public IoXmlLesen ioXmlLesen = null;
-    public IoXmlSchreiben ioXmlSchreiben = null;
-    public StarterClass starterClass = null; // Klasse zum Ausführen der Programme: VLC, flvstreamer, ...
-    // Panel
+    public History history = null; // alle angesehenen Filme
+    public ErledigteAbos erledigteAbos = null; // erfolgreich geladenen Abos
+
+    public IoXmlLesen ioXmlLesen = null; // Konfig laden
+    public IoXmlSchreiben ioXmlSchreiben = null; //Konfig speichern
+    public StarterClass starterClass = null; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
+
+    // Gui
     public MediathekGui mediathekGui = null; // JFrame der Gui
     public GuiFilme guiFilme = null; // Tab mit den Filmen
     public GuiDownloads guiDownloads = null; // Tab mit den Downloads
     public GuiAbo guiAbo = null; // Tab mit den Abos
-    // für die Tabellen
-    public boolean nachDownloadShutDown = false;
-    public MVFilmInformation filmInfoHud = null;
+    public MVFilmInformation filmInfoHud = null; // Infos zum Film
+
     private Timer timer;
 
     public Daten(String basis, MediathekGui gui) {
