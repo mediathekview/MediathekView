@@ -38,7 +38,6 @@ public final class MVReplaceList {
         if (liste.isEmpty()) {
             // wenn leer:
             liste.add(new String[]{" ", "_"});
-            liste.add(new String[]{"\n", "_"});
             liste.add(new String[]{"\"", "_"});
             liste.add(new String[]{"*", "_"});
             liste.add(new String[]{"?", "_"});
@@ -47,6 +46,14 @@ public final class MVReplaceList {
             liste.add(new String[]{":", "_"});
             liste.add(new String[]{"'", "_"});
             liste.add(new String[]{"|", "_"});
+            liste.add(new String[]{"", "_"});
+            liste.add(new String[]{"", "_"});
+            liste.add(new String[]{"", "_"});
+            liste.add(new String[]{"", "_"});
+            liste.add(new String[]{"", "_"});
+            liste.add(new String[]{"", "_"});
+            liste.add(new String[]{"", "_"});
+            liste.add(new String[]{"", "_"});
         }
     }
 

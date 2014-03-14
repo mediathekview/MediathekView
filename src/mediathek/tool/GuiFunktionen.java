@@ -221,8 +221,7 @@ public class GuiFunktionen extends Funktionen {
                 r += "z";
             } else if (c == 'æ') {
                 r += "ae";
-            } else // Rest
-            if (c == '\n') {
+            } else if (c == '\n') {
             } else if (c == '–') {
                 r += "-";
             } else if (c == '„') {
