@@ -80,7 +80,7 @@
                       <Component id="jCheckBoxAboSuchen" min="-2" max="-2" attributes="0"/>
                       <Component id="jCheckBoxDownloadSofortStarten" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="176" max="32767" attributes="0"/>
                   <Component id="jButtonHilfeNeuladen" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -96,7 +96,7 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jCheckBoxDownloadSofortStarten" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="9" max="32767" attributes="0"/>
+                  <EmptySpace pref="13" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -171,7 +171,7 @@
                       <Component id="jRadioButtonManuel" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jTextFieldUserAgent" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="27" max="32767" attributes="0"/>
+                  <EmptySpace pref="31" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -231,17 +231,18 @@
                           <Component id="jRadioButtonNamenNormal" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jRadioButtonNameAscii" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="122" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="jButtonHilfeZielname" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jRadioButtonNameNix" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jRadioButtonNameUnicode" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jRadioButtonNameTabelle" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="jButtonBearbeiten" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <Component id="jRadioButtonNameUnicode" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jRadioButtonNameNix" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
@@ -260,13 +261,15 @@
                       <Component id="jRadioButtonNameAscii" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jRadioButtonNameUnicode" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jRadioButtonNameNix" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jRadioButtonNameUnicode" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jRadioButtonNameTabelle" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonBearbeiten" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="16" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -287,7 +290,7 @@
             <Property name="text" type="java.lang.String" value="einfache Pr&#xfc;fung"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JRadioButton" name="jRadioButtonNameUnicode">
+        <Component class="javax.swing.JRadioButton" name="jRadioButtonNameTabelle">
           <Properties>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup2"/>
@@ -318,6 +321,14 @@
         <Component class="javax.swing.JButton" name="jButtonBearbeiten">
           <Properties>
             <Property name="text" type="java.lang.String" value="Bearbeiten"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JRadioButton" name="jRadioButtonNameUnicode">
+          <Properties>
+            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+              <ComponentRef name="buttonGroup2"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Unicode-Zeichen &quot;vereinfachen&quot;"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -392,7 +403,7 @@
                           <Component id="jButtonProgrammVideoplayer" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="30" max="32767" attributes="0"/>
+                  <EmptySpace pref="34" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -474,7 +485,7 @@
                       <Component id="jButtonProgrammUrl" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonHilfeProgrammUrl" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="30" max="32767" attributes="0"/>
+                  <EmptySpace pref="34" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
