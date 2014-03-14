@@ -23,6 +23,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
+import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
 import mediathek.tool.AsxLesen;
 import mediathek.tool.Datum;
@@ -31,7 +32,6 @@ import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.controller.Log;
 import mediathek.tool.MVFilmSize;
 import msearch.daten.DatenFilm;
 

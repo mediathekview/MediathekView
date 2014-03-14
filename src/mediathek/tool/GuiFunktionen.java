@@ -128,10 +128,6 @@ public class GuiFunktionen extends Funktionen {
         }
         ret = ret.replace("\n", "_");
         ret = ret.replace("\"", "_");
-//        ret = ret.replace(",", "_");
-//        ret = ret.replace(";", "_");
-//        ret = ret.replace("(", "_");
-//        ret = ret.replace(")", "_");
         ret = ret.replace("*", "_");
         ret = ret.replace("?", "_");
         ret = ret.replace("<", "_");

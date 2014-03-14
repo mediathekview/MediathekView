@@ -20,7 +20,6 @@
 package mediathek.tool;
 
 import mediathek.controller.Log;
-import msearch.daten.DatenFilm;
 
 public class MVFilmSize implements Comparable<MVFilmSize> {
 
@@ -47,7 +46,6 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
             aktSizeL = -1L;
             sizeL = 0L;
             sizeStr = "";
-            return;
         } else {
             try {
                 sizeL = Long.valueOf(size);

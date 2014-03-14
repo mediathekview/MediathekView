@@ -34,7 +34,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
@@ -47,7 +46,6 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVInputStream;
 import mediathek.tool.MVNotification;
-import mediathek.tool.MVUrlDateiGroesse;
 import msearch.daten.DatenFilm;
 
 public class StarterClass {
@@ -320,7 +318,7 @@ public class StarterClass {
             try {
                 int len;
                 new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
-                datenDownload.mVFilmSize.setSize(MVUrlDateiGroesse.laenge(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]));
+                datenDownload.mVFilmSize.setSize(laenge(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]));
                 datenDownload.mVFilmSize.setAktSize(0);
                 BufferedInputStream srcBuffer = null;
                 BufferedOutputStream destBuffer = null;
@@ -430,7 +428,7 @@ public class StarterClass {
             try {
                 int len;
                 new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
-                datenDownload.mVFilmSize.setSize(MVUrlDateiGroesse.laenge(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]));
+                datenDownload.mVFilmSize.setSize(laenge(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]));
                 datenDownload.mVFilmSize.setAktSize(0);
                 BufferedInputStream srcBuffer = null;
                 BufferedOutputStream destBuffer = null;
@@ -660,6 +658,36 @@ public class StarterClass {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, StarterClass.class.getSimpleName());
             }
         }
+    }
+
+    private long laenge(String url) {
+        final int TIMEOUT = 2500; // ms
+        // liefert die Dateigröße einer URL in BYTE!
+        // oder -1
+        long ret = -1;
+        if (!url.toLowerCase().startsWith("http")) {
+            return ret;
+        }
+        try {
+            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+            conn.setReadTimeout(TIMEOUT);
+            conn.setConnectTimeout(TIMEOUT);
+            if (conn.getResponseCode() < 400) {
+                ret = conn.getContentLengthLong(); //gibts erst seit jdk 7
+                // ret = conn.getContentLength();
+                conn.disconnect();
+            }
+        } catch (Exception ex) {
+            ret = -1;
+            Log.fehlerMeldung(643298301, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload.laenge", ex);
+        }
+        if (ret < 300 * 1024) {
+            // alles unter 300k sind Playlisten, ...
+            // dann wars nix
+            ret = -1;
+        }
+        return ret;
     }
 
     private void writeInfoFile(DatenDownload datenDownload) {
