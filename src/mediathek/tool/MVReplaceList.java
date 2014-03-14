@@ -26,24 +26,28 @@ public final class MVReplaceList {
 
     public final static String REPLACELIST = "Ersetzungstabelle";
     public final static String VON = "von";
+    public final static int VON_NR = 0;
     public final static String NACH = "nach";
+    public final static int NACH_NR = 1;
     public final static String[] COLUMN_NAMES = {VON, NACH};
     public static final int MAX_ELEM = 2;
 
     public static LinkedList<String[]> liste = new LinkedList<>();
 
     public void init() {
-        // vor dem ersetzen wenn leer:
-        liste.add(new String[]{" ", "_"});
-        liste.add(new String[]{"\n", "_"});
-        liste.add(new String[]{"\"", "_"});
-        liste.add(new String[]{"*", "_"});
-        liste.add(new String[]{"?", "_"});
-        liste.add(new String[]{"<", "_"});
-        liste.add(new String[]{">", "_"});
-        liste.add(new String[]{":", "_"});
-        liste.add(new String[]{"'", "_"});
-        liste.add(new String[]{"|", "_"});
+        if (liste.isEmpty()) {
+            // wenn leer:
+            liste.add(new String[]{" ", "_"});
+            liste.add(new String[]{"\n", "_"});
+            liste.add(new String[]{"\"", "_"});
+            liste.add(new String[]{"*", "_"});
+            liste.add(new String[]{"?", "_"});
+            liste.add(new String[]{"<", "_"});
+            liste.add(new String[]{">", "_"});
+            liste.add(new String[]{":", "_"});
+            liste.add(new String[]{"'", "_"});
+            liste.add(new String[]{"|", "_"});
+        }
     }
 
     public String replace(String str) {

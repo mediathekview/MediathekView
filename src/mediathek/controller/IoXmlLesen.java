@@ -70,7 +70,6 @@ public class IoXmlLesen {
                         //String t = parser.getLocalName();
                         if (parser.getLocalName().equals(MVConfig.SYSTEM)) {
                             //System
-//                            get(parser, event, Konstanten.SYSTEM, Konstanten.SYSTEM_COLUMN_NAMES, Daten.system);
                             getConfig(parser, MVConfig.SYSTEM, Daten.mVConfig, true);
                         } else if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
                             //Programmgruppen

@@ -19,7 +19,6 @@
  */
 package mediathek.gui;
 
-import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;

@@ -42,7 +42,7 @@ import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 
 public class PanelEinstellungenErweitert extends PanelVorlage {
-
+    
     public PanelEinstellungenErweitert(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
@@ -119,28 +119,28 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 jRadioButtonNameUnicode.setSelected(true);
         }
         jRadioButtonNamenNormal.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_NORMAL);
             }
         });
         jRadioButtonNameAscii.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_ASCII);
             }
         });
         jRadioButtonNameUnicode.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_UNICODE);
             }
         });
         jRadioButtonNameNix.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_NIX);
@@ -182,7 +182,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     }
                 }
                 // merken und prüfen
-                Daten.mVConfig.add(MVConfig.SYSTEM_ORDNER_OEFFNEN,jTextFieldProgrammDateimanager.getText());
+                Daten.mVConfig.add(MVConfig.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager.getText());
                 String programm = jTextFieldProgrammDateimanager.getText();
                 if (!programm.equals("")) {
                     try {
@@ -194,7 +194,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     } catch (Exception ignored) {
                     }
                 }
-
+                
             }
         });
         jButtonProgrammVideoplayer.addActionListener(new ActionListener() {
@@ -244,7 +244,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     } catch (Exception ignored) {
                     }
                 }
-
+                
             }
         });
         jButtonProgrammUrl.addActionListener(new ActionListener() {
@@ -294,7 +294,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     } catch (Exception ignored) {
                     }
                 }
-
+                
             }
         });
         jButtonHilfeProgrammDateimanager.setIcon(GetIcon.getIcon("help_16.png"));
@@ -359,17 +359,17 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             public void insertUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             @Override
             public void changedUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             private void tus() {
                 Daten.mVConfig.add(MVConfig.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager.getText());
             }
@@ -380,17 +380,17 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             public void insertUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             @Override
             public void changedUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             private void tus() {
                 Daten.mVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer.getText());
             }
@@ -401,23 +401,30 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             public void insertUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             @Override
             public void changedUpdate(DocumentEvent e) {
                 tus();
             }
-
+            
             private void tus() {
                 Daten.mVConfig.add(MVConfig.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl.getText());
             }
         });
+        jButtonBearbeiten.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogErsetzungstabelle(parentComponent, true, daten).setVisible(true);
+            }
+        });
     }
-
+    
     private void init() {
         // UserAgent
         jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
@@ -431,7 +438,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jTextFieldProgrammDateimanager.setText(Daten.mVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN));
         jTextFieldProgrammUrl.setText(Daten.mVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN));
     }
-
+    
     private void setUserAgent() {
         if (jRadioButtonAuto.isSelected()) {
             Daten.setUserAgentAuto();
@@ -467,6 +474,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jRadioButtonNameUnicode = new javax.swing.JRadioButton();
         jRadioButtonNameAscii = new javax.swing.JRadioButton();
         jRadioButtonNameNix = new javax.swing.JRadioButton();
+        jButtonBearbeiten = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jTextFieldProgrammDateimanager = new javax.swing.JTextField();
         jButtonProgrammDateimanager = new javax.swing.JButton();
@@ -511,7 +519,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jButtonHilfeNeuladen))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxDownloadSofortStarten)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("User-Agent"));
@@ -556,7 +564,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jRadioButtonManuel)
                     .addComponent(jTextFieldUserAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfe, jTextFieldAuto, jTextFieldUserAgent});
@@ -570,7 +578,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         buttonGroup2.add(jRadioButtonNameUnicode);
         jRadioButtonNameUnicode.setSelected(true);
-        jRadioButtonNameUnicode.setText("Unicode-Zeichen \"vereinfachen\"");
+        jRadioButtonNameUnicode.setText("Ersetzungstabelle");
 
         buttonGroup2.add(jRadioButtonNameAscii);
         jRadioButtonNameAscii.setText("nur ASCII-Zeichen erlauben");
@@ -578,6 +586,8 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         buttonGroup2.add(jRadioButtonNameNix);
         jRadioButtonNameNix.setForeground(new java.awt.Color(153, 0, 51));
         jRadioButtonNameNix.setText("Keine Veränderung vornehmen (dann selbst prüfen!)");
+
+        jButtonBearbeiten.setText("Bearbeiten");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -588,15 +598,17 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jRadioButtonNamenNormal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jRadioButtonNameAscii)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
                         .addComponent(jButtonHilfeZielname))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jRadioButtonNameNix)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jRadioButtonNameUnicode)
-                                .addGap(18, 18, 18)
-                                .addComponent(jRadioButtonNameAscii)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButtonBearbeiten)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -606,13 +618,14 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonHilfeZielname)
-                    .addComponent(jRadioButtonNamenNormal))
+                    .addComponent(jRadioButtonNamenNormal)
+                    .addComponent(jRadioButtonNameAscii))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButtonNameNix)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jRadioButtonNameUnicode)
-                    .addComponent(jRadioButtonNameAscii))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButtonNameNix)
+                    .addComponent(jButtonBearbeiten))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -678,7 +691,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButtonHilfeVideoplayer)
                         .addComponent(jButtonProgrammVideoplayer)))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammDateimanager, jButtonProgrammDateimanager, jTextFieldProgrammDateimanager});
@@ -712,7 +725,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jTextFieldProgrammUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonProgrammUrl)
                     .addComponent(jButtonHilfeProgrammUrl))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammUrl, jButtonProgrammUrl, jTextFieldProgrammUrl});
@@ -744,11 +757,12 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.JButton jButtonBearbeiten;
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonHilfeNeuladen;
     private javax.swing.JButton jButtonHilfeProgrammDateimanager;
@@ -778,22 +792,22 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     // End of variables declaration//GEN-END:variables
 
     private class BeobUserAgent implements DocumentListener {
-
+        
         @Override
         public void insertUpdate(DocumentEvent e) {
             tus();
         }
-
+        
         @Override
         public void removeUpdate(DocumentEvent e) {
             tus();
         }
-
+        
         @Override
         public void changedUpdate(DocumentEvent e) {
             tus();
         }
-
+        
         private void tus() {
             Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
         }
