@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -46,61 +47,23 @@ public final class MVReplaceList {
             liste.add(new String[]{":", "_"});
             liste.add(new String[]{"'", "_"});
             liste.add(new String[]{"|", "_"});
-            liste.add(new String[]{"", "_"});
-            liste.add(new String[]{"", "_"});
-            liste.add(new String[]{"", "_"});
-            liste.add(new String[]{"", "_"});
-            liste.add(new String[]{"", "_"});
-            liste.add(new String[]{"", "_"});
-            liste.add(new String[]{"", "_"});
-            liste.add(new String[]{"", "_"});
         }
     }
 
-    public String replace(String str) {
+    public String replace(String str, boolean pfad) {
         if (liste.isEmpty()) {
             init();
         }
         Iterator<String[]> it = liste.iterator();
         while (it.hasNext()) {
             String[] sa = it.next();
+            if (pfad && sa[1].equals(File.separator)) {
+                // dann kann er nicht entfernt werden :(
+                continue;
+            }
             str = str.replace(sa[0], sa[1]);
         }
         return str;
     }
 
-//    public void save() {
-//        String ret = "";
-//        try {
-//            Iterator<String[]> it = liste.iterator();
-//            while (it.hasNext()) {
-//                String[] s = it.next();
-//                ret += s[0] + s[1];
-//            }
-//            Daten.mVConfig.add(REPLACELIST, ret);
-//        } catch (Exception ex) {
-//            Log.fehlerMeldung(784512096, Log.FEHLER_ART_PROG, "MVReplaceList.save", ex);
-//            Daten.mVConfig.add(REPLACELIST, "");
-//        }
-//    }
-//
-//    public void load() {
-//        if (!Daten.mVConfig.get(REPLACELIST).isEmpty()) {
-//            try {
-//                String s = Daten.mVConfig.get(REPLACELIST);
-//                for (int i = 0; i < s.length(); ++i) {
-//                    String[] sa = new String[2];
-//                    sa[0] = s.substring(i, i + 1);
-//                    ++i;
-//                    sa[1] = s.substring(i, i + 1);
-//                    liste.add(sa);
-//                }
-//            } catch (Exception ex) {
-//                Log.fehlerMeldung(915263607, Log.FEHLER_ART_PROG, "MVReplaceList.load", ex);
-//                init();
-//            }
-//        } else {
-//            init();
-//        }
-//    }
 }

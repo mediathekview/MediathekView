@@ -57,6 +57,8 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
             public void actionPerformed(ActionEvent e) {
                 Daten.mVReplaceList.liste.clear();
                 Daten.mVReplaceList.init();
+                tabelleLaden();
+                setTextfelder();
             }
         });
         jButtonPlus.addActionListener(new ActionListener() {

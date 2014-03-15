@@ -117,62 +117,56 @@ public class GuiFunktionen extends Funktionen {
         return ret;
     }
 
-    public static String replaceLeerDateiname(String pfad, boolean istDatei, boolean leerEntfernen) {
+    public static String replaceLeerDateiname(String name, boolean istDatei, boolean leerEntfernen) {
         // aus einem Pfadnamen/Dateinamen werden verbotene Zeichen entfernt
         // "istDatei" kennzeichnet einen Dateinamen, sonst Pfadnamen
         // verbotene Zeichen entfernen
         // < > ? " : | \ / *
         if (Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_NIX)) {
             // dann wars das!
-            return pfad;
+            return name;
         }
-        String ret = pfad;
+        String ret = name;
+        //=================
+        // Windows
         boolean winPfad = false;
-        if (!istDatei && pfad.length() >= 2) {
-            if (pfad.charAt(1) == ':') {
-                // damit auch "d:" und nicht nur "d:\" als Pfad geht
-                winPfad = true;
-            }
-        }
         if (Funktionen.getOs() == Funktionen.OS_WIN_32BIT || Funktionen.getOs() == Funktionen.OS_WIN_64BIT) {
+            if (!istDatei && ret.length() > 1) {
+                if (ret.charAt(1) == ':') {
+                    // damit auch "d:" und nicht nur "d:\" als Pfad geht
+                    winPfad = true;
+                    ret = ret.replaceFirst(":", ""); // muss zum Schluss wieder rein, kann aber so nicht ersetzt werden
+                }
+            }
             // win verträgt keine Pfadnamen/Dateinamen mit einem "." am Schluß
             while (ret.length() > 0 && ret.endsWith(".")) {
                 ret = ret.substring(0, ret.length() - 1);
             }
         }
+        //===========================
         if (istDatei) {
-            ret = ret.replace("\\", "-");
-            ret = ret.replace("/", "-");
-        } else {
             if (File.separator.equals("\\")) {
-                ret = ret.replace("/", "-");
+                ret = ret.replace("\\", "");
             } else {
-                ret = ret.replace("\\", "-");
+                ret = ret.replace("/", "");
             }
         }
-        if (leerEntfernen) {
-            ret = ret.replace(" ", "_");
-        }
-        ret = ret.replace("\n", "_");
-        ret = ret.replace("\"", "_");
-        ret = ret.replace("*", "_");
-        ret = ret.replace("?", "_");
-        ret = ret.replace("<", "_");
-        ret = ret.replace(">", "_");
-        ret = ret.replace(":", "_");
-        ret = ret.replace("'", "_");
-        ret = ret.replace("|", "_");
-        if (Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_UNICODE)) {
+        ret = ret.replace("\n", "");
+        Daten.mVReplaceList.replace(ret, !istDatei);
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_UNICODE))) {
+            // wenn gewünscht, Unicode "vereinfachen"
             ret = cleanUnicode(ret, "_");
-        } else if (Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_ASCII)) {
+        }
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_ASCII)) {
+            // wenn gewünscht, dann NUR Asccii-Zeichen erlauben
             ret = getAscii(ret);
         }
         if (winPfad) {
             // c: wieder herstellen
-            if (ret.length() >= 3) {
-                ret = ret.substring(0, 1) + ":" + ret.substring(2);
-            } else if (ret.length() >= 2) {
-                ret = ret.substring(0, 1) + ":";
+            if (ret.length() == 1) {
+                ret = ret + ":";
+            } else if (ret.length() > 1) {
+                ret = ret.charAt(0) + ":" + ret.substring(1);
             }
         }
         return ret;
