@@ -4,16 +4,22 @@ werden können. Beim Speichern kann das Probleme
 verursachen.
 
 
-* "Unicode-Zeichen vereinfachen" (Empfehlung)
+* "einfache Prüfung" (Empfehlung)
 Es wird versucht Zeichen, die Probleme verursachen 
-können, zu ersetzen.
-
+können, zu ersetzen. Die Ersetzungstabelle kann
+angepasst werden.
 
 * "nur ASCII-Zeichen erlauben"
-Dabei wird noch strenger vorgegangen. Es werden
-auch z.B. Umlaute "ö -> oe" ersetzt.
+Da werden ZUSÄTZLICH alle Zeichen "über 127" ersetzt.
+Auch Umlaute "ö -> oe" werden ersetzt.
 
 
 * "keine Veränderungen vornehmen ..."
 Es werden KEINE Veränderungen am Dateinamen vorgenommen.
 Man muss selbst prüfen, ob das Betriebssystem damit klar kommt.
+
+
+# "Unicode-Zeichen vereinfachen" (Empfehlung)
+Es wird versucht Unicode-Zeichen, die Probleme verursachen 
+können oder nicht richtig dargestellt werden können,
+zu ersetzen.

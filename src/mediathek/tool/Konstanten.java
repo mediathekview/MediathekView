@@ -55,8 +55,6 @@ public class Konstanten {
 
     public static final String ZIELNAMEN_ANPASSEN_NORMAL = "normal";
     public static final String ZIELNAMEN_ANPASSEN_ASCII = "ascii";
-    public static final String ZIELNAMEN_ANPASSEN_UNICODE = "unicode";
-    public static final String ZIELNAMEN_ANPASSEN_TABELLE = "tabelle";
     public static final String ZIELNAMEN_ANPASSEN_NIX = "NIX";
-    public static final String ZIELNAMEN_ANPASSEN_ERSETZUNGSTABELLE = "Ersetzungstabelle";
+
 }
