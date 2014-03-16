@@ -23,8 +23,8 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
-import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.controller.Log;
+import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVMessageDialog;
 
 public class DatenPset {
@@ -66,7 +66,7 @@ public class DatenPset {
     public static final String PROGRAMMSET_INFODATEI = "Infodatei";
     public static final int PROGRAMMSET_INFODATEI_NR = 16;
     public static final int MAX_ELEM = 17;
-    public static final String[] COLUMN_NAMES = {"Setname", PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
+    public static final String[] COLUMN_NAMES = {"Setname", "Präfix", PROGRAMMSET_SUFFIX_DIREKT,
         PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
         PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
         PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, "Auflösung", PROGRAMMSET_ADD_ON,

@@ -39,8 +39,9 @@ public class DatenProg {
     public static final String PROGRAMM_RESTART = "Restart";
     public static final int PROGRAMM_RESTART_NR = 6;
     public static final int MAX_ELEM = 7;
-    public static final String[] COLUMN_NAMES = {"Beschreibung", PROGRAMM_ZIEL_DATEINAME, PROGRAMM_PROGRAMMPFAD,
-        PROGRAMM_SCHALTER, PROGRAMM_PRAEFIX, PROGRAMM_SUFFIX, PROGRAMM_RESTART};
+    public static final String[] COLUMN_NAMES = {"Beschreibung", PROGRAMM_ZIEL_DATEINAME, "Programm",
+        "Schalter", "Präfix", PROGRAMM_SUFFIX, PROGRAMM_RESTART};
+
     public static final String[] COLUMN_NAMES_ = {PROGRAMM_NAME, PROGRAMM_ZIEL_DATEINAME, PROGRAMM_PROGRAMMPFAD,
         PROGRAMM_SCHALTER, PROGRAMM_PRAEFIX, PROGRAMM_SUFFIX, PROGRAMM_RESTART};
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
