@@ -26,6 +26,7 @@
 	- http-Downloads können unterbrochen und fortgesetzt werden
 	- Diff: es gibt "Diffs" der Filmliste, so braucht nur ein Diff-File und nicht die ganze Liste geladen werden
 	- verwendete Farben können in den Einstellungen verändert werden
+	- die Ersetzung von "verbotenen" Zeichen für Namen von Downloads kann angepasst werden
 	
 	# Version 4
 	- Das Dateiformat der Filmliste ist auf "json" geändert worden, die Liste zum Download wird mit den XZ Utils mit "LZMA2" komprimiert
