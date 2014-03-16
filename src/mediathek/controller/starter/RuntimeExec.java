@@ -25,9 +25,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import mediathek.controller.Log;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.controller.Log;
 
 public class RuntimeExec {
 
@@ -194,19 +194,4 @@ public class RuntimeExec {
             }
         }
     }
-//    private static final String TASKLIST = "tasklist";
-//
-//    public static String isProcessRunging() throws Exception {
-//        String ret = "";
-//        Process p = Runtime.getRuntime().exec(TASKLIST);
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-//        String line;
-//        while ((line = reader.readLine()) != null) {
-//            System.out.println(line);
-//            ret += line + "\n";
-//        }
-//
-//        return ret;
-//
-//    }
 }
