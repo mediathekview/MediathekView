@@ -189,6 +189,13 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
     }
 
     private void beenden() {
+        Iterator<String[]> iterator = Daten.mVReplaceList.liste.iterator();
+        while (iterator.hasNext()) {
+            String[] s = iterator.next();
+            if (s[0].isEmpty() && s[1].isEmpty()) {
+                iterator.remove();
+            }
+        }
         this.dispose();
     }
 
