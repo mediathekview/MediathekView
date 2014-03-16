@@ -90,10 +90,9 @@ public class GuiFunktionen extends Funktionen {
         }
     }
 
-    public static String checkDateiname(String name) {
-        // aus einem Pfadnamen/Dateinamen werden verbotene Zeichen entfernt
-        // "istDatei" kennzeichnet einen Dateinamen, sonst Pfadnamen
-        // verbotene Zeichen entfernen
+    public static String checkDateiname(String name, boolean pfad) {
+        // dient nur zum Anzeigen falls es Probleme mit dem
+        // Namen geben könnte
         // < > ? " : | \ / *
         String ret = name;
         if (Funktionen.getOs() == Funktionen.OS_WIN_32BIT || Funktionen.getOs() == Funktionen.OS_WIN_64BIT) {
@@ -102,8 +101,16 @@ public class GuiFunktionen extends Funktionen {
                 ret = ret.substring(0, ret.length() - 1);
             }
         }
-        ret = ret.replace("\\", "-");
-        ret = ret.replace("/", "-");
+        if (pfad) {
+            if (File.separator.equals("/")) {
+                ret = ret.replace("\\", "-");
+            } else {
+                ret = ret.replace("/", "-");
+            }
+        } else {
+            ret = ret.replace("\\", "-");
+            ret = ret.replace("/", "-");
+        }
         ret = ret.replace(" ", "_");
         ret = ret.replace("\n", "_");
         ret = ret.replace("\"", "_");
@@ -127,7 +134,7 @@ public class GuiFunktionen extends Funktionen {
             return name;
         }
         String ret = name;
-        //=================
+        // ===============================
         // Windows
         boolean winPfad = false;
         if (Funktionen.getOs() == Funktionen.OS_WIN_32BIT || Funktionen.getOs() == Funktionen.OS_WIN_64BIT) {
@@ -143,7 +150,8 @@ public class GuiFunktionen extends Funktionen {
                 ret = ret.substring(0, ret.length() - 1);
             }
         }
-        //===========================
+        // ===============================
+        // wir immer entfernt
         if (istDatei) {
             if (File.separator.equals("\\")) {
                 ret = ret.replace("\\", "");
@@ -152,7 +160,8 @@ public class GuiFunktionen extends Funktionen {
             }
         }
         ret = ret.replace("\n", "");
-        Daten.mVReplaceList.replace(ret, !istDatei);
+        // und jetzt je nach Einstellungen abarbeiten
+        ret = Daten.mVReplaceList.replace(ret, !istDatei);
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_UNICODE))) {
             // wenn gewünscht, Unicode "vereinfachen"
             ret = cleanUnicode(ret, "_");

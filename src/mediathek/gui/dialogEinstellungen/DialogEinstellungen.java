@@ -52,6 +52,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private PanelBlacklist panelBlacklist;
     private PanelErledigteUrls panelErledigteAbos;
     private PanelErledigteUrls panelHistory;
+    private PanelDateinamen panelDateinamen;
     private PanelVorlage panelPset;
     private PanelPsetImport panelPsetVorlagen;
     // Infos
@@ -103,6 +104,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         panelHistory.initHistory();
         panelErledigteAbos = new PanelErledigteUrls(ddaten, parentComponent);
         panelErledigteAbos.initAbo();
+        panelDateinamen = new PanelDateinamen(ddaten, parentComponent);
         panelPset = new PanelPset(ddaten, parentComponent);
         panelPsetVorlagen = new PanelPsetImport(ddaten, parentComponent);
         // Infos
@@ -122,6 +124,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         final String NAME_filmListeLaden = "Filmliste laden";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";
+        final String NAME_dateiname = "Pfad und Dateinamen";
         final String NAME_programmset = "Set bearbeiten";
         final String NAME_programmsetImportieren = "Set importieren";
         // Infos
@@ -161,6 +164,8 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         // ===============================================================================
         // ########### Programme ##############
         DefaultMutableTreeNode treeNodeDownloads = new DefaultMutableTreeNode("Aufzeichnen und Abspielen");
+        DefaultMutableTreeNode treeNodeDateinamen = new DefaultMutableTreeNode(NAME_dateiname);
+        treeNodeDownloads.add(treeNodeDateinamen);
         DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
         treeNodeDownloads.add(treeNodeProgramme);
         DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
@@ -233,6 +238,9 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                     } else if (name.equals(NAME_logfile)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelErledigteAbos);
+                    } else if (name.equals(NAME_dateiname)) {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelDateinamen);
                     } else if (name.equals(NAME_programmset)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelPset);

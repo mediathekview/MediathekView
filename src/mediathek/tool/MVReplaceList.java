@@ -57,7 +57,7 @@ public final class MVReplaceList {
         Iterator<String[]> it = liste.iterator();
         while (it.hasNext()) {
             String[] sa = it.next();
-            if (pfad && sa[1].equals(File.separator)) {
+            if (pfad && sa[0].equals(File.separator)) {
                 // dann kann er nicht entfernt werden :(
                 continue;
             }
