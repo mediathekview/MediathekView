@@ -28,6 +28,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.daten.Daten;
+import mediathek.tool.EscBeenden;
 import mediathek.tool.MVReplaceList;
 import mediathek.tool.TModel;
 
@@ -50,6 +51,13 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         parentComponent = parent;
         ddaten = dd;
         initComponents();
+        new EscBeenden(this) {
+            @Override
+            public void beenden_() {
+                ok = false;
+                beenden();
+            }
+        };
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonReset.addActionListener(new ActionListener() {
 

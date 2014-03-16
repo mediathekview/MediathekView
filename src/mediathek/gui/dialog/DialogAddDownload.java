@@ -42,7 +42,6 @@ import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.GuiKonstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
 import mediathek.tool.MVColor;
@@ -139,8 +138,67 @@ public class DialogAddDownload extends javax.swing.JDialog {
         }
         jTextFieldSender.setText(datenFilm.arr[DatenFilm.FILM_SENDER_NR]);
         jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL_NR]);
-        jTextFieldName.getDocument().addDocumentListener(new BeobCheckNamen());
-        ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getDocument().addDocumentListener(new BeobCheckNamen());
+        jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            private void tus() {
+                if (!stopBeob) {
+                    nameGeaendert = true;
+                    if (!jTextFieldName.getText().equals(GuiFunktionen.checkDateiname(jTextFieldName.getText(), false /*pfad*/))) {
+                        jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
+                    } else {
+                        jTextFieldName.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
+                    }
+                }
+
+            }
+        });
+        ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            private void tus() {
+                if (!stopBeob) {
+                    nameGeaendert = true;
+                    String s = ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getText();
+                    if (!s.equals(GuiFunktionen.checkDateiname(s, true /*pfad*/))) {
+                        ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).setBackground(MVColor.DOWNLOAD_FEHLER.color);
+//                        jComboBoxPfad.setBackground(MVColor.DOWNLOAD_FEHLER.color);
+                    } else {
+                        ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).setBackground(Color.WHITE);
+//                        jComboBoxPfad.setBackground(javax.swing.UIManager.getDefaults().getColor("ComboBox.buttonHighlight"));
+                    }
+                }
+
+            }
+        });
         jRadioButtonAufloesungHd.addActionListener(new BeobRadio());
         jRadioButtonAufloesungKlein.addActionListener(new BeobRadio());
         jRadioButtonAufloesungHoch.addActionListener(new BeobRadio());
@@ -403,7 +461,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel3)
                     .addComponent(jTextFieldTitel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jTextFieldSender, jTextFieldTitel});
@@ -491,7 +549,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jComboBoxPset, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Auflösung"));
@@ -526,7 +584,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 .addComponent(jRadioButtonAufloesungHoch)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButtonAufloesungKlein)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -562,7 +620,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jButtonOk)
                     .addComponent(jButtonAbbrechen)
@@ -592,40 +650,39 @@ public class DialogAddDownload extends javax.swing.JDialog {
     private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
 
-    private class BeobCheckNamen implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            checkPfadName();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            checkPfadName();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            checkPfadName();
-        }
-
-        private void checkPfadName() {
-            if (!stopBeob) {
-                nameGeaendert = true;
-                if (!jTextFieldName.getText().equals(GuiFunktionen.checkDateiname(jTextFieldName.getText()))) {
-                    jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
-                } else {
-                    jTextFieldName.setBackground(Color.WHITE);
-                }
-                if (!jComboBoxPfad.getSelectedItem().toString().equals(GuiFunktionen.checkDateiname(jComboBoxPfad.getSelectedItem().toString()))) {
-                    jComboBoxPfad.setBackground(MVColor.DOWNLOAD_FEHLER.color);
-                } else {
-                    jComboBoxPfad.setBackground(Color.WHITE);
-                }
-            }
-        }
-    }
-
+//    private class BeobCheckNamen implements DocumentListener {
+//
+//        @Override
+//        public void insertUpdate(DocumentEvent e) {
+//            checkPfadName();
+//        }
+//
+//        @Override
+//        public void removeUpdate(DocumentEvent e) {
+//            checkPfadName();
+//        }
+//
+//        @Override
+//        public void changedUpdate(DocumentEvent e) {
+//            checkPfadName();
+//        }
+//
+//        private void checkPfadName() {
+//            if (!stopBeob) {
+//                nameGeaendert = true;
+//                if (!jTextFieldName.getText().equals(GuiFunktionen.checkDateiname(jTextFieldName.getText()))) {
+//                    jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
+//                } else {
+//                    jTextFieldName.setBackground(null);
+//                }
+//                if (!jComboBoxPfad.getSelectedItem().toString().equals(GuiFunktionen.checkDateiname(jComboBoxPfad.getSelectedItem().toString()))) {
+//                    jComboBoxPfad.setBackground(MVColor.DOWNLOAD_FEHLER.color);
+//                } else {
+//                    jComboBoxPfad.setBackground(null);
+//                }
+//            }
+//        }
+//    }
     private class BeobRadio implements ActionListener {
 
         @Override
