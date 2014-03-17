@@ -245,7 +245,7 @@ public class FilmeLaden {
     private void fillHash(ListeFilme listeFilme) {
         Iterator<DatenFilm> it = listeFilme.iterator();
         while (it.hasNext()) {
-            hashSet.add(it.next().arr[DatenFilm.FILM_URL_NR]);
+            hashSet.add(it.next().getUrlHistory());
         }
     }
 
@@ -254,7 +254,7 @@ public class FilmeLaden {
         Iterator<DatenFilm> it = listeFilme.iterator();
         while (it.hasNext()) {
             DatenFilm datenFilm = it.next();
-            if (!hashSet.contains(datenFilm.arr[DatenFilm.FILM_URL_NR])) {
+            if (!hashSet.contains(datenFilm.getUrlHistory())) {
                 datenFilm.neuerFilm = true;
                 listeFilme.neueFilme = true;
             } else {
