@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Component;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
@@ -28,7 +28,9 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.daten.Daten;
+import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.MVReplaceList;
 import mediathek.tool.TModel;
 
@@ -36,7 +38,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
 
     public boolean ok = false;
     public String ziel = "";
-    private Component parentComponent = null;
+    private Frame parentComponent = null;
     private Daten ddaten = null;
     private boolean stopBeob = false;
 
@@ -58,6 +60,11 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
                 beenden();
             }
         };
+        jLabelAlert.setVisible(false);
+        jButtonPlus.setIcon(GetIcon.getIcon("add_16.png"));
+        jButtonMinus.setIcon(GetIcon.getIcon("remove_16.png"));
+        jButtonUp.setIcon(GetIcon.getIcon("move_up_16.png"));
+        jButtonDown.setIcon(GetIcon.getIcon("move_down_16.png"));
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonReset.addActionListener(new ActionListener() {
 
@@ -73,7 +80,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVReplaceList.liste.add(new String[]{"", ""});
+                Daten.mVReplaceList.liste.add(new String[]{"von", "nach"});
                 tabelleLaden();
                 setTextfelder();
             }
@@ -88,6 +95,20 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
                     tabelleLaden();
                     setTextfelder();
                 }
+            }
+        });
+        jButtonUp.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                upDown(true);
+            }
+        });
+        jButtonDown.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                upDown(false);
             }
         });
         tabelleLaden();
@@ -132,7 +153,8 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         if (!stopBeob) {
             int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
-                Daten.mVReplaceList.liste.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR] = jTextFieldVon.getText();
+                Daten.mVReplaceList.liste.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR]
+                        = jTextFieldVon.getText().isEmpty() ? " " : jTextFieldVon.getText(); // nicht nach nix suchen
                 tabelleLaden();
             }
         }
@@ -146,6 +168,24 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
                 tabelleLaden();
             }
         }
+    }
+
+    private void upDown(boolean auf) {
+        int rows = tabelle.getSelectedRow();
+        if (rows != -1) {
+            int row = tabelle.convertRowIndexToModel(rows);
+            int neu = Daten.mVReplaceList.auf(row, auf);
+            tabelleLaden();
+            tabelle.setRowSelectionInterval(neu, neu);
+            tabelle.scrollRectToVisible(tabelle.getCellRect(neu, 0, true));
+        } else {
+            new HinweisKeineAuswahl().zeigen(parentComponent);
+        }
+
+    }
+
+    private void check() {
+        jLabelAlert.setVisible(Daten.mVReplaceList.check());
     }
 
     private void tabelleLaden() {
@@ -174,6 +214,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
                 tabelle.addRowSelectionInterval(selectedTableRow, selectedTableRow);
             }
         }
+        check();
         stopBeob = false;
     }
 
@@ -212,6 +253,11 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         jButtonMinus = new javax.swing.JButton();
         jButtonPlus = new javax.swing.JButton();
         jButtonReset = new javax.swing.JButton();
+        jButtonDown = new javax.swing.JButton();
+        jButtonUp = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jLabelAlert = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -233,11 +279,27 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
 
         jLabel2.setText("nach:");
 
-        jButtonMinus.setText("-");
+        jButtonMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/remove_16.png"))); // NOI18N
 
-        jButtonPlus.setText("+");
+        jButtonPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/add_16.png"))); // NOI18N
 
         jButtonReset.setText("Reset Tabelle");
+
+        jButtonDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/move_down_16.png"))); // NOI18N
+
+        jButtonUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/move_up_16.png"))); // NOI18N
+
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        jTextArea1.setEditable(false);
+        jTextArea1.setBackground(javax.swing.UIManager.getDefaults().getColor("Label.background"));
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(3);
+        jTextArea1.setText("Die Tabelle wird von oben nach unten abgearbeitet.\nEs ist also möglich, dass eine Ersetzung durch eine weitere\nwieder ersetzt wird!");
+        jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane2.setViewportView(jTextArea1);
+
+        jLabelAlert.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/alert_32.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -247,8 +309,14 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 496, Short.MAX_VALUE)
+                        .addComponent(jButtonReset)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelAlert)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -259,11 +327,13 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldNach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonUp)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonDown)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonPlus)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonMinus)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonReset)))
+                        .addComponent(jButtonMinus)))
                 .addContainerGap())
         );
 
@@ -273,31 +343,43 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel1)
                     .addComponent(jTextFieldVon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(jTextFieldNach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonMinus)
+                    .addComponent(jButtonUp)
+                    .addComponent(jButtonDown)
                     .addComponent(jButtonPlus)
+                    .addComponent(jButtonMinus))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabelAlert)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonOk)
                     .addComponent(jButtonReset))
-                .addGap(18, 18, 18)
-                .addComponent(jButtonOk)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonDown;
     private javax.swing.JButton jButtonMinus;
     private javax.swing.JButton jButtonOk;
     private javax.swing.JButton jButtonPlus;
     private javax.swing.JButton jButtonReset;
+    private javax.swing.JButton jButtonUp;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelAlert;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextFieldNach;
     private javax.swing.JTextField jTextFieldVon;
     private javax.swing.JTable tabelle;
