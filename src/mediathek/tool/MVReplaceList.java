@@ -33,7 +33,7 @@ public final class MVReplaceList {
     public final static String[] COLUMN_NAMES = {VON, NACH};
     public static final int MAX_ELEM = 2;
 
-    public static LinkedList<String[]> liste = new LinkedList<>();
+    public  LinkedList<String[]> liste = new LinkedList<>();
 
     public void init() {
         if (liste.isEmpty()) {

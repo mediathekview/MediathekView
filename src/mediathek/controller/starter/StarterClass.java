@@ -700,6 +700,8 @@ public class StarterClass {
                 br.write("\n");
                 br.write(DatenFilm.FILM_THEMA + ":       " + datenDownload.film.arr[DatenFilm.FILM_THEMA_NR]);
                 br.write("\n\n");
+                br.write(DatenFilm.FILM_TITEL + ":       " + datenDownload.film.arr[DatenFilm.FILM_TITEL_NR]);
+                br.write("\n\n");
                 br.write(DatenFilm.FILM_DATUM + ":       " + datenDownload.film.arr[DatenFilm.FILM_DATUM_NR]);
                 br.write("\n");
                 br.write(DatenFilm.FILM_ZEIT + ":        " + datenDownload.film.arr[DatenFilm.FILM_ZEIT_NR]);
