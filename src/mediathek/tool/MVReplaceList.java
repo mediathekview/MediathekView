@@ -66,4 +66,33 @@ public final class MVReplaceList {
         return str;
     }
 
+    public boolean check() {
+        for (int i = 0; i < liste.size(); ++i) {
+            String[] is = liste.get(i);
+            for (int k = i+1; k < liste.size(); ++k) {
+                String[] ks = liste.get(k);
+                if (is[1].contains(ks[0])) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public int auf(int idx, boolean auf) {
+        String[] replace = liste.remove(idx);
+        int neu = idx;
+        if (auf) {
+            if (neu > 0) {
+                --neu;
+            }
+        } else {
+            if (neu < liste.size()) {
+                ++neu;
+            }
+        }
+        liste.add(neu, replace);
+        return neu;
+    }
+
 }
