@@ -37,6 +37,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
@@ -52,7 +53,6 @@ import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.controller.Log;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVTable;
 import mediathek.tool.TModel;
@@ -103,7 +103,8 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeLoeschen.setIcon(GetIcon.getIcon("remove_16.png"));
         jButtonGruppeAuf.setIcon(GetIcon.getIcon("move_up_16.png"));
         jButtonGruppeAb.setIcon(GetIcon.getIcon("move_down_16.png"));
-
+        jLabelMeldungAbspielen.setIcon(GetIcon.getIcon("alert_16.png"));
+        jLabelMeldungSeichern.setIcon(GetIcon.getIcon("alert_16.png"));
         //Programme
         tabellePset.setAutoResizeMode(MVTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
@@ -310,12 +311,16 @@ public class PanelPsetLang extends PanelVorlage {
         tabellePset.setModel(listePset.getModel());
         tabellePset.setSpalten();
         spaltenSetzen();
+        jLabelMeldungAbspielen.setVisible(listePset.getPsetAbspielen() == null);
+        jLabelMeldungSeichern.setVisible(listePset.getListeSpeichern().size() == 0);
         stopBeob = false;
     }
 
     private void spaltenSetzen() {
         for (int i = 0; i < tabellePset.getColumnCount(); ++i) {
-            if (i != DatenPset.PROGRAMMSET_NAME_NR) {
+            if (i != DatenPset.PROGRAMMSET_NAME_NR
+                    && i != DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR
+                    && i != DatenPset.PROGRAMMSET_IST_SPEICHERN_NR) {
                 tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(0);
                 tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(0);
                 tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(0);
@@ -610,6 +615,8 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxButton = new javax.swing.JCheckBox();
         jCheckBoxAbo = new javax.swing.JCheckBox();
         jButtonAbspielen = new javax.swing.JButton();
+        jLabelMeldungAbspielen = new javax.swing.JLabel();
+        jLabelMeldungSeichern = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jButtonGruppeFarbe = new javax.swing.JButton();
@@ -681,6 +688,8 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonPruefen.setText("Prüfen");
         jButtonPruefen.setToolTipText("Programmpfade prüfen");
 
+        jSplitPane1.setDividerLocation(200);
+
         jPanelDetails.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -699,13 +708,13 @@ public class PanelPsetLang extends PanelVorlage {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -743,8 +752,14 @@ public class PanelPsetLang extends PanelVorlage {
                     .addComponent(jCheckBoxButton)
                     .addComponent(jCheckBoxAbo)
                     .addComponent(jButtonAbspielen))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
+
+        jLabelMeldungAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/alert_16.png"))); // NOI18N
+        jLabelMeldungAbspielen.setText("kein Set zum Abspielen ausgewählt!");
+
+        jLabelMeldungSeichern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/alert_16.png"))); // NOI18N
+        jLabelMeldungSeichern.setText("kein Set zum Speichern ausgewählt!");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -758,7 +773,12 @@ public class PanelPsetLang extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldSetName))
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelMeldungAbspielen)
+                            .addComponent(jLabelMeldungSeichern))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -772,7 +792,11 @@ public class PanelPsetLang extends PanelVorlage {
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(94, 94, 94))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabelMeldungAbspielen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabelMeldungSeichern)
+                .addGap(38, 38, 38))
         );
 
         javax.swing.GroupLayout jPanelDetailsLayout = new javax.swing.GroupLayout(jPanelDetails);
@@ -819,7 +843,7 @@ public class PanelPsetLang extends PanelVorlage {
                         .addComponent(jButtonGruppeStandardfarbe))
                     .addComponent(jLabel11)
                     .addComponent(jLabel13))
-                .addContainerGap(250, Short.MAX_VALUE))
+                .addContainerGap(197, Short.MAX_VALUE))
         );
 
         jPanel5Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonGruppeFarbe, jButtonGruppeStandardfarbe});
@@ -893,7 +917,7 @@ public class PanelPsetLang extends PanelVorlage {
                                 .addComponent(jButtonGruppePfad))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jCheckBoxThema)
-                                .addGap(0, 234, Short.MAX_VALUE)))
+                                .addGap(0, 181, Short.MAX_VALUE)))
                         .addGap(16, 16, 16))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel8)
@@ -966,11 +990,11 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldGruppeDirektPraefix, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                .addComponent(jTextFieldGruppeDirektPraefix)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldGruppeDirektSuffix, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                .addComponent(jTextFieldGruppeDirektSuffix)
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -982,7 +1006,7 @@ public class PanelPsetLang extends PanelVorlage {
                     .addComponent(jTextFieldGruppeDirektPraefix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
                     .addComponent(jTextFieldGruppeDirektSuffix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         jTextArea1.setEditable(false);
@@ -1030,7 +1054,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addComponent(jRadioButtonAufloesungKlein)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel14)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         jPanel13.setBorder(javax.swing.BorderFactory.createTitledBorder("Infodatei"));
@@ -1051,7 +1075,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jCheckBoxInfodatei)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
@@ -1078,7 +1102,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Download", jPanel11);
@@ -1181,7 +1205,7 @@ public class PanelPsetLang extends PanelVorlage {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldProgSuffix, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))))
+                                .addComponent(jTextFieldProgSuffix, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE))))
                     .addGroup(jPanelProgrammDetailsLayout.createSequentialGroup()
                         .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
@@ -1253,7 +1277,14 @@ public class PanelPsetLang extends PanelVorlage {
 
         jSplitPane1.setRightComponent(jTabbedPane);
 
-        jTablePset.setModel(new TModel());
+        jTablePset.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3"
+            }
+        ));
         jTablePset.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane3.setViewportView(jTablePset);
 
@@ -1321,7 +1352,7 @@ public class PanelPsetLang extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSplitPane1)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 783, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonPruefen, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1335,9 +1366,9 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jSplitPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonHilfe)
-                    .addComponent(jButtonPruefen))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jButtonPruefen)
+                    .addComponent(jButtonHilfe))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -1371,6 +1402,8 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabelMeldungAbspielen;
+    private javax.swing.JLabel jLabelMeldungSeichern;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
