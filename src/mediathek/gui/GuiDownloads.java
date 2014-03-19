@@ -341,7 +341,7 @@ public class GuiDownloads extends PanelVorlage {
         if (row != -1) {
             DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
             DatenDownload datenDownloadKopy = datenDownload.getCopy();
-            DialogEditDownload dialog = new DialogEditDownload(null, true, datenDownloadKopy);
+            DialogEditDownload dialog = new DialogEditDownload(parentComponent, true, datenDownloadKopy);
             dialog.setVisible(true);
             if (dialog.ok) {
                 datenDownload.aufMichKopieren(datenDownloadKopy);
