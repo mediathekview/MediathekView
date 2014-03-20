@@ -85,34 +85,30 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void zurueckgestellteWiederAktivieren() {
-        DatenDownload d = null;
         ListIterator<DatenDownload> it = this.listIterator(0);
         while (it.hasNext()) {
             it.next().arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.FALSE.toString();
         }
     }
 
-    public synchronized void listePutzen(boolean putzen) {
+    public synchronized void listePutzen() {
         // fertige Downloads löschen
-        // wird nur aktualisiert: !putzen, werden fehlerhafte Downlods nicht gelöscht
+        // fehlerhafte zurücksetzen
         boolean gefunden = false;
         Iterator<DatenDownload> it = this.iterator();
         while (it.hasNext()) {
             DatenDownload d = it.next();
-            if (d.start != null) {
-                if (putzen && d.start.status >= Start.STATUS_FERTIG) {
-                    // alles was fertig/fehlerhaft ist, kommt beim putzen weg
-                    gefunden = true;
-                    it.remove();
-                } else if (d.getQuelle() == Start.QUELLE_ABO && d.start.status >= Start.STATUS_FERTIG) {
-                    // fehlerhafte "Abos" werden immer gelöscht, die können wieder angelegt werden
-                    gefunden = true;
-                    it.remove();
-                } else if (d.start.status == Start.STATUS_FERTIG) {
-                    // der Rest kommt nur weg, wenn er echt "feritig" und !fehlerhaft ist
-                    gefunden = true;
-                    it.remove();
-                }
+            if (d.start == null) {
+                continue;
+            }
+            if (d.start.status == Start.STATUS_FERTIG) {
+                // alles was fertig/fehlerhaft ist, kommt beim putzen weg
+                it.remove();
+                gefunden = true;
+            } else if (d.start.status == Start.STATUS_ERR) {
+                // fehlerhafte werden zurückgesetzt
+                d.resetDownload();
+                gefunden = true;
             }
         }
         if (gefunden) {
@@ -124,9 +120,38 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // fertigen Download löschen
         boolean gefunden = false;
         if (datenDownload.start != null) {
-            if (datenDownload.start.status >= Start.STATUS_FERTIG) {
+            if (datenDownload.start.status == Start.STATUS_FERTIG) {
+                // alles was fertig/fehlerhaft ist, kommt beim putzen weg
+                this.remove();
                 gefunden = true;
-                this.remove(datenDownload);
+            } else if (datenDownload.start.status == Start.STATUS_ERR) {
+                // fehlerhafte werden zurückgesetzt
+                datenDownload.resetDownload();
+                gefunden = true;
+            }
+        }
+        if (gefunden) {
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+        }
+    }
+
+    public synchronized void abosPutzen() {
+        // fehlerhafte und nicht gestartete löschen
+        boolean gefunden = false;
+        Iterator<DatenDownload> it = this.iterator();
+        while (it.hasNext()) {
+            DatenDownload d = it.next();
+            if (!d.istAbo()) {
+                continue;
+            }
+            if (d.start == null) {
+                // noch nicht gestartet
+                it.remove();
+                gefunden = true;
+            } else if (d.start.status == Start.STATUS_ERR) {
+                // fehlerhafte
+                d.resetDownload();
+                gefunden = true;
             }
         }
         if (gefunden) {
@@ -244,8 +269,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                             }
                         }
                         if (nurStart) {
-                            datenDownload.mVFilmSize.reset();
-                            datenDownload.start = null;
+                            datenDownload.resetDownload();
                         } else {
                             it.remove();
                         }
@@ -462,25 +486,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         if (gefunden) {
             listeNummerieren();
         }
-    }
-
-    public synchronized void abosLoschenWennNochNichtGestartet() {
-        // es werden alle Abos (DIE NOCH NICHT GESTARTET SIND) aus der Liste gelöscht
-//        boolean gefunden = false;
-        Iterator<DatenDownload> it = this.iterator();
-        while (it.hasNext()) {
-            DatenDownload d = it.next();
-            if (d.istAbo()) {
-                if (d.start == null) {
-                    // ansonsten läuft er schon
-                    it.remove();
-//                    gefunden = true;
-                }
-            }
-        }
-//        if (gefunden) {
-//            listeNummerieren();
-//        }
     }
 
     public synchronized void listeNummerieren() {
