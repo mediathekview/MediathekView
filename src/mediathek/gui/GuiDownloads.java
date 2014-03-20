@@ -313,9 +313,8 @@ public class GuiDownloads extends PanelVorlage {
 
     private synchronized void downloadsAktualisieren() {
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
-        Daten.listeDownloads.listePutzen(false /*putzen*/);
+        Daten.listeDownloads.abosPutzen();
         Daten.listeDownloads.zurueckgestellteWiederAktivieren();
-        Daten.listeDownloads.abosLoschenWennNochNichtGestartet();
         Daten.listeDownloads.abosSuchen(parentComponent);
         tabelleLaden();
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
@@ -327,7 +326,7 @@ public class GuiDownloads extends PanelVorlage {
     private synchronized void downloadsAufraeumen() {
         // abgeschlossene Downloads werden aus der Tabelle/Liste entfernt
         // die Starts dafür werden auch gelöscht
-        Daten.listeDownloads.listePutzen(true /*putzen*/);
+        Daten.listeDownloads.listePutzen();
     }
 
     private synchronized void downloadsAufraeumen(DatenDownload datenDownload) {

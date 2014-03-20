@@ -88,12 +88,12 @@ public class IoXmlSchreiben {
             writer.writeCharacters("\n\n");
             writer.writeComment("Abos");
             writer.writeCharacters("\n");
-            xmlSchreibenAbo(daten);
+            xmlSchreibenAbo();
 
             writer.writeCharacters("\n\n");
             writer.writeComment("Blacklist");
             writer.writeCharacters("\n");
-            xmlSchreibenBlackList(daten);
+            xmlSchreibenBlackList();
 
             writer.writeCharacters("\n\n");
             writer.writeComment("Programmeinstellungen");
@@ -114,7 +114,7 @@ public class IoXmlSchreiben {
             writer.writeCharacters("\n\n");
             writer.writeComment("Downloads");
             writer.writeCharacters("\n");
-            xmlSchreibenDownloads(daten);
+            xmlSchreibenDownloads();
 
             writer.writeCharacters("\n\n");
             writer.writeComment("Update Filmliste");
@@ -185,7 +185,7 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void xmlSchreibenDownloads(Daten daten) {
+    private void xmlSchreibenDownloads() {
         Iterator<DatenDownload> iterator;
         //Abo schreiben
         DatenDownload d;
@@ -193,10 +193,10 @@ public class IoXmlSchreiben {
         while (iterator.hasNext()) {
             d = iterator.next();
             if (!d.istAbo()) {
-                // Abos müssen neu angelegt werden
+                //Abos müssen neu angelegt werden
                 if (d.start != null) {
-                    if (d.start.status >= Start.STATUS_FERTIG) {
-                        // keine fertigen Downloads
+                    if (d.start.status == Start.STATUS_FERTIG) {
+                        // keine fertigen Downloads, fehlerhafte bleiben
                         continue;
                     }
                 }
@@ -205,7 +205,7 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void xmlSchreibenAbo(Daten daten) {
+    private void xmlSchreibenAbo() {
         ListIterator<DatenAbo> iterator;
         //Abo schreibem
         DatenAbo datenAbo;
@@ -216,7 +216,7 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void xmlSchreibenBlackList(Daten daten) {
+    private void xmlSchreibenBlackList() {
         Iterator<DatenBlacklist> it = Daten.listeBlacklist.iterator();
         //Blacklist schreibem
         DatenBlacklist blacklist;

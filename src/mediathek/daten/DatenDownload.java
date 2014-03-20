@@ -205,6 +205,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
             }
         }
         arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.TRUE.toString();
+        resetDownload();
+    }
+
+    public void resetDownload() {
+        mVFilmSize.reset();
         start = null;
     }
 
