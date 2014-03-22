@@ -44,6 +44,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
+import mediathek.tool.Konstanten;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
@@ -300,7 +301,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         }
         if (pfade.size() > 0) {
             s = pfade.get(0);
-            for (int i = 1; i < 10 && i < pfade.size(); ++i) {
+            for (int i = 1; i < Konstanten.MAX_PFADE_DIALOG_DOWNLOAD && i < pfade.size(); ++i) {
                 if (!pfade.get(i).isEmpty()) {
                     s += "<>" + pfade.get(i);
                 }
@@ -461,7 +462,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel3)
                     .addComponent(jTextFieldTitel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jTextFieldSender, jTextFieldTitel});
@@ -475,6 +476,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
         jLabel4.setText("Dateiname:");
 
         jComboBoxPfad.setEditable(true);
+        jComboBoxPfad.setMaximumRowCount(15);
         jComboBoxPfad.setModel(new javax.swing.DefaultComboBoxModel(new String[] { " " }));
 
         jButtonDelHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
@@ -549,7 +551,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jComboBoxPset, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Auflösung"));
@@ -584,7 +586,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 .addComponent(jRadioButtonAufloesungHoch)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButtonAufloesungKlein)
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -620,7 +622,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jButtonOk)
                     .addComponent(jButtonAbbrechen)
