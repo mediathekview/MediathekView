@@ -34,7 +34,6 @@ import javax.swing.JToolBar;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
@@ -125,7 +124,7 @@ public final class MVToolBar extends JToolBar {
         jButtonFilmeLaden = new MVButton(new String[]{TOOLBAR_TAB_FILME, TOOLBAR_TAB_DOWNLOADS}, "Filmliste laden", "neue Filmliste laden", "filmlisteLaden_32.png", "filmlisteLaden_16.png");
         buttonListAlles.add(jButtonFilmeLaden);
         buttonListDownloads.add(jButtonFilmeLaden);
-        jButtonInfo = new MVButton(new String[]{TOOLBAR_TAB_FILME, TOOLBAR_TAB_DOWNLOADS}, "Infos anzeigen", "Infos anzeigen", "info_32.png", "info_16.png");
+        jButtonInfo = new MVButton(new String[]{TOOLBAR_TAB_FILME, TOOLBAR_TAB_DOWNLOADS}, "Filminformation anzeigen", "Filminformation anzeigen", "info_32.png", "info_16.png");
         buttonListAlles.add(jButtonInfo);
         buttonListDownloads.add(jButtonInfo);
         jButtonFilmAbspielen = new MVButton(new String[]{TOOLBAR_TAB_FILME}, "Film abspielen", "Film abspielen", "film_start_32.png", "film_start_16.png");
@@ -138,7 +137,7 @@ public final class MVToolBar extends JToolBar {
         jButtonDownloadAlleStarten = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "alle Downloads starten", "alle Downloads starten", "download_alleStarten_32.png", "download_alleStarten_16.png");
         buttonListAlles.add(jButtonDownloadAlleStarten);
         buttonListDownloads.add(jButtonDownloadAlleStarten);
-        jButtonDownloadFilmStarten = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Film Starten", "Film im Player Starten", "film_start_32.png", "film_start_16.png");
+        jButtonDownloadFilmStarten = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Film Starten", "gespeicherten Film abspielen", "film_start_32.png", "film_start_16.png");
         buttonListAlles.add(jButtonDownloadFilmStarten);
         buttonListDownloads.add(jButtonDownloadFilmStarten);
         jButtonDownloadZurueckstellen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Download zurückstellen", "Download zurückstellen", "undo_32.png", "undo_16.png");
@@ -236,7 +235,7 @@ public final class MVToolBar extends JToolBar {
             this.add(jTextFieldFilter);
 
             // Button Filter
-            jButtonFilterPanel.setToolTipText("Erweiterte Suche / Filter anzeigen");
+            jButtonFilterPanel.setToolTipText("Erweiterte Suche (Filter) anzeigen/ausblenden");
             jButtonFilterPanel.setBorder(null);
             jButtonFilterPanel.setBorderPainted(false);
             jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

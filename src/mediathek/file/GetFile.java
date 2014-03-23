@@ -35,6 +35,7 @@ public class GetFile {
     String PFAD_PSET_LINUX = "/mediathek/file/pset_linux.xml";
     String PFAD_PSET_WINDOWS = "/mediathek/file/pset_windows.xml";
     String PFAD_PSET_MAC = "/mediathek/file/pset_mac.xml";
+    public static String PFAD_HILFETEXT_GEO = "/mediathek/file/hilfetext_geo.txt";
     public static String PFAD_HILFETEXT_FILTER = "/mediathek/file/hilfetext_filter.txt";
     public static String PFAD_HILFETEXT_BLACKLIST = "/mediathek/file/hilfetext_blacklist.txt";
     public static String PFAD_HILFETEXT_PRGRAMME = "/mediathek/file/hilfetext_programme.txt";

@@ -29,7 +29,6 @@ import mediathek.daten.Daten;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.dialogEinstellungen.PanelPsetLang;
 import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionenProgramme;

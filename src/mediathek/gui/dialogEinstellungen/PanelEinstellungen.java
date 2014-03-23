@@ -64,7 +64,7 @@ public class PanelEinstellungen extends PanelVorlage {
                         + "Hier kann angegeben werden, wie viele\n"
                         + "Downloads gleichzeitig gestartet werden können.\n"
                         + "Es gibt jedoch noch eine Begrenzung \n"
-                        + "auf 2 Downloads pro Server\n"
+                        + "auf 2 Downloads pro Server,\n"
                         + "die trotzdem nicht überschritten wird.").setVisible(true);
             }
         });

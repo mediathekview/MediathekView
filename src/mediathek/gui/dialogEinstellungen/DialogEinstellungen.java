@@ -30,13 +30,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import mediathek.MediathekGui;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.PanelAbout;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
-import mediathek.controller.Log;
 import mediathek.tool.MVConfig;
 
 public class DialogEinstellungen extends javax.swing.JFrame {
@@ -124,7 +124,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         final String NAME_filmListeLaden = "Filmliste laden";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
         final String NAME_blacklist = "Blacklist";
-        final String NAME_dateiname = "Pfad und Dateinamen";
+        final String NAME_dateiname = "Datei- und Pfadnamen";
         final String NAME_programmset = "Set bearbeiten";
         final String NAME_programmsetImportieren = "Set importieren";
         // Infos

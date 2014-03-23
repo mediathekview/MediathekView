@@ -169,7 +169,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     if (datenDownload.start != null) {
                         if (datenDownload.start.status == Start.STATUS_FERTIG) {
                             setIcon(film_start_tab);
-                            setToolTipText("Film abspielen");
+                            setToolTipText("gespeicherten Film abspielen");
                         } else if (datenDownload.start.status == Start.STATUS_ERR) {
                             setIcon(download_start_tab);
                             setToolTipText("Download starten");
@@ -185,7 +185,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     if (datenDownload.start != null) {
                         if (datenDownload.start.status == Start.STATUS_FERTIG) {
                             setIcon(film_start_sw_tab);
-                            setToolTipText("Film abspielen");
+                            setToolTipText("gespeicherten Film abspielen");
                         } else if (datenDownload.start.status == Start.STATUS_ERR) {
                             setIcon(download_start_sw_tab);
                             setToolTipText("Download starten");

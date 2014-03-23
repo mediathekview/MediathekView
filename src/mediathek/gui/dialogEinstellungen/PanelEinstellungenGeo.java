@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import mediathek.daten.Daten;
+import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
@@ -109,10 +110,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Nicht alle Filme lassen sich im Ausland abrufen.\n"
-                        + "Wenn geblockete Filme markiert werden sollen\n"
-                        + "kann man hier seinen Standort angeben").setVisible(true);
+                new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_GEO)).setVisible(true);
             }
         });
     }

@@ -243,7 +243,7 @@ public class PanelPsetImport extends PanelVorlage {
         jTextAreaBeschreibung.setRows(5);
         jScrollPane3.setViewportView(jTextAreaBeschreibung);
 
-        jButtonImportVorlage.setText("Set Importieren");
+        jButtonImportVorlage.setText("Set importieren");
 
         jLabel6.setText("Betriebssystem:");
 

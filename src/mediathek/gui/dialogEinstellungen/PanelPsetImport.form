@@ -260,7 +260,7 @@
                 </Container>
                 <Component class="javax.swing.JButton" name="jButtonImportVorlage">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Set Importieren"/>
+                    <Property name="text" type="java.lang.String" value="Set importieren"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel6">

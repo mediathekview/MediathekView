@@ -126,7 +126,7 @@ public class PanelDateinamen extends PanelVorlage {
         jRadioButtonNameNix = new javax.swing.JRadioButton();
         jButtonHilfeZielname = new javax.swing.JButton();
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Dateiname der gespeicherten Filme anpassen"));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Datei- und Pfadnamen der gespeicherten Filme anpassen"));
 
         buttonGroup2.add(jRadioButtonNamenNormal);
         jRadioButtonNamenNormal.setText("einfache Prüfung");
@@ -136,7 +136,7 @@ public class PanelDateinamen extends PanelVorlage {
 
         jCheckBoxUnicode.setText("Unicode-Zeichen \"vereinfachen\"");
 
-        jButtonBearbeiten.setText("Ersetzungstabelle Bearbeiten");
+        jButtonBearbeiten.setText("Ersetzungstabelle bearbeiten");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
