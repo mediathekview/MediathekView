@@ -50,6 +50,7 @@ import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVReplaceList;
+import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 import msearch.io.MSFilmlisteLesen;
 import msearch.io.MSFilmlisteSchreiben;
@@ -164,6 +165,8 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
         mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, "240");
         if (Daten.debug) {
             mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
