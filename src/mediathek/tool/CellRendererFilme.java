@@ -19,14 +19,14 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.Log;
-import mediathek.controller.History;
 import java.awt.Component;
 import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
+import mediathek.controller.History;
+import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
