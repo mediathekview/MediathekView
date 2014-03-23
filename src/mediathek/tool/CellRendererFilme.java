@@ -114,10 +114,10 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 if (getIcon() == null) {
                     if (isSelected) {
                         setIcon(film_start_tab);
-                        setToolTipText("Film starten");
+                        setToolTipText("Film abspielen");
                     } else {
                         setIcon(film_start_sw_tab);
-                        setToolTipText("Film starten");
+                        setToolTipText("Film abspielen");
                     }
                 }
             } else if (c == DatenFilm.FILM_AUFZEICHNEN_NR) {

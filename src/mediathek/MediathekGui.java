@@ -1329,7 +1329,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuDownload.add(jSeparator3);
 
         jMenuItemDownloadAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/film_start_16.png"))); // NOI18N
-        jMenuItemDownloadAbspielen.setText("Film abspielen");
+        jMenuItemDownloadAbspielen.setText("gespeicherten Film abspielen");
         jMenuDownload.add(jMenuItemDownloadAbspielen);
 
         jMenuItemDownloadsAktualisieren.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_SPACE, 0));

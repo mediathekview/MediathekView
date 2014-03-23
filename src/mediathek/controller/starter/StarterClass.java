@@ -491,7 +491,7 @@ public class StarterClass {
         ArrayList<String> text = new ArrayList<>();
         boolean abspielen = datenDownload.getQuelle() == Start.QUELLE_BUTTON;
         if (abspielen) {
-            text.add("Film starten");
+            text.add("Film abspielen");
         } else {
             if (start.startcounter > 1) {
                 text.add("Download starten - Restart (Summe Starts: " + start.startcounter + ")");

@@ -40,7 +40,7 @@ möglich:
 %T Titel des Films
 %t Thema des Films
 %N Originaldateiname des Films (der kann sehr kryptisch und lang sein)
-%S Suffix des Originaldateinamens des Films
+%S Suffix des Originaldateinamens des Films (z.B. "mp4")
 
 Damit kann man einen Namen z.B. so aufbauen:
 %H__%t-%T.mp4 -> 20131206__Doku-Titel_der_Doku.mp4
@@ -52,7 +52,7 @@ verwendet)
 werden.
 
 
-Die Auflösung kann ebenfalls vorgegeben werden. Existiert für den Film die angegebenen
+Die Auflösung kann ebenfalls vorgegeben werden. Existiert für den Film die angegebene
 Auflösung nicht, wird die nächstkleinere verwendet.
 
 
@@ -90,6 +90,6 @@ Dateiname: "%t-%T.mp4"
 Hier wird %f durch die URL des Films ersetzt.
 %t und %T werden durch einen Pfad und Dateinamen 
 ersetzt und in den Programmschalter anstatt der "**" eingesetzt.
-(c:\Pfad\Thema-Titel.mp4)
+(C:\Pfad\Thema-Titel.mp4)
 
 

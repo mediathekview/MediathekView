@@ -1,5 +1,6 @@
+
 Die Dateinamen der Filme enthalten
-Zeichen die nicht immer richtig dargestellt
+Zeichen, die nicht immer richtig dargestellt
 werden können. Beim Speichern kann das Probleme
 verursachen.
 

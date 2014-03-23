@@ -1,0 +1,16 @@
+
+Nicht alle Filme lassen sich im Ausland abrufen.
+Wenn geblockte Filme markiert werden sollen,
+kann man hier seinen Standort angeben.
+
+Der Download geogeblockter Sendungen
+bricht im Ausland sofort ab (Download
+"fehlerhaft"). MediathekView kennt nicht alle
+Muster für geogeblockte Sendungen. Ob ein
+fehlerhafter Download auf Geoblocking
+zurückzuführen ist, zeigt sich beim Klick auf
+den Link zur Sendung ("zur Website") ganz
+unten im Tab "Filme". Wenn die Sendung
+auch auf der Website des Senders nicht
+abgespielt werden kann, liegt fast immer
+Geoblocking vor.
