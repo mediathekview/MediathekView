@@ -139,6 +139,8 @@ public class PanelBeschreibung extends JPanel {
         jXHyperlinkWebsite.setText("jXHyperlink1");
         jScrollPane1.setViewportView(jXHyperlinkWebsite);
 
+        jCheckBoxChange.setToolTipText("Beschreibung ändern");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(

@@ -36,19 +36,17 @@ public interface MVFilter {
 
     public JButton get_jButtonFilterLoeschen();
 
-    public JButton get_jButtonHilfe();
-
     public JCheckBox get_jCheckBoxKeineAbos();
 
     public JCheckBox get_jCheckBoxKeineGesehenen();
 
     public JCheckBox get_jCheckBoxNurHd();
 
-    public JComboBox get_jComboBoxFilterSender();
+    public JComboBox<String> get_jComboBoxFilterSender();
 
-    public JComboBox get_jComboBoxFilterThema();
+    public JComboBox<String> get_jComboBoxFilterThema();
 
-    public JComboBox get_jComboBoxZeitraum();
+    public JComboBox<String> get_jComboBoxZeitraum();
 
     public JSlider get_jSliderMinuten();
 

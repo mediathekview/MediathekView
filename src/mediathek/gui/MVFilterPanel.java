@@ -30,20 +30,36 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeListener;
+import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
 
 public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
     JFrame f;
+    Daten daten;
 
-    public MVFilterPanel(JFrame jFrame) {
+    public MVFilterPanel(JFrame jFrame, Daten d) {
         initComponents();
         f = jFrame;
+        daten = d;
         setVisible(true);
         jButtonFilterLoeschen.setIcon(GetIcon.getIcon("clear_16.png"));
         jButtonFilterLoeschen.setMnemonic(KeyEvent.VK_F8);
+        jButtonBlacklist.setIcon(GetIcon.getIcon("blacklist_16.png"));
+        jButtonBlacklist.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DialogLeer dialog = new DialogLeer(f, true);
+                dialog.init("Blacklist", new PanelBlacklist(daten, f, PanelBlacklist.class.getName() + "_3"));
+                dialog.setVisible(true);
+            }
+        });
+
         jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
@@ -82,6 +98,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jTextFieldFilterIrgendwo = new javax.swing.JTextField();
         jButtonFilterLoeschen = new javax.swing.JButton();
         jButtonHilfe = new javax.swing.JButton();
+        jButtonBlacklist = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
 
         jLabel1.setText("Zeitraum:");
@@ -190,6 +207,9 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
         jButtonHilfe.setToolTipText("Hilfe");
 
+        jButtonBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/blacklist_16.png"))); // NOI18N
+        jButtonBlacklist.setToolTipText("Blacklist öffnen");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -202,16 +222,20 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                     .addComponent(jTextFieldFilterThemaTitel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jTextFieldFilterIrgendwo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel5)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonHilfe)
+                        .addComponent(jButtonFilterLoeschen)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonFilterLoeschen)))
+                        .addComponent(jButtonBlacklist)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonHilfe))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel5))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -240,7 +264,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButtonFilterLoeschen)
-                    .addComponent(jButtonHilfe))
+                    .addComponent(jButtonHilfe)
+                    .addComponent(jButtonBlacklist))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -271,6 +296,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonBlacklist;
     public javax.swing.JButton jButtonFilterLoeschen;
     public javax.swing.JButton jButtonHilfe;
     public javax.swing.JCheckBox jCheckBoxKeineAbos;
@@ -302,11 +328,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     @Override
     public JButton get_jButtonFilterLoeschen() {
         return jButtonFilterLoeschen;
-    }
-
-    @Override
-    public JButton get_jButtonHilfe() {
-        return jButtonHilfe;
     }
 
     @Override
@@ -383,9 +404,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     public void removeAllListener() {
         for (ActionListener a : jButtonFilterLoeschen.getActionListeners()) {
             jButtonFilterLoeschen.removeActionListener(a);
-        }
-        for (ActionListener a : jButtonHilfe.getActionListeners()) {
-            jButtonHilfe.removeActionListener(a);
         }
         for (ActionListener a : jCheckBoxKeineAbos.getActionListeners()) {
             jCheckBoxKeineAbos.removeActionListener(a);

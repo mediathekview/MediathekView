@@ -19,14 +19,17 @@
  */
 package mediathek.gui.dialog;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import msearch.daten.DatenFilm;
 
 public class DialogBeschreibung extends javax.swing.JDialog {
 
     DatenFilm datenFilm;
+    Frame paFrame;
 
     /**
      *
@@ -35,6 +38,7 @@ public class DialogBeschreibung extends javax.swing.JDialog {
      */
     public DialogBeschreibung(java.awt.Frame parent, DatenFilm ddatenFilm) {
         super(parent, true);
+        paFrame = parent;
         initComponents();
         datenFilm = ddatenFilm;
         setTitle("Beschreibung ändern");
@@ -57,6 +61,19 @@ public class DialogBeschreibung extends javax.swing.JDialog {
                 beenden();
             }
         });
+        jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonHilfe.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(paFrame, true, "\n"
+                        + "Diese Funktion richtet sich z.B. an Benutzer,\n"
+                        + "welche eine angepasste Beschreibung der Sendung in Form\n"
+                        + "der Infodatei (\"Filmname.txt\") anlegen\n"
+                        + "und durch Drittprogramme einlesen lassen wollen.\n"
+                        + "Achtung: Diese Änderungen gehen nach dem Neuladen\n"
+                        + "einer Filmliste verloren.").setVisible(true);
+            }
+        });
         pack();
     }
 
@@ -77,6 +94,7 @@ public class DialogBeschreibung extends javax.swing.JDialog {
         jTextArea1 = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
         jTextFieldTitel = new javax.swing.JTextField();
+        jButtonHilfe = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -91,6 +109,8 @@ public class DialogBeschreibung extends javax.swing.JDialog {
 
         jTextFieldTitel.setEditable(false);
 
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -100,6 +120,8 @@ public class DialogBeschreibung extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonHilfe)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonOk))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
@@ -117,14 +139,17 @@ public class DialogBeschreibung extends javax.swing.JDialog {
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonOk)
+                .addGap(13, 13, 13)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonOk)
+                    .addComponent(jButtonHilfe))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonOk;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
