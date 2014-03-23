@@ -132,6 +132,9 @@
           </SubComponents>
         </Container>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxChange">
+          <Properties>
+            <Property name="toolTipText" type="java.lang.String" value="Beschreibung &#xe4;ndern"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

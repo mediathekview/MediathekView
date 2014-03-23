@@ -165,6 +165,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
         mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, "240");

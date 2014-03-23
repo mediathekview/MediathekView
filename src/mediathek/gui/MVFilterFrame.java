@@ -114,7 +114,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(f, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
+                new DialogHilfe(f, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
             }
         });
         pack();
@@ -204,9 +204,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                             .addComponent(jCheckBoxKeineGesehenen)
                             .addComponent(jLabel1)
                             .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jToggleButtonNeue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jToggleButtonLivestram, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jToggleButtonNeue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jToggleButtonLivestram, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jToggleButtonHistory))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -409,11 +408,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     }
 
     @Override
-    public JButton get_jButtonHilfe() {
-        return jButtonHilfe;
-    }
-
-    @Override
     public JCheckBox get_jCheckBoxKeineAbos() {
         return jCheckBoxKeineAbos;
     }
@@ -429,17 +423,17 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     }
 
     @Override
-    public JComboBox get_jComboBoxFilterSender() {
+    public JComboBox<String> get_jComboBoxFilterSender() {
         return jComboBoxFilterSender;
     }
 
     @Override
-    public JComboBox get_jComboBoxFilterThema() {
+    public JComboBox<String> get_jComboBoxFilterThema() {
         return jComboBoxFilterThema;
     }
 
     @Override
-    public JComboBox get_jComboBoxZeitraum() {
+    public JComboBox<String> get_jComboBoxZeitraum() {
         return jComboBoxZeitraum;
     }
 
@@ -487,9 +481,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     public void removeAllListener() {
         for (ActionListener a : jButtonFilterLoeschen.getActionListeners()) {
             jButtonFilterLoeschen.removeActionListener(a);
-        }
-        for (ActionListener a : jButtonHilfe.getActionListeners()) {
-            jButtonHilfe.removeActionListener(a);
         }
         for (ActionListener a : jCheckBoxKeineAbos.getActionListeners()) {
             jCheckBoxKeineAbos.removeActionListener(a);

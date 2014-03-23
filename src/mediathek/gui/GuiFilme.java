@@ -108,7 +108,7 @@ public class GuiFilme extends PanelVorlage {
         jScrollPane1.setViewportView(tabelle);
         panelVideoplayerSetzen();
         panelBeschreibung = new PanelBeschreibung(daten.mediathekGui, daten);
-        mVFilterPanel = new MVFilterPanel(parentComponent);
+        mVFilterPanel = new MVFilterPanel(parentComponent, daten);
         mVFilterFrame = new MVFilterFrame(d);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
@@ -282,7 +282,6 @@ public class GuiFilme extends PanelVorlage {
         }
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_FILTER))) {
             jScrollPaneFilter.setVisible(false);
-//            jPanelFilter.setVisible(false);
             jPanelFilter.removeAll();
             mVFilter = mVFilterFrame;
             mVFilterFrame.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
@@ -291,7 +290,6 @@ public class GuiFilme extends PanelVorlage {
             mVFilter = mVFilterPanel;
             jPanelFilter.add(mVFilterPanel, BorderLayout.CENTER);
             jScrollPaneFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
-//            jPanelFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
             if (jScrollPaneFilter.isVisible()) {
                 setSplitPane();
             }

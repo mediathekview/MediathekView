@@ -20,13 +20,15 @@
 
 	# Version 5
 	- Anordnung der Filter
-	- Beenden wenn noch Downloads noch laufen: sofrt - warten ( und anschließend Rechner heruterfahen) - Abbrechen
+	- Beenden wenn noch Downloads noch laufen: sofort - warten ( und anschließend Rechner heruterfahen) - Abbrechen
 	- Geoblocking: Geblockte Filme werden markiert
 	- aktuelle History im Filter: alle in der aktuellen Sitzung gestarteten Filme anzeigen lassen (und evtl. nochmal starten ..)
 	- http-Downloads können unterbrochen und fortgesetzt werden
 	- Diff: es gibt "Diffs" der Filmliste, so braucht nur ein Diff-File und nicht die ganze Liste geladen werden
 	- verwendete Farben können in den Einstellungen verändert werden
 	- die Ersetzung von "verbotenen" Zeichen für Namen von Downloads kann angepasst werden
+	- "Sets zurücksetzen": Alle Sets zum Speichern/Abspielen auf die Standardeinstellungen zurücksetzen 
+	ohne jedoch die Abos, Blacklist etc. zu löschen
 	
 	# Version 4
 	- Das Dateiformat der Filmliste ist auf "json" geändert worden, die Liste zum Download wird mit den XZ Utils mit "LZMA2" komprimiert

@@ -245,8 +245,8 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jTextAreaAuto.setEditable(false);
         jTextAreaAuto.setColumns(20);
-        jTextAreaAuto.setRows(3);
-        jTextAreaAuto.setText("Die Filmliste wird beim Programmstart automatisch geladen (wenn sie\nälter als 3h ist). Zusätzlich kann sie über den Button \"Neue Filmliste laden\"\ngeladen werden.");
+        jTextAreaAuto.setRows(4);
+        jTextAreaAuto.setText("Die Filmliste wird beim Programmstart automatisch geladen (wenn sie\nälter als 3h ist). Zusätzlich kann sie über den Button \"Neue Filmliste laden\"\naktualisiert werden. Zum Update werden dann nur noch die Differenzlisten geladen (enthalten\nnur die neuen Filme).");
         jTextAreaAuto.setMargin(new java.awt.Insets(4, 4, 4, 4));
         jScrollPane2.setViewportView(jTextAreaAuto);
 
@@ -286,8 +286,8 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jTextAreaManuell.setEditable(false);
         jTextAreaManuell.setColumns(20);
-        jTextAreaManuell.setRows(3);
-        jTextAreaManuell.setText("Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\"\ngeladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum\nLaden ausgewählt werden.");
+        jTextAreaManuell.setRows(4);
+        jTextAreaManuell.setText("Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\"\ngeladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum\nLaden ausgewählt werden.\nIst die Filmliste nicht älter als 1 Tag, reicht eine Differenzliste (enthält nur die neuen Filme).");
         jTextAreaManuell.setMargin(new java.awt.Insets(4, 4, 4, 4));
         jScrollPane3.setViewportView(jTextAreaManuell);
 
@@ -342,7 +342,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButtonDiffs)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
