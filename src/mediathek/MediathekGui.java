@@ -43,6 +43,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
+import javax.swing.InputMap;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -58,18 +59,26 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import mediathek.controller.CheckUpdate;
 import mediathek.controller.IoXmlLesen;
+import mediathek.controller.Log;
+import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
+import mediathek.daten.DatenDownload;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.PanelVorlage;
+import mediathek.gui.dialog.DialogBeenden;
+import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.gui.dialog.MVAboutDialog;
 import mediathek.gui.dialog.MVFilmInformation;
+import mediathek.gui.dialog.PanelHilfe;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
+import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.res.GetIcon;
@@ -78,15 +87,6 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.controller.Log;
-import mediathek.controller.starter.Start;
-import mediathek.daten.DatenDownload;
-import mediathek.gui.dialog.DialogBeenden;
-import mediathek.gui.dialog.DialogLeer;
-import mediathek.gui.dialog.DialogOk;
-import mediathek.gui.dialog.MVAboutDialog;
-import mediathek.gui.dialog.PanelHilfe;
-import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFrame;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
@@ -225,6 +225,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); // soll abgefangen werden
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
+        //Hier wird F10 default Funktion unterbunden:
+        InputMap im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        im.put(KeyStroke.getKeyStroke("F10"), "none");
 
         updateSplashScreenText("Anwendungsdaten laden...");
         Duration duration = new Duration(MediathekGui.class.getSimpleName());
@@ -1165,7 +1168,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jPanelInfo = new javax.swing.JPanel();
         jTabbedPane = new javax.swing.JTabbedPane();
         jPanelToolBar = new javax.swing.JPanel();
-        javax.swing.JMenuBar jMenuBar = new javax.swing.JMenuBar();
+        jMenuBar = new javax.swing.JMenuBar();
         jMenuDatei = new javax.swing.JMenu();
         jMenuItemFilmlisteLaden = new javax.swing.JMenuItem();
         jMenuItemEinstellungen = new javax.swing.JMenuItem();
@@ -1420,6 +1423,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
     private javax.swing.JMenu jMenuAnsicht;
+    private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenu jMenuDatei;
     private javax.swing.JMenu jMenuDownload;
     private javax.swing.JMenu jMenuHilfe;
