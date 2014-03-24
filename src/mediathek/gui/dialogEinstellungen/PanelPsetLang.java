@@ -106,7 +106,7 @@ public class PanelPsetLang extends PanelVorlage {
         jLabelMeldungAbspielen.setIcon(GetIcon.getIcon("alert_16.png"));
         jLabelMeldungSeichern.setIcon(GetIcon.getIcon("alert_16.png"));
         //Programme
-        tabellePset.setAutoResizeMode(MVTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+        tabellePset.setAutoResizeMode(MVTable.AUTO_RESIZE_OFF);
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -318,9 +318,16 @@ public class PanelPsetLang extends PanelVorlage {
 
     private void spaltenSetzen() {
         for (int i = 0; i < tabellePset.getColumnCount(); ++i) {
-            if (i != DatenPset.PROGRAMMSET_NAME_NR
-                    && i != DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR
-                    && i != DatenPset.PROGRAMMSET_IST_SPEICHERN_NR) {
+            if (i == DatenPset.PROGRAMMSET_NAME_NR) {
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(10);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(120);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(1000);
+            } else if (i == DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR
+                    || i == DatenPset.PROGRAMMSET_IST_SPEICHERN_NR) {
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(10);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(80);
+                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(1000);
+            } else {
                 tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(0);
                 tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(0);
                 tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(0);

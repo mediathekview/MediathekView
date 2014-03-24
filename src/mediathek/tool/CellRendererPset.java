@@ -19,11 +19,11 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.Log;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenPset;
 import mediathek.res.GetIcon;
@@ -71,6 +71,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
                 }
             }
             if (c == DatenPset.PROGRAMMSET_IST_SPEICHERN_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
                 setText(""); // nur das Icon anzeigen
                 if (datenPset.istSpeichern()) {
                     setIcon(GetIcon.getIcon("ja_16.png"));
