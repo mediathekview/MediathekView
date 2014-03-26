@@ -582,7 +582,7 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
         }
         Log.systemMeldung(text.toArray(new String[]{}));
-        if (!start.stoppen) {
+        if (!start.stoppen && !abgebrochen) {
             if (datenDownload.getQuelle() != Start.QUELLE_BUTTON) {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override

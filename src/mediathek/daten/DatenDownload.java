@@ -103,20 +103,23 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_QUELLE_NR = 29;
     public static final String DOWNLOAD_ZURUECKGESTELLT = "Zurueckgestellt";
     public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 30;
+    public static final String DOWNLOAD_UNTERBROCHEN = "Unterbrochen";
+    public static final int DOWNLOAD_UNTERBROCHEN_NR = 31;
     public static final String DOWNLOAD_INFODATEI = "Infodatei";
-    public static final int DOWNLOAD_INFODATEI_NR = 31;
+    public static final int DOWNLOAD_INFODATEI_NR = 32;
     public static final String DOWNLOAD_REF = "Ref";
-    public static final int DOWNLOAD_REF_NR = 32;
+    public static final int DOWNLOAD_REF_NR = 33;
     //
     public static final String DOWNLOAD = "Downlad";
-    public static final int MAX_ELEM = 33;
+    public static final int MAX_ELEM = 34;
     public static final String[] COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         DOWNLOAD_BUTTON_START, DOWNLOAD_BUTTON_DEL,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, DOWNLOAD_GROESSE,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_GEO,
         DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
-        DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT,
+        DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE,
+        DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_UNTERBROCHEN,
         DOWNLOAD_INFODATEI, DOWNLOAD_REF};
     public static final String[] COLUMN_NAMES_ = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         "Button-Start"/*DOWNLOAD_BUTTON_START*/, "Button-Del"/*DOWNLOAD_BUTTON_DEL*/,
@@ -124,7 +127,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_GEO,
         DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
-        DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE, DOWNLOAD_ZURUECKGESTELLT,
+        DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE,
+        DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_UNTERBROCHEN,
         DOWNLOAD_INFODATEI, DOWNLOAD_REF};
     public Datum datumFilm = new Datum(0);
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
@@ -197,6 +201,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return arr[DOWNLOAD_ZURUECKGESTELLT_NR].equals(Boolean.TRUE.toString());
     }
 
+    public boolean istUnterbrochen() {
+        return arr[DOWNLOAD_UNTERBROCHEN_NR].equals(Boolean.TRUE.toString());
+    }
+
     public void zurueckstellen() {
         if (start != null) {
             if (start.status > Start.STATUS_INIT) {
@@ -206,6 +214,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
         arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.TRUE.toString();
         resetDownload();
+    }
+
+    public void unterbrechen() {
+        arr[DOWNLOAD_UNTERBROCHEN_NR] = Boolean.TRUE.toString();
     }
 
     public void resetDownload() {
@@ -520,6 +532,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[i] = "";
         }
         arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.FALSE.toString();
+        arr[DOWNLOAD_UNTERBROCHEN_NR] = Boolean.FALSE.toString();
     }
 
     public Datum getDatumForObject() {
