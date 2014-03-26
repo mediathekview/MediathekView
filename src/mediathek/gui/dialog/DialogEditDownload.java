@@ -96,7 +96,8 @@ public class DialogEditDownload extends javax.swing.JDialog {
         //Label
         c.gridx = 0;
         c.weightx = 0;
-        if (i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR || i == DatenDownload.DOWNLOAD_URL_AUTH_NR || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
+        if (i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR
+                || i == DatenDownload.DOWNLOAD_URL_AUTH_NR || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
                 || i == DatenDownload.DOWNLOAD_BUTTON_DEL_NR || i == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
             // ist eigentlich Unsinn, es anzuzeigen
             return;
