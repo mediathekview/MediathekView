@@ -101,35 +101,32 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 if (datenDownload != null) {
                     if (datenDownload.start != null) {
                         if (datenDownload.start.status == Start.STATUS_RUN) {
+                            setToolTipText("Film stoppen");
                             if (isSelected) {
                                 setIcon(film_stop_tab);
-                                setToolTipText("Film stoppen");
                             } else {
                                 setIcon(film_stop_sw_tab);
-                                setToolTipText("Film stoppen");
                             }
                         }
                     }
                 }
                 if (getIcon() == null) {
+                    setToolTipText("Film abspielen");
                     if (isSelected) {
                         setIcon(film_start_tab);
-                        setToolTipText("Film abspielen");
                     } else {
                         setIcon(film_start_sw_tab);
-                        setToolTipText("Film abspielen");
                     }
                 }
             } else if (c == DatenFilm.FILM_AUFZEICHNEN_NR) {
                 // ==================
                 // Button Aufzeichnen
                 setHorizontalAlignment(SwingConstants.CENTER);
+                setToolTipText("Film aufzeichnen");
                 if (isSelected) {
                     setIcon(film_rec_tab);
-                    setToolTipText("Film speichern");
                 } else {
                     setIcon(film_rec_sw_tab);
-                    setToolTipText("Film speichern");
                 }
             }
             // Farben setzen

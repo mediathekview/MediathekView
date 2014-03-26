@@ -28,8 +28,9 @@ import mediathek.daten.DatenDownload;
 import mediathek.tool.Konstanten;
 
 public class DialogContinueDownload extends javax.swing.JDialog {
-
+    
     public boolean weiter = true;
+    public boolean abbrechen = false;
 
     /**
      *
@@ -43,12 +44,23 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
-        jTextArea1.setText("Filmdatei existiert bereits.\n"
+        jTextArea1.setText("Die Filmdatei existiert bereits.\n\n"
                 + "Download weiterführen?\n"
                 + "(Ansonsten Datei überschreiben und von Anfang beginnen)");
         jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+        jButtonAbbrechen.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abbrechen = true;
+                weiter = false;
+                beenden();
+            }
+        });
+        jButtonJa.requestFocus();
+        jButtonJa.setSelected(true);
         jButtonJa.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 weiter = true;
@@ -56,7 +68,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
             }
         });
         jButtonNein.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 weiter = false;
@@ -66,16 +78,16 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         pack();
         new Thread(new Wait_(jLabelWait)).start();
     }
-
+    
     private class Wait_ implements Runnable {
-
+        
         JLabel jLabel;
         int w = 0;
-
+        
         public Wait_(JLabel jjLabel) {
             jLabel = jjLabel;
         }
-
+        
         @Override
         public synchronized void run() {
             try {
@@ -107,7 +119,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
             }
         }
     }
-
+    
     private void beenden() {
         this.dispose();
     }
@@ -127,6 +139,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         jTextFieldTitel = new javax.swing.JTextField();
         jButtonJa = new javax.swing.JButton();
         jLabelWait = new javax.swing.JLabel();
+        jButtonAbbrechen = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -145,6 +158,8 @@ public class DialogContinueDownload extends javax.swing.JDialog {
 
         jLabelWait.setText("0");
 
+        jButtonAbbrechen.setText("Download abbrechen");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -153,7 +168,8 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonAbbrechen)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabelWait)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonJa)
@@ -182,13 +198,15 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonNein)
                     .addComponent(jButtonJa)
-                    .addComponent(jLabelWait))
+                    .addComponent(jLabelWait)
+                    .addComponent(jButtonAbbrechen))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAbbrechen;
     private javax.swing.JButton jButtonJa;
     private javax.swing.JButton jButtonNein;
     private javax.swing.JLabel jLabel2;
