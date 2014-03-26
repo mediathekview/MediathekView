@@ -279,7 +279,7 @@ public class StarterClass {
                 new DialogDownloadfehler(null, ex.getLocalizedMessage(), datenDownload).setVisible(true);
             }
             leeresFileLoeschen(file);
-            fertigmeldung(datenDownload, start);
+            fertigmeldung(datenDownload, start, false);
             start.restSekunden = -1;
             start.percent = Start.PROGRESS_FERTIG;
             notifyStartEvent(datenDownload);
@@ -303,6 +303,15 @@ public class StarterClass {
 
         DatenDownload datenDownload;
         Start start;
+        BufferedInputStream srcBuffer = null;
+        BufferedOutputStream destBuffer = null;
+        HttpURLConnection conn = null;
+        final int STATE_ABBRECHEN = 1;
+        final int STATE_HTTP_ERROR = 2;
+        final int STATE_DOWNLOAD = 3;
+        int state = STATE_DOWNLOAD;
+        int downloaded = 0;
+        File file;
 
         public StartenDownload(DatenDownload d) {
             datenDownload = d;
@@ -315,127 +324,157 @@ public class StarterClass {
         public void run() {
             startmeldung(datenDownload, start);
             MVInputStream input;
+            String responseCode = "";
             try {
                 int len;
                 new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
                 datenDownload.mVFilmSize.setSize(laenge(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]));
                 datenDownload.mVFilmSize.setAktSize(0);
-                BufferedInputStream srcBuffer = null;
-                BufferedOutputStream destBuffer = null;
-                HttpURLConnection conn = null;
-                String responseCode = "";
-                try {
-                    URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                    conn = (HttpURLConnection) url.openConnection();
-                    File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-                    int downloaded = 0;
-                    if (file.exists()) {
-                        DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(null, datenDownload);
-                        dialogContinueDownload.setVisible(true);
-                        if (dialogContinueDownload.weiter) {
-                            downloaded = (int) file.length();
-                        }
-                    }
+                URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                conn = (HttpURLConnection) url.openConnection();
+                file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                if (!abbrechen()) {
                     conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
                     conn.setRequestProperty("User-Agent", Daten.getUserAgent());
                     conn.setDoInput(true);
                     conn.setDoOutput(true);
                     conn.connect();
                     if (conn.getResponseCode() >= 400) {
-                        responseCode = "Responsecode: "+conn.getResponseCode() + ", " + conn.getResponseMessage();
+                        // ==================================
+                        // dann wars das
+                        responseCode = "Responsecode: " + conn.getResponseCode() + "\n" + conn.getResponseMessage();
                         Log.fehlerMeldung(915236798, Log.FEHLER_ART_PROG, "StartetClass.StartenDownload", "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
+                        new DialogDownloadfehler(null, "URL des Films:\n"
+                                + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] + "\n\n"
+                                + responseCode + "\n", datenDownload).setVisible(true);
+                        state = STATE_HTTP_ERROR;
                     }
-                    input = new MVInputStream(conn.getInputStream());
-                    start.mVInputStream = input;
-                    srcBuffer = new BufferedInputStream(input);
-                    FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
-                    destBuffer = new BufferedOutputStream(fos, 1024);
-                    datenDownload.mVFilmSize.addAktSize(downloaded);
-                    byte[] buffer = new byte[1024];
-                    long p, pp = 0;
-                    while ((len = srcBuffer.read(buffer)) != -1 && !start.stoppen) {
-                        downloaded += len;
-                        destBuffer.write(buffer, 0, len);
-                        datenDownload.mVFilmSize.addAktSize(len);
-                        if (datenDownload.mVFilmSize.getSize() > 0) {
-                            p = (datenDownload.mVFilmSize.getAktSize() * (long) 1000) / datenDownload.mVFilmSize.getSize();
-                            // p muss zwischen 1 und 999 liegen
-                            if (p == 0) {
-                                p = Start.PROGRESS_GESTARTET;
-                            } else if (p >= 1000) {
-                                p = 999;
-                            }
-                            start.percent = (int) p;
-                            if (p != pp) {
-                                pp = p;
-                                // Restzeit ermitteln
-                                if (p > 2) {
-                                    // sonst macht es noch keinen Sinn
-                                    start.bandbreite = input.getBandbreite();
-                                    int diffZeit = start.startZeit.diffInSekunden();
-                                    int restProzent = 1000 - (int) p;
-                                    start.restSekunden = (diffZeit * restProzent / p);
-                                    // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
-                                    // als die bereits geladene Speilzeit des Films
-                                    bereitsAnschauen(datenDownload);
+                }
+                switch (state) {
+                    case STATE_DOWNLOAD:
+                        input = new MVInputStream(conn.getInputStream());
+                        start.mVInputStream = input;
+                        srcBuffer = new BufferedInputStream(input);
+                        FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
+                        destBuffer = new BufferedOutputStream(fos, 1024);
+                        datenDownload.mVFilmSize.addAktSize(downloaded);
+                        byte[] buffer = new byte[1024];
+                        long p,
+                         pp = 0;
+                        while ((len = srcBuffer.read(buffer)) != -1 && !start.stoppen) {
+                            downloaded += len;
+                            destBuffer.write(buffer, 0, len);
+                            datenDownload.mVFilmSize.addAktSize(len);
+                            if (datenDownload.mVFilmSize.getSize() > 0) {
+                                p = (datenDownload.mVFilmSize.getAktSize() * (long) 1000) / datenDownload.mVFilmSize.getSize();
+                                // p muss zwischen 1 und 999 liegen
+                                if (p == 0) {
+                                    p = Start.PROGRESS_GESTARTET;
+                                } else if (p >= 1000) {
+                                    p = 999;
                                 }
-                                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+                                start.percent = (int) p;
+                                if (p != pp) {
+                                    pp = p;
+                                    // Restzeit ermitteln
+                                    if (p > 2) {
+                                        // sonst macht es noch keinen Sinn
+                                        start.bandbreite = input.getBandbreite();
+                                        int diffZeit = start.startZeit.diffInSekunden();
+                                        int restProzent = 1000 - (int) p;
+                                        start.restSekunden = (diffZeit * restProzent / p);
+                                        // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
+                                        // als die bereits geladene Speilzeit des Films
+                                        bereitsAnschauen(datenDownload);
+                                    }
+                                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+                                }
                             }
                         }
-                    }
-                    Log.systemMeldung(input.toString());
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(316598941, Log.FEHLER_ART_PROG, "StartetClass.StartenDownload", ex, "Fehler");
-                    new DialogDownloadfehler(null, ex.getLocalizedMessage() + (responseCode.isEmpty() ? "" : "\n" + responseCode), datenDownload).setVisible(true);
-                } finally {
-                    try {
-                        if (srcBuffer != null) {
-                            srcBuffer.close();
+                        Log.systemMeldung(input.toString());
+                        if (!start.stoppen) {
+                            if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
+                                // direkter Start mit dem Button
+                                start.status = Start.STATUS_FERTIG;
+                            } else if (pruefen(datenDownload, start)) {
+                                //Anzeige ändern - fertig
+                                start.status = Start.STATUS_FERTIG;
+                            } else {
+                                //Anzeige ändern - bei Fehler fehlt der Eintrag
+                                start.status = Start.STATUS_ERR;
+                            }
                         }
-                        if (destBuffer != null) {
-                            destBuffer.close();
-                        }
-                        if (conn != null) {
-                            conn.disconnect();
-                        }
-                    } catch (Exception e) {
-                    }
+                        break;
+                    case STATE_ABBRECHEN:
+//                        start.status = Start.STATUS_RUN; // bei "init" wird er sonst nochmal gestartet
+                        break;
+                    case STATE_HTTP_ERROR:
+                        start.status = Start.STATUS_ERR;
+                        break;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(502039078, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload", ex);
+                Log.fehlerMeldung(316598941, Log.FEHLER_ART_PROG, "StartetClass.StartenDownload", ex, "Fehler");
+                start.status = Start.STATUS_ERR;
+                new DialogDownloadfehler(null, ex.getLocalizedMessage(), datenDownload).setVisible(true);
             }
-            if (!start.stoppen) {
-                if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
-                    // direkter Start mit dem Button
-                    start.status = Start.STATUS_FERTIG;
-                } else if (pruefen(datenDownload, start)) {
-                    //Anzeige ändern - fertig
-                    start.status = Start.STATUS_FERTIG;
-                } else {
-                    //Anzeige ändern - bei Fehler fehlt der Eintrag
-                    start.status = Start.STATUS_ERR;
+            ende(state);
+        }
+
+        private void ende(int state) {
+            try {
+                if (srcBuffer != null) {
+                    srcBuffer.close();
                 }
+                if (destBuffer != null) {
+                    destBuffer.close();
+                }
+                if (conn != null) {
+                    conn.disconnect();
+                }
+            } catch (Exception e) {
             }
             leeresFileLoeschen(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
-            fertigmeldung(datenDownload, start);
-            start.restSekunden = -1;
-            start.percent = Start.PROGRESS_FERTIG;
-            datenDownload.mVFilmSize.setAktSize(-1);
+            fertigmeldung(datenDownload, start, state == STATE_ABBRECHEN);
+            switch (state) {
+                case STATE_ABBRECHEN:
+                    datenDownload.resetDownload();
+                    break;
+                case STATE_HTTP_ERROR:
+                case STATE_DOWNLOAD:
+                    start.restSekunden = -1;
+                    start.percent = Start.PROGRESS_FERTIG;
+                    datenDownload.mVFilmSize.setAktSize(-1);
+                    break;
+            }
             notifyStartEvent(datenDownload);
         }
 
-    }
+        private boolean abbrechen() {
+            if (file.exists()) {
+                DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(null, datenDownload);
+                dialogContinueDownload.setVisible(true);
+                if (dialogContinueDownload.abbrechen) {
+                    // dann wars das
+                    state = STATE_ABBRECHEN;
+                    return true;
+                } else if (dialogContinueDownload.weiter) {
+                    downloaded = (int) file.length();
+                }
+            }
+            return false;
+        }
 
-    private void bereitsAnschauen(DatenDownload datenDownload) {
-        if (datenDownload.film != null && datenDownload.start != null) {
-            if (datenDownload.film.dauerL > 0
-                    && datenDownload.start.restSekunden > 0
-                    && datenDownload.mVFilmSize.getAktSize() > 0
-                    && datenDownload.mVFilmSize.getSize() > 0) {
-                // macht nur dann Sinn
-                long zeitGeladen = datenDownload.film.dauerL * datenDownload.mVFilmSize.getAktSize() / datenDownload.mVFilmSize.getSize();
-                if (zeitGeladen > (datenDownload.start.restSekunden * 1.1 /* plus 10% zur Sicherheit*/)) {
-                    datenDownload.start.beginnAnschauen = true;
+        private void bereitsAnschauen(DatenDownload datenDownload) {
+            if (datenDownload.film != null && datenDownload.start != null) {
+                if (datenDownload.film.dauerL > 0
+                        && datenDownload.start.restSekunden > 0
+                        && datenDownload.mVFilmSize.getAktSize() > 0
+                        && datenDownload.mVFilmSize.getSize() > 0) {
+                    // macht nur dann Sinn
+                    long zeitGeladen = datenDownload.film.dauerL * datenDownload.mVFilmSize.getAktSize() / datenDownload.mVFilmSize.getSize();
+                    if (zeitGeladen > (datenDownload.start.restSekunden * 1.1 /* plus 10% zur Sicherheit*/)) {
+                        datenDownload.start.beginnAnschauen = true;
+                    }
                 }
             }
         }
@@ -511,18 +550,19 @@ public class StarterClass {
         Log.systemMeldung(text.toArray(new String[]{}));
     }
 
-    private void fertigmeldung(final DatenDownload datenDownload, final Start start) {
+    private void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
         ArrayList<String> text = new ArrayList<>();
-        if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
-            //Daten.listeDownloads.listePutzen();
+        if (abgebrochen) {
+            text.add("Download wurde abgebrochen");
+        } else if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
             text.add("Film fertig");
         } else {
             if (start.stoppen) {
                 text.add("Download abgebrochen");
-            } else if (start.status != Start.STATUS_ERR) {
+            } else if (start.status == Start.STATUS_FERTIG) {
                 // dann ists gut
                 text.add("Download ist fertig und hat geklappt");
-            } else {
+            } else if (start.status == Start.STATUS_ERR) {
                 text.add("Download ist fertig und war fehlerhaft");
             }
             text.add("Programmset: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);

@@ -27,7 +27,8 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="jButtonAbbrechen" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="jLabelWait" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jButtonJa" linkSize="1" min="-2" max="-2" attributes="0"/>
@@ -60,6 +61,7 @@
                   <Component id="jButtonNein" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonJa" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabelWait" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonAbbrechen" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -106,6 +108,11 @@
     <Component class="javax.swing.JLabel" name="jLabelWait">
       <Properties>
         <Property name="text" type="java.lang.String" value="0"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonAbbrechen">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Download abbrechen"/>
       </Properties>
     </Component>
   </SubComponents>

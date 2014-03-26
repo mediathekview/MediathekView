@@ -20,13 +20,11 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-
-import javax.swing.*;
-
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
-import mediathek.daten.Daten;
+import javax.swing.JOptionPane;
+import javax.swing.RepaintManager;
 import mediathek.controller.Log;
-import mediathek.tool.Funktionen;
+import mediathek.daten.Daten;
 import mediathek.tool.MVSingleInstance;
 
 public class Main {

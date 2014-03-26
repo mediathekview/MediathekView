@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialog;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -26,13 +27,11 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-
-import com.jidesoft.utils.SystemInfo;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
-import mediathek.controller.Log;
 
 public class DialogZiel extends javax.swing.JDialog {
 
