@@ -57,7 +57,6 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                 beenden();
             }
         });
-        jButtonJa.requestFocus();
         jButtonJa.setSelected(true);
         jButtonJa.addActionListener(new ActionListener() {
             
