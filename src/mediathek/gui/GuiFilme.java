@@ -294,7 +294,6 @@ public class GuiFilme extends PanelVorlage {
                 setSplitPane();
             }
         }
-//        updateUI();
         // einrichten
         mVFilter.get_jToggleButtonNeue().setEnabled(false);
         mVFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
@@ -651,9 +650,9 @@ public class GuiFilme extends PanelVorlage {
                     mVFilter.get_jComboBoxFilterSender().setSelectedIndex(0);
                     if (!filterSender.equals("")) {
                         // ist wohl ein Bug beim Combo, klappt nur richtig wenn editable?!
-                        mVFilter.get_jComboBoxFilterSender().setEditable(true);
+//                        mVFilter.get_jComboBoxFilterSender().setEditable(true);
                         mVFilter.get_jComboBoxFilterSender().setSelectedItem(filterSender);
-                        mVFilter.get_jComboBoxFilterSender().setEditable(false);
+//                        mVFilter.get_jComboBoxFilterSender().setEditable(false);
                         if (mVFilter.get_jComboBoxFilterSender().getSelectedIndex() == 0) {
                             // war wohl nix, der gewählte Sender wurde in die Blacklist eingetragen
                             filterSender = "";
@@ -669,9 +668,9 @@ public class GuiFilme extends PanelVorlage {
                     }
                     // wenn Thema bei dem Sender vorhanden, dann wieder setzen
                     // ist wohl ein Bug beim Combo, klappt nur richtig wenn editable?!
-                    mVFilter.get_jComboBoxFilterThema().setEditable(true);
+//                    mVFilter.get_jComboBoxFilterThema().setEditable(true);
                     mVFilter.get_jComboBoxFilterThema().setSelectedItem(filterThema);
-                    mVFilter.get_jComboBoxFilterThema().setEditable(false);
+//                    mVFilter.get_jComboBoxFilterThema().setEditable(false);
                     if (!filterThema.equals("") && mVFilter.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
                         // war wohl nix
                         themaNichtDa = true;
