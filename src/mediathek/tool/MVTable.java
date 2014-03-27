@@ -510,7 +510,8 @@ public final class MVTable extends JTable {
                         breite[i] = 75;
                     } else if (i == DatenDownload.DOWNLOAD_BUTTON_START_NR
                             || i == DatenDownload.DOWNLOAD_BUTTON_DEL_NR
-                            || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+                            || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR
+                            || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR) {
                         breite[i] = 50;
                     } else if (i == DatenDownload.DOWNLOAD_TITEL_NR) {
                         breite[i] = 250;
@@ -584,7 +585,6 @@ public final class MVTable extends JTable {
                             || i == DatenDownload.DOWNLOAD_ART_NR
                             || i == DatenDownload.DOWNLOAD_QUELLE_NR
                             || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR
-                            || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR
                             || i == DatenDownload.DOWNLOAD_HISTORY_URL_NR
                             || i == DatenDownload.DOWNLOAD_REF_NR) {
                         breite[i] = 0;

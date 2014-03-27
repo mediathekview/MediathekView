@@ -20,7 +20,6 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;

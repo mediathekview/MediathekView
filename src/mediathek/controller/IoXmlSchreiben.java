@@ -192,14 +192,11 @@ public class IoXmlSchreiben {
         iterator = Daten.listeDownloads.iterator();
         while (iterator.hasNext()) {
             d = iterator.next();
-            if (!d.istAbo()) {
-                //Abos müssen neu angelegt werden
-                if (d.start != null) {
-                    if (d.start.status == Start.STATUS_FERTIG) {
-                        // keine fertigen Downloads, fehlerhafte bleiben
-                        continue;
-                    }
-                }
+            if (d.isInterrupted()) {
+                // unterbrochene werden gespeichert, dass die Info "Interrupt" erhalten bleibt
+                xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr, false);
+            } else if (!d.istAbo() && !d.istFertig()) {
+                //Download, (Abo müssen neu angelegt werden)
                 xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr, false);
             }
         }
