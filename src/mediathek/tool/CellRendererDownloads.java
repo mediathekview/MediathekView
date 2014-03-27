@@ -163,6 +163,13 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 } else {
                     setIcon(nein_12);
                 }
+            } else if (c == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+                if (datenDownload.isInterrupted()) {
+                    setIcon(ja_16);
+                } else {
+                    setIcon(nein_12);
+                }
             } else if (c == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (isSelected) {

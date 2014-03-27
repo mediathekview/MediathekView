@@ -21,7 +21,6 @@ package mediathek.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -31,7 +30,6 @@ import java.nio.file.Path;
 import javax.swing.JFrame;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
@@ -127,7 +125,7 @@ public class IoXmlLesen {
                     }
                 }
                 parser.close();
-            } catch (XMLStreamException | IOException ex) {
+            } catch (Exception ex) {
                 Log.fehlerMeldung(392840096, Log.FEHLER_ART_PROG, "IoXml.xmlDatenLesen", ex);
             }
             Daten.listeDownloads.listeNummerieren();

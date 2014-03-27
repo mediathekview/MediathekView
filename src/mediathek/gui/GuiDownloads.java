@@ -96,7 +96,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void run() {
                 // erst wenn das Programm geladen ist
-                downloadsAktualisieren(); // die Tabelle wird dabei gleich geladen
+                downloadsAktualisieren();
             }
         });
     }
@@ -413,7 +413,7 @@ public class GuiDownloads extends PanelVorlage {
             if (!arrayUrlsAbo.isEmpty()) {
                 daten.erledigteAbos.zeileSchreiben(arrayUrlsAbo);
             }
-            Daten.listeDownloads.delDownloadByUrl(arrayUrls, false /*nurStart*/);
+            Daten.listeDownloads.downloadLoeschen(arrayUrls);
             tabelleLaden();
             tabelle.requestFocusSelelct(jScrollPane1);
         } else {
@@ -440,7 +440,6 @@ public class GuiDownloads extends PanelVorlage {
                 Daten.listeDownloads.remove(datenDownload);
                 Daten.listeDownloads.add(datenDownload);
             }
-//            Daten.listeDownloads.listeNummerieren();
         }
         // ==========================
         // erst mal die URLs sammeln
@@ -508,7 +507,7 @@ public class GuiDownloads extends PanelVorlage {
         }
         // ========================
         // jetzt noch die Starts stoppen
-        Daten.listeDownloads.delDownloadByUrl(listeUrlsDownloadLoeschen, true /*nurStart*/);
+        Daten.listeDownloads.downloadAbbrechen(listeUrlsDownloadLoeschen);
         // und die Downloads starten oder stoppen
         if (starten) {
             //alle Downloads starten/wiederstarten
@@ -532,7 +531,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         }
-        Daten.listeDownloads.delDownloadByUrl(urls, true /*nurStart*/);
+        Daten.listeDownloads.downloadAbbrechen(urls);
     }
 
     private void setInfo() {

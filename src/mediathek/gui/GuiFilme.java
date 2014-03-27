@@ -1081,7 +1081,7 @@ public class GuiFilme extends PanelVorlage {
                         if (datenDownload.start != null) {
                             if (datenDownload.start.status == Start.STATUS_RUN) {
                                 stop = true;
-                                Daten.listeDownloadsButton.delDownloadByUrl(datenFilm.arr[DatenFilm.FILM_URL_NR], true);
+                                Daten.listeDownloadsButton.delDownloadButton(datenFilm.arr[DatenFilm.FILM_URL_NR]);
                             }
                         }
                     }

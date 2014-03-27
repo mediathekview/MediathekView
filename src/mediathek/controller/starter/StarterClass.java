@@ -451,12 +451,16 @@ public class StarterClass {
 
         private boolean abbrechen() {
             if (file.exists()) {
-                DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(null, datenDownload);
+                DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(daten.mediathekGui, datenDownload);
                 dialogContinueDownload.setVisible(true);
                 if (dialogContinueDownload.abbrechen) {
                     // dann wars das
                     state = STATE_ABBRECHEN;
                     return true;
+                } else if (!dialogContinueDownload.weiter && !dialogContinueDownload.name.isEmpty()) {
+                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = dialogContinueDownload.name;
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+                    file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 } else if (dialogContinueDownload.weiter) {
                     downloaded = (int) file.length();
                 }
