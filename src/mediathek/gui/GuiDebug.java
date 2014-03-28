@@ -26,18 +26,17 @@ import java.net.URL;
 import java.net.URLConnection;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-
 import mediathek.MediathekGui;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.gui.dialogEinstellungen.PanelSenderLaden;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.controller.Log;
 import mediathek.tool.MVNotification;
 import msearch.daten.MSConfig;
 
 public class GuiDebug extends JPanel {
-
+    static boolean allesLaden = false;
     private JButton[] buttonSender;
     private String[] sender;
     private Daten daten;
