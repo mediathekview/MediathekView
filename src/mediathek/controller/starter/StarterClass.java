@@ -352,6 +352,7 @@ public class StarterClass {
                 }
                 switch (state) {
                     case STATE_DOWNLOAD:
+                        datenDownload.interruptRestart();
                         input = new MVInputStream(conn.getInputStream());
                         start.mVInputStream = input;
                         srcBuffer = new BufferedInputStream(input);

@@ -245,7 +245,7 @@ public class GuiDownloads extends PanelVorlage {
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS,
-            ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD}, GuiDownloads.class.getSimpleName()) {
+            ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, ListenerMediathekView.EREIGNIS_RESET_INTERRUPT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelleLaden();
@@ -426,6 +426,7 @@ public class GuiDownloads extends PanelVorlage {
         // Film der noch keinen Starts hat wird gestartet
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // bei !starten wird der Film gestoppt
+        // wird immer vom Benutzer aufgerufen
         String[] urls;
         ArrayList<String> listeUrlsDownloadLoeschen = new ArrayList<>();
         ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
@@ -512,12 +513,8 @@ public class GuiDownloads extends PanelVorlage {
         if (starten) {
             //alle Downloads starten/wiederstarten
             DatenDownload.startenDownloads(daten, listeDownloadsStarten);
-            //tabelle.fireTableDataChanged(true);
-            tabelleLaden();
-        } else {
-            //oder stoppen
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getName());
         }
+        tabelleLaden();
     }
 
     private void wartendeDownloadsStoppen() {

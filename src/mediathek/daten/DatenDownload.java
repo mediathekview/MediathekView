@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
+import mediathek.controller.starter.StarterClass;
 import mediathek.tool.AsxLesen;
 import mediathek.tool.Datum;
 import mediathek.tool.DatumZeit;
@@ -210,7 +211,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         resetDownload();
     }
 
-    public boolean isInterrupted() {
+    public boolean interrupted() {
         if (istFertig()) {
             // fertige sind nicht mehr unterbrochen
             return false;
@@ -220,6 +221,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public void interrupt() {
         arr[DOWNLOAD_UNTERBROCHEN_NR] = Boolean.TRUE.toString();
+    }
+
+    public void interruptRestart() {
+        arr[DOWNLOAD_UNTERBROCHEN_NR] = Boolean.FALSE.toString();
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_RESET_INTERRUPT, DatenDownload.class.getName());
     }
 
     public boolean istFertig() {
