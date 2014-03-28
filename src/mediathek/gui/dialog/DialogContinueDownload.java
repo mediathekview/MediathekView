@@ -141,7 +141,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         });
         pack();
         jLabelWait.setText("");
-        if (datenDownload.isInterrupted()) {
+        if (datenDownload.interrupted()) {
             // annsonsten muss der User sebst entscheiden was er will
             new Thread(new Wait_(jLabelWait)).start();
         }

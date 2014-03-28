@@ -141,7 +141,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         Iterator<DatenDownload> it = this.iterator();
         while (it.hasNext()) {
             DatenDownload d = it.next();
-            if (d.isInterrupted()) {
+            if (d.interrupted()) {
                 continue;
             }
             if (!d.istAbo()) {
@@ -409,6 +409,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 l.set(DatenDownload.DOWNLOAD_BANDBREITE_NR, datenDownload.getTextBandbreite());
                 l.set(DatenDownload.DOWNLOAD_PROGRESS_NR, null);
                 l.set(DatenDownload.DOWNLOAD_GROESSE_NR, datenDownload.mVFilmSize);
+                l.set(DatenDownload.DOWNLOAD_UNTERBROCHEN_NR, null);
             }
         }
     }
