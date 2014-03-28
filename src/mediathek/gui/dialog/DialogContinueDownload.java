@@ -90,7 +90,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
 
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        jButtonZiel.addActionListener(new BeobPfad());
+        jButtonZiel.addActionListener(new ZielBeobachter());
         jButtonNeuerName.setEnabled(false);
         jButtonNeuerName.addActionListener(new ActionListener() {
 
@@ -506,41 +506,81 @@ public class DialogContinueDownload extends javax.swing.JDialog {
     private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
 
-    private class BeobPfad implements ActionListener {
+    private class ZielBeobachter implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
+            //we can use native directory chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(parent, "Download speichern");
-                chooser.setMode(FileDialog.SAVE);
+                //we want to select a directory only, so temporarily change properties
+                System.setProperty("apple.awt.fileDialogForDirectories", "true");
+                FileDialog chooser = new FileDialog(parent, "Film speichern");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
+                    //A directory was selected, that means Cancel was not pressed
                     try {
-                        File destination = new File(chooser.getDirectory() + chooser.getFile());
-                        jTextFieldName.setText(destination.getAbsolutePath());
+                        jComboBoxPfad.addItem(chooser.getDirectory() + chooser.getFile());
+                        jComboBoxPfad.setSelectedItem(chooser.getDirectory() + chooser.getFile());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(302019898, Log.FEHLER_ART_PROG, "DialogContinueDownload.BeobPfad", ex);
+                        Log.fehlerMeldung(795623147, Log.FEHLER_ART_PROG, "DialogContinueDownload.ZielBeobachter", ex);
                     }
                 }
+                System.setProperty("apple.awt.fileDialogForDirectories", "false");
             } else {
+                //use the cross-platform swing chooser
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
-                if (!jTextFieldName.getText().equals("")) {
-                    chooser.setCurrentDirectory(new File(jTextFieldName.getText()));
+                if (!jComboBoxPfad.getSelectedItem().toString().equals("")) {
+                    chooser.setCurrentDirectory(new File(jComboBoxPfad.getSelectedItem().toString()));
                 }
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                chooser.setFileHidingEnabled(false);
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
-                        jTextFieldName.setText(chooser.getSelectedFile().getAbsolutePath());
+                        jComboBoxPfad.addItem(chooser.getSelectedFile().getAbsolutePath());
+                        jComboBoxPfad.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(763214789, Log.FEHLER_ART_PROG, "DialogContinueDownload.BeobPfad", ex);
+                        Log.fehlerMeldung(915230478, Log.FEHLER_ART_PROG, "DialogContinueDownload.ZielBeobachter", ex);
                     }
                 }
             }
         }
     }
+//    private class BeobPfad implements ActionListener {
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            //we can use native chooser on Mac...
+//            if (SystemInfo.isMacOSX()) {
+//                FileDialog chooser = new FileDialog(parent, "Download speichern");
+//                chooser.setMode(FileDialog.SAVE);
+//                chooser.setVisible(true);
+//                if (chooser.getFile() != null) {
+//                    try {
+//                        File destination = new File(chooser.getDirectory() + chooser.getFile());
+//                        jTextFieldName.setText(destination.getAbsolutePath());
+//                    } catch (Exception ex) {
+//                        Log.fehlerMeldung(302019898, Log.FEHLER_ART_PROG, "DialogContinueDownload.BeobPfad", ex);
+//                    }
+//                }
+//            } else {
+//                int returnVal;
+//                JFileChooser chooser = new JFileChooser();
+//                if (!jTextFieldName.getText().equals("")) {
+//                    chooser.setCurrentDirectory(new File(jTextFieldName.getText()));
+//                }
+//                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//                chooser.setFileHidingEnabled(false);
+//                returnVal = chooser.showOpenDialog(null);
+//                if (returnVal == JFileChooser.APPROVE_OPTION) {
+//                    try {
+//                        jTextFieldName.setText(chooser.getSelectedFile().getAbsolutePath());
+//                    } catch (Exception ex) {
+//                        Log.fehlerMeldung(763214789, Log.FEHLER_ART_PROG, "DialogContinueDownload.BeobPfad", ex);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 }
