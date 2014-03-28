@@ -118,7 +118,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonWeiter" linkSize="1" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="jButtonNeuerName" linkSize="1" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonNeuStarten" linkSize="1" alignment="1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -133,7 +133,7 @@
                       <Component id="jLabelWait" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="jButtonNeuerName" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonNeuStarten" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -150,7 +150,7 @@
             <Property name="text" type="java.lang.String" value="Download weiterf&#xfc;hren"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonNeuerName">
+        <Component class="javax.swing.JButton" name="jButtonNeuStarten">
           <Properties>
             <Property name="text" type="java.lang.String" value="Download neu starten"/>
           </Properties>
@@ -173,9 +173,9 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="jLabelName" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="138" max="32767" attributes="0"/>
-                          <Component id="jButtonName" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabelNameExistiert" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="136" max="32767" attributes="0"/>
+                          <Component id="jButtonNeuerName" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -215,8 +215,8 @@
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="jLabelName" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonName" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabelNameExistiert" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonNeuerName" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -233,12 +233,12 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonName">
+        <Component class="javax.swing.JButton" name="jButtonNeuerName">
           <Properties>
             <Property name="text" type="java.lang.String" value="mit neuem Namen laden"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabelName">
+        <Component class="javax.swing.JLabel" name="jLabelNameExistiert">
           <Properties>
             <Property name="text" type="java.lang.String" value="Datei existiert schon!"/>
           </Properties>
