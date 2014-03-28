@@ -24,6 +24,11 @@ import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +37,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -40,6 +46,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 import mediathek.tool.DatumZeit;
+import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVColor;
@@ -47,12 +54,14 @@ import mediathek.tool.MVConfig;
 
 public class DialogContinueDownload extends javax.swing.JDialog {
 
-    public boolean weiter = true;
+    public boolean weiter = false;
+    public boolean neuStarten = false;
+    public boolean neuerName = false;
     public boolean abbrechen = false;
-    public String name = "";
     public JFrame parent;
     DatenDownload datenDownload;
     File file;
+    boolean stopWait = false;
 
     /**
      *
@@ -68,18 +77,27 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         if (p != null) {
             setLocationRelativeTo(p);
         }
-        jLabelName.setText("");
+        jLabelWait.setText("");
+        jLabelWait.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                stopWait = true;
+            }
+        });
+
+        jLabelNameExistiert.setText("");
         jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
 
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
         jButtonZiel.addActionListener(new BeobPfad());
-        jButtonName.setEnabled(false);
-        jButtonName.addActionListener(new ActionListener() {
+        jButtonNeuerName.setEnabled(false);
+        jButtonNeuerName.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                weiter = false;
-                name = jTextFieldName.getText();
+                neuerName = true;
+                setPfadName();
                 beenden();
             }
         });
@@ -87,9 +105,20 @@ public class DialogContinueDownload extends javax.swing.JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                abbrechen = true;
-                weiter = false;
-                beenden();
+                abbrechen();
+            }
+        });
+        new EscBeenden(this) {
+            @Override
+            public void beenden_() {
+                abbrechen();
+            }
+        };
+        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); // soll abgefangen werden
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent evt) {
+                abbrechen();
             }
         });
         jButtonWeiter.setSelected(true);
@@ -101,21 +130,14 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                 beenden();
             }
         });
-        jButtonNeuerName.addActionListener(new ActionListener() {
+        jButtonNeuStarten.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                weiter = false;
-                setPfadName();
+                neuStarten = true;
                 beenden();
             }
         });
-        pack();
-        jLabelWait.setText("");
-        if (datenDownload.interrupted()) {
-            // annsonsten muss der User sebst entscheiden was er will
-            new Thread(new Wait_(jLabelWait)).start();
-        }
         jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR]);
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -135,24 +157,12 @@ public class DialogContinueDownload extends javax.swing.JDialog {
             }
 
             private void tus() {
-                jButtonName.setEnabled(!jTextFieldName.getText().equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR])
-                        || !(((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getText()).equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
-                try {
-                    file = new File(jTextFieldName.getText());
-                    if (file.exists()) {
-                        jLabelName.setText("Datei existiert schon!");
-                    } else {
-                        jLabelName.setText("");
-                    }
-                } catch (Exception ex) {
-
-                }
+                checkPfadName();
                 if (!jTextFieldName.getText().equals(GuiFunktionen.checkDateiname(jTextFieldName.getText(), true /*pfad*/))) {
                     jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                 } else {
                     jTextFieldName.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
                 }
-
             }
         });
         ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
@@ -173,8 +183,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
             }
 
             private void tus() {
-                jButtonName.setEnabled(!jTextFieldName.getText().equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR])
-                        || !(((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getText()).equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
+                checkPfadName();
                 String s = ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getText();
                 if (!s.equals(GuiFunktionen.checkDateiname(s, true /*pfad*/))) {
                     ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).setBackground(MVColor.DOWNLOAD_FEHLER.color);
@@ -184,6 +193,10 @@ public class DialogContinueDownload extends javax.swing.JDialog {
             }
         });
         setModelPfad(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
+        if (datenDownload.interrupted()) {
+            // annsonsten muss der User sebst entscheiden was er will
+            new Thread(new Wait_(jLabelWait)).start();
+        }
     }
 
     private class Wait_ implements Runnable {
@@ -210,7 +223,12 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                         });
                     }
                     this.wait(1000);
+                    if (stopWait) {
+                        jLabel.setText("");
+                        return;
+                    }
                 }
+                weiter = true;
                 if (SwingUtilities.isEventDispatchThread()) {
                     beenden();
                 } else {
@@ -225,6 +243,11 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                 Log.fehlerMeldung(698989743, Log.FEHLER_ART_PROG, "ListenerMediathekView.pingen", ex);
             }
         }
+    }
+
+    private void abbrechen() {
+        abbrechen = true;
+        beenden();
     }
 
     private void setModelPfad(String pfad) {
@@ -261,6 +284,26 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, name);
     }
 
+    private void checkPfadName() {
+        String pfad = jComboBoxPfad.getSelectedItem().toString();
+        String name = jTextFieldName.getText();
+        if (pfad.endsWith(File.separator)) {
+            pfad = pfad.substring(0, pfad.length() - 1);
+        }
+        String pfadName = GuiFunktionen.addsPfad(pfad, name);
+        jButtonNeuerName.setEnabled(!jTextFieldName.getText().equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR])
+                || !(((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getText()).equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
+        try {
+            file = new File(pfadName);
+            if (file.exists()) {
+                jLabelNameExistiert.setText("Datei existiert schon!");
+            } else {
+                jLabelNameExistiert.setText("");
+            }
+        } catch (Exception ex) {
+        }
+    }
+
     private void beenden() {
         this.dispose();
     }
@@ -281,12 +324,12 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jLabelWait = new javax.swing.JLabel();
         jButtonWeiter = new javax.swing.JButton();
-        jButtonNeuerName = new javax.swing.JButton();
+        jButtonNeuStarten = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jTextFieldName = new javax.swing.JTextField();
         jButtonZiel = new javax.swing.JButton();
-        jButtonName = new javax.swing.JButton();
-        jLabelName = new javax.swing.JLabel();
+        jButtonNeuerName = new javax.swing.JButton();
+        jLabelNameExistiert = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jComboBoxPfad = new javax.swing.JComboBox();
@@ -312,7 +355,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
 
         jButtonWeiter.setText("Download weiterführen");
 
-        jButtonNeuerName.setText("Download neu starten");
+        jButtonNeuStarten.setText("Download neu starten");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -325,11 +368,11 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                         .addComponent(jLabelWait)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonWeiter))
-                    .addComponent(jButtonNeuerName, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jButtonNeuStarten, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonNeuerName, jButtonWeiter});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonNeuStarten, jButtonWeiter});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -339,7 +382,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                     .addComponent(jButtonWeiter)
                     .addComponent(jLabelWait))
                 .addGap(18, 18, 18)
-                .addComponent(jButtonNeuerName)
+                .addComponent(jButtonNeuStarten)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -347,9 +390,9 @@ public class DialogContinueDownload extends javax.swing.JDialog {
 
         jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
 
-        jButtonName.setText("mit neuem Namen laden");
+        jButtonNeuerName.setText("mit neuem Namen laden");
 
-        jLabelName.setText("Datei existiert schon!");
+        jLabelNameExistiert.setText("Datei existiert schon!");
 
         jLabel1.setText("Zielpfad:");
 
@@ -366,9 +409,9 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabelName)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
-                        .addComponent(jButtonName))
+                        .addComponent(jLabelNameExistiert)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
+                        .addComponent(jButtonNeuerName))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
@@ -397,12 +440,12 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                     .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabelName)
-                    .addComponent(jButtonName))
+                    .addComponent(jLabelNameExistiert)
+                    .addComponent(jButtonNeuerName))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonName, jButtonZiel, jTextFieldName});
+        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonNeuerName, jButtonZiel, jTextFieldName});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -445,7 +488,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAbbrechen;
-    private javax.swing.JButton jButtonName;
+    private javax.swing.JButton jButtonNeuStarten;
     private javax.swing.JButton jButtonNeuerName;
     private javax.swing.JButton jButtonWeiter;
     private javax.swing.JButton jButtonZiel;
@@ -453,7 +496,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabelName;
+    private javax.swing.JLabel jLabelNameExistiert;
     private javax.swing.JLabel jLabelWait;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
