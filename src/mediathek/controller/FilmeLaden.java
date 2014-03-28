@@ -203,7 +203,7 @@ public class FilmeLaden {
             Daten.listeFilme.neueFilme = false;
             Daten.listeFilmeNachBlackList.neueFilme = false;
             fillHash(Daten.listeFilme);
-            MSConfig.senderAllesLaden = senderAllesLaden;
+//            MSConfig.senderAllesLaden = senderAllesLaden;
             MSConfig.debug = Daten.debug;
             mSearchFilmeSuchen.updateSender(sender, Daten.listeFilme);
         }
