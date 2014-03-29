@@ -121,6 +121,7 @@ public class ProgrammLog {
             bw.write(Log.textProgramm.toString());
             bw.newLine();
             bw.flush();
+            bw.close();
         } catch (Exception ex) {
             Log.fehlerMeldung(319865493, Log.FEHLER_ART_PROG, "ProgrammLog.zeileSchreiben-1", ex);
             MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
