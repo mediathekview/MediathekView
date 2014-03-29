@@ -127,9 +127,6 @@ public class StarterClass {
         private void startStarten(DatenDownload datenDownload) {
             datenDownload.start.startZeit = new Datum();
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
-            if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR])) {
-                writeInfoFile(datenDownload);
-            }
             switch (datenDownload.getArt()) {
                 case Start.ART_PROGRAMM:
                     StartenProgramm startenProgrammn = new StartenProgramm(datenDownload);
@@ -160,6 +157,9 @@ public class StarterClass {
             file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
             notifyStartEvent(datenDownload);
             try {
+                if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR])) {
+                    writeInfoFile(datenDownload);
+                }
                 new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
             } catch (Exception ex) {
                 Log.fehlerMeldung(469365281, Log.FEHLER_ART_PROG, "StarterClass.StartenProgramm-1", ex);
@@ -352,6 +352,9 @@ public class StarterClass {
                 }
                 switch (state) {
                     case STATE_DOWNLOAD:
+                        if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR])) {
+                            writeInfoFile(datenDownload);
+                        }
                         datenDownload.interruptRestart();
                         input = new MVInputStream(conn.getInputStream());
                         start.mVInputStream = input;
@@ -691,6 +694,7 @@ public class StarterClass {
             }
             br.write("\n\n");
             br.flush();
+            br.close();
         } catch (IOException ex) {
             Log.fehlerMeldung(975410369, Log.FEHLER_ART_PROG, "StartetClass.writeInfoFile", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
