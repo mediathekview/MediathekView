@@ -461,13 +461,13 @@ public class StarterClass {
                     // dann wars das
                     state = STATE_ABBRECHEN;
                     return true;
-                } else if (dialogContinueDownload.neuerName) {
-                    // den neuen Namen setzen
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
-                    new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
-                    file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-                } else if (dialogContinueDownload.neuStarten) {
-                    // nix zu tun :)
+                } else if (dialogContinueDownload.neueStarten) {
+                    if (dialogContinueDownload.neuerName) {
+                        // dann hat sich auch der Name geändert
+                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+                        new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
+                        file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                    }
                 } else if (dialogContinueDownload.weiter) {
                     // bereits geladen:
                     downloaded = (int) file.length();
