@@ -60,6 +60,11 @@ public class MVColor {
     public static final MVC BUTTON_SET_ABSPIELEN = new MVC(new Color(205, 255, 191), "Einstellungen Sets, Button Abspielen");
     public static final MVC FILMLISTE_LADEN_AKTIV = new MVC(new Color(205, 255, 191), "Einstellungen Filmliste, Auto-Manuell");
 
+    // DialogDownload
+    public static MVC DOWNLOAD_DATEINAME_EXISTEIRT = new MVC(new Color(190, 0, 0), "Download, Dateiname existiert schon");
+    public static MVC DOWNLOAD_DATEINAME_NEU = new MVC(new Color(0, 140, 0), "Download, Dateiname ist neu");
+    public static MVC DOWNLOAD_DATEINAME_ALT = new MVC(new Color(0, 0, 200), "Download, Dateiname ist der alte");
+
     public LinkedList<MVC> liste = new LinkedList<>();
     public static final int MVC_TEXT = 0;
     public static final int MVC_COLOR = 1;
@@ -88,6 +93,9 @@ public class MVColor {
         liste.add(FILTER_REGEX_FEHLER);
         liste.add(BUTTON_SET_ABSPIELEN);
         liste.add(FILMLISTE_LADEN_AKTIV);
+        liste.add(DOWNLOAD_DATEINAME_EXISTEIRT);
+        liste.add(DOWNLOAD_DATEINAME_NEU);
+        liste.add(DOWNLOAD_DATEINAME_ALT);
     }
 
     public final void load() {
