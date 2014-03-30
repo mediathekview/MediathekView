@@ -26,6 +26,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -42,11 +43,16 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private JCheckBox jCheckBoxRestart = new JCheckBox();
     private JCheckBox jCheckBoxInfodatei = new JCheckBox();
     public boolean ok = false;
+    private MVPanelDownloadZiel mVPanelDownloadZiel;
+    private boolean gestartet;
 
-    public DialogEditDownload(java.awt.Frame parent, boolean modal, DatenDownload ddownload) {
+    public DialogEditDownload(JFrame parent, boolean modal, DatenDownload ddownload, boolean ggestartet) {
         super(parent, modal);
         initComponents();
         datenDownload = ddownload;
+        gestartet = ggestartet;
+        mVPanelDownloadZiel = new MVPanelDownloadZiel(parent, datenDownload, false);
+        mVPanelDownloadZiel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButtonBeenden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -102,73 +108,91 @@ public class DialogEditDownload extends javax.swing.JDialog {
             // ist eigentlich Unsinn, es anzuzeigen
             return;
         }
-        if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
-            labelListe[i].setForeground(Color.BLUE);
-            jCheckBoxRestart.setSelected(datenDownload.isRestart());
-            jCheckBoxRestart.addActionListener(new BeobCheckbox());
-            gridbag.setConstraints(labelListe[i], c);
-            jPanelExtra.add(labelListe[i]);
-            c.gridx = 1;
-            c.weightx = 10;
-            gridbag.setConstraints(jCheckBoxRestart, c);
-            jPanelExtra.add(jCheckBoxRestart);
-        } else if (i == DatenDownload.DOWNLOAD_INFODATEI_NR) {
-            labelListe[i].setForeground(Color.BLUE);
-            jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR]));
-            jCheckBoxInfodatei.addActionListener(new BeobCheckbox());
-            gridbag.setConstraints(labelListe[i], c);
-            jPanelExtra.add(labelListe[i]);
-            c.gridx = 1;
-            c.weightx = 10;
-            gridbag.setConstraints(jCheckBoxInfodatei, c);
-            jPanelExtra.add(jCheckBoxInfodatei);
-        } else {
-            if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
-                labelListe[i].setForeground(Color.BLUE);
-                if (datenDownload.getArt() != Start.ART_DOWNLOAD) {
-                    textfeldListe[i].setEditable(true);
-                    textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
-                }
-            } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                textfeldListe[i].setText(Start.getTextProgress(datenDownload.start));
-            } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
-                textfeldListe[i].setText(datenDownload.getTextRestzeit());
-            } else if (i == DatenDownload.DOWNLOAD_ART_NR) {
-                switch (datenDownload.getArt()) {
-                    case Start.ART_DOWNLOAD:
-                        textfeldListe[i].setText(Start.ART_DOWNLOAD_TXT);
-                        break;
-                    case Start.ART_PROGRAMM:
-                        textfeldListe[i].setText(Start.ART_PROGRAMM_TXT);
-                        break;
-                }
-            } else if (i == DatenDownload.DOWNLOAD_QUELLE_NR) {
-                switch (datenDownload.getQuelle()) {
-                    case Start.QUELLE_ALLE:
-                        textfeldListe[i].setText(Start.QUELLE_ALLE_TXT);
-                        break;
-                    case Start.QUELLE_ABO:
-                        textfeldListe[i].setText(Start.QUELLE_ABO_TXT);
-                        break;
-                    case Start.QUELLE_BUTTON:
-                        textfeldListe[i].setText(Start.QUELLE_BUTTON_TXT);
-                        break;
-                    case Start.QUELLE_DOWNLOAD:
-                        textfeldListe[i].setText(Start.QUELLE_DOWNLOAD_TXT);
-                        break;
-                }
+        if (datenDownload.getArt() == Start.ART_DOWNLOAD
+                && (i == DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR
+                || i == DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR
+                || i == DatenDownload.DOWNLOAD_ZIEL_PFAD_NR)
+                && !gestartet) {
+            // Downloadpfad anpassen
+            if (i == DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR) {
+                c.gridx = 1;
+                c.weightx = 10;
+                gridbag.setConstraints(mVPanelDownloadZiel, c);
+                jPanelExtra.add(mVPanelDownloadZiel);
             }
-            gridbag.setConstraints(labelListe[i], c);
-            jPanelExtra.add(labelListe[i]);
-            //Textfeld
-            c.gridx = 1;
-            c.weightx = 10;
-            gridbag.setConstraints(textfeldListe[i], c);
-            jPanelExtra.add(textfeldListe[i]);
+        } else {
+            if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+                labelListe[i].setForeground(Color.BLUE);
+                jCheckBoxRestart.setSelected(datenDownload.isRestart());
+                jCheckBoxRestart.addActionListener(new BeobCheckbox());
+                jCheckBoxRestart.setEnabled(!gestartet);
+                gridbag.setConstraints(labelListe[i], c);
+                jPanelExtra.add(labelListe[i]);
+                c.gridx = 1;
+                c.weightx = 10;
+                gridbag.setConstraints(jCheckBoxRestart, c);
+                jPanelExtra.add(jCheckBoxRestart);
+            } else if (i == DatenDownload.DOWNLOAD_INFODATEI_NR) {
+                labelListe[i].setForeground(Color.BLUE);
+                jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR]));
+                jCheckBoxInfodatei.addActionListener(new BeobCheckbox());
+                jCheckBoxInfodatei.setEnabled(!gestartet);
+                gridbag.setConstraints(labelListe[i], c);
+                jPanelExtra.add(labelListe[i]);
+                c.gridx = 1;
+                c.weightx = 10;
+                gridbag.setConstraints(jCheckBoxInfodatei, c);
+                jPanelExtra.add(jCheckBoxInfodatei);
+            } else {
+                if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
+                    labelListe[i].setForeground(Color.BLUE);
+                    if (datenDownload.getArt() != Start.ART_DOWNLOAD) {
+                        textfeldListe[i].setEditable(!gestartet);
+                        textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
+                    }
+                } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                    textfeldListe[i].setText(Start.getTextProgress(datenDownload.start));
+                } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                    textfeldListe[i].setText(datenDownload.getTextRestzeit());
+                } else if (i == DatenDownload.DOWNLOAD_ART_NR) {
+                    switch (datenDownload.getArt()) {
+                        case Start.ART_DOWNLOAD:
+                            textfeldListe[i].setText(Start.ART_DOWNLOAD_TXT);
+                            break;
+                        case Start.ART_PROGRAMM:
+                            textfeldListe[i].setText(Start.ART_PROGRAMM_TXT);
+                            break;
+                    }
+                } else if (i == DatenDownload.DOWNLOAD_QUELLE_NR) {
+                    switch (datenDownload.getQuelle()) {
+                        case Start.QUELLE_ALLE:
+                            textfeldListe[i].setText(Start.QUELLE_ALLE_TXT);
+                            break;
+                        case Start.QUELLE_ABO:
+                            textfeldListe[i].setText(Start.QUELLE_ABO_TXT);
+                            break;
+                        case Start.QUELLE_BUTTON:
+                            textfeldListe[i].setText(Start.QUELLE_BUTTON_TXT);
+                            break;
+                        case Start.QUELLE_DOWNLOAD:
+                            textfeldListe[i].setText(Start.QUELLE_DOWNLOAD_TXT);
+                            break;
+                    }
+                }
+                gridbag.setConstraints(labelListe[i], c);
+                jPanelExtra.add(labelListe[i]);
+                //Textfeld
+                c.gridx = 1;
+                c.weightx = 10;
+                gridbag.setConstraints(textfeldListe[i], c);
+                jPanelExtra.add(textfeldListe[i]);
+            }
         }
     }
 
     private void check() {
+        mVPanelDownloadZiel.setPfadName_geaendert();
+        mVPanelDownloadZiel.saveComboPfad();
         ok = true;
     }
 
