@@ -52,9 +52,8 @@ public class IoXmlLesen {
 
     BZip2CompressorOutputStream bZip2CompressorOutputStream = null;
 
-    public void datenLesen(Daten daten) {
-        Path xmlFilePath = null;
-        xmlFilePath = Daten.getMediathekXmlFilePath();
+    public boolean datenLesen(Daten daten, Path xmlFilePath) {
+        boolean ret = false;
         if (Files.exists(xmlFilePath)) {
             int event;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
@@ -125,13 +124,16 @@ public class IoXmlLesen {
                     }
                 }
                 parser.close();
+                ret = true;
             } catch (Exception ex) {
+                ret = false;
                 Log.fehlerMeldung(392840096, Log.FEHLER_ART_PROG, "IoXml.xmlDatenLesen", ex);
             }
             Daten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
             Daten.filmeLaden.getDownloadUrlsFilmlisten(false, false /*diffs*/).sort();
         }
+        return ret;
     }
 
     public static boolean einstellungenExistieren() {
