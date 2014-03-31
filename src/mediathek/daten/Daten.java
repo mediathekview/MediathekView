@@ -96,6 +96,7 @@ public class Daten {
     public MVFilmInformation filmInfoHud = null; // Infos zum Film
 
     private Timer timer;
+    private boolean configCopy = false;
 
     public Daten(String basis, MediathekGui gui) {
         basisverzeichnis = basis;
@@ -262,7 +263,7 @@ public class Daten {
     public static Path getMediathekXmlFilePath() {
         Path xmlFilePath = null;
         try {
-            xmlFilePath = Daten.getSettingsDirectory().resolve("mediathek.xml");
+            xmlFilePath = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -271,7 +272,9 @@ public class Daten {
 
     public void allesLaden() {
         updateSplashScreen("Lade Konfigurationsdaten...");
-        ioXmlLesen.datenLesen(this);
+
+        Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        ioXmlLesen.datenLesen(this, xmlFilePath);
 
         updateSplashScreen("Lade History...");
         history.laden();
@@ -289,6 +292,31 @@ public class Daten {
     }
 
     public void allesSpeichern() {
+        if (!configCopy) {
+            // nur einmal pro Programmstart machen
+            try {
+                Path xmlFilePath = Daten.getMediathekXmlFilePath();
+                Path xmlFilePath_1 = null;
+                Path xmlFilePath_2 = null;
+                Path xmlFilePath_3 = null;
+                xmlFilePath_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY1);
+                xmlFilePath_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY2);
+                xmlFilePath_3 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY3);
+
+                if (xmlFilePath_2.toFile().exists()) {
+                    xmlFilePath_2.toFile().renameTo(xmlFilePath_3.toFile());
+                }
+                if (xmlFilePath_1.toFile().exists()) {
+                    xmlFilePath_1.toFile().renameTo(xmlFilePath_2.toFile());
+                }
+                if (xmlFilePath.toFile().exists()) {
+                    xmlFilePath.toFile().renameTo(xmlFilePath_1.toFile());
+                }
+            } catch (Exception e) {
+                Log.fehlerMeldung(795623147, Log.FEHLER_ART_PROG, Daten.class.getName(), e);
+            }
+            configCopy = true;
+        }
         ioXmlSchreiben.datenSchreiben(this);
         if (Daten.RESET) {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
