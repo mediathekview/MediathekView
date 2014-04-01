@@ -46,6 +46,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private PanelEinstellungen panelEinstellungen;
     private PanelEinstellungenErweitert panelEinstellungenErweitert;
     private PanelEinstellungenGeo panelEinstellungenGeo;
+    private PanelImport panelImport;
     private PanelEinstellungenColor panelEinstellungenColor;
     private PanelFilmlisteLaden panelImportFilme;
     private PanelExportFilmliste panelExportFilmliste;
@@ -96,6 +97,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         panelEinstellungen = new PanelEinstellungen(ddaten, parentComponent);
         panelEinstellungenErweitert = new PanelEinstellungenErweitert(ddaten, parentComponent);
         panelEinstellungenGeo = new PanelEinstellungenGeo(ddaten, parentComponent);
+        panelImport = new PanelImport(ddaten, parentComponent);
         panelEinstellungenColor = new PanelEinstellungenColor(ddaten, parentComponent);
         panelImportFilme = new PanelFilmlisteLaden(ddaten, parentComponent);
         panelExportFilmliste = new PanelExportFilmliste(ddaten, parentComponent);
@@ -120,6 +122,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         final String NAME_allgemeineEinstellungen = "Allgemein";
         final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
         final String NAME_allgemeineEinstellungenGeo = "Geo";
+        final String NAME_allgemeineEinstellungenImport = "Import";
         final String NAME_allgemeineEinstellungenColor = "Farben";
         final String NAME_filmListeLaden = "Filmliste laden";
         final String NAME_filmListeExportieren = "Filmliste exportieren";
@@ -148,6 +151,8 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
         DefaultMutableTreeNode treeNodeAllgemeineEinstellungenGeo = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenGeo);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenGeo);
+        DefaultMutableTreeNode treeNodeAllgemeineEinstellungenImport = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenImport);
+        treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenImport);
         DefaultMutableTreeNode treeNodeAllgemeineEinstellungenColor = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenColor);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenColor);
         treeNodeStart.add(treeNodeEinstellungen);
@@ -220,6 +225,9 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                     } else if (name.equals(NAME_allgemeineEinstellungenGeo)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungenGeo);
+                    } else if (name.equals(NAME_allgemeineEinstellungenImport)) {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelImport);
                     } else if (name.equals(NAME_allgemeineEinstellungenColor)) {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungenColor);

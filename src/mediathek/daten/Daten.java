@@ -296,21 +296,18 @@ public class Daten {
             // nur einmal pro Programmstart machen
             try {
                 Path xmlFilePath = Daten.getMediathekXmlFilePath();
-                Path xmlFilePath_1 = null;
-                Path xmlFilePath_2 = null;
-                Path xmlFilePath_3 = null;
-                xmlFilePath_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY1);
-                xmlFilePath_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY2);
-                xmlFilePath_3 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY3);
+                Path xmlFilePathCopy_1;
+                Path xmlFilePathCopy_2;
 
-                if (xmlFilePath_2.toFile().exists()) {
-                    xmlFilePath_2.toFile().renameTo(xmlFilePath_3.toFile());
-                }
-                if (xmlFilePath_1.toFile().exists()) {
-                    xmlFilePath_1.toFile().renameTo(xmlFilePath_2.toFile());
+                for (int i = 5; i > 1; --i) {
+                    xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
+                    xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
+                    if (xmlFilePathCopy_1.toFile().exists()) {
+                        xmlFilePathCopy_1.toFile().renameTo(xmlFilePathCopy_2.toFile());
+                    }
                 }
                 if (xmlFilePath.toFile().exists()) {
-                    xmlFilePath.toFile().renameTo(xmlFilePath_1.toFile());
+                    xmlFilePath.toFile().renameTo(Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1).toFile());
                 }
             } catch (Exception e) {
                 Log.fehlerMeldung(795623147, Log.FEHLER_ART_PROG, Daten.class.getName(), e);

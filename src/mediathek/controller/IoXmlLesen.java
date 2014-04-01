@@ -141,6 +141,48 @@ public class IoXmlLesen {
         return Files.exists(xmlFilePath);
     }
 
+    public static int[] importAboBlacklist(JFrame parent, String datei, boolean abo, boolean black) {
+        int[] found = new int[]{0, 0};
+        try {
+            int event;
+            XMLInputFactory inFactory = XMLInputFactory.newInstance();
+            inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+            XMLStreamReader parser;
+            InputStreamReader in;
+            in = new InputStreamReader(new FileInputStream(datei), Konstanten.KODIERUNG_UTF);
+            parser = inFactory.createXMLStreamReader(in);
+            while (parser.hasNext()) {
+                event = parser.next();
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    //String t = parser.getLocalName();
+                    if (abo && parser.getLocalName().equals(DatenAbo.ABO)) {
+                        //Abo
+                        DatenAbo datenAbo = new DatenAbo();
+                        if (get(parser, event, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
+                            ++found[0];
+                            Daten.listeAbo.addAbo(datenAbo);
+                        }
+                    } else if (black && parser.getLocalName().equals(DatenBlacklist.BLACKLIST)) {
+                        //Blacklist
+                        ListeBlacklist blacklist = Daten.listeBlacklist;
+                        DatenBlacklist datenBlacklist = new DatenBlacklist();
+                        if (get(parser, event, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
+                            ++found[1];
+                            blacklist.add(datenBlacklist);
+                        }
+                    }
+                }
+            }
+            in.close();
+        } catch (Exception ex) {
+            Log.fehlerMeldung(302045698, Log.FEHLER_ART_PROG, "IoXml.importAboBlacklist", ex);
+        }
+        if (found[0] > 0) {
+            Daten.listeAbo.aenderungMelden();
+        }
+        return found;
+    }
+
     public static ListePset importPset(JFrame parent, Daten dd, String dateiUrl, boolean log) {
         int timeout = 10000; //10 Sekunden
         try {
