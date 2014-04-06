@@ -44,9 +44,8 @@ public class DialogImportPset extends javax.swing.JDialog {
         jButtonOk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (check()) {
-                    beenden();
-                }
+                ok = true;
+                beenden();
             }
         });
         jButtonAbbrechen.addActionListener(new ActionListener() {
@@ -73,11 +72,6 @@ public class DialogImportPset extends javax.swing.JDialog {
                 }
             }
         });
-    }
-
-    private boolean check() {
-        ok = true;
-        return ok;
     }
 
     private void beenden() {

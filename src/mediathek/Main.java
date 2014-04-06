@@ -87,6 +87,8 @@ public class Main {
                         // use for debugging EDT violations
                         RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
                     }
+                    // use for debugging EDT violations
+                    RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
                 }
 
                 switch (state) {

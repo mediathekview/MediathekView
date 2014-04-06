@@ -27,6 +27,7 @@ import javax.swing.JFrame;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 
 public class ListePset extends LinkedList<DatenPset> {
@@ -195,12 +196,12 @@ public class ListePset extends LinkedList<DatenPset> {
         return ret;
     }
 
-    public boolean addVorlage(JFrame parent, Daten dd, ListePset liste) {
+    public boolean progMusterErsetzen(JFrame parent, Daten dd, ListePset liste) {
         boolean ret = true;
         Iterator<DatenPset> it = liste.iterator();
         while (it.hasNext()) {
             DatenPset pSet = it.next();
-            if (!addVorlage(parent, dd, pSet)) {
+            if (!ListePset.this.progMusterErsetzen(parent, dd, pSet)) {
                 ret = false;
             }
         }
@@ -208,7 +209,7 @@ public class ListePset extends LinkedList<DatenPset> {
         return ret;
     }
 
-    private boolean addVorlage(JFrame parent, Daten dd, DatenPset pSet) {
+    private boolean progMusterErsetzen(JFrame parent, Daten dd, DatenPset pSet) {
         pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
         String mplayer = "";
         String vlc = "";

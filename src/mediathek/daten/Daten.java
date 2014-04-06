@@ -172,22 +172,14 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
         mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, "240");
         try {
-            if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_MPLAYER).equals("")) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
-            }
-            if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC).equals("")) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
-            }
-            if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER).equals("")) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
-            }
-            if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG).equals("")) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
-            }
-            if (Daten.debug) {
-                mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
-            }
+            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
+            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
+            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
+            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
         } catch (Exception ex) {
+        }
+        if (Daten.debug) {
+            mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
         }
     }
 
@@ -292,6 +284,8 @@ public class Daten {
         Path xmlFilePath = Daten.getMediathekXmlFilePath();
         if (!ioXmlLesen.datenLesen(this, xmlFilePath)) {
             // dann hat das Laden nicht geklappt
+            listePset.clear();
+            GuiFunktionenProgramme.addSetVorlagen(mediathekGui, this, ListePsetVorlagen.getStandarset(mediathekGui, this), true /*auto*/, true /*setVersion*/);
             init();
         }
 

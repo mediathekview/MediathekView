@@ -248,7 +248,7 @@ public class IoXmlLesen {
         } else {
             // damit die Variablen ersetzt werden
             ListePset ll = new ListePset();
-            ll.addVorlage(parent, dd, liste);
+            ll.progMusterErsetzen(parent, dd, liste);
             return ll;
         }
     }
@@ -302,7 +302,7 @@ public class IoXmlLesen {
             return null;
         } else {
             ListePset ll = new ListePset();
-            ll.addVorlage(parent, dd, liste);
+            ll.progMusterErsetzen(parent, dd, liste);
             return ll;
         }
     }
