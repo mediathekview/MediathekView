@@ -30,11 +30,11 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.controller.IoXmlLesen;
+import mediathek.controller.Log;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogOkCancel;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
-import mediathek.controller.Log;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 
@@ -127,76 +127,87 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     }
 
     public static void getNeuVersionStandarset(JFrame parent, Daten ddaten, String bs) {
-        ListePset lp = getStandarset(parent, ddaten, bs);
-        SwingUtilities.invokeLater(new GetNeuVersion(parent, ddaten, bs, lp));
+        ListePset listePsetStandard = getStandarset(parent, ddaten, bs);
+        SwingUtilities.invokeLater(new GetNeuVersion(parent, ddaten, bs, listePsetStandard));
     }
 
     private static class GetNeuVersion implements Runnable {
 
         Daten ddaten;
         String bs;
-        ListePset lp;
+        ListePset listePsetStandard;
         JFrame parent;
 
         public GetNeuVersion(JFrame pparent, Daten dd, String bbs, ListePset llp) {
             ddaten = dd;
             bs = bbs;
-            lp = llp;
+            listePsetStandard = llp;
             parent = pparent;
         }
 
         @Override
         public synchronized void run() {
             String version = Daten.mVConfig.get(MVConfig.SYSTEM_VERSION_PROGRAMMSET);
-            if (lp != null) {
-                if (!version.equals(lp.version)) {
-                    String titel = "Das Standardset wurde aktualisert";
-                    String text = "   ==================================================\n\n"
-                            + "   Es gibt ein neues Standardset der Videoplayer\n"
-                            + "   für den Download und das Abspielen der Filme\n"
-                            + "   \n"
-                            + "   Wenn bei Ihnen das Abspielen und Speichern aller Filme\n"
-                            + "   klappt, brauchen Sie nichts ändern.\n"
-                            + "   \n"
-                            + "   \n"
-                            + "   ==================================================\n"
-                            + "   \n"
-                            + "   Soll das neue Set installiert werden?\n"
-                            + "   \n"
-                            + "   ==================================================\n"
-                            + "   \n"
-                            + "   Die bestehenden Einstellungen werden nicht verändert.\n"
-                            + "   Das neue Set muss dann erst noch in den\n"
-                            + "   \"Einstellungen->Videoplayer\"\n"
-                            + "   aktiviert werden\n"
-                            + "   \n"
-                            + "   \n"
-                            + "   \n";
-                    DialogOkCancel dialogOkCancel = new DialogOkCancel(parent, ddaten, true, titel, text);
-                    dialogOkCancel.setVisible(true);
-                    if (dialogOkCancel.ok) {
-                        Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, lp.version);
-                        // die Zielpafade anpassen
-                        ListePset org = ddaten.listePset.getListeSpeichern();
-                        for (DatenPset ps : lp.getListeSpeichern()) {
-                            ps.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR];
-                            ps.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR];
-                            ps.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR];
-                            ps.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = org.get(0).arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR];
+            if (listePsetStandard != null) {
+                if (ddaten.listePset.size() > 0) {
+                    // sonst ist die Liste leer und dann gibts immer neue
+                    if (!version.isEmpty() && !version.equals(listePsetStandard.version)) {
+                        // wenn leer, dann ists ein Programmneustart
+                        String titel = "Das Standardset wurde aktualisert";
+                        String text = "   ==================================================\n\n"
+                                + "   Es gibt ein neues Standardset der Videoplayer\n"
+                                + "   für den Download und das Abspielen der Filme\n"
+                                + "   \n"
+                                + "   Wenn bei Ihnen das Abspielen und Speichern aller Filme\n"
+                                + "   klappt, brauchen Sie nichts ändern.\n"
+                                + "   \n"
+                                + "   \n"
+                                + "   ==================================================\n"
+                                + "   \n"
+                                + "   Soll das neue Set installiert werden?\n"
+                                + "   \n"
+                                + "   ==================================================\n"
+                                + "   \n"
+                                + "   Die bestehenden Einstellungen werden nicht verändert.\n"
+                                + "   Das neue Set muss dann erst noch in den\n"
+                                + "   \"Einstellungen->Videoplayer\"\n"
+                                + "   aktiviert werden\n"
+                                + "   \n"
+                                + "   \n"
+                                + "   \n";
+                        DialogOkCancel dialogOkCancel = new DialogOkCancel(parent, ddaten, true, titel, text);
+                        dialogOkCancel.setVisible(true);
+                        if (!dialogOkCancel.ok) {
+                            return;
+                        } else if (!dialogOkCancel.morgen) {
+                            // dann auch die Versionsnummer aktualisieren
+                            Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
+                            return;
                         }
-                        for (DatenPset ps : lp) {
-                            // die bestehenden Sets sollen nicht gestört werden
-                            ps.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
-                            ps.arr[DatenPset.PROGRAMMSET_IST_ABO_NR] = Boolean.FALSE.toString();
-                            ps.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR] = Boolean.FALSE.toString();
-                            ps.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.FALSE.toString();
-                        }
-                        ddaten.listePset.addPset(lp);
-                    } else if (!dialogOkCancel.morgen) {
-                        // dann auch die Versionsnummer aktualisieren
-                        Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, lp.version);
                     }
                 }
+                Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
+                // die Zielpafade anpassen
+                ListePset listePsetOrgSpeichern = ddaten.listePset.getListeSpeichern();
+                if (listePsetOrgSpeichern.size() > 0) {
+                    for (DatenPset ps : listePsetStandard.getListeSpeichern()) {
+                        ps.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR];
+                        ps.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR];
+                        ps.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR];
+                        ps.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR];
+                    }
+                }
+                if (!ddaten.listePset.isEmpty()) {
+                    // wenn leer, dann gibt immer die Neuen und die sind dann auch aktiv
+                    for (DatenPset ps : listePsetStandard) {
+                        // die bestehenden Sets sollen nicht gestört werden
+                        ps.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
+                        ps.arr[DatenPset.PROGRAMMSET_IST_ABO_NR] = Boolean.FALSE.toString();
+                        ps.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR] = Boolean.FALSE.toString();
+                        ps.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.FALSE.toString();
+                    }
+                }
+                ddaten.listePset.addPset(listePsetStandard);
             }
         }
     }

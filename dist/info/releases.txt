@@ -29,6 +29,8 @@
 	- die Ersetzung von "verbotenen" Zeichen für Namen von Downloads kann angepasst werden
 	- "Sets zurücksetzen": Alle Sets zum Speichern/Abspielen auf die Standardeinstellungen zurücksetzen 
 	ohne jedoch die Abos, Blacklist etc. zu löschen
+	- Abos und die Blacklist kann aus einer alten Konfigdatei importiert werden
+	- Pfad bei direkten Downloads kann angepasst werden
 	
 	# Version 4
 	- Das Dateiformat der Filmliste ist auf "json" geändert worden, die Liste zum Download wird mit den XZ Utils mit "LZMA2" komprimiert
