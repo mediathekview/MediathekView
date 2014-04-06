@@ -42,6 +42,7 @@ import mediathek.gui.GuiFilme;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
+import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
@@ -170,8 +171,23 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
         mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, "240");
-        if (Daten.debug) {
-            mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
+        try {
+            if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_MPLAYER).equals("")) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
+            }
+            if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC).equals("")) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
+            }
+            if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER).equals("")) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
+            }
+            if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG).equals("")) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
+            }
+            if (Daten.debug) {
+                mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
+            }
+        } catch (Exception ex) {
         }
     }
 
@@ -274,7 +290,10 @@ public class Daten {
         updateSplashScreen("Lade Konfigurationsdaten...");
 
         Path xmlFilePath = Daten.getMediathekXmlFilePath();
-        ioXmlLesen.datenLesen(this, xmlFilePath);
+        if (!ioXmlLesen.datenLesen(this, xmlFilePath)) {
+            // dann hat das Laden nicht geklappt
+            init();
+        }
 
         updateSplashScreen("Lade History...");
         history.laden();
