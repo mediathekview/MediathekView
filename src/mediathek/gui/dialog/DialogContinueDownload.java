@@ -135,20 +135,27 @@ public class DialogContinueDownload extends javax.swing.JDialog {
             try {
                 for (w = Konstanten.DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN; w > 0; --w) {
                     if (SwingUtilities.isEventDispatchThread()) {
-                        jLabel.setText("weiterführen in: " + w + " s");
+                        if (stopWait) {
+                            jLabel.setText("");
+                        } else {
+                            jLabel.setText("weiterführen in: " + w + " s");
+                        }
                     } else {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                jLabel.setText("weiterführen in: " + w + " s");
+                                if (stopWait) {
+                                    jLabel.setText("");
+                                } else {
+                                    jLabel.setText("weiterführen in: " + w + " s");
+                                }
                             }
                         });
                     }
-                    this.wait(1000);
                     if (stopWait) {
-                        jLabel.setText("");
                         return;
                     }
+                    this.wait(1000);
                 }
                 weiter = true;
                 if (SwingUtilities.isEventDispatchThread()) {
@@ -184,10 +191,10 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         jTextArea1 = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
         jTextFieldTitel = new javax.swing.JTextField();
-        jButtonAbbrechen = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabelWait = new javax.swing.JLabel();
         jButtonWeiter = new javax.swing.JButton();
+        jButtonAbbrechen = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jButtonNeuerName = new javax.swing.JButton();
         jPanelPath = new javax.swing.JPanel();
@@ -205,25 +212,31 @@ public class DialogContinueDownload extends javax.swing.JDialog {
 
         jTextFieldTitel.setEditable(false);
 
-        jButtonAbbrechen.setText("Download abbrechen");
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255), 2));
 
         jLabelWait.setText("0");
 
         jButtonWeiter.setText("Download weiterführen");
+
+        jButtonAbbrechen.setText("Download abbrechen");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(283, Short.MAX_VALUE)
-                .addComponent(jLabelWait)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonWeiter)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabelWait)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonWeiter))
+                    .addComponent(jButtonAbbrechen, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonWeiter});
+
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -231,10 +244,12 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonWeiter)
                     .addComponent(jLabelWait))
+                .addGap(18, 18, 18)
+                .addComponent(jButtonAbbrechen)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255), 2));
 
         jButtonNeuerName.setText("mit diesem Namen neu Starten");
 
@@ -242,11 +257,11 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         jPanelPath.setLayout(jPanelPathLayout);
         jPanelPathLayout.setHorizontalGroup(
             jPanelPathLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 527, Short.MAX_VALUE)
         );
         jPanelPathLayout.setVerticalGroup(
             jPanelPathLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 87, Short.MAX_VALUE)
+            .addGap(0, 124, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -254,7 +269,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(252, Short.MAX_VALUE)
+                .addContainerGap(262, Short.MAX_VALUE)
                 .addComponent(jButtonNeuerName)
                 .addContainerGap())
             .addComponent(jPanelPath, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -281,10 +296,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldTitel))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonAbbrechen)))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -300,8 +312,6 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonAbbrechen)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 

@@ -232,35 +232,55 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG);
     }
 
-    public static boolean addVorlagen(JFrame parent, Daten ddaten, ListePset pSet, boolean auto) {
-        // Standardgruppen laden
-        if (pSet != null) {
-            parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            for (DatenPset ps : pSet) {
-                if (!ps.arr[DatenPset.PROGRAMMSET_ADD_ON_NR].equals("")) {
-                    if (!addOnZip(ps.arr[DatenPset.PROGRAMMSET_ADD_ON_NR])) {
-                        // und Tschüss
-                        return false;
-                    }
-                }
-            }
-            parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    public static void addSetVorlagen(JFrame parent, Daten ddaten, ListePset pSet, boolean auto, boolean setVersion) {
+        if (pSet == null) {
             if (!auto) {
-                DialogImportPset dialog = new DialogImportPset(null, true, ddaten, pSet);
-                dialog.setVisible(true);
-                if (!dialog.ok) {
-                    return false;
+                MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
+                        "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+            return;
+        }
+        if (parent != null) {
+            parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        }
+        for (DatenPset ps : pSet) {
+            if (!ps.arr[DatenPset.PROGRAMMSET_ADD_ON_NR].equals("")) {
+                if (!addOnZip(ps.arr[DatenPset.PROGRAMMSET_ADD_ON_NR])) {
+                    // und Tschüss
+                    if (!auto) {
+                        MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
+                                "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
+                    return;
                 }
             }
+        }
+        if (parent != null) {
+            parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        }
+        if (auto) {
             if (ddaten.listePset.addPset(pSet)) {
-                MVMessageDialog.showMessageDialog(null, pSet.size() + " Programmset importiert!",
-                        "Ok", JOptionPane.INFORMATION_MESSAGE);
+                if (setVersion) {
+                    Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
+                }
             }
-            return true;
         } else {
-            MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
-                    "Fehler", JOptionPane.ERROR_MESSAGE);
-            return false;
+            DialogImportPset dialog = new DialogImportPset(parent, true, ddaten, pSet);
+            dialog.setVisible(true);
+            if (dialog.ok) {
+                if (ddaten.listePset.addPset(pSet)) {
+                    if (setVersion) {
+                        Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
+                    }
+                    MVMessageDialog.showMessageDialog(null, pSet.size() + " Programmset importiert!",
+                            "Ok", JOptionPane.INFORMATION_MESSAGE);
+
+                } else {
+                    MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
+                            "Fehler", JOptionPane.ERROR_MESSAGE);
+
+                }
+            }
         }
     }
 

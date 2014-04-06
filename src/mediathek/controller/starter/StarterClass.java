@@ -149,6 +149,7 @@ public class StarterClass {
         Start start;
         RuntimeExec runtimeExec;
         File file;
+        String exMessage = "";
 
         public StartenProgramm(DatenDownload d) {
             datenDownload = d;
@@ -275,8 +276,14 @@ public class StarterClass {
                     }
                 }
             } catch (Exception ex) {
+                exMessage = ex.getLocalizedMessage();
                 Log.fehlerMeldung(395623710, Log.FEHLER_ART_PROG, "StarterClass.StartenProgramm-2", ex);
-                new DialogDownloadfehler(null, ex.getLocalizedMessage(), datenDownload).setVisible(true);
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new DialogDownloadfehler(null, exMessage, datenDownload).setVisible(true);
+                    }
+                });
             }
             leeresFileLoeschen(file);
             fertigmeldung(datenDownload, start, false);
@@ -312,6 +319,8 @@ public class StarterClass {
         int state = STATE_DOWNLOAD;
         int downloaded = 0;
         File file;
+        String responseCode = "";
+        String exMessage = "";
 
         public StartenDownload(DatenDownload d) {
             datenDownload = d;
@@ -324,7 +333,6 @@ public class StarterClass {
         public void run() {
             startmeldung(datenDownload, start);
             MVInputStream input;
-            String responseCode = "";
             try {
                 int len;
                 new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
@@ -344,9 +352,14 @@ public class StarterClass {
                         // dann wars das
                         responseCode = "Responsecode: " + conn.getResponseCode() + "\n" + conn.getResponseMessage();
                         Log.fehlerMeldung(915236798, Log.FEHLER_ART_PROG, "StartetClass.StartenDownload", "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
-                        new DialogDownloadfehler(null, "URL des Films:\n"
-                                + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] + "\n\n"
-                                + responseCode + "\n", datenDownload).setVisible(true);
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                new DialogDownloadfehler(null, "URL des Films:\n"
+                                        + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] + "\n\n"
+                                        + responseCode + "\n", datenDownload).setVisible(true);
+                            }
+                        });
                         state = STATE_HTTP_ERROR;
                     }
                 }
@@ -417,9 +430,15 @@ public class StarterClass {
                         break;
                 }
             } catch (Exception ex) {
+                exMessage = ex.getLocalizedMessage();
                 Log.fehlerMeldung(316598941, Log.FEHLER_ART_PROG, "StartetClass.StartenDownload", ex, "Fehler");
                 start.status = Start.STATUS_ERR;
-                new DialogDownloadfehler(null, ex.getLocalizedMessage(), datenDownload).setVisible(true);
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new DialogDownloadfehler(null, exMessage, datenDownload).setVisible(true);
+                    }
+                });
             }
             ende(state);
         }
@@ -453,7 +472,34 @@ public class StarterClass {
             notifyStartEvent(datenDownload);
         }
 
+        private boolean retAbbrechen;
+        private boolean dialogAbbrechenIsVis;
+
         private boolean abbrechen() {
+            dialogAbbrechenIsVis = true;
+            retAbbrechen = true;
+            if (SwingUtilities.isEventDispatchThread()) {
+                retAbbrechen = abbrechen_();
+            } else {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        retAbbrechen = abbrechen_();
+                        dialogAbbrechenIsVis = false;
+                    }
+                });
+            }
+            while (dialogAbbrechenIsVis) {
+                try {
+                    wait(100);
+                } catch (Exception ex) {
+
+                }
+            }
+            return retAbbrechen;
+        }
+
+        private boolean abbrechen_() {
             if (file.exists()) {
                 DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(daten.mediathekGui, datenDownload);
                 dialogContinueDownload.setVisible(true);

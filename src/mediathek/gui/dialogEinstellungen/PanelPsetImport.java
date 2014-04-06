@@ -112,7 +112,7 @@ public class PanelPsetImport extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
-                GuiFunktionenProgramme.addVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, daten, Funktionen.getOsString()), false /* auto */);
+                GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, daten), false /*auto*/, true /*setVersion*/);
             }
         });
 
@@ -128,12 +128,12 @@ public class PanelPsetImport extends PanelVorlage {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         ListePset pSet = IoXmlLesen.importPset(parentComponent, daten, datei, true);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        GuiFunktionenProgramme.addVorlagen(parentComponent, daten, pSet, false /* auto */);
+        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, pSet, false /*auto*/, false /*setVersion*/);
     }
 
     private void importText() {
         ListePset pSet = IoXmlLesen.importPsetText(parentComponent, daten, jTextAreaImport.getText(), true);
-        GuiFunktionenProgramme.addVorlagen(parentComponent, daten, pSet, false /* auto */);
+        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, pSet, false /*auto*/, false /*setVersion*/);
     }
 
     private void tabelleLaden() {

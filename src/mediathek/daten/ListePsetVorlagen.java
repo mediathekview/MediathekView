@@ -34,6 +34,7 @@ import mediathek.controller.Log;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogOkCancel;
 import mediathek.tool.Funktionen;
+import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
@@ -127,7 +128,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     }
 
     public static void getNeuVersionStandarset(JFrame parent, Daten ddaten, String bs) {
-        ListePset listePsetStandard = getStandarset(parent, ddaten, bs);
+        ListePset listePsetStandard = getStandarset(parent, ddaten);
         SwingUtilities.invokeLater(new GetNeuVersion(parent, ddaten, bs, listePsetStandard));
     }
 
@@ -150,9 +151,11 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             String version = Daten.mVConfig.get(MVConfig.SYSTEM_VERSION_PROGRAMMSET);
             if (listePsetStandard != null) {
                 if (ddaten.listePset.size() > 0) {
-                    // sonst ist die Liste leer und dann gibts immer neue
-                    if (!version.isEmpty() && !version.equals(listePsetStandard.version)) {
-                        // wenn leer, dann ists ein Programmneustart
+                    // ansonsten ist die Liste leer und dann gibts immer was
+                    if (version.equals(listePsetStandard.version)) {
+                        // dann passt alles
+                        return;
+                    } else {
                         String titel = "Das Standardset wurde aktualisert";
                         String text = "   ==================================================\n\n"
                                 + "   Es gibt ein neues Standardset der Videoplayer\n"
@@ -178,10 +181,11 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                         DialogOkCancel dialogOkCancel = new DialogOkCancel(parent, ddaten, true, titel, text);
                         dialogOkCancel.setVisible(true);
                         if (!dialogOkCancel.ok) {
-                            return;
-                        } else if (!dialogOkCancel.morgen) {
-                            // dann auch die Versionsnummer aktualisieren
-                            Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
+                            if (!dialogOkCancel.morgen) {
+                                // dann auch die Versionsnummer aktualisieren
+                                Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
+                            }
+                            // dann halt nicht
                             return;
                         }
                     }
@@ -207,18 +211,19 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                         ps.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.FALSE.toString();
                     }
                 }
+                GuiFunktionenProgramme.addSetVorlagen(ddaten.mediathekGui, ddaten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
                 ddaten.listePset.addPset(listePsetStandard);
             }
         }
     }
 
-    public static ListePset getStandarset(JFrame parent, Daten ddaten, String bs) {
+    public static ListePset getStandarset(JFrame parent, Daten ddaten) {
         ListePset pSet = null;
         String[] vorlage = null;
         ListePsetVorlagen lv = new ListePsetVorlagen();
         if (lv.getListe()) {
             for (String[] ar : lv) {
-                if (ar[PGR_NAME_NR].equalsIgnoreCase("Standardset " + bs)) {
+                if (ar[PGR_NAME_NR].equalsIgnoreCase("Standardset " + Funktionen.getOsString())) {
                     vorlage = ar;
                     break;
                 }
