@@ -84,8 +84,6 @@ public class Main {
                             JOptionPane.showMessageDialog(null, "MediathekView is already running!");
                             //System.exit(1);
                         }
-                        // use for debugging EDT violations
-                        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
                     }
                     // use for debugging EDT violations
                     RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());

@@ -294,8 +294,8 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         jTextArea1.setEditable(false);
         jTextArea1.setBackground(javax.swing.UIManager.getDefaults().getColor("Label.background"));
         jTextArea1.setColumns(20);
-        jTextArea1.setRows(3);
-        jTextArea1.setText("Die Tabelle wird von oben nach unten abgearbeitet.\nEs ist also möglich, dass eine Ersetzung durch eine weitere\nwieder ersetzt wird!");
+        jTextArea1.setRows(5);
+        jTextArea1.setText("Die Tabelle wird von oben nach unten\nabgearbeitet. Es ist also möglich, \ndass eine Ersetzung durch eine weitere\nwieder ersetzt wird!");
         jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane2.setViewportView(jTextArea1);
 

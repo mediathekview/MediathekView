@@ -184,8 +184,8 @@
               <Color blue="ee" green="ee" id="Label.background" palette="3" red="ee" type="palette"/>
             </Property>
             <Property name="columns" type="int" value="20"/>
-            <Property name="rows" type="int" value="3"/>
-            <Property name="text" type="java.lang.String" value="Die Tabelle wird von oben nach unten abgearbeitet.&#xa;Es ist also m&#xf6;glich, dass eine Ersetzung durch eine weitere&#xa;wieder ersetzt wird!"/>
+            <Property name="rows" type="int" value="5"/>
+            <Property name="text" type="java.lang.String" value="Die Tabelle wird von oben nach unten&#xa;abgearbeitet. Es ist also m&#xf6;glich, &#xa;dass eine Ersetzung durch eine weitere&#xa;wieder ersetzt wird!"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                 <EmptyBorder/>
