@@ -29,7 +29,7 @@ echo MediathekView Buildnummer: $relNr >> dist/info/$relNr.build
 # zip erstellen
 cd dist/
 datum=$(date +%Y.%m.%d )
-zip -r MediathekView_4_$datum.zip .
+zip -r MediathekView_5_$datum.zip .
 cd ..
 
 # Dateien ins share-Verzeichnis von VmWare kopieren

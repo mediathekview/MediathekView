@@ -19,15 +19,15 @@ Film aufzeichnen		F7
 Filter löschen                  F8
 Blacklist anzeigen              F9
 
-Download zurückstellen		Rücktaste
-Download dauerhaft löschen	Entf
-Downloads aktualisieren		Leertaste
+Download zurückstellen			Rücktaste
+Download dauerhaft löschen		Entf
+Downloads aktualisieren			Leertaste
 
 Abos löschen			Entf
-Abos ändern			Return
+Abos ändern				Return
 
-Beschreibung anzeigen		F10
-Buttons anzeigen                F11
+Beschreibung anzeigen	F10
+Buttons anzeigen		F11
 
 
 
