@@ -33,12 +33,14 @@ public final class MVReplaceList {
     public final static String[] COLUMN_NAMES = {VON, NACH};
     public static final int MAX_ELEM = 2;
 
-    public  LinkedList<String[]> liste = new LinkedList<>();
+    public LinkedList<String[]> liste = new LinkedList<>();
 
     public void init() {
         if (liste.isEmpty()) {
             // wenn leer:
             liste.add(new String[]{" ", "_"});
+            liste.add(new String[]{"/", "_"});
+            liste.add(new String[]{"\\", "_"});
             liste.add(new String[]{"\"", "_"});
             liste.add(new String[]{"*", "_"});
             liste.add(new String[]{"?", "_"});
@@ -69,7 +71,7 @@ public final class MVReplaceList {
     public boolean check() {
         for (int i = 0; i < liste.size(); ++i) {
             String[] is = liste.get(i);
-            for (int k = i+1; k < liste.size(); ++k) {
+            for (int k = i + 1; k < liste.size(); ++k) {
                 String[] ks = liste.get(k);
                 if (is[1].contains(ks[0])) {
                     return true;
