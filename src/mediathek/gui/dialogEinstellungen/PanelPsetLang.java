@@ -903,7 +903,7 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxLaenge.setText("Dateiname beschränken auf:");
         jCheckBoxLaenge.setToolTipText("die Länge des Dateinamens wird auf die Anzahl Zeichen beschränkt");
 
-        jSpinnerLaenge.setModel(new javax.swing.SpinnerNumberModel(25, 12, 100, 1));
+        jSpinnerLaenge.setModel(new javax.swing.SpinnerNumberModel(25, 12, 200, 1));
 
         jLabel12.setText("Zeichen");
 
