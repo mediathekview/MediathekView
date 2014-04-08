@@ -582,7 +582,7 @@
                     <Component class="javax.swing.JSpinner" name="jSpinnerLaenge">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="25" maximum="100" minimum="12" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="25" maximum="200" minimum="12" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                       </Properties>
                     </Component>
