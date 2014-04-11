@@ -20,6 +20,10 @@
 	# Version 6
 	- tmp-Files wurden nicht gelöscht
 	- der Downloadpfad im Set (Basispfad) wird jetzt nicht mehr verändert
+	- die Filmbeschreibung kann direkt gespeichert werden
+	- Auräumen fertiger Downloads in der Tabelle löschte den falschen Download
+	- Dialog: Downloadfehler bekommt keinen Focus
+	- Filter: "7 Tage" eingefügt
 
 	# Version 5
 	- Anordnung der Filter
