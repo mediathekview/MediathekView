@@ -37,7 +37,7 @@ import mediathek.tool.MVMessageDialog;
 public class ProgrammLog {
 
     public static void LogDateiSchreiben(Daten ddaten, JFrame jFrame) {
-        DialogZiel dialog = new DialogZiel(jFrame, ddaten, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
+        DialogZiel dialog = new DialogZiel(jFrame, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
         dialog.setVisible(true);
         if (!dialog.ok) {
             return;

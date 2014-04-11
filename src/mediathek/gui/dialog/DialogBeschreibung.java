@@ -19,26 +19,30 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
+import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.MVInfoFile;
 import msearch.daten.DatenFilm;
 
 public class DialogBeschreibung extends javax.swing.JDialog {
 
     DatenFilm datenFilm;
-    Frame paFrame;
+    JFrame paFrame;
+    Daten daten;
 
     /**
      *
      * @param parent
      * @param ddatenFilm
      */
-    public DialogBeschreibung(java.awt.Frame parent, DatenFilm ddatenFilm) {
+    public DialogBeschreibung(JFrame parent, Daten ddaten, DatenFilm ddatenFilm) {
         super(parent, true);
         paFrame = parent;
+        daten = ddaten;
         initComponents();
         datenFilm = ddatenFilm;
         setTitle("Beschreibung ändern");
@@ -74,6 +78,14 @@ public class DialogBeschreibung extends javax.swing.JDialog {
                         + "einer Filmliste verloren.").setVisible(true);
             }
         });
+        jButtonSpeichern.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR] = jTextArea1.getText();
+                MVInfoFile.writeInfoFile(paFrame, daten, datenFilm);
+            }
+        });
         pack();
     }
 
@@ -95,6 +107,7 @@ public class DialogBeschreibung extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jTextFieldTitel = new javax.swing.JTextField();
         jButtonHilfe = new javax.swing.JButton();
+        jButtonSpeichern = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -111,6 +124,8 @@ public class DialogBeschreibung extends javax.swing.JDialog {
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
 
+        jButtonSpeichern.setText("Speichern");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -119,7 +134,8 @@ public class DialogBeschreibung extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonSpeichern)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonHilfe)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonOk))
@@ -134,15 +150,18 @@ public class DialogBeschreibung extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldTitel, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonOk)
-                    .addComponent(jButtonHilfe))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButtonSpeichern)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextFieldTitel, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(13, 13, 13)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonOk)
+                            .addComponent(jButtonHilfe))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -151,6 +170,7 @@ public class DialogBeschreibung extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonOk;
+    private javax.swing.JButton jButtonSpeichern;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
