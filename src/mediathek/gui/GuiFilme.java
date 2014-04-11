@@ -304,8 +304,8 @@ public class GuiFilme extends PanelVorlage {
             mVFilter.get_jCheckBoxNurHd().setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_NUR_HD)));
             mVFilter.get_jComboBoxZeitraum().setSelectedIndex(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE)));
         } catch (Exception ex) {
-            mVFilter.get_jComboBoxZeitraum().setSelectedIndex(6);
-            Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_TAGE, "6");
+            mVFilter.get_jComboBoxZeitraum().setSelectedIndex(5);
+            Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_TAGE, "5");
         }
         mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
         mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));

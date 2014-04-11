@@ -94,6 +94,7 @@ public class GuiFunktionen extends Funktionen {
         // dient nur zum Anzeigen falls es Probleme mit dem
         // Namen geben könnte
         // < > ? " : | \ / *
+        boolean winPfad = false;
         String ret = name;
         if (Funktionen.getOs() == Funktionen.OS_WIN_32BIT || Funktionen.getOs() == Funktionen.OS_WIN_64BIT) {
             // win verträgt keine Pfadnamen/Dateinamen mit einem "." am Schluß
@@ -106,6 +107,15 @@ public class GuiFunktionen extends Funktionen {
                 ret = ret.replace("\\", "-");
             } else {
                 ret = ret.replace("/", "-");
+            }
+            if (Funktionen.getOs() == Funktionen.OS_WIN_32BIT || Funktionen.getOs() == Funktionen.OS_WIN_64BIT) {
+                if (ret.length() > 1) {
+                    if (ret.charAt(1) == ':') {
+                        // damit auch "d:" und nicht nur "d:\" als Pfad geht
+                        winPfad = true;
+                        ret = ret.replaceFirst(":", ""); // muss zum Schluss wieder rein, kann aber so nicht ersetzt werden
+                    }
+                }
             }
         } else {
             ret = ret.replace("\\", "-");
@@ -121,6 +131,14 @@ public class GuiFunktionen extends Funktionen {
         ret = ret.replace(":", "_");
         ret = ret.replace("'", "_");
         ret = ret.replace("|", "_");
+        if (winPfad) {
+            // c: wieder herstellen
+            if (ret.length() == 1) {
+                ret = ret + ":";
+            } else if (ret.length() > 1) {
+                ret = ret.charAt(0) + ":" + ret.substring(1);
+            }
+        }
         return ret;
     }
 
