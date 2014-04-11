@@ -39,14 +39,14 @@ import msearch.daten.DatenFilm;
  */
 public class PanelBeschreibung extends JPanel {
 
-    Daten ddaten;
+    Daten daten;
     DatenFilm aktFilm = null;
     JFrame parent;
 
     public PanelBeschreibung(JFrame pparent, Daten dd) {
         initComponents();
         parent = pparent;
-        ddaten = dd;
+        daten = dd;
         jCheckBoxBeschreibung.setIcon(GetIcon.getIcon("close_15.png"));
         jCheckBoxBeschreibung.addActionListener(new ActionListener() {
             @Override
@@ -57,7 +57,7 @@ public class PanelBeschreibung extends JPanel {
         });
         jXHyperlinkWebsite.setText("");
         try {
-            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(parent, ddaten, ""));
+            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(parent, daten, ""));
         } catch (URISyntaxException ignored) {
         }
         jXHyperlinkWebsite.addMouseListener(new BeobMausUrl(jXHyperlinkWebsite));
@@ -71,7 +71,7 @@ public class PanelBeschreibung extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (aktFilm != null) {
                     String akt = aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
-                    new DialogBeschreibung(parent, aktFilm).setVisible(true);
+                    new DialogBeschreibung(parent,daten, aktFilm).setVisible(true);
                     if (!aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals(akt)) {
                         // dann hat sich die Beschreibung geändert
                         setText();

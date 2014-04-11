@@ -20,15 +20,14 @@
 package mediathek.gui.dialog;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mediathek.controller.Log;
-import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
@@ -37,21 +36,21 @@ public class DialogZiel extends javax.swing.JDialog {
 
     public boolean ok = false;
     public String ziel;
-    private Component parentComponent = null;
-    private Daten ddaten = null;
+//    private Component parentComponent = null;
+    private JFrame parent;
 
     /**
      *
-     * @param parent
-     * @param dd
+     * @param pparent
      * @param modal
      * @param ziel
      * @param titel
      */
-    public DialogZiel(java.awt.Frame parent, Daten dd, boolean modal, String ziel, String titel) {
-        super(parent, modal);
-        parentComponent = parent;
-        ddaten = dd;
+    public DialogZiel(JFrame pparent, boolean modal, String ziel, String titel) {
+        super(pparent, modal);
+//        parentComponent = pparent;
+        parent = pparent;
+//        ddaten = dd;
         initComponents();
         jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
         setTitle(titel);
@@ -60,8 +59,8 @@ public class DialogZiel extends javax.swing.JDialog {
         jButtonZiel.addActionListener(new ZielBeobachter());
         jTextFieldPfad.setText(ziel);
         this.ziel = ziel;
-        if (parent != null) {
-            setLocationRelativeTo(parent);
+        if (pparent != null) {
+            setLocationRelativeTo(pparent);
         }
         new EscBeenden(this) {
             @Override
@@ -79,7 +78,7 @@ public class DialogZiel extends javax.swing.JDialog {
             try {
                 int ook;
                 if (new File(pfad).exists()) {
-                    ook = JOptionPane.showConfirmDialog(parentComponent, "Datei:  " + "\"" + pfad + "\"" + "  existiert bereits", "Überschreiben?",
+                    ook = JOptionPane.showConfirmDialog(parent, "Datei:  " + "\"" + pfad + "\"" + "  existiert bereits", "Überschreiben?",
                             JOptionPane.YES_NO_OPTION);
                 } else {
                     ook = JOptionPane.OK_OPTION;
@@ -215,7 +214,7 @@ public class DialogZiel extends javax.swing.JDialog {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Logdatei speichern");
+                FileDialog chooser = new FileDialog(parent, "Logdatei speichern");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
