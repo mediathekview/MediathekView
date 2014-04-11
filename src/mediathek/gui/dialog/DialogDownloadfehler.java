@@ -35,6 +35,8 @@ public class DialogDownloadfehler extends javax.swing.JDialog {
     public DialogDownloadfehler(java.awt.Frame parent, String text, DatenDownload datenDownload) {
         super(parent, false);
         initComponents();
+        setFocusableWindowState(false);
+        setFocusable(false);
         setTitle("Downloadfehler");
         if (parent != null) {
             setLocationRelativeTo(parent);
@@ -48,7 +50,7 @@ public class DialogDownloadfehler extends javax.swing.JDialog {
         jTextArea1.setText(text);
         jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
         jButtonOk.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden();
@@ -56,7 +58,7 @@ public class DialogDownloadfehler extends javax.swing.JDialog {
         });
         pack();
     }
-    
+
     private void beenden() {
         this.dispose();
     }
