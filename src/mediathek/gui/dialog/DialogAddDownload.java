@@ -168,6 +168,7 @@ public class DialogAddDownload extends javax.swing.JDialog {
 
             }
         });
+        ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).setOpaque(true);
         ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
@@ -191,10 +192,8 @@ public class DialogAddDownload extends javax.swing.JDialog {
                     String s = ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getText();
                     if (!s.equals(GuiFunktionen.checkDateiname(s, true /*pfad*/))) {
                         ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).setBackground(MVColor.DOWNLOAD_FEHLER.color);
-//                        jComboBoxPfad.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                     } else {
                         ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).setBackground(Color.WHITE);
-//                        jComboBoxPfad.setBackground(javax.swing.UIManager.getDefaults().getColor("ComboBox.buttonHighlight"));
                     }
                 }
 

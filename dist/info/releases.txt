@@ -17,6 +17,9 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+	# Version 6
+	- tmp-Files wurden nicht gelöscht
+	- der Downloadpfad im Set (Basispfad) wird jetzt nicht mehr verändert
 
 	# Version 5
 	- Anordnung der Filter

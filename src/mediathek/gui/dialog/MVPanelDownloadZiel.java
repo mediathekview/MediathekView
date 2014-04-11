@@ -103,6 +103,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                 }
             }
         });
+        ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).setOpaque(true);
         ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
