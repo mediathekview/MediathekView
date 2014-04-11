@@ -376,6 +376,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private void dateinamePfadBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
+        // nname und ppfad sind nur belegt, wenn der Download über den DialogAddDownload gestartet wurde (aus TabFilme)
         String name;
         String pfad;
         if (!pSet.progsContainPath()) {
@@ -398,8 +399,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
             if (name.equals("")) {
                 name = DatumZeit.Heute_yyyyMMdd + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
             }
-            name = replaceString(name, film);
-            name = GuiFunktionen.replaceLeerDateiname(name, true/* istDatei */, true /* leerEntfernen */);
+            name = replaceString(name, film); // %D ... ersetzen
+            name = GuiFunktionen.replaceLeerDateiname(name, true/* istDatei */);
             // prüfen ob das Suffix 2x vorkommt
             if (name.length() > 8) {
                 String suf1 = name.substring(name.length() - 8, name.length() - 4);
@@ -442,14 +443,15 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
                 if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
                     // und Abopfad an den Pfad anhängen
-                    pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(abo.arr[DatenAbo.ABO_ZIELPFAD_NR], true/* istDatei */, true /* leerEntfernen */));
+                    pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(abo.arr[DatenAbo.ABO_ZIELPFAD_NR], true/* istDatei */));
                 }
             } else if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
                 // bei Downloads den Namen des Themas an den Zielpfad anhängen
-                pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR], true/* istDatei */, true /* leerEntfernen */));
+                pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR], true/* istDatei */));
             }
-            pfad = replaceString(pfad, film);
-            pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* istDatei */, false /* leerEntfernen */);
+            pfad = replaceString(pfad, film); // %D ... ersetzen
+            // der vorgegebenen Pfad des Sets wird so genommen wie er ist
+            //pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* istDatei */, false /* leerEntfernen */); 
         }
         if (pfad.endsWith(File.separator)) {
             pfad = pfad.substring(0, pfad.length() - 1);
@@ -462,6 +464,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (name.equals("")) {
             name = DatumZeit.Heute_yyyyMMdd + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
         }
+        
         arr[DOWNLOAD_ZIEL_DATEINAME_NR] = name;
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
         arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, name);

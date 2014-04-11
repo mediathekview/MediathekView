@@ -124,7 +124,7 @@ public class GuiFunktionen extends Funktionen {
         return ret;
     }
 
-    public static String replaceLeerDateiname(String name, boolean istDatei, boolean leerEntfernen) {
+    public static String replaceLeerDateiname(String name, boolean istDatei) {
         // aus einem Pfadnamen/Dateinamen werden verbotene Zeichen entfernt
         // "istDatei" kennzeichnet einen Dateinamen, sonst Pfadnamen
         // verbotene Zeichen entfernen
