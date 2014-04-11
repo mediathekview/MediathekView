@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <launch4jConfig>
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>MediathekView.jar</jar>
-  <outfile>/mnt/daten/software/Mediathek/Mediathek/res/MediathekView.exe</outfile>
+  <outfile>/mnt/daten/software/Mediathek/Mediathek/res/MediathekView2.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir></chdir>
@@ -18,5 +19,6 @@
     <minVersion>1.7.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
+    <runtimeBits>64/32</runtimeBits>
   </jre>
 </launch4jConfig>
