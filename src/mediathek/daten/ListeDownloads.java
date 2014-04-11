@@ -122,7 +122,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         if (datenDownload.start != null) {
             if (datenDownload.start.status == Start.STATUS_FERTIG) {
                 // alles was fertig/fehlerhaft ist, kommt beim putzen weg
-                this.remove();
+                remove(datenDownload);
                 gefunden = true;
             } else if (datenDownload.start.status == Start.STATUS_ERR) {
                 // fehlerhafte werden zurückgesetzt
