@@ -9,7 +9,7 @@ Der Zielpfad gibt an, wo Filme gespeichert werden sollen.
 Um alle Filme ansehen und aufzeichnen zu können, müssen mindestens
 diese Programme installiert sein:
 
-VLC-Player
+VLC
 Dieses Programm dient zum Ansehen und teilweise auch zum Aufzeichnen der Filme.
 
 flvstreamer
@@ -24,10 +24,12 @@ Zum Aufzeichnen von Playlisten (URL endet mit "m3u8")
 Linux:
 Die Programme können über die Paketverwaltung eingespielt werden.
 
-Windows, Os X:
-Die Programme können aus dem Internet geladen werden:
+
+Windows, OS X:
+Die Programme "flvstreamer" und "ffmpeg" sind bereits in MediathekView
+integriert. Es muss bloss noch "VLC" aus dem Internet geladen werden:
+
 
 http://www.videolan.org
 https://savannah.nongnu.org/projects/flvstreamer/
 http://ffmpeg.org
-
