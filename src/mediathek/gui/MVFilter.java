@@ -32,6 +32,8 @@ import javax.swing.JToggleButton;
  */
 public interface MVFilter {
 
+    public static final int MAX_FILTER = 5;
+
     public void removeAllListener();
 
     public JButton get_jButtonFilterLoeschen();
@@ -68,4 +70,5 @@ public interface MVFilter {
 
     public int getFilter();
 
+    public void filterChange();
 }
