@@ -24,6 +24,8 @@ import java.util.LinkedList;
 
 public class MVConfig {
 
+    public final static String TRENNER = "##";
+
     // ################################
     // Tags System
     // ################################
@@ -92,6 +94,7 @@ public class MVConfig {
     public static final String SYSTEM_IMPORT_URL_MANUELL = "system-import-url-manuell";
     public static final String SYSTEM_EXPORT_DATEI = "system-export-datei";
     // Filter
+    public static final String SYSTEM_FILTER = "system-filter-";
     public static final String SYSTEM_FILTER_DAUER = "system-filter-dauer";
     public static final String SYSTEM_FILTER_TAGE = "system-filter-tage"; // index im Array GuiFilme.COMBO_ZEIT_INT
     public static final String SYSTEM_FILTER_KEINE_ABO = "system-filter-abo";
@@ -123,9 +126,36 @@ public class MVConfig {
         hashmap.put(key, value);
     }
 
+    public synchronized void add(String key, String[] value) {
+        String s = "";
+        for (String sv : value) {
+            if (s.isEmpty()) {
+                s = sv;
+            } else {
+                s += TRENNER + sv;
+            }
+        }
+        hashmap.put(key, s);
+    }
+
     public synchronized String get(String key) {
         String s = hashmap.get(key);
         return s == null ? "" : s;
+    }
+
+    public synchronized String[] get(String key, int count) {
+        String[] sa = {""};
+        String s = hashmap.get(key);
+        if (s != null) {
+            sa = s.split(TRENNER);
+        }
+        if (sa.length != count) {
+            sa = new String[count];
+            for (int i = 0; i < count; ++i) {
+                sa[i] = "";
+            }
+        }
+        return sa;
     }
 
     public synchronized String[][] getAll() {

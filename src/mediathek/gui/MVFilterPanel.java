@@ -70,34 +70,53 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
             }
         });
         jRadioButtonF1.setSelected(true);
-        jRadioButtonF1.addChangeListener(new BeobRadio(jRadioButtonF1));
-        jRadioButtonF2.addChangeListener(new BeobRadio(jRadioButtonF2));
-        jRadioButtonF3.addChangeListener(new BeobRadio(jRadioButtonF3));
-        jRadioButtonF4.addChangeListener(new BeobRadio(jRadioButtonF4));
-        jRadioButtonF5.addChangeListener(new BeobRadio(jRadioButtonF5));
+        jRadioButtonF1.addActionListener(new BeobRadio());
+        jRadioButtonF2.addActionListener(new BeobRadio());
+        jRadioButtonF3.addActionListener(new BeobRadio());
+        jRadioButtonF4.addActionListener(new BeobRadio());
+        jRadioButtonF5.addActionListener(new BeobRadio());
     }
 
-    private class BeobRadio implements ChangeListener {
+    private class BeobRadio implements ActionListener {
 
-        JRadioButton jrb;
-
-        public BeobRadio(JRadioButton r) {
-            jrb = r;
+        public BeobRadio() {
             set();
         }
 
         @Override
-        public void stateChanged(ChangeEvent e) {
+        public void actionPerformed(ActionEvent e) {
             set();
+            filterChange();
         }
 
         private void set() {
-            if (jrb.isSelected()) {
-                jrb.setIcon(GetIcon.getIcon("filter_on.png"));
+            if (jRadioButtonF1.isSelected()) {
+                jRadioButtonF1.setIcon(GetIcon.getIcon("filter_on.png"));
             } else {
-                jrb.setIcon(GetIcon.getIcon("filter_off.png"));
+                jRadioButtonF1.setIcon(GetIcon.getIcon("filter_off.png"));
+            }
+            if (jRadioButtonF2.isSelected()) {
+                jRadioButtonF2.setIcon(GetIcon.getIcon("filter_on.png"));
+            } else {
+                jRadioButtonF2.setIcon(GetIcon.getIcon("filter_off.png"));
+            }
+            if (jRadioButtonF3.isSelected()) {
+                jRadioButtonF3.setIcon(GetIcon.getIcon("filter_on.png"));
+            } else {
+                jRadioButtonF3.setIcon(GetIcon.getIcon("filter_off.png"));
+            }
+            if (jRadioButtonF4.isSelected()) {
+                jRadioButtonF4.setIcon(GetIcon.getIcon("filter_on.png"));
+            } else {
+                jRadioButtonF4.setIcon(GetIcon.getIcon("filter_off.png"));
+            }
+            if (jRadioButtonF5.isSelected()) {
+                jRadioButtonF5.setIcon(GetIcon.getIcon("filter_on.png"));
+            } else {
+                jRadioButtonF5.setIcon(GetIcon.getIcon("filter_off.png"));
             }
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -401,17 +420,21 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     @Override
     public int getFilter() {
         if (jRadioButtonF1.isSelected()) {
-            return 0;
-        } else if (jRadioButtonF2.isSelected()) {
             return 1;
-        } else if (jRadioButtonF3.isSelected()) {
+        } else if (jRadioButtonF2.isSelected()) {
             return 2;
-        } else if (jRadioButtonF4.isSelected()) {
+        } else if (jRadioButtonF3.isSelected()) {
             return 3;
-        } else if (jRadioButtonF5.isSelected()) {
+        } else if (jRadioButtonF4.isSelected()) {
             return 4;
+        } else if (jRadioButtonF5.isSelected()) {
+            return 5;
         }
-        return 0;
+        return 1;
+    }
+
+    @Override
+    public void filterChange() {
     }
 
     @Override
