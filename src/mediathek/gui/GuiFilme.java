@@ -296,8 +296,8 @@ public class GuiFilme extends PanelVorlage {
             mVFilter.get_jComboBoxZeitraum().setSelectedIndex(Integer.parseInt(einstFilter[3]));
         } catch (Exception ex) {
             mVFilter.get_jComboBoxZeitraum().setSelectedIndex(5);
-            Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_TAGE, "5");
         }
+        Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_TAGE, String.valueOf(mVFilter.get_jComboBoxZeitraum().getSelectedIndex()));
         try {
             mVFilter.get_jSliderMinuten().setValue(Integer.parseInt(einstFilter[4]));
         } catch (Exception ex) {
@@ -306,6 +306,8 @@ public class GuiFilme extends PanelVorlage {
         }
         mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
         stopBeob = false;
+        MVListeFilme.checkBlacklist();
+
         tabelleLaden();
     }
 
