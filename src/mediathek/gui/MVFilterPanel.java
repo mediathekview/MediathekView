@@ -26,11 +26,9 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
@@ -91,26 +89,31 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         private void set() {
             if (jRadioButtonF1.isSelected()) {
+                Daten.AKT_FILTER = 0;
                 jRadioButtonF1.setIcon(GetIcon.getIcon("filter_on.png"));
             } else {
                 jRadioButtonF1.setIcon(GetIcon.getIcon("filter_off.png"));
             }
             if (jRadioButtonF2.isSelected()) {
+                Daten.AKT_FILTER = 1;
                 jRadioButtonF2.setIcon(GetIcon.getIcon("filter_on.png"));
             } else {
                 jRadioButtonF2.setIcon(GetIcon.getIcon("filter_off.png"));
             }
             if (jRadioButtonF3.isSelected()) {
+                Daten.AKT_FILTER = 2;
                 jRadioButtonF3.setIcon(GetIcon.getIcon("filter_on.png"));
             } else {
                 jRadioButtonF3.setIcon(GetIcon.getIcon("filter_off.png"));
             }
             if (jRadioButtonF4.isSelected()) {
+                Daten.AKT_FILTER = 3;
                 jRadioButtonF4.setIcon(GetIcon.getIcon("filter_on.png"));
             } else {
                 jRadioButtonF4.setIcon(GetIcon.getIcon("filter_off.png"));
             }
             if (jRadioButtonF5.isSelected()) {
+                Daten.AKT_FILTER = 4;
                 jRadioButtonF5.setIcon(GetIcon.getIcon("filter_on.png"));
             } else {
                 jRadioButtonF5.setIcon(GetIcon.getIcon("filter_off.png"));
@@ -416,22 +419,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     public javax.swing.JToggleButton jToggleButtonLivestram;
     public javax.swing.JToggleButton jToggleButtonNeue;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public int getFilter() {
-        if (jRadioButtonF1.isSelected()) {
-            return 1;
-        } else if (jRadioButtonF2.isSelected()) {
-            return 2;
-        } else if (jRadioButtonF3.isSelected()) {
-            return 3;
-        } else if (jRadioButtonF4.isSelected()) {
-            return 4;
-        } else if (jRadioButtonF5.isSelected()) {
-            return 5;
-        }
-        return 1;
-    }
 
     @Override
     public void filterChange() {

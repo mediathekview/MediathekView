@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.controller.Log;
 import mediathek.gui.GuiFilme;
+import mediathek.gui.MVFilter;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Filter;
 import mediathek.tool.ListenerMediathekView;
@@ -173,10 +174,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     private void setFilter() {
         try {
-            if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("") || Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("0")) {
+            //if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("") || Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("0")) {
+            if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE, Daten.AKT_FILTER).equals("") || Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE, Daten.AKT_FILTER).equals("0")) {
                 tage = 0;
             } else {
-                long max = 1000L * 60L * 60L * 24L * GuiFilme.COMBO_ZEIT_INT[Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE))];
+                long max = 1000L * 60L * 60L * 24L * GuiFilme.COMBO_ZEIT_INT[Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE, Daten.AKT_FILTER))];
                 tage = new Date().getTime() - max;
             }
         } catch (Exception ex) {
