@@ -68,6 +68,7 @@ public class Daten {
 
     //alle Programmeinstellungen
     public static MVConfig mVConfig = new MVConfig();
+    public static int AKT_FILTER = 0; // welcher Filter ausgewählt ist 1 ... 5
 
     // zentrale Klassen
     public static MVColor mVColor = new MVColor(); // verwendete Farben

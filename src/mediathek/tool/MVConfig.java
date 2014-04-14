@@ -126,9 +126,28 @@ public class MVConfig {
         hashmap.put(key, value);
     }
 
-    public synchronized void add(String key, String[] value) {
-        String s = "";
-        for (String sv : value) {
+    public synchronized void add(String key, String value, int i, int max) {
+        boolean ok = false;
+        String[] sa = {""};
+        String s = hashmap.get(key);
+        if (s != null) {
+            sa = s.split(TRENNER);
+            if (sa.length == max) {
+                sa[i] = value;
+                ok = true;
+            }
+        }
+        if (!ok) {
+            // dann anlegen
+            sa = new String[max];
+            for (int ii = 0; ii < max; ++ii) {
+                sa[i] = "";
+            }
+            sa[i] = value;
+        }
+        // und jetzt eintragen
+        s = "";
+        for (String sv : sa) {
             if (s.isEmpty()) {
                 s = sv;
             } else {
@@ -143,19 +162,20 @@ public class MVConfig {
         return s == null ? "" : s;
     }
 
-    public synchronized String[] get(String key, int count) {
+    public synchronized String get(String key, int i) {
         String[] sa = {""};
         String s = hashmap.get(key);
-        if (s != null) {
+        if (s == null) {
+            return "";
+        } else {
             sa = s.split(TRENNER);
         }
-        if (sa.length != count) {
-            sa = new String[count];
-            for (int i = 0; i < count; ++i) {
-                sa[i] = "";
-            }
+        if (sa.length <= i) {
+            hashmap.remove(key);
+            return "";
+        } else {
+            return sa[i];
         }
-        return sa;
     }
 
     public synchronized String[][] getAll() {

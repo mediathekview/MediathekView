@@ -68,7 +68,5 @@ public interface MVFilter {
 
     public void setVisible(boolean v);
 
-    public int getFilter();
-
     public void filterChange();
 }
