@@ -77,23 +77,23 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jComboBoxZeitraum" max="32767" attributes="0"/>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jCheckBoxKeineGesehenen" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jCheckBoxKeineAbos" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jCheckBoxNurHd" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jToggleButtonNeue" linkSize="3" alignment="0" min="-2" pref="120" max="-2" attributes="0"/>
-                              <Component id="jToggleButtonLivestram" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jToggleButtonHistory" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
                       <Component id="jSliderMinuten" pref="225" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jTextFieldFilterMinuten" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jCheckBoxNurNeue" min="-2" max="-2" attributes="0"/>
+                              <Component id="jCheckBoxKeineGesehenen" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jCheckBoxKeineAbos" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jCheckBoxNurHd" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jToggleButtonLivestram" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jToggleButtonHistory" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -121,9 +121,9 @@
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jCheckBoxNurHd" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="jCheckBoxNurNeue" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                   <Component id="jToggleButtonLivestram" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jToggleButtonNeue" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jToggleButtonHistory" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
@@ -175,14 +175,6 @@
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JToggleButton" name="jToggleButtonNeue">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Neue"/>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
-          </AuxValues>
-        </Component>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxKeineGesehenen">
           <Properties>
             <Property name="text" type="java.lang.String" value="gesehene ausblenden"/>
@@ -210,6 +202,11 @@
         <Component class="javax.swing.JToggleButton" name="jToggleButtonHistory">
           <Properties>
             <Property name="text" type="java.lang.String" value="aktuelle History"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="jCheckBoxNurNeue">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="nur Neue"/>
           </Properties>
         </Component>
       </SubComponents>
