@@ -62,7 +62,7 @@ public interface MVFilter {
 
     public JToggleButton get_jToggleButtonLivestram();
 
-    public JToggleButton get_jToggleButtonNeue();
+    public JCheckBox get_jCheckBoxNeue();
 
     public JToggleButton get_jToggleButtonHistory();
 
