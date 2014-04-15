@@ -185,7 +185,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jComboBoxZeitraum, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSliderMinuten, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                    .addComponent(jSliderMinuten, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -330,14 +330,19 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxFilterSender, jComboBoxFilterThema, jTextFieldFilterIrgendwo, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
 
         buttonGroup1.add(jRadioButtonF1);
+        jRadioButtonF1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_on.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF2);
+        jRadioButtonF2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF3);
+        jRadioButtonF3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF4);
+        jRadioButtonF4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF5);
+        jRadioButtonF5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -372,13 +377,12 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 .addGap(9, 9, 9)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jRadioButtonF1, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jRadioButtonF2, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jRadioButtonF3, javax.swing.GroupLayout.Alignment.TRAILING))
-                    .addComponent(jRadioButtonF5)
-                    .addComponent(jRadioButtonF4))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jRadioButtonF1)
+                    .addComponent(jRadioButtonF2)
+                    .addComponent(jRadioButtonF3)
+                    .addComponent(jRadioButtonF4)
+                    .addComponent(jRadioButtonF5))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

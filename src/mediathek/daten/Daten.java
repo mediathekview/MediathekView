@@ -171,7 +171,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
-        mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, "240");
+        mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, Konstanten.GUIFILME_DIVIDER_LOCATION);
         try {
             Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
             Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
