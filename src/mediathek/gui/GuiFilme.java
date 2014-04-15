@@ -78,6 +78,7 @@ import mediathek.tool.Datum;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
@@ -611,8 +612,8 @@ public class GuiFilme extends PanelVorlage {
         try {
             jSplitPane1.setDividerLocation(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_FILME_DIVIDER)));
         } catch (Exception ignore) {
-            jSplitPane1.setDividerLocation(240);
-            Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, "240");
+            Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, Konstanten.GUIFILME_DIVIDER_LOCATION);
+            jSplitPane1.setDividerLocation(Integer.parseInt(Konstanten.GUIFILME_DIVIDER_LOCATION));
         }
     }
 
