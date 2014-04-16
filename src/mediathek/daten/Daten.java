@@ -68,7 +68,7 @@ public class Daten {
 
     //alle Programmeinstellungen
     public static MVConfig mVConfig = new MVConfig();
-    public static int AKT_FILTER = 0; // welcher Filter ausgewählt ist 1 ... 5
+    public static int aktFilter = 0; // welcher Filter ausgewählt ist 1 ... 5
 
     // zentrale Klassen
     public static MVColor mVColor = new MVColor(); // verwendete Farben
@@ -306,38 +306,7 @@ public class Daten {
     }
 
     public void allesSpeichern() {
-        final int MAX_COPY = 5;
-        boolean rename = true;
-        if (!configCopy) {
-            // nur einmal pro Programmstart machen
-            try {
-                Path xmlFilePath = Daten.getMediathekXmlFilePath();
-                Path xmlFilePathCopy_1;
-                Path xmlFilePathCopy_2;
-                xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + MAX_COPY);
-                if (xmlFilePathCopy_1.toFile().exists()) {
-                    xmlFilePathCopy_1.toFile().delete();
-                }
-                for (int i = MAX_COPY; i > 1; --i) {
-                    xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
-                    xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
-                    if (xmlFilePathCopy_1.toFile().exists()) {
-                        if (!xmlFilePathCopy_1.toFile().renameTo(xmlFilePathCopy_2.toFile())) {
-                            rename = false;
-                        }
-                    }
-                }
-                if (xmlFilePath.toFile().exists()) {
-                    xmlFilePath.toFile().renameTo(Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1).toFile());
-                }
-            } catch (Exception e) {
-                Log.fehlerMeldung(795623147, Log.FEHLER_ART_PROG, Daten.class.getName(), e);
-            }
-            if (!rename) {
-                Log.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
-            }
-            configCopy = true;
-        }
+        konfigCopy();
         ioXmlSchreiben.datenSchreiben(this);
         if (Daten.RESET) {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
@@ -365,6 +334,42 @@ public class Daten {
             } catch (Exception e) {
                 Log.fehlerMeldung(465690123, Log.FEHLER_ART_PROG, Daten.class.getName(), e);
             }
+        }
+    }
+
+    private void konfigCopy() {
+        final int MAX_COPY = 5;
+        boolean renameOk = true;
+        if (!configCopy) {
+            // nur einmal pro Programmstart machen
+            try {
+                Path xmlFilePath = Daten.getMediathekXmlFilePath();
+                Path xmlFilePathCopy_1;
+                Path xmlFilePathCopy_2;
+                xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + MAX_COPY);
+                if (xmlFilePathCopy_1.toFile().exists()) {
+                    // das letzte File löschen, sonst klappt das umbenenen unter Win nicht
+                    xmlFilePathCopy_1.toFile().delete();
+                }
+                for (int i = MAX_COPY; i > 1; --i) {
+                    xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
+                    xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
+                    if (xmlFilePathCopy_1.toFile().exists()) {
+                        if (!xmlFilePathCopy_1.toFile().renameTo(xmlFilePathCopy_2.toFile())) {
+                            renameOk = false;
+                        }
+                    }
+                }
+                if (xmlFilePath.toFile().exists()) {
+                    xmlFilePath.toFile().renameTo(Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1).toFile());
+                }
+            } catch (Exception e) {
+                Log.fehlerMeldung(795623147, Log.FEHLER_ART_PROG, Daten.class.getName(), e);
+            }
+            if (!renameOk) {
+                Log.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
+            }
+            configCopy = true;
         }
     }
 }

@@ -246,7 +246,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
         // Start erstellen und zur Liste hinzufügen
         this.start = new Start();
         // gestartete Filme (originalURL des Films) auch in die History eintragen
-        Daten.listeFilmeHistory.add(film);
+        if (film != null) {
+            Daten.listeFilmeHistory.add(film);
+        }
         ddaten.history.add(arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
     }
@@ -464,7 +466,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (name.equals("")) {
             name = DatumZeit.Heute_yyyyMMdd + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
         }
-        
+
         arr[DOWNLOAD_ZIEL_DATEINAME_NR] = name;
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
         arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, name);

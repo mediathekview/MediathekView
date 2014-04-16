@@ -149,31 +149,31 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         private void set() {
             if (jRadioButtonF1.isSelected()) {
-                Daten.AKT_FILTER = 0;
+                Daten.aktFilter = 0;
                 jRadioButtonF1.setIcon(GetIcon.getIcon("filter_on.png"));
             } else {
                 jRadioButtonF1.setIcon(GetIcon.getIcon("filter_off.png"));
             }
             if (jRadioButtonF2.isSelected()) {
-                Daten.AKT_FILTER = 1;
+                Daten.aktFilter = 1;
                 jRadioButtonF2.setIcon(GetIcon.getIcon("filter_on.png"));
             } else {
                 jRadioButtonF2.setIcon(GetIcon.getIcon("filter_off.png"));
             }
             if (jRadioButtonF3.isSelected()) {
-                Daten.AKT_FILTER = 2;
+                Daten.aktFilter = 2;
                 jRadioButtonF3.setIcon(GetIcon.getIcon("filter_on.png"));
             } else {
                 jRadioButtonF3.setIcon(GetIcon.getIcon("filter_off.png"));
             }
             if (jRadioButtonF4.isSelected()) {
-                Daten.AKT_FILTER = 3;
+                Daten.aktFilter = 3;
                 jRadioButtonF4.setIcon(GetIcon.getIcon("filter_on.png"));
             } else {
                 jRadioButtonF4.setIcon(GetIcon.getIcon("filter_off.png"));
             }
             if (jRadioButtonF5.isSelected()) {
-                Daten.AKT_FILTER = 4;
+                Daten.aktFilter = 4;
                 jRadioButtonF5.setIcon(GetIcon.getIcon("filter_on.png"));
             } else {
                 jRadioButtonF5.setIcon(GetIcon.getIcon("filter_off.png"));

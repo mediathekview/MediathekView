@@ -477,6 +477,9 @@ public class StarterClass {
         private boolean dialogAbbrechenIsVis;
 
         private boolean abbrechen() {
+            if (Daten.auto) {
+                return false;
+            }
             dialogAbbrechenIsVis = true;
             retAbbrechen = true;
             if (SwingUtilities.isEventDispatchThread()) {
