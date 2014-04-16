@@ -55,7 +55,7 @@ public class MediathekAuto {
             Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
                 @Override
                 public void fertig(MSListenerFilmeLadenEvent event) {
-                    filmeLaden();
+                    download();
                 }
             });
             if (Daten.listeFilme.filmlisteZuAlt()) {
@@ -63,7 +63,7 @@ public class MediathekAuto {
                 Daten.filmeLaden.importFilmliste("");
             } else {
                 Log.systemMeldung("aktuelle Filmliste verwenden");
-                filmeLaden();
+                download();
             }
         } else {
             // Programm erst mit der GuiVersion einrichten
@@ -72,7 +72,7 @@ public class MediathekAuto {
         }
     }
 
-    private synchronized void filmeLaden() {
+    private synchronized void download() {
         try {
             Log.playerMeldungenAus = true;
             Daten.listeDownloads.abosSuchen(null);
