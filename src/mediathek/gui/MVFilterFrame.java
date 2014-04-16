@@ -117,6 +117,13 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 new DialogHilfe(f, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
             }
         });
+        jRadioButtonF1.setSelected(true);
+        jRadioButtonF1.addActionListener(new BeobRadio());
+        jRadioButtonF2.addActionListener(new BeobRadio());
+        jRadioButtonF3.addActionListener(new BeobRadio());
+        jRadioButtonF4.addActionListener(new BeobRadio());
+        jRadioButtonF5.addActionListener(new BeobRadio());
+
         pack();
     }
 
@@ -128,9 +135,57 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         super.dispose();
     }
 
+    private class BeobRadio implements ActionListener {
+
+        public BeobRadio() {
+            set();
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            set();
+            filterChange();
+        }
+
+        private void set() {
+            if (jRadioButtonF1.isSelected()) {
+                Daten.AKT_FILTER = 0;
+                jRadioButtonF1.setIcon(GetIcon.getIcon("filter_on.png"));
+            } else {
+                jRadioButtonF1.setIcon(GetIcon.getIcon("filter_off.png"));
+            }
+            if (jRadioButtonF2.isSelected()) {
+                Daten.AKT_FILTER = 1;
+                jRadioButtonF2.setIcon(GetIcon.getIcon("filter_on.png"));
+            } else {
+                jRadioButtonF2.setIcon(GetIcon.getIcon("filter_off.png"));
+            }
+            if (jRadioButtonF3.isSelected()) {
+                Daten.AKT_FILTER = 2;
+                jRadioButtonF3.setIcon(GetIcon.getIcon("filter_on.png"));
+            } else {
+                jRadioButtonF3.setIcon(GetIcon.getIcon("filter_off.png"));
+            }
+            if (jRadioButtonF4.isSelected()) {
+                Daten.AKT_FILTER = 3;
+                jRadioButtonF4.setIcon(GetIcon.getIcon("filter_on.png"));
+            } else {
+                jRadioButtonF4.setIcon(GetIcon.getIcon("filter_off.png"));
+            }
+            if (jRadioButtonF5.isSelected()) {
+                Daten.AKT_FILTER = 4;
+                jRadioButtonF5.setIcon(GetIcon.getIcon("filter_on.png"));
+            } else {
+                jRadioButtonF5.setIcon(GetIcon.getIcon("filter_off.png"));
+            }
+        }
+
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel3 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -139,11 +194,11 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jTextFieldFilterMinuten = new javax.swing.JTextField();
         jSliderMinuten = new javax.swing.JSlider();
         jToggleButtonLivestram = new javax.swing.JToggleButton();
-        jToggleButtonNeue = new javax.swing.JToggleButton();
         jCheckBoxKeineGesehenen = new javax.swing.JCheckBox();
         jCheckBoxKeineAbos = new javax.swing.JCheckBox();
         jCheckBoxNurHd = new javax.swing.JCheckBox();
         jToggleButtonHistory = new javax.swing.JToggleButton();
+        jCheckBoxNurNeue = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox();
@@ -158,6 +213,11 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jButtonFilterLoeschen = new javax.swing.JButton();
         jButtonHilfe = new javax.swing.JButton();
         jButtonOk = new javax.swing.JButton();
+        jRadioButtonF1 = new javax.swing.JRadioButton();
+        jRadioButtonF2 = new javax.swing.JRadioButton();
+        jRadioButtonF3 = new javax.swing.JRadioButton();
+        jRadioButtonF4 = new javax.swing.JRadioButton();
+        jRadioButtonF5 = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setUndecorated(true);
@@ -175,8 +235,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         jToggleButtonLivestram.setText("Livestreams");
 
-        jToggleButtonNeue.setText("Neue");
-
         jCheckBoxKeineGesehenen.setText("gesehene ausblenden");
 
         jCheckBoxKeineAbos.setText("Abos nicht anzeigen");
@@ -184,6 +242,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jCheckBoxNurHd.setText("nur HD anzeigen");
 
         jToggleButtonHistory.setText("aktuelle History");
+
+        jCheckBoxNurNeue.setText("nur Neue");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -199,19 +259,19 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                         .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBoxNurNeue)
                             .addComponent(jCheckBoxNurHd)
                             .addComponent(jCheckBoxKeineAbos)
                             .addComponent(jCheckBoxKeineGesehenen)
                             .addComponent(jLabel1)
                             .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jToggleButtonNeue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jToggleButtonLivestram, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jToggleButtonHistory))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jToggleButtonHistory, jToggleButtonLivestram, jToggleButtonNeue});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jToggleButtonHistory, jToggleButtonLivestram});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,15 +289,15 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 .addGap(18, 18, 18)
                 .addComponent(jToggleButtonLivestram)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButtonNeue)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToggleButtonHistory)
-                .addGap(9, 9, 9)
+                .addGap(14, 14, 14)
                 .addComponent(jCheckBoxKeineGesehenen)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxKeineAbos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxNurHd)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxNurNeue)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -325,6 +385,16 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         jButtonOk.setText("OK");
 
+        buttonGroup1.add(jRadioButtonF1);
+
+        buttonGroup1.add(jRadioButtonF2);
+
+        buttonGroup1.add(jRadioButtonF3);
+
+        buttonGroup1.add(jRadioButtonF4);
+
+        buttonGroup1.add(jRadioButtonF5);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -336,8 +406,17 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jRadioButtonF1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButtonF2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButtonF3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButtonF4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButtonF5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonHilfe)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonOk)))
@@ -353,7 +432,15 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonHilfe)
-                    .addComponent(jButtonOk))
+                    .addComponent(jButtonOk)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButtonF3)
+                            .addComponent(jRadioButtonF2)
+                            .addComponent(jRadioButtonF4)
+                            .addComponent(jRadioButtonF5)
+                            .addComponent(jRadioButtonF1))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -373,12 +460,14 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
     public javax.swing.JButton jButtonFilterLoeschen;
     public javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonOk;
     public javax.swing.JCheckBox jCheckBoxKeineAbos;
     public javax.swing.JCheckBox jCheckBoxKeineGesehenen;
     public javax.swing.JCheckBox jCheckBoxNurHd;
+    private javax.swing.JCheckBox jCheckBoxNurNeue;
     public javax.swing.JComboBox jComboBoxFilterSender;
     public javax.swing.JComboBox jComboBoxFilterThema;
     public javax.swing.JComboBox jComboBoxZeitraum;
@@ -392,6 +481,11 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JRadioButton jRadioButtonF1;
+    private javax.swing.JRadioButton jRadioButtonF2;
+    private javax.swing.JRadioButton jRadioButtonF3;
+    private javax.swing.JRadioButton jRadioButtonF4;
+    private javax.swing.JRadioButton jRadioButtonF5;
     public javax.swing.JSlider jSliderMinuten;
     public javax.swing.JTextField jTextFieldFilterIrgendwo;
     public javax.swing.JTextField jTextFieldFilterMinuten;
@@ -399,8 +493,11 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     public javax.swing.JTextField jTextFieldFilterTitel;
     private javax.swing.JToggleButton jToggleButtonHistory;
     public javax.swing.JToggleButton jToggleButtonLivestram;
-    public javax.swing.JToggleButton jToggleButtonNeue;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void filterChange() {
+    }
 
     @Override
     public JButton get_jButtonFilterLoeschen() {
@@ -468,8 +565,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     }
 
     @Override
-    public JToggleButton get_jToggleButtonNeue() {
-        return jToggleButtonNeue;
+    public JCheckBox get_jCheckBoxNeue() {
+        return jCheckBoxNurNeue;
     }
 
     @Override
@@ -518,8 +615,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         for (ActionListener a : jToggleButtonLivestram.getActionListeners()) {
             jToggleButtonLivestram.removeActionListener(a);
         }
-        for (ActionListener a : jToggleButtonNeue.getActionListeners()) {
-            jToggleButtonNeue.removeActionListener(a);
+        for (ActionListener a : jCheckBoxNurNeue.getActionListeners()) {
+            jCheckBoxNurNeue.removeActionListener(a);
         }
         for (ActionListener a : jToggleButtonHistory.getActionListeners()) {
             jToggleButtonHistory.removeActionListener(a);

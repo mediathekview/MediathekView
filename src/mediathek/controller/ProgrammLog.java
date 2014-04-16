@@ -120,6 +120,22 @@ public class ProgrammLog {
             bw.newLine();
             bw.write(Log.textProgramm.toString());
             bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            //
+            bw.write("#########################################################");
+            bw.newLine();
+            bw.write("## Fehlermeldungen GUI ##################################");
+            bw.newLine();
+            bw.write(Log.printFehlerMeldung_());
+            bw.write("#########################################################");
+            bw.newLine();
+            bw.write("## Fehlermeldungen lib msearch ##########################");
+            bw.newLine();
+            bw.write(msearch.tool.MSLog.fehlerMeldungen_());
+            bw.newLine();
+            //
             bw.flush();
             bw.close();
         } catch (Exception ex) {

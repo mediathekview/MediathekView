@@ -385,7 +385,7 @@
           <Group type="102" alignment="1" attributes="0">
               <Component id="jPanelToolBar" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel1" pref="745" max="32767" attributes="0"/>
+              <Component id="jPanel1" pref="805" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
