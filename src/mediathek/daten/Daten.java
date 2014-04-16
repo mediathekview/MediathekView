@@ -68,6 +68,7 @@ public class Daten {
 
     //alle Programmeinstellungen
     public static MVConfig mVConfig = new MVConfig();
+    public static int AKT_FILTER = 0; // welcher Filter ausgewählt ist 1 ... 5
 
     // zentrale Klassen
     public static MVColor mVColor = new MVColor(); // verwendete Farben
@@ -170,7 +171,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
-        mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, "240");
+        mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, Konstanten.GUIFILME_DIVIDER_LOCATION);
         try {
             Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
             Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
@@ -305,18 +306,25 @@ public class Daten {
     }
 
     public void allesSpeichern() {
+        final int MAX_COPY = 5;
+        boolean rename = true;
         if (!configCopy) {
             // nur einmal pro Programmstart machen
             try {
                 Path xmlFilePath = Daten.getMediathekXmlFilePath();
                 Path xmlFilePathCopy_1;
                 Path xmlFilePathCopy_2;
-
-                for (int i = 5; i > 1; --i) {
+                xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + MAX_COPY);
+                if (xmlFilePathCopy_1.toFile().exists()) {
+                    xmlFilePathCopy_1.toFile().delete();
+                }
+                for (int i = MAX_COPY; i > 1; --i) {
                     xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
                     xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
                     if (xmlFilePathCopy_1.toFile().exists()) {
-                        xmlFilePathCopy_1.toFile().renameTo(xmlFilePathCopy_2.toFile());
+                        if (!xmlFilePathCopy_1.toFile().renameTo(xmlFilePathCopy_2.toFile())) {
+                            rename = false;
+                        }
                     }
                 }
                 if (xmlFilePath.toFile().exists()) {
@@ -324,6 +332,9 @@ public class Daten {
                 }
             } catch (Exception e) {
                 Log.fehlerMeldung(795623147, Log.FEHLER_ART_PROG, Daten.class.getName(), e);
+            }
+            if (!rename) {
+                Log.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
             }
             configCopy = true;
         }

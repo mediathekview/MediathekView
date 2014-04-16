@@ -19,9 +19,6 @@
  */
 package mediathek.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -29,7 +26,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.daten.Daten;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
@@ -67,14 +63,9 @@ public class Log {
     private static String progressText = "";
     private static Date startZeit = new Date(System.currentTimeMillis());
     private static Date stopZeit = null;
-    private static File logfile = null;
 
     public void resetFehlerListe() {
         fehlerListe.clear();
-    }
-
-    public static void setLogFile(File log) {
-        logfile = log;
     }
 
     public static synchronized void versionsMeldungen(String classname) {
@@ -178,6 +169,32 @@ public class Log {
         systemMeldung("");
         systemMeldung("");
         systemMeldung("");
+        printFehlerMeldung();
+        // Laufzeit ausgeben
+        stopZeit = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        int minuten;
+        try {
+            minuten = Math.round((stopZeit.getTime() - startZeit.getTime()) / (1000 * 60));
+        } catch (Exception ex) {
+            minuten = -1;
+        }
+        systemMeldung("");
+        systemMeldung("");
+        systemMeldung("###########################################################");
+        systemMeldung("   --> Beginn: " + sdf.format(startZeit));
+        systemMeldung("   --> Fertig: " + sdf.format(stopZeit));
+        systemMeldung("   --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten));
+        systemMeldung("###########################################################");
+        systemMeldung("");
+        systemMeldung("   und Tschuess");
+        systemMeldung("");
+        systemMeldung("");
+        systemMeldung("###########################################################");
+    }
+
+    public static void printFehlerMeldung() {
+        systemMeldung("");
         systemMeldung("###########################################################");
         if (fehlerListe.size() == 0) {
             systemMeldung(" Keine Fehler :)");
@@ -238,27 +255,73 @@ public class Log {
             }
         }
         systemMeldung("###########################################################");
-        // Laufzeit ausgeben
-        stopZeit = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        int minuten;
-        try {
-            minuten = Math.round((stopZeit.getTime() - startZeit.getTime()) / (1000 * 60));
-        } catch (Exception ex) {
-            minuten = -1;
+        systemMeldung("");
+    }
+
+    public static String printFehlerMeldung_() {
+        String ret = "\n";
+        ret += "-----------------------------------------------------------\n";
+        if (fehlerListe.size() == 0) {
+            ret += " Keine Fehler :)\n";
+        } else {
+            // Fehler ausgeben
+            int i_1;
+            int i_2;
+            for (int i = 1; i < fehlerListe.size(); ++i) {
+                for (int k = i; k > 0; --k) {
+                    i_1 = fehlerListe.get(k - 1)[1];
+                    i_2 = fehlerListe.get(k)[1];
+                    // if (str1.compareToIgnoreCase(str2) > 0) {
+                    if (i_1 < i_2) {
+                        fehlerListe.add(k - 1, fehlerListe.remove(k));
+                    } else {
+                        break;
+                    }
+                }
+            }
+            Iterator<Integer[]> it = fehlerListe.iterator();
+            while (it.hasNext()) {
+                Integer[] integers = it.next();
+                String z;
+                switch (integers[0]) {
+                    case FEHLER_ART_MREADER:
+                        z = FEHLER_ART_MREADER_TEXT;
+                        break;
+                    case FEHLER_ART_FILME_SUCHEN:
+                        z = FEHLER_ART_FILME_SUCHEN_TEXT;
+                        break;
+                    case FEHLER_ART_GETURL:
+                        z = FEHLER_ART_GETURL_TEXT;
+                        break;
+                    case FEHLER_ART_PROG:
+                        z = FEHLER_ART_PROG_TEXT;
+                        break;
+                    case FEHLER_ART_NOGUI:
+                        z = FEHLER_ART_NOGUI_TEXT;
+                        break;
+                    case FEHLER_ART_AUTO:
+                        z = FEHLER_ART_AUTO_TEXT;
+                        break;
+                    default:
+                        z = "";
+                }
+                boolean ex = integers[3] == 1;
+                String strEx;
+                if (ex) {
+                    strEx = "Ex! ";
+                } else {
+                    strEx = "    ";
+                }
+                if (integers[1] < 0) {
+                    ret += strEx + z + " Fehlernummer: " + integers[1] + " Anzahl: " + integers[2] + "\n";
+                } else {
+                    ret += strEx + z + " Fehlernummer:  " + integers[1] + " Anzahl: " + integers[2] + "\n";
+                }
+            }
         }
-        systemMeldung("");
-        systemMeldung("");
-        systemMeldung("###########################################################");
-        systemMeldung("   --> Beginn: " + sdf.format(startZeit));
-        systemMeldung("   --> Fertig: " + sdf.format(stopZeit));
-        systemMeldung("   --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten));
-        systemMeldung("###########################################################");
-        systemMeldung("");
-        systemMeldung("   und Tschuess");
-        systemMeldung("");
-        systemMeldung("");
-        systemMeldung("###########################################################");
+        ret += "-----------------------------------------------------------\n";
+        ret += "\n";
+        return ret;
     }
 
     private static void addFehlerNummer(int nr, int art, boolean exception) {
@@ -283,7 +346,6 @@ public class Log {
             try {
                 String s = getStackTrace(ex);
                 System.out.println(s);
-                logFileSchreiben(new String[]{s});
             } catch (Exception nix) {
             }
             // Exceptions immer ausgeben
@@ -330,7 +392,6 @@ public class Log {
                 System.out.print(progressText);
             }
         }
-        logFileSchreiben(texte);
     }
 
     private static void debugmeldung(String texte) {
@@ -342,7 +403,6 @@ public class Log {
         if (progress) {
             System.out.print(progressText);
         }
-        logFileSchreiben(new String[]{texte});
     }
 
     private static void systemmeldung(String[] texte) {
@@ -374,35 +434,6 @@ public class Log {
         if (progress) {
             System.out.print(progressText);
         }
-        logFileSchreiben(texte);
-    }
-
-    private synchronized static void logFileSchreiben(String[] texte) {
-        // ins Logfile eintragen
-        if (logfile != null) {
-            OutputStreamWriter writer = null;
-            try {
-                writer = new OutputStreamWriter(new FileOutputStream(logfile, true));
-                for (int i = 0; i < texte.length; ++i) {
-                    String s = texte[i];
-                    if (s.equals("")) {
-                        writer.write("\n"); // nur leere Zeile schrieben
-                    } else {
-                        writer.write(DatumZeit.getJetzt_ddMMyyyy_HHmm() + "     " + s);
-                        writer.write("\n");
-                    }
-                }
-                writer.close();
-            } catch (Exception ex) {
-                System.out.println("Fehler beim Logfile schreiben: " + ex.getMessage());
-            } finally {
-                try {
-                    writer.close();
-                } catch (Exception ex) {
-                }
-            }
-        }
-
     }
 
     private static void playermeldung(String[] texte) {

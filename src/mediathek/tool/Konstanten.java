@@ -61,5 +61,6 @@ public class Konstanten {
     public static final String ZIELNAMEN_ANPASSEN_NIX = "NIX";
 
     public static final int MAX_PFADE_DIALOG_DOWNLOAD = 15;
+    public static final String GUIFILME_DIVIDER_LOCATION = "260";
 
 }

@@ -19,10 +19,13 @@
  */
 package mediathek.tool;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class MVConfig {
+
+    public final static String TRENNER = "#=#";
 
     // ################################
     // Tags System
@@ -92,11 +95,19 @@ public class MVConfig {
     public static final String SYSTEM_IMPORT_URL_MANUELL = "system-import-url-manuell";
     public static final String SYSTEM_EXPORT_DATEI = "system-export-datei";
     // Filter
-    public static final String SYSTEM_FILTER_DAUER = "system-filter-dauer";
-    public static final String SYSTEM_FILTER_TAGE = "system-filter-tage"; // index im Array GuiFilme.COMBO_ZEIT_INT
-    public static final String SYSTEM_FILTER_KEINE_ABO = "system-filter-abo";
-    public static final String SYSTEM_FILTER_KEINE_GESEHENE = "system-filter-gesehen";
-    public static final String SYSTEM_FILTER_NUR_HD = "system-filter-hd";
+    public static final String SYSTEM_FILTER_DAUER = "filter-dauer";
+    public static final String SYSTEM_FILTER_TAGE = "filter-tage"; // index im Array GuiFilme.COMBO_ZEIT_INT
+    public static final String SYSTEM_FILTER_KEINE_ABO = "filter-keineAbo";
+    public static final String SYSTEM_FILTER_KEINE_GESEHENE = "filter-keineGesehen";
+    public static final String SYSTEM_FILTER_NUR_HD = "filter-nurHd";
+    public static final String SYSTEM_FILTER_NUR_NEUE = "filter-nurNeue";
+    //
+    public static final String SYSTEM_FILTER_SENDER = "filter-sender";
+    public static final String SYSTEM_FILTER_THEMA = "filter-thema";
+    public static final String SYSTEM_FILTER_TITEL = "filter-titel";
+    public static final String SYSTEM_FILTER_THEMA_TITEL = "filter-themaTitel";
+    public static final String SYSTEM_FILTER_IRGENDWO = "filter-irgendwo";
+
     // Programmpfade
     public static final String SYSTEM_PFAD_VLC = "pfad-vlc";
     public static final String SYSTEM_PFAD_FLVSTREAMER = "pfad-flvstreamer";
@@ -123,9 +134,62 @@ public class MVConfig {
         hashmap.put(key, value);
     }
 
+    public synchronized void add(String key, String value, int i, int max) {
+        boolean ok = false;
+        String[] sa = {""};
+        String s = hashmap.get(key);
+        if (s != null) {
+            sa = split(s);
+            if (sa.length == max) {
+                sa[i] = value;
+                ok = true;
+            }
+        }
+        if (!ok) {
+            // dann anlegen
+            sa = new String[max];
+            for (int k = 0; k < max; ++k) {
+                sa[k] = "";
+            }
+            sa[i] = value;
+        }
+        // und jetzt eintragen
+        s = "";
+        for (int k = 0; k < max; ++k) {
+            s += sa[k];
+            if (k < max - 1) {
+                s += TRENNER;
+            }
+        }
+//        for (String sv : sa) {
+//            if (s.isEmpty()) {
+//                s = sv;
+//            } else {
+//                s += TRENNER + sv;
+//            }
+//        }
+        hashmap.put(key, s);
+    }
+
     public synchronized String get(String key) {
         String s = hashmap.get(key);
         return s == null ? "" : s;
+    }
+
+    public synchronized String get(String key, int i) {
+        String[] sa = {""};
+        String s = hashmap.get(key);
+        if (s == null) {
+            return "";
+        } else {
+            sa = split(s);
+        }
+        if (sa.length <= i) {
+            hashmap.remove(key);
+            return "";
+        } else {
+            return sa[i];
+        }
     }
 
     public synchronized String[][] getAll() {
@@ -139,6 +203,18 @@ public class MVConfig {
         }
         listeSort(liste, 0);
         return liste.toArray(new String[][]{});
+    }
+
+    private String[] split(String sIn) {
+        ArrayList<String> l = new ArrayList<>();
+        String s = sIn;
+        while (s.contains(TRENNER)) {
+            l.add(s.substring(0, s.indexOf(TRENNER)));
+            s = s.substring(s.indexOf(TRENNER) + TRENNER.length());
+        }
+        l.add(s);
+        return l.toArray(new String[]{});
+
     }
 
     private void listeSort(LinkedList<String[]> liste, int stelle) {
