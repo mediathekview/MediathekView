@@ -29,7 +29,6 @@ import mediathek.tool.MVSingleInstance;
 
 public class Main {
 
-    public static final String STARTP_LOGFILE = "-log";
     public static final String STARTP_MAXIMIERT = "-M";
 
     /*

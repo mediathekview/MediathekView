@@ -306,18 +306,25 @@ public class Daten {
     }
 
     public void allesSpeichern() {
+        final int MAX_COPY = 5;
+        boolean rename = true;
         if (!configCopy) {
             // nur einmal pro Programmstart machen
             try {
                 Path xmlFilePath = Daten.getMediathekXmlFilePath();
                 Path xmlFilePathCopy_1;
                 Path xmlFilePathCopy_2;
-
-                for (int i = 5; i > 1; --i) {
+                xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + MAX_COPY);
+                if (xmlFilePathCopy_1.toFile().exists()) {
+                    xmlFilePathCopy_1.toFile().delete();
+                }
+                for (int i = MAX_COPY; i > 1; --i) {
                     xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
                     xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
                     if (xmlFilePathCopy_1.toFile().exists()) {
-                        xmlFilePathCopy_1.toFile().renameTo(xmlFilePathCopy_2.toFile());
+                        if (!xmlFilePathCopy_1.toFile().renameTo(xmlFilePathCopy_2.toFile())) {
+                            rename = false;
+                        }
                     }
                 }
                 if (xmlFilePath.toFile().exists()) {
@@ -325,6 +332,9 @@ public class Daten {
                 }
             } catch (Exception e) {
                 Log.fehlerMeldung(795623147, Log.FEHLER_ART_PROG, Daten.class.getName(), e);
+            }
+            if (!rename) {
+                Log.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
             }
             configCopy = true;
         }
