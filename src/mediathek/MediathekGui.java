@@ -634,10 +634,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 new PanelMeldungen(daten, daten.mediathekGui, Log.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Hilfsprogramme"));
         panelMeldungen.setLayout(new BorderLayout());
         panelMeldungen.add(splitPane, BorderLayout.CENTER);
-//        if (Daten.debug) {
-//            jTabbedPane.addTab("Debug", new GuiDebug(daten));
-//            jTabbedPane.addTab("Starts", new PanelInfoStarts());
-//        }
+        if (Daten.debug) {
+            jTabbedPane.addTab("Debug", new GuiDebug(daten));
+            jTabbedPane.addTab("Starts", new PanelInfoStarts());
+        }
         initFrames();
     }
 
