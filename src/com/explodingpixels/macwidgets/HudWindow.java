@@ -71,22 +71,6 @@ public class HudWindow {
 
     /**
      * Creates a Heads Up Display style window.
-     */
-    public HudWindow() {
-        this("");
-    }
-
-    /**
-     * Creates a Heads Up Display style window.
-     *
-     * @param title the title to use for this window.
-     */
-    public HudWindow(String title) {
-        this(title, null);
-    }
-
-    /**
-     * Creates a Heads Up Display style window.
      *
      * @param title the title to use for this window.
      * @param owner the {@link Frame} that this HUD is parented to. Can be null.
@@ -270,8 +254,8 @@ public class HudWindow {
         }
 
         private void updateFocusState() {
-            Boolean focused = WindowUtils.isParentWindowFocused(this);
-            fLabel.setForeground(focused == null || focused ? FONT_COLOR : UNFOCUSED_FONT_COLOR);
+            final boolean focused = WindowUtils.isParentWindowFocused(this);
+            fLabel.setForeground(focused ? FONT_COLOR : UNFOCUSED_FONT_COLOR);
         }
 
         @Override
@@ -382,7 +366,7 @@ public class HudWindow {
         private int fYOffsetToWidnowEdge;
 
         public BottomPanel(Window window) {
-            super(new FlowLayout(SwingConstants.RIGHT));
+            super(new FlowLayout(FlowLayout.RIGHT));
             fWindow = window;
             setOpaque(false);
             add(fResizeCorner);

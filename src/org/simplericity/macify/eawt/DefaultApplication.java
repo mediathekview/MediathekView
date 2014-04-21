@@ -45,6 +45,7 @@ import javax.imageio.ImageIO;
  * If this class is used on a non-OS X platform the operations will have no effect or they will simulate
  * what the Apple API would do for those who manipulate state. ({@link #setEnabledAboutMenu(boolean)} etc.)
  */
+@SuppressWarnings("unchecked")
 public class DefaultApplication implements Application {
 
     private Object application;
@@ -94,9 +95,28 @@ public class DefaultApplication implements Application {
         }
     }
 
+    /**
+     * This will set a OS provided badge to the icon, typically a number.
+     * @param displayableString The number to display as a string.
+     */
+    public void setDockIconBadge(String displayableString)
+    {
+        if (isMac())
+        {
+            try {
+                Method setDockIconBadge = application.getClass().getMethod("setDockIconBadge", String.class);
+                setDockIconBadge.invoke(application,displayableString);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+
     @Override
     public void addApplicationListener(ApplicationListener applicationListener) {
-
         if (!Modifier.isPublic(applicationListener.getClass().getModifiers())) {
             throw new IllegalArgumentException("ApplicationListener must be a public class");
         }

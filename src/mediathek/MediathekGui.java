@@ -212,8 +212,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                     pfad = ar[0];
                 }
             }
-            for (int i = 0; i < ar.length; ++i) {
-                if (ar[i].equalsIgnoreCase(Main.STARTP_MAXIMIERT)) {
+            for (String anAr : ar) {
+                if (anAr.equalsIgnoreCase(Main.STARTP_MAXIMIERT)) {
                     max = true;
                 }
             }
@@ -669,9 +669,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
     }
 
+    /**
+     * Setup the UI for OS X
+     */
     private void setupUserInterfaceForOsx() {
-        //OS X specific menu initializations
-        Application application = new DefaultApplication();
+        final DefaultApplication application = new DefaultApplication();
         application.addApplicationListener(this);
         application.addAboutMenuItem();
         application.addPreferencesMenuItem();
@@ -684,7 +686,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             BufferedImage appImage = ImageIO.read(url);
             application.setApplicationIconImage(appImage);
         } catch (IOException ex) {
-            System.err.println("Application image could not be loaded");
+            Log.debugMeldung("OS X Application image could not be loaded");
         }
 
         //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
@@ -699,13 +701,26 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             jMenuHilfe.remove(jMenuItemAbout);
         }
 
-        //WORKAROUND: Versions below 10.9 donÂ´t seem to work correctly...
+        //WORKAROUND: Versions below 10.9 don´t seem to work correctly...
         String strOsVersion = SystemInfo.getOSVersion();
         if (strOsVersion.startsWith("10.9")) {
             enableOsxFullScreenMode(this);
         } else {
             Log.debugMeldung("OS X Fullscreen Support NOT enabled.");
         }
+
+        //setup the badge support for displaying active downloads
+        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{
+                ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                final int activeDownloads = Daten.listeDownloads.getActiveDownloads();
+                if (activeDownloads > 0)
+                    application.setDockIconBadge(String.valueOf(activeDownloads));
+                else
+                    application.setDockIconBadge("");
+            }
+        });
     }
 
     private void initMenue() {
