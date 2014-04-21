@@ -13,7 +13,6 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.table.TableModel;
 
 import com.explodingpixels.macwidgets.plaf.EmphasizedLabelUI;
-import com.explodingpixels.macwidgets.plaf.ITunesTableUI;
 
 /**
  * A factory for creating various types of Mac style widgets. See each method's javadoc for detailed
@@ -21,26 +20,6 @@ import com.explodingpixels.macwidgets.plaf.ITunesTableUI;
  * Human Interface Guidelines.
  */
 public class MacWidgetFactory {
-
-    /**
-     * Creates an iTunes style table like the one listed below:
-     * <br/>
-     * <img src="../../../../graphics/iTunesTable.png">
-     * <br/>
-     * Sorting indicators will be rendered if a
-     * {@link com.explodingpixels.widgets.TableUtils.SortDelegate} is installed on the associated
-     * {@link JTable} via the
-     * {@link com.explodingpixels.widgets.TableUtils#makeSortable(javax.swing.JTable, com.explodingpixels.widgets.TableUtils.SortDelegate)}
-     * method.
-     * <p/>
-     * To wrap this table in an iApp style {@link JScrollPane}, see
-     * {@link IAppWidgetFactory#createScrollPane(java.awt.Component)};
-     */
-    public static JTable createITunesTable(TableModel tableModel) {
-        JTable table = new JTable(tableModel);
-        table.setUI(new ITunesTableUI());
-        return table;
-    }
 
     public static ComponentBottomBar createComponentStatusBar() {
         return new ComponentBottomBar();
