@@ -37,6 +37,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
+import mediathek.tool.MVMessageDialog;
 
 public class PanelImport extends PanelVorlage {
 
@@ -85,7 +86,7 @@ public class PanelImport extends PanelVorlage {
                 + found[1] + " Blacklisteinträge\n"
                 + "hinzugefügt";
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        JOptionPane.showMessageDialog(parentComponent, text, "Import", JOptionPane.INFORMATION_MESSAGE);
+        MVMessageDialog.showMessageDialog(parentComponent, text, "Import", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void setButtonImport() {

@@ -22,19 +22,22 @@ package mediathek.tool;
 import java.awt.Component;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import mediathek.daten.Daten;
 
 public class MVMessageDialog {
 
     public static void showMessageDialog(final Component parent, final String message, final String title, final int messageType) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            JOptionPane.showMessageDialog(parent, message, title, messageType);
-        } else {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    JOptionPane.showMessageDialog(parent, message, title, messageType);
-                }
-            });
+        if (!Daten.auto) {
+            if (SwingUtilities.isEventDispatchThread()) {
+                JOptionPane.showMessageDialog(parent, message, title, messageType);
+            } else {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        JOptionPane.showMessageDialog(parent, message, title, messageType);
+                    }
+                });
+            }
         }
 
     }

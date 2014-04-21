@@ -234,8 +234,10 @@ public class FilmeLaden {
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false/*aboLoeschen*/);
         istAmLaufen = false;
         if (event.fehler) {
+            Log.systemMeldung("Filmliste laden war fehlerhaft");
             MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
         } else {
+            Log.systemMeldung("Filmliste geladen: " + Daten.listeFilme.size() + " Filme");
             Daten.filmlisteSpeichern();
         }
         notifyFertig(event);

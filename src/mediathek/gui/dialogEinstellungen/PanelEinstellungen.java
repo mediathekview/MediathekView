@@ -42,6 +42,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
+import mediathek.tool.MVMessageDialog;
 
 public class PanelEinstellungen extends PanelVorlage {
 
@@ -119,7 +120,7 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void cbxIconPackagesItemStateChanged(java.awt.event.ItemEvent evt) {
-        JOptionPane.showMessageDialog(this, "Sie müssen die Applikation neu starten damit die Icons genutzt werden können.", "MediathekView", JOptionPane.WARNING_MESSAGE);
+        MVMessageDialog.showMessageDialog(this, "Sie müssen die Applikation neu starten damit die Icons genutzt werden können.", "MediathekView", JOptionPane.WARNING_MESSAGE);
         String iconName = jComboBoxIcons.getModel().getElementAt(jComboBoxIcons.getSelectedIndex());
         if (iconName.equals(ICONSET_STANDARD)) {
             Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());

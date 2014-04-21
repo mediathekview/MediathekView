@@ -114,11 +114,22 @@ public class GuiFilme extends PanelVorlage {
             public void filterChange() {
                 setAktFilter(true);
             }
+
+            @Override
+            public void filterReset() {
+                aktFilterLoeschen();
+                filterSpeichern();
+            }
         };
         mVFilterFrame = new MVFilterFrame(d) {
             @Override
             public void filterChange() {
                 setAktFilter(true);
+            }
+
+            @Override
+            public void filterReset() {
+                aktFilterLoeschen();
             }
         };
         jPanelBeschreibung.setLayout(new BorderLayout());
@@ -706,6 +717,24 @@ public class GuiFilme extends PanelVorlage {
             MVListeFilme.checkBlacklist();
             tabelleLadenAktFilterChange();
         }
+    }
+
+    private void aktFilterLoeschen() {
+        stopBeob = true;
+        filterLoeschen_();
+        mVFilter.get_jCheckBoxKeineAbos().setSelected(false);
+        mVFilter.get_jCheckBoxKeineGesehenen().setSelected(false);
+        mVFilter.get_jCheckBoxNurHd().setSelected(false);
+        mVFilter.get_jCheckBoxNeue().setSelected(false);
+        mVFilter.get_jComboBoxZeitraum().setSelectedIndex(0);
+        Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_TAGE, "0", Daten.aktFilter, MVFilter.MAX_FILTER);
+        mVFilter.get_jSliderMinuten().setValue(0);
+        Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_DAUER, "0", Daten.aktFilter, MVFilter.MAX_FILTER);
+        mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
+        stopBeob = false;
+        filterSpeichern();
+        MVListeFilme.checkBlacklist();
+        tabelleLadenAktFilterChange();
     }
 
     private void filterLoeschen_() {
