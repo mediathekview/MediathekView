@@ -661,8 +661,8 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jTextFieldFilterTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
         mVFilter.get_jTextFieldFilterThemaTitel().addActionListener(new BeobFilter());
         mVFilter.get_jTextFieldFilterThemaTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        mVFilter.get_jTextFieldFilterIrgendwo().addActionListener(new BeobFilter());
-        mVFilter.get_jTextFieldFilterIrgendwo().getDocument().addDocumentListener(new BeobFilterTitelDoc());
+//        mVFilter.get_jTextFieldFilterIrgendwo().addActionListener(new BeobFilter());
+//        mVFilter.get_jTextFieldFilterIrgendwo().getDocument().addDocumentListener(new BeobFilterTitelDoc());
         mVFilter.get_jSliderMinuten().addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -680,6 +680,8 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jCheckBoxNurHd().addActionListener(new BeobFilter());
         mVFilter.get_jCheckBoxNeue().addActionListener(new BeobFilter());
         mVFilter.get_jToggleButtonHistory().addActionListener(new BeobFilter());
+        mVFilter.get_jRadioButtonTT().addActionListener(new BeobFilter());
+        mVFilter.get_JRadioButtonIrgendwo().addActionListener(new BeobFilter());
     }
 
     private void setAktFilter(boolean aktChange) {
@@ -694,7 +696,10 @@ public class GuiFilme extends PanelVorlage {
 
             mVFilter.get_jTextFieldFilterTitel().setText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TITEL, Daten.aktFilter));
             mVFilter.get_jTextFieldFilterThemaTitel().setText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_THEMA_TITEL, Daten.aktFilter));
-            mVFilter.get_jTextFieldFilterIrgendwo().setText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_IRGENDWO, Daten.aktFilter));
+            if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TT, Daten.aktFilter).isEmpty()) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_TT, Boolean.TRUE.toString(), Daten.aktFilter, MVFilter.MAX_FILTER);
+            }
+            mVFilter.setThemaTitel(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TT, Daten.aktFilter)));
 
             mVFilter.get_jCheckBoxKeineAbos().setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_KEINE_ABO, Daten.aktFilter)));
             mVFilter.get_jCheckBoxKeineGesehenen().setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_KEINE_GESEHENE, Daten.aktFilter)));
@@ -744,7 +749,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
         mVFilter.get_jTextFieldFilterTitel().setText("");
         mVFilter.get_jTextFieldFilterThemaTitel().setText("");
-        mVFilter.get_jTextFieldFilterIrgendwo().setText("");
+        mVFilter.setThemaTitel(true);
         //neu laden
         tabelleLaden();
     }
@@ -755,7 +760,7 @@ public class GuiFilme extends PanelVorlage {
 
         Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_TITEL, String.valueOf(mVFilter.get_jTextFieldFilterTitel().getText()), Daten.aktFilter, MVFilter.MAX_FILTER);
         Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_THEMA_TITEL, String.valueOf(mVFilter.get_jTextFieldFilterThemaTitel().getText()), Daten.aktFilter, MVFilter.MAX_FILTER);
-        Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_IRGENDWO, String.valueOf(mVFilter.get_jTextFieldFilterIrgendwo().getText()), Daten.aktFilter, MVFilter.MAX_FILTER);
+        Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_TT, Boolean.toString(mVFilter.getThemaTitel()), Daten.aktFilter, MVFilter.MAX_FILTER);
 
         Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_KEINE_ABO, String.valueOf(mVFilter.get_jCheckBoxKeineAbos().isSelected()), Daten.aktFilter, MVFilter.MAX_FILTER);
         Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_KEINE_GESEHENE, String.valueOf(mVFilter.get_jCheckBoxKeineGesehenen().isSelected()), Daten.aktFilter, MVFilter.MAX_FILTER);
@@ -888,8 +893,8 @@ public class GuiFilme extends PanelVorlage {
             MVListeFilme.getModelTabFilme(lf, daten, tabelle,
                     mVFilter.get_jComboBoxFilterSender().getSelectedItem().toString(),
                     mVFilter.get_jComboBoxFilterThema().getSelectedItem().toString(), mVFilter.get_jTextFieldFilterTitel().getText(),
-                    mVFilter.get_jTextFieldFilterThemaTitel().getText(),
-                    mVFilter.get_jTextFieldFilterIrgendwo().getText(),
+                    mVFilter.getThemaTitel() ? mVFilter.get_jTextFieldFilterThemaTitel().getText() : "",
+                    mVFilter.getThemaTitel() ? "" : mVFilter.get_jTextFieldFilterThemaTitel().getText(),
                     mVFilter.get_jSliderMinuten().getValue(),
                     mVFilter.get_jCheckBoxKeineAbos().isSelected(), mVFilter.get_jCheckBoxKeineGesehenen().isSelected(),
                     mVFilter.get_jCheckBoxNurHd().isSelected(), mVFilter.get_jToggleButtonLivestram().isSelected(), mVFilter.get_jCheckBoxNeue().isSelected());
@@ -1128,7 +1133,6 @@ public class GuiFilme extends PanelVorlage {
             if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE))) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_TITEL, String.valueOf(mVFilter.get_jTextFieldFilterTitel().getText()), Daten.aktFilter, MVFilter.MAX_FILTER);
                 Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_THEMA_TITEL, String.valueOf(mVFilter.get_jTextFieldFilterThemaTitel().getText()), Daten.aktFilter, MVFilter.MAX_FILTER);
-                Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_IRGENDWO, String.valueOf(mVFilter.get_jTextFieldFilterIrgendwo().getText()), Daten.aktFilter, MVFilter.MAX_FILTER);
                 tabelleLaden();
             }
         }
@@ -1582,8 +1586,10 @@ public class GuiFilme extends PanelVorlage {
                         //neues Abo anlegen
                         Daten.listeAbo.addAbo(mVFilter.get_jComboBoxFilterSender().getSelectedItem().toString(),
                                 mVFilter.get_jComboBoxFilterThema().getSelectedItem().toString(),
-                                mVFilter.get_jTextFieldFilterTitel().getText(), mVFilter.get_jTextFieldFilterThemaTitel().getText(),
-                                mVFilter.get_jTextFieldFilterIrgendwo().getText(), mVFilter.get_jSliderMinuten().getValue(), thema);
+                                mVFilter.get_jTextFieldFilterTitel().getText(),
+                                mVFilter.getThemaTitel() ? mVFilter.get_jTextFieldFilterThemaTitel().getText() : "",
+                                mVFilter.getThemaTitel() ? "" : mVFilter.get_jTextFieldFilterThemaTitel().getText(),
+                                mVFilter.get_jSliderMinuten().getValue(), thema);
                         stopBeob = false;
                     }
                 }

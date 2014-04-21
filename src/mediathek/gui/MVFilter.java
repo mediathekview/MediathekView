@@ -22,6 +22,7 @@ package mediathek.gui;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -52,9 +53,15 @@ public interface MVFilter {
 
     public JSlider get_jSliderMinuten();
 
-    public JTextField get_jTextFieldFilterIrgendwo();
-
     public JTextField get_jTextFieldFilterMinuten();
+
+    public boolean getThemaTitel();
+
+    public void setThemaTitel(boolean set);
+
+    public JRadioButton get_jRadioButtonTT();
+
+    public JRadioButton get_JRadioButtonIrgendwo();
 
     public JTextField get_jTextFieldFilterThemaTitel();
 
