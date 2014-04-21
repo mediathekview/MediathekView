@@ -23,6 +23,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -123,8 +124,30 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jRadioButtonF3.addActionListener(new BeobRadio());
         jRadioButtonF4.addActionListener(new BeobRadio());
         jRadioButtonF5.addActionListener(new BeobRadio());
+        jRadioButtonF1.addMouseListener(new BeobRadioReset());
+        jRadioButtonF2.addMouseListener(new BeobRadioReset());
+        jRadioButtonF3.addMouseListener(new BeobRadioReset());
+        jRadioButtonF4.addMouseListener(new BeobRadioReset());
+        jRadioButtonF5.addMouseListener(new BeobRadioReset());
 
         pack();
+    }
+
+    private class BeobRadioReset extends MouseAdapter {
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                filterReset();
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                filterReset();
+            }
+        }
     }
 
     @Override
@@ -497,6 +520,10 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
     @Override
     public void filterChange() {
+    }
+
+    @Override
+    public void filterReset() {
     }
 
     @Override
