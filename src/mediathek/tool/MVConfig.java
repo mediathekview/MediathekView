@@ -107,8 +107,7 @@ public class MVConfig {
     public static final String SYSTEM_FILTER_TITEL = "filter-titel";
     public static final String SYSTEM_FILTER_THEMA_TITEL = "filter-themaTitel";
     public static final String SYSTEM_FILTER_TT = "filter-TT-oder-irgendwo";
-    public static final String SYSTEM_FILTER_ANZAHL_PANEL = "filter-anzahl-panel";
-    public static final String SYSTEM_FILTER_ANZAHL_FRAME = "filter-anzahl-frame";
+    public static final String SYSTEM_FILTER_ANZAHL = "filter-anzahl";
 
     //public static final String SYSTEM_FILTER_IRGENDWO = "filter-irgendwo";
     // Programmpfade
