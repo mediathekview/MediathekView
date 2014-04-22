@@ -147,17 +147,11 @@ public class DatenPset {
     
     public boolean isFreeLine() {
         //Wenn die Programmgruppe keinen Namen hat, leere Zeile
-        if (this.arr[PROGRAMMSET_NAME_NR].equals("")) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.arr[PROGRAMMSET_NAME_NR].equals("");
     }
     
     public void setAbspielen(Daten ddaten) {
-        Iterator<DatenPset> it = ddaten.listePset.iterator();
-        while (it.hasNext()) {
-            DatenPset datenPset = it.next();
+        for (DatenPset datenPset : ddaten.listePset) {
             datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
         }
         arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.TRUE.toString();
@@ -180,7 +174,7 @@ public class DatenPset {
         //passt nichts, wird das letzte Programm genommen
         //ist nur ein Programm in der Liste wird dieses genommen
         DatenProg ret = null;
-        if (listeProg.size() == 0) {
+        if (listeProg.isEmpty()) {
             MVMessageDialog.showMessageDialog(null, "Programme einrichten!",
                     "Kein Programm", JOptionPane.INFORMATION_MESSAGE);
         } else if (listeProg.size() == 1) {
@@ -195,7 +189,7 @@ public class DatenPset {
                     break;
                 }
             }
-            if (listeProg.size() > 0 && ret == null) {
+            if (!listeProg.isEmpty() && ret == null) {
                 ret = listeProg.getLast();
             }
         }
@@ -222,9 +216,7 @@ public class DatenPset {
     
     public DatenPset copy() {
         DatenPset ret = new DatenPset();
-        for (int i = 0; i < arr.length; ++i) {
-            ret.arr[i] = new String(this.arr[i]);
-        }
+        System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
         //es darf nur einen geben!
         ret.arr[PROGRAMMSET_NAME_NR] = "Kopie-" + arr[PROGRAMMSET_NAME_NR];
         ret.arr[PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.toString(false);
@@ -235,7 +227,7 @@ public class DatenPset {
         return ret;
     }
     
-    public Color getFarbe(Daten daten) {
+    public Color getFarbe() {
         Color ret = null;
         String r, g, b;
         if (!arr[PROGRAMMSET_FARBE_NR].equals("")) {
@@ -277,9 +269,9 @@ public class DatenPset {
         for (int i = 0; i < MAX_ELEM; ++i) {
             ret += "| " + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
         }
-        for (int i = 0; i < listeProg.size(); ++i) {
+        for (Object aListeProg : listeProg) {
             ret += "|" + Daten.LINE_SEPARATOR;
-            ret += listeProg.get(i).toString();
+            ret += aListeProg.toString();
         }
         ret += "|_______________________________________________" + Daten.LINE_SEPARATOR;
         return ret;

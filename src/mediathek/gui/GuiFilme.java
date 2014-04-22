@@ -563,7 +563,7 @@ public class GuiFilme extends PanelVorlage {
         c.gridy = zeile;
         if (liste.get(i).isLable()) {
             JLabel label = new JLabel(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME_NR]);
-            Color col = liste.get(i).getFarbe(daten);
+            Color col = liste.get(i).getFarbe();
             if (col != null) {
                 label.setForeground(col);
             }
@@ -573,7 +573,7 @@ public class GuiFilme extends PanelVorlage {
         } else {
             button = new JButton(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME_NR]);
             button.addActionListener(new BeobOpen(liste.get(i)));
-            Color col = liste.get(i).getFarbe(daten);
+            Color col = liste.get(i).getFarbe();
             if (col != null) {
                 button.setBackground(col);
             }
@@ -1313,7 +1313,7 @@ public class GuiFilme extends PanelVorlage {
                     // ein "leeres" Pset, Platzhalter
                     continue;
                 }
-                Color col = pset.getFarbe(daten);
+                Color col = pset.getFarbe();
                 item = new JMenuItem(pset.arr[DatenPset.PROGRAMMSET_NAME_NR]);
                 if (pset.getListeProg().isEmpty()) {
                     if (col != null) {

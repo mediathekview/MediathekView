@@ -20,7 +20,6 @@
 package mediathek.controller;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
@@ -45,18 +44,20 @@ import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 public class FilmeLaden {
 
     // public static
+/*
     public static final int UPDATE_FILME_AUS = 0; // nix
     public static final int UPDATE_FILME_URL = 1; // manuell laden, Url automatisch wählen
     public static final int UPDATE_FILME_AUTO = 2; // beim Start, immer mal wieder, + Url auto
     public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
+*/
     private Duration duration = new Duration(FilmeLaden.class.getSimpleName());
     private HashSet<String> hashSet = new HashSet<>();
     private ListeFilme diffListe = new ListeFilme();
 
-    private static enum ListenerMelden {
+    private enum ListenerMelden {
 
         START, PROGRESS, FINISHED
-    };
+    }
     // private
     private MSFilmeSuchen mSearchFilmeSuchen;
     private MSImportFilmliste mSearchImportFilmliste;
@@ -178,7 +179,7 @@ public class FilmeLaden {
     // #######################################
     // Filme bei den Sendern laden
     // #######################################
-    public void filmeBeimSenderSuchen(ListeFilme llisteFilme, boolean senderAllesLaden, boolean filmlisteUpdate) {
+    public void filmeBeimSenderSuchen(boolean senderAllesLaden, boolean filmlisteUpdate) {
         // Filme bei allen Sender suchen
         if (!istAmLaufen) {
             // nicht doppelt starten
@@ -194,7 +195,7 @@ public class FilmeLaden {
         }
     }
 
-    public void updateSender(String[] sender, ListeFilme llisteFilme, boolean senderAllesLaden) {
+    public void updateSender(String[] sender) {
         // Filme nur bei EINEM Sender suchen (nur update)
         if (!istAmLaufen) {
             // nicht doppelt starten
@@ -245,22 +246,19 @@ public class FilmeLaden {
     }
 
     private void fillHash(ListeFilme listeFilme) {
-        Iterator<DatenFilm> it = listeFilme.iterator();
-        while (it.hasNext()) {
-            hashSet.add(it.next().getUrlHistory());
+        for (DatenFilm film : listeFilme) {
+            hashSet.add(film.getUrlHistory());
         }
     }
 
     private void searchHash(ListeFilme listeFilme) {
         listeFilme.neueFilme = false;
-        Iterator<DatenFilm> it = listeFilme.iterator();
-        while (it.hasNext()) {
-            DatenFilm datenFilm = it.next();
-            if (!hashSet.contains(datenFilm.getUrlHistory())) {
-                datenFilm.neuerFilm = true;
+        for (DatenFilm film : listeFilme) {
+            if (!hashSet.contains(film.getUrlHistory())) {
+                film.neuerFilm = true;
                 listeFilme.neueFilme = true;
             } else {
-                datenFilm.neuerFilm = false;
+                film.neuerFilm = false;
             }
         }
         hashSet.clear();

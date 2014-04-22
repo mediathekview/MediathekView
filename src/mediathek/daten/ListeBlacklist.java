@@ -20,12 +20,10 @@
 package mediathek.daten;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.controller.Log;
 import mediathek.gui.GuiFilme;
-import mediathek.gui.MVFilter;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Filter;
 import mediathek.tool.ListenerMediathekView;
@@ -91,8 +89,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     @Override
     public DatenBlacklist get(int idx) {
-        DatenBlacklist ret = super.get(idx);
-        return ret;
+        return super.get(idx);
     }
 
     public DatenBlacklist get(String nr) {
@@ -143,14 +140,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         listeRet.clear();
         setFilter();
         if (listeFilme != null) {
-            DatenFilm film;
             listeRet.setMeta(listeFilme);
-            Iterator<DatenFilm> it = listeFilme.iterator();
-            while (it.hasNext()) {
-                film = it.next();
-                if (checkFilm(film)) {
-                    listeRet.add(film);
-                    if (film.neuerFilm) {
+            for (DatenFilm filmEntry : listeFilme) {
+                if (checkFilm(filmEntry)) {
+                    listeRet.add(filmEntry);
+                    if (filmEntry.neuerFilm) {
                         listeRet.neueFilme = true;
                     }
                 }
@@ -196,7 +190,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     private boolean checkFilm(DatenFilm film) {
         // true wenn Film angezeigt wird!!
-        DatenBlacklist blacklist;
         // erst mal den Filter Tage
         if (!checkDate(film)) {
             return false;
@@ -215,29 +208,18 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         if (this.size() == 0) {
             return true;
         }
-        Iterator<DatenBlacklist> it = this.iterator();
-        while (it.hasNext()) {
-            blacklist = it.next();
-            if (Filter.filterAufFilmPruefen(blacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
-                    Filter.isPattern(blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR])
-                    ? new String[]{blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase()} : blacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase().split(","),
-                    Filter.isPattern(blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR])
-                    ? new String[]{blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase()} : blacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase().split(","),
-                    new String[]{""}, 0, film, true /*auch die Länge prüfen*/)) {
-                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST))) {
-                    return true;
-                } else {
-                    return false;
-                }
+        for (DatenBlacklist blacklistEntry : this) {
+            if (Filter.filterAufFilmPruefen(blacklistEntry.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
+                    Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR])
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase()} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase().split(","),
+                    Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR])
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase()} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase().split(","),
+                    new String[]{""}, 0, film, true /*auch die Länge prüfen*/
+            )) {
+                return Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
             }
         }
-        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST))) {
-            // nur anzeigen wenn ein Filter passt
-            return false;
-        } else {
-            // kein Filter gefunden, also anzeigen
-            return true;
-        }
+        return !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
     }
 
     private boolean checkDate(DatenFilm film) {

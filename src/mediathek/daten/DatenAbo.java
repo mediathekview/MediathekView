@@ -20,7 +20,6 @@
 package mediathek.daten;
 
 import mediathek.tool.GermanStringSorter;
-import mediathek.tool.GuiFunktionen;
 import mediathek.controller.Log;
 import msearch.daten.DatenFilm;
 
@@ -56,7 +55,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int MAX_ELEM = 12;
     public static final String[] COLUMN_NAMES = {ABO_NR, ABO_EINGESCHALTET, ABO_NAME, ABO_SENDER, ABO_THEMA, ABO_TITEL, ABO_THEMA_TITEL,
         ABO_IRGENDWO, ABO_MINDESTDAUER, ABO_ZIELPFAD, ABO_DOWN_DATUM, ABO_PSET};
-    public static final String[] COLUMN_NAMES_ = COLUMN_NAMES;
+    //public static final String[] COLUMN_NAMES_ = COLUMN_NAMES;
     public int mindestdauerMinuten = 0;
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
@@ -81,9 +80,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     public DatenAbo getCopy() {
         DatenAbo ret = new DatenAbo();
-        for (int i = 0; i < arr.length; ++i) {
-            ret.arr[i] = new String(this.arr[i]);
-        }
+        System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
         ret.mindestdauerMinuten = this.mindestdauerMinuten;
         return ret;
     }
@@ -113,20 +110,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
             aboEin();
             return true;
         }
-        if (Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET_NR])) {
-            return true;
-        }
-        return false;
+        return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET_NR]);
     }
 
     public static boolean anzeigen(int i) {
-        if (spaltenAnzeigen == null) {
-            return true;
-        } else {
-            return spaltenAnzeigen[i];
-        }
+        return spaltenAnzeigen == null || spaltenAnzeigen[i];
     }
 
+/*
     public boolean toggleAboEinAus() {
         // Abo EinAus wird geändert und der Zustand NACH der Änderung
         // wird zurückgegeben
@@ -136,22 +127,24 @@ public class DatenAbo implements Comparable<DatenAbo> {
         arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(!Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET_NR]));
         return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET_NR]);
     }
+*/
 
+/*
     public void aboAus() {
         arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(false);
     }
+*/
 
     public void aboEin() {
         arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(true);
     }
 
     public void aufMichKopieren(DatenAbo datenAbo) {
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = new String(datenAbo.arr[i]);
-        }
+        System.arraycopy(datenAbo.arr, 0, arr, 0, arr.length);
         this.mindestdauerMinuten = datenAbo.mindestdauerMinuten;
     }
 
+/*
     public String aboPfadAnhaengen(String pfad) {
         String ret = pfad;
         if (!arr[ABO_ZIELPFAD_NR].equals("")) {
@@ -159,6 +152,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         }
         return ret;
     }
+*/
 
     private void makeArr() {
         arr = new String[MAX_ELEM];

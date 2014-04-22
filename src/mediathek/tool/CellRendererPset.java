@@ -59,7 +59,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
                 datenPset.arr[i] = table.getModel().getValueAt(r, i).toString();
             }
             if (c == DatenPset.PROGRAMMSET_NAME_NR) {
-                setForeground(datenPset.getFarbe(daten));
+                setForeground(datenPset.getFarbe());
             }
             if (c == DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);

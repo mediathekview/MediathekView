@@ -98,7 +98,7 @@ public class GuiFunktionen extends Funktionen {
         String ret = name;
         if (Funktionen.getOs() == Funktionen.OS_WIN_32BIT || Funktionen.getOs() == Funktionen.OS_WIN_64BIT) {
             // win verträgt keine Pfadnamen/Dateinamen mit einem "." am Schluß
-            while (ret.length() > 0 && ret.endsWith(".")) {
+            while (!ret.isEmpty() && ret.endsWith(".")) {
                 ret = ret.substring(0, ret.length() - 1);
             }
         }
@@ -164,7 +164,7 @@ public class GuiFunktionen extends Funktionen {
                 }
             }
             // win verträgt keine Pfadnamen/Dateinamen mit einem "." am Schluß
-            while (ret.length() > 0 && ret.endsWith(".")) {
+            while (!ret.isEmpty() && ret.endsWith(".")) {
                 ret = ret.substring(0, ret.length() - 1);
             }
         }
@@ -223,7 +223,7 @@ public class GuiFunktionen extends Funktionen {
         char c;
         for (int i = 0; i < ret.length(); ++i) {
             c = ret.charAt(i);
-            char hex = ret.charAt(i);
+            //char hex = ret.charAt(i);
             if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.BASIC_LATIN) {
                 r += c;
             } else // Umlaute, 
@@ -326,6 +326,7 @@ public class GuiFunktionen extends Funktionen {
         return ret;
     }
 
+/*
     public static String addUrl(String u1, String u2) {
         if (u1.endsWith("/")) {
             return u1 + u2;
@@ -333,6 +334,7 @@ public class GuiFunktionen extends Funktionen {
             return u1 + "/" + u2;
         }
     }
+*/
 
     public static boolean istUrl(String dateiUrl) {
         return dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
@@ -381,11 +383,13 @@ public class GuiFunktionen extends Funktionen {
         return ret;
     }
 
+/*
     public static void listeSort(LinkedList<String> liste) {
         //Stringliste alphabetisch sortieren
         GermanStringSorter sorter = GermanStringSorter.getInstance();
         Collections.sort(liste, sorter);
     }
+*/
 
     public static String getHomePath() {
         //lifert den Pfad zum Homeverzeichnis

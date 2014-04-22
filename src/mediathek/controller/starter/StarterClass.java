@@ -63,7 +63,6 @@ public class StarterClass {
     public synchronized void urlMitProgrammStarten(DatenPset pSet, DatenFilm ersterFilm, String aufloesung) {
         // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
-        Start s = null;
         String url = ersterFilm.arr[DatenFilm.FILM_URL_NR];
         if (!url.equals("")) {
             DatenDownload d = new DatenDownload(pSet, ersterFilm, Start.QUELLE_BUTTON, null, "", "", aufloesung);
@@ -203,7 +202,7 @@ public class StarterClass {
                             } catch (Exception ex) {
                                 try {
                                     this.wait(2000);
-                                } catch (InterruptedException e) {
+                                } catch (InterruptedException ignored) {
                                 }
                             }
                             break;
@@ -448,7 +447,7 @@ public class StarterClass {
                 if (conn != null) {
                     conn.disconnect();
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             leeresFileLoeschen(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
             fertigmeldung(datenDownload, start, state == STATE_ABBRECHEN);
@@ -489,7 +488,7 @@ public class StarterClass {
             while (dialogAbbrechenIsVis) {
                 try {
                     wait(100);
-                } catch (Exception ex) {
+                } catch (Exception ignored) {
 
                 }
             }
@@ -602,7 +601,7 @@ public class StarterClass {
         } else {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
         }
-        Log.systemMeldung(text.toArray(new String[]{}));
+        Log.systemMeldung(text.toArray(new String[text.size()]));
     }
 
     private void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
@@ -636,7 +635,7 @@ public class StarterClass {
         } else {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
         }
-        Log.systemMeldung(text.toArray(new String[]{}));
+        Log.systemMeldung(text.toArray(new String[text.size()]));
         if (!start.stoppen && !abgebrochen) {
             if (datenDownload.getQuelle() != Start.QUELLE_BUTTON) {
                 SwingUtilities.invokeLater(new Runnable() {

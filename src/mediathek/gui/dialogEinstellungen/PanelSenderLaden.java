@@ -197,7 +197,7 @@ public class PanelSenderLaden extends JPanel {
             for (JButton aButtonSender : buttonSender) {
                 aButtonSender.setEnabled(false);
             }
-            Daten.filmeLaden.updateSender(new String[]{sender}, Daten.listeFilme, false /* senderAllesLaden */);
+            Daten.filmeLaden.updateSender(new String[]{sender}  /* senderAllesLaden */);
         }
     }
 
