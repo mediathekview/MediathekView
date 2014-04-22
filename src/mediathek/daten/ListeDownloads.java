@@ -590,8 +590,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-    public synchronized int getStartsNotFinished() {
-        // liefert die Anzahl Starts die noch anstehen, Status: "init" oder "run"
+    /**
+     * Return the number of Starts, which are queued in state INIT or RUN.
+     * @return number of queued Starts.
+     */
+    public synchronized int getNumberOfStartsNotFinished() {
         ListIterator<DatenDownload> it = this.listIterator(0);
         while (it.hasNext()) {
             Start s = it.next().start;
@@ -604,8 +607,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return 0;
     }
 
-    public synchronized LinkedList<DatenDownload> getListeStartsNotFinished(int quelle) {
-        // liefert alle gestarteten Downloads einer Quelle zB: Button
+    /**
+     * Return a List of all not yet finished downloads.
+     * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
+     * @return A list with all download objects.
+     */
+    public synchronized LinkedList<DatenDownload> getListOfStartsNotFinished(int quelle) {
         LinkedList<DatenDownload> ret = new LinkedList<>();
         for (DatenDownload download : this) {
             if (download.start != null) {

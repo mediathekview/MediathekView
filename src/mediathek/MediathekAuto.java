@@ -95,7 +95,7 @@ public class MediathekAuto {
                 it.next().startenDownload(daten);
                 this.wait(5000);
             }
-            while (Daten.listeDownloads.getStartsNotFinished() > 0) {
+            while (Daten.listeDownloads.getNumberOfStartsNotFinished() > 0) {
                 //alle 5 Sekunden nachschauen ob schon fertig
                 this.wait(5000);
             }
