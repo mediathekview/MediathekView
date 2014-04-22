@@ -156,7 +156,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                 pfade.add(pfad);
             }
         }
-        jComboBoxPath.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[]{})));
+        jComboBoxPath.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
     }
 
     public void saveComboPfad() {
@@ -171,7 +171,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                 pfade.add(s);
             }
         }
-        if (pfade.size() > 0) {
+        if (!pfade.isEmpty()) {
             s = pfade.get(0);
             for (int i = 1; i < Konstanten.MAX_PFADE_DIALOG_DOWNLOAD && i < pfade.size(); ++i) {
                 if (!pfade.get(i).isEmpty()) {
@@ -205,7 +205,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                 jLabelExists.setForeground(MVColor.DOWNLOAD_DATEINAME_ALT.color);
                 jLabelExists.setText("Alter Name");
             }
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
     }
 

@@ -36,7 +36,6 @@ import mediathek.tool.MVNotification;
 import msearch.daten.MSConfig;
 
 public class GuiDebug extends JPanel {
-    static boolean allesLaden = false;
     private JButton[] buttonSender;
     private String[] sender;
     private Daten daten;
@@ -93,7 +92,7 @@ public class GuiDebug extends JPanel {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Daten.filmeLaden.filmeBeimSenderSuchen(Daten.listeFilme, jToggleButtonAllesLaden.isSelected(), true);
+                        Daten.filmeLaden.filmeBeimSenderSuchen(jToggleButtonAllesLaden.isSelected(), true);
                     }
                 }).start();
             }

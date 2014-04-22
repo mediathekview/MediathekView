@@ -97,7 +97,6 @@ public class Daten {
     public GuiAbo guiAbo = null; // Tab mit den Abos
     public MVFilmInformation filmInfoHud = null; // Infos zum Film
 
-    private Timer timer;
     private boolean configCopy = false;
 
     public Daten(String basis, MediathekGui gui) {
@@ -135,7 +134,7 @@ public class Daten {
         history = new History();
 
         starterClass = new StarterClass(this);
-        timer = new Timer(1000, new ActionListener() {
+        Timer timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_TIMER, Daten.class.getName());
@@ -177,7 +176,7 @@ public class Daten {
             Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
             Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
             Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         if (Daten.debug) {
             mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
@@ -259,7 +258,7 @@ public class Daten {
     public static String getSettingsDirectory_String() {
         try {
             return getSettingsDirectory().toString();
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         return "";
     }
@@ -267,7 +266,7 @@ public class Daten {
     /**
      * Return the path to "mediathek.xml"
      *
-     * @return
+     * @return Path object to mediathek.xml file
      */
     public static Path getMediathekXmlFilePath() {
         Path xmlFilePath = null;

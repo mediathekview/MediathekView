@@ -46,8 +46,6 @@ public class RuntimeExec {
     //private Pattern patternZeit = Pattern.compile("(?<=time=)[\\d:.]+"); //    1611kB time=00:00:06.73 bitrate=1959.7kbits/s   
     private Pattern patternZeit = Pattern.compile("(?<=time=)[^ ]*"); //    1611kB time=00:00:06.73 bitrate=1959.7kbits/s   
     private double totalSecs = 0;
-    private double aktSecs = 0;
-    private String zeit, prozent;
 
     public RuntimeExec(DatenDownload d) {
         start = d.start;
@@ -70,9 +68,6 @@ public class RuntimeExec {
             clearIn.start();
             clearOut.start();
         } catch (Exception ex) {
-            //bescheid geben
-            if (process == null) {
-            }
             Log.fehlerMeldung(450028932, Log.FEHLER_ART_PROG, "RuntimeExec.exec", ex, "Fehler beim Starten");
         }
         return process;
@@ -118,11 +113,11 @@ public class RuntimeExec {
                     GetPercentageFromErrorStream(inStr);
                     Log.playerMeldung(titel + ": " + inStr);
                 }
-            } catch (IOException ex) {
+            } catch (IOException ignored) {
             } finally {
                 try {
                     buff.close();
-                } catch (IOException ex) {
+                } catch (IOException ignored) {
                 }
             }
         }
@@ -133,7 +128,7 @@ public class RuntimeExec {
             Matcher matcher = patternFlvstreamer.matcher(input);
             if (matcher.find()) {
                 try {
-                    prozent = matcher.group();
+                    String prozent = matcher.group();
                     prozent = prozent.substring(0, prozent.length() - 1);
                     double d = Double.parseDouble(prozent);
                     meldenDouble(d);
@@ -157,9 +152,9 @@ public class RuntimeExec {
                     }
                     matcher = patternZeit.matcher(input);
                     if (totalSecs > 0 && matcher.find()) {
-                        zeit = matcher.group();
+                        String zeit = matcher.group();
                         String[] hms = zeit.split(":");
-                        aktSecs = Integer.parseInt(hms[0]) * 3600
+                        double aktSecs = Integer.parseInt(hms[0]) * 3600
                                 + Integer.parseInt(hms[1]) * 60
                                 + Double.parseDouble(hms[2]);
                         double d = aktSecs / totalSecs * 100;

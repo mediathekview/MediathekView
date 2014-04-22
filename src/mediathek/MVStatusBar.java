@@ -25,7 +25,7 @@ import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 public final class MVStatusBar extends JPanel {
 
     boolean stopTimer = false;
-    EnumMap<MVStatusBar.StatusbarIndex, String> displayListForLeftLabel = new EnumMap<MVStatusBar.StatusbarIndex, String>(MVStatusBar.StatusbarIndex.class);
+    EnumMap<MVStatusBar.StatusbarIndex, String> displayListForLeftLabel = new EnumMap<>(MVStatusBar.StatusbarIndex.class);
     MVStatusBar.StatusbarIndex currentIndex = MVStatusBar.StatusbarIndex.NONE;
 
     private JLabel lblCenter;
@@ -89,7 +89,7 @@ public final class MVStatusBar extends JPanel {
     public enum StatusbarIndex {
 
         NONE, FILME, DOWNLOAD, ABO
-    };
+    }
 
     public JComponent getComponent() {
         return bottomBar.getComponent();
