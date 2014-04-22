@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -28,10 +29,16 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
@@ -39,6 +46,8 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 
 public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
@@ -76,76 +85,152 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jRadioButtonF3.addActionListener(new BeobRadio());
         jRadioButtonF4.addActionListener(new BeobRadio());
         jRadioButtonF5.addActionListener(new BeobRadio());
-        jRadioButtonF1.addMouseListener(new BeobRadioReset());
-        jRadioButtonF2.addMouseListener(new BeobRadioReset());
-        jRadioButtonF3.addMouseListener(new BeobRadioReset());
-        jRadioButtonF4.addMouseListener(new BeobRadioReset());
-        jRadioButtonF5.addMouseListener(new BeobRadioReset());
+        jRadioButtonF1.addMouseListener(new BeobMaus(jRadioButtonF1));
+        jRadioButtonF2.addMouseListener(new BeobMaus(jRadioButtonF2));
+        jRadioButtonF3.addMouseListener(new BeobMaus(jRadioButtonF3));
+        jRadioButtonF4.addMouseListener(new BeobMaus(jRadioButtonF4));
+        jRadioButtonF5.addMouseListener(new BeobMaus(jRadioButtonF5));
+        setFilterAnzahl();
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILTER_ANZAHL, MVFilterPanel.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setFilterAnzahl();
+            }
+        });
     }
 
-    private class BeobRadioReset extends MouseAdapter {
+    private void setRadio() {
+        if (jRadioButtonF1.isSelected()) {
+            Daten.aktFilter = 0;
+            jRadioButtonF1.setIcon(GetIcon.getIcon("filter_on.png"));
+        } else {
+            jRadioButtonF1.setIcon(GetIcon.getIcon("filter_off.png"));
+        }
+        if (jRadioButtonF2.isSelected()) {
+            Daten.aktFilter = 1;
+            jRadioButtonF2.setIcon(GetIcon.getIcon("filter_on.png"));
+        } else {
+            jRadioButtonF2.setIcon(GetIcon.getIcon("filter_off.png"));
+        }
+        if (jRadioButtonF3.isSelected()) {
+            Daten.aktFilter = 2;
+            jRadioButtonF3.setIcon(GetIcon.getIcon("filter_on.png"));
+        } else {
+            jRadioButtonF3.setIcon(GetIcon.getIcon("filter_off.png"));
+        }
+        if (jRadioButtonF4.isSelected()) {
+            Daten.aktFilter = 3;
+            jRadioButtonF4.setIcon(GetIcon.getIcon("filter_on.png"));
+        } else {
+            jRadioButtonF4.setIcon(GetIcon.getIcon("filter_off.png"));
+        }
+        if (jRadioButtonF5.isSelected()) {
+            Daten.aktFilter = 4;
+            jRadioButtonF5.setIcon(GetIcon.getIcon("filter_on.png"));
+        } else {
+            jRadioButtonF5.setIcon(GetIcon.getIcon("filter_off.png"));
+        }
+    }
+
+    private void setFilterAnzahl() {
+        int i;
+        try {
+            i = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_ANZAHL_PANEL));
+        } catch (Exception ex) {
+            Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_ANZAHL_PANEL, String.valueOf(3));
+            i = 3;
+        }
+        jRadioButtonF2.setVisible(i >= 2);
+        jRadioButtonF3.setVisible(i >= 3);
+        jRadioButtonF4.setVisible(i >= 4);
+        jRadioButtonF5.setVisible(i == 5);
+    }
+
+    private class BeobRadio implements ActionListener {
+
+        public BeobRadio() {
+            setRadio();
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setRadio();
+            filterChange();
+        }
+    }
+
+    public class BeobMaus extends MouseAdapter {
+
+        //rechhte Maustaste
+        private JRadioButton JRadioButton;
+        JSpinner jSpinner;
+
+        public BeobMaus(JRadioButton jr) {
+            JRadioButton = jr;
+        }
 
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
-                filterReset();
+                showMenu(arg0);
             }
         }
 
         @Override
         public void mouseReleased(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
-                filterReset();
+                showMenu(arg0);
             }
         }
+
+        private void showMenu(MouseEvent evt) {
+            if (!JRadioButton.isSelected()) {
+                return;
+            }
+            JPopupMenu jPopupMenu = new JPopupMenu();
+            JMenuItem item = new JMenuItem("Filter löschen");
+            item.setIcon(GetIcon.getIcon("filter_loeschen_16.png"));
+            item.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    filterReset();
+                }
+            });
+            jPopupMenu.add(item);
+            //##Trenner##
+            jPopupMenu.addSeparator();
+            //##Trenner##
+            JPanel p = new JPanel(new FlowLayout());
+            JSpinner jSp = new JSpinner(new javax.swing.SpinnerNumberModel(1, 1, 5, 1));
+            jSpinner = jSp;
+            int i;
+            try {
+                i = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_ANZAHL_PANEL));
+            } catch (Exception ex) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_ANZAHL_PANEL, String.valueOf(3));
+                i = 3;
+            }
+            jSpinner.setValue(i);
+            jSpinner.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_ANZAHL_PANEL, String.valueOf(((Number) jSpinner.getModel().getValue()).intValue()));
+                    setFilterAnzahl();
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILTER_ANZAHL, MVFilterPanel.class.getSimpleName());
+                }
+            });
+            JLabel label = new JLabel("Anzahl Filter anzeigen:");
+            p.add(label);
+            p.add(jSpinner);
+            jPopupMenu.add(p);
+
+            //anzeigen
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
     }
 
-    private class BeobRadio implements ActionListener {
-
-        public BeobRadio() {
-            set();
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            set();
-            filterChange();
-        }
-
-        private void set() {
-            if (jRadioButtonF1.isSelected()) {
-                Daten.aktFilter = 0;
-                jRadioButtonF1.setIcon(GetIcon.getIcon("filter_on.png"));
-            } else {
-                jRadioButtonF1.setIcon(GetIcon.getIcon("filter_off.png"));
-            }
-            if (jRadioButtonF2.isSelected()) {
-                Daten.aktFilter = 1;
-                jRadioButtonF2.setIcon(GetIcon.getIcon("filter_on.png"));
-            } else {
-                jRadioButtonF2.setIcon(GetIcon.getIcon("filter_off.png"));
-            }
-            if (jRadioButtonF3.isSelected()) {
-                Daten.aktFilter = 2;
-                jRadioButtonF3.setIcon(GetIcon.getIcon("filter_on.png"));
-            } else {
-                jRadioButtonF3.setIcon(GetIcon.getIcon("filter_off.png"));
-            }
-            if (jRadioButtonF4.isSelected()) {
-                Daten.aktFilter = 3;
-                jRadioButtonF4.setIcon(GetIcon.getIcon("filter_on.png"));
-            } else {
-                jRadioButtonF4.setIcon(GetIcon.getIcon("filter_off.png"));
-            }
-            if (jRadioButtonF5.isSelected()) {
-                Daten.aktFilter = 4;
-                jRadioButtonF5.setIcon(GetIcon.getIcon("filter_on.png"));
-            } else {
-                jRadioButtonF5.setIcon(GetIcon.getIcon("filter_off.png"));
-            }
-        }
-
-    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
