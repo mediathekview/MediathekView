@@ -20,17 +20,8 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.SplashScreen;
-import java.awt.Toolkit;
-import java.awt.Window;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -41,22 +32,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.LinkedList;
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.InputMap;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.KeyStroke;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.CheckUpdate;
@@ -91,7 +69,6 @@ import mediathek.tool.MVConfig;
 import mediathek.tool.MVFrame;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
-import org.simplericity.macify.eawt.Application;
 import org.simplericity.macify.eawt.ApplicationEvent;
 import org.simplericity.macify.eawt.ApplicationListener;
 import org.simplericity.macify.eawt.DefaultApplication;
@@ -116,6 +93,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private JCheckBoxMenuItem jCheckBoxAboExtrafenster = new JCheckBoxMenuItem();
     private JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
     private JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
+    /**
+     * The application proxy object into OS X´s native world.
+     */
+    final DefaultApplication application = new DefaultApplication();
 
     /**
      * Legt die statusbar an.
@@ -673,7 +654,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Setup the UI for OS X
      */
     private void setupUserInterfaceForOsx() {
-        final DefaultApplication application = new DefaultApplication();
         application.addApplicationListener(this);
         application.addAboutMenuItem();
         application.addPreferencesMenuItem();
@@ -685,6 +665,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             URL url = this.getClass().getResource("res/MediathekView.png");
             BufferedImage appImage = ImageIO.read(url);
             application.setApplicationIconImage(appImage);
+            OsxApplicationIconImage = appImage;
         } catch (IOException ex) {
             Log.debugMeldung("OS X Application image could not be loaded");
         }
@@ -709,19 +690,115 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             Log.debugMeldung("OS X Fullscreen Support NOT enabled.");
         }
 
+        setupOsxDockIconBadge();
+    }
+
+    /**
+     * Setup the OS X dock icon badge handler.
+     */
+    private void setupOsxDockIconBadge() {
         //setup the badge support for displaying active downloads
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{
                 ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 final int activeDownloads = Daten.listeDownloads.getActiveDownloads();
-                if (activeDownloads > 0)
+                if (activeDownloads > 0) {
                     application.setDockIconBadge(String.valueOf(activeDownloads));
-                else
+                    if (osxProgressIndicatorThread == null) {
+                        osxProgressIndicatorThread = new OsxIndicatorThread();
+                        osxProgressIndicatorThread.start();
+                    }
+                } else {
                     application.setDockIconBadge("");
+                    if (osxProgressIndicatorThread != null) {
+                        osxProgressIndicatorThread.interrupt();
+                        osxProgressIndicatorThread = null;
+                    }
+                }
             }
         });
     }
+
+    /**
+     * This thread will update the percentage drawn on the dock icon on OS X.
+     */
+    private class OsxIndicatorThread extends Thread {
+        private BufferedImage newApplicationIcon = null;
+        private int width;
+        private int height;
+        private int numOfDownloadsActive;
+        private double accumPercentage;
+
+        public OsxIndicatorThread() {
+            setName("OSX dock icon update thread");
+            width = OsxApplicationIconImage.getWidth();
+            height = OsxApplicationIconImage.getHeight();
+            newApplicationIcon = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!isInterrupted()) {
+                    numOfDownloadsActive = 0;
+                    accumPercentage = 0.0;
+
+                    //only count running/active downloads and calc accumulated progres..
+                    //use copy as we are counting on a separate thread
+                    LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(Start.QUELLE_ALLE);
+                    for (DatenDownload download : activeDownloadList) {
+                        if (download.start != null && download.start.status == Start.STATUS_RUN) {
+                            numOfDownloadsActive++;
+                            accumPercentage += download.start.percent / 10.0;
+                        }
+                    }
+                    activeDownloadList.clear();
+
+                    SwingUtilities.invokeAndWait(new Runnable() {
+                        @Override
+                        public void run() {
+                            final double percentage = accumPercentage / numOfDownloadsActive;
+
+                            Graphics g = newApplicationIcon.getGraphics();
+                            g.drawImage(OsxApplicationIconImage, 0, 0, null);
+                            g.setColor(Color.RED);
+                            g.fillRect(0, height - 20, width, 20);
+                            g.setColor(Color.GREEN);
+                            final int progressBarWidth = (int) (((width) / 100.0) * percentage);
+                            g.fillRect(0, height - 20, progressBarWidth, 20);
+                            g.dispose();
+
+                            application.setApplicationIconImage(newApplicationIcon);
+                        }
+                    });
+                    sleep(100);
+                }
+            } catch (Exception ignored) {
+            } finally {
+                //reset the application dock icon
+                try {
+                    SwingUtilities.invokeAndWait(new Runnable() {
+                        @Override
+                        public void run() {
+                            application.setApplicationIconImage(OsxApplicationIconImage);
+                        }
+                    });
+                } catch (Exception ignored) {
+                }
+            }
+        }
+    }
+
+    /**
+     * Repaint-Thread for progress indicator on OS X.
+     */
+    private Thread osxProgressIndicatorThread = null;
+
+    /**
+     * The BufferedImage of the OS X application icon.
+     */
+    private BufferedImage OsxApplicationIconImage = null;
 
     private void initMenue() {
         initSpinner();
