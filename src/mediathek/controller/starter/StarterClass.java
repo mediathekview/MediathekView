@@ -370,13 +370,17 @@ public class StarterClass {
                         datenDownload.mVFilmSize.addAktSize(downloaded);
                         byte[] buffer = new byte[1024];
                         long p,
-                         pp = 0;
+                         pp = 0,
+                         startProzent = -1;
                         while ((len = srcBuffer.read(buffer)) != -1 && !start.stoppen) {
                             downloaded += len;
                             destBuffer.write(buffer, 0, len);
                             datenDownload.mVFilmSize.addAktSize(len);
                             if (datenDownload.mVFilmSize.getSize() > 0) {
                                 p = (datenDownload.mVFilmSize.getAktSize() * (long) 1000) / datenDownload.mVFilmSize.getSize();
+                                if (startProzent == -1) {
+                                    startProzent = p;
+                                }
                                 // p muss zwischen 1 und 999 liegen
                                 if (p == 0) {
                                     p = Start.PROGRESS_GESTARTET;
@@ -387,12 +391,12 @@ public class StarterClass {
                                 if (p != pp) {
                                     pp = p;
                                     // Restzeit ermitteln
-                                    if (p > 2) {
+                                    if (p > 2 && p > startProzent) {
                                         // sonst macht es noch keinen Sinn
                                         start.bandbreite = input.getBandbreite();
                                         int diffZeit = start.startZeit.diffInSekunden();
                                         int restProzent = 1000 - (int) p;
-                                        start.restSekunden = (diffZeit * restProzent / p);
+                                        start.restSekunden = (diffZeit * restProzent / (p - startProzent));
                                         // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
                                         // als die bereits geladene Speilzeit des Films
                                         bereitsAnschauen(datenDownload);
