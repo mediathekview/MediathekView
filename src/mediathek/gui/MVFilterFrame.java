@@ -43,7 +43,6 @@ import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.MediathekGui;
@@ -128,16 +127,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             }
         });
         jRadioButtonF1.setSelected(true);
-//        jRadioButtonF1.setVerticalTextPosition(SwingConstants.TOP);
-//        jRadioButtonF2.setVerticalTextPosition(SwingConstants.TOP);
-//        jRadioButtonF3.setVerticalTextPosition(SwingConstants.TOP);
-//        jRadioButtonF4.setVerticalTextPosition(SwingConstants.TOP);
-//        jRadioButtonF5.setVerticalTextPosition(SwingConstants.TOP);
-//        jRadioButtonF1.setHorizontalTextPosition(SwingConstants.CENTER);
-//        jRadioButtonF2.setHorizontalTextPosition(SwingConstants.CENTER);
-//        jRadioButtonF3.setHorizontalTextPosition(SwingConstants.CENTER);
-//        jRadioButtonF4.setHorizontalTextPosition(SwingConstants.CENTER);
-//        jRadioButtonF5.setHorizontalTextPosition(SwingConstants.CENTER);
         jRadioButtonF1.addActionListener(new BeobRadio());
         jRadioButtonF2.addActionListener(new BeobRadio());
         jRadioButtonF3.addActionListener(new BeobRadio());
@@ -155,11 +144,17 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 setFilterAnzahl();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILTER_AKT, MVFilterFrame.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setRadio();
+            }
+        });
 
         pack();
     }
 
-    private void setRadio() {
+    private void setAktFilter() {
         if (jRadioButtonF1.isSelected()) {
             Daten.aktFilter = 0;
             jRadioButtonF1.setIcon(GetIcon.getIcon("filter_on.png"));
@@ -192,6 +187,15 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         }
     }
 
+    private void setRadio() {
+        jRadioButtonF1.setSelected(Daten.aktFilter == 0);
+        jRadioButtonF2.setSelected(Daten.aktFilter == 1);
+        jRadioButtonF3.setSelected(Daten.aktFilter == 2);
+        jRadioButtonF4.setSelected(Daten.aktFilter == 3);
+        jRadioButtonF5.setSelected(Daten.aktFilter == 4);
+        setAktFilter();
+    }
+
     private void setFilterAnzahl() {
         int i;
         try {
@@ -204,18 +208,25 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jRadioButtonF3.setVisible(i >= 3);
         jRadioButtonF4.setVisible(i >= 4);
         jRadioButtonF5.setVisible(i == 5);
+        if (Daten.aktFilter >= i) {
+            jRadioButtonF1.setSelected(true);
+            setAktFilter();
+            filterChange();
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILTER_AKT, MVFilterFrame.class.getSimpleName());
+        }
     }
 
     private class BeobRadio implements ActionListener {
 
         public BeobRadio() {
-            setRadio();
+            setAktFilter();
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            setRadio();
+            setAktFilter();
             filterChange();
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILTER_AKT, MVFilterFrame.class.getSimpleName());
         }
     }
 
