@@ -19,10 +19,10 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.Log;
 import java.util.EventListener;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
+import mediathek.controller.Log;
 
 public class ListenerMediathekView implements EventListener {
 
@@ -58,6 +58,7 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_BESCHREIBUNG = 32;
     public static final int EREIGNIS_RESET_INTERRUPT = 33;
     public static final int EREIGNIS_FILTER_ANZAHL = 34;
+    public static final int EREIGNIS_FILTER_AKT = 35;
     public int[] mvEreignis = {-1};
     public String klasse = "";
     private static EventListenerList listeners = new EventListenerList();
