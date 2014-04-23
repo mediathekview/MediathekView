@@ -32,6 +32,7 @@ import javax.swing.DropMode;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
@@ -324,6 +325,27 @@ public final class MVTable extends JTable {
             Rectangle cellLocation = getCellRect(firstSelectedRow, 0, false);
             jScrollPane.getVerticalScrollBar().setValue(cellLocation.y);
         }
+    }
+
+    public void scrollToCenter(int rowIndex) {
+        if (!(getParent() instanceof JViewport)) {
+            return;
+        }
+        JViewport viewport = (JViewport) getParent();
+        Rectangle rect = getCellRect(rowIndex, 0, true);
+        Rectangle viewRect = viewport.getViewRect();
+        rect.setLocation(rect.x - viewRect.x, rect.y - viewRect.y);
+
+        int centerX = (viewRect.width - rect.width) / 2;
+        int centerY = (viewRect.height - rect.height) / 2;
+        if (rect.x < centerX) {
+            centerX = -centerX;
+        }
+        if (rect.y < centerY) {
+            centerY = -centerY;
+        }
+        rect.translate(centerX, centerY);
+        viewport.scrollRectToVisible(rect);
     }
 
     public void getSelected() {
