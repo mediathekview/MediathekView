@@ -421,7 +421,20 @@ public class GuiDownloads extends PanelVorlage {
             }
             Daten.listeDownloads.downloadLoeschen(arrayUrls);
             tabelleLaden();
-            tabelle.requestFocusSelelct(jScrollPane1);
+            // ausrichten
+            if (rows.length >= 1) {
+                int s = rows[0];
+                if (s >= tabelle.getRowCount()) {
+                    s = tabelle.getRowCount() - 1;
+                    if (s < 0) {
+                        s = 0;
+                    }
+                }
+                if (tabelle.getRowCount() >= 0) {
+                    tabelle.setRowSelectionInterval(s, s);
+                    tabelle.scrollToCenter(s);
+                }
+            }
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
