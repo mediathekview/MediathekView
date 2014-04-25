@@ -422,7 +422,7 @@ public class GuiDownloads extends PanelVorlage {
             Daten.listeDownloads.downloadLoeschen(arrayUrls);
             tabelleLaden();
             // ausrichten
-            if (rows.length >= 1) {
+            if (tabelle.getRowCount() > 0 && rows.length >= 1) {
                 int s = rows[0];
                 if (s >= tabelle.getRowCount()) {
                     s = tabelle.getRowCount() - 1;
@@ -430,10 +430,8 @@ public class GuiDownloads extends PanelVorlage {
                         s = 0;
                     }
                 }
-                if (tabelle.getRowCount() >= 0) {
-                    tabelle.setRowSelectionInterval(s, s);
-                    tabelle.scrollToCenter(s);
-                }
+                tabelle.setRowSelectionInterval(s, s);
+                tabelle.scrollToCenter(s);
             }
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
