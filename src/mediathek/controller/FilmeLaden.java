@@ -126,7 +126,7 @@ public class FilmeLaden {
             dialog.setVisible(true);
         } else {
             // Filme werden automatisch geladen
-            Daten.filmeLaden.importFilmliste("");
+            importFilmliste("");
         }
     }
 
