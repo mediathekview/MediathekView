@@ -19,13 +19,12 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.Log;
 import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.security.CodeSource;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import mediathek.Main;
+import mediathek.controller.Log;
 
 public class Funktionen {
 

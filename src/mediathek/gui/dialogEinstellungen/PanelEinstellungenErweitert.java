@@ -367,14 +367,15 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
     private void init() {
         // UserAgent
-        jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
-        jTextFieldUserAgent.setText(Daten.mVConfig.get(MVConfig.SYSTEM_USER_AGENT));
         if (Daten.isUserAgentAuto()) {
             jRadioButtonAuto.setSelected(true);
         } else {
             jRadioButtonManuel.setSelected(true);
         }
+        jTextFieldUserAgent.setText(Daten.mVConfig.get(MVConfig.SYSTEM_USER_AGENT));
+        jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
         jTextFieldUserAgent.setEditable(jRadioButtonManuel.isSelected());
+
         jTextFieldProgrammDateimanager.setText(Daten.mVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN));
         jTextFieldProgrammUrl.setText(Daten.mVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN));
     }

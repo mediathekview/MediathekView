@@ -101,7 +101,6 @@ public class Log {
         versionsMeldungen(classname);
         Log.systemMeldung("Programmpfad: " + Funktionen.getPathJar());
         Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
-        Log.systemMeldung("Useragent: " + Daten.getUserAgent());
         Log.systemMeldung("###########################################################");
         Log.systemMeldung("");
         Log.systemMeldung("");

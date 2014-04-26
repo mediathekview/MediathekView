@@ -53,6 +53,7 @@ import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVReplaceList;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
+import msearch.daten.MSConfig;
 import msearch.io.MSFilmlisteLesen;
 import msearch.io.MSFilmlisteSchreiben;
 
@@ -181,6 +182,7 @@ public class Daten {
         if (Daten.debug) {
             mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
         }
+        MSConfig.setUserAgent(Konstanten.USER_AGENT_DEFAULT);
     }
 
     /**
@@ -197,6 +199,7 @@ public class Daten {
     public static void setUserAgentAuto() {
         // Useragent wird vom Programm verwaltet
         Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
+        Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT, Konstanten.USER_AGENT_DEFAULT);
     }
 
     public static void setUserAgentManuel(String ua) {
@@ -298,6 +301,7 @@ public class Daten {
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
         MVListeFilme.checkBlacklist();
+        MSConfig.setUserAgent(getUserAgent());
     }
 
     public static void filmlisteSpeichern() {
