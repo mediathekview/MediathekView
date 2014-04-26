@@ -29,6 +29,7 @@ import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.Duration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
 import msearch.daten.DatenFilm;
@@ -43,13 +44,6 @@ import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 public class FilmeLaden {
 
-    // public static
-/*
-    public static final int UPDATE_FILME_AUS = 0; // nix
-    public static final int UPDATE_FILME_URL = 1; // manuell laden, Url automatisch wählen
-    public static final int UPDATE_FILME_AUTO = 2; // beim Start, immer mal wieder, + Url auto
-    public static final int ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60; // beim Start des Programms wir die Liste geladen wenn sie älter ist als ..
-*/
     private Duration duration = new Duration(FilmeLaden.class.getSimpleName());
     private HashSet<String> hashSet = new HashSet<>();
     private ListeFilme diffListe = new ListeFilme();

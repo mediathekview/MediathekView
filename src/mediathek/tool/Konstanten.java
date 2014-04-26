@@ -23,14 +23,13 @@ public class Konstanten {
 
     public static final String VERSION = "6";
     public static final String PROGRAMMNAME = "MediathekView";
-    public static final String USER_AGENT_DEFAULT = PROGRAMMNAME + " " + VERSION;
+    public static final String USER_AGENT_DEFAULT = Funktionen.getProgVersionString();
     public static final String CONFIG_FILE = "mediathek.xml";
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";
 
 // MediathekView URLs
     public static final String ADRESSE_FILMLISTEN_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
     public static final String DATEINAME_LISTE_FILMLISTEN = "filmlisten.xml";
-    //public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/version.xml"; alte bis 3.3.0
     public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/prog-info.xml"; // ab Version 4, einstellig!
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";
     public static final String ADRESSE_ANLEITUNG = "http://sourceforge.net/p/zdfmediathk/wiki/Home/";
