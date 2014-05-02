@@ -19,17 +19,21 @@
  */
 package mediathek.res;
 
+import java.awt.Image;
 import java.io.File;
 import javax.swing.ImageIcon;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
-import mediathek.controller.Log;
 import mediathek.tool.MVConfig;
 
 public class GetIcon {
 
     private final static String PFAD_INTERN = "/mediathek/res/";
+
+    public static Image getImage(String strIcon) {
+        return getIcon(strIcon).getImage();
+    }
 
     public static ImageIcon getIcon(String strIcon) {
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
