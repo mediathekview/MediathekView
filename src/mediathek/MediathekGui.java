@@ -491,6 +491,29 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 beenden();
             }
         });
+////        systemTray();
+    }
+
+    private void systemTray() {
+        if (SystemTray.isSupported()) {
+            // anlegen
+            final PopupMenu popup = new PopupMenu();
+            final TrayIcon trayIcon = new TrayIcon(GetIcon.getImage("mv-tray.png"));
+            trayIcon.setImageAutoSize(true);
+            final SystemTray tray = SystemTray.getSystemTray();
+
+            MenuItem aboutItem = new MenuItem("About");
+            popup.add(aboutItem);
+            popup.addSeparator();
+            trayIcon.setPopupMenu(popup);
+            try {
+                tray.add(trayIcon);
+            } catch (AWTException e) {
+                Log.systemMeldung("Tray konnte nicht geladen werden!");
+            }
+        } else {
+            Log.systemMeldung("Tray wird nicht unterstützt!");
+        }
     }
 
     public void hideFrame(String state) {
@@ -665,7 +688,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             URL url = this.getClass().getResource("res/MediathekView.png");
             BufferedImage appImage = ImageIO.read(url);
             application.setApplicationIconImage(appImage);
-            OsxApplicationIconImage = appImage;
         } catch (IOException ex) {
             Log.debugMeldung("OS X Application image could not be loaded");
         }
@@ -699,12 +721,13 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private void setupOsxDockIconBadge() {
         //setup the badge support for displaying active downloads
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{
-                ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
+            ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 final int activeDownloads = Daten.listeDownloads.getActiveDownloads();
                 if (activeDownloads > 0) {
                     application.setDockIconBadge(String.valueOf(activeDownloads));
+
                     if (osxProgressIndicatorThread == null) {
                         osxProgressIndicatorThread = new OsxIndicatorThread();
                         osxProgressIndicatorThread.start();
@@ -724,17 +747,45 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * This thread will update the percentage drawn on the dock icon on OS X.
      */
     private class OsxIndicatorThread extends Thread {
+
+        /**
+         * The BufferedImage of the OS X application icon.
+         */
+        private BufferedImage OsxApplicationIconImage = null;
+        /**
+         * Stores the application image with the progress drawn on it
+         */
         private BufferedImage newApplicationIcon = null;
-        private int width;
-        private int height;
+        private final int appIconWidth;
+        private final int appIconHeight;
         private int numOfDownloadsActive;
         private double accumPercentage;
+        private double oldPercentage;
+        private boolean bFirstUpdate = true;
 
         public OsxIndicatorThread() {
             setName("OSX dock icon update thread");
-            width = OsxApplicationIconImage.getWidth();
-            height = OsxApplicationIconImage.getHeight();
-            newApplicationIcon = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            OsxApplicationIconImage = application.getApplicationIconImage();
+            appIconWidth = OsxApplicationIconImage.getWidth();
+            appIconHeight = OsxApplicationIconImage.getHeight();
+            newApplicationIcon = new BufferedImage(appIconWidth, appIconHeight, BufferedImage.TYPE_INT_ARGB);
+        }
+
+        /**
+         * Draw the progress bar into the application icon and set dock icon.
+         *
+         * @param progressBarWidth width of the bar.
+         */
+        private void drawAndSetApplicationIconWithProgress(int progressBarWidth) {
+            Graphics g = newApplicationIcon.getGraphics();
+            g.drawImage(OsxApplicationIconImage, 0, 0, null);
+            g.setColor(Color.RED);
+            g.fillRect(0, appIconHeight - 20, appIconWidth, 20);
+            g.setColor(Color.GREEN);
+            g.fillRect(0, appIconHeight - 20, progressBarWidth, 20);
+            g.dispose();
+
+            application.setApplicationIconImage(newApplicationIcon);
         }
 
         @Override
@@ -745,7 +796,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                     accumPercentage = 0.0;
 
                     //only count running/active downloads and calc accumulated progres..
-                    //use copy as we are counting on a separate thread
                     LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(Start.QUELLE_ALLE);
                     for (DatenDownload download : activeDownloadList) {
                         if (download.start != null && download.start.status == Start.STATUS_RUN) {
@@ -755,37 +805,29 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                     }
                     activeDownloadList.clear();
 
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        @Override
-                        public void run() {
-                            final double percentage = accumPercentage / numOfDownloadsActive;
+                    double percentage = accumPercentage / numOfDownloadsActive;
+                    final int progressBarWidth = (int) ((appIconWidth / 100.0) * percentage);
 
-                            Graphics g = newApplicationIcon.getGraphics();
-                            g.drawImage(OsxApplicationIconImage, 0, 0, null);
-                            g.setColor(Color.RED);
-                            g.fillRect(0, height - 20, width, 20);
-                            g.setColor(Color.GREEN);
-                            final int progressBarWidth = (int) (((width) / 100.0) * percentage);
-                            g.fillRect(0, height - 20, progressBarWidth, 20);
-                            g.dispose();
+                    if (bFirstUpdate) {
+                        drawAndSetApplicationIconWithProgress(progressBarWidth);
+                        bFirstUpdate = false;
+                    }
 
-                            application.setApplicationIconImage(newApplicationIcon);
+                    //update in 1pct steps...
+                    if (percentage % 1 == 0) {
+                        //if icon was already drawn, don´ do it again
+                        if (oldPercentage != percentage) {
+                            drawAndSetApplicationIconWithProgress(progressBarWidth);
                         }
-                    });
-                    sleep(100);
+
+                        oldPercentage = percentage;
+                    }
+                    sleep(500);
                 }
             } catch (Exception ignored) {
             } finally {
                 //reset the application dock icon
-                try {
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        @Override
-                        public void run() {
-                            application.setApplicationIconImage(OsxApplicationIconImage);
-                        }
-                    });
-                } catch (Exception ignored) {
-                }
+                application.setApplicationIconImage(OsxApplicationIconImage);
             }
         }
     }
@@ -794,11 +836,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Repaint-Thread for progress indicator on OS X.
      */
     private Thread osxProgressIndicatorThread = null;
-
-    /**
-     * The BufferedImage of the OS X application icon.
-     */
-    private BufferedImage OsxApplicationIconImage = null;
 
     private void initMenue() {
         initSpinner();
