@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ $(hostname) = "beta" ]
+if [ $(hostname) = "beta" ] || [ $(hostname) = "lt" ]
 then
 # nur für den Entwicklungsrechner sinnvoll
 
