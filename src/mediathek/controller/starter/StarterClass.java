@@ -19,12 +19,11 @@
  */
 package mediathek.controller.starter;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.SwingUtilities;
@@ -56,6 +55,7 @@ public class StarterClass {
         daten = d;
         starten = new Starten();
         Thread startenThread = new Thread(starten);
+        startenThread.setName("StarterClass Daemon Thread");
         startenThread.setDaemon(true);
         startenThread.start();
     }
@@ -127,7 +127,9 @@ public class StarterClass {
                     break;
                 case Start.ART_DOWNLOAD:
                     StartenDownload startenDownload = new StartenDownload(datenDownload);
-                    new Thread(startenDownload).start();
+                    Thread downloadThread = new Thread(startenDownload);
+                    downloadThread.setName("DIRECT DL THREAD_" + startenDownload.datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+                    downloadThread.start();
                     break;
                 default:
                     Log.fehlerMeldung(789356001, Log.FEHLER_ART_PROG, "StartetClass.startStarten", "StarterClass.Starten - Switch-default");
@@ -301,19 +303,19 @@ public class StarterClass {
 
     private class StartenDownload implements Runnable {
 
-        DatenDownload datenDownload;
-        Start start;
-        BufferedInputStream srcBuffer = null;
-        BufferedOutputStream destBuffer = null;
-        HttpURLConnection conn = null;
-        final int STATE_ABBRECHEN = 1;
-        final int STATE_HTTP_ERROR = 2;
-        final int STATE_DOWNLOAD = 3;
-        int state = STATE_DOWNLOAD;
-        int downloaded = 0;
-        File file;
-        String responseCode = "";
-        String exMessage = "";
+        private DatenDownload datenDownload;
+        private Start start;
+        private HttpURLConnection conn = null;
+        private final int STATE_ABBRECHEN = 1;
+        private final int STATE_HTTP_ERROR = 2;
+        private final int STATE_DOWNLOAD = 3;
+        private int state = STATE_DOWNLOAD;
+        private int downloaded = 0;
+        private File file = null;
+        private String responseCode;
+        private String exMessage;
+
+        private FileOutputStream fos = null;
 
         public StartenDownload(DatenDownload d) {
             datenDownload = d;
@@ -322,38 +324,67 @@ public class StarterClass {
             notifyStartEvent(datenDownload);
         }
 
+        /**
+         * Setup the HTTP connection common settings
+         * @param conn The active connection.
+         */
+        private void setupHttpConnection(HttpURLConnection conn)
+        {
+            conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
+            conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+        }
+
         @Override
         public void run() {
             startmeldung(datenDownload, start);
-            MVInputStream input;
             try {
-                int len;
-                new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
+                Files.createDirectory(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
+            } catch (IOException ignored) {
+            }
+
+            try {
                 datenDownload.mVFilmSize.setSize(laenge(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]));
                 datenDownload.mVFilmSize.setAktSize(0);
                 URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 conn = (HttpURLConnection) url.openConnection();
                 file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 if (!abbrechen()) {
-                    conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
-                    conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                    conn.setDoInput(true);
-                    conn.setDoOutput(true);
+                    setupHttpConnection(conn);
                     conn.connect();
-                    if (conn.getResponseCode() >= 400) {
-                        // ==================================
-                        // dann wars das
-                        responseCode = "Responsecode: " + conn.getResponseCode() + "\n" + conn.getResponseMessage();
-                        Log.fehlerMeldung(915236798, Log.FEHLER_ART_PROG, "StartetClass.StartenDownload", "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                new DialogDownloadfehler(null, "URL des Films:\n"
-                                        + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] + "\n\n"
-                                        + responseCode + "\n", datenDownload).setVisible(true);
+                    final int httpResponseCode = conn.getResponseCode();
+                    if (httpResponseCode >= 400) {
+                        //Range passt nicht, also neue Verbindung versuchen...
+                        if (httpResponseCode == 416) {
+                            conn.disconnect();
+                            //Get a new connection and reset download param...
+                            conn = (HttpURLConnection)url.openConnection();
+                            downloaded = 0;
+                            setupHttpConnection(conn);
+                            conn.connect();
+                            //hier war es dann nun wirklich...
+                            if (conn.getResponseCode() >= 400) {
+                                state = STATE_HTTP_ERROR;
                             }
-                        });
-                        state = STATE_HTTP_ERROR;
+                            else
+                                state = STATE_DOWNLOAD;
+                        }
+                        else {
+                            // ==================================
+                            // dann wars das
+                            responseCode = "Responsecode: " + conn.getResponseCode() + "\n" + conn.getResponseMessage();
+                            Log.fehlerMeldung(915236798, Log.FEHLER_ART_PROG, "StartetClass.StartenDownload", "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    new DialogDownloadfehler(null, "URL des Films:\n"
+                                            + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] + "\n\n"
+                                            + responseCode + "\n", datenDownload).setVisible(true);
+                                }
+                            });
+                            state = STATE_HTTP_ERROR;
+                        }
                     }
                 }
                 switch (state) {
@@ -362,19 +393,20 @@ public class StarterClass {
                             MVInfoFile.writeInfoFile(datenDownload);
                         }
                         datenDownload.interruptRestart();
-                        input = new MVInputStream(conn.getInputStream());
-                        start.mVInputStream = input;
-                        srcBuffer = new BufferedInputStream(input);
-                        FileOutputStream fos = (downloaded == 0) ? new FileOutputStream(file) : new FileOutputStream(file, true);
-                        destBuffer = new BufferedOutputStream(fos, 1024);
+                        start.mVInputStream = new MVInputStream(conn.getInputStream());
+
+                        fos = new FileOutputStream(file,(downloaded != 0));
+
                         datenDownload.mVFilmSize.addAktSize(downloaded);
-                        byte[] buffer = new byte[1024];
+                        final byte[] buffer = new byte[MVBandwidthTokenBucket.TOKEN_PERMIT_SIZE];
                         long p,
                          pp = 0,
                          startProzent = -1;
-                        while ((len = srcBuffer.read(buffer)) != -1 && !start.stoppen) {
+                        int len;
+
+                        while ((len = start.mVInputStream.read(buffer)) != -1 && (!start.stoppen)) {
                             downloaded += len;
-                            destBuffer.write(buffer, 0, len);
+                            fos.write(buffer, 0, len);
                             datenDownload.mVFilmSize.addAktSize(len);
                             if (datenDownload.mVFilmSize.getSize() > 0) {
                                 p = (datenDownload.mVFilmSize.getAktSize() * (long) 1000) / datenDownload.mVFilmSize.getSize();
@@ -393,7 +425,7 @@ public class StarterClass {
                                     // Restzeit ermitteln
                                     if (p > 2 && p > startProzent) {
                                         // sonst macht es noch keinen Sinn
-                                        start.bandbreite = input.getBandbreite();
+                                        start.bandbreite = start.mVInputStream.getBandbreite();
                                         int diffZeit = start.startZeit.diffInSekunden();
                                         int restProzent = 1000 - (int) p;
                                         start.restSekunden = (diffZeit * restProzent / (p - startProzent));
@@ -405,7 +437,7 @@ public class StarterClass {
                                 }
                             }
                         }
-                        Log.systemMeldung(input.toString());
+                        Log.systemMeldung(start.mVInputStream.toString());
                         if (!start.stoppen) {
                             if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
                                 // direkter Start mit dem Button
@@ -442,11 +474,11 @@ public class StarterClass {
 
         private void ende(int state) {
             try {
-                if (srcBuffer != null) {
-                    srcBuffer.close();
+                if (start.mVInputStream != null) {
+                    start.mVInputStream.close();
                 }
-                if (destBuffer != null) {
-                    destBuffer.close();
+                if (fos != null) {
+                    fos.close();
                 }
                 if (conn != null) {
                     conn.disconnect();
@@ -573,10 +605,12 @@ public class StarterClass {
                 if (file.length() == 0) {
                     // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
                     Log.systemMeldung(new String[]{"Restart/Aufräumen: leere Datei löschen", file.getAbsolutePath()});
-                    file.delete();
+                    if (!file.delete())
+                        throw new Exception();
                 } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
                     Log.systemMeldung(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", file.getAbsolutePath()});
-                    file.delete();
+                    if (!file.delete())
+                        throw new Exception();
                 }
             }
         } catch (Exception ex) {

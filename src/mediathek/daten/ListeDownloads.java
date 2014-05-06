@@ -45,12 +45,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public ListeDownloads(Daten ddaten) {
         this.ddaten = ddaten;
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, ListeDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setBanbreite();
-            }
-        });
     }
 
     //===================================
@@ -813,18 +807,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             host = "exception";
         }
         return host;
-    }
-
-    private synchronized void setBanbreite() {
-        Start s;
-        for (DatenDownload download : this) {
-            s = download.start;
-            if (s != null) {
-                if (s.mVInputStream != null) {
-                    s.mVInputStream.setBandbreite();
-                }
-            }
-        }
     }
 
     private synchronized boolean checkUrlExists(String url) {

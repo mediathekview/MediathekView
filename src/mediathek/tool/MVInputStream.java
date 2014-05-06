@@ -23,40 +23,35 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.Log;
 import java.io.IOException;
 import java.io.InputStream;
-import mediathek.daten.Daten;
+
+import mediathek.controller.starter.MVBandwidthTokenBucket;
 
 public class MVInputStream extends InputStream {
 
     private final InputStream iStream;
-    private static long maxBytePerSec = 0;
     private long startZeit = System.currentTimeMillis();
-    private long bytesGelesen = 0;
-    private long gesamtVerpennt = 0;
-    private static final long warten_ms = 50;
+    private long bytesGelesen;
+    private MVBandwidthTokenBucket bucket = null;
 
     public MVInputStream(InputStream in) {
         iStream = in;
-        try {
-            maxBytePerSec = Long.parseLong(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE)) * 1024;
-        } catch (Exception ex) {
-            maxBytePerSec = 0;
-            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, "0");
-        }
+        bucket = MVBandwidthTokenBucket.getInstance();
+        bucket.ensureBucketThreadIsRunning();
     }
 
-    public void setBandbreite() {
-        maxBytePerSec = Long.parseLong(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE)) * 1024;
-        startZeit = System.currentTimeMillis();
-        bytesGelesen = 0;
+    @Override
+    public void close() throws IOException
+    {
+        iStream.close();
+        super.close();
     }
 
     @Override
     public int read() throws IOException {
-        pause();
-        int einByte = iStream.read();
+        bucket.takeBlocking();
+        final int einByte = iStream.read();
         if (einByte != -1) {
             bytesGelesen++;
         }
@@ -65,30 +60,16 @@ public class MVInputStream extends InputStream {
 
     @Override
     public int read(byte[] b) throws IOException {
-        pause();
-        int anzByte = iStream.read(b);
+        bucket.takeBlocking();
+        final int anzByte = iStream.read(b);
         if (anzByte != -1) {
             bytesGelesen += anzByte;
         }
         return anzByte;
     }
 
-    private synchronized void pause() throws IOException {
-        if (maxBytePerSec == 0) {
-            return;
-        }
-        if (getBandbreite() > maxBytePerSec) {
-            try {
-                wait(warten_ms);
-                gesamtVerpennt += warten_ms;
-            } catch (InterruptedException ex) {
-                Log.fehlerMeldung(591237096, Log.FEHLER_ART_PROG, "MVInputStream.pause", ex);
-            }
-        }
-    }
-
     public long getBandbreite() {
-        long dauer = (System.currentTimeMillis() - startZeit) / 1000;
+        final long dauer = (System.currentTimeMillis() - startZeit) / 1000;
         if (dauer == 0) {
             return bytesGelesen;
         } else {
@@ -96,15 +77,10 @@ public class MVInputStream extends InputStream {
         }
     }
 
-    public long getTotalSleepTime() {
-        return gesamtVerpennt;
-    }
-
     @Override
     public String toString() {
         return "Download: "
                 + "gelesen: " + (bytesGelesen > 0 ? bytesGelesen / 1024 : 0) + " KiB, "
-                + "Bandbreite: " + (getBandbreite() > 0 ? getBandbreite() / 1024 : 0) + " KiB/s "
-                + ", Wartezeit: " + (gesamtVerpennt > 0 ? gesamtVerpennt / 1000 : 0) + " s";
+                + "Bandbreite: " + (getBandbreite() > 0 ? getBandbreite() / 1024 : 0) + " KiB/s ";
     }
 }
