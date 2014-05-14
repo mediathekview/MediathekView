@@ -103,7 +103,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      */
     private void createStatusBar() {
         statusBar = new MVStatusBar();
-        jPanelInfo.add(statusBar.getComponent(), BorderLayout.CENTER);
+
+        JScrollPane js = new JScrollPane();
+        js.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        js.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        js.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        js.setViewportView(statusBar.getComponent());
+
+        //jPanelInfo.add(statusBar.getComponent(), BorderLayout.CENTER);
+        jPanelInfo.add(js, BorderLayout.CENTER);
     }
 
     public MVStatusBar getStatusBar() {
@@ -126,7 +134,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      */
     private int splashScreenProgress = 0; //currently 10
 
-    /** Update the {@link java.awt.SplashScreen} with the given text
+    /**
+     * Update the {@link java.awt.SplashScreen} with the given text
      *
      * @param text The text which is to be displayed.
      */
@@ -309,8 +318,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     /**
-     * This will set the Look&Feel based on Application Preferences.
-     * In case of error it will always reset to system LAF.
+     * This will set the Look&Feel based on Application Preferences. In case of
+     * error it will always reset to system LAF.
      */
     private void setLookAndFeel() {
         try {
