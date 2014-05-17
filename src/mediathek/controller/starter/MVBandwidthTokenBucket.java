@@ -12,9 +12,9 @@ import java.util.concurrent.Semaphore;
  * Bandwidth throttling based on http://en.wikipedia.org/wiki/Token_bucket
  */
 public class MVBandwidthTokenBucket {
-    public static final int TOKEN_PERMIT_SIZE = 1000;
+    public static final int DEFAULT_BUFFER_SIZE = 1000; // default byte buffer size
     private static MVBandwidthTokenBucket ourInstance = new MVBandwidthTokenBucket();
-    private volatile int bucketCapacity = 1000; // 1000 KByte = 1 MByte
+    private volatile int bucketCapacity = 1*1000*1000; // 1MByte in bytes
     private Semaphore bucketSize = new Semaphore(0, false);
 
 
@@ -47,19 +47,31 @@ public class MVBandwidthTokenBucket {
     }
 
     /**
-     * Take one TOKEN_PERMIT_SIZE Byte block out of the queue.
-     * If no token is available the caller will block until one gets available.
+     * Take number of byte tickets from bucket.
+     * @param howMany The number of bytes to acquire.
      */
-    public void takeBlocking() {
+    public void takeBlocking(final int howMany) {
         //if bucket size equals 0 then unlimited speed...
         if (getBucketCapacity() > 0) {
             try {
-                bucketSize.acquire();
+                bucketSize.acquire(howMany);
             } catch (Exception ignored) {
             }
         }
     }
 
+    /**
+     * Acquire one byte ticket from bucket.
+     */
+    public void takeBlocking()
+    {
+         takeBlocking(1);
+    }
+
+    /**
+     * Get the capacity of the Token Bucket.
+     * @return Maximum number of tokens in the bucket.
+     */
     public synchronized int getBucketCapacity() {
         return bucketCapacity;
     }
@@ -98,17 +110,20 @@ public class MVBandwidthTokenBucket {
 
     /**
      * Read bandwidth settings from config.
-     * @return The maximum bandwidth set or zero for unlimited speed.
+     * @return The maximum bandwidth in bytes set or zero for unlimited speed.
      */
     private int getBandwidth() {
-        int maxKBytePerSec;
+        int bytesPerSecond;
+
         try {
-            maxKBytePerSec = (int) Long.parseLong(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
+            final int maxKBytePerSec = (int) Long.parseLong(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
+            bytesPerSecond = maxKBytePerSec * 1000;
+
         } catch (Exception ex) {
-            maxKBytePerSec = 0;
+            bytesPerSecond = 0;
             Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, "0");
         }
-        return maxKBytePerSec;
+        return bytesPerSecond;
     }
 
     /**

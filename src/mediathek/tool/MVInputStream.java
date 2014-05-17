@@ -23,64 +23,122 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.starter.MVBandwidthTokenBucket;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import mediathek.controller.starter.MVBandwidthTokenBucket;
+import java.util.TimerTask;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MVInputStream extends InputStream {
 
     private final InputStream iStream;
-    private long startZeit = System.currentTimeMillis();
-    private long bytesGelesen;
     private MVBandwidthTokenBucket bucket = null;
+    private BandwidthCalculationTask calculationTask;
 
-    public MVInputStream(InputStream in) {
+    public MVInputStream(InputStream in, java.util.Timer calculationTimer) {
         iStream = in;
         bucket = MVBandwidthTokenBucket.getInstance();
         bucket.ensureBucketThreadIsRunning();
+
+        //start bandwidth calculation
+        calculationTask = new BandwidthCalculationTask();
+        calculationTimer.scheduleAtFixedRate(calculationTask, 0, 1000);
     }
 
     @Override
-    public void close() throws IOException
-    {
+    public void close() throws IOException {
         iStream.close();
         super.close();
+        //stop bandwidth calculation
+        calculationTask.cancel();
     }
 
     @Override
     public int read() throws IOException {
         bucket.takeBlocking();
-        final int einByte = iStream.read();
-        if (einByte != -1) {
-            bytesGelesen++;
-        }
-        return einByte;
+        final int bytesRead = iStream.read();
+        if (bytesRead != -1)
+            calculationTask.incrementBytesRead(1);
+
+        return bytesRead;
     }
 
     @Override
     public int read(byte[] b) throws IOException {
-        bucket.takeBlocking();
-        final int anzByte = iStream.read(b);
-        if (anzByte != -1) {
-            bytesGelesen += anzByte;
-        }
-        return anzByte;
+        bucket.takeBlocking(b.length);
+        final int bytesRead = iStream.read(b);
+        if (bytesRead != -1)
+            calculationTask.incrementBytesRead(bytesRead);
+
+        return bytesRead;
     }
 
-    public long getBandbreite() {
-        final long dauer = (System.currentTimeMillis() - startZeit) / 1000;
-        if (dauer == 0) {
-            return bytesGelesen;
-        } else {
-            return bytesGelesen / dauer;
-        }
+    /**
+     * Return the bandwidth used by this InputStream.
+     *
+     * @return Bandwidth in bytes per second.
+     */
+    public long getBandwidth() {
+        return calculationTask.getBandwidth();
     }
 
     @Override
     public String toString() {
+        final long bytesRead = calculationTask.getTotalBytesRead();
+        final long bandwidth = calculationTask.getBandwidth();
+
         return "Download: "
-                + "gelesen: " + (bytesGelesen > 0 ? bytesGelesen / 1024 : 0) + " KiB, "
-                + "Bandbreite: " + (getBandbreite() > 0 ? getBandbreite() / 1024 : 0) + " KiB/s ";
+                + "gelesen: " + (bytesRead > 0 ? bytesRead / 1024 : 0) + " KiB, "
+                + "Bandbreite: " + (bandwidth > 0 ? bandwidth / 1024 : 0) + " KiB/s ";
+    }
+
+    /**
+     * This TimerTask calculates the bandwidth (bytes per seconds) and records the overall bytes read
+     * until termination.
+     */
+    private class BandwidthCalculationTask extends TimerTask {
+        private long oldTotalBytes = 0;
+        private long totalBytesRead = 0;
+        private long bandwidth = 0;
+        private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+        @Override
+        public void run() {
+            lock.writeLock().lock();
+            bandwidth = totalBytesRead - oldTotalBytes;
+            oldTotalBytes = totalBytesRead;
+            lock.writeLock().unlock();
+        }
+
+        public void incrementBytesRead(int value) {
+            lock.writeLock().lock();
+            totalBytesRead += value;
+            lock.writeLock().unlock();
+        }
+
+        /**
+         * Return the total number of bytes read.
+         *
+         * @return Total number of bytes read.
+         */
+        public long getTotalBytesRead() {
+            lock.readLock().lock();
+            final long res = totalBytesRead;
+            lock.readLock().unlock();
+            return res;
+        }
+
+        /**
+         * Return the bandwidth used by this stream.
+         *
+         * @return Bandwidth in bytes per second.
+         */
+        public long getBandwidth() {
+            lock.readLock().lock();
+            final long bw = bandwidth;
+            lock.readLock().unlock();
+            return bw;
+        }
     }
 }
