@@ -62,27 +62,39 @@ public class Start {
     public Start() {
     }
 
-    public static String getTextProgress(Start s) {
+    public static String getTextProgress(final Start s) {
         String ret = "";
-        if (s == null) {
-            return "";
+
+        if (s == null)
+            return ret;
+
+        switch (s.percent) {
+            case PROGRESS_NICHT_GESTARTET:
+                break;
+
+            case PROGRESS_WARTEN:
+                ret = "warten";
+                break;
+
+            case PROGRESS_GESTARTET:
+                ret = "gestartet";
+                break;
+
+            case PROGRESS_FERTIG:
+                if (s.status == Start.STATUS_ERR)
+                    ret = "fehlerhaft";
+                else
+                    ret = "fertig";
+                break;
+
+            default:
+                if (1 < s.percent && s.percent < PROGRESS_FERTIG) {
+                    double d = s.percent / 10.0;
+                    ret = Double.toString(d) + "%";
+                }
+                break;
         }
-        if (s.percent == PROGRESS_NICHT_GESTARTET) {
-            // noch nicht gestartet
-        } else if (s.percent == PROGRESS_WARTEN) {
-            ret = "warten";
-        } else if (s.percent == PROGRESS_GESTARTET) {
-            ret = "gestartet";
-        } else if (1 < s.percent && s.percent < PROGRESS_FERTIG) {
-            double d = s.percent / 10.0;
-            ret = Double.toString(d) + "%";
-        } else if (s.percent == PROGRESS_FERTIG) {
-            if (s.status == Start.STATUS_ERR) {
-                ret = "fehlerhaft";
-            } else {
-                ret = "fertig";
-            }
-        }
+
         return ret;
     }
 }
