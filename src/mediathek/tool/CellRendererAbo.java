@@ -47,6 +47,13 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
         super.getTableCellRendererComponent(
                 table, value, isSelected, hasFocus, row, column);
         try {
+            if (isSelected) {
+                setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
+                //setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
+            } else {
+                setFont(getFont());
+                //setFont(new java.awt.Font(null));
+            }
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
             DatenAbo abo = Daten.listeAbo.getAboNr(r);
@@ -55,7 +62,8 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
             if (!eingeschaltet) {
-                setFont(new java.awt.Font("Dialog", Font.ITALIC, 12));
+                setFont(new java.awt.Font("Dialog", Font.ITALIC, getFont().getSize()));
+                //setFont(new java.awt.Font("Dialog", Font.ITALIC, 12));
                 if (isSelected) {
                     setBackground(MVColor.ABO_AUSGESCHALTET_SEL.color);
                 } else {

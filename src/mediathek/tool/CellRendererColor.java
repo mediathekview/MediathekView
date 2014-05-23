@@ -37,9 +37,9 @@ public class CellRendererColor extends DefaultTableCellRenderer {
             int row,
             int column) {
         setBackground(null);
-        setForeground(null);
-        setFont(null);
-        setIcon(null);
+//        setForeground(null);
+//        setFont(null);
+//        setIcon(null);
         setHorizontalAlignment(SwingConstants.LEADING);
         super.getTableCellRendererComponent(
                 table, value, isSelected, hasFocus, row, column);
