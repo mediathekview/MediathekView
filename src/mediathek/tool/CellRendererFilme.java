@@ -75,7 +75,8 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         try {
             setBackground(null);
             setForeground(null);
-            setFont(null);
+            //setFont(null);
+            //setFont(getFont());
             setIcon(null);
             setToolTipText(null);
             setHorizontalAlignment(SwingConstants.LEADING);
@@ -87,6 +88,13 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(r, DatenFilm.FILM_REF_NR);
             boolean live = datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE);
             DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL_NR]);
+            if (isSelected) {
+                setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
+                //setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
+            } else {
+                setFont(getFont());
+                //setFont(new java.awt.Font(null));
+            }
             if (c == DatenFilm.FILM_NR_NR || c == DatenFilm.FILM_GROESSE_NR
                     || c == DatenFilm.FILM_DATUM_NR || c == DatenFilm.FILM_ZEIT_NR || c == DatenFilm.FILM_DAUER_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
@@ -162,13 +170,6 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                         }
                     }
                 }
-            }
-            if (isSelected) {
-                // setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize() < 12 ? 12 : getFont().getSize()));
-                // setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
-                setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
-            } else {
-                setFont(new java.awt.Font(null));
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(630098552, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);

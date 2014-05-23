@@ -96,6 +96,13 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
             DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(r, DatenDownload.DOWNLOAD_REF_NR);
+            if (isSelected) {
+                setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
+                //setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
+            } else {
+                setFont(getFont());
+                //setFont(new java.awt.Font(null));
+            }
             if (c == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 if (datenDownload.start != null) {
@@ -248,11 +255,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(758200166, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
-        }
-        if (isSelected) {
-            setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
-        } else {
-            setFont(new java.awt.Font(null));
         }
         return this;
     }
