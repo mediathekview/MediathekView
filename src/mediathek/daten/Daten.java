@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import mediathek.MediathekGui;
@@ -343,28 +346,43 @@ public class Daten {
     private void konfigCopy() {
         final int MAX_COPY = 5;
         boolean renameOk = true;
+        long creatTime = -1;
         if (!configCopy) {
             // nur einmal pro Programmstart machen
+            Log.systemMeldung("-------------------------------------------------------");
+            Log.systemMeldung("Einstellungen sichern");
             try {
                 Path xmlFilePath = Daten.getMediathekXmlFilePath();
                 Path xmlFilePathCopy_1;
                 Path xmlFilePathCopy_2;
-                xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + MAX_COPY);
+                xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1);
                 if (xmlFilePathCopy_1.toFile().exists()) {
-                    // das letzte File löschen, sonst klappt das umbenenen unter Win nicht
-                    xmlFilePathCopy_1.toFile().delete();
+                    BasicFileAttributes attrs = Files.readAttributes(xmlFilePathCopy_1, BasicFileAttributes.class);
+                    FileTime d = attrs.lastModifiedTime();
+                    creatTime = d.toMillis();
                 }
-                for (int i = MAX_COPY; i > 1; --i) {
-                    xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
-                    xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
+                if (creatTime == -1 || creatTime < DatumZeit.getHeute_0Uhr()) {
+                    // nur dann ist die letzte Kopie älter als einen Tag
+                    xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + MAX_COPY);
                     if (xmlFilePathCopy_1.toFile().exists()) {
-                        if (!xmlFilePathCopy_1.toFile().renameTo(xmlFilePathCopy_2.toFile())) {
-                            renameOk = false;
+                        // das letzte File löschen, sonst klappt das umbenenen unter Win nicht
+                        xmlFilePathCopy_1.toFile().delete();
+                    }
+                    for (int i = MAX_COPY; i > 1; --i) {
+                        xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
+                        xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
+                        if (xmlFilePathCopy_1.toFile().exists()) {
+                            if (!xmlFilePathCopy_1.toFile().renameTo(xmlFilePathCopy_2.toFile())) {
+                                renameOk = false;
+                            }
                         }
                     }
-                }
-                if (xmlFilePath.toFile().exists()) {
-                    xmlFilePath.toFile().renameTo(Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1).toFile());
+                    if (xmlFilePath.toFile().exists()) {
+                        xmlFilePath.toFile().renameTo(Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1).toFile());
+                    }
+                    Log.systemMeldung("Einstellungen wurden gesichert");
+                } else {
+                    Log.systemMeldung("Einstellungen wurden heute schon gesichert");
                 }
             } catch (Exception e) {
                 Log.fehlerMeldung(795623147, Log.FEHLER_ART_PROG, Daten.class.getName(), e);
@@ -373,6 +391,7 @@ public class Daten {
                 Log.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
             }
             configCopy = true;
+            Log.systemMeldung("-------------------------------------------------------");
         }
     }
 }

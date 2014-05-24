@@ -19,11 +19,13 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.Log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
+import mediathek.controller.Log;
 
 public class DatumZeit {
 
@@ -75,6 +77,20 @@ public class DatumZeit {
         today = new Date();
         output = formatter.format(today);
         return output;
+    }
+
+    public static long getHeute_0Uhr() {
+        Date date = new Date();
+//        System.out.println(date);
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        date = cal.getTime();
+//        System.out.println(date);
+        return date.getTime();
     }
 
     public static String getHeute_dd_MM_yyyy() {
