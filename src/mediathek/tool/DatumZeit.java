@@ -19,13 +19,13 @@
  */
 package mediathek.tool;
 
+import mediathek.controller.Log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import mediathek.controller.Log;
 
 public class DatumZeit {
 
@@ -79,6 +79,16 @@ public class DatumZeit {
         return output;
     }
 
+    public static String getHeute_dd_MM_yyyy() {
+        Date today;
+        String output;
+        SimpleDateFormat formatter;
+        formatter = new SimpleDateFormat("dd.MM.yyyy");
+        today = new Date();
+        output = formatter.format(today);
+        return output;
+    }
+
     public static long getHeute_0Uhr() {
         Date date = new Date();
 //        System.out.println(date);
@@ -91,16 +101,6 @@ public class DatumZeit {
         date = cal.getTime();
 //        System.out.println(date);
         return date.getTime();
-    }
-
-    public static String getHeute_dd_MM_yyyy() {
-        Date today;
-        String output;
-        SimpleDateFormat formatter;
-        formatter = new SimpleDateFormat("dd.MM.yyyy");
-        today = new Date();
-        output = formatter.format(today);
-        return output;
     }
 
     private static long getZeitZukunftBlacklist() {

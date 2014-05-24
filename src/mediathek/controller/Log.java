@@ -62,14 +62,13 @@ public class Log {
     private static boolean progress = false;
     private static String progressText = "";
     private static Date startZeit = new Date(System.currentTimeMillis());
-    private static Date stopZeit = null;
 
     public void resetFehlerListe() {
         fehlerListe.clear();
     }
 
     public static synchronized void versionsMeldungen(String classname) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         Log.systemMeldung("");
         Log.systemMeldung("");
         Log.systemMeldung("###########################################################");
@@ -170,7 +169,7 @@ public class Log {
         systemMeldung("");
         printFehlerMeldung();
         // Laufzeit ausgeben
-        stopZeit = new Date(System.currentTimeMillis());
+        Date stopZeit = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         int minuten;
         try {
@@ -213,9 +212,7 @@ public class Log {
                     }
                 }
             }
-            Iterator<Integer[]> it = fehlerListe.iterator();
-            while (it.hasNext()) {
-                Integer[] integers = it.next();
+            for (Integer[] integers : fehlerListe) {
                 String z;
                 switch (integers[0]) {
                     case FEHLER_ART_MREADER:
@@ -278,9 +275,7 @@ public class Log {
                     }
                 }
             }
-            Iterator<Integer[]> it = fehlerListe.iterator();
-            while (it.hasNext()) {
-                Integer[] integers = it.next();
+            for (Integer[] integers : fehlerListe) {
                 String z;
                 switch (integers[0]) {
                     case FEHLER_ART_MREADER:
@@ -328,7 +323,7 @@ public class Log {
         int ex = exception ? (ex = 1) : (ex = 2);
         while (it.hasNext()) {
             Integer[] i = it.next();
-            if (i[1].intValue() == nr) {
+            if (i[1] == nr) {
                 i[0] = art;
                 i[2]++;
                 i[3] = ex;
@@ -336,7 +331,7 @@ public class Log {
             }
         }
         // dann gibts die Nummer noch nicht
-        fehlerListe.add(new Integer[]{new Integer(art), new Integer(nr), new Integer(1), new Integer(ex)});
+        fehlerListe.add(new Integer[]{art, nr, 1, ex});
     }
 
     private static void fehlermeldung_(int fehlerNummer, int art, String klasse, Exception ex, String[] texte) {
@@ -345,7 +340,7 @@ public class Log {
             try {
                 String s = getStackTrace(ex);
                 System.out.println(s);
-            } catch (Exception nix) {
+            } catch (Exception ignored) {
             }
             // Exceptions immer ausgeben
             if (progress) {
@@ -382,9 +377,9 @@ public class Log {
             }
             System.out.println(z + " " + FEHLER + klasse);
             notifyMediathekListener(LOG_FEHLER, FEHLER + klasse);
-            for (int i = 0; i < texte.length; ++i) {
-                System.out.println(z + "           " + texte[i]);
-                notifyMediathekListener(LOG_FEHLER, texte[i]);
+            for (String text : texte) {
+                System.out.println(z + "           " + text);
+                notifyMediathekListener(LOG_FEHLER, text);
             }
             System.out.println("");
             if (progress) {

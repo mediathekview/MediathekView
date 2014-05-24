@@ -223,8 +223,7 @@ class EvaluatorColor extends Evaluator<Color> {
             (int)((v1.getBlue() - v0.getBlue()) * fraction + 0.5f);
         int a = v0.getAlpha() +
             (int)((v1.getAlpha() - v0.getAlpha()) * fraction + 0.5f);
-        Color value = new Color(r, g, b, a);
-        return value;
+        return new Color(r, g, b, a);
     }    
 }
 

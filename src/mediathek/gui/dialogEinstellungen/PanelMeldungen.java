@@ -26,7 +26,6 @@ import javax.swing.JFrame;
 import javax.swing.text.DefaultCaret;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.controller.Log;
 import mediathek.tool.MVConfig;
@@ -57,7 +56,7 @@ public class PanelMeldungen extends PanelVorlage {
         jCheckBoxAuto.setForeground(jCheckBoxAuto.isSelected() ? cGruen : cRot);
         setText();
         //init
-        ListenerMediathekView.addListener(new ListenerMediathekView(logArt, PanelMeldungen.class.getName() + String.valueOf(panelNr)) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(logArt, PanelMeldungen.class.getName() + panelNr) {
             // + String.valueOf(PANEL_NR) damit die unterschiedlichen Panel unterschieden werden
             @Override
             public void ping() {
@@ -83,7 +82,7 @@ public class PanelMeldungen extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 if (!stopBeob) {
                     Daten.mVConfig.add(getNrSystem(), String.valueOf(jCheckBoxUmbrechen.isSelected()));
-                    ListenerMediathekView.notify(logArt, PanelMeldungen.class.getName() + String.valueOf(panelNr));
+                    ListenerMediathekView.notify(logArt, PanelMeldungen.class.getName() + panelNr);
                     setLineWrab();
                 }
             }

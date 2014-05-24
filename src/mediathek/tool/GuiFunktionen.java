@@ -25,8 +25,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
-import java.util.Collections;
-import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import mediathek.MediathekGui;
@@ -54,10 +52,10 @@ public class GuiFunktionen extends Funktionen {
     }
 
     public static void getSize(String nr, JFrame jFrame) {
-        Daten.mVConfig.add(nr, String.valueOf(jFrame.getSize().width) + ":"
-                + String.valueOf(jFrame.getSize().height) + ":"
-                + String.valueOf(jFrame.getLocation().x) + ":"
-                + String.valueOf(jFrame.getLocation().y));
+        Daten.mVConfig.add(nr, jFrame.getSize().width + ":"
+                + jFrame.getSize().height + ":"
+                + jFrame.getLocation().x + ":"
+                + jFrame.getLocation().y);
     }
 
     public static void setSize(String nr, JFrame jFrame, JFrame relativFrame) {
@@ -345,14 +343,14 @@ public class GuiFunktionen extends Funktionen {
         String ret = "";
         if (pfad != null) {
             if (!pfad.equals("")) {
-                ret = pfad.substring(pfad.lastIndexOf("/") + 1);
+                ret = pfad.substring(pfad.lastIndexOf('/') + 1);
             }
         }
         if (ret.contains("?")) {
-            ret = ret.substring(0, ret.indexOf("?"));
+            ret = ret.substring(0, ret.indexOf('?'));
         }
         if (ret.contains("&")) {
-            ret = ret.substring(0, ret.indexOf("&"));
+            ret = ret.substring(0, ret.indexOf('&'));
         }
         if (ret.equals("")) {
             Log.fehlerMeldung(395019631, Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiName", pfad);
@@ -366,14 +364,14 @@ public class GuiFunktionen extends Funktionen {
         String ret = "";
         if (pfad != null) {
             if (!pfad.equals("") && pfad.contains(".")) {
-                ret = pfad.substring(pfad.lastIndexOf(".") + 1);
+                ret = pfad.substring(pfad.lastIndexOf('.') + 1);
             }
         }
         if (ret.equals("")) {
             Log.fehlerMeldung(969871236, Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiSuffix", pfad);
         }
         if (ret.contains("?")) {
-            ret = ret.substring(0, ret.indexOf("?"));
+            ret = ret.substring(0, ret.indexOf('?'));
         }
         if (ret.length() > 5) {
             // dann ist was faul

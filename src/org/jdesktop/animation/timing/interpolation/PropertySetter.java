@@ -116,8 +116,7 @@ public class PropertySetter extends TimingTargetAdapter {
     public static Animator createAnimator(int duration, Object object, 
             String propertyName, KeyFrames keyFrames) {
         PropertySetter ps = new PropertySetter(object, propertyName, keyFrames);
-        Animator animator = new Animator(duration, ps);
-        return animator;
+        return new Animator(duration, ps);
     }
 
     /**
@@ -142,8 +141,7 @@ public class PropertySetter extends TimingTargetAdapter {
     public static <T> Animator createAnimator(int duration, 
             Object object, String propertyName, T... params) {
         PropertySetter ps = new PropertySetter(object, propertyName, params);
-        Animator animator = new Animator(duration, ps);
-        return animator;
+        return new Animator(duration, ps);
     }
     
     /**
@@ -175,8 +173,7 @@ public class PropertySetter extends TimingTargetAdapter {
             Evaluator evaluator, T... params) {
         PropertySetter ps = new PropertySetter(object, propertyName, evaluator, 
                 params);
-        Animator animator = new Animator(duration, ps);
-        return animator;
+        return new Animator(duration, ps);
     }
 
     /**

@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
-import mediathek.controller.starter.StarterClass;
 import mediathek.tool.AsxLesen;
 import mediathek.tool.Datum;
 import mediathek.tool.DatumZeit;
@@ -256,8 +255,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> ad) {
         // Start erstellen und zur Liste hinzufügen
         for (DatenDownload d : ad) {
-            Start s = new Start();
-            d.start = s;
+            d.start = new Start();
         }
         ddaten.history.add(ad);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, DatenDownload.class.getSimpleName());
@@ -331,9 +329,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     return s + " MB/s";
                     //return String.valueOf(start.bandbreite / (1000 * 1000)) + "," + (start.bandbreite / 1000 % 1000) + " MB/s";
                 } else if (start.bandbreite > 1000) {
-                    return String.valueOf(start.bandbreite / (1000)) + " kB/s";
+                    return (start.bandbreite / 1000) + " kB/s";
                 } else if (start.bandbreite > 1) {
-                    return String.valueOf(start.bandbreite) + " B/s";
+                    return start.bandbreite + " B/s";
                 } else {
                     return "";
                 }

@@ -46,7 +46,7 @@ import mediathek.tool.MVMessageDialog;
 
 public class PanelEinstellungen extends PanelVorlage {
 
-    private final String ICONSET_STANDARD = "Standard";
+    private final static String ICONSET_STANDARD = "Standard";
 
     public PanelEinstellungen(Daten d, JFrame parent) {
         super(d, parent);

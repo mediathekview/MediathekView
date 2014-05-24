@@ -62,11 +62,10 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     public static final int PGR_INFO_NR = 5;
     public static final int PGR_MAX_ELEM = 6;
     public static final String[] PGR_COLUMN_NAMES = {PGR_NAME, PGR_BESCHREIBUNG, PGR_VERSION, PGR_BS, PGR_URL, PGR_INFO};
-    // private
-    private final int timeout = 10000;
+    private final static int TIMEOUT = 10000;
 
     public TModel getTModel(String bs) {
-        LinkedList<String[]> tmp = new LinkedList<String[]>();
+        LinkedList<String[]> tmp = new LinkedList<>();
         String[][] object;
         if (this.size() > 0) {
             if (!bs.equals("")) {
@@ -85,8 +84,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                     object[i] = this.get(i);
                 }
             }
-            TModel model = new TModel(object, PGR_COLUMN_NAMES);
-            return model;
+            return new TModel(object, PGR_COLUMN_NAMES);
         } else {
             return new TModel(new Object[][]{}, PGR_COLUMN_NAMES);
         }
@@ -103,8 +101,8 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             URLConnection conn;
             conn = new URL(Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN).openConnection();
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-            conn.setReadTimeout(timeout);
-            conn.setConnectTimeout(timeout);
+            conn.setReadTimeout(TIMEOUT);
+            conn.setConnectTimeout(TIMEOUT);
             inReader = new InputStreamReader(conn.getInputStream(), Konstanten.KODIERUNG_UTF);
             parser = inFactory.createXMLStreamReader(inReader);
             while (parser.hasNext()) {
