@@ -56,6 +56,7 @@ public final class MVTable extends JTable {
     private String[] indexWertSelection = null;
     private int[] selIndexes = null;
     private boolean[] spaltenAnzeigen;
+    public boolean icon = true;
 
     public MVTable(int tabelle) {
         this.tabelle = tabelle;

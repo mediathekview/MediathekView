@@ -205,12 +205,13 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenDownload.COLUMN_NAMES, DatenDownload.spaltenAnzeigen,
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR, DatenDownload.DOWNLOAD_REF_NR},
-                new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR}) {
-                    @Override
-                    public void tabelleLaden_() {
-                        tabelleLaden();
-                    }
-                });
+                new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR},
+                true /*Icon*/) {
+            @Override
+            public void tabelleLaden_() {
+                tabelleLaden();
+            }
+        });
         jRadioButtonAlles.addActionListener(new BeobAnzeige());
         jRadioButtonAbos.addActionListener(new BeobAnzeige());
         jRadioButtonDownloads.addActionListener(new BeobAnzeige());

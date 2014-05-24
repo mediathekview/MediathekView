@@ -94,7 +94,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             });
         }
 
-
         panel = new JPanel(new BorderLayout());
         panel.add(progressBar);
 
@@ -204,7 +203,9 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     break;
 
                 case DatenDownload.DOWNLOAD_SENDER_NR:
-                    handleSenderColumn((String)value);
+                    if (((MVTable) table).icon) {
+                        handleSenderColumn((String) value);
+                    }
                     break;
             }
 
@@ -218,14 +219,13 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 
     /**
      * Draws the sender icon in the sender model column.
+     *
      * @param sender Name of the sender.
      */
-    private void handleSenderColumn(String sender)
-    {
+    private void handleSenderColumn(String sender) {
         setHorizontalAlignment(SwingConstants.CENTER);
         ImageIcon icon = senderIconCache.get(sender);
-        if (icon != null)
-        {
+        if (icon != null) {
             setText("");
             setIcon(icon);
         }
