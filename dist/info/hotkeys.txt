@@ -13,6 +13,8 @@ Menüpunkte
 ===========
 Einstellungen			F4
 neue Filmliste			F5
+Programm beenden		ctrl + q
+
 
 Film abspielen			F6
 Film aufzeichnen		F7
