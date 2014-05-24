@@ -303,6 +303,15 @@ public class GuiFunktionen extends Funktionen {
     }
 
     public static String addsPfad(String pfad1, String pfad2) {
+        String ret = concatPaths(pfad1, pfad2);
+        if (ret.equals("")) {
+            Log.fehlerMeldung(283946015, Log.FEHLER_ART_PROG, "GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
+        }
+        return ret;
+    }
+
+    public static String concatPaths(String pfad1, String pfad2)
+    {
         String ret = "";
         if (pfad1 != null && pfad2 != null) {
             if (!pfad1.equals("") && !pfad2.equals("")) {
@@ -317,9 +326,6 @@ public class GuiFunktionen extends Funktionen {
                     ret += File.separator + pfad2;
                 }
             }
-        }
-        if (ret.equals("")) {
-            Log.fehlerMeldung(283946015, Log.FEHLER_ART_PROG, "GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
         }
         return ret;
     }

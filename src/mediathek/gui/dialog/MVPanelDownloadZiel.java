@@ -126,9 +126,9 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                 checkPfadName();
                 String s = ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText();
                 if (!s.equals(GuiFunktionen.checkDateiname(s, true /*pfad*/))) {
-                    ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).setBackground(MVColor.DOWNLOAD_FEHLER.color);
+                    jComboBoxPath.getEditor().getEditorComponent().setBackground(MVColor.DOWNLOAD_FEHLER.color);
                 } else {
-                    ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).setBackground(Color.WHITE);
+                    jComboBoxPath.getEditor().getEditorComponent().setBackground(Color.WHITE);
                 }
             }
         });
@@ -191,11 +191,11 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         } else {
             p = pfad;
         }
-        String pfadName = GuiFunktionen.addsPfad(p, name);
+        String pfadName = GuiFunktionen.concatPaths(p, name);
         try {
             File file = new File(pfadName);
             if (file.exists()) {
-                jLabelExists.setForeground(MVColor.DOWNLOAD_DATEINAME_EXISTEIRT.color);
+                jLabelExists.setForeground(MVColor.DOWNLOAD_DATEINAME_EXISTIERT.color);
                 jLabelExists.setText("Datei existiert schon!");
             } else if (!jTextFieldName.getText().equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR])
                     || !(((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText()).equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR])) {
