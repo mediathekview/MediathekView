@@ -41,15 +41,10 @@ public class ErledigteAbos {
     private final static String TRENNER = "  |###|  ";
     private final static String PAUSE = " |#| ";
     private HashSet<String> listeErledigteAbos;
-    private LinkedList<String> listeErledigteAbosSortDate = new LinkedList<>();
+    private LinkedList<String[]> listeErledigteAbosSortDate = new LinkedList<>();
 
     public ErledigteAbos() {
         listeErledigteAbos = new HashSet<String>() {
-            @Override
-            public boolean add(String e) {
-                listeErledigteAbosSortDate.add(e);
-                return super.add(e);
-            }
 
             @Override
             public void clear() {
@@ -107,7 +102,7 @@ public class ErledigteAbos {
 
         try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(aboFilePath)))) {
             while ((zeile = in.readLine()) != null) {
-                if (getUrlAusZeile(zeile).equals(urlFilm)) {
+                if (getUrlAusZeile(zeile)[2].equals(urlFilm)) {
                     gefunden = true; //nur dann muss das Logfile auch geschrieben werden
                 } else {
                     liste.add(zeile);
@@ -140,13 +135,15 @@ public class ErledigteAbos {
     public synchronized boolean zeileSchreiben(String thema, String titel, String url) {
         boolean ret = false;
         String text;
+        String datum = DatumZeit.getHeute_dd_MM_yyyy();
         listeErledigteAbos.add(url);
+        listeErledigteAbosSortDate.add(new String[]{datum, titel, url});
 
         //Automatic Resource Management
         try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getDownloadAboFilePath(), StandardOpenOption.APPEND)))) {
             thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
             titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
-            text = DatumZeit.getHeute_dd_MM_yyyy() + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
+            text = datum + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
             bufferedWriter.write(text);
             bufferedWriter.flush();
             bufferedWriter.close();
@@ -189,6 +186,7 @@ public class ErledigteAbos {
                     titel = a[1];
                     url = a[2];
                     listeErledigteAbos.add(url);
+                    listeErledigteAbosSortDate.add(new String[]{zeit, titel, url});
                     thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
                     titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
                     text = zeit + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
@@ -214,10 +212,10 @@ public class ErledigteAbos {
     public synchronized Object[][] getObjectData() {
         Object[][] object;
         int i = 0;
-        Iterator<String> iterator = listeErledigteAbosSortDate.iterator();
-        object = new Object[listeErledigteAbosSortDate.size()][1];
+        Iterator<String[]> iterator = listeErledigteAbosSortDate.iterator();
+        object = new Object[listeErledigteAbosSortDate.size()][3];
         while (iterator.hasNext()) {
-            object[i][0] = iterator.next();
+            object[i] = iterator.next();
             ++i;
         }
         return object;
@@ -233,7 +231,9 @@ public class ErledigteAbos {
         try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(downloadAboFilePath)))) {
             String zeile;
             while ((zeile = in.readLine()) != null) {
-                listeErledigteAbos.add(getUrlAusZeile(zeile));
+                String[] s = getUrlAusZeile(zeile);
+                listeErledigteAbos.add(s[2]);
+                listeErledigteAbosSortDate.add(s);
             }
             in.close();
         } catch (Exception ex) {
@@ -248,8 +248,8 @@ public class ErledigteAbos {
         return s;
     }
 
-    private String getUrlAusZeile(String zeile) {
-        String url = "";
+    private String[] getUrlAusZeile(String zeile) {
+        String url = "", titel = "", datum = "";
         int a1;
 
         try {
@@ -258,12 +258,15 @@ public class ErledigteAbos {
                 a1 = zeile.lastIndexOf(TRENNER);
                 a1 += TRENNER.length();
                 url = zeile.substring(a1);
+                // titel
+                titel = zeile.substring(zeile.lastIndexOf(PAUSE) + PAUSE.length(), zeile.lastIndexOf(TRENNER));
+                datum = zeile.substring(0, zeile.indexOf(PAUSE));
             } else {
                 url = zeile;
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(398853224, Log.FEHLER_ART_PROG, "ErledigteAbos.getUrlAusZeile: " + zeile, ex);
         }
-        return url;
+        return new String[]{datum, titel, url};
     }
 }
