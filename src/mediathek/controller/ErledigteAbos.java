@@ -35,6 +35,7 @@ import mediathek.daten.Daten;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
+import msearch.daten.DatenFilm;
 
 public class ErledigteAbos {
 
@@ -215,9 +216,12 @@ public class ErledigteAbos {
         Object[][] object;
         int i = 0;
         Iterator<String> iterator = listeErledigteAbosSortDate.iterator();
-        object = new Object[listeErledigteAbosSortDate.size()][1];
+        object = new Object[listeErledigteAbosSortDate.size()][2];
         while (iterator.hasNext()) {
-            object[i][0] = iterator.next();
+            String url = iterator.next();
+            DatenFilm film = Daten.listeFilme.getFilmByUrl(url);
+            object[i][0] = url;
+            object[i][1] = film != null ? film.arr[DatenFilm.FILM_TITEL_NR] : "";
             ++i;
         }
         return object;
