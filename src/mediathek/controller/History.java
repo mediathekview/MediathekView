@@ -130,12 +130,12 @@ public class History extends HashSet<String> {
 
     public Object[][] getObjectData() {
         int i = 0;
-
-        Object[][] object = new Object[size()][2];
+        Object[][] object = new Object[size()][3];
         for (String s : this) {
             DatenFilm film = Daten.listeFilme.getFilmByUrl(s);
-            object[i][0] = s;
+            object[i][0] = "";
             object[i][1] = film != null ? film.arr[DatenFilm.FILM_TITEL_NR] : "";
+            object[i][2] = s;
             ++i;
         }
         return object;
