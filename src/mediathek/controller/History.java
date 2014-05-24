@@ -33,6 +33,7 @@ import java.util.Iterator;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.ListenerMediathekView;
+import msearch.daten.DatenFilm;
 
 public class History extends HashSet<String> {
 
@@ -135,9 +136,12 @@ public class History extends HashSet<String> {
         Object[][] object;
         int i = 0;
         Iterator<String> iterator = this.iterator();
-        object = new Object[this.size()][1];
+        object = new Object[this.size()][2];
         while (iterator.hasNext()) {
-            object[i][0] = iterator.next();
+            String url = iterator.next();
+            DatenFilm film = Daten.listeFilme.getFilmByUrl(url);
+            object[i][0] = url;
+            object[i][1] = film != null ? film.arr[DatenFilm.FILM_TITEL_NR] : "";
             ++i;
         }
         return object;
