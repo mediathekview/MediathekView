@@ -259,12 +259,13 @@ public class GuiFilme extends PanelVorlage {
         tabelle.setDefaultRenderer(Integer.class, new CellRendererFilme(daten));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
                 new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR, DatenFilm.FILM_DATUM_LONG_NR, /* DatenFilm.FILM_URL_HISTORY_NR, */ DatenFilm.FILM_REF_NR},
-                new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR}) {
-                    @Override
-                    public void tabelleLaden_() {
-                        tabelleLaden();
-                    }
-                });
+                new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR},
+                false /*Icon*/) {
+            @Override
+            public void tabelleLaden_() {
+                tabelleLaden();
+            }
+        });
 
         jCheckBoxProgamme.setIcon(GetIcon.getIcon("close_15.png"));
         jCheckBoxProgamme.addActionListener(new ActionListener() {

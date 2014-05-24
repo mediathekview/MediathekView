@@ -36,10 +36,12 @@ public class BeobTableHeader extends MouseAdapter {
     JCheckBoxMenuItem[] box;
     int[] ausblenden;
     int[] button;
+    boolean icon = false;
 
-    public BeobTableHeader(MVTable tabelle, String[] columns, boolean[] spalten, int[] aausblenden, int[] bbutton) {
+    public BeobTableHeader(MVTable tabelle, String[] columns, boolean[] spalten, int[] aausblenden, int[] bbutton, boolean icon) {
         this.tabelle = tabelle;
         this.columns = columns;
+        this.icon = icon;
         spaltenAnzeigen = spalten;
         this.ausblenden = aausblenden;
         button = bbutton;
@@ -99,6 +101,21 @@ public class BeobTableHeader extends MouseAdapter {
                     for (int i : button) {
                         setSpalten(i, item2.isSelected());
                     }
+                }
+            });
+            jPopupMenu.add(item2);
+        }
+        if (icon) {
+            //##Trenner##
+            jPopupMenu.addSeparator();
+            //##Trenner##
+            final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("Icons anzeigen");
+            item2.setSelected(tabelle.icon);
+            item2.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    tabelle.icon = item2.isSelected();
+                    setSpalten();
                 }
             });
             jPopupMenu.add(item2);
