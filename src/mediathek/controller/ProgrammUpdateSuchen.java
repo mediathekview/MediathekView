@@ -21,7 +21,6 @@ package mediathek.controller;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
@@ -38,12 +37,12 @@ import mediathek.tool.MVConfig;
 
 public class ProgrammUpdateSuchen {
 
-    private final String PROGRAM_VERSION = "Program_Version";
-    private final String PROGRAM_RELEASE_INFO = "Program_Release_Info";
-    private final String DOWNLOAD_PROGRAM = "Download_Programm";
-    private final String INFO = "Info";
-    private final String INFO_NO = "number";
-    private LinkedList<String[]> listInfos = new LinkedList<String[]>(); // String[] info = {Nummer, Info};
+    private final static String PROGRAM_VERSION = "Program_Version";
+    private final static String PROGRAM_RELEASE_INFO = "Program_Release_Info";
+    private final static String DOWNLOAD_PROGRAM = "Download_Programm";
+    private final static String INFO = "Info";
+    private final static String INFO_NO = "number";
+    private LinkedList<String[]> listInfos = new LinkedList<>(); // String[] info = {Nummer, Info};
     private String version;
     private String release;
     private String downloadUrlProgramm;
@@ -115,8 +114,7 @@ public class ProgrammUpdateSuchen {
                 } else {
                     angezeigt = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT));
                 }
-                for (int i = 0; i < listInfos.size(); ++i) {
-                    String[] h = listInfos.get(i);
+                for (String[] h : listInfos) {
                     if (alleAnzeigen || angezeigt < Integer.parseInt(h[0])) {
                         text.append("=======================================\n");
                         text.append(h[1]);
@@ -152,7 +150,7 @@ public class ProgrammUpdateSuchen {
         return false;
     }
 
-    private String[] suchen() throws MalformedURLException, IOException, XMLStreamException {
+    private String[] suchen() throws IOException, XMLStreamException {
         String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
         //String parsername = "";
         int event;

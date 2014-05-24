@@ -231,10 +231,10 @@ public class DatenPset {
         Color ret = null;
         String r, g, b;
         if (!arr[PROGRAMMSET_FARBE_NR].equals("")) {
-            r = arr[PROGRAMMSET_FARBE_NR].substring(0, arr[PROGRAMMSET_FARBE_NR].indexOf(","));
-            g = arr[PROGRAMMSET_FARBE_NR].substring(arr[PROGRAMMSET_FARBE_NR].indexOf(",") + 1,
-                    arr[PROGRAMMSET_FARBE_NR].lastIndexOf(","));
-            b = arr[PROGRAMMSET_FARBE_NR].substring(arr[PROGRAMMSET_FARBE_NR].lastIndexOf(",") + 1);
+            r = arr[PROGRAMMSET_FARBE_NR].substring(0, arr[PROGRAMMSET_FARBE_NR].indexOf(','));
+            g = arr[PROGRAMMSET_FARBE_NR].substring(arr[PROGRAMMSET_FARBE_NR].indexOf(',') + 1,
+                    arr[PROGRAMMSET_FARBE_NR].lastIndexOf(','));
+            b = arr[PROGRAMMSET_FARBE_NR].substring(arr[PROGRAMMSET_FARBE_NR].lastIndexOf(',') + 1);
             try {
                 ret = new Color(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
             } catch (Exception ex) {
@@ -246,7 +246,7 @@ public class DatenPset {
     
     public void setFarbe(Color farbe) {
         arr[PROGRAMMSET_FARBE_NR] =
-                String.valueOf(farbe.getRed()) + "," + String.valueOf(farbe.getGreen()) + "," + String.valueOf(farbe.getBlue());
+                farbe.getRed() + "," + farbe.getGreen() + "," + farbe.getBlue();
     }
     
     public boolean checkDownloadDirekt(String url) {

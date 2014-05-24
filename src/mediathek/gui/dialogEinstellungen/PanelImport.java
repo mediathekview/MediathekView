@@ -34,14 +34,13 @@ import javax.swing.event.DocumentListener;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
-import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.MVMessageDialog;
 
 public class PanelImport extends PanelVorlage {
 
-    ListePsetVorlagen listeVorlagen = new ListePsetVorlagen();
+    //ListePsetVorlagen listeVorlagen = new ListePsetVorlagen();
 
     public PanelImport(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -80,7 +79,7 @@ public class PanelImport extends PanelVorlage {
 
     private void importDatei(String datei) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        int[] found = IoXmlLesen.importAboBlacklist(parentComponent, datei, jCheckBoxAbo.isSelected(), jCheckBoxBlack.isSelected());
+        int[] found = IoXmlLesen.importAboBlacklist(datei, jCheckBoxAbo.isSelected(), jCheckBoxBlack.isSelected());
         String text = "Es wurden\n"
                 + found[0] + " Abos und\n"
                 + found[1] + " Blacklisteinträge\n"

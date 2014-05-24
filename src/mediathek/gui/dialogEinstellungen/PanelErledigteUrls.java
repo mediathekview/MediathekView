@@ -24,16 +24,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import static javax.swing.JComponent.TOOL_TIP_TEXT_KEY;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import mediathek.daten.Daten;
-import mediathek.daten.DatenDownload;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.dialog.DialogAddDownload;
-import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.TModel;
@@ -42,7 +37,6 @@ import msearch.daten.DatenFilm;
 public class PanelErledigteUrls extends PanelVorlage {
 
     private boolean abo;
-    private String[] tableTitle = {"Url", "Titel"};
 
     public PanelErledigteUrls(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -57,7 +51,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             @Override
             public void ping() {
                 if (jToggleButtonLaden.isSelected()) {
-                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), tableTitle));
+                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), new String[]{"Url"}));
                 }
             }
         });
@@ -72,10 +66,10 @@ public class PanelErledigteUrls extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 if (jToggleButtonLaden.isSelected()) {
                     jButtonLoeschen.setEnabled(true);
-                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), tableTitle));
+                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), new String[]{"Url"}));
                 } else {
                     jButtonLoeschen.setEnabled(false);
-                    jTable1.setModel(new TModel(null, tableTitle));
+                    jTable1.setModel(new TModel(null, new String[]{"Url"}));
                 }
             }
         });
@@ -87,7 +81,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             @Override
             public void ping() {
                 if (jToggleButtonLaden.isSelected()) {
-                    jTable1.setModel(new TModel(daten.history.getObjectData(), tableTitle));
+                    jTable1.setModel(new TModel(daten.history.getObjectData(), new String[]{"Url"}));
                 }
             }
         });
@@ -102,10 +96,10 @@ public class PanelErledigteUrls extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 if (jToggleButtonLaden.isSelected()) {
                     jButtonLoeschen.setEnabled(true);
-                    jTable1.setModel(new TModel(daten.history.getObjectData(), tableTitle));
+                    jTable1.setModel(new TModel(daten.history.getObjectData(), new String[]{"Url"}));
                 } else {
                     jButtonLoeschen.setEnabled(false);
-                    jTable1.setModel(new TModel(null, tableTitle));
+                    jTable1.setModel(new TModel(null, new String[]{"Url"}));
                 }
             }
         });
@@ -172,7 +166,6 @@ public class PanelErledigteUrls extends PanelVorlage {
         BeobLoeschen beobLoeschen = new BeobLoeschen();
         BeobUrl beobUrl = new BeobUrl();
         private Point p;
-        DatenFilm film = null;
 
         @Override
         public void mousePressed(MouseEvent arg0) {
@@ -193,8 +186,6 @@ public class PanelErledigteUrls extends PanelVorlage {
             int nr = jTable1.rowAtPoint(p);
             if (nr >= 0) {
                 jTable1.setRowSelectionInterval(nr, nr);
-                String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), 0).toString();
-                film = Daten.listeFilme.getFilmByUrl(url);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();
             //löschen
@@ -205,50 +196,8 @@ public class PanelErledigteUrls extends PanelVorlage {
             item = new JMenuItem("URL kopieren");
             item.addActionListener(beobUrl);
             jPopupMenu.add(item);
-            // Infos anzeigen
-            item = new JMenuItem("Infos zum Film anzeigen");
-            item.addActionListener(new BeobInfo());
-            jPopupMenu.add(item);
-            if (film == null) {
-                item.setEnabled(false);
-            }
-            // Download anlegen
-            item = new JMenuItem("Download anlegen");
-            item.addActionListener(new BeobDownload());
-            jPopupMenu.add(item);
-            if (film == null) {
-                item.setEnabled(false);
-            }
+            //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-
-        private class BeobDownload implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DatenDownload datenDownload = Daten.listeDownloads.getDownloadUrlFilm(film.arr[DatenFilm.FILM_URL_NR]);
-                if (datenDownload != null) {
-                    int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
-                            + "Nochmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
-                    if (ret != JOptionPane.OK_OPTION) {
-                        return;
-                    }
-                }
-                // weiter
-                DialogAddDownload dialog = new DialogAddDownload(daten.mediathekGui, daten, film, null, "");
-                dialog.setVisible(true);
-            }
-
-        }
-
-        private class BeobInfo implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVFilmInformation filmInfoHud = daten.filmInfoHud;
-                filmInfoHud.updateCurrentFilm(film);
-                filmInfoHud.show();
-            }
         }
 
         private class BeobUrl implements ActionListener {

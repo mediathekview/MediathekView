@@ -23,9 +23,9 @@ import mediathek.controller.Log;
 
 public class MVFilmSize implements Comparable<MVFilmSize> {
 
-    Long aktSizeL = -1L;
+    private long aktSizeL = -1L;
     public Long sizeL = 0L;
-    String sizeStr = "";
+    private String sizeStr = "";
 
     public MVFilmSize() {
     }

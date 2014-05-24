@@ -46,12 +46,8 @@ import mediathek.tool.MVReplaceList;
 import msearch.filmeLaden.DatenFilmlistenServer;
 import msearch.filmeLaden.DatenUrlFilmliste;
 import msearch.filmeLaden.MSFilmlistenSuchen;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 public class IoXmlLesen {
-
-    BZip2CompressorOutputStream bZip2CompressorOutputStream = null;
-
     public boolean datenLesen(Daten daten, Path xmlFilePath) {
         boolean ret = false;
         if (Files.exists(xmlFilePath)) {
@@ -71,12 +67,12 @@ public class IoXmlLesen {
                         } else if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
                             //Programmgruppen
                             datenPset = new DatenPset();
-                            if (get(parser, event, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
+                            if (get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
                                 daten.listePset.add(datenPset);
                             }
                         } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
                             DatenProg datenProg = new DatenProg();
-                            if (get(parser, event, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr)) {
+                            if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr)) {
                                 if (datenPset != null) {
                                     datenPset.addProg(datenProg);
                                 }
@@ -85,19 +81,19 @@ public class IoXmlLesen {
                         } else if (parser.getLocalName().equals(MVReplaceList.REPLACELIST)) {
                             // Ersetzungstabelle
                             String[] sa = new String[MVReplaceList.MAX_ELEM];
-                            if (get(parser, event, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
+                            if (get(parser, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
                                 Daten.mVReplaceList.liste.add(sa);
                             }
                         } else if (parser.getLocalName().equals(DatenAbo.ABO)) {
                             //Abo
                             DatenAbo datenAbo = new DatenAbo();
-                            if (get(parser, event, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
+                            if (get(parser, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
                                 Daten.listeAbo.addAbo(datenAbo);
                             }
                         } else if (parser.getLocalName().equals(DatenDownload.DOWNLOAD)) {
                             //Downloads
                             DatenDownload d = new DatenDownload();
-                            if (get(parser, event, DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr)) {
+                            if (get(parser, DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr)) {
                                 d.init();
                                 Daten.listeDownloads.add(d);
                             }
@@ -105,19 +101,19 @@ public class IoXmlLesen {
                             //Blacklist
                             ListeBlacklist blacklist = Daten.listeBlacklist;
                             DatenBlacklist datenBlacklist = new DatenBlacklist();
-                            if (get(parser, event, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
+                            if (get(parser, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
                                 blacklist.add(datenBlacklist);
                             }
                         } else if (parser.getLocalName().equals(MSFilmlistenSuchen.FILM_UPDATE_SERVER)) {
                             //Urls Filmlisten
                             DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
-                            if (get(parser, event, MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
+                            if (get(parser, MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
                                 Daten.filmeLaden.getDownloadUrlsFilmlisten(false, false /*diffs*/).addWithCheck(datenUrlFilmliste);
                             }
                         } else if (parser.getLocalName().equals(DatenFilmlistenServer.FILM_LISTEN_SERVER)) {
                             //Filmlisteserver
                             DatenFilmlistenServer datenFilmlistenServer = new DatenFilmlistenServer();
-                            if (get(parser, event, DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, datenFilmlistenServer.arr)) {
+                            if (get(parser, DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, datenFilmlistenServer.arr)) {
                                 Daten.filmeLaden.getListeFilmlistnServer().add(datenFilmlistenServer);
                             }
                         }
@@ -141,7 +137,7 @@ public class IoXmlLesen {
         return Files.exists(xmlFilePath);
     }
 
-    public static int[] importAboBlacklist(JFrame parent, String datei, boolean abo, boolean black) {
+    public static int[] importAboBlacklist(String datei, boolean abo, boolean black) {
         int[] found = new int[]{0, 0};
         try {
             int event;
@@ -158,7 +154,7 @@ public class IoXmlLesen {
                     if (abo && parser.getLocalName().equals(DatenAbo.ABO)) {
                         //Abo
                         DatenAbo datenAbo = new DatenAbo();
-                        if (get(parser, event, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
+                        if (get(parser, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
                             ++found[0];
                             Daten.listeAbo.addAbo(datenAbo);
                         }
@@ -166,7 +162,7 @@ public class IoXmlLesen {
                         //Blacklist
                         ListeBlacklist blacklist = Daten.listeBlacklist;
                         DatenBlacklist datenBlacklist = new DatenBlacklist();
-                        if (get(parser, event, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
+                        if (get(parser, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
                             ++found[1];
                             blacklist.add(datenBlacklist);
                         }
@@ -310,7 +306,7 @@ public class IoXmlLesen {
     // ##############################
     // private
     // ##############################
-    private static boolean get(XMLStreamReader parser, int event, String xmlElem, String[] xmlNames, String[] strRet) {
+    private static boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet) {
         return get(parser, xmlElem, xmlNames, strRet, true);
     }
 

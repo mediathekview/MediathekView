@@ -60,9 +60,9 @@ public class HudRadioButtonUI extends BasicRadioButtonUI {
 
     private class DotIcon implements Icon {
 
-        private final int RADIO_BUTTON_SIZE = 13;
+        private final static int RADIO_BUTTON_SIZE = 13;
 
-        private final float DOT_DIAMETER = 4.25f;
+        private final static float DOT_DIAMETER = 4.25f;
 
         private boolean isDarkColorScheme = true;
         private Color fontColor = WidgetBaseColors.DARK_FONT_COLOR;

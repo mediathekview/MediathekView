@@ -782,12 +782,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 URL url = new URL(uurl);
                 String tmp = url.getHost();
                 if (tmp.contains(".")) {
-                    host = tmp.substring(tmp.lastIndexOf("."));
-                    tmp = tmp.substring(0, tmp.lastIndexOf("."));
+                    host = tmp.substring(tmp.lastIndexOf('.'));
+                    tmp = tmp.substring(0, tmp.lastIndexOf('.'));
                     if (tmp.contains(".")) {
-                        host = tmp.substring(tmp.lastIndexOf(".") + 1) + host;
+                        host = tmp.substring(tmp.lastIndexOf('.') + 1) + host;
                     } else if (tmp.contains("/")) {
-                        host = tmp.substring(tmp.lastIndexOf("/") + 1) + host;
+                        host = tmp.substring(tmp.lastIndexOf('/') + 1) + host;
                     } else {
                         host = "host";
                     }

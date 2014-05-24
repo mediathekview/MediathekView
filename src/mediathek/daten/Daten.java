@@ -19,6 +19,21 @@
  */
 package mediathek.daten;
 
+import mediathek.MediathekGui;
+import mediathek.controller.*;
+import mediathek.controller.starter.StarterClass;
+import mediathek.gui.GuiAbo;
+import mediathek.gui.GuiDownloads;
+import mediathek.gui.GuiFilme;
+import mediathek.gui.dialog.MVFilmInformation;
+import mediathek.tool.*;
+import msearch.daten.DatenFilm;
+import msearch.daten.ListeFilme;
+import msearch.daten.MSConfig;
+import msearch.io.MSFilmlisteLesen;
+import msearch.io.MSFilmlisteSchreiben;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -28,48 +43,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.util.Date;
-import javax.swing.JOptionPane;
-import javax.swing.Timer;
-import mediathek.MediathekGui;
-import mediathek.controller.ErledigteAbos;
-import mediathek.controller.FilmeLaden;
-import mediathek.controller.History;
-import mediathek.controller.IoXmlLesen;
-import mediathek.controller.IoXmlSchreiben;
-import mediathek.controller.Log;
-import mediathek.controller.starter.StarterClass;
-import mediathek.gui.GuiAbo;
-import mediathek.gui.GuiDownloads;
-import mediathek.gui.GuiFilme;
-import mediathek.gui.dialog.MVFilmInformation;
-import mediathek.tool.DatumZeit;
-import mediathek.tool.Funktionen;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.GuiKonstanten;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVColor;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVListeFilme;
-import mediathek.tool.MVMessageDialog;
-import mediathek.tool.MVReplaceList;
-import msearch.daten.DatenFilm;
-import msearch.daten.ListeFilme;
-import msearch.daten.MSConfig;
-import msearch.io.MSFilmlisteLesen;
-import msearch.io.MSFilmlisteSchreiben;
 
 public class Daten {
 
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     // flags
     public static boolean debug = false; // Debugmodus
     public static boolean auto = false; // Version: MediathekAuto
     public static boolean RESET = false; // Programm auf Starteinstellungen zurücksetzen
-
-    // Verzeichnis zum Speichern der Programmeinstellungen
-    private static String basisverzeichnis = "";
-
     //alle Programmeinstellungen
     public static MVConfig mVConfig = new MVConfig();
     public static int aktFilter = 0; // welcher Filter ausgewählt ist 1 ... 5
@@ -79,14 +60,15 @@ public class Daten {
     public static MVReplaceList mVReplaceList = new MVReplaceList(); // Ersetzungsliste für die Namen der Downloads
     public static FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     public static ListeFilme listeFilme = null;
-    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     public static ListeFilme listeFilmeNachBlackList = null; // ist DIE Filmliste
     public static ListeFilme listeFilmeHistory = null; // für die HEUTIGE HISTORY
     public static ListeDownloads listeDownloads = null; // Filme die als "Download: Tab Download" geladen werden sollen
     public static ListeDownloads listeDownloadsButton = null; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     public static ListeBlacklist listeBlacklist = null;
-    public ListePset listePset = null;
     public static ListeAbo listeAbo = null;
+    // Verzeichnis zum Speichern der Programmeinstellungen
+    private static String basisverzeichnis = "";
+    public ListePset listePset = null;
     public History history = null; // alle angesehenen Filme
     public ErledigteAbos erledigteAbos = null; // erfolgreich geladenen Abos
 
@@ -148,55 +130,6 @@ public class Daten {
         });
         timer.setInitialDelay(4000); // damit auch alles geladen ist
         timer.start();
-    }
-
-    private void init() {
-        //MVConfig initialisieren
-        mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
-        mVConfig.add(MVConfig.SYSTEM_USER_AGENT, Konstanten.USER_AGENT_DEFAULT);
-        mVConfig.add(MVConfig.SYSTEM_LOOK, "0");
-        mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.FALSE.toString());
-        mVConfig.add(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_NORMAL);
-        mVConfig.add(MVConfig.SYSTEM_ZIELNAMEN_UNICODE, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
-        mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
-        mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(0));
-        mVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
-        mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, Konstanten.GUIFILME_DIVIDER_LOCATION);
-        try {
-            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
-            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
-            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
-            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
-        } catch (Exception ignored) {
-        }
-        if (Daten.debug) {
-            mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
-        }
-        MSConfig.setUserAgent(Konstanten.USER_AGENT_DEFAULT);
-    }
-
-    /**
-     * Update the {@link java.awt.SplashScreen} only if we have a Swing UI.
-     *
-     * @param text The displayed text on the splash graphics.
-     */
-    private void updateSplashScreen(String text) {
-        if (mediathekGui != null) {
-            mediathekGui.updateSplashScreenText(text);
-        }
     }
 
     public static void setUserAgentAuto() {
@@ -284,6 +217,59 @@ public class Daten {
         return xmlFilePath;
     }
 
+    public static void filmlisteSpeichern() {
+        new MSFilmlisteSchreiben().filmlisteSchreibenJson(getDateiFilmliste(), listeFilme);
+    }
+
+    private void init() {
+        //MVConfig initialisieren
+        mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
+        mVConfig.add(MVConfig.SYSTEM_USER_AGENT, Konstanten.USER_AGENT_DEFAULT);
+        mVConfig.add(MVConfig.SYSTEM_LOOK, "0");
+        mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.FALSE.toString());
+        mVConfig.add(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN, Konstanten.ZIELNAMEN_ANPASSEN_NORMAL);
+        mVConfig.add(MVConfig.SYSTEM_ZIELNAMEN_UNICODE, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
+        mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
+        mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(0));
+        mVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
+        mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, Konstanten.GUIFILME_DIVIDER_LOCATION);
+        try {
+            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
+            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
+            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
+            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
+        } catch (Exception ignored) {
+        }
+        if (Daten.debug) {
+            mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
+        }
+        MSConfig.setUserAgent(Konstanten.USER_AGENT_DEFAULT);
+    }
+
+    /**
+     * Update the {@link java.awt.SplashScreen} only if we have a Swing UI.
+     *
+     * @param text The displayed text on the splash graphics.
+     */
+    private void updateSplashScreen(String text) {
+        if (mediathekGui != null) {
+            mediathekGui.updateSplashScreenText(text);
+        }
+    }
+
     public void allesLaden() {
         updateSplashScreen("Lade Konfigurationsdaten...");
 
@@ -305,10 +291,6 @@ public class Daten {
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
         MVListeFilme.checkBlacklist();
         MSConfig.setUserAgent(getUserAgent());
-    }
-
-    public static void filmlisteSpeichern() {
-        new MSFilmlisteSchreiben().filmlisteSchreibenJson(getDateiFilmliste(), listeFilme);
     }
 
     public void allesSpeichern() {
@@ -395,3 +377,4 @@ public class Daten {
         }
     }
 }
+

@@ -100,8 +100,8 @@ public class SourceListTreeUI extends BasicTreeUI {
 
     private static final Color TRANSPARENT_COLOR = new Color(0, 0, 0, 0);
 
-    private final String SELECT_NEXT = "selectNext";
-    private final String SELECT_PREVIOUS = "selectPrevious";
+    private final static String SELECT_NEXT = "selectNext";
+    private final static String SELECT_PREVIOUS = "selectPrevious";
 
     private SourceListColorScheme fColorScheme;
     private FocusStatePainter fBackgroundPainter;

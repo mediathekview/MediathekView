@@ -29,7 +29,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.ListenerMediathekView;
@@ -58,7 +57,7 @@ public class History extends HashSet<String> {
         for (DatenDownload d : ad) {
             if (d.film != null) {
                 Daten.listeFilmeHistory.add(d.film);
-            }else{
+            } else {
                 System.out.print("Mist");
             }
             super.add(d.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
@@ -79,10 +78,7 @@ public class History extends HashSet<String> {
      * @return Path object to history file
      */
     private Path getHistoryFilePath() throws IOException {
-        Path historyFilePath = null;
-        historyFilePath = Daten.getSettingsDirectory().resolve("history.txt");
-
-        return historyFilePath;
+        return Daten.getSettingsDirectory().resolve("history.txt");
     }
 
     public void laden() {
@@ -133,17 +129,16 @@ public class History extends HashSet<String> {
     }
 
     public Object[][] getObjectData() {
-        Object[][] object;
         int i = 0;
-        Iterator<String> iterator = this.iterator();
-        object = new Object[this.size()][2];
-        while (iterator.hasNext()) {
-            String url = iterator.next();
-            DatenFilm film = Daten.listeFilme.getFilmByUrl(url);
-            object[i][0] = url;
+
+        Object[][] object = new Object[size()][2];
+        for (String s : this) {
+            DatenFilm film = Daten.listeFilme.getFilmByUrl(s);
+            object[i][0] = s;
             object[i][1] = film != null ? film.arr[DatenFilm.FILM_TITEL_NR] : "";
             ++i;
         }
         return object;
     }
+
 }

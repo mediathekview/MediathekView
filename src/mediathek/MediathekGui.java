@@ -676,7 +676,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             Class<?> clazz = Class.forName(className);
             Method method = clazz.getMethod(methodName, Window.class, boolean.class);
             method.invoke(null, window, true);
-        } catch (Throwable t) {
+        } catch (Exception t) {
             System.err.println("Full screen mode is not supported");
             t.printStackTrace();
         }
@@ -1388,7 +1388,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuDatei.add(jMenuItemEinstellungen);
         jMenuDatei.add(jSeparator2);
 
-        jMenuItemBeenden.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemBeenden.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/beenden_16.png"))); // NOI18N
         jMenuItemBeenden.setText("Beenden");
         jMenuDatei.add(jMenuItemBeenden);

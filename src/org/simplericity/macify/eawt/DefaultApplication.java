@@ -346,12 +346,10 @@ public class DefaultApplication implements Application {
                     Integer length = (Integer) nsDataClass.getMethod("length", new Class[0]).invoke(nsData);
                     byte[] bytes = (byte[]) nsDataClass.getMethod("bytes", new Class[]{Integer.TYPE, Integer.TYPE}).invoke(nsData, 0, length);
 
-                    BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
-                    return image;
+                    return ImageIO.read(new ByteArrayInputStream(bytes));
 
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException e) {
+                    e.printStackTrace();                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException e) {
                     throw new RuntimeException(e);
                 }
             }

@@ -78,7 +78,7 @@ public class HudCheckBoxUI extends BasicCheckBoxUI {
 
     private class CheckIcon implements Icon {
 
-        private final int CHECK_BOX_SIZE = 12;
+        private final static int CHECK_BOX_SIZE = 12;
         private boolean isDarkColorScheme = true;
         private Color fontColor = WidgetBaseColors.DARK_FONT_COLOR;
 

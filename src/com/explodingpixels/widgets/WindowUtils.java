@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
 
 import javax.swing.FocusManager;
 import javax.swing.JComponent;
@@ -134,7 +133,7 @@ public class WindowUtils {
      */
     private static AncestorListener createAncestorListener(
             JComponent component, final WindowFocusListener windowListener) {
-        final WeakReference<JComponent> weakReference = new WeakReference<JComponent>(
+        final WeakReference<JComponent> weakReference = new WeakReference<>(
                 component);
         return new AncestorListener() {
             public void ancestorAdded(AncestorEvent event) {
@@ -159,7 +158,7 @@ public class WindowUtils {
                 // fire a fake event to the given listener indicating the actual
                 // focus state of the
                 // given window.
-                if (window == focusedWindow) {
+                if (window.equals(focusedWindow)) {
                     windowListener.windowGainedFocus(new WindowEvent(window,
                             WindowEvent.WINDOW_GAINED_FOCUS));
                 } else {

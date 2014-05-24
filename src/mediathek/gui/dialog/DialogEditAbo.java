@@ -47,8 +47,8 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private Daten ddaten;
     private DatenAbo aktAbo;
     private JTextField[] textfeldListe;
-    private JComboBox<String> comboboxProgramm = new JComboBox<String>();
-    private JComboBox<String> comboboxSender = new JComboBox<String>();
+    private JComboBox<String> comboboxProgramm = new JComboBox<>();
+    private JComboBox<String> comboboxSender = new JComboBox<>();
     private JCheckBox checkBoxEingeschaltet = new JCheckBox();
     private JSlider sliderDauer = new JSlider(0, 100, 0);
     private JLabel labelDauer = new JLabel("0");
@@ -59,8 +59,8 @@ public class DialogEditAbo extends javax.swing.JDialog {
         initComponents();
         ddaten = d;
         aktAbo = aktA;
-        comboboxProgramm.setModel(new javax.swing.DefaultComboBoxModel<String>(ddaten.listePset.getListeAbo().getObjectDataCombo()));
-        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<String>(GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen())));
+        comboboxProgramm.setModel(new javax.swing.DefaultComboBoxModel<>(ddaten.listePset.getListeAbo().getObjectDataCombo()));
+        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<>(GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen())));
         jButtonBeenden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -152,7 +152,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
             sliderDauer.addChangeListener(new ChangeListener() {
                 @Override
                 public void stateChanged(ChangeEvent e) {
-                    labelDauer.setText("  " + String.valueOf(sliderDauer.getValue()) + " ");
+                    labelDauer.setText("  " + sliderDauer.getValue() + " ");
                     if (!sliderDauer.getValueIsAdjusting()) {
                         aktAbo.setMindestDauerMinuten(sliderDauer.getValue());
                     }

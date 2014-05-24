@@ -12,7 +12,7 @@ import java.util.concurrent.Semaphore;
  * Bandwidth throttling based on http://en.wikipedia.org/wiki/Token_bucket
  */
 public class MVBandwidthTokenBucket {
-    public static final int DEFAULT_BUFFER_SIZE = 1000; // default byte buffer size
+    public static final int DEFAULT_BUFFER_SIZE = 64*1024; // default byte buffer size
     private static MVBandwidthTokenBucket ourInstance = new MVBandwidthTokenBucket();
     private volatile int bucketCapacity = 1*1000*1000; // 1MByte in bytes
     private Semaphore bucketSize = new Semaphore(0, false);

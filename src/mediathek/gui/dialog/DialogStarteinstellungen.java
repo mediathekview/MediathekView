@@ -31,7 +31,6 @@ import mediathek.gui.dialogEinstellungen.PanelEinstellungenGeo;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.PanelPsetLang;
-import mediathek.tool.Funktionen;
 import static mediathek.tool.Funktionen.OS_MAC;
 import static mediathek.tool.Funktionen.OS_WIN_32BIT;
 import static mediathek.tool.Funktionen.OS_WIN_64BIT;
@@ -42,10 +41,10 @@ import mediathek.tool.MVConfig;
 public class DialogStarteinstellungen extends javax.swing.JDialog {
 
     Daten ddaten;
-    private final int STAT_START = 1;
-    private final int STAT_PFAD = 2;
-    private final int STAT_PSET = 3;
-    private final int STAT_FERTIG = 4;
+    private final static int STAT_START = 1;
+    private final static int STAT_PFAD = 2;
+    private final static int STAT_PSET = 3;
+    private final static int STAT_FERTIG = 4;
     private int status = STAT_START;
     private final JFrame parentComponent;
     JCheckBox jCheckBox = new JCheckBox("Einmal am Tag nach einer neuen Programmversion suchen");
