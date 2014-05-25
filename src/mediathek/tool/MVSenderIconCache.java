@@ -16,6 +16,7 @@ public class MVSenderIconCache {
         iconCache = new HashMap<>();
         iconCache.put("3Sat", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "3Sat.png")));
         iconCache.put("ARD", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "ARD.png")));
+        iconCache.put("ARD.Podcast", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "ARD.png")));
         ImageIcon arteIcon = new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "ARTE.png"));
         iconCache.put("ARTE.DE", arteIcon);
         iconCache.put("ARTE.FR", arteIcon);
@@ -27,6 +28,7 @@ public class MVSenderIconCache {
         iconCache.put("ORF", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "ORF.png")));
         iconCache.put("RBB", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "RBB.png")));
         iconCache.put("SRF", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "SRF.png")));
+        iconCache.put("SRF.Podcast", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "SRF.png")));
         iconCache.put("SWR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "SWR.png")));
         iconCache.put("WDR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "WDR.png")));
         iconCache.put("ZDF", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "ZDF.png")));
