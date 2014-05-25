@@ -61,7 +61,6 @@ public class IoXmlSchreiben {
 
     public synchronized void datenSchreiben(Daten daten) {
         xmlDatenSchreiben(daten);
-        daten.history.speichern();
     }
 
     public synchronized void exportPset(DatenPset[] pSet, String datei) {

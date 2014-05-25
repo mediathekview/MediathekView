@@ -93,7 +93,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         jButtonLoeschen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                daten.history.loeschen();
+                daten.history.alleLoeschen();
             }
         });
         jToggleButtonLaden.addActionListener(new ActionListener() {
@@ -277,7 +277,7 @@ public class PanelErledigteUrls extends PanelVorlage {
                     if (abo) {
                         daten.erledigteAbos.urlAusLogfileLoeschen(del);
                     } else {
-                        daten.history.remove(del);
+                        daten.history.urlAusLogfileLoeschen(del);
                     }
                 }
             }

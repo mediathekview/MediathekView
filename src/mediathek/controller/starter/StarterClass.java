@@ -64,7 +64,7 @@ public class StarterClass {
             d.start = new Start();
             starten.startStarten(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
-            daten.history.add(d.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
+            daten.history.zeileSchreiben(ersterFilm.arr[DatenFilm.FILM_THEMA_NR], ersterFilm.arr[DatenFilm.FILM_TITEL_NR], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
             Daten.listeFilmeHistory.add(ersterFilm);
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
             Daten.listeDownloadsButton.addMitNummer(d);
@@ -114,12 +114,14 @@ public class StarterClass {
                 if (file.length() == 0) {
                     // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
                     Log.systemMeldung(new String[]{"Restart/Aufräumen: leere Datei löschen", file.getAbsolutePath()});
-                    if (!file.delete())
+                    if (!file.delete()) {
                         throw new Exception();
+                    }
                 } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
                     Log.systemMeldung(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", file.getAbsolutePath()});
-                    if (!file.delete())
+                    if (!file.delete()) {
                         throw new Exception();
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -204,7 +206,10 @@ public class StarterClass {
         }
     }
 
-    private enum HttpDownloadState {CANCEL, ERROR, DOWNLOAD}
+    private enum HttpDownloadState {
+
+        CANCEL, ERROR, DOWNLOAD
+    }
 
     // ********************************************
     // Hier wird dann gestartet
@@ -497,17 +502,20 @@ public class StarterClass {
                 conn.setRequestProperty("User-Agent", Daten.getUserAgent());
                 conn.setReadTimeout(TIMEOUT);
                 conn.setConnectTimeout(TIMEOUT);
-                if (conn.getResponseCode() < 400)
+                if (conn.getResponseCode() < 400) {
                     ret = conn.getContentLengthLong();
+                }
                 // alles unter 300k sind Playlisten, ...
-                if (ret < 300 * 1024)
+                if (ret < 300 * 1024) {
                     ret = -1;
+                }
             } catch (Exception ex) {
                 ret = -1;
                 Log.fehlerMeldung(643298301, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload.getContentLength", ex);
             } finally {
-                if (conn != null)
+                if (conn != null) {
                     conn.disconnect();
+                }
             }
             return ret;
         }
@@ -621,10 +629,11 @@ public class StarterClass {
                             setupHttpConnection(conn);
                             conn.connect();
                             //hier war es dann nun wirklich...
-                            if (conn.getResponseCode() >= 400)
+                            if (conn.getResponseCode() >= 400) {
                                 state = HttpDownloadState.ERROR;
-                            else
+                            } else {
                                 state = HttpDownloadState.DOWNLOAD;
+                            }
                         } else {
                             // ==================================
                             // dann wars das
@@ -698,8 +707,9 @@ public class StarterClass {
         }
 
         private boolean cancelDownload() {
-            if (Daten.auto)
+            if (Daten.auto) {
                 return false;
+            }
 
             dialogAbbrechenIsVis = true;
             retAbbrechen = true;

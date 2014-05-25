@@ -69,8 +69,8 @@ public class Daten {
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis = "";
     public ListePset listePset = null;
-    public History history = null; // alle angesehenen Filme
-    public ErledigteAbos erledigteAbos = null; // erfolgreich geladenen Abos
+    public MVUsedUrls history = null; // alle angesehenen Filme
+    public MVUsedUrls erledigteAbos = null; // erfolgreich geladenen Abos
 
     public IoXmlLesen ioXmlLesen = null; // Konfig laden
     public IoXmlSchreiben ioXmlSchreiben = null; //Konfig speichern
@@ -110,14 +110,16 @@ public class Daten {
         listeDownloadsButton = new ListeDownloads(this);
 
         updateSplashScreen("Lade erledigte Abos...");
-        erledigteAbos = new ErledigteAbos();
+        //erledigteAbos = new ErledigteAbos();
+        erledigteAbos = new MVUsedUrls(Konstanten.FILE_ERLEDIGTE_ABOS, ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS);
 
         //initialisieren
         updateSplashScreen("Lade Filmliste...");
         ioXmlLesen = new IoXmlLesen();
         ioXmlSchreiben = new IoXmlSchreiben();
 
-        history = new History();
+        updateSplashScreen("Lade History...");
+        history = new MVUsedUrls(Konstanten.FILE_HISTORY, ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT);
 
         starterClass = new StarterClass(this);
         Timer timer = new Timer(1000, new ActionListener() {
@@ -283,8 +285,6 @@ public class Daten {
             init();
         }
 
-        updateSplashScreen("Lade History...");
-        history.laden();
         mVColor.load(); // Farben einrichten
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
