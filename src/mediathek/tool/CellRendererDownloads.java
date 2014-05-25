@@ -108,7 +108,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         try {
             setBackground(null);
             setForeground(null);
-            setFont(null);
             setIcon(null);
             setToolTipText(null);
             setHorizontalAlignment(SwingConstants.LEADING);

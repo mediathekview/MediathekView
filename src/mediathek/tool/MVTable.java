@@ -83,7 +83,7 @@ public final class MVTable extends JTable {
                 spaltenAnzeigen = getSpaltenEinAus(DatenFilm.spaltenAnzeigen, DatenFilm.MAX_ELEM);
                 indexSpalte = DatenFilm.FILM_NR_NR;
                 nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
-//                iconAnzeigen = MVConfig.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
+                iconAnzeigen = MVConfig.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
                 this.setModel(new TModelFilm(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_DOWNLOADS:

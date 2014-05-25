@@ -8,6 +8,7 @@ import java.util.Map;
  * This class will load only one instance for all used sender icons.
  */
 public class MVSenderIconCache {
+
     private static Map<String, ImageIcon> iconCache = null;
     private final static String PFAD = "/mediathek/res/sender/";
 
@@ -29,10 +30,12 @@ public class MVSenderIconCache {
         iconCache.put("SWR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "SWR.png")));
         iconCache.put("WDR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "WDR.png")));
         iconCache.put("ZDF", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "ZDF.png")));
+        iconCache.put("ZDF-tivi", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "ZDF.png")));
     }
 
     /**
      * Get the icon for a specific sender.
+     *
      * @param sender The name of the supported sender.
      * @return The {@link javax.swing.ImageIcon} for the sender or null.
      */
