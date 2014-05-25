@@ -1365,7 +1365,7 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.add(item);
             //History
             if (film != null) {
-                if (daten.history.contains(film.getUrlHistory())) {
+                if (daten.history.urlPruefen(film.getUrlHistory())) {
                     item = new JMenuItem("Film als ungesehen markieren");
                     item.addActionListener(new BeobHistory(false));
                 } else {
@@ -1405,10 +1405,10 @@ public class GuiFilme extends PanelVorlage {
                 if (nr >= 0) {
                     DatenFilm film = getFilm(nr);
                     if (eintragen) {
-                        daten.history.add(film.getUrlHistory());
+                        daten.history.zeileSchreiben(film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory());
                         Daten.listeFilmeHistory.add(film);
                     } else {
-                        daten.history.remove(film.getUrlHistory());
+                        daten.history.urlAusLogfileLoeschen(film.getUrlHistory());
                     }
                 }
             }

@@ -248,16 +248,22 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (film != null) {
             Daten.listeFilmeHistory.add(film);
         }
-        ddaten.history.add(arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
+        ddaten.history.zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA_NR], arr[DatenDownload.DOWNLOAD_TITEL_NR], arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
     }
 
     public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> ad) {
         // Start erstellen und zur Liste hinzufügen
+        ArrayList<String[]> arrayUrls = new ArrayList<>();
         for (DatenDownload d : ad) {
             d.start = new Start();
+            arrayUrls.add(new String[]{d.arr[DatenDownload.DOWNLOAD_THEMA_NR],
+                d.arr[DatenDownload.DOWNLOAD_TITEL_NR],
+                d.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]});
         }
-        ddaten.history.add(ad);
+        if (!arrayUrls.isEmpty()) {
+            ddaten.history.zeileSchreiben(arrayUrls);
+        }
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, DatenDownload.class.getSimpleName());
     }
 

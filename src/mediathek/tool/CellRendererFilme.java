@@ -25,8 +25,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import mediathek.controller.History;
 import mediathek.controller.Log;
+import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -44,7 +44,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     private static ImageIcon film_stop_sw_tab = null;
     private boolean geoMelden = false;
     private Daten ddaten;
-    private History history = null;
+    private MVUsedUrls history = null;
     private MVSenderIconCache senderIconCache;
 
     public CellRendererFilme(Daten d) {
@@ -132,7 +132,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     // bei livestreams keine History anzeigen
                     setForeground(MVColor.FILM_LIVESTREAM.color);
                 } else {
-                    if (history.contains(datenFilm.getUrlHistory())) {
+                    if (history.urlPruefen(datenFilm.getUrlHistory())) {
                         if (!isSelected) {
                             setBackground(MVColor.FILM_HISTORY.color);
                         }
