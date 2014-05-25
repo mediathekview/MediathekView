@@ -56,7 +56,6 @@ public class MVConfig {
     public static final String SYSTEM_PANEL_MELDUNGEN_ANZEIGEN = "system-panel-meldungen-anzeigen";
     public static final String SYSTEM_PANEL_FILME_DIVIDER = "system-panel-filme-divider";
 
-    //public static final String SYSTEM_PANEL_FILTER_ANZEIGEN = "system-panel-filter-anzeigen";
     public static final String SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN = "system-panel-beschreibung-anzeigen";
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_FILME = "Eigenschaften-Tabellen-Filme";
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS = "Eigenschaften-Tabellen-Downloads";
@@ -76,6 +75,8 @@ public class MVConfig {
     public static final String SYSTEM_ICON_KLEIN_ALLES = "system-icon-groesse-alles";
     public static final String SYSTEM_ICON_KLEIN_DOWNLOADS_EXTERN = "system-icon-groesse-Download-Extern";
     public static final String SYSTEM_ICON_KLEIN_ABOS_EXTERN = "system-icon-groesse-Abos-Extern";
+    public static final String SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN = "system-tab-download-icon-anzeigen";
+    public static final String SYSTEM_TAB_FILME_ICON_ANZEIGEN = "system-tab-filme-icon-anzeigen";
     // Extrafenster
     public static final String SYSTEM_FENSTER_DOWNLOAD = "Fenster-Download";
     public static final String SYSTEM_VIS_DOWNLOAD = "Vis-Download";
