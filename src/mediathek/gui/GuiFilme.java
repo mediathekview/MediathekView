@@ -260,7 +260,7 @@ public class GuiFilme extends PanelVorlage {
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
                 new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR, DatenFilm.FILM_DATUM_LONG_NR, /* DatenFilm.FILM_URL_HISTORY_NR, */ DatenFilm.FILM_REF_NR},
                 new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR},
-                false /*Icon*/) {
+                true /*Icon*/) {
             @Override
             public void tabelleLaden_() {
                 tabelleLaden();

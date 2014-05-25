@@ -45,6 +45,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     private boolean geoMelden = false;
     private Daten ddaten;
     private History history = null;
+    private MVSenderIconCache senderIconCache;
 
     public CellRendererFilme(Daten d) {
         ddaten = d;
@@ -62,6 +63,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
             }
         });
+        senderIconCache = new MVSenderIconCache();
     }
 
     @Override
@@ -75,68 +77,48 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         try {
             setBackground(null);
             setForeground(null);
-            //setFont(null);
-            //setFont(getFont());
             setIcon(null);
             setToolTipText(null);
             setHorizontalAlignment(SwingConstants.LEADING);
-            super.getTableCellRendererComponent(
-                    table, value, isSelected, hasFocus, row, column);
-            int r = table.convertRowIndexToModel(row);
-            int c = table.convertColumnIndexToModel(column);
-            boolean start = false;
-            DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(r, DatenFilm.FILM_REF_NR);
-            boolean live = datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE);
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            int rowModelIndex = table.convertRowIndexToModel(row);
+            int columnModelIndex = table.convertColumnIndexToModel(column);
+
+            DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF_NR);
             DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL_NR]);
+
+            boolean live = datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE);
+            boolean start = false;
             if (isSelected) {
                 setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
-                //setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
             } else {
                 setFont(getFont());
-                //setFont(new java.awt.Font(null));
             }
-            if (c == DatenFilm.FILM_NR_NR || c == DatenFilm.FILM_GROESSE_NR
-                    || c == DatenFilm.FILM_DATUM_NR || c == DatenFilm.FILM_ZEIT_NR || c == DatenFilm.FILM_DAUER_NR) {
-                setHorizontalAlignment(SwingConstants.CENTER);
-            }
-            if (c == DatenFilm.FILM_GROESSE_NR) {
-                setHorizontalAlignment(SwingConstants.RIGHT);
-            }
-            if (c == DatenFilm.FILM_ABSPIELEN_NR) {
-                // ======================
-                // Button Abspielen
-                setHorizontalAlignment(SwingConstants.CENTER);
-                if (datenDownload != null) {
-                    if (datenDownload.start != null) {
-                        if (datenDownload.start.status == Start.STATUS_RUN) {
-                            setToolTipText("Film stoppen");
-                            if (isSelected) {
-                                setIcon(film_stop_tab);
-                            } else {
-                                setIcon(film_stop_sw_tab);
-                            }
-                        }
+            switch (columnModelIndex) {
+                case DatenFilm.FILM_NR_NR:
+                case DatenFilm.FILM_DATUM_NR:
+                case DatenFilm.FILM_ZEIT_NR:
+                case DatenFilm.FILM_DAUER_NR:
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    break;
+                case DatenFilm.FILM_GROESSE_NR:
+                    setHorizontalAlignment(SwingConstants.RIGHT);
+                    break;
+                case DatenFilm.FILM_ABSPIELEN_NR:
+                    handleButtonStartColumn(datenDownload, isSelected);
+                    break;
+
+                case DatenFilm.FILM_AUFZEICHNEN_NR:
+                    handleButtonDownloadColumn(datenDownload, isSelected);
+                    break;
+                case DatenFilm.FILM_SENDER_NR:
+                    if (((MVTable) table).icon) {
+                        handleSenderColumn((String) value);
                     }
-                }
-                if (getIcon() == null) {
-                    setToolTipText("Film abspielen");
-                    if (isSelected) {
-                        setIcon(film_start_tab);
-                    } else {
-                        setIcon(film_start_sw_tab);
-                    }
-                }
-            } else if (c == DatenFilm.FILM_AUFZEICHNEN_NR) {
-                // ==================
-                // Button Aufzeichnen
-                setHorizontalAlignment(SwingConstants.CENTER);
-                setToolTipText("Film aufzeichnen");
-                if (isSelected) {
-                    setIcon(film_rec_tab);
-                } else {
-                    setIcon(film_rec_sw_tab);
-                }
+                    break;
             }
+
             // Farben setzen
             if (datenDownload != null) {
                 // gestarteter Film
@@ -175,6 +157,56 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             Log.fehlerMeldung(630098552, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
         }
         return this;
+    }
+
+    private void handleButtonStartColumn(final DatenDownload datenDownload, final boolean isSelected) {
+        // Button Abspielen
+        setHorizontalAlignment(SwingConstants.CENTER);
+        if (datenDownload != null) {
+            if (datenDownload.start != null) {
+                if (datenDownload.start.status == Start.STATUS_RUN) {
+                    setToolTipText("Film stoppen");
+                    if (isSelected) {
+                        setIcon(film_stop_tab);
+                    } else {
+                        setIcon(film_stop_sw_tab);
+                    }
+                }
+            }
+        }
+        if (getIcon() == null) {
+            setToolTipText("Film abspielen");
+            if (isSelected) {
+                setIcon(film_start_tab);
+            } else {
+                setIcon(film_start_sw_tab);
+            }
+        }
+    }
+
+    private void handleButtonDownloadColumn(final DatenDownload datenDownload, final boolean isSelected) {
+        // Button Aufzeichnen
+        setHorizontalAlignment(SwingConstants.CENTER);
+        setToolTipText("Film aufzeichnen");
+        if (isSelected) {
+            setIcon(film_rec_tab);
+        } else {
+            setIcon(film_rec_sw_tab);
+        }
+    }
+
+    /**
+     * Draws the sender icon in the sender model column.
+     *
+     * @param sender Name of the sender.
+     */
+    private void handleSenderColumn(String sender) {
+        setHorizontalAlignment(SwingConstants.CENTER);
+        ImageIcon icon = senderIconCache.get(sender);
+        if (icon != null) {
+            setText("");
+            setIcon(icon);
+        }
     }
 
     private void setColor(Component c, Start s, boolean isSelected) {
