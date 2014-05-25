@@ -27,6 +27,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
@@ -52,6 +53,8 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     private static ImageIcon download_del_sw_tab = null;
     private boolean geoMelden = false;
     private JProgressBar progressBar;
+    private final Border emptyBorder = BorderFactory.createEmptyBorder();
+    private final Border largeBorder = BorderFactory.createEmptyBorder(9, 2, 9, 2);
     private JPanel panel;
     private MVSenderIconCache senderIconCache;
 
@@ -77,7 +80,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         });
 
         progressBar = new JProgressBar(0, 1000);
-        progressBar.setBorder(BorderFactory.createEmptyBorder(9, 2, 9, 2));
         progressBar.setStringPainted(true);
         //on OSX the OS provided progress bar looks much better...
         if (!SystemInfo.isMacOSX()) {
@@ -126,6 +128,12 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             switch (columnModelIndex) {
                 case DatenDownload.DOWNLOAD_PROGRESS_NR:
                     setHorizontalAlignment(SwingConstants.CENTER);
+                    if (((MVTable)table).icon) {
+                        progressBar.setBorder(largeBorder);
+                    }
+                    else {
+                        progressBar.setBorder(emptyBorder);
+                    }
                     if (datenDownload.start != null) {
                         if (1 < datenDownload.start.percent && datenDownload.start.percent < Start.PROGRESS_FERTIG) {
 

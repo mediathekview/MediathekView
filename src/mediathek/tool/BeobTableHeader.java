@@ -115,6 +115,10 @@ public class BeobTableHeader extends MouseAdapter {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     tabelle.icon = item2.isSelected();
+                    if (!tabelle.icon)
+                        tabelle.setRowHeight(18);
+                    else
+                        tabelle.setRowHeight(36);
                     setSpalten();
                 }
             });
@@ -137,11 +141,7 @@ public class BeobTableHeader extends MouseAdapter {
     }
 
     private boolean anzeigen(int i) {
-        if (spaltenAnzeigen == null) {
-            return true;
-        } else {
-            return spaltenAnzeigen[i];
-        }
+        return spaltenAnzeigen == null || spaltenAnzeigen[i];
     }
 
     private void setSpalten() {
