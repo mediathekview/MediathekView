@@ -145,7 +145,7 @@ public class MVUsedUrls {
         //Automatic Resource Management
         try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND)))) {
             thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
-            titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
+            titel = GuiFunktionen.textLaenge(40, putzen(titel), false /* mitte */, false /*addVorne*/);
             text = datum + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
             bufferedWriter.write(text);
             bufferedWriter.flush();
@@ -191,7 +191,7 @@ public class MVUsedUrls {
                     listeUrls.add(url);
                     listeUrlsSortDate.add(new String[]{zeit, titel, url});
                     thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
-                    titel = GuiFunktionen.textLaenge(30, putzen(titel), false /* mitte */, false /*addVorne*/);
+                    titel = GuiFunktionen.textLaenge(40, putzen(titel), false /* mitte */, false /*addVorne*/);
                     text = zeit + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
                     bufferedWriter.write(text);
                     ret = true;
