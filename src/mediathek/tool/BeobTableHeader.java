@@ -107,18 +107,13 @@ public class BeobTableHeader extends MouseAdapter {
         }
         if (icon) {
             //##Trenner##
-            jPopupMenu.addSeparator();
-            //##Trenner##
             final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("Icons anzeigen");
             item2.setSelected(tabelle.icon);
             item2.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     tabelle.icon = item2.isSelected();
-                    if (!tabelle.icon)
-                        tabelle.setRowHeight(18);
-                    else
-                        tabelle.setRowHeight(36);
+                    tabelle.setHeight();
                     setSpalten();
                 }
             });

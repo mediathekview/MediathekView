@@ -19,19 +19,30 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.Log;
-import mediathek.daten.*;
-import msearch.daten.DatenFilm;
-
-import javax.activation.DataHandler;
-import javax.swing.*;
-import javax.swing.RowSorter.SortKey;
-import java.awt.*;
+import java.awt.Cursor;
+import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
 import java.util.LinkedList;
 import java.util.List;
+import javax.activation.DataHandler;
+import javax.swing.DropMode;
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JViewport;
+import javax.swing.RowSorter;
+import javax.swing.RowSorter.SortKey;
+import javax.swing.SortOrder;
+import javax.swing.TransferHandler;
+import mediathek.controller.Log;
+import mediathek.daten.Daten;
+import mediathek.daten.DatenAbo;
+import mediathek.daten.DatenDownload;
+import mediathek.daten.DatenProg;
+import mediathek.daten.DatenPset;
+import msearch.daten.DatenFilm;
 
 public final class MVTable extends JTable {
 
@@ -45,6 +56,7 @@ public final class MVTable extends JTable {
     public static final String FELDTRENNER = "|";
     public static final String SORT_ASCENDING = "ASCENDING";
     public static final String SORT_DESCENDING = "DESCENDING";
+    public boolean icon = false;
     private int[] breite;
     private int[] reihe;
     private String nrDatenSystem = "";
@@ -56,13 +68,12 @@ public final class MVTable extends JTable {
     private String[] indexWertSelection = null;
     private int[] selIndexes = null;
     private boolean[] spaltenAnzeigen;
-    public boolean icon = true;
+    private String iconAnzeigen = "";
 
     public MVTable(int tabelle) {
         this.tabelle = tabelle;
         setAutoCreateRowSorter(true);
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        setRowHeight(18);
 
         String[] spaltenTitel;
         switch (tabelle) {
@@ -72,15 +83,16 @@ public final class MVTable extends JTable {
                 spaltenAnzeigen = getSpaltenEinAus(DatenFilm.spaltenAnzeigen, DatenFilm.MAX_ELEM);
                 indexSpalte = DatenFilm.FILM_NR_NR;
                 nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
+//                iconAnzeigen = MVConfig.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
                 this.setModel(new TModelFilm(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_DOWNLOADS:
-                setRowHeight(36);
                 spaltenTitel = DatenDownload.COLUMN_NAMES;
                 maxSpalten = DatenDownload.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
                 indexSpalte = DatenDownload.DOWNLOAD_NR_NR;
                 nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS;
+                iconAnzeigen = MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN;
                 setDragEnabled(true);
                 setDropMode(DropMode.INSERT_ROWS);
                 setTransferHandler(new TableRowTransferHandlerDownload(this));
@@ -115,6 +127,18 @@ public final class MVTable extends JTable {
         }
         breite = getArray(maxSpalten);
         reihe = getArray(maxSpalten);
+        if (!iconAnzeigen.isEmpty()) {
+            icon = Boolean.parseBoolean(Daten.mVConfig.get(iconAnzeigen));
+        }
+        setHeight();
+    }
+
+    public void setHeight() {
+        if (!icon) {
+            setRowHeight(18);
+        } else {
+            setRowHeight(36);
+        }
     }
 
     public void reorder(int index, int[] rowFrom) {
@@ -590,6 +614,9 @@ public final class MVTable extends JTable {
             }
         }
         Daten.mVConfig.add(nrDatenSystem, b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown);
+        if (!iconAnzeigen.isEmpty()) {
+            Daten.mVConfig.add(iconAnzeigen, String.valueOf(icon));
+        }
     }
 
     private int[] getArray(int anzahl) {
