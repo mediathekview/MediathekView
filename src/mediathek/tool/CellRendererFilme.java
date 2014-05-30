@@ -113,8 +113,8 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     handleButtonDownloadColumn(datenDownload, isSelected);
                     break;
                 case DatenFilm.FILM_SENDER_NR:
-                    if (((MVTable) table).icon) {
-                        handleSenderColumn((String) value);
+                    if (((MVTable) table).iconAnzeigen) {
+                        handleSenderColumn((String) value, ((MVTable) table).iconKlein);
                     }
                     break;
             }
@@ -200,9 +200,9 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
      *
      * @param sender Name of the sender.
      */
-    private void handleSenderColumn(String sender) {
+    private void handleSenderColumn(String sender, boolean small) {
         setHorizontalAlignment(SwingConstants.CENTER);
-        ImageIcon icon = senderIconCache.get(sender);
+        ImageIcon icon = senderIconCache.get(sender, small);
         if (icon != null) {
             setText("");
             setIcon(icon);

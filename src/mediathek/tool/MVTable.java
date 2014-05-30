@@ -56,7 +56,8 @@ public final class MVTable extends JTable {
     public static final String FELDTRENNER = "|";
     public static final String SORT_ASCENDING = "ASCENDING";
     public static final String SORT_DESCENDING = "DESCENDING";
-    public boolean icon = false;
+    public boolean iconAnzeigen = false;
+    public boolean iconKlein = false;
     private int[] breite;
     private int[] reihe;
     private String nrDatenSystem = "";
@@ -68,7 +69,8 @@ public final class MVTable extends JTable {
     private String[] indexWertSelection = null;
     private int[] selIndexes = null;
     private boolean[] spaltenAnzeigen;
-    private String iconAnzeigen = "";
+    private String iconAnzeigenStr = "";
+    private String iconKleinStr = "";
 
     public MVTable(int tabelle) {
         this.tabelle = tabelle;
@@ -83,7 +85,8 @@ public final class MVTable extends JTable {
                 spaltenAnzeigen = getSpaltenEinAus(DatenFilm.spaltenAnzeigen, DatenFilm.MAX_ELEM);
                 indexSpalte = DatenFilm.FILM_NR_NR;
                 nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
-                iconAnzeigen = MVConfig.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
+                iconAnzeigenStr = MVConfig.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
+                iconKleinStr = MVConfig.SYSTEM_TAB_FILME_ICON_KLEIN;
                 this.setModel(new TModelFilm(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_DOWNLOADS:
@@ -92,7 +95,8 @@ public final class MVTable extends JTable {
                 spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
                 indexSpalte = DatenDownload.DOWNLOAD_NR_NR;
                 nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS;
-                iconAnzeigen = MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN;
+                iconAnzeigenStr = MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN;
+                iconKleinStr = MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN;
                 setDragEnabled(true);
                 setDropMode(DropMode.INSERT_ROWS);
                 setTransferHandler(new TableRowTransferHandlerDownload(this));
@@ -127,15 +131,20 @@ public final class MVTable extends JTable {
         }
         breite = getArray(maxSpalten);
         reihe = getArray(maxSpalten);
-        if (!iconAnzeigen.isEmpty()) {
-            icon = Boolean.parseBoolean(Daten.mVConfig.get(iconAnzeigen));
+        if (!iconAnzeigenStr.isEmpty()) {
+            iconAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(iconAnzeigenStr));
+        }
+        if (!iconKleinStr.isEmpty()) {
+            iconKlein = Boolean.parseBoolean(Daten.mVConfig.get(iconKleinStr));
         }
         setHeight();
     }
 
     public void setHeight() {
-        if (!icon) {
+        if (!iconAnzeigen) {
             setRowHeight(18);
+        } else if (iconKlein) {
+            setRowHeight(20);
         } else {
             setRowHeight(36);
         }
@@ -614,8 +623,11 @@ public final class MVTable extends JTable {
             }
         }
         Daten.mVConfig.add(nrDatenSystem, b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown);
-        if (!iconAnzeigen.isEmpty()) {
-            Daten.mVConfig.add(iconAnzeigen, String.valueOf(icon));
+        if (!iconAnzeigenStr.isEmpty()) {
+            Daten.mVConfig.add(iconAnzeigenStr, String.valueOf(iconAnzeigen));
+        }
+        if (!iconKleinStr.isEmpty()) {
+            Daten.mVConfig.add(iconKleinStr, String.valueOf(iconKlein));
         }
     }
 

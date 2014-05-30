@@ -127,10 +127,9 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             switch (columnModelIndex) {
                 case DatenDownload.DOWNLOAD_PROGRESS_NR:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (((MVTable)table).icon) {
+                    if (((MVTable) table).iconAnzeigen) {
                         progressBar.setBorder(largeBorder);
-                    }
-                    else {
+                    } else {
                         progressBar.setBorder(emptyBorder);
                     }
                     if (datenDownload.start != null) {
@@ -210,8 +209,8 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     break;
 
                 case DatenDownload.DOWNLOAD_SENDER_NR:
-                    if (((MVTable) table).icon) {
-                        handleSenderColumn((String) value);
+                    if (((MVTable) table).iconAnzeigen) {
+                        handleSenderColumn((String) value, ((MVTable) table).iconKlein);
                     }
                     break;
             }
@@ -229,9 +228,9 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
      *
      * @param sender Name of the sender.
      */
-    private void handleSenderColumn(String sender) {
+    private void handleSenderColumn(String sender, boolean small) {
         setHorizontalAlignment(SwingConstants.CENTER);
-        ImageIcon icon = senderIconCache.get(sender);
+        ImageIcon icon = senderIconCache.get(sender, small);
         if (icon != null) {
             setText("");
             setIcon(icon);
