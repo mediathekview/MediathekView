@@ -75,8 +75,10 @@ public class MVConfig {
     public static final String SYSTEM_ICON_KLEIN_ALLES = "system-icon-groesse-alles";
     public static final String SYSTEM_ICON_KLEIN_DOWNLOADS_EXTERN = "system-icon-groesse-Download-Extern";
     public static final String SYSTEM_ICON_KLEIN_ABOS_EXTERN = "system-icon-groesse-Abos-Extern";
-    public static final String SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN = "system-tab-download-icon-anzeigen";
     public static final String SYSTEM_TAB_FILME_ICON_ANZEIGEN = "system-tab-filme-icon-anzeigen";
+    public static final String SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN = "system-tab-download-icon-anzeigen";
+    public static final String SYSTEM_TAB_FILME_ICON_KLEIN = "system-tab-filme-icon-klein";
+    public static final String SYSTEM_TAB_DOWNLOAD_ICON_KLEIN = "system-tab-download-icon-klein";
     // Extrafenster
     public static final String SYSTEM_FENSTER_DOWNLOAD = "Fenster-Download";
     public static final String SYSTEM_VIS_DOWNLOAD = "Vis-Download";

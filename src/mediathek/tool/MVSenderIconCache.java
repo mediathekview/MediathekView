@@ -10,7 +10,9 @@ import java.util.Map;
 public class MVSenderIconCache {
 
     private static Map<String, ImageIcon> iconCache = null;
+    private static Map<String, ImageIcon> iconCache_small = null;
     private final static String PFAD = "/mediathek/res/sender/";
+    private final static String PFAD_SMALL = "/mediathek/res/sender_small/";
 
     static {
         iconCache = new HashMap<>();
@@ -35,13 +37,41 @@ public class MVSenderIconCache {
         iconCache.put("ZDF-tivi", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "ZDF.png")));
     }
 
+    static {
+        iconCache_small = new HashMap<>();
+        iconCache_small.put("3Sat", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "3Sat.png")));
+        iconCache_small.put("ARD", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "ARD.png")));
+        iconCache_small.put("ARD.Podcast", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "ARD.png")));
+        ImageIcon arteIcon = new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "ARTE.png"));
+        iconCache_small.put("ARTE.DE", arteIcon);
+        iconCache_small.put("ARTE.FR", arteIcon);
+        iconCache_small.put("BR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "BR.png")));
+        iconCache_small.put("HR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "HR.png")));
+        iconCache_small.put("KiKA", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "KiKA.png")));
+        iconCache_small.put("MDR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "MDR.png")));
+        iconCache_small.put("NDR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "NDR.png")));
+        iconCache_small.put("ORF", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "ORF.png")));
+        iconCache_small.put("RBB", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "RBB.png")));
+        iconCache_small.put("SRF", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "SRF.png")));
+        iconCache_small.put("SRF.Podcast", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "SRF.png")));
+        iconCache_small.put("SWR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "SWR.png")));
+        iconCache_small.put("WDR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "WDR.png")));
+        iconCache_small.put("ZDF", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "ZDF.png")));
+        iconCache_small.put("ZDF-tivi", new ImageIcon(MVSenderIconCache.class.getResource(PFAD_SMALL + "ZDF.png")));
+    }
+
     /**
      * Get the icon for a specific sender.
      *
      * @param sender The name of the supported sender.
+     * @param small
      * @return The {@link javax.swing.ImageIcon} for the sender or null.
      */
-    public ImageIcon get(String sender) {
-        return iconCache.get(sender);
+    public ImageIcon get(String sender, boolean small) {
+        if (small) {
+            return iconCache_small.get(sender);
+        } else {
+            return iconCache.get(sender);
+        }
     }
 }
