@@ -127,7 +127,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             switch (columnModelIndex) {
                 case DatenDownload.DOWNLOAD_PROGRESS_NR:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (((MVTable) table).iconAnzeigen) {
+                    if (((MVTable) table).iconAnzeigen && !((MVTable) table).iconKlein) {
                         progressBar.setBorder(largeBorder);
                     } else {
                         progressBar.setBorder(emptyBorder);

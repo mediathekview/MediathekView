@@ -255,9 +255,9 @@ public class PanelHilfe extends PanelVorlage {
 
         jLabel4.setText("Buttons, Abos und die Blacklists gelöscht.");
 
-        jButtonSets.setText("Einstellungen zum Abspielen/Speichern zurücksetzen");
+        jButtonSets.setText("Einstellungen zum Abspielen/Aufzeichnen zurücksetzen");
 
-        jLabel8.setText("Es werden die Programmsets zum Abspielen und Aufzeichnen");
+        jLabel8.setText("Es werden alle Programmsets zum Abspielen und Aufzeichnen");
 
         jLabel10.setText("gelöscht und die Standardsets wieder angelegt.");
 
