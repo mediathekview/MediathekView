@@ -377,12 +377,12 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonSets">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Einstellungen zum Abspielen/Speichern zur&#xfc;cksetzen"/>
+            <Property name="text" type="java.lang.String" value="Einstellungen zum Abspielen/Aufzeichnen zur&#xfc;cksetzen"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel8">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Es werden die Programmsets zum Abspielen und Aufzeichnen"/>
+            <Property name="text" type="java.lang.String" value="Es werden alle Programmsets zum Abspielen und Aufzeichnen"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel10">
