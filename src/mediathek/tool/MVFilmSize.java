@@ -95,7 +95,11 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
                 sizeStr = "";
             }
         } else {
-            sizeStr = getGroesse(aktSizeL) + " von " + getGroesse(sizeL);
+            if (sizeL != 0) {
+                sizeStr = getGroesse(aktSizeL) + " von " + getGroesse(sizeL);
+            } else {
+                sizeStr = getGroesse(aktSizeL);
+            }
         }
     }
 
