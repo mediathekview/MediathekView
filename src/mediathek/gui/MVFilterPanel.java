@@ -25,19 +25,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
-import javax.swing.JSlider;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
@@ -222,8 +210,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 //##Trenner##
             }
             JPanel p = new JPanel(new FlowLayout());
-            JSpinner jSp = new JSpinner(new javax.swing.SpinnerNumberModel(1, 1, 5, 1));
-            jSpinner = jSp;
+            jSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 5, 1));
             int i;
             try {
                 i = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_ANZAHL));
@@ -256,12 +243,12 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        buttonGroup2 = new javax.swing.ButtonGroup();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
+        javax.swing.ButtonGroup buttonGroup2 = new javax.swing.ButtonGroup();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jComboBoxZeitraum = new javax.swing.JComboBox();
-        jLabel3 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jTextFieldFilterMinuten = new javax.swing.JTextField();
         jSliderMinuten = new javax.swing.JSlider();
         jToggleButtonLivestram = new javax.swing.JToggleButton();
@@ -270,12 +257,12 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jCheckBoxNurHd = new javax.swing.JCheckBox();
         jToggleButtonHistory = new javax.swing.JToggleButton();
         jCheckBoxNurNeue = new javax.swing.JCheckBox();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox();
-        jLabel4 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
         jComboBoxFilterThema = new javax.swing.JComboBox();
-        jLabel5 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
         jTextFieldFilterTitel = new javax.swing.JTextField();
         jTextFieldFilterThemaTitel = new javax.swing.JTextField();
         jButtonFilterLoeschen = new javax.swing.JButton();
@@ -283,7 +270,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jButtonBlacklist = new javax.swing.JButton();
         jRadioButtonTT = new javax.swing.JRadioButton();
         jRadioButtonIrgendwo = new javax.swing.JRadioButton();
-        jSeparator1 = new javax.swing.JSeparator();
+        javax.swing.JSeparator jSeparator1 = new javax.swing.JSeparator();
         jRadioButtonF1 = new javax.swing.JRadioButton();
         jRadioButtonF2 = new javax.swing.JRadioButton();
         jRadioButtonF3 = new javax.swing.JRadioButton();
@@ -291,8 +278,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jRadioButtonF5 = new javax.swing.JRadioButton();
 
         jLabel1.setText("Zeitraum:");
-
-        jComboBoxZeitraum.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel3.setText("Mindestlänge [min]:");
 
@@ -369,13 +354,11 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jLabel2.setText("Sender:");
 
         jComboBoxFilterSender.setMaximumRowCount(20);
-        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBoxFilterSender.setPreferredSize(new java.awt.Dimension(184, 24));
 
         jLabel4.setText("Thema:");
 
         jComboBoxFilterThema.setMaximumRowCount(20);
-        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBoxFilterThema.setPreferredSize(new java.awt.Dimension(184, 24));
 
         jLabel5.setText("Titel:");
@@ -525,8 +508,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton jButtonBlacklist;
     public javax.swing.JButton jButtonFilterLoeschen;
     public javax.swing.JButton jButtonHilfe;
@@ -537,13 +518,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     public javax.swing.JComboBox jComboBoxFilterSender;
     public javax.swing.JComboBox jComboBoxFilterThema;
     public javax.swing.JComboBox jComboBoxZeitraum;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JRadioButton jRadioButtonF1;
     private javax.swing.JRadioButton jRadioButtonF2;
     private javax.swing.JRadioButton jRadioButtonF3;
@@ -551,7 +525,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     private javax.swing.JRadioButton jRadioButtonF5;
     private javax.swing.JRadioButton jRadioButtonIrgendwo;
     private javax.swing.JRadioButton jRadioButtonTT;
-    private javax.swing.JSeparator jSeparator1;
     public javax.swing.JSlider jSliderMinuten;
     public javax.swing.JTextField jTextFieldFilterMinuten;
     public javax.swing.JTextField jTextFieldFilterThemaTitel;

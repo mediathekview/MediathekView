@@ -51,21 +51,17 @@ public class Log {
     public static final String FEHLER_ART_AUTO_TEXT = "   Auto: ";
     public static final int FEHLER_ART_NOGUI = 5;
     public static final String FEHLER_ART_NOGUI_TEXT = "  NoGui: ";
-    public static final int FEHLER_ART_MAX = 6;
-    // private
+    //public static final int FEHLER_ART_MAX = 6;
+
     private static final int MAX_LAENGE_1 = 50000;
     private static final int MAX_LAENGE_2 = 30000;
     private static int zeilenNrSystem = 0;
     private static int zeilenNrProgramm = 0;
     private static int zeilenNrFehler = 0;
-    private static LinkedList<Integer[]> fehlerListe = new LinkedList<Integer[]>(); // [Art, Fehlernummer, Anzahl, Exception(0,1 für ja, nein)]
+    private static LinkedList<Integer[]> fehlerListe = new LinkedList<>(); // [Art, Fehlernummer, Anzahl, Exception(0,1 für ja, nein)]
     private static boolean progress = false;
     private static String progressText = "";
     private static Date startZeit = new Date(System.currentTimeMillis());
-
-    public void resetFehlerListe() {
-        fehlerListe.clear();
-    }
 
     public static synchronized void versionsMeldungen(String classname) {
         final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -145,21 +141,6 @@ public class Log {
         if (!playerMeldungenAus) {
             playermeldung(new String[]{text});
         }
-    }
-
-    public static synchronized void progress(String texte) {
-        progress = true;
-        texte += "\r";
-        progressText = texte;
-        System.out.print(texte);
-    }
-
-    public static synchronized void progressEnde() {
-        progress = false;
-        progressText = "";
-        System.out.print("                                                                            \r");
-        System.out.println();
-        System.out.println();
     }
 
     public static void printEndeMeldung() {

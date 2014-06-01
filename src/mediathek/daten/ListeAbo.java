@@ -99,7 +99,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
 
     public void sort() {
-        Collections.<DatenAbo>sort(this);
+        Collections.sort(this);
     }
 
     public void addObjectData(TModelAbo model) {
@@ -131,10 +131,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
     private boolean aboExistiertBereits(DatenAbo abo) {
         // true wenn es das Abo schon gibt
-        DatenAbo datenAbo;
-        ListIterator<DatenAbo> it = this.listIterator();
-        while (it.hasNext()) {
-            datenAbo = it.next();
+        for (DatenAbo datenAbo : this) {
             if (Filter.aboExistiertBereits(datenAbo, abo)) {
                 return true;
             }

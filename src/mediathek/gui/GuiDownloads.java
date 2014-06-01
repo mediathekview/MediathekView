@@ -23,23 +23,10 @@ import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Date;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.MVStatusBar;
@@ -58,7 +45,6 @@ import mediathek.tool.DirOpenAction;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVMessageDialog;
@@ -74,8 +60,15 @@ public class GuiDownloads extends PanelVorlage {
     private MVFilmInformation filmInfoHud;
     private PanelBeschreibung panelBeschreibung;
     private long lastUpdate = 0;
-    private int[] transferedRows = null;
-    private int rowFrom = 0;
+    private boolean showAbos = true;
+    private boolean showDownloads = true;
+    private static final String COMBO_DISPLAY_ALL = "Alles";
+    private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "Nur Downloads";
+    private static final String COMBO_DISPLAY_ABOS_ONLY = "Nur Abos";
+    /**
+     * The internally used model.
+     */
+    private TModelDownload model;
 
     public GuiDownloads(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -83,15 +76,19 @@ public class GuiDownloads extends PanelVorlage {
         tabelle = new MVTable(MVTable.TABELLE_TAB_DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
         filmInfoHud = daten.filmInfoHud;
+
         panelBeschreibung = new PanelBeschreibung(daten.mediathekGui, daten);
-        jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
+
         init();
         tabelle.initTabelle();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
         addListenerMediathekView();
+        cbDisplayCategories.setModel(getDisplaySelectionModel());
+        cbDisplayCategories.addActionListener(new DisplayCategoryListener());
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -100,9 +97,6 @@ public class GuiDownloads extends PanelVorlage {
             }
         });
     }
-    //===================================
-    //public
-    //===================================
 
     @Override
     public void isShown() {
@@ -194,13 +188,15 @@ public class GuiDownloads extends PanelVorlage {
             }
         });
         panelBeschreibungSetzen();
-        jRadioButtonAbos.setForeground(MVColor.DOWNLOAD_IST_ABO.color);
-        jRadioButtonDownloads.setForeground(MVColor.DOWNLOAD_IST_DIREKTER_DOWNLOAD.color);
-        tabelle.setDefaultRenderer(Object.class, new CellRendererDownloads());
-        tabelle.setDefaultRenderer(Datum.class, new CellRendererDownloads());
-        tabelle.setDefaultRenderer(MVFilmSize.class, new CellRendererDownloads());
-        tabelle.setDefaultRenderer(Integer.class, new CellRendererDownloads());
-        tabelle.setModel(new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES));
+
+        final CellRendererDownloads cellRenderer = new CellRendererDownloads();
+        tabelle.setDefaultRenderer(Object.class, cellRenderer);
+        tabelle.setDefaultRenderer(Datum.class, cellRenderer);
+        tabelle.setDefaultRenderer(MVFilmSize.class, cellRenderer);
+        tabelle.setDefaultRenderer(Integer.class, cellRenderer);
+
+        model = new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES);
+        tabelle.setModel(model);
         tabelle.addMouseListener(new BeobMausTabelle());
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenDownload.COLUMN_NAMES, DatenDownload.spaltenAnzeigen,
@@ -209,12 +205,10 @@ public class GuiDownloads extends PanelVorlage {
                 true /*Icon*/) {
             @Override
             public void tabelleLaden_() {
-                tabelleLaden();
+                reloadTable();
             }
         });
-        jRadioButtonAlles.addActionListener(new BeobAnzeige());
-        jRadioButtonAbos.addActionListener(new BeobAnzeige());
-        jRadioButtonDownloads.addActionListener(new BeobAnzeige());
+
         Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
             @Override
             public void fertig(MSListenerFilmeLadenEvent event) {
@@ -249,13 +243,13 @@ public class GuiDownloads extends PanelVorlage {
             ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, ListenerMediathekView.EREIGNIS_RESET_INTERRUPT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                tabelleLaden();
+                reloadTable();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_START_EVENT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                Daten.listeDownloads.setModelProgressAlleStart((TModelDownload) tabelle.getModel());
+                Daten.listeDownloads.setModelProgressAlleStart(model);
                 tabelle.fireTableDataChanged(true /*setSpalten*/);
                 setInfo();
             }
@@ -273,7 +267,7 @@ public class GuiDownloads extends PanelVorlage {
                 if (lastUpdate < (new Date().getTime() - 250)) {
                     // nur alle 250ms aufrufen
                     lastUpdate = new Date().getTime();
-                    Daten.listeDownloads.setModelProgress((TModelDownload) tabelle.getModel());
+                    Daten.listeDownloads.setModelProgress(model);
                     //tabelle.fireTableDataChanged(true /*setSpalten*/);
                 }
             }
@@ -290,22 +284,12 @@ public class GuiDownloads extends PanelVorlage {
         jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
     }
 
-    private synchronized void tabelleLaden() {
+    private synchronized void reloadTable() {
         // nur Downloads die schon in der Liste sind werden geladen
-        boolean abo, download;
         stopBeob = true;
         tabelle.getSpalten();
-        if (jRadioButtonAlles.isSelected()) {
-            abo = true;
-            download = true;
-        } else if (jRadioButtonAbos.isSelected()) {
-            abo = true;
-            download = false;
-        } else {
-            abo = false;
-            download = true;
-        }
-        Daten.listeDownloads.getModel((TModelDownload) tabelle.getModel(), abo, download);
+
+        Daten.listeDownloads.getModel(model, showAbos, showDownloads);
         tabelle.setSpalten();
         stopBeob = false;
         aktFilmSetzen();
@@ -317,7 +301,7 @@ public class GuiDownloads extends PanelVorlage {
         Daten.listeDownloads.abosPutzen();
         Daten.listeDownloads.zurueckgestellteWiederAktivieren();
         Daten.listeDownloads.abosSuchen(parentComponent);
-        tabelleLaden();
+        reloadTable();
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
             // und wenn gewollt auch gleich starten
             filmStartenWiederholenStoppen(true /*alle*/, true /*starten*/);
@@ -351,7 +335,7 @@ public class GuiDownloads extends PanelVorlage {
             dialog.setVisible(true);
             if (dialog.ok) {
                 datenDownload.aufMichKopieren(datenDownloadKopy);
-                tabelleLaden();
+                reloadTable();
             }
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
@@ -421,7 +405,7 @@ public class GuiDownloads extends PanelVorlage {
                 daten.erledigteAbos.zeileSchreiben(arrayUrlsAbo);
             }
             Daten.listeDownloads.downloadLoeschen(arrayUrls);
-            tabelleLaden();
+            reloadTable();
             // ausrichten
             if (tabelle.getRowCount() > 0 && rows.length >= 1) {
                 int s = rows[0];
@@ -532,7 +516,7 @@ public class GuiDownloads extends PanelVorlage {
             //alle Downloads starten/wiederstarten
             DatenDownload.startenDownloads(daten, listeDownloadsStarten);
         }
-        tabelleLaden();
+        reloadTable();
     }
 
     private void wartendeDownloadsStoppen() {
@@ -555,10 +539,19 @@ public class GuiDownloads extends PanelVorlage {
         daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar.StatusbarIndex.DOWNLOAD, textLinks);
     }
 
+    /**
+     * Return the model used for the display categories {@link javax.swing.JComboBox}.
+     *
+     * @return The selection model.
+     */
+    private DefaultComboBoxModel<String> getDisplaySelectionModel() {
+        return new DefaultComboBoxModel<>(new String[]{COMBO_DISPLAY_ALL, COMBO_DISPLAY_DOWNLOADS_ONLY, COMBO_DISPLAY_ABOS_ONLY});
+    }
+
     private void aktFilmSetzen() {
         if (this.isShowing()) {
             DatenFilm aktFilm = null;
-            int selectedTableRow = tabelle.getSelectedRow();
+            final int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
                 DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF_NR);
                 if (datenDownload != null) {
@@ -566,10 +559,9 @@ public class GuiDownloads extends PanelVorlage {
                     if (datenDownload.film == null) {
                         // geladener Einmaldownload nach Programmstart
                         datenDownload.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                        // vielleicht klappts ja damit
                     }
-                    if (datenDownload.film != null) {
-                        aktFilm = datenDownload.film;
-                    }
+                    aktFilm = datenDownload.film;
                 }
             }
             filmInfoHud.updateCurrentFilm(aktFilm);
@@ -587,114 +579,39 @@ public class GuiDownloads extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
-        jPanelFilter = new javax.swing.JPanel();
-        jRadioButtonAlles = new javax.swing.JRadioButton();
-        jRadioButtonDownloads = new javax.swing.JRadioButton();
-        jRadioButtonAbos = new javax.swing.JRadioButton();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanelFilter = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
+        cbDisplayCategories = new javax.swing.JComboBox();
         jPanelBeschreibung = new javax.swing.JPanel();
+
+        setLayout(new java.awt.BorderLayout());
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
 
-        jPanelFilter.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        buttonGroup1.add(jRadioButtonAlles);
-        jRadioButtonAlles.setSelected(true);
-        jRadioButtonAlles.setText(" alle");
-        jRadioButtonAlles.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jRadioButtonAlles.setBorderPainted(true);
-
-        buttonGroup1.add(jRadioButtonDownloads);
-        jRadioButtonDownloads.setText(" Downloads ");
-        jRadioButtonDownloads.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jRadioButtonDownloads.setBorderPainted(true);
-
-        buttonGroup1.add(jRadioButtonAbos);
-        jRadioButtonAbos.setText(" Abos ");
-        jRadioButtonAbos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jRadioButtonAbos.setBorderPainted(true);
+        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.LEFT);
+        flowLayout1.setAlignOnBaseline(true);
+        jPanelFilter.setLayout(flowLayout1);
 
         jLabel1.setText("Anzeigen:");
+        jPanelFilter.add(jLabel1);
+        jPanelFilter.add(cbDisplayCategories);
 
-        javax.swing.GroupLayout jPanelFilterLayout = new javax.swing.GroupLayout(jPanelFilter);
-        jPanelFilter.setLayout(jPanelFilterLayout);
-        jPanelFilterLayout.setHorizontalGroup(
-            jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelFilterLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButtonAlles)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButtonDownloads)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButtonAbos)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanelFilterLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jRadioButtonAbos, jRadioButtonAlles, jRadioButtonDownloads});
-
-        jPanelFilterLayout.setVerticalGroup(
-            jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilterLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jRadioButtonAlles)
-                    .addComponent(jRadioButtonDownloads)
-                    .addComponent(jRadioButtonAbos)
-                    .addComponent(jLabel1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        add(jPanelFilter, java.awt.BorderLayout.PAGE_START);
 
         jPanelBeschreibung.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-
-        javax.swing.GroupLayout jPanelBeschreibungLayout = new javax.swing.GroupLayout(jPanelBeschreibung);
-        jPanelBeschreibung.setLayout(jPanelBeschreibungLayout);
-        jPanelBeschreibungLayout.setHorizontalGroup(
-            jPanelBeschreibungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 668, Short.MAX_VALUE)
-        );
-        jPanelBeschreibungLayout.setVerticalGroup(
-            jPanelBeschreibungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 127, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelFilter, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanelFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6))
-        );
+        jPanelBeschreibung.setLayout(new java.awt.BorderLayout());
+        add(jPanelBeschreibung, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JComboBox cbDisplayCategories;
     private javax.swing.JPanel jPanelBeschreibung;
-    private javax.swing.JPanel jPanelFilter;
-    private javax.swing.JRadioButton jRadioButtonAbos;
-    private javax.swing.JRadioButton jRadioButtonAlles;
-    private javax.swing.JRadioButton jRadioButtonDownloads;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
@@ -1010,11 +927,35 @@ public class GuiDownloads extends PanelVorlage {
         }
     }
 
-    private class BeobAnzeige implements ActionListener {
+    /**
+     * This class filters the shown table items based on the made selection.
+     */
+    private class DisplayCategoryListener implements ActionListener {
 
         @Override
+        @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
-            tabelleLaden();
+            JComboBox<String> box = (JComboBox<String>) e.getSource();
+            final String action = (String) box.getSelectedItem();
+
+            switch (action) {
+                case COMBO_DISPLAY_ALL:
+                    showAbos = true;
+                    showDownloads = true;
+                    break;
+
+                case COMBO_DISPLAY_DOWNLOADS_ONLY:
+                    showAbos = false;
+                    showDownloads = true;
+                    break;
+
+                case COMBO_DISPLAY_ABOS_ONLY:
+                    showAbos = true;
+                    showDownloads = false;
+                    break;
+            }
+
+            reloadTable();
         }
     }
 }

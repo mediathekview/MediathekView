@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.regex.Matcher;
@@ -27,7 +26,6 @@ import javax.swing.JFrame;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 
 public class ListePset extends LinkedList<DatenPset> {
@@ -41,22 +39,20 @@ public class ListePset extends LinkedList<DatenPset> {
     public static final String MUSTER_PFAD_SCRIPT = "PFAD_SCRIPT";
     public String version = "";
 
-    public boolean nameExists(String name) {
-        boolean ret = false;
-        ListIterator<DatenPset> it = this.listIterator(0);
-        while (it.hasNext()) {
-            if (it.next().arr[DatenPset.PROGRAMMSET_NAME_NR].equals(name)) {
-                ret = true;
-            }
-        }
-        return ret;
-    }
+//    public boolean nameExists(String name) {
+//        boolean ret = false;
+//        ListIterator<DatenPset> it = this.listIterator(0);
+//        while (it.hasNext()) {
+//            if (it.next().arr[DatenPset.PROGRAMMSET_NAME_NR].equals(name)) {
+//                ret = true;
+//            }
+//        }
+//        return ret;
+//    }
 
     public DatenPset getPsetAbspielen() {
         //liefert die Programmgruppe zum Abspielen
-        Iterator<DatenPset> it = this.iterator();
-        while (it.hasNext()) {
-            DatenPset datenPset = it.next();
+        for (DatenPset datenPset : this) {
             if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR])) {
                 return datenPset;
             }
@@ -101,9 +97,7 @@ public class ListePset extends LinkedList<DatenPset> {
     public ListePset getListeSpeichern() {
         // liefert eine Liste Programmsets, die zum Speichern angelegt sind (ist meist nur eins)
         ListePset liste = new ListePset();
-        Iterator<DatenPset> it = this.iterator();
-        while (it.hasNext()) {
-            DatenPset datenPset = it.next();
+        for (DatenPset datenPset : this) {
             if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR])) {
                 liste.add(datenPset);
             }
@@ -114,9 +108,7 @@ public class ListePset extends LinkedList<DatenPset> {
     public ListePset getListeButton() {
         // liefert eine Liste Programmsets, die als Button angelegt sind
         ListePset liste = new ListePset();
-        Iterator<DatenPset> it = this.iterator();
-        while (it.hasNext()) {
-            DatenPset datenPset = it.next();
+        for (DatenPset datenPset : this) {
             if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR])) {
                 liste.add(datenPset);
             }
@@ -127,9 +119,7 @@ public class ListePset extends LinkedList<DatenPset> {
     public ListePset getListeAbo() {
         // liefert eine Liste Programmsets, die für Abos angelegt sind (ist meist nur eins)
         ListePset liste = new ListePset();
-        Iterator<DatenPset> it = this.iterator();
-        while (it.hasNext()) {
-            DatenPset datenPset = it.next();
+        for (DatenPset datenPset : this) {
             if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_ABO_NR])) {
                 liste.add(datenPset);
             }
@@ -169,9 +159,8 @@ public class ListePset extends LinkedList<DatenPset> {
 
     public boolean addPset(DatenPset datenPset) {
         boolean abspielen = false;
-        Iterator<DatenPset> it = this.iterator();
-        while (it.hasNext()) {
-            if (Boolean.parseBoolean(it.next().arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR])) {
+        for (DatenPset datenPset1 : this) {
+            if (Boolean.parseBoolean(datenPset1.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR])) {
                 abspielen = true;
                 break;
             }
@@ -186,9 +175,8 @@ public class ListePset extends LinkedList<DatenPset> {
 
     public boolean addPset(ListePset liste) {
         boolean ret = true;
-        Iterator<DatenPset> it = liste.iterator();
-        while (it.hasNext()) {
-            if (!addPset(it.next())) {
+        for (DatenPset entry : liste) {
+            if (!addPset(entry)) {
                 ret = false;
             }
         }
@@ -198,9 +186,7 @@ public class ListePset extends LinkedList<DatenPset> {
 
     public boolean progMusterErsetzen(JFrame parent, Daten dd, ListePset liste) {
         boolean ret = true;
-        Iterator<DatenPset> it = liste.iterator();
-        while (it.hasNext()) {
-            DatenPset pSet = it.next();
+        for (DatenPset pSet : liste) {
             if (!ListePset.this.progMusterErsetzen(parent, dd, pSet)) {
                 ret = false;
             }

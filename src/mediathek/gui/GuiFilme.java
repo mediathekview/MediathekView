@@ -188,10 +188,6 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void fertig(MSListenerFilmeLadenEvent event) {
-                if (!Daten.listeFilmeNachBlackList.neueFilme) {
-//                    mVFilter.get_jCheckBoxNeue().setSelected(false);
-                }
-//                mVFilter.get_jCheckBoxNeue().setEnabled(Daten.listeFilmeNachBlackList.neueFilme);
                 tabelleLaden();
             }
         });
@@ -254,9 +250,12 @@ public class GuiFilme extends PanelVorlage {
         BeobMausTabelle beobMausTabelle = new BeobMausTabelle();
         tabelle.addMouseListener(beobMausTabelle);
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
-        tabelle.setDefaultRenderer(Object.class, new CellRendererFilme(daten));
-        tabelle.setDefaultRenderer(Datum.class, new CellRendererFilme(daten));
-        tabelle.setDefaultRenderer(Integer.class, new CellRendererFilme(daten));
+
+        final CellRendererFilme cellRenderer = new CellRendererFilme(daten);
+        tabelle.setDefaultRenderer(Object.class, cellRenderer);
+        tabelle.setDefaultRenderer(Datum.class, cellRenderer);
+        tabelle.setDefaultRenderer(Integer.class, cellRenderer);
+
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
                 new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR, DatenFilm.FILM_DATUM_LONG_NR, /* DatenFilm.FILM_URL_HISTORY_NR, */ DatenFilm.FILM_REF_NR},
                 new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR},
@@ -914,7 +913,6 @@ public class GuiFilme extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel5 = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -925,20 +923,6 @@ public class GuiFilme extends PanelVorlage {
         jPanelExtraInnen = new javax.swing.JPanel();
         jScrollPaneFilter = new javax.swing.JScrollPane();
         jPanelFilter = new javax.swing.JPanel();
-
-        jPanel5.setMaximumSize(new java.awt.Dimension(32767, 5));
-        jPanel5.setMinimumSize(new java.awt.Dimension(100, 5));
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 5, Short.MAX_VALUE)
-        );
 
         jSplitPane1.setDividerLocation(240);
 
@@ -1005,12 +989,12 @@ public class GuiFilme extends PanelVorlage {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1027,7 +1011,7 @@ public class GuiFilme extends PanelVorlage {
         );
         jPanelFilterLayout.setVerticalGroup(
             jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 481, Short.MAX_VALUE)
+            .addGap(0, 504, Short.MAX_VALUE)
         );
 
         jScrollPaneFilter.setViewportView(jPanelFilter);
@@ -1038,26 +1022,17 @@ public class GuiFilme extends PanelVorlage {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 839, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jSplitPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSplitPane1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox jCheckBoxProgamme;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JPanel jPanelExtraInnen;

@@ -111,7 +111,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                     if (parser.getLocalName().equals(PGR)) {
                         //wieder ein neuer Server, toll
                         String[] p = new String[PGR_MAX_ELEM];
-                        get(parser, event, PGR, PGR_COLUMN_NAMES, p);
+                        get(parser, PGR, PGR_COLUMN_NAMES, p);
                         if (!p[PGR_URL_NR].equals("")) {
                             this.add(p);
                         }
@@ -264,7 +264,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         return pSet;
     }
 
-    private boolean get(XMLStreamReader parser, int event, String xmlElem, String[] xmlNames, String[] strRet) {
+    private boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet) {
         boolean ret = true;
         int maxElem = strRet.length;
         for (int i = 0; i < maxElem; ++i) {
@@ -272,7 +272,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
         try {
             while (parser.hasNext()) {
-                event = parser.next();
+                int event = parser.next();
                 if (event == XMLStreamConstants.END_ELEMENT) {
                     if (parser.getLocalName().equals(xmlElem)) {
                         break;

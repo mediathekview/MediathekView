@@ -26,9 +26,9 @@ import java.util.ListIterator;
 
 public class ListeProg extends LinkedList<DatenProg> {
 
-    public void addProg(String name, String pfad, String schalter) {
-        add(new DatenProg(name, pfad, schalter, Boolean.FALSE.toString()));
-    }
+//    public void addProg(String name, String pfad, String schalter) {
+//        add(new DatenProg(name, pfad, schalter, Boolean.FALSE.toString()));
+//    }
 
     public DatenProg remove(String name) {
         DatenProg ret = null;
@@ -81,17 +81,17 @@ public class ListeProg extends LinkedList<DatenProg> {
         return model;
     }
 
-    public String[] getObjectDataCombo() {
-        String[] object;
-        DatenProg daten;
-        int i = 0;
-        ListIterator<DatenProg> iterator = this.listIterator(0);
-        object = new String[this.size()];
-        while (iterator.hasNext()) {
-            daten = iterator.next();
-            object[i] = daten.arr[DatenProg.PROGRAMM_NAME_NR];
-            ++i;
-        }
-        return object;
-    }
+//    public String[] getObjectDataCombo() {
+//        String[] object;
+//        DatenProg daten;
+//        int i = 0;
+//        ListIterator<DatenProg> iterator = this.listIterator(0);
+//        object = new String[this.size()];
+//        while (iterator.hasNext()) {
+//            daten = iterator.next();
+//            object[i] = daten.arr[DatenProg.PROGRAMM_NAME_NR];
+//            ++i;
+//        }
+//        return object;
+//    }
 }

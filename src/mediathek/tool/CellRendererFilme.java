@@ -43,13 +43,11 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     private static ImageIcon film_stop_tab = null;
     private static ImageIcon film_stop_sw_tab = null;
     private boolean geoMelden = false;
-    private Daten ddaten;
     private MVUsedUrls history = null;
     private MVSenderIconCache senderIconCache;
 
     public CellRendererFilme(Daten d) {
-        ddaten = d;
-        history = ddaten.history;
+        history = d.history;
         film_start_tab = GetIcon.getIcon("film_start_tab.png");
         film_start_sw_tab = GetIcon.getIcon("film_start_sw_tab.png");
         film_rec_tab = GetIcon.getIcon("film_rec_tab.png");
@@ -82,8 +80,8 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             setHorizontalAlignment(SwingConstants.LEADING);
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-            int rowModelIndex = table.convertRowIndexToModel(row);
-            int columnModelIndex = table.convertColumnIndexToModel(column);
+            final int rowModelIndex = table.convertRowIndexToModel(row);
+            final int columnModelIndex = table.convertColumnIndexToModel(column);
 
             DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF_NR);
             DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL_NR]);
@@ -110,7 +108,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     break;
 
                 case DatenFilm.FILM_AUFZEICHNEN_NR:
-                    handleButtonDownloadColumn(datenDownload, isSelected);
+                    handleButtonDownloadColumn(isSelected);
                     break;
                 case DatenFilm.FILM_SENDER_NR:
                     if (((MVTable) table).iconAnzeigen) {
@@ -184,7 +182,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         }
     }
 
-    private void handleButtonDownloadColumn(final DatenDownload datenDownload, final boolean isSelected) {
+    private void handleButtonDownloadColumn(final boolean isSelected) {
         // Button Aufzeichnen
         setHorizontalAlignment(SwingConstants.CENTER);
         setToolTipText("Film aufzeichnen");

@@ -20,136 +20,33 @@
 package mediathek.tool;
 
 import java.util.List;
-import java.util.ListIterator;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 public class TModel extends DefaultTableModel {
-
-    TableModelListener[] tmls = null;
-    public Object[][] object;
-    Object[] columns;
 
     public TModel() {
     }
 
     public TModel(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
-        object = data;
-        columns = columnNames;
     }
 
-//    public void reorder(int fromIndex, int toIndex) {
-//        this.moveRow(fromIndex, fromIndex, toIndex);
-//    }
     @Override
     public boolean isCellEditable(int i, int j) {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     public int getIdxRow(int idxWert) {
         // liefert die Zeile in der die erste Spalte idx enthält
         // die Indexspalte ist die SPALTE 0!!!!
         int ret = 0;
-        ListIterator<List> it = this.getDataVector().listIterator();
-        while (it.hasNext()) {
-            if (((Integer) it.next().get(0)).intValue() == idxWert) {
+        for (List list : (Iterable<List>) getDataVector()) {
+            if ((Integer) list.get(0) == idxWert) {
                 return ret;
             }
             ++ret;
         }
         return -1;
     }
-
-//    public void filterModel(String str, int feld, boolean exact) {
-//        if (str != null) {
-//            if (!str.equals("")) {
-//                for (int i = 0; i < this.getRowCount(); ++i) {
-//                    String tmp;
-//                    tmp = this.getValueAt(i, feld).toString();
-//                    if (exact && tmp.length() != str.length()) {
-//                        this.removeRow(i);
-//                        --i;
-//                        continue;
-//                    }
-//                    if (!tmp.toLowerCase().contains(str.toLowerCase())) {
-//                        this.removeRow(i);
-//                        --i;
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    public void filter(Daten daten, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
-//        List zeile;
-//        ListIterator<List> it = this.getDataVector().listIterator();
-//        while (it.hasNext()) {
-//            zeile = it.next();
-//            if (live) {
-//                if (!zeile.get(DatenFilm.FILM_THEMA_NR).equals(ListeFilme.THEMA_LIVE)) {
-//                    it.remove();
-//                    continue;
-//                }
-//            } else if (nurHd) {
-//                if (zeile.get(DatenFilm.FILM_URL_HD_NR).toString().isEmpty()) {
-//                    it.remove();
-//                    continue;
-//                }
-//            } else {
-//                if (!zeile.get(DatenFilm.FILM_ABO_NAME_NR).equals("")) {
-//                    if (keineAbos) {
-//                        it.remove();
-//                        continue;
-//                    }
-//                }
-//                if (kGesehen) {
-//                    if (daten.history.contains(zeile.get(DatenFilm.FILM_URL_NR).toString())) {
-//                        it.remove();
-//                        continue;
-//                    }
-//                }
-//            }
-//
-//
-//        }
-//    }
-//    public String[] getModelOfField(Daten daten, int feld, boolean leer) {
-//        /* erstellt ein StringArray mit den Daten des Feldes
-//         * leer: immer ein leeres Feld am Anfang */
-//        LinkedList<String> list = new LinkedList<String>();
-//        String[] ret;
-//        String str;
-//        for (int i = 0; i < this.getRowCount(); ++i) {
-//            str = this.getValueAt(i, feld).toString();
-//            if (str.equals("")) {
-//                leer = true;
-//            } else if (!list.contains(str)) {
-//                list.add(str);
-//            }
-//        }
-//        if (leer) {
-//            ret = new String[list.size() + 1];
-//            ret[0] = "";
-//            for (int i = 0; i < list.size(); ++i) {
-//                ret[i + 1] = list.get(i);
-//            }
-//        } else {
-//            ret = new String[list.size()];
-//            for (int i = 0; i < list.size(); ++i) {
-//                ret[i] = list.get(i);
-//            }
-//        }
-//        return ret;
-//    }
-//    public boolean delRow(int spalte, String wert) {
-//        /* löscht die Zeile(n) in der die "Spalte" den "Wert" hat */
-//        boolean gefunden = false;
-//        for (int i = this.getRowCount() - 1; i >= 0; --i) {
-//            if (this.getValueAt(i, spalte).toString().equals(wert)) {
-//                this.removeRow(i);
-//                gefunden = true;
-//            }
-//        }
-//        return gefunden;
-//    }
 }

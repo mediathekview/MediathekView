@@ -266,19 +266,18 @@ public class IoXmlSchreiben {
     }
 
     private void xmlSchreibenConfig(String xmlName, String[][] xmlSpalten, boolean newLine) {
-        int xmlMax = xmlSpalten.length;
         try {
             writer.writeStartElement(xmlName);
             if (newLine) {
                 writer.writeCharacters("\n"); //neue Zeile
             }
-            for (int i = 0; i < xmlMax; ++i) {
-                if (!xmlSpalten[i][1].equals("")) {
+            for (String[] xmlSpalte : xmlSpalten) {
+                if (!xmlSpalte[1].equals("")) {
                     if (newLine) {
                         writer.writeCharacters("\t"); //Tab
                     }
-                    writer.writeStartElement(xmlSpalten[i][0]);
-                    writer.writeCharacters(xmlSpalten[i][1]);
+                    writer.writeStartElement(xmlSpalte[0]);
+                    writer.writeCharacters(xmlSpalte[1]);
                     writer.writeEndElement();
                     if (newLine) {
                         writer.writeCharacters("\n"); //neue Zeile

@@ -22,11 +22,7 @@ package mediathek;
 import com.jidesoft.utils.SystemInfo;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -298,13 +294,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         });
 
         // für den Mac
-        this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-f");
-        this.getRootPane().getActionMap().put("mac-f", new AbstractAction() {
+        final JRootPane rootPane = getRootPane();
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-f");
+        rootPane.getActionMap().put("mac-f", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setFocusSuchfeld();
             }
         });
+
         setFocusSuchfeld();
         duration.ping("Gui steht!");
     }
@@ -1170,7 +1168,21 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         if (SystemInfo.isMacOSX()) {
             // sonst gibts eine Exception
             setupUserInterfaceForOsx();
+            setupAcceleratorsForOsx();
         }
+    }
+
+    /**
+     * Keyboard shortcuts for some actions need to be changed for OS X
+     */
+    private void setupAcceleratorsForOsx()
+    {
+        jMenuItemFilmAbspielen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F6, InputEvent.META_MASK));
+        jMenuItemFilmAufzeichnen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F7, InputEvent.META_MASK));
+        jMenuItemFilterLoeschen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F8, InputEvent.META_MASK));
+        jMenuItemBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F9, InputEvent.META_MASK));
+        jCheckBoxMenuItemBeschreibung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.META_MASK));
+        jCheckBoxMenuItemVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, InputEvent.META_MASK));
     }
 
     /**
@@ -1296,7 +1308,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jPanelInfo = new javax.swing.JPanel();
         jTabbedPane = new javax.swing.JTabbedPane();
@@ -1340,17 +1351,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemAnleitung = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jMenuItemAbout = new javax.swing.JMenuItem();
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -1551,6 +1551,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
