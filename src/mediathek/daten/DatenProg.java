@@ -60,19 +60,9 @@ public class DatenProg {
         arr[PROGRAMM_RESTART_NR] = restart.equals("") ? Boolean.toString(false) : restart;
     }
 
-    public DatenProg(String name, String programmpfad, String schalter, String restart, String farbe) {
-        makeArr();
-        arr[PROGRAMM_NAME_NR] = name;
-        arr[PROGRAMM_PROGRAMMPFAD_NR] = programmpfad;
-        arr[PROGRAMM_SCHALTER_NR] = schalter;
-        arr[PROGRAMM_RESTART_NR] = restart.equals("") ? Boolean.toString(false) : restart;
-    }
-
     public DatenProg copy() {
         DatenProg ret = new DatenProg();
-        for (int i = 0; i < arr.length; ++i) {
-            ret.arr[i] = new String(this.arr[i]);
-        }
+        System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
         return ret;
     }
 

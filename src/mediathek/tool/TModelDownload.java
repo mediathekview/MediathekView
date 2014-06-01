@@ -23,7 +23,7 @@ import mediathek.daten.DatenDownload;
 
 public class TModelDownload extends TModel {
 
-    Class[] types;
+    private Class[] types;
 
     public TModelDownload(Object[][] data, Object[] columnNames) {
         super(data, columnNames);

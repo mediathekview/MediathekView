@@ -269,17 +269,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public DatenDownload getCopy() {
         DatenDownload ret = new DatenDownload();
-        for (int i = 0; i < arr.length; ++i) {
-            ret.arr[i] = new String(this.arr[i]);
-        }
+        System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
         ret.datumFilm = this.datumFilm;
         return ret;
     }
 
     public void aufMichKopieren(DatenDownload datenDownload) {
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = new String(datenDownload.arr[i]);
-        }
+        System.arraycopy(datenDownload.arr, 0, arr, 0, arr.length);
     }
 
     public boolean istAbo() {
@@ -356,9 +352,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].replace("%p", "");
             pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace("%n", "");
             pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace("%p", "");
-            Iterator<DatenProg> it = pSet.getListeProg().iterator();
-            while (it.hasNext()) {
-                DatenProg prog = it.next();
+            for (DatenProg prog : pSet.getListeProg()) {
                 prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].replace("%n", "");
                 prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].replace("%p", "");
             }
@@ -545,7 +539,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     @Override
     public int compareTo(DatenDownload arg0) {
-        int ret = 0;
+        int ret;
         if ((ret = sorter.compare(arr[DatenDownload.DOWNLOAD_SENDER_NR], arg0.arr[DatenDownload.DOWNLOAD_SENDER_NR])) == 0) {
             return sorter.compare(arr[DatenDownload.DOWNLOAD_THEMA_NR], arg0.arr[DatenDownload.DOWNLOAD_THEMA_NR]);
         }
