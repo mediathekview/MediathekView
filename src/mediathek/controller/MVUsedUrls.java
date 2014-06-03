@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -41,7 +42,7 @@ public class MVUsedUrls {
     private final static String TRENNER = "  |###|  ";
     private final static String PAUSE = " |#| ";
     private final HashSet<String> listeUrls;
-    private LinkedList<String[]> listeUrlsSortDate;
+    private LinkedList<MVUsedUrl> listeUrlsSortDate;
     private final String fileName;
     private final int notifyEvent;
 
@@ -81,13 +82,23 @@ public class MVUsedUrls {
     public synchronized Object[][] getObjectData() {
         Object[][] object;
         int i = 0;
-        Iterator<String[]> iterator = listeUrlsSortDate.iterator();
+        Iterator<MVUsedUrl> iterator = listeUrlsSortDate.iterator();
         object = new Object[listeUrlsSortDate.size()][3];
         while (iterator.hasNext()) {
-            object[i] = iterator.next();
+            object[i] = iterator.next().uUrl;
             ++i;
         }
         return object;
+    }
+
+    public synchronized LinkedList<MVUsedUrl> getSortList() {
+        LinkedList<MVUsedUrl> ret = new LinkedList<>();
+        Iterator<MVUsedUrl> iterator = listeUrlsSortDate.iterator();
+        while (iterator.hasNext()) {
+            ret.add(iterator.next());
+        }
+        Collections.sort(ret);
+        return ret;
     }
 
     public synchronized boolean urlAusLogfileLoeschen(String urlFilm) {
@@ -140,7 +151,7 @@ public class MVUsedUrls {
         String text;
         String datum = DatumZeit.getHeute_dd_MM_yyyy();
         listeUrls.add(url);
-        listeUrlsSortDate.add(new String[]{datum, titel, url});
+        listeUrlsSortDate.add(new MVUsedUrl(new String[]{datum, titel, url}));
 
         //Automatic Resource Management
         try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND)))) {
@@ -189,7 +200,7 @@ public class MVUsedUrls {
                     titel = a[1];
                     url = a[2];
                     listeUrls.add(url);
-                    listeUrlsSortDate.add(new String[]{zeit, titel, url});
+                    listeUrlsSortDate.add(new MVUsedUrl(new String[]{zeit, titel, url}));
                     thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
                     titel = GuiFunktionen.textLaenge(40, putzen(titel), false /* mitte */, false /*addVorne*/);
                     text = zeit + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
@@ -232,7 +243,7 @@ public class MVUsedUrls {
             while ((zeile = in.readLine()) != null) {
                 String[] s = getUrlAusZeile(zeile);
                 listeUrls.add(s[2]);
-                listeUrlsSortDate.add(s);
+                listeUrlsSortDate.add(new MVUsedUrl(s));
             }
             in.close();
         } catch (Exception ex) {

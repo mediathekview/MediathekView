@@ -24,17 +24,28 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import mediathek.controller.MVUsedUrl;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogAddDownload;
+import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModel;
 import msearch.daten.DatenFilm;
 
@@ -48,6 +59,13 @@ public class PanelErledigteUrls extends PanelVorlage {
         initComponents();
         jTable1.addMouseListener(new BeobMausTabelle());
         jButtonLoeschen.setEnabled(false);
+        jButtonExport.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exportListe();
+            }
+        });
     }
 
     public void initAbo() {
@@ -110,6 +128,40 @@ public class PanelErledigteUrls extends PanelVorlage {
         });
     }
 
+    private void exportListe() {
+        if (jTable1.getModel().getRowCount() <= 0) {
+            return;
+        }
+        DialogZiel dialog = new DialogZiel(parentComponent, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt", "Filmtitel speichern");
+        dialog.setVisible(true);
+        if (!dialog.ok) {
+            return;
+        }
+        LinkedList<MVUsedUrl> liste;
+        if (abo) {
+            liste = daten.erledigteAbos.getSortList();
+        } else {
+            liste = daten.history.getSortList();
+        }
+
+        Path logFilePath = Paths.get(dialog.ziel);
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(logFilePath)))) {
+            bw.newLine();
+            Iterator<MVUsedUrl> it = liste.iterator();
+            while (it.hasNext()) {
+                bw.write(it.next().getString());
+                bw.newLine();
+            }
+            bw.newLine();
+            //
+            bw.flush();
+            bw.close();
+        } catch (Exception ex) {
+            MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
+                    "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -122,6 +174,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         jTable1 = new javax.swing.JTable();
         jButtonLoeschen = new javax.swing.JButton();
         jToggleButtonLaden = new javax.swing.JToggleButton();
+        jButtonExport = new javax.swing.JButton();
 
         jTable1.setModel(new TModel());
         jScrollPane1.setViewportView(jTable1);
@@ -129,6 +182,8 @@ public class PanelErledigteUrls extends PanelVorlage {
         jButtonLoeschen.setText("Liste löschen");
 
         jToggleButtonLaden.setText("Laden");
+
+        jButtonExport.setText("Liste exportieren");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -141,6 +196,8 @@ public class PanelErledigteUrls extends PanelVorlage {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jToggleButtonLaden)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonExport)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonLoeschen)))
                 .addContainerGap())
         );
@@ -155,11 +212,13 @@ public class PanelErledigteUrls extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonLoeschen)
-                    .addComponent(jToggleButtonLaden))
+                    .addComponent(jToggleButtonLaden)
+                    .addComponent(jButtonExport))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonLoeschen;
     private javax.swing.JTable jTable1;
     private javax.swing.JToggleButton jToggleButtonLaden;
