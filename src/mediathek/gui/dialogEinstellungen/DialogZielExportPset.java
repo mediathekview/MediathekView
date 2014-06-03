@@ -19,23 +19,23 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import com.jidesoft.utils.SystemInfo;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
-import mediathek.controller.Log;
 import mediathek.tool.MVMessageDialog;
 
-public class DialogZiel extends javax.swing.JDialog {
+public class DialogZielExportPset extends javax.swing.JDialog {
 
     public boolean ok = false;
     public String ziel = "";
@@ -50,7 +50,7 @@ public class DialogZiel extends javax.swing.JDialog {
      * @param pfad
      * @param name
      */
-    public DialogZiel(java.awt.Frame parent, Daten dd, boolean modal, String pfad, String name) {
+    public DialogZielExportPset(JFrame parent, Daten dd, boolean modal, String pfad, String name) {
         super(parent, modal);
         parentComponent = parent;
         ddaten = dd;
@@ -98,10 +98,10 @@ public class DialogZiel extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jButtonZiel = new javax.swing.JButton();
         jTextFieldPfad = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jButtonOk = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -168,8 +168,6 @@ public class DialogZiel extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonOk;
     private javax.swing.JButton jButtonZiel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextFieldPfad;
     // End of variables declaration//GEN-END:variables
 
