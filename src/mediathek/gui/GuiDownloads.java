@@ -26,11 +26,13 @@ import java.awt.Toolkit;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.MVStatusBar;
 import mediathek.MVToolBar;
+import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -41,6 +43,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererDownloads;
 import mediathek.tool.Datum;
+import mediathek.tool.DatumZeit;
 import mediathek.tool.DirOpenAction;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
@@ -382,27 +385,29 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void downloadLoeschen(boolean dauerhaft) {
+        String zeit = DatumZeit.getHeute_dd_MM_yyyy();
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
             ArrayList<String> arrayUrls = new ArrayList<>();
-            ArrayList<String[]> arrayUrlsAbo = new ArrayList<>();
+            LinkedList<MVUsedUrl> urlAboList = new LinkedList<>();
             for (int row : rows) {
                 DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
                 if (dauerhaft) {
                     arrayUrls.add(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                     if (datenDownload.istAbo()) {
                         // ein Abo wird zusätzlich ins Logfile geschrieben
-                        arrayUrlsAbo.add(new String[]{datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
-                            datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                            datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]});
+                        urlAboList.add(new MVUsedUrl(zeit,
+                                datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
+                                datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
+                                datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]));
                     }
                 } else {
                     // wenn nicht dauerhaft
                     datenDownload.zurueckstellen();
                 }
             }
-            if (!arrayUrlsAbo.isEmpty()) {
-                daten.erledigteAbos.zeileSchreiben(arrayUrlsAbo);
+            if (!urlAboList.isEmpty()) {
+                daten.erledigteAbos.zeilenSchreiben(urlAboList);
             }
             Daten.listeDownloads.downloadLoeschen(arrayUrls);
             reloadTable();

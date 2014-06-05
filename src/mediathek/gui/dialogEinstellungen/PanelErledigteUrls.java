@@ -52,7 +52,6 @@ import msearch.daten.DatenFilm;
 public class PanelErledigteUrls extends PanelVorlage {
 
     private boolean abo;
-    private String[] tableTitle = {"Datum", "Titel", "Url"};
 
     public PanelErledigteUrls(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -74,7 +73,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             @Override
             public void ping() {
                 if (jToggleButtonLaden.isSelected()) {
-                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), tableTitle));
+                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), MVUsedUrl.title));
                 }
             }
         });
@@ -89,10 +88,10 @@ public class PanelErledigteUrls extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 if (jToggleButtonLaden.isSelected()) {
                     jButtonLoeschen.setEnabled(true);
-                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), tableTitle));
+                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), MVUsedUrl.title));
                 } else {
                     jButtonLoeschen.setEnabled(false);
-                    jTable1.setModel(new TModel(null, tableTitle));
+                    jTable1.setModel(new TModel(null, MVUsedUrl.title));
                 }
             }
         });
@@ -104,7 +103,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             @Override
             public void ping() {
                 if (jToggleButtonLaden.isSelected()) {
-                    jTable1.setModel(new TModel(daten.history.getObjectData(), tableTitle));
+                    jTable1.setModel(new TModel(daten.history.getObjectData(), MVUsedUrl.title));
                 }
             }
         });
@@ -119,10 +118,10 @@ public class PanelErledigteUrls extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 if (jToggleButtonLaden.isSelected()) {
                     jButtonLoeschen.setEnabled(true);
-                    jTable1.setModel(new TModel(daten.history.getObjectData(), tableTitle));
+                    jTable1.setModel(new TModel(daten.history.getObjectData(), MVUsedUrl.title));
                 } else {
                     jButtonLoeschen.setEnabled(false);
-                    jTable1.setModel(new TModel(null, tableTitle));
+                    jTable1.setModel(new TModel(null, MVUsedUrl.title));
                 }
             }
         });
@@ -146,6 +145,9 @@ public class PanelErledigteUrls extends PanelVorlage {
 
         Path logFilePath = Paths.get(dialog.ziel);
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(logFilePath)))) {
+            bw.newLine();
+            bw.write(MVUsedUrl.getHeaderString());
+            bw.newLine();
             bw.newLine();
             Iterator<MVUsedUrl> it = liste.iterator();
             while (it.hasNext()) {
@@ -251,7 +253,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             int nr = jTable1.rowAtPoint(p);
             if (nr >= 0) {
                 jTable1.setRowSelectionInterval(nr, nr);
-                String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), 2).toString();
+                String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), 3).toString();
                 film = Daten.listeFilme.getFilmByUrl(url);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();

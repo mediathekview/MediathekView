@@ -23,7 +23,9 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import mediathek.controller.Log;
+import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.tool.AsxLesen;
 import mediathek.tool.Datum;
@@ -254,15 +256,17 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> ad) {
         // Start erstellen und zur Liste hinzufügen
-        ArrayList<String[]> arrayUrls = new ArrayList<>();
+        String zeit = DatumZeit.getHeute_dd_MM_yyyy();
+        LinkedList<MVUsedUrl> urlList = new LinkedList<>();
         for (DatenDownload d : ad) {
             d.start = new Start();
-            arrayUrls.add(new String[]{d.arr[DatenDownload.DOWNLOAD_THEMA_NR],
-                d.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                d.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]});
+            urlList.add(new MVUsedUrl(zeit,
+                    d.arr[DatenDownload.DOWNLOAD_THEMA_NR],
+                    d.arr[DatenDownload.DOWNLOAD_TITEL_NR],
+                    d.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]));
         }
-        if (!arrayUrls.isEmpty()) {
-            ddaten.history.zeileSchreiben(arrayUrls);
+        if (!urlList.isEmpty()) {
+            ddaten.history.zeilenSchreiben(urlList);
         }
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, DatenDownload.class.getSimpleName());
     }

@@ -45,6 +45,8 @@ public class RuntimeExec {
     private Pattern patternFfmpeg = Pattern.compile("(?<=  Duration: )[^,]*"); // Duration: 00:00:30.28, start: 0.000000, bitrate: N/A
     //private Pattern patternZeit = Pattern.compile("(?<=time=)[\\d:.]+"); //    1611kB time=00:00:06.73 bitrate=1959.7kbits/s   
     private Pattern patternZeit = Pattern.compile("(?<=time=)[^ ]*"); //    1611kB time=00:00:06.73 bitrate=1959.7kbits/s   
+    private Pattern patternZeitAvconv = Pattern.compile("(?<=time=)[^ ]*"); //frame= 2525 fps= 32 q=-1.0 size=   26182kB time=100.96 bitrate=2124.5kbits/s 
+
     private double totalSecs = 0;
 
     public RuntimeExec(DatenDownload d) {
@@ -152,13 +154,21 @@ public class RuntimeExec {
                     }
                     matcher = patternZeit.matcher(input);
                     if (totalSecs > 0 && matcher.find()) {
+                        // ffmpeg    1611kB time=00:00:06.73 bitrate=1959.7kbits/s   
+                        // avconv    size=   26182kB time=100.96 bitrate=2124.5kbits/s 
                         String zeit = matcher.group();
-                        String[] hms = zeit.split(":");
-                        double aktSecs = Integer.parseInt(hms[0]) * 3600
-                                + Integer.parseInt(hms[1]) * 60
-                                + Double.parseDouble(hms[2]);
-                        double d = aktSecs / totalSecs * 100;
-                        meldenDouble(d);
+                        if (zeit.contains(":")) {
+                            String[] hms = zeit.split(":");
+                            double aktSecs = Integer.parseInt(hms[0]) * 3600
+                                    + Integer.parseInt(hms[1]) * 60
+                                    + Double.parseDouble(hms[2]);
+                            double d = aktSecs / totalSecs * 100;
+                            meldenDouble(d);
+                        } else {
+                            double aktSecs = Double.parseDouble(zeit);
+                            double d = aktSecs / totalSecs * 100;
+                            meldenDouble(d);
+                        }
                     }
                 } catch (Exception ex) {
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
