@@ -39,8 +39,8 @@ import mediathek.tool.ListenerMediathekView;
 
 public class MVUsedUrls {
 
-    private final static String TRENNER = "  |###|  ";
-    private final static String PAUSE = " |#| ";
+//    private final static String TRENNER = "  |###|  ";
+//    private final static String PAUSE = " |#| ";
     private final HashSet<String> listeUrls;
     private LinkedList<MVUsedUrl> listeUrlsSortDate;
     private final String fileName;
@@ -116,7 +116,7 @@ public class MVUsedUrls {
 
         try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(urlPath)))) {
             while ((zeile = in.readLine()) != null) {
-                if (getUrlAusZeile(zeile)[2].equals(urlFilm)) {
+                if (MVUsedUrl.getUrlAusZeile(zeile).getUrl().equals(urlFilm)) {
                     gefunden = true; //nur dann muss das Logfile auch geschrieben werden
                 } else {
                     liste.add(zeile);
@@ -151,13 +151,11 @@ public class MVUsedUrls {
         String text;
         String datum = DatumZeit.getHeute_dd_MM_yyyy();
         listeUrls.add(url);
-        listeUrlsSortDate.add(new MVUsedUrl(new String[]{datum, titel, url}));
+        listeUrlsSortDate.add(new MVUsedUrl(datum, thema, titel, url));
 
         //Automatic Resource Management
         try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND)))) {
-            thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
-            titel = GuiFunktionen.textLaenge(40, putzen(titel), false /* mitte */, false /*addVorne*/);
-            text = datum + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
+            text = MVUsedUrl.getUsedUrl(datum, thema, titel, url);
             bufferedWriter.write(text);
             bufferedWriter.flush();
             bufferedWriter.close();
@@ -171,39 +169,32 @@ public class MVUsedUrls {
     }
 
     // eigener Thread!!
-    public synchronized void zeileSchreiben(ArrayList<String[]> list) {
-        new Thread(new zeileSchreiben_(list)).start();
+    public synchronized void zeilenSchreiben(LinkedList<MVUsedUrl> mvuuList) {
+        new Thread(new zeilenSchreiben_(mvuuList)).start();
     }
 
-    private class zeileSchreiben_ implements Runnable {
+    private class zeilenSchreiben_ implements Runnable {
 
-        ArrayList<String[]> l;
+        LinkedList<MVUsedUrl> mvuuList;
 
-        public zeileSchreiben_(ArrayList<String[]> ll) {
-            l = ll;
+        public zeilenSchreiben_(LinkedList<MVUsedUrl> mvuuList) {
+            this.mvuuList = mvuuList;
         }
 
         @Override
         public synchronized void run() {
-            zeileSchreiben(l);
+            zeilenSchreiben(mvuuList);
         }
 
-        public synchronized boolean zeileSchreiben(ArrayList<String[]> list) {
+        private synchronized boolean zeilenSchreiben(LinkedList<MVUsedUrl> mvuuList) {
 
             boolean ret = false;
             String text;
-            String zeit = DatumZeit.getHeute_dd_MM_yyyy();
-            String thema, titel, url;
             try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND)))) {
-                for (String[] a : list) {
-                    thema = a[0];
-                    titel = a[1];
-                    url = a[2];
-                    listeUrls.add(url);
-                    listeUrlsSortDate.add(new MVUsedUrl(new String[]{zeit, titel, url}));
-                    thema = GuiFunktionen.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/);
-                    titel = GuiFunktionen.textLaenge(40, putzen(titel), false /* mitte */, false /*addVorne*/);
-                    text = zeit + PAUSE + thema + PAUSE + titel + TRENNER + url + "\n";
+                for (MVUsedUrl mvuu : mvuuList) {
+                    listeUrls.add(mvuu.getUrl());
+                    listeUrlsSortDate.add(mvuu);
+                    text = mvuu.getUsedUrl();
                     bufferedWriter.write(text);
                     ret = true;
                 }
@@ -241,9 +232,9 @@ public class MVUsedUrls {
         try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(urlPath)))) {
             String zeile;
             while ((zeile = in.readLine()) != null) {
-                String[] s = getUrlAusZeile(zeile);
-                listeUrls.add(s[2]);
-                listeUrlsSortDate.add(new MVUsedUrl(s));
+                MVUsedUrl mvuu = MVUsedUrl.getUrlAusZeile(zeile);
+                listeUrls.add(mvuu.getUrl());
+                listeUrlsSortDate.add(mvuu);
             }
             in.close();
         } catch (Exception ex) {
@@ -251,32 +242,31 @@ public class MVUsedUrls {
         }
     }
 
-    private String putzen(String s) {
-        s = s.replace("\n", "");
-        s = s.replace("|", "");
-        s = s.replace(TRENNER, "");
-        return s;
-    }
-
-    private String[] getUrlAusZeile(String zeile) {
-        String url = "", titel = "", datum = "";
-        int a1;
-
-        try {
-            if (zeile.contains(TRENNER)) {
-                //neues Logfile-Format
-                a1 = zeile.lastIndexOf(TRENNER);
-                a1 += TRENNER.length();
-                url = zeile.substring(a1);
-                // titel
-                titel = zeile.substring(zeile.lastIndexOf(PAUSE) + PAUSE.length(), zeile.lastIndexOf(TRENNER));
-                datum = zeile.substring(0, zeile.indexOf(PAUSE));
-            } else {
-                url = zeile;
-            }
-        } catch (Exception ex) {
-            Log.fehlerMeldung(398853224, Log.FEHLER_ART_PROG, "ErledigteAbos.getUrlAusZeile: " + zeile, ex);
-        }
-        return new String[]{datum, titel, url};
-    }
+//    private String putzen(String s) {
+//        s = s.replace("\n", "");
+//        s = s.replace("|", "");
+//        s = s.replace(TRENNER, "");
+//        return s;
+//    }
+//    private String[] getUrlAusZeile(String zeile) {
+//        String url = "", titel = "", datum = "";
+//        int a1;
+//
+//        try {
+//            if (zeile.contains(TRENNER)) {
+//                //neues Logfile-Format
+//                a1 = zeile.lastIndexOf(TRENNER);
+//                a1 += TRENNER.length();
+//                url = zeile.substring(a1);
+//                // titel
+//                titel = zeile.substring(zeile.lastIndexOf(PAUSE) + PAUSE.length(), zeile.lastIndexOf(TRENNER));
+//                datum = zeile.substring(0, zeile.indexOf(PAUSE));
+//            } else {
+//                url = zeile;
+//            }
+//        } catch (Exception ex) {
+//            Log.fehlerMeldung(398853224, Log.FEHLER_ART_PROG, "ErledigteAbos.getUrlAusZeile: " + zeile, ex);
+//        }
+//        return new String[]{datum, titel, url};
+//    }
 }
