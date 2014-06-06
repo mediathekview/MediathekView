@@ -27,14 +27,12 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.daten.Daten;
 import mediathek.tool.DatumZeit;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 
 public class MVUsedUrls {
