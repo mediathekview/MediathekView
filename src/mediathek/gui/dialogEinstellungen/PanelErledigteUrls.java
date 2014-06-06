@@ -130,6 +130,7 @@ public class PanelErledigteUrls extends PanelVorlage {
     }
 
     private void export() {
+        MVRun mVRun;
         if (jTable1.getModel().getRowCount() <= 0) {
             return;
         }
@@ -138,7 +139,9 @@ public class PanelErledigteUrls extends PanelVorlage {
         if (!dialog.ok) {
             return;
         }
-        new Thread(new Export_(dialog.ziel)).start();
+        mVRun = new MVRun(daten.mediathekGui, "Datei: \"" + dialog.ziel + "\" erstellen");
+        mVRun.setVisible(true);
+        new Thread(new Export_(dialog.ziel, mVRun)).start();
     }
 
     private class Export_ implements Runnable {
@@ -146,15 +149,9 @@ public class PanelErledigteUrls extends PanelVorlage {
         String ziel;
         MVRun mVRun;
 
-        public Export_(final String ziel) {
+        public Export_(final String ziel, MVRun mVRun) {
             this.ziel = ziel;
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    mVRun = new MVRun(daten.mediathekGui, "Datei: \"" + ziel + "\" erstellen");
-                    mVRun.setVisible(true);
-                }
-            });
+            this.mVRun = mVRun;
         }
 
         @Override
