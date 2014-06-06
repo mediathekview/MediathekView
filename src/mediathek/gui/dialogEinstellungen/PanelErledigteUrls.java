@@ -146,12 +146,12 @@ public class PanelErledigteUrls extends PanelVorlage {
         String ziel;
         MVRun mVRun;
 
-        public Export_(String ziel) {
+        public Export_(final String ziel) {
             this.ziel = ziel;
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    mVRun = new MVRun(daten.mediathekGui);
+                    mVRun = new MVRun(daten.mediathekGui, "Datei: \"" + ziel + "\" erstellen");
                     mVRun.setVisible(true);
                 }
             });
@@ -193,12 +193,7 @@ public class PanelErledigteUrls extends PanelVorlage {
                     }
                 });
             } finally {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        mVRun.dispose();
-                    }
-                });
+                mVRun.dispose();
             }
         }
     }
@@ -261,6 +256,7 @@ public class PanelErledigteUrls extends PanelVorlage {
     // End of variables declaration//GEN-END:variables
 
     public class BeobMausTabelle extends MouseAdapter {
+
         //rechhte Maustaste in der Tabelle
         BeobLoeschen beobLoeschen = new BeobLoeschen();
         BeobUrl beobUrl = new BeobUrl();
