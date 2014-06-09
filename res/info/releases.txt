@@ -27,7 +27,8 @@
 	- Sendericons werden in den Tabellen "Filme" und "Downlaods" angezeigt (2 Größen und
 	abschaltbar)
 	- Tabellen verwenden jetzt auch die Systemschriftgröße
-
+	- Mit %i kann beim Namen eines Downloads die Filmnummer verwendet werden
+	
 	# Version 6
 	- tmp-Files wurden nicht gelöscht
 	- der Downloadpfad im Set (Basispfad) wird jetzt nicht mehr verändert

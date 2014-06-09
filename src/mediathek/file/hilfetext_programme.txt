@@ -41,6 +41,7 @@ möglich:
 %t Thema des Films
 %N Originaldateiname des Films (der kann sehr kryptisch und lang sein)
 %S Suffix des Originaldateinamens des Films (z.B. "mp4")
+%i Filmnummer (die ändert sich beim Neuladen der Filmliste!)
 
 Damit kann man einen Namen z.B. so aufbauen:
 %H__%t-%T.mp4 -> 20131206__Doku-Titel_der_Doku.mp4

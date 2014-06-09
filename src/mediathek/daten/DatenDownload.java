@@ -506,6 +506,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         s = s.replace("%t", film.arr[DatenFilm.FILM_THEMA_NR]);
         s = s.replace("%T", film.arr[DatenFilm.FILM_TITEL_NR]);
         s = s.replace("%s", film.arr[DatenFilm.FILM_SENDER_NR]);
+        s = s.replace("%i", String.valueOf(film.nr));
 
         s = s.replace("%H", DatumZeit.Heute_yyyyMMdd);
         s = s.replace("%h", DatumZeit.Jetzt_HHMMSS);
