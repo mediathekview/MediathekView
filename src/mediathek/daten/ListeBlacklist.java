@@ -121,21 +121,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         return object;
     }
 
-//    public boolean blockSender(String sender) {
-//        // für die Senderliste im Panel Filter
-//        // Sender die komplett geblockt sind, dort nicht anzeigen
-//        ListIterator<DatenBlacklist> iterator = this.listIterator();
-//        while (iterator.hasNext()) {
-//            DatenBlacklist datenBlacklist = iterator.next();
-//            if (datenBlacklist.arr[DatenBlacklist.BLACKLIST_SENDER_NR].equals(sender)
-//                    && datenBlacklist.arr[DatenBlacklist.BLACKLIST_THEMA_NR].isEmpty()
-//                    && datenBlacklist.arr[DatenBlacklist.BLACKLIST_TITEL_NR].isEmpty()
-//                    && datenBlacklist.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].isEmpty()) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
     public void filterListe(ListeFilme listeFilme, ListeFilme listeRet) {
         listeRet.clear();
         setFilter();
@@ -211,9 +196,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         for (DatenBlacklist blacklistEntry : this) {
             if (Filter.filterAufFilmPruefen(blacklistEntry.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR])
-                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase()} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase().split(","),
+                    ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase()} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase().split(","),
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR])
-                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase()} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase().split(","),
+                    ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase()} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase().split(","),
                     new String[]{""}, 0, film, true /*auch die Länge prüfen*/
             )) {
                 return Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
