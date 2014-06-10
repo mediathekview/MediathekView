@@ -25,7 +25,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
 
 public class PanelPset extends PanelVorlage {

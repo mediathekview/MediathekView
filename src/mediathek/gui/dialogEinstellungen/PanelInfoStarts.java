@@ -21,8 +21,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
-
+import javax.swing.JPanel;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.TModel;

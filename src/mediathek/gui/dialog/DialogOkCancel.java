@@ -36,6 +36,7 @@ public class DialogOkCancel extends javax.swing.JDialog {
     /**
      *
      * @param pparent
+     * @param daten
      * @param modal
      * @param titel
      * @param text

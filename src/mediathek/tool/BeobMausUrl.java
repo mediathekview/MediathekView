@@ -31,8 +31,8 @@ import org.jdesktop.swingx.JXHyperlink;
 public class BeobMausUrl extends MouseAdapter {
 
     //rechhte Maustaste auf URL
-    private BeobUrl beobUrl = new BeobUrl();
-    private JXHyperlink link;
+    private final BeobUrl beobUrl = new BeobUrl();
+    private final JXHyperlink link;
 
     public BeobMausUrl(JXHyperlink llink) {
         link = llink;

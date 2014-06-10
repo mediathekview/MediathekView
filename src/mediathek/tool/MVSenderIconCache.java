@@ -1,8 +1,8 @@
 package mediathek.tool;
 
-import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.ImageIcon;
 
 /**
  * This class will load only one instance for all used sender icons.

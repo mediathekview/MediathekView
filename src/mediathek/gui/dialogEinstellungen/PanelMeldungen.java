@@ -24,15 +24,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.text.DefaultCaret;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.controller.Log;
 import mediathek.tool.MVConfig;
 
 public class PanelMeldungen extends PanelVorlage {
 
-    private StringBuffer text;
+    private final StringBuffer text;
     private int logArt;
     private static int PANEL_NR_MAX = 0;
     private int panelNr = 0;

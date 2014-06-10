@@ -46,6 +46,7 @@ final public class MVSingleInstance {
 
             //delete the lockfile when VM gets shut down
             Runtime.getRuntime().addShutdownHook(new Thread() {
+                @Override
                 public void run() {
                     closeLock();
                     final boolean deleted = file.delete();

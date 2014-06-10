@@ -61,7 +61,7 @@ public class MVAboutDialog extends JDialog {
     private final JLabel lblJavaVersion = new JLabel();
     private final JLabel lblVmType = new JLabel();
     private MarqueePane marqueePane;
-    private JFrame parentFrame;
+    private final JFrame parentFrame;
 
     private void setupVersionString() {
         String strVersion = "Version ";

@@ -37,7 +37,7 @@ public class DialogZiel extends javax.swing.JDialog {
     public boolean ok = false;
     public String ziel;
 //    private Component parentComponent = null;
-    private JFrame parent;
+    private final JFrame parent;
 
     /**
      *

@@ -54,7 +54,7 @@ public class Datum extends Date {
 
     public int diffInSekunden() {
         // liefert den BETRAG! der Zeitdifferenz zu jetzt
-        int ret = 0;
+        int ret;
         ret = new Long((this.getTime() - new Datum().getTime()) / (1000)).intValue(); // Zeitdifferenz in Sekunden
         if (ret < 0) {
             ret = -1 * ret;

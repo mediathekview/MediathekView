@@ -36,8 +36,8 @@ import mediathek.tool.MVNotification;
 import msearch.daten.MSConfig;
 
 public class GuiDebug extends JPanel {
-    private JButton[] buttonSender;
-    private String[] sender;
+    private final JButton[] buttonSender;
+    private final String[] sender;
     private Daten daten;
 
     public GuiDebug(Daten d) {
@@ -399,7 +399,7 @@ public class GuiDebug extends JPanel {
 
     private class BeobSenderLoeschen implements ActionListener {
 
-        private String sender;
+        private final String sender;
 
         public BeobSenderLoeschen(String ssender) {
             sender = ssender;

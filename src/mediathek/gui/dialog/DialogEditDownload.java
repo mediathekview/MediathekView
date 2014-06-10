@@ -37,14 +37,14 @@ import mediathek.tool.EscBeenden;
 
 public class DialogEditDownload extends javax.swing.JDialog {
 
-    private DatenDownload datenDownload;
+    private final DatenDownload datenDownload;
     private JTextField[] textfeldListe;
     private JLabel[] labelListe;
-    private JCheckBox jCheckBoxRestart = new JCheckBox();
-    private JCheckBox jCheckBoxInfodatei = new JCheckBox();
+    private final JCheckBox jCheckBoxRestart = new JCheckBox();
+    private final JCheckBox jCheckBoxInfodatei = new JCheckBox();
     public boolean ok = false;
-    private MVPanelDownloadZiel mVPanelDownloadZiel;
-    private boolean gestartet;
+    private final MVPanelDownloadZiel mVPanelDownloadZiel;
+    private final boolean gestartet;
 
     public DialogEditDownload(JFrame parent, boolean modal, DatenDownload ddownload, boolean ggestartet) {
         super(parent, modal);

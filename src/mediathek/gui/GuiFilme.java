@@ -96,11 +96,11 @@ public class GuiFilme extends PanelVorlage {
     private JButton buttonArray[];
     private final String[] COMBO_ZEIT = new String[]{"alles", "1 Tag", "2 Tage", "3 Tage", "7 Tage", "15 Tage", "20 Tage", "30 Tage"};
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 7, 15, 20, 30};
-    private MVFilmInformation filmInfoHud;
-    private PanelBeschreibung panelBeschreibung;
+    private final MVFilmInformation filmInfoHud;
+    private final PanelBeschreibung panelBeschreibung;
     private MVFilter mVFilter;
     public MVFilterFrame mVFilterFrame;
-    private MVFilterPanel mVFilterPanel;
+    private final MVFilterPanel mVFilterPanel;
 
     public GuiFilme(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -1117,18 +1117,18 @@ public class GuiFilme extends PanelVorlage {
     public class BeobMausTabelle extends MouseAdapter {
         //rechhte Maustaste in der Tabelle
 
-        private BeobUrl beobUrl = new BeobUrl();
-        private BeobPrint beobPrint = new BeobPrint();
-        private BeobFilterLoeschen beobLoeschen = new BeobFilterLoeschen();
-        private BeobAbo beobAbo = new BeobAbo(false /* mit Titel */);
-        private BeobAbo beobAboMitTitel = new BeobAbo(true /* mit Titel */);
-        private BeobAboFilter beobAboFilter = new BeobAboFilter();
-        private BeobFilterThema beobThema = new BeobFilterThema();
-        private BeobFilterSender beobSender = new BeobFilterSender();
-        private BeobFilterSenderThema beobSenderThema = new BeobFilterSenderThema();
-        private BeobFilterSenderThemaTitel beobSenderThemaTitel = new BeobFilterSenderThemaTitel();
-        private BeobBlacklist boeobBlacklistSender = new BeobBlacklist(true, false);
-        private BeobBlacklist boeobBlacklistSenderThema = new BeobBlacklist(true, true);
+        private final BeobUrl beobUrl = new BeobUrl();
+        private final BeobPrint beobPrint = new BeobPrint();
+        private final BeobFilterLoeschen beobLoeschen = new BeobFilterLoeschen();
+        private final BeobAbo beobAbo = new BeobAbo(false /* mit Titel */);
+        private final BeobAbo beobAboMitTitel = new BeobAbo(true /* mit Titel */);
+        private final BeobAboFilter beobAboFilter = new BeobAboFilter();
+        private final BeobFilterThema beobThema = new BeobFilterThema();
+        private final BeobFilterSender beobSender = new BeobFilterSender();
+        private final BeobFilterSenderThema beobSenderThema = new BeobFilterSenderThema();
+        private final BeobFilterSenderThemaTitel beobSenderThemaTitel = new BeobFilterSenderThemaTitel();
+        private final BeobBlacklist boeobBlacklistSender = new BeobBlacklist(true, false);
+        private final BeobBlacklist boeobBlacklistSenderThema = new BeobBlacklist(true, true);
         private Point p;
 
         public BeobMausTabelle() {
@@ -1560,6 +1560,7 @@ public class GuiFilme extends PanelVorlage {
                         DatenFilm film = getFilm(nr);
                         String thema = film.arr[DatenFilm.FILM_THEMA_NR];
                         //neues Abo anlegen
+                        // addAbo(String filmSender, String filmThema, String filmTitel, String filmThemaTitel, String irgendwo, int mindestdauer, String namePfad)
                         Daten.listeAbo.addAbo(mVFilter.get_jComboBoxFilterSender().getSelectedItem().toString(),
                                 mVFilter.get_jComboBoxFilterThema().getSelectedItem().toString(),
                                 mVFilter.get_jTextFieldFilterTitel().getText(),

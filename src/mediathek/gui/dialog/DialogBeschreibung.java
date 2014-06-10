@@ -37,6 +37,7 @@ public class DialogBeschreibung extends javax.swing.JDialog {
     /**
      *
      * @param parent
+     * @param ddaten
      * @param ddatenFilm
      */
     public DialogBeschreibung(JFrame parent, Daten ddaten, DatenFilm ddatenFilm) {

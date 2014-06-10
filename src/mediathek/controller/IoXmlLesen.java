@@ -61,61 +61,64 @@ public class IoXmlLesen {
                     event = parser.next();
                     if (event == XMLStreamConstants.START_ELEMENT) {
                         //String t = parser.getLocalName();
-                        if (parser.getLocalName().equals(MVConfig.SYSTEM)) {
-                            //System
-                            getConfig(parser, MVConfig.SYSTEM, Daten.mVConfig, true);
-                        } else if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
-                            //Programmgruppen
-                            datenPset = new DatenPset();
-                            if (get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
-                                daten.listePset.add(datenPset);
-                            }
-                        } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
-                            DatenProg datenProg = new DatenProg();
-                            if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr)) {
-                                if (datenPset != null) {
-                                    datenPset.addProg(datenProg);
+                        switch (parser.getLocalName()) {
+                            case MVConfig.SYSTEM:
+                                //System
+                                getConfig(parser, MVConfig.SYSTEM, Daten.mVConfig, true);
+                                break;
+                            case DatenPset.PROGRAMMSET:
+                                //Programmgruppen
+                                datenPset = new DatenPset();
+                                if (get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
+                                    daten.listePset.add(datenPset);
+                                }   break;
+                            case DatenProg.PROGRAMM:
+                                DatenProg datenProg = new DatenProg();
+                                if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr)) {
+                                    if (datenPset != null) {
+                                        datenPset.addProg(datenProg);
+                                    }
                                 }
-                            }
-                            //ende Programgruppen
-                        } else if (parser.getLocalName().equals(MVReplaceList.REPLACELIST)) {
-                            // Ersetzungstabelle
-                            String[] sa = new String[MVReplaceList.MAX_ELEM];
-                            if (get(parser, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
-                                Daten.mVReplaceList.liste.add(sa);
-                            }
-                        } else if (parser.getLocalName().equals(DatenAbo.ABO)) {
-                            //Abo
-                            DatenAbo datenAbo = new DatenAbo();
-                            if (get(parser, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
-                                Daten.listeAbo.addAbo(datenAbo);
-                            }
-                        } else if (parser.getLocalName().equals(DatenDownload.DOWNLOAD)) {
-                            //Downloads
-                            DatenDownload d = new DatenDownload();
-                            if (get(parser, DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr)) {
-                                d.init();
-                                Daten.listeDownloads.add(d);
-                            }
-                        } else if (parser.getLocalName().equals(DatenBlacklist.BLACKLIST)) {
-                            //Blacklist
-                            ListeBlacklist blacklist = Daten.listeBlacklist;
-                            DatenBlacklist datenBlacklist = new DatenBlacklist();
-                            if (get(parser, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
-                                blacklist.add(datenBlacklist);
-                            }
-                        } else if (parser.getLocalName().equals(MSFilmlistenSuchen.FILM_UPDATE_SERVER)) {
-                            //Urls Filmlisten
-                            DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
-                            if (get(parser, MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
-                                Daten.filmeLaden.getDownloadUrlsFilmlisten(false, false /*diffs*/).addWithCheck(datenUrlFilmliste);
-                            }
-                        } else if (parser.getLocalName().equals(DatenFilmlistenServer.FILM_LISTEN_SERVER)) {
-                            //Filmlisteserver
-                            DatenFilmlistenServer datenFilmlistenServer = new DatenFilmlistenServer();
-                            if (get(parser, DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, datenFilmlistenServer.arr)) {
-                                Daten.filmeLaden.getListeFilmlistnServer().add(datenFilmlistenServer);
-                            }
+                                //ende Programgruppen
+                                break;
+                            case MVReplaceList.REPLACELIST:
+                                // Ersetzungstabelle
+                                String[] sa = new String[MVReplaceList.MAX_ELEM];
+                                if (get(parser, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
+                                    Daten.mVReplaceList.liste.add(sa);
+                                }   break;
+                            case DatenAbo.ABO:
+                                //Abo
+                                DatenAbo datenAbo = new DatenAbo();
+                                if (get(parser, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
+                                    Daten.listeAbo.addAbo(datenAbo);
+                                }   break;
+                            case DatenDownload.DOWNLOAD:
+                                //Downloads
+                                DatenDownload d = new DatenDownload();
+                                if (get(parser, DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr)) {
+                                    d.init();
+                                    Daten.listeDownloads.add(d);
+                                }   break;
+                            case DatenBlacklist.BLACKLIST:
+                                //Blacklist
+                                ListeBlacklist blacklist = Daten.listeBlacklist;
+                                DatenBlacklist datenBlacklist = new DatenBlacklist();
+                                if (get(parser, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
+                                    blacklist.add(datenBlacklist);
+                                }   break;
+                            case MSFilmlistenSuchen.FILM_UPDATE_SERVER:
+                                //Urls Filmlisten
+                                DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
+                                if (get(parser, MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
+                                    Daten.filmeLaden.getDownloadUrlsFilmlisten(false, false /*diffs*/).addWithCheck(datenUrlFilmliste);
+                                }   break;
+                            case DatenFilmlistenServer.FILM_LISTEN_SERVER:
+                                //Filmlisteserver
+                                DatenFilmlistenServer datenFilmlistenServer = new DatenFilmlistenServer();
+                                if (get(parser, DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, datenFilmlistenServer.arr)) {
+                                    Daten.filmeLaden.getListeFilmlistnServer().add(datenFilmlistenServer);
+                                }   break;
                         }
                     }
                 }
@@ -215,20 +218,21 @@ public class IoXmlLesen {
                 event = parser.next();
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     //String t = parser.getLocalName();
-                    if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
-                        datenPset = new DatenPset();
-                        if (!get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false)) {
-                            datenPset = null;
-                        } else {
-                            liste.add(datenPset);
-                        }
-                    } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
-                        if (datenPset != null) {
-                            DatenProg datenProg = new DatenProg();
-                            if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false)) {
-                                datenPset.addProg(datenProg);
-                            }
-                        }
+                    switch (parser.getLocalName()) {
+                        case DatenPset.PROGRAMMSET:
+                            datenPset = new DatenPset();
+                            if (!get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false)) {
+                                datenPset = null;
+                            } else {
+                                liste.add(datenPset);
+                            }   break;
+                        case DatenProg.PROGRAMM:
+                            if (datenPset != null) {
+                                DatenProg datenProg = new DatenProg();
+                                if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false)) {
+                                    datenPset.addProg(datenProg);
+                                }
+                            }   break;
                     }
                 }
             }

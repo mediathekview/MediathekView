@@ -23,18 +23,17 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.starter.MVBandwidthTokenBucket;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.TimerTask;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import mediathek.controller.starter.MVBandwidthTokenBucket;
 
 public class MVInputStream extends InputStream {
 
     private final InputStream iStream;
     private MVBandwidthTokenBucket bucket = null;
-    private BandwidthCalculationTask calculationTask;
+    private final BandwidthCalculationTask calculationTask;
 
     public MVInputStream(InputStream in, java.util.Timer calculationTimer) {
         iStream = in;
@@ -101,7 +100,7 @@ public class MVInputStream extends InputStream {
         private long oldTotalBytes = 0;
         private long totalBytesRead = 0;
         private long bandwidth = 0;
-        private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+        private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         @Override
         public void run() {

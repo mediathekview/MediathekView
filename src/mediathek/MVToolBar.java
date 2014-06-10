@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import javax.swing.Box.Filler;
 import javax.swing.JButton;
@@ -514,9 +515,7 @@ public final class MVToolBar extends JToolBar {
             name = nname;
             imageIconKlein = iimageIconKlein;
             imageIconNormal = iimageIconNormal;
-            for (String s : ssparte) {
-                sparte.add(s);
-            }
+            sparte.addAll(Arrays.asList(ssparte));
             setOpaque(false);
             setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
             setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

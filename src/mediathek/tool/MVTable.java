@@ -58,8 +58,8 @@ public final class MVTable extends JTable {
     public static final String SORT_DESCENDING = "DESCENDING";
     public boolean iconAnzeigen = false;
     public boolean iconKlein = false;
-    private int[] breite;
-    private int[] reihe;
+    private final int[] breite;
+    private final int[] reihe;
     private String nrDatenSystem = "";
     private int tabelle;
     private int maxSpalten;

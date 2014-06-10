@@ -58,10 +58,10 @@ public class Log {
     private static int zeilenNrSystem = 0;
     private static int zeilenNrProgramm = 0;
     private static int zeilenNrFehler = 0;
-    private static LinkedList<Integer[]> fehlerListe = new LinkedList<>(); // [Art, Fehlernummer, Anzahl, Exception(0,1 für ja, nein)]
-    private static boolean progress = false;
-    private static String progressText = "";
-    private static Date startZeit = new Date(System.currentTimeMillis());
+    private static final LinkedList<Integer[]> fehlerListe = new LinkedList<>(); // [Art, Fehlernummer, Anzahl, Exception(0,1 für ja, nein)]
+    private static final boolean progress = false;
+    private static final String progressText = "";
+    private static final Date startZeit = new Date(System.currentTimeMillis());
 
     public static synchronized void versionsMeldungen(String classname) {
         final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -301,7 +301,7 @@ public class Log {
 
     private static void addFehlerNummer(int nr, int art, boolean exception) {
         Iterator<Integer[]> it = fehlerListe.iterator();
-        int ex = exception ? (ex = 1) : (ex = 2);
+        int ex = exception ? 1 : 2;
         while (it.hasNext()) {
             Integer[] i = it.next();
             if (i[1] == nr) {

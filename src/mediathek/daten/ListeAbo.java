@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -26,11 +27,13 @@ import javax.swing.JOptionPane;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Filter;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
+import msearch.tool.GermanStringSorter;
 
 public class ListeAbo extends LinkedList<DatenAbo> {
 
@@ -51,6 +54,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     public boolean addAbo(String filmSender, String filmThema, String filmTitel, String filmThemaTitel, String irgendwo, int mindestdauer, String namePfad) {
         //abo anlegen, oder false wenns schon existiert
         boolean ret = false;
+        namePfad = GuiFunktionen.replaceLeerDateiname(namePfad, true /* istDatei */);
         DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, namePfad, "");
         DialogEditAbo dialogEditAbo = new DialogEditAbo(null, true, daten, datenAbo);
         dialogEditAbo.setVisible(true);
@@ -127,6 +131,20 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             }
             model.addRow(object);
         }
+    }
+
+    public ArrayList<String> getPfade() {
+        // liefert eine Array mit allen Pfaden
+        ArrayList<String> pfade = new ArrayList<>();
+        for (DatenAbo abo : this) {
+            String s = abo.arr[DatenAbo.ABO_ZIELPFAD_NR];
+            if (!pfade.contains(s)) {
+                pfade.add(abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
+            }
+        }
+        GermanStringSorter sorter = GermanStringSorter.getInstance();
+        Collections.sort(pfade, sorter);
+        return pfade;
     }
 
     private boolean aboExistiertBereits(DatenAbo abo) {

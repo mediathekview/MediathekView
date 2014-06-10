@@ -29,7 +29,6 @@ import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.Duration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
-import mediathek.tool.Konstanten;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
 import msearch.daten.DatenFilm;
@@ -45,8 +44,8 @@ import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 public class FilmeLaden {
 
     private Duration duration = new Duration(FilmeLaden.class.getSimpleName());
-    private HashSet<String> hashSet = new HashSet<>();
-    private ListeFilme diffListe = new ListeFilme();
+    private final HashSet<String> hashSet = new HashSet<>();
+    private final ListeFilme diffListe = new ListeFilme();
 
     private enum ListenerMelden {
 

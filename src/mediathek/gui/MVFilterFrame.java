@@ -233,7 +233,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     public class BeobMaus extends MouseAdapter {
 
         //rechhte Maustaste
-        private JRadioButton JRadioButton;
+        private final JRadioButton JRadioButton;
         JSpinner jSpinner;
 
         public BeobMaus(JRadioButton jr) {

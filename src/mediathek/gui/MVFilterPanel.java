@@ -25,7 +25,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButton;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
@@ -172,7 +185,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     public class BeobMaus extends MouseAdapter {
 
         //rechhte Maustaste
-        private JRadioButton JRadioButton;
+        private final JRadioButton JRadioButton;
         JSpinner jSpinner;
 
         public BeobMaus(JRadioButton jr) {

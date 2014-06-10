@@ -22,7 +22,6 @@ package mediathek.daten;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.controller.Log;
 import mediathek.controller.MVUsedUrl;
@@ -254,11 +253,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
     }
 
-    public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> ad) {
+    public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> downloads) {
         // Start erstellen und zur Liste hinzufügen
         String zeit = DatumZeit.getHeute_dd_MM_yyyy();
         LinkedList<MVUsedUrl> urlList = new LinkedList<>();
-        for (DatenDownload d : ad) {
+        for (DatenDownload d : downloads) {
             d.start = new Start();
             urlList.add(new MVUsedUrl(zeit,
                     d.arr[DatenDownload.DOWNLOAD_THEMA_NR],
@@ -447,7 +446,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
                 if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
                     // und Abopfad an den Pfad anhängen
-                    pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(abo.arr[DatenAbo.ABO_ZIELPFAD_NR], true/* istDatei */));
+                    //pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(abo.arr[DatenAbo.ABO_ZIELPFAD_NR], true/* istDatei */));
+                    pfad = GuiFunktionen.addsPfad(pfad, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
                 }
             } else if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
                 // bei Downloads den Namen des Themas an den Zielpfad anhängen

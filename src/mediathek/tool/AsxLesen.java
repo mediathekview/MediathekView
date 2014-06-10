@@ -19,12 +19,12 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 
 public class AsxLesen {

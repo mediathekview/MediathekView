@@ -3,18 +3,20 @@ package mediathek;
 import com.explodingpixels.macwidgets.BottomBar;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
-
-import java.awt.*;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.EnumMap;
-import javax.swing.*;
-
-import mediathek.daten.Daten;
-import mediathek.tool.ListenerMediathekView;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import mediathek.controller.Log;
+import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.ListenerMediathekView;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 /**
@@ -28,11 +30,11 @@ public final class MVStatusBar extends JPanel {
     EnumMap<MVStatusBar.StatusbarIndex, String> displayListForLeftLabel = new EnumMap<>(MVStatusBar.StatusbarIndex.class);
     MVStatusBar.StatusbarIndex currentIndex = MVStatusBar.StatusbarIndex.NONE;
 
-    private JLabel lblCenter;
-    private JLabel lblRechts;
-    private JProgressBar progress;
-    private JButton stopButton;
-    private BottomBar bottomBar;
+    private final JLabel lblCenter;
+    private final JLabel lblRechts;
+    private final JProgressBar progress;
+    private final JButton stopButton;
+    private final BottomBar bottomBar;
 
     public MVStatusBar() {
         bottomBar = new BottomBar(BottomBarSize.LARGE);

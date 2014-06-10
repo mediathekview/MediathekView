@@ -311,7 +311,7 @@ public class StarterClass {
                     MVInfoFile.writeInfoFile(datenDownload);
                 }
 
-                Files.createDirectory(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
+                Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
             } catch (IOException ignored) {
             } catch (Exception ex) {
                 Log.fehlerMeldung(469365281, Log.FEHLER_ART_PROG, "StarterClass.StartenProgramm-1", ex);
@@ -548,9 +548,7 @@ public class StarterClass {
 
             datenDownload.mVFilmSize.addAktSize(downloaded);
             final byte[] buffer = new byte[MVBandwidthTokenBucket.DEFAULT_BUFFER_SIZE];
-            long p,
-                    pp = 0,
-                    startProzent = -1;
+            long p, pp = 0, startProzent = -1;
             int len;
 
             while ((len = start.mVInputStream.read(buffer)) != -1 && (!start.stoppen)) {
@@ -605,7 +603,7 @@ public class StarterClass {
         public void run() {
             startmeldung(datenDownload, start);
             try {
-                Files.createDirectory(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
+                Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
             } catch (IOException ignored) {
             }
 

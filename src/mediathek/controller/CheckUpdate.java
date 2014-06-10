@@ -29,8 +29,8 @@ import mediathek.tool.MVConfig;
 
 public class CheckUpdate {
 
-    private Daten daten;
-    private JFrame parent;
+    private final Daten daten;
+    private final JFrame parent;
 
     public CheckUpdate(JFrame pparent, Daten dd) {
         daten = dd;

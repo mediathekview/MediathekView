@@ -40,6 +40,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
@@ -48,7 +49,6 @@ import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
-import mediathek.controller.Log;
 
 public class PanelPsetKurz extends PanelVorlage {
 
