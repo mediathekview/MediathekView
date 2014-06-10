@@ -29,9 +29,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
-import mediathek.controller.Log;
 import mediathek.tool.UrlHyperlinkAction;
 import msearch.daten.DatenFilm;
 import org.jdesktop.swingx.JXHyperlink;
@@ -46,14 +46,14 @@ public class MVFilmInformation implements ChangeListener {
     private JXHyperlink lblUrlThemaField;
     private JXHyperlink lblUrlPicture;
     private JTextArea textAreaBeschreibung;
-    private Daten ddaten;
-    private JLabel[] labelArrNames = new JLabel[DatenFilm.MAX_ELEM];
-    private JTextField[] txtArrCont = new JTextField[DatenFilm.MAX_ELEM];
-    private ViewImage viewImage = new ViewImage();
-    private JButton buttonBild = new JButton("Bild laden");
-    private Color foreground, background;
+    private final Daten ddaten;
+    private final JLabel[] labelArrNames = new JLabel[DatenFilm.MAX_ELEM];
+    private final JTextField[] txtArrCont = new JTextField[DatenFilm.MAX_ELEM];
+    private final ViewImage viewImage = new ViewImage();
+    private final JButton buttonBild = new JButton("Bild laden");
+    private final Color foreground, background;
     private DatenFilm aktFilm = new DatenFilm();
-    private JFrame parent;
+    private final JFrame parent;
 
     public MVFilmInformation(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
         this.ddaten = ddaten;

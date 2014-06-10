@@ -21,7 +21,6 @@ package mediathek.tool;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;

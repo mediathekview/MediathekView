@@ -310,8 +310,7 @@ public class GuiFunktionen extends Funktionen {
         return ret;
     }
 
-    public static String concatPaths(String pfad1, String pfad2)
-    {
+    public static String concatPaths(String pfad1, String pfad2) {
         String ret = "";
         if (pfad1 != null && pfad2 != null) {
             if (!pfad1.equals("") && !pfad2.equals("")) {
@@ -330,18 +329,18 @@ public class GuiFunktionen extends Funktionen {
         return ret;
     }
 
-/*
-    public static String addUrl(String u1, String u2) {
-        if (u1.endsWith("/")) {
-            return u1 + u2;
-        } else {
-            return u1 + "/" + u2;
-        }
-    }
-*/
-
+    /*
+     public static String addUrl(String u1, String u2) {
+     if (u1.endsWith("/")) {
+     return u1 + u2;
+     } else {
+     return u1 + "/" + u2;
+     }
+     }
+     */
     public static boolean istUrl(String dateiUrl) {
-        return dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
+        //return dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
+        return dateiUrl.startsWith("http") || dateiUrl.startsWith("www");
     }
 
     public static String getDateiName(String pfad) {
@@ -387,14 +386,13 @@ public class GuiFunktionen extends Funktionen {
         return ret;
     }
 
-/*
-    public static void listeSort(LinkedList<String> liste) {
-        //Stringliste alphabetisch sortieren
-        GermanStringSorter sorter = GermanStringSorter.getInstance();
-        Collections.sort(liste, sorter);
-    }
-*/
-
+    /*
+     public static void listeSort(LinkedList<String> liste) {
+     //Stringliste alphabetisch sortieren
+     GermanStringSorter sorter = GermanStringSorter.getInstance();
+     Collections.sort(liste, sorter);
+     }
+     */
     public static String getHomePath() {
         //lifert den Pfad zum Homeverzeichnis
         return System.getProperty("user.home");

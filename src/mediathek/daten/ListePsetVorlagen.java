@@ -69,9 +69,9 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         String[][] object;
         if (this.size() > 0) {
             if (!bs.equals("")) {
-                for (int i = 0; i < this.size(); i++) {
-                    if (this.get(i)[PGR_BS_NR].contains(bs)) {
-                        tmp.add(this.get(i));
+                for (String[] aThi : this) {
+                    if (aThi[PGR_BS_NR].contains(bs)) {
+                        tmp.add(aThi);
                     }
                 }
                 object = new String[tmp.size()][PGR_MAX_ELEM];

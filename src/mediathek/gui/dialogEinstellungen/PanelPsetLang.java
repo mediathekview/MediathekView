@@ -377,12 +377,16 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxButton.setSelected(pSet.istButton());
             jCheckBoxAbo.setSelected(pSet.istAbo());
             jButtonAbspielen.setBackground(pSet.istAbspielen() ? MVColor.BUTTON_SET_ABSPIELEN.color : null);
-            if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_HD)) {
-                jRadioButtonAufloesungHD.setSelected(true);
-            } else if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_KLEIN)) {
-                jRadioButtonAufloesungKlein.setSelected(true);
-            } else {
-                jRadioButtonAufloesungNormal.setSelected(true);
+            switch (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]) {
+                case DatenFilm.AUFLOESUNG_HD:
+                    jRadioButtonAufloesungHD.setSelected(true);
+                    break;
+                case DatenFilm.AUFLOESUNG_KLEIN:
+                    jRadioButtonAufloesungKlein.setSelected(true);
+                    break;
+                default:
+                    jRadioButtonAufloesungNormal.setSelected(true);
+                    break;
             }
         } else {
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
@@ -550,7 +554,7 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void setExport() {
-        LinkedList<DatenPset> liste = new LinkedList<DatenPset>();
+        LinkedList<DatenPset> liste = new LinkedList<>();
         int rows[] = tabellePset.getSelectedRows();
         if (rows.length > 0) {
             DatenPset pSet;

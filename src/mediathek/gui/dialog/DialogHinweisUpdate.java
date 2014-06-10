@@ -30,8 +30,8 @@ import mediathek.tool.UrlHyperlinkAction;
 public class DialogHinweisUpdate extends javax.swing.JDialog {
 
     private String text = "";
-    private Daten ddaten;
-    private JFrame parent;
+    private final Daten ddaten;
+    private final JFrame parent;
 
     /**
      *

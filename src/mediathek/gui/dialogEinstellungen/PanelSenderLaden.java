@@ -19,10 +19,11 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.*;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
@@ -185,7 +186,7 @@ public class PanelSenderLaden extends JPanel {
 
     private class BeobSenderLaden implements ActionListener {
 
-        private String sender;
+        private final String sender;
 
         public BeobSenderLaden(String ssender) {
             sender = ssender;

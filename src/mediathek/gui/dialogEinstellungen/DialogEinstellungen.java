@@ -216,64 +216,84 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                 } else {
                     String name = node.getUserObject().toString();
                     setTitle(name);
-                    if (name.equals(NAME_allgemeineEinstellungen)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelEinstellungen);
-                    } else if (name.equals(NAME_allgemeineEinstellungenErweitert)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelEinstellungenErweitert);
-                    } else if (name.equals(NAME_allgemeineEinstellungenGeo)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelEinstellungenGeo);
-                    } else if (name.equals(NAME_allgemeineEinstellungenImport)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelImport);
-                    } else if (name.equals(NAME_allgemeineEinstellungenColor)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelEinstellungenColor);
-                    } else if (name.equals(NAME_filmListeLaden)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelImportFilme);
-                    } else if (name.equals(NAME_filmListeExportieren)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelExportFilmliste);
-                    } else if (name.equals(NAME_blacklist)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelBlacklist);
-                    } else if (name.equals(NAME_history)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelHistory);
-                    } else if (name.equals(NAME_logfile)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelErledigteAbos);
-                    } else if (name.equals(NAME_dateiname)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelDateinamen);
-                    } else if (name.equals(NAME_programmset)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelPset);
-                    } else if (name.equals(NAME_programmsetImportieren)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelPsetVorlagen);
-                    } else if (name.equals(NAME_programmInfos)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelAbout);
-                    } else if (name.equals(NAME_logdatei)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelMeldungenUbersicht);
-                    } else if (name.equals(NAME_systemmeldungen)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelMeldungenSystem);
-                    } else if (name.equals(NAME_fehlermeldungen)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelMeldungenFehler);
-                    } else if (name.equals(NAME_meldungenProgramme)) {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelMeldungenPlayer);
-                    } else {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelLeer);
-                        setTitle("Programmeinstellungen");
+                    switch (name) {
+                        case NAME_allgemeineEinstellungen:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelEinstellungen);
+                            break;
+                        case NAME_allgemeineEinstellungenErweitert:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelEinstellungenErweitert);
+                            break;
+                        case NAME_allgemeineEinstellungenGeo:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelEinstellungenGeo);
+                            break;
+                        case NAME_allgemeineEinstellungenImport:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelImport);
+                            break;
+                        case NAME_allgemeineEinstellungenColor:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelEinstellungenColor);
+                            break;
+                        case NAME_filmListeLaden:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelImportFilme);
+                            break;
+                        case NAME_filmListeExportieren:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelExportFilmliste);
+                            break;
+                        case NAME_blacklist:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelBlacklist);
+                            break;
+                        case NAME_history:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelHistory);
+                            break;
+                        case NAME_logfile:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelErledigteAbos);
+                            break;
+                        case NAME_dateiname:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelDateinamen);
+                            break;
+                        case NAME_programmset:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelPset);
+                            break;
+                        case NAME_programmsetImportieren:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelPsetVorlagen);
+                            break;
+                        case NAME_programmInfos:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelAbout);
+                            break;
+                        case NAME_logdatei:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelMeldungenUbersicht);
+                            break;
+                        case NAME_systemmeldungen:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelMeldungenSystem);
+                            break;
+                        case NAME_fehlermeldungen:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelMeldungenFehler);
+                            break;
+                        case NAME_meldungenProgramme:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelMeldungenPlayer);
+                            break;
+                        default:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelLeer);
+                            setTitle("Programmeinstellungen");
+                            break;
                     }
                 }
                 jPanelExtra.updateUI();

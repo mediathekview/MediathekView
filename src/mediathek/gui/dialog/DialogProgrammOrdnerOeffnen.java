@@ -27,10 +27,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import mediathek.controller.Log;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
-import mediathek.controller.Log;
 import mediathek.tool.MVMessageDialog;
 
 public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
@@ -44,7 +44,8 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
      * @param parent
      * @param modal
      * @param zziel
-     * * @param titel
+     * @param titel
+     * @param text
      */
     public DialogProgrammOrdnerOeffnen(java.awt.Frame parent, boolean modal, String zziel, String titel, String text) {
         super(parent, modal);

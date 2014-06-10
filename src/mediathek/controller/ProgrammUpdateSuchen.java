@@ -42,7 +42,7 @@ public class ProgrammUpdateSuchen {
     private final static String DOWNLOAD_PROGRAM = "Download_Programm";
     private final static String INFO = "Info";
     private final static String INFO_NO = "number";
-    private LinkedList<String[]> listInfos = new LinkedList<>(); // String[] info = {Nummer, Info};
+    private final LinkedList<String[]> listInfos = new LinkedList<>(); // String[] info = {Nummer, Info};
     private String version;
     private String release;
     private String downloadUrlProgramm;

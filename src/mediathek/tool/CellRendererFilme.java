@@ -44,7 +44,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     private static ImageIcon film_stop_sw_tab = null;
     private boolean geoMelden = false;
     private MVUsedUrls history = null;
-    private MVSenderIconCache senderIconCache;
+    private final MVSenderIconCache senderIconCache;
 
     public CellRendererFilme(Daten d) {
         history = d.history;

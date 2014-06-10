@@ -1,9 +1,16 @@
 package mediathek;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.Timer;
 import mediathek.tool.Funktionen;
 
 public class MVMemoryUsageButton extends JButton {
@@ -23,6 +30,7 @@ public class MVMemoryUsageButton extends JButton {
 
         //we may want to explicitly garbage collect :)
         addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 System.gc();
             }

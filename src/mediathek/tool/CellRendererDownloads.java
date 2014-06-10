@@ -20,17 +20,25 @@
 package mediathek.tool;
 
 import com.jidesoft.utils.SystemInfo;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicProgressBarUI;
+import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
-
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicProgressBarUI;
-import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
 
 public class CellRendererDownloads extends DefaultTableCellRenderer {
 
@@ -55,8 +63,8 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     private JProgressBar progressBar;
     private final Border emptyBorder = BorderFactory.createEmptyBorder();
     private final Border largeBorder = BorderFactory.createEmptyBorder(9, 2, 9, 2);
-    private JPanel panel;
-    private MVSenderIconCache senderIconCache;
+    private final JPanel panel;
+    private final MVSenderIconCache senderIconCache;
 
     public CellRendererDownloads() {
         ja_16 = GetIcon.getIcon("ja_16.png");

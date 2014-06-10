@@ -20,9 +20,29 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.AWTException;
+import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.RenderingHints;
+import java.awt.SplashScreen;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +50,23 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.InputMap;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.CheckUpdate;
@@ -72,23 +108,23 @@ import org.simplericity.macify.eawt.DefaultApplication;
 public final class MediathekGui extends javax.swing.JFrame implements ApplicationListener {
 
     private Daten daten;
-    private DialogEinstellungen dialogEinstellungen;
-    private JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
+    private final DialogEinstellungen dialogEinstellungen;
+    private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
     JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
     JPanel jPanelAnzahl = new JPanel();
     PanelVorlage panelMeldungen = new PanelVorlage(daten, this);
     JSplitPane splitPane = null;
     private final MVToolBar mVToolBar;
     private MVStatusBar statusBar;
-    private MVFrame[] frames = new MVFrame[3]; // Downloads, Abos, Meldungen
+    private final MVFrame[] frames = new MVFrame[3]; // Downloads, Abos, Meldungen
     private JCheckBoxMenuItem jCheckBoxFilterAnzeigen = new JCheckBoxMenuItem();
     private JCheckBoxMenuItem jCheckBoxFilterExtrafenster = new JCheckBoxMenuItem();
-    private JCheckBoxMenuItem jCheckBoxDownloadAnzeigen = new JCheckBoxMenuItem();
-    private JCheckBoxMenuItem jCheckBoxDownloadExtrafenster = new JCheckBoxMenuItem();
-    private JCheckBoxMenuItem jCheckBoxAboAnzeigen = new JCheckBoxMenuItem();
-    private JCheckBoxMenuItem jCheckBoxAboExtrafenster = new JCheckBoxMenuItem();
-    private JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
-    private JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
+    private final JCheckBoxMenuItem jCheckBoxDownloadAnzeigen = new JCheckBoxMenuItem();
+    private final JCheckBoxMenuItem jCheckBoxDownloadExtrafenster = new JCheckBoxMenuItem();
+    private final JCheckBoxMenuItem jCheckBoxAboAnzeigen = new JCheckBoxMenuItem();
+    private final JCheckBoxMenuItem jCheckBoxAboExtrafenster = new JCheckBoxMenuItem();
+    private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
+    private final JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
     /**
      * The application proxy object into OS X´s native world.
      */

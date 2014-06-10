@@ -29,8 +29,8 @@ import mediathek.res.GetIcon;
 public class BeobMpanel implements ActionListener {
 
     private int hoehe = -1;
-    private JCheckBox box;
-    private JPanel panel;
+    private final JCheckBox box;
+    private final JPanel panel;
 
     public BeobMpanel(JCheckBox bbox, JPanel ppanel, String text) {
         box = bbox;

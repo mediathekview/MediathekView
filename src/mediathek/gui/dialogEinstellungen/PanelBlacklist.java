@@ -42,7 +42,6 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
@@ -155,7 +154,7 @@ public class PanelBlacklist extends PanelVorlage {
                 String ti = jTextFieldTitel.getText().trim();
                 String thti = jTextFieldThemaTitel.getText().trim();
                 if (!se.equals("") || !th.equals("") || !ti.equals("") || !thti.equals("")) {
-                    daten.listeBlacklist.add(new DatenBlacklist(se, th, ti, thti));
+                    Daten.listeBlacklist.add(new DatenBlacklist(se, th, ti, thti));
                     tabelleLaden();
                 }
             }
@@ -172,7 +171,7 @@ public class PanelBlacklist extends PanelVorlage {
                     if (selectedTableRow >= 0) {
                         int row = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
                         String delNr = jTableBlacklist.getModel().getValueAt(row, DatenBlacklist.BLACKLIST_NR_NR).toString();
-                        DatenBlacklist bl = daten.listeBlacklist.get(delNr);
+                        DatenBlacklist bl = Daten.listeBlacklist.get(delNr);
                         bl.arr[DatenBlacklist.BLACKLIST_SENDER_NR] = se;
                         bl.arr[DatenBlacklist.BLACKLIST_THEMA_NR] = th;
                         bl.arr[DatenBlacklist.BLACKLIST_TITEL_NR] = ti;
@@ -194,7 +193,7 @@ public class PanelBlacklist extends PanelVorlage {
         jButtonTabelleLoeschen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                daten.listeBlacklist.clear();
+                Daten.listeBlacklist.clear();
                 tabelleLaden();
             }
         });
@@ -305,7 +304,7 @@ public class PanelBlacklist extends PanelVorlage {
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR_NR).toString();
-            ret = daten.listeBlacklist.remove(delNr);
+            ret = Daten.listeBlacklist.remove(delNr);
             tabelleLaden();
         }
         return ret;

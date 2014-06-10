@@ -38,7 +38,6 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
-import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;

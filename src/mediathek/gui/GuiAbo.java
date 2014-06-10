@@ -134,7 +134,7 @@ public class GuiAbo extends PanelVorlage {
 
     private void tabelleLaden() {
         tabelle.getSpalten();
-        daten.listeAbo.addObjectData((TModelAbo) tabelle.getModel());
+        Daten.listeAbo.addObjectData((TModelAbo) tabelle.getModel());
         tabelle.setSpalten();
         setInfo();
     }
@@ -178,13 +178,11 @@ public class GuiAbo extends PanelVorlage {
     private void aboAendern() {
         int row = tabelle.getSelectedRow();
         if (row >= 0) {
-            int delRow = tabelle.convertRowIndexToModel(row);
-            DatenAbo akt = Daten.listeAbo.getAboNr(delRow);
-            DatenAbo ret = akt.getCopy();
-            DialogEditAbo dialog = new DialogEditAbo(null, true, daten, ret);
+            int modelRow = tabelle.convertRowIndexToModel(row);
+            DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
+            DialogEditAbo dialog = new DialogEditAbo(null, true, daten, akt);
             dialog.setVisible(true);
             if (dialog.ok) {
-                akt.aufMichKopieren(ret);
                 tabelleLaden();
                 Daten.listeAbo.aenderungMelden();
             }
@@ -223,7 +221,7 @@ public class GuiAbo extends PanelVorlage {
         int gesamt = tabelle.getModel().getRowCount();
         for (int i = 0; i < tabelle.getModel().getRowCount(); ++i) {
             int modelRow = tabelle.convertRowIndexToModel(i);
-            DatenAbo akt = daten.listeAbo.getAboNr(modelRow);
+            DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
             if (akt.aboIstEingeschaltet()) {
                 ++ein;
             } else {
@@ -331,7 +329,7 @@ public class GuiAbo extends PanelVorlage {
             if (nr >= 0) {
                 tabelle.setRowSelectionInterval(nr, nr);
                 int modelRow = tabelle.convertRowIndexToModel(nr);
-                DatenAbo akt = daten.listeAbo.getAboNr(modelRow);
+                DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
                 ein = Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET_NR]);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();

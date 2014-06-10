@@ -47,9 +47,9 @@ import mediathek.tool.UrlHyperlinkAction;
 public class PanelProgrammPfade extends JPanel {
 
     public JDialog dialog = null;
-    private boolean vlc, flvstreamer, mplayer, ffmpeg;
-    private Daten ddaten;
-    private JFrame parentComponent;
+    private final boolean vlc, flvstreamer, mplayer, ffmpeg;
+    private final Daten ddaten;
+    private final JFrame parentComponent;
 
     public PanelProgrammPfade(JFrame parentFrame, Daten dd, boolean vvlc, boolean fflvstreamer, boolean mmplayer, boolean fffmpeg) {
         initComponents();
@@ -522,7 +522,7 @@ public class PanelProgrammPfade extends JPanel {
 
     private class BeobPfad implements ActionListener {
 
-        private JTextField textField;
+        private final JTextField textField;
 
         public BeobPfad(JTextField ttextField) {
             textField = ttextField;

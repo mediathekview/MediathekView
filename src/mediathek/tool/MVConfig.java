@@ -182,7 +182,7 @@ public class MVConfig {
     }
 
     public synchronized String get(String key, int i) {
-        String[] sa = {""};
+        String[] sa;
         String s = hashmap.get(key);
         if (s == null) {
             return "";
