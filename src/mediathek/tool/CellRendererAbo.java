@@ -55,11 +55,11 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                 table, value, isSelected, hasFocus, row, column);
         try {
             if (isSelected) {
-                setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
-                //setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
+                // setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
+                setFont(new java.awt.Font("Dialog", Font.BOLD, MVTable.fontSize));
             } else {
-                setFont(getFont());
-                //setFont(new java.awt.Font(null));
+                // setFont(getFont());
+                setFont(new java.awt.Font("Dialog", Font.PLAIN, MVTable.fontSize));
             }
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);

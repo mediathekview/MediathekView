@@ -89,9 +89,11 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             boolean live = datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE);
             boolean start = false;
             if (isSelected) {
-                setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
+                // setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
+                setFont(new java.awt.Font("Dialog", Font.BOLD, MVTable.fontSize));
             } else {
-                setFont(getFont());
+                // setFont(getFont());
+                setFont(new java.awt.Font("Dialog", Font.PLAIN, MVTable.fontSize));
             }
             switch (columnModelIndex) {
                 case DatenFilm.FILM_NR_NR:
