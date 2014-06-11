@@ -108,6 +108,8 @@ public final class MVTable extends JTable {
                 spaltenAnzeigen = getSpaltenEinAus(DatenAbo.spaltenAnzeigen, DatenAbo.MAX_ELEM);
                 indexSpalte = DatenAbo.ABO_NR_NR;
                 nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS;
+                iconAnzeigenStr = MVConfig.SYSTEM_TAB_ABO_ICON_ANZEIGEN;
+                iconKleinStr = MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN;
                 this.setModel(new TModelAbo(new Object[][]{}, spaltenTitel));
                 break;
             case TABELLE_TAB_PSET:

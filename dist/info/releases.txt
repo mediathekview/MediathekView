@@ -28,6 +28,8 @@
 	abschaltbar)
 	- Tabellen verwenden jetzt auch die Systemschriftgröße
 	- Mit %i kann beim Namen eines Downloads die Filmnummer verwendet werden
+	- Dialog Abos: Es werden bereits verwendete Pfade als Ziel mit angezeigt und es können
+	jetzt auch "Unterpfade" angegeben werden
 	
 	# Version 6
 	- tmp-Files wurden nicht gelöscht

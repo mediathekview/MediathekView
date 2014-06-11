@@ -21,6 +21,7 @@ package mediathek.tool;
 
 import java.awt.Component;
 import java.awt.Font;
+import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -30,6 +31,12 @@ import mediathek.daten.DatenAbo;
 import mediathek.res.GetIcon;
 
 public class CellRendererAbo extends DefaultTableCellRenderer {
+
+    private final MVSenderIconCache senderIconCache;
+
+    public CellRendererAbo() {
+        senderIconCache = new MVSenderIconCache();
+    }
 
     @Override
     public Component getTableCellRendererComponent(
@@ -70,17 +77,38 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                     setBackground(MVColor.ABO_AUSGESCHALTET.color);
                 }
             }
-            if (c == DatenAbo.ABO_EINGESCHALTET_NR) {
-                setHorizontalAlignment(SwingConstants.CENTER);
-                if (eingeschaltet) {
-                    setIcon(GetIcon.getIcon("ja_16.png"));
-                } else {
-                    setIcon(GetIcon.getIcon("nein_12.png"));
-                }
+            switch (c) {
+                case DatenAbo.ABO_EINGESCHALTET_NR:
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (eingeschaltet) {
+                        setIcon(GetIcon.getIcon("ja_16.png"));
+                    } else {
+                        setIcon(GetIcon.getIcon("nein_12.png"));
+                    }
+                    break;
+                case DatenAbo.ABO_SENDER_NR:
+                    if (((MVTable) table).iconAnzeigen) {
+                        handleSenderColumn((String) value, ((MVTable) table).iconKlein);
+                    }
+                    break;
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(630365892, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
         }
         return this;
+    }
+
+    /**
+     * Draws the sender icon in the sender model column.
+     *
+     * @param sender Name of the sender.
+     */
+    private void handleSenderColumn(String sender, boolean small) {
+        setHorizontalAlignment(SwingConstants.CENTER);
+        ImageIcon icon = senderIconCache.get(sender, small);
+        if (icon != null) {
+            setText("");
+            setIcon(icon);
+        }
     }
 }

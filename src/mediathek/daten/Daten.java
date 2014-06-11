@@ -264,8 +264,10 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, Konstanten.GUIFILME_DIVIDER_LOCATION);
         mVConfig.add(MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_TAB_FILME_ICON_ANZEIGEN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_ANZEIGEN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_TAB_FILME_ICON_KLEIN, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN, Boolean.TRUE.toString());
         try {
             Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
             Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
