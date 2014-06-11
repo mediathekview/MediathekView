@@ -93,6 +93,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
+import mediathek.tool.MVFont;
 import mediathek.tool.MVFrame;
 import mediathek.tool.MVTable;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
@@ -1078,21 +1079,21 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                MVTable.setFontSize(true);
+                MVFont.setFontSize(true);
            }
         });
         jMenuItemSchriftKl.addActionListener(new ActionListener() {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                MVTable.setFontSize(false);
+                MVFont.setFontSize(false);
             }
         });
         jMenuItemSchriftNormal.addActionListener(new ActionListener() {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                MVTable.resetFontSize();
+                MVFont.resetFontSize();
             }
         });
         // ============================

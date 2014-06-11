@@ -71,8 +71,6 @@ public final class MVTable extends JTable {
     private boolean[] spaltenAnzeigen;
     private String iconAnzeigenStr = "";
     private String iconKleinStr = "";
-    public static int fontSize = 12;
-    private static int fontNormal;
 
     public MVTable(int tabelle) {
         this.tabelle = tabelle;
@@ -142,7 +140,6 @@ public final class MVTable extends JTable {
             iconKlein = Boolean.parseBoolean(Daten.mVConfig.get(iconKleinStr));
         }
         setHeight();
-        fontNormal = getFont().getSize();
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FONT, MVTable.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -153,59 +150,24 @@ public final class MVTable extends JTable {
 
     public void setHeight() {
         if (!iconAnzeigen) {
-            if (fontSize < 15) {
+            if (MVFont.fontSize < 15) {
                 setRowHeight(18);
             } else {
-                setRowHeight(fontSize + fontSize / 3);
+                setRowHeight(MVFont.fontSize + MVFont.fontSize / 3);
             }
         } else if (iconKlein) {
-            if (fontSize < 18) {
+            if (MVFont.fontSize < 18) {
                 setRowHeight(20);
             } else {
-                setRowHeight(fontSize + fontSize / 3);
+                setRowHeight(MVFont.fontSize + MVFont.fontSize / 3);
             }
         } else {
-            if (fontSize < 30) {
+            if (MVFont.fontSize < 30) {
                 setRowHeight(36);
             } else {
-                setRowHeight(fontSize + fontSize / 3);
+                setRowHeight(MVFont.fontSize + MVFont.fontSize / 3);
             }
         }
-    }
-
-    private static int getFontSize(int size) {
-        size = fontNormal + 4 * size;
-        if (size < 6) {
-            size = 6;
-        }
-        return size;
-    }
-
-    public static void resetFontSize() {
-        Daten.mVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
-        fontSize = getFontSize(0);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FONT, GuiFunktionen.class.getSimpleName());
-    }
-
-    public static void setFontSize(boolean up) {
-        int size;
-        try {
-            size = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_FONT_SIZE));
-        } catch (Exception ex) {
-            size = 0;
-        }
-        if (up && size < 10) {
-            ++size;
-        } else if (!up && size > -5) {
-            --size;
-            if (fontSize == getFontSize(size)) {
-                // dann gehts nicht mehr kleiner
-                ++size;
-            }
-        }
-        Daten.mVConfig.add(MVConfig.SYSTEM_FONT_SIZE, String.valueOf(size));
-        fontSize = getFontSize(size);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FONT, GuiFunktionen.class.getSimpleName());
     }
 
     public void reorder(int index, int[] rowFrom) {
