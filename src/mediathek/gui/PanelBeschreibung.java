@@ -30,6 +30,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
+import mediathek.tool.MVFont;
 import mediathek.tool.UrlHyperlinkAction;
 import msearch.daten.DatenFilm;
 
@@ -71,7 +72,7 @@ public class PanelBeschreibung extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (aktFilm != null) {
                     String akt = aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
-                    new DialogBeschreibung(parent,daten, aktFilm).setVisible(true);
+                    new DialogBeschreibung(parent, daten, aktFilm).setVisible(true);
                     if (!aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals(akt)) {
                         // dann hat sich die Beschreibung geändert
                         setText();
@@ -79,6 +80,12 @@ public class PanelBeschreibung extends JPanel {
                         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BESCHREIBUNG, PanelBeschreibung.class.getSimpleName());
                     }
                 }
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FONT, PanelBeschreibung.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setText();
             }
         });
     }
@@ -96,7 +103,7 @@ public class PanelBeschreibung extends JPanel {
             // Beschreibung setzen
             jEditorPane.setText(
                     "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
-                    + "<head><style type=\"text/css\">.sans { font-family: Verdana, Geneva, sans-serif;}</style></head>\n"
+                    + "<head><style type=\"text/css\">.sans { font-family: Verdana, Geneva, sans-serif; font-size: " + MVFont.fontSize + "pt; }</style></head>\n"
                     + "<body>"
                     + "<span class=\"sans\"><b>" + (aktFilm.arr[DatenFilm.FILM_SENDER_NR].isEmpty() ? "" : aktFilm.arr[DatenFilm.FILM_SENDER_NR] + "  -  ")
                     + aktFilm.arr[DatenFilm.FILM_TITEL_NR] + "</b><br /></span>"
@@ -130,6 +137,7 @@ public class PanelBeschreibung extends JPanel {
         jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
         jEditorPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
+        jEditorPane.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         jScrollPane2.setViewportView(jEditorPane);
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));

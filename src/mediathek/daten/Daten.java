@@ -49,6 +49,7 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
+import mediathek.tool.MVFont;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVReplaceList;
@@ -306,6 +307,8 @@ public class Daten {
         }
 
         mVColor.load(); // Farben einrichten
+        MVFont.initFont(); // Fonts einrichten
+        
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
         new MSFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste(), "", Daten.listeFilme);
