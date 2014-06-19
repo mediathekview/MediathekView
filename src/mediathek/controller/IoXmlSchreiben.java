@@ -118,6 +118,8 @@ public class IoXmlSchreiben {
             writer.writeComment("Update Filmliste");
             writer.writeCharacters("\n");
             xmlSchreibenFilmUpdateServer();
+
+            writer.writeCharacters("\n\n");
             xmlSchreibenEnde();
         } catch (Exception ex) {
             Log.fehlerMeldung(656328109, Log.FEHLER_ART_PROG, "IoXml.xmlDatenSchreiben", ex);
@@ -221,13 +223,35 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void xmlSchreibenFilmUpdateServer() {
+    private void xmlSchreibenFilmUpdateServer() throws XMLStreamException {
         Iterator<DatenUrlFilmliste> iterator;
         //FilmUpdate schreibem
         DatenUrlFilmliste datenUrlFilmliste;
-        iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten(false, false /*diffs*/).iterator();
+        writer.writeCharacters("\n");
+        writer.writeComment("Akt-Filmliste");
+        writer.writeCharacters("\n");
+        iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().iterator();
         while (iterator.hasNext()) {
             datenUrlFilmliste = iterator.next();
+            datenUrlFilmliste.arr[MSFilmlistenSuchen.FILM_UPDATE_SERVER_ART_NR] = MSFilmlistenSuchen.SERVER_ART_AKT;
+            xmlSchreibenDaten(MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
+        }
+        writer.writeCharacters("\n");
+        writer.writeComment("Old-Filmliste");
+        writer.writeCharacters("\n");
+        iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten_old().iterator();
+        while (iterator.hasNext()) {
+            datenUrlFilmliste = iterator.next();
+            datenUrlFilmliste.arr[MSFilmlistenSuchen.FILM_UPDATE_SERVER_ART_NR] = MSFilmlistenSuchen.SERVER_ART_OLD;
+            xmlSchreibenDaten(MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
+        }
+        writer.writeCharacters("\n");
+        writer.writeComment("Diff-Filmliste");
+        writer.writeCharacters("\n");
+        iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().iterator();
+        while (iterator.hasNext()) {
+            datenUrlFilmliste = iterator.next();
+            datenUrlFilmliste.arr[MSFilmlistenSuchen.FILM_UPDATE_SERVER_ART_NR] = MSFilmlistenSuchen.SERVER_ART_DIFF;
             xmlSchreibenDaten(MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
 //        Iterator<DatenFilmlistenServer> it;
