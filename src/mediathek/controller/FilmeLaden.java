@@ -34,8 +34,7 @@ import mediathek.tool.MVMessageDialog;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 import msearch.daten.MSConfig;
-import msearch.filmeLaden.ListeDownloadUrlsFilmlisten;
-import msearch.filmeLaden.ListeFilmlistenServer;
+import msearch.filmeLaden.ListeFilmlistenUrls;
 import msearch.filmeLaden.MSImportFilmliste;
 import msearch.filmeSuchen.MSFilmeSuchen;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
@@ -99,18 +98,9 @@ public class FilmeLaden {
         });
     }
 
-    // ###########################
-    public synchronized void setStop(boolean set) {
-        MSConfig.setStop(set);
-    }
-
-    public String[] getSenderNamen() {
-        return mSearchFilmeSuchen.getNamenSender();
-    }
-
-    // ###################################################################
-    // Filme laden
-    // ###################################################################
+    // #########################################################
+    // Filme als Liste importieren
+    // #########################################################
     public void filmeLaden(Daten daten, boolean manuell) {
         if (manuell || GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUS) {
             // Dialog zum Laden der Filme anzeigen
@@ -123,9 +113,6 @@ public class FilmeLaden {
         }
     }
 
-    // #########################################################
-    // Filme als Liste importieren
-    // #########################################################
     public void importFilmliste(String dateiUrl) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
         duration.start("Filme laden, start");
@@ -197,34 +184,35 @@ public class FilmeLaden {
             Daten.listeFilme.neueFilme = false;
             Daten.listeFilmeNachBlackList.neueFilme = false;
             fillHash(Daten.listeFilme);
-//            MSConfig.senderAllesLaden = senderAllesLaden;
             MSConfig.debug = Daten.debug;
             mSearchFilmeSuchen.updateSender(sender, Daten.listeFilme);
         }
     }
 
-//    public ListeFilmlistenServer getListeFilmlistnServer() {
-//        return msImportFilmliste.getListe_FilmlistenServer();
-//    }
+    // #######################################
+    // #######################################
+    public synchronized void setStop(boolean set) {
+        MSConfig.setStop(set);
+    }
 
-    public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten(boolean update, boolean diff /*ListeDiffs*/) {
-        return msImportFilmliste.getDownloadUrls_Filmlisten(update, diff);
+    public String[] getSenderNamen() {
+        return mSearchFilmeSuchen.getNamenSender();
     }
 
     public void updateDownloadUrlsFilmlisten(boolean old, boolean akt, boolean diff) {
         msImportFilmliste.updateDownloadUrlsFilmlisten(old, akt, diff);
     }
 
-    public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten_akt() {
-        return msImportFilmliste.msFilmlistenSuchen.listeDownloadUrlsFilmlisten_akt;
+    public ListeFilmlistenUrls getDownloadUrlsFilmlisten_akt() {
+        return msImportFilmliste.msFilmlistenSuchen.listeFilmlistenUrls_akt;
     }
 
-    public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten_old() {
-        return msImportFilmliste.msFilmlistenSuchen.listeDownloadUrlsFilmlisten_old;
+    public ListeFilmlistenUrls getDownloadUrlsFilmlisten_old() {
+        return msImportFilmliste.msFilmlistenSuchen.listeFilmlistenUrls_old;
     }
 
-    public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten_diff() {
-        return msImportFilmliste.msFilmlistenSuchen.listeDownloadUrlsFilmlisten_diff;
+    public ListeFilmlistenUrls getDownloadUrlsFilmlisten_diff() {
+        return msImportFilmliste.msFilmlistenSuchen.listeFilmlistenUrls_diff;
     }
 
     private void undEnde(MSListenerFilmeLadenEvent event) {
@@ -272,10 +260,10 @@ public class FilmeLaden {
         }
         hashSet.clear();
     }
+
     // ###########################
     // Listener
     // ###########################
-
     public void addAdListener(MSListenerFilmeLaden listener) {
         listeners.add(MSListenerFilmeLaden.class, listener);
     }
@@ -300,9 +288,9 @@ public class FilmeLaden {
 
     private class Start implements Runnable {
 
-        private MSListenerFilmeLaden listenerFilmeLaden;
-        private MSListenerFilmeLadenEvent event;
-        private ListenerMelden listenerMelden;
+        private final MSListenerFilmeLaden listenerFilmeLaden;
+        private final MSListenerFilmeLadenEvent event;
+        private final ListenerMelden listenerMelden;
 
         public Start(MSListenerFilmeLaden llistenerFilmeLaden, MSListenerFilmeLadenEvent eevent, ListenerMelden lliListenerMelden) {
             listenerFilmeLaden = llistenerFilmeLaden;
