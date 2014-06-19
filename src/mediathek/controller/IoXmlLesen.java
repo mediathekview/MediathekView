@@ -48,6 +48,7 @@ import msearch.filmeLaden.DatenUrlFilmliste;
 import msearch.filmeLaden.MSFilmlistenSuchen;
 
 public class IoXmlLesen {
+
     public boolean datenLesen(Daten daten, Path xmlFilePath) {
         boolean ret = false;
         if (Files.exists(xmlFilePath)) {
@@ -71,7 +72,8 @@ public class IoXmlLesen {
                                 datenPset = new DatenPset();
                                 if (get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
                                     daten.listePset.add(datenPset);
-                                }   break;
+                                }
+                                break;
                             case DatenProg.PROGRAMM:
                                 DatenProg datenProg = new DatenProg();
                                 if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr)) {
@@ -86,33 +88,48 @@ public class IoXmlLesen {
                                 String[] sa = new String[MVReplaceList.MAX_ELEM];
                                 if (get(parser, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
                                     Daten.mVReplaceList.liste.add(sa);
-                                }   break;
+                                }
+                                break;
                             case DatenAbo.ABO:
                                 //Abo
                                 DatenAbo datenAbo = new DatenAbo();
                                 if (get(parser, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
                                     Daten.listeAbo.addAbo(datenAbo);
-                                }   break;
+                                }
+                                break;
                             case DatenDownload.DOWNLOAD:
                                 //Downloads
                                 DatenDownload d = new DatenDownload();
                                 if (get(parser, DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr)) {
                                     d.init();
                                     Daten.listeDownloads.add(d);
-                                }   break;
+                                }
+                                break;
                             case DatenBlacklist.BLACKLIST:
                                 //Blacklist
                                 ListeBlacklist blacklist = Daten.listeBlacklist;
                                 DatenBlacklist datenBlacklist = new DatenBlacklist();
                                 if (get(parser, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
                                     blacklist.add(datenBlacklist);
-                                }   break;
+                                }
+                                break;
                             case MSFilmlistenSuchen.FILM_UPDATE_SERVER:
                                 //Urls Filmlisten
                                 DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
                                 if (get(parser, MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
-                                    Daten.filmeLaden.getDownloadUrlsFilmlisten(false, false /*diffs*/).addWithCheck(datenUrlFilmliste);
-                                }   break;
+                                    switch (datenUrlFilmliste.arr[MSFilmlistenSuchen.FILM_UPDATE_SERVER_ART_NR]) {
+                                        case MSFilmlistenSuchen.SERVER_ART_AKT:
+                                            Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().addWithCheck(datenUrlFilmliste);
+                                            break;
+                                        case MSFilmlistenSuchen.SERVER_ART_OLD:
+                                            Daten.filmeLaden.getDownloadUrlsFilmlisten_old().addWithCheck(datenUrlFilmliste);
+                                            break;
+                                        case MSFilmlistenSuchen.SERVER_ART_DIFF:
+                                            Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().addWithCheck(datenUrlFilmliste);
+                                            break;
+                                    }
+                                }
+                                break;
 //                            case DatenFilmlistenServer.FILM_LISTEN_SERVER:
 //                                //Filmlisteserver
 //                                DatenFilmlistenServer datenFilmlistenServer = new DatenFilmlistenServer();
@@ -130,7 +147,9 @@ public class IoXmlLesen {
             }
             Daten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
-            Daten.filmeLaden.getDownloadUrlsFilmlisten(false, false /*diffs*/).sort();
+            Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().sort();
+            Daten.filmeLaden.getDownloadUrlsFilmlisten_old().sort();
+            Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().sort();
         }
         return ret;
     }
@@ -225,14 +244,16 @@ public class IoXmlLesen {
                                 datenPset = null;
                             } else {
                                 liste.add(datenPset);
-                            }   break;
+                            }
+                            break;
                         case DatenProg.PROGRAMM:
                             if (datenPset != null) {
                                 DatenProg datenProg = new DatenProg();
                                 if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false)) {
                                     datenPset.addProg(datenProg);
                                 }
-                            }   break;
+                            }
+                            break;
                     }
                 }
             }
