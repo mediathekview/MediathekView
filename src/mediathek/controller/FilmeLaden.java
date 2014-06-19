@@ -53,8 +53,8 @@ public class FilmeLaden {
     }
     // private
     private MSFilmeSuchen mSearchFilmeSuchen;
-    private MSImportFilmliste mSearchImportFilmliste;
-    private EventListenerList listeners = new EventListenerList();
+    private final MSImportFilmliste msImportFilmliste;
+    private final EventListenerList listeners = new EventListenerList();
     private boolean istAmLaufen = false;
 
     public FilmeLaden() {
@@ -77,8 +77,8 @@ public class FilmeLaden {
                 undEnde(event);
             }
         });
-        mSearchImportFilmliste = new MSImportFilmliste();
-        mSearchImportFilmliste.addAdListener(new MSListenerFilmeLaden() {
+        msImportFilmliste = new MSImportFilmliste();
+        msImportFilmliste.addAdListener(new MSListenerFilmeLaden() {
             @Override
             public synchronized void start(MSListenerFilmeLadenEvent event) {
                 notifyStart(event);
@@ -140,12 +140,12 @@ public class FilmeLaden {
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 Log.systemMeldung("Aktuelle Filmliste laden");
-                mSearchImportFilmliste.filmeImportierenAuto("", Daten.listeFilme, diffListe);
+                msImportFilmliste.filmeImportierenAuto("", Daten.listeFilme, diffListe);
             } else {
                 // Filme als Liste importieren, feste URL/Datei
                 Log.systemMeldung("Filmliste laden von: " + dateiUrl);
                 Daten.listeFilme.clear();
-                mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, "", Daten.listeFilme);
+                msImportFilmliste.filmeImportierenDatei(dateiUrl, "", Daten.listeFilme);
             }
         }
     }
@@ -165,7 +165,7 @@ public class FilmeLaden {
             System.gc();
             // Filme als Liste importieren, feste URL/Datei
             Log.systemMeldung("Filmliste laden von: " + dateiUrl);
-            mSearchImportFilmliste.filmeImportierenDatei(dateiUrl, "", diffListe);
+            msImportFilmliste.filmeImportierenDatei(dateiUrl, "", diffListe);
         }
     }
 
@@ -203,12 +203,28 @@ public class FilmeLaden {
         }
     }
 
-    public ListeFilmlistenServer getListeFilmlistnServer() {
-        return mSearchImportFilmliste.getListe_FilmlistenServer();
-    }
+//    public ListeFilmlistenServer getListeFilmlistnServer() {
+//        return msImportFilmliste.getListe_FilmlistenServer();
+//    }
 
     public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten(boolean update, boolean diff /*ListeDiffs*/) {
-        return mSearchImportFilmliste.getDownloadUrls_Filmlisten(update, diff);
+        return msImportFilmliste.getDownloadUrls_Filmlisten(update, diff);
+    }
+
+    public void updateDownloadUrlsFilmlisten(boolean old, boolean akt, boolean diff) {
+        msImportFilmliste.updateDownloadUrlsFilmlisten(old, akt, diff);
+    }
+
+    public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten_akt() {
+        return msImportFilmliste.msFilmlistenSuchen.listeDownloadUrlsFilmlisten_akt;
+    }
+
+    public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten_old() {
+        return msImportFilmliste.msFilmlistenSuchen.listeDownloadUrlsFilmlisten_old;
+    }
+
+    public ListeDownloadUrlsFilmlisten getDownloadUrlsFilmlisten_diff() {
+        return msImportFilmliste.msFilmlistenSuchen.listeDownloadUrlsFilmlisten_diff;
     }
 
     private void undEnde(MSListenerFilmeLadenEvent event) {

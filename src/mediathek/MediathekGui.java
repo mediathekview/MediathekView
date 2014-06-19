@@ -95,7 +95,6 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVFrame;
-import mediathek.tool.MVTable;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 import org.simplericity.macify.eawt.ApplicationEvent;
