@@ -43,7 +43,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
-import msearch.filmeLaden.DatenUrlFilmliste;
+import msearch.filmeLaden.DatenFilmlisteUrl;
 import msearch.filmeLaden.MSFilmlistenSuchen;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
@@ -156,18 +156,18 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
     private void tabelleLaden() {
         if (jRadioButtonAkt.isSelected()) {
-            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().getTableObjectData(), MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
+            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
         } else if (jRadioButtonOld.isSelected()) {
-            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_old().getTableObjectData(), MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
+            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_old().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
         } else /*diff*/ {
-            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().getTableObjectData(), MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
+            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
         }
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
-            if (i == MSFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR) {
+            if (i == DatenFilmlisteUrl.FILM_UPDATE_SERVER_URL_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(10);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(400);
-            } else if (!Daten.debug && i == MSFilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR) {
+            } else if (!Daten.debug && (i == DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR || i == DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR)) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(0);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(0);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(0);
@@ -178,24 +178,24 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             }
         }
         if (jRadioButtonDiff.isSelected() || jRadioButtonAkt.isSelected()) {
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR)).setMinWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR)).setPreferredWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR)).setMaxWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR)).setMinWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR)).setPreferredWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_ZEIT_NR)).setMaxWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR)).setMinWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR)).setPreferredWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR)).setMaxWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_DATUM_NR)).setMinWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_DATUM_NR)).setPreferredWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_DATUM_NR)).setMaxWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_ZEIT_NR)).setMinWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_ZEIT_NR)).setPreferredWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_ZEIT_NR)).setMaxWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setMinWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setPreferredWidth(0);
+            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setMaxWidth(0);
         }
     }
 
     private void table1Select(boolean doppel) {
         stopBeob = true;
-        DatenUrlFilmliste datenUrlFilmliste = null;
+        DatenFilmlisteUrl datenUrlFilmliste = null;
         int selectedTableRow = jTable1.getSelectedRow();
         if (selectedTableRow >= 0) {
-            String url = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MSFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR).toString();
+            String url = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), DatenFilmlisteUrl.FILM_UPDATE_SERVER_URL_NR).toString();
             if (jRadioButtonAkt.isSelected()) {
                 datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().getDatenUrlFilmliste(url);
             } else if (jRadioButtonOld.isSelected()) {
@@ -205,7 +205,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             }
         }
         if (datenUrlFilmliste != null) {
-            jTextFieldUrl.setText(datenUrlFilmliste.arr[MSFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR]);
+            jTextFieldUrl.setText(datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_URL_NR]);
             if (doppel) {
                 // dann wars ein Doppelklick, gleich laden
                 if (jCheckBoxUpdate.isSelected()) {

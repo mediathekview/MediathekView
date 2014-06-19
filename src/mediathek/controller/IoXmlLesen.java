@@ -43,9 +43,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVReplaceList;
-import msearch.filmeLaden.DatenFilmlistenServer;
-import msearch.filmeLaden.DatenUrlFilmliste;
-import msearch.filmeLaden.MSFilmlistenSuchen;
+import msearch.filmeLaden.DatenFilmlisteUrl;
 
 public class IoXmlLesen {
 
@@ -113,29 +111,23 @@ public class IoXmlLesen {
                                     blacklist.add(datenBlacklist);
                                 }
                                 break;
-                            case MSFilmlistenSuchen.FILM_UPDATE_SERVER:
+                            case DatenFilmlisteUrl.FILM_UPDATE_SERVER:
                                 //Urls Filmlisten
-                                DatenUrlFilmliste datenUrlFilmliste = new DatenUrlFilmliste();
-                                if (get(parser, MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
-                                    switch (datenUrlFilmliste.arr[MSFilmlistenSuchen.FILM_UPDATE_SERVER_ART_NR]) {
-                                        case MSFilmlistenSuchen.SERVER_ART_AKT:
-                                            Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().addWithCheck(datenUrlFilmliste);
+                                DatenFilmlisteUrl datenFilmlisteUrl = new DatenFilmlisteUrl();
+                                if (get(parser, DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenFilmlisteUrl.arr)) {
+                                    switch (datenFilmlisteUrl.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR]) {
+                                        case DatenFilmlisteUrl.SERVER_ART_AKT:
+                                            Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().addWithCheck(datenFilmlisteUrl);
                                             break;
-                                        case MSFilmlistenSuchen.SERVER_ART_OLD:
-                                            Daten.filmeLaden.getDownloadUrlsFilmlisten_old().addWithCheck(datenUrlFilmliste);
+                                        case DatenFilmlisteUrl.SERVER_ART_OLD:
+                                            Daten.filmeLaden.getDownloadUrlsFilmlisten_old().addWithCheck(datenFilmlisteUrl);
                                             break;
-                                        case MSFilmlistenSuchen.SERVER_ART_DIFF:
-                                            Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().addWithCheck(datenUrlFilmliste);
+                                        case DatenFilmlisteUrl.SERVER_ART_DIFF:
+                                            Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().addWithCheck(datenFilmlisteUrl);
                                             break;
                                     }
                                 }
                                 break;
-//                            case DatenFilmlistenServer.FILM_LISTEN_SERVER:
-//                                //Filmlisteserver
-//                                DatenFilmlistenServer datenFilmlistenServer = new DatenFilmlistenServer();
-//                                if (get(parser, DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, datenFilmlistenServer.arr)) {
-//                                    Daten.filmeLaden.getListeFilmlistnServer().add(datenFilmlistenServer);
-//                                }   break;
                         }
                     }
                 }
@@ -295,15 +287,6 @@ public class IoXmlLesen {
                         } else {
                             liste.add(datenPset);
                         }
-//                    } else if (parser.getLocalName().equals(Konstanten__old.PROGRAMMGRUPPE_BUTTON)) {
-//                        DatenPgruppe__old datenPgruppe__old = new DatenPgruppe__old();
-//                        if (!get(parser, event, Konstanten__old.PROGRAMMGRUPPE_BUTTON, Konstanten__old.PROGRAMMGRUPPE_COLUMN_NAMES, datenPgruppe__old.arr, false)) {
-//                            datenPset = null;
-//                        } else {
-//                            datenPset = datenPgruppe__old.getNewVersion();
-//                            liste.add(datenPset);
-//                        }
-//                    } else if (parser.getLocalName().equals(DatenProg.PROGRAMM)) {
                         if (datenPset != null) {
                             DatenProg datenProg = new DatenProg();
                             if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false)) {

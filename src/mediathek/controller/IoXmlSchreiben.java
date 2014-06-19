@@ -42,9 +42,7 @@ import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVReplaceList;
-import msearch.filmeLaden.DatenFilmlistenServer;
-import msearch.filmeLaden.DatenUrlFilmliste;
-import msearch.filmeLaden.MSFilmlistenSuchen;
+import msearch.filmeLaden.DatenFilmlisteUrl;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 public class IoXmlSchreiben {
@@ -224,17 +222,17 @@ public class IoXmlSchreiben {
     }
 
     private void xmlSchreibenFilmUpdateServer() throws XMLStreamException {
-        Iterator<DatenUrlFilmliste> iterator;
+        Iterator<DatenFilmlisteUrl> iterator;
         //FilmUpdate schreibem
-        DatenUrlFilmliste datenUrlFilmliste;
+        DatenFilmlisteUrl datenUrlFilmliste;
         writer.writeCharacters("\n");
         writer.writeComment("Akt-Filmliste");
         writer.writeCharacters("\n");
         iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().iterator();
         while (iterator.hasNext()) {
             datenUrlFilmliste = iterator.next();
-            datenUrlFilmliste.arr[MSFilmlistenSuchen.FILM_UPDATE_SERVER_ART_NR] = MSFilmlistenSuchen.SERVER_ART_AKT;
-            xmlSchreibenDaten(MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
+            datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_AKT;
+            xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
         writer.writeCharacters("\n");
         writer.writeComment("Old-Filmliste");
@@ -242,8 +240,8 @@ public class IoXmlSchreiben {
         iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten_old().iterator();
         while (iterator.hasNext()) {
             datenUrlFilmliste = iterator.next();
-            datenUrlFilmliste.arr[MSFilmlistenSuchen.FILM_UPDATE_SERVER_ART_NR] = MSFilmlistenSuchen.SERVER_ART_OLD;
-            xmlSchreibenDaten(MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
+            datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_OLD;
+            xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
         writer.writeCharacters("\n");
         writer.writeComment("Diff-Filmliste");
@@ -251,15 +249,9 @@ public class IoXmlSchreiben {
         iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().iterator();
         while (iterator.hasNext()) {
             datenUrlFilmliste = iterator.next();
-            datenUrlFilmliste.arr[MSFilmlistenSuchen.FILM_UPDATE_SERVER_ART_NR] = MSFilmlistenSuchen.SERVER_ART_DIFF;
-            xmlSchreibenDaten(MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
+            datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_DIFF;
+            xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
-//        Iterator<DatenFilmlistenServer> it;
-//        it = Daten.filmeLaden.getListeFilmlistnServer().iterator();
-//        while (it.hasNext()) {
-//            DatenFilmlistenServer f = it.next();
-//            xmlSchreibenDaten(DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, f.arr, false);
-//        }
     }
 
     private void xmlSchreibenDaten(String xmlName, String[] xmlSpalten, String[] datenArray, boolean newLine) {

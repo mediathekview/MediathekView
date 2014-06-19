@@ -29,7 +29,6 @@ import javax.swing.JPanel;
 import mediathek.MediathekGui;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
-import mediathek.gui.dialogEinstellungen.PanelListeFilmlistenServer;
 import mediathek.gui.dialogEinstellungen.PanelSenderLaden;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVNotification;
@@ -99,8 +98,6 @@ public class GuiDebug extends JPanel {
         });
 
         jPanelSenderLaden.add(new PanelSenderLaden());
-
-        jPanelListen.add(new PanelListeFilmlistenServer(d, daten.mediathekGui));
 
         jButtonCheckUrl.addActionListener(new ActionListener() {
             @Override
