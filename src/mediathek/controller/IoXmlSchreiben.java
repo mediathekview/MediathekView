@@ -230,12 +230,12 @@ public class IoXmlSchreiben {
             datenUrlFilmliste = iterator.next();
             xmlSchreibenDaten(MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
-        Iterator<DatenFilmlistenServer> it;
-        it = Daten.filmeLaden.getListeFilmlistnServer().iterator();
-        while (it.hasNext()) {
-            DatenFilmlistenServer f = it.next();
-            xmlSchreibenDaten(DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, f.arr, false);
-        }
+//        Iterator<DatenFilmlistenServer> it;
+//        it = Daten.filmeLaden.getListeFilmlistnServer().iterator();
+//        while (it.hasNext()) {
+//            DatenFilmlistenServer f = it.next();
+//            xmlSchreibenDaten(DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, f.arr, false);
+//        }
     }
 
     private void xmlSchreibenDaten(String xmlName, String[] xmlSpalten, String[] datenArray, boolean newLine) {

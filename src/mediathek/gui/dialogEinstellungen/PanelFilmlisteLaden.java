@@ -88,19 +88,27 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         });
         jRadioButtonUpdateAus.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
-        jRadioButtonKomplett.addActionListener(new ActionListener() {
+        jRadioButtonOld.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                jCheckBoxUpdate.setSelected(jRadioButtonDiffs.isSelected());
+                jCheckBoxUpdate.setSelected(jRadioButtonDiff.isSelected());
                 tabelleLaden();
             }
         });
-        jRadioButtonDiffs.addActionListener(new ActionListener() {
+        jRadioButtonAkt.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                jCheckBoxUpdate.setSelected(jRadioButtonDiffs.isSelected());
+                jCheckBoxUpdate.setSelected(jRadioButtonDiff.isSelected());
+                tabelleLaden();
+            }
+        });
+        jRadioButtonDiff.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jCheckBoxUpdate.setSelected(jRadioButtonDiff.isSelected());
                 tabelleLaden();
             }
         });
@@ -133,7 +141,13 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
     private void listeFilmlistenSuchen() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        Daten.filmeLaden.getDownloadUrlsFilmlisten(true, jRadioButtonDiffs.isSelected() /*diffs*/); // Liste neu laden und eine URL auswählen
+        if (jRadioButtonAkt.isSelected()) {
+            Daten.filmeLaden.updateDownloadUrlsFilmlisten(false, true, false);
+        } else if (jRadioButtonOld.isSelected()) {
+            Daten.filmeLaden.updateDownloadUrlsFilmlisten(true, false, false);
+        } else /*diff*/ {
+            Daten.filmeLaden.updateDownloadUrlsFilmlisten(false, false, true);
+        }
         stopBeob = true;
         tabelleLaden();
         stopBeob = false;
@@ -141,12 +155,18 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten(false, jRadioButtonDiffs.isSelected() /*diffs*/).getTableObjectData(), MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
+        if (jRadioButtonAkt.isSelected()) {
+            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().getTableObjectData(), MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
+        } else if (jRadioButtonOld.isSelected()) {
+            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_old().getTableObjectData(), MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
+        } else /*diff*/ {
+            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().getTableObjectData(), MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
+        }
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
             if (i == MSFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(10);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);
-                jTable1.getColumnModel().getColumn(i).setPreferredWidth(350);
+                jTable1.getColumnModel().getColumn(i).setPreferredWidth(400);
             } else if (!Daten.debug && i == MSFilmlistenSuchen.FILM_UPDATE_SERVER_PRIO_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(0);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(0);
@@ -157,7 +177,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(100);
             }
         }
-        if (jRadioButtonDiffs.isSelected() /*diffs*/) {
+        if (jRadioButtonDiff.isSelected() || jRadioButtonAkt.isSelected()) {
             jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR)).setMinWidth(0);
             jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR)).setPreferredWidth(0);
             jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(MSFilmlistenSuchen.FILM_UPDATE_SERVER_DATUM_NR)).setMaxWidth(0);
@@ -175,12 +195,16 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         DatenUrlFilmliste datenUrlFilmliste = null;
         int selectedTableRow = jTable1.getSelectedRow();
         if (selectedTableRow >= 0) {
-            datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten(false, jRadioButtonDiffs.isSelected() /*diffs*/).getDatenUrlFilmliste(jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow),
-                    MSFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR).toString());
+            String url = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MSFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR).toString();
+            if (jRadioButtonAkt.isSelected()) {
+                datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().getDatenUrlFilmliste(url);
+            } else if (jRadioButtonOld.isSelected()) {
+                datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten_old().getDatenUrlFilmliste(url);
+            } else /*diff*/ {
+                datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().getDatenUrlFilmliste(url);
+            }
         }
         if (datenUrlFilmliste != null) {
-            //jRadioButtonUpdateAus.setSelected(true);
-            //daten.system[Konstanten.SYSTEM_IMPORT_ART_FILME_NR] = String.valueOf(Konstanten.UPDATE_FILME_AUS);
             jTextFieldUrl.setText(datenUrlFilmliste.arr[MSFilmlistenSuchen.FILM_UPDATE_SERVER_URL_NR]);
             if (doppel) {
                 // dann wars ein Doppelklick, gleich laden
@@ -233,8 +257,9 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         javax.swing.JScrollPane jScrollPane3 = new javax.swing.JScrollPane();
         jTextAreaManuell = new javax.swing.JTextArea();
         jCheckBoxUpdate = new javax.swing.JCheckBox();
-        jRadioButtonKomplett = new javax.swing.JRadioButton();
-        jRadioButtonDiffs = new javax.swing.JRadioButton();
+        jRadioButtonAkt = new javax.swing.JRadioButton();
+        jRadioButtonDiff = new javax.swing.JRadioButton();
+        jRadioButtonOld = new javax.swing.JRadioButton();
         jRadioButtonAuto = new javax.swing.JRadioButton();
         jRadioButtonUpdateAus = new javax.swing.JRadioButton();
 
@@ -273,7 +298,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
 
-        jLabel2.setText("Liste der Downloadserver (URLs) aktualisieren:");
+        jLabel2.setText("Liste aktualisieren:");
 
         jButtonAkualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png"))); // NOI18N
 
@@ -292,12 +317,15 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jCheckBoxUpdate.setText("alte Filmliste nicht löschen, nur erweitern");
 
-        buttonGroup2.add(jRadioButtonKomplett);
-        jRadioButtonKomplett.setSelected(true);
-        jRadioButtonKomplett.setText("komplette Listen");
+        buttonGroup2.add(jRadioButtonAkt);
+        jRadioButtonAkt.setSelected(true);
+        jRadioButtonAkt.setText("aktuelle komplette Listen");
 
-        buttonGroup2.add(jRadioButtonDiffs);
-        jRadioButtonDiffs.setText("Differenzlisten");
+        buttonGroup2.add(jRadioButtonDiff);
+        jRadioButtonDiff.setText("Differenzlisten");
+
+        buttonGroup2.add(jRadioButtonOld);
+        jRadioButtonOld.setText("alte Filmlisten");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -306,42 +334,43 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jRadioButtonDiffs)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 690, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldUrl)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonDateiAuswaehlen))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jRadioButtonKomplett)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonAkualisieren))
                     .addComponent(jScrollPane3)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jCheckBoxUpdate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonFilmeLaden)))
+                        .addComponent(jButtonFilmeLaden))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jRadioButtonAkt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButtonDiff)
+                        .addGap(18, 18, 18)
+                        .addComponent(jRadioButtonOld)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonAkualisieren)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jRadioButtonKomplett)
+                    .addComponent(jRadioButtonAkt)
+                    .addComponent(jRadioButtonDiff)
+                    .addComponent(jRadioButtonOld)
                     .addComponent(jLabel2)
                     .addComponent(jButtonAkualisieren))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButtonDiffs)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
+                .addGap(9, 9, 9)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -398,9 +427,10 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private javax.swing.JButton jButtonFilmeLaden;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBoxUpdate;
+    private javax.swing.JRadioButton jRadioButtonAkt;
     private javax.swing.JRadioButton jRadioButtonAuto;
-    private javax.swing.JRadioButton jRadioButtonDiffs;
-    private javax.swing.JRadioButton jRadioButtonKomplett;
+    private javax.swing.JRadioButton jRadioButtonDiff;
+    private javax.swing.JRadioButton jRadioButtonOld;
     private javax.swing.JRadioButton jRadioButtonUpdateAus;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextAreaAuto;

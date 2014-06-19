@@ -113,12 +113,12 @@ public class IoXmlLesen {
                                 if (get(parser, MSFilmlistenSuchen.FILM_UPDATE_SERVER, MSFilmlistenSuchen.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr)) {
                                     Daten.filmeLaden.getDownloadUrlsFilmlisten(false, false /*diffs*/).addWithCheck(datenUrlFilmliste);
                                 }   break;
-                            case DatenFilmlistenServer.FILM_LISTEN_SERVER:
-                                //Filmlisteserver
-                                DatenFilmlistenServer datenFilmlistenServer = new DatenFilmlistenServer();
-                                if (get(parser, DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, datenFilmlistenServer.arr)) {
-                                    Daten.filmeLaden.getListeFilmlistnServer().add(datenFilmlistenServer);
-                                }   break;
+//                            case DatenFilmlistenServer.FILM_LISTEN_SERVER:
+//                                //Filmlisteserver
+//                                DatenFilmlistenServer datenFilmlistenServer = new DatenFilmlistenServer();
+//                                if (get(parser, DatenFilmlistenServer.FILM_LISTEN_SERVER, DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES, datenFilmlistenServer.arr)) {
+//                                    Daten.filmeLaden.getListeFilmlistnServer().add(datenFilmlistenServer);
+//                                }   break;
                         }
                     }
                 }

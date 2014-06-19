@@ -76,16 +76,16 @@ public class PanelListeFilmlistenServer extends PanelVorlage {
     }
 
     private void tabelleLaden() {
-        jTable1.setModel(new TModel(Daten.filmeLaden.getListeFilmlistnServer().getTableObjectData(), DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES_ANZEIGE));
-        for (int i = 0; i < jTable1.getColumnCount(); ++i) {
-            jTable1.getColumnModel().getColumn(i).setMinWidth(10);
-            jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);
-            if (i == DatenFilmlistenServer.FILM_LISTEN_SERVER_NR_NR) {
-                jTable1.getColumnModel().getColumn(i).setPreferredWidth(50);
-            } else if (i == DatenFilmlistenServer.FILM_LISTEN_SERVER_URL_NR) {
-                jTable1.getColumnModel().getColumn(i).setPreferredWidth(500);
-            }
-        }
+//        jTable1.setModel(new TModel(Daten.filmeLaden.getListeFilmlistnServer().getTableObjectData(), DatenFilmlistenServer.FILM_LISTEN_SERVER_COLUMN_NAMES_ANZEIGE));
+//        for (int i = 0; i < jTable1.getColumnCount(); ++i) {
+//            jTable1.getColumnModel().getColumn(i).setMinWidth(10);
+//            jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);
+//            if (i == DatenFilmlistenServer.FILM_LISTEN_SERVER_NR_NR) {
+//                jTable1.getColumnModel().getColumn(i).setPreferredWidth(50);
+//            } else if (i == DatenFilmlistenServer.FILM_LISTEN_SERVER_URL_NR) {
+//                jTable1.getColumnModel().getColumn(i).setPreferredWidth(500);
+//            }
+//        }
     }
 
     private void table1Select() {
