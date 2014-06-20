@@ -503,6 +503,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
     private String replaceString(String s, DatenFilm film) {
         s = s.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.Heute_yyyyMMdd : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
         s = s.replace("%d", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? DatumZeit.Jetzt_HHMMSS : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT_NR]));
+
+        s = s.replace("%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.Heute_yyyyMMdd : film.arr[DatenFilm.FILM_DATUM_NR]));
+        s = s.replace("%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.Heute_yyyyMMdd : film.arr[DatenFilm.FILM_DATUM_NR]));
+        s = s.replace("%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.Heute_yyyyMMdd : film.arr[DatenFilm.FILM_DATUM_NR]));
+
         s = s.replace("%t", film.arr[DatenFilm.FILM_THEMA_NR]);
         s = s.replace("%T", film.arr[DatenFilm.FILM_TITEL_NR]);
         s = s.replace("%s", film.arr[DatenFilm.FILM_SENDER_NR]);
@@ -514,6 +519,35 @@ public class DatenDownload implements Comparable<DatenDownload> {
         s = s.replace("%N", GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
         s = s.replace("%S", GuiFunktionen.getDateiSuffix(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
         return s;
+    }
+
+    private static String getDMY(String s, String datum) {
+        // liefert das Datum: Jahr - Monat - Tag
+        // %1 - Tag
+        // %2 - Monat
+        // %3 - Jahr
+        String ret = "";
+        if (!datum.equals("")) {
+            try {
+                if (datum.length() == 10) {
+                    switch (s) {
+                        case "%1":
+                            ret = datum.substring(0, 2); // Tag
+                            break;
+                        case "%2":
+                            ret = datum.substring(3, 5); // Monat
+                            break;
+                        case "%3":
+                            ret = datum.substring(6); // Jahr
+                            break;
+
+                    }
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(775421006, Log.FEHLER_ART_PROG, "DatenFilm.datumDrehen", ex, datum);
+            }
+        }
+        return ret;
     }
 
     private static String datumDrehen(String datum) {
@@ -529,7 +563,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
             } catch (Exception ex) {
                 Log.fehlerMeldung(775421006, Log.FEHLER_ART_PROG, "DatenFilm.datumDrehen", ex, datum);
             }
-
         }
         return ret;
     }
