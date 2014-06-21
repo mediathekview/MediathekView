@@ -36,6 +36,10 @@ möglich:
 %H "heute", aktuelles Datum der Form JJJJMMTT z.B. 20090815 (15.08.2009)
 %h "jetzt", aktuelle Uhrzeit der Form SSMMss z.B. 152059 (15:20:59)
 
+%1 Tag,
+%2 Monat,
+%3 Jahr vom Sendedatum des Films oder aktuellem Datum, wenn Sendedatum leer
+
 %s Sender des Films
 %T Titel des Films
 %t Thema des Films

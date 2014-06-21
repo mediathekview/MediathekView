@@ -31,35 +31,12 @@ public class PanelInfoStarts extends JPanel {
 
     private TModel tModel;
 
-    /**
-     * Creates new form GuiFeed
-     *
-     */
     public PanelInfoStarts() {
         super();
         initComponents();
-//        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, PanelInfoStarts.class.getSimpleName()) {
-//            @Override
-//            public void ping() {
-//                init();
-//            }
-//        });
-//        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT, PanelInfoStarts.class.getSimpleName()) {
-//            @Override
-//            public void ping() {
-//                init();
-//            }
-//        });
-//        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, PanelInfoStarts.class.getSimpleName()) {
-//            @Override
-//            public void ping() {
-//                init();
-//            }
-//        });
         jButtonAuffrischen.addActionListener(new BeobLaden());
         tModel = getEmptyModel();
         jTable1.setModel(tModel);
-//        jTable1.setDefaultRenderer(Object.class, new CellRendererFilme(daten));
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         init();
     }
@@ -74,7 +51,6 @@ public class PanelInfoStarts extends JPanel {
                 titel[i] = "Art";
             }
         }
-
         return new TModel(new Object[][]{}, titel);
     }
 
@@ -112,7 +88,7 @@ public class PanelInfoStarts extends JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonAuffrischen)))
@@ -122,7 +98,7 @@ public class PanelInfoStarts extends JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonAuffrischen)
                 .addContainerGap())
