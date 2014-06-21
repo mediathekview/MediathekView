@@ -88,6 +88,10 @@ public class GuiAbo extends PanelVorlage {
         aboLoeschen();
     }
 
+    public void neu() {
+        aboNeu();
+    }
+
     //===================================
     //private
     //===================================
@@ -190,6 +194,20 @@ public class GuiAbo extends PanelVorlage {
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
+    }
+
+    private void aboNeu() {
+        Daten.listeAbo.addAbo("" /*sender*/, "" /*thema*/, ""/*titel*/, "" /*themaTitel*/, "" /*irgendwo*/, 0, "neu" /*ziel*/);
+
+//        DatenAbo akt = new DatenAbo("Neu", "", "" /*thema*/, ""/*titel*/, "" /*themaTitel*/, "" /*irgendwo*/, 0, "neu" /*ziel*/, "");
+//        DialogEditAbo dialog = new DialogEditAbo(null, true, daten, akt);
+//        dialog.setVisible(true);
+//        if (dialog.ok) {
+//            Daten.listeAbo.addAbo(akt);
+//            tabelleLaden();
+//            Daten.listeAbo.aenderungMelden();
+//        }
+//        setInfo();
     }
 
     private void aboEinAus(boolean ein) {

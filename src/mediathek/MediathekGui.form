@@ -276,6 +276,14 @@
                 <Property name="text" type="java.lang.String" value="&#xe4;ndern"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAboNeu">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/add_16.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="neues Abo anlegen"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuAnsicht">
