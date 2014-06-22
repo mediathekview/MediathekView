@@ -165,6 +165,7 @@ public final class MVToolBar extends JToolBar {
         jButtonFilterPanel = new JButton();
 
         jTextFieldFilter = new org.jdesktop.swingx.JXSearchField();
+        
         this.add(filler__5);
         if (!extern) {
             this.add(jButtonFilmeLaden);

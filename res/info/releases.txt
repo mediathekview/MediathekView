@@ -26,8 +26,9 @@
 	als Download angelegt werden
 	- Sendericons werden in den Tabellen "Filme" und "Downlaods" angezeigt (2 Größen und
 	abschaltbar)
-	- Tabellen verwenden jetzt auch die Systemschriftgröße
+	- Schriftgröße in den Tabellen: Es wird die Systemschriftgröße verwendet und sie kann auch übers Menü eingestellt werden
 	- Dialog Abos: Es werden bereits verwendete Pfade als Ziel mit angezeigt und es können
+	- Im Tab Abo: Es kann ein Abo auch direkt angelegt werden (Menü)
 	jetzt auch "Unterpfade" angegeben werden
 	- Mit %i kann beim Namen eines Downloads die Filmnummer verwendet werden
 	- %1, %2, %3 wird bei Downloads in den Tag, Monat, Jahr des Films (oder wenn nicht vorhanden von "Heute") übersetzt
