@@ -595,8 +595,8 @@ public class GuiFilme extends PanelVorlage {
             history = mVFilter.get_jToggleButtonHistory().isSelected();
         }
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_FILTER))) {
-            jScrollPaneFilter.setVisible(false);
             jPanelFilter.removeAll();
+            jScrollPaneFilter.setVisible(false);
             mVFilter = mVFilterFrame;
             mVFilterFrame.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
         } else {
@@ -609,7 +609,6 @@ public class GuiFilme extends PanelVorlage {
             }
         }
         // einrichten
-//        mVFilter.get_jCheckBoxNeue().setEnabled(false);
         mVFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
         mVFilter.get_jComboBoxZeitraum().setModel(new DefaultComboBoxModel<>(COMBO_ZEIT));
         setAktFilter(false);
@@ -617,6 +616,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
         mVFilter.get_jToggleButtonHistory().setSelected(history);
         setFilterAction();
+        this.updateUI();
     }
 
     private void setSplitPane() {
