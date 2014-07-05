@@ -24,12 +24,12 @@
 	- Tabelle Download: beim Löschen einer Zeile bleibt die Selektion an der Stelle
 	- History/erledigte Abos: die Liste kann exportiert werden und Filme könne nochmals
 	als Download angelegt werden
-	- Sendericons werden in den Tabellen "Filme" und "Downlaods" angezeigt (2 Größen und
+	- Sendericons werden in den Tabellen "Filme", "Downlaods" und "Abos" angezeigt (2 Größen und
 	abschaltbar)
 	- Schriftgröße in den Tabellen: Es wird die Systemschriftgröße verwendet und sie kann auch übers Menü eingestellt werden
 	- Dialog Abos: Es werden bereits verwendete Pfade als Ziel mit angezeigt und es können
-	- Im Tab Abo: Es kann ein Abo auch direkt angelegt werden (Menü)
 	jetzt auch "Unterpfade" angegeben werden
+	- Im Tab Abo: Es kann ein Abo auch direkt angelegt werden (Menü)
 	- Mit %i kann beim Namen eines Downloads die Filmnummer verwendet werden
 	- %1, %2, %3 wird bei Downloads in den Tag, Monat, Jahr des Films (oder wenn nicht vorhanden von "Heute") übersetzt
 	

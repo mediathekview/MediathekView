@@ -22,69 +22,49 @@ package mediathek.gui.dialog;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
-import mediathek.controller.Log;
+import javax.swing.*;
+
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Konstanten;
 
-public class DialogContinueDownload extends javax.swing.JDialog {
+public class DialogContinueDownload extends JDialog {
 
-    public boolean weiter = false;
-    public boolean neueStarten = false;
-    public boolean neuerName = false;
-    public boolean abbrechen = false;
-    public JFrame parent;
-    DatenDownload datenDownload;
-    File file;
-    boolean stopWait = false;
-    MVPanelDownloadZiel mVPanelDownloadZiel;
+    public enum DownloadResult {CANCELLED, CONTINUE, RESTART_WITH_NEW_NAME}
+    private DownloadResult result;
 
-    /**
-     *
-     * @param p
-     * @param dDownload
-     */
-    public DialogContinueDownload(JFrame p, DatenDownload dDownload) {
-        super(p, true);
+    private boolean isNewName = false;
+    private MVPanelDownloadZiel mVPanelDownloadZiel;
+    private Timer countdownTimer = null;
+
+    public DialogContinueDownload(JFrame parent, DatenDownload datenDownload) {
+        super(parent, true);
         initComponents();
-        parent = p;
-        datenDownload = dDownload;
-        mVPanelDownloadZiel = new MVPanelDownloadZiel(null, dDownload, false);
+        mVPanelDownloadZiel = new MVPanelDownloadZiel(null, datenDownload, false);
         jPanelPath.setLayout(new BorderLayout(0, 0));
         jPanelPath.add(mVPanelDownloadZiel, BorderLayout.CENTER);
-        setTitle("Download weiterführen?");
-        if (p != null) {
-            setLocationRelativeTo(p);
+
+        if (parent != null) {
+            setLocationRelativeTo(parent);
         }
-        jLabelWait.setText("");
-        jLabelWait.addMouseListener(new MouseAdapter() {
 
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                stopWait = true;
-            }
-        });
-
-        jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+        String dialogText = "<html>Der Film \""
+                + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]
+                + "\" existiert bereits.<br>Wie möchten Sie fortfahren?</html>";
+        jLabel1.setText(dialogText);
 
         jButtonNeuerName.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                neueStarten = true;
-                neuerName = mVPanelDownloadZiel.setPfadName_geaendert();
+                result = DownloadResult.RESTART_WITH_NEW_NAME;
+                isNewName = mVPanelDownloadZiel.setPfadName_geaendert();
                 beenden();
             }
         });
+
         jButtonAbbrechen.addActionListener(new ActionListener() {
 
             @Override
@@ -98,160 +78,81 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                 abbrechen();
             }
         };
-        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); // soll abgefangen werden
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
                 abbrechen();
             }
         });
-        jButtonWeiter.setSelected(true);
         jButtonWeiter.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                weiter = true;
+                result = DownloadResult.CONTINUE;
                 beenden();
             }
         });
-        if (datenDownload.interrupted()) {
-            // annsonsten muss der User sebst entscheiden was er will
-            new Thread(new Wait_(jLabelWait)).start();
-        }
+
+        //start the countdown...
+        countdownTimer = new Timer(0, new CountdownAction());
+        countdownTimer.setRepeats(true);
+        countdownTimer.start();
+
         pack();
+
+        getRootPane().setDefaultButton(jButtonWeiter);
     }
 
-    private class Wait_ implements Runnable {
+    /**
+     * Return the result of the user selection made in the dialog.
+     * @return A {@link mediathek.gui.dialog.DialogContinueDownload.DownloadResult} result.
+     */
+    public DownloadResult getResult()
+    {
+        return result;
+    }
 
-        JLabel jLabel;
-        int w = 0;
-
-        public Wait_(JLabel jjLabel) {
-            jLabel = jjLabel;
-        }
-
-        @Override
-        public synchronized void run() {
-            try {
-                for (w = Konstanten.DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN; w > 0; --w) {
-                    if (SwingUtilities.isEventDispatchThread()) {
-                        if (stopWait) {
-                            jLabel.setText("");
-                        } else {
-                            jLabel.setText("weiterführen in: " + w + " s");
-                        }
-                    } else {
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (stopWait) {
-                                    jLabel.setText("");
-                                } else {
-                                    jLabel.setText("weiterführen in: " + w + " s");
-                                }
-                            }
-                        });
-                    }
-                    if (stopWait) {
-                        return;
-                    }
-                    this.wait(1000);
-                }
-                weiter = true;
-                if (SwingUtilities.isEventDispatchThread()) {
-                    beenden();
-                } else {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            beenden();
-                        }
-                    });
-                }
-            } catch (Exception ex) {
-                Log.fehlerMeldung(698989743, Log.FEHLER_ART_PROG, "ListenerMediathekView.pingen", ex);
-            }
-        }
+    /**
+     * Check if a new name was specified.
+     * @return A new name needs to be used.
+     */
+    public boolean isNewName() {
+        return isNewName;
     }
 
     private void abbrechen() {
-        abbrechen = true;
+        result = DownloadResult.CANCELLED;
         beenden();
     }
 
     private void beenden() {
+        if (countdownTimer != null)
+            countdownTimer.stop();
         mVPanelDownloadZiel.saveComboPfad();
-        this.dispose();
+        dispose();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jLabel2 = new javax.swing.JLabel();
-        jTextFieldTitel = new javax.swing.JTextField();
-        jPanel1 = new javax.swing.JPanel();
-        jLabelWait = new javax.swing.JLabel();
         jButtonWeiter = new javax.swing.JButton();
         jButtonAbbrechen = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         jButtonNeuerName = new javax.swing.JButton();
         jPanelPath = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("Download weiterführen");
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(6);
-        jTextArea1.setText("Die Filmdatei existiert bereits.\n\n   * Download weiterführen\n   * Download neu starten und Datei überschreiben\n   * Mit neuem Namen laden");
-        jScrollPane1.setViewportView(jTextArea1);
+        jButtonWeiter.setText("Weiterführen in XXX");
 
-        jLabel2.setText("Filmtitel:");
-
-        jTextFieldTitel.setEditable(false);
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255), 2));
-
-        jLabelWait.setText("0");
-
-        jButtonWeiter.setText("Download weiterführen");
-
-        jButtonAbbrechen.setText("Download abbrechen");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabelWait)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonWeiter))
-                    .addComponent(jButtonAbbrechen, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
-        );
-
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonWeiter});
-
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonWeiter)
-                    .addComponent(jLabelWait))
-                .addGap(18, 18, 18)
-                .addComponent(jButtonAbbrechen)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jButtonAbbrechen.setText("Abbrechen");
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255), 2));
 
-        jButtonNeuerName.setText("mit diesem Namen neu Starten");
+        jButtonNeuerName.setText("Mit diesem Namen neu Starten");
 
         javax.swing.GroupLayout jPanelPathLayout = new javax.swing.GroupLayout(jPanelPath);
         jPanelPath.setLayout(jPanelPathLayout);
@@ -269,7 +170,7 @@ public class DialogContinueDownload extends javax.swing.JDialog {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(262, Short.MAX_VALUE)
+                .addContainerGap(285, Short.MAX_VALUE)
                 .addComponent(jButtonNeuerName)
                 .addContainerGap())
             .addComponent(jPanelPath, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -283,6 +184,8 @@ public class DialogContinueDownload extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jLabel1.setText("<html>Die Filmdatei existiert bereits.<br>Wie möchten Sie forfahren?</html>");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -290,29 +193,27 @@ public class DialogContinueDownload extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                    .addComponent(jLabel1)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonAbbrechen)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldTitel))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButtonWeiter)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldTitel, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                    .addComponent(jButtonWeiter)
+                    .addComponent(jButtonAbbrechen))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(16, 16, 16))
         );
 
         pack();
@@ -321,14 +222,28 @@ public class DialogContinueDownload extends javax.swing.JDialog {
     private javax.swing.JButton jButtonAbbrechen;
     private javax.swing.JButton jButtonNeuerName;
     private javax.swing.JButton jButtonWeiter;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabelWait;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanelPath;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Implements the countdown based on Swing Timer for automatic placement on EDT.
+     */
+    private class CountdownAction implements ActionListener {
+        private int w = Konstanten.DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (w > 0) {
+                jButtonWeiter.setText("Weiterführen in " + w + "s");
+                if (countdownTimer != null)
+                    countdownTimer.setDelay(1000);
+            }
+            else {
+                result = DownloadResult.CONTINUE;
+                beenden();
+            }
+            w--;
+        }
+    }
 }

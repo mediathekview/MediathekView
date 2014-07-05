@@ -211,12 +211,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
         resetDownload();
     }
 
-    public boolean interrupted() {
-        if (istFertig()) {
-            // fertige sind nicht mehr unterbrochen
-            return false;
-        }
-        return arr[DOWNLOAD_UNTERBROCHEN_NR].equals(Boolean.TRUE.toString());
+    public boolean isInterrupted() {
+        return !isFinished() && arr[DOWNLOAD_UNTERBROCHEN_NR].equals(Boolean.TRUE.toString());
     }
 
     public void interrupt() {
@@ -228,13 +224,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_RESET_INTERRUPT, DatenDownload.class.getName());
     }
 
-    public boolean istFertig() {
-        if (start != null) {
-            if (start.status == Start.STATUS_FERTIG) {
-                return true;
-            }
-        }
-        return false;
+    public boolean isFinished() {
+        return (start != null) && (start.status == Start.STATUS_FERTIG);
     }
 
     public void resetDownload() {
@@ -242,7 +233,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         start = null;
     }
 
-    public void startenDownload(Daten ddaten) {
+    public void startDownload(Daten ddaten) {
         // Start erstellen und zur Liste hinzufügen
         this.start = new Start();
         // gestartete Filme (originalURL des Films) auch in die History eintragen

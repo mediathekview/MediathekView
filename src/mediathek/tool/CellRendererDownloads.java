@@ -187,7 +187,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 
                 case DatenDownload.DOWNLOAD_UNTERBROCHEN_NR:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.interrupted()) {
+                    if (datenDownload.isInterrupted()) {
                         setIcon(ja_16);
                     } else {
                         setIcon(nein_12);

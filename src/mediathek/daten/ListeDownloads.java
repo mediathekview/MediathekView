@@ -123,7 +123,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         Iterator<DatenDownload> it = this.iterator();
         while (it.hasNext()) {
             DatenDownload d = it.next();
-            if (d.interrupted()) {
+            if (d.isInterrupted()) {
                 continue;
             }
             if (!d.istAbo()) {

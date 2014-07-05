@@ -92,7 +92,7 @@ public class MediathekAuto {
             it = Daten.listeDownloads.listIterator(0);
             while (it.hasNext()) {
                 // alle 5 Sekungen einen Download starten
-                it.next().startenDownload(daten);
+                it.next().startDownload(daten);
                 this.wait(5000);
             }
             while (Daten.listeDownloads.getNumberOfStartsNotFinished() > 0) {

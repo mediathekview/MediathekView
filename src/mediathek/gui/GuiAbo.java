@@ -211,8 +211,7 @@ public class GuiAbo extends PanelVorlage {
     }
 
     private void aboEinAus(boolean ein) {
-        int sel = tabelle.getSelectedRow();
-        int[] rows = tabelle.getSelectedRows();
+        final int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int row : rows) {
                 int modelRow = tabelle.convertRowIndexToModel(row);
@@ -265,11 +264,8 @@ public class GuiAbo extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
-
-        jLabel1.setText("jLabel1");
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
