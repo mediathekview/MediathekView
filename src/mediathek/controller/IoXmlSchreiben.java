@@ -190,10 +190,10 @@ public class IoXmlSchreiben {
         iterator = Daten.listeDownloads.iterator();
         while (iterator.hasNext()) {
             d = iterator.next();
-            if (d.interrupted()) {
+            if (d.isInterrupted()) {
                 // unterbrochene werden gespeichert, dass die Info "Interrupt" erhalten bleibt
                 xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr, false);
-            } else if (!d.istAbo() && !d.istFertig()) {
+            } else if (!d.istAbo() && !d.isFinished()) {
                 //Download, (Abo müssen neu angelegt werden)
                 xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr, false);
             }

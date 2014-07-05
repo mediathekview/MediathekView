@@ -318,6 +318,10 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Schriftr&#xf6;&#xdf;e"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItemSchriftGr">
                   <Properties>

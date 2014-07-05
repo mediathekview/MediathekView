@@ -51,15 +51,9 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
 public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
-
-    JFrame f;
-    Daten daten;
-
-    public MVFilterPanel(JFrame jFrame, Daten d) {
+    public MVFilterPanel(final JFrame parent, final Daten daten) {
         initComponents();
-        f = jFrame;
-        daten = d;
-        setVisible(true);
+
         jButtonFilterLoeschen.setIcon(GetIcon.getIcon("clear_16.png"));
         jButtonFilterLoeschen.setMnemonic(KeyEvent.VK_F8);
         jButtonBlacklist.setIcon(GetIcon.getIcon("blacklist_16.png"));
@@ -67,8 +61,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogLeer dialog = new DialogLeer(f, true);
-                dialog.init("Blacklist", new PanelBlacklist(daten, f, PanelBlacklist.class.getName() + "_3"));
+                DialogLeer dialog = new DialogLeer(parent, true);
+                dialog.init("Blacklist", new PanelBlacklist(daten, parent, PanelBlacklist.class.getName() + "_3"));
                 dialog.setVisible(true);
             }
         });
@@ -77,7 +71,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(f, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
+                new DialogHilfe(parent, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
             }
         });
         jRadioButtonF1.setSelected(true);
@@ -104,6 +98,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 setRadio();
             }
         });
+
+        setVisible(true);
     }
 
     private void setAktFilter() {
@@ -252,7 +248,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
     }
 
-
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -289,8 +284,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jRadioButtonF3 = new javax.swing.JRadioButton();
         jRadioButtonF4 = new javax.swing.JRadioButton();
         jRadioButtonF5 = new javax.swing.JRadioButton();
-        jLabel6 = new javax.swing.JLabel();
-        jSeparator2 = new javax.swing.JSeparator();
+        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
+        javax.swing.JSeparator jSeparator2 = new javax.swing.JSeparator();
 
         jLabel1.setText("Zeitraum:");
 
@@ -423,7 +418,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jRadioButtonTT)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 3, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jRadioButtonIrgendwo)))
                 .addContainerGap())
         );
@@ -542,7 +537,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     public javax.swing.JComboBox jComboBoxFilterSender;
     public javax.swing.JComboBox jComboBoxFilterThema;
     public javax.swing.JComboBox jComboBoxZeitraum;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JRadioButton jRadioButtonF1;
     private javax.swing.JRadioButton jRadioButtonF2;
     private javax.swing.JRadioButton jRadioButtonF3;
@@ -550,7 +544,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     private javax.swing.JRadioButton jRadioButtonF5;
     private javax.swing.JRadioButton jRadioButtonIrgendwo;
     private javax.swing.JRadioButton jRadioButtonTT;
-    private javax.swing.JSeparator jSeparator2;
     public javax.swing.JSlider jSliderMinuten;
     public javax.swing.JTextField jTextFieldFilterMinuten;
     public javax.swing.JTextField jTextFieldFilterThemaTitel;
@@ -587,6 +580,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         return jCheckBoxNurHd;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public JComboBox get_jComboBoxFilterSender() {
         return jComboBoxFilterSender;
@@ -613,11 +607,13 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         return jRadioButtonIrgendwo;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public JComboBox get_jComboBoxFilterThema() {
         return jComboBoxFilterThema;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public JComboBox get_jComboBoxZeitraum() {
         return jComboBoxZeitraum;

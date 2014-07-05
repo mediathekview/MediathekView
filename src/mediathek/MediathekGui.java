@@ -84,7 +84,6 @@ import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.gui.dialog.PanelHilfe;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
-import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.res.GetIcon;
 import mediathek.tool.Duration;
@@ -681,8 +680,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         panelMeldungen.setLayout(new BorderLayout());
         panelMeldungen.add(splitPane, BorderLayout.CENTER);
         if (Daten.debug) {
-//////            jTabbedPane.addTab("Debug", new GuiDebug(daten));
-            //jTabbedPane.addTab("Starts", new PanelInfoStarts());
+            jTabbedPane.addTab("Debug", new GuiDebug(daten));
         }
         initFrames();
     }
@@ -1409,7 +1407,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemToolBar = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemBeschreibung = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemVideoplayer = new javax.swing.JCheckBoxMenuItem();
-        jMenu1 = new javax.swing.JMenu();
+        javax.swing.JMenu jMenu1 = new javax.swing.JMenu();
         jMenuItemSchriftGr = new javax.swing.JMenuItem();
         jMenuItemSchriftKl = new javax.swing.JMenuItem();
         jMenuItemSchriftNormal = new javax.swing.JMenuItem();
@@ -1642,7 +1640,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenuAnsicht;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenu jMenuDatei;

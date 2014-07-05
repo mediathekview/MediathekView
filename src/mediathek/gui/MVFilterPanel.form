@@ -263,7 +263,7 @@
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="jRadioButtonTT" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="3" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="jRadioButtonIrgendwo" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -488,8 +488,16 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Filterprofile:"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JSeparator" name="jSeparator2">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>
