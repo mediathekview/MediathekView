@@ -26,7 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
-import java.util.ListIterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.stream.XMLOutputFactory;
@@ -46,12 +45,42 @@ import msearch.filmeLaden.DatenFilmlisteUrl;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 public class IoXmlSchreiben {
+    private class FileDecompressor {
+        private OutputStream decompressedOutputStream = null;
+        private Path xmlFilePath = null;
+
+        public FileDecompressor(Path xmlFilePath)
+        {
+            this.xmlFilePath = xmlFilePath;
+        }
+
+        public OutputStream decompress() throws IOException
+        {
+            OutputStream outputStream = Files.newOutputStream(xmlFilePath);
+            if (xmlFilePath.endsWith(GuiKonstanten.FORMAT_BZ2)) {
+                decompressedOutputStream = new BZip2CompressorOutputStream(outputStream, 2);
+            } else if (xmlFilePath.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+                ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
+                ZipEntry entry = new ZipEntry(Konstanten.PROGRAMMNAME);
+                zipOutputStream.putNextEntry(entry);
+                decompressedOutputStream = zipOutputStream;
+            } else {
+                decompressedOutputStream = outputStream;
+            }
+
+            return decompressedOutputStream;
+        }
+
+        public void close() throws IOException
+        {
+            decompressedOutputStream.close();
+        }
+    }
 
     private XMLStreamWriter writer;
     private OutputStreamWriter out = null;
-    ZipOutputStream zipOutputStream = null;
-    BZip2CompressorOutputStream bZip2CompressorOutputStream = null;
     private Path xmlFilePath = null;
+    private FileDecompressor decompressor = null;
 
     public IoXmlSchreiben() {
         xmlFilePath = Daten.getMediathekXmlFilePath();
@@ -73,9 +102,6 @@ public class IoXmlSchreiben {
         }
     }
 
-    // ##############################
-    // private
-    // ##############################
     private void xmlDatenSchreiben(Daten daten) {
         try {
             Log.systemMeldung("Daten Schreiben");
@@ -126,18 +152,8 @@ public class IoXmlSchreiben {
 
     private void xmlSchreibenStart() throws IOException, XMLStreamException {
         Log.systemMeldung("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
-        final OutputStream outputStream = Files.newOutputStream(xmlFilePath);
-        if (xmlFilePath.endsWith(GuiKonstanten.FORMAT_BZ2)) {
-            bZip2CompressorOutputStream = new BZip2CompressorOutputStream(outputStream, 2);
-            out = new OutputStreamWriter(bZip2CompressorOutputStream, Konstanten.KODIERUNG_UTF);
-        } else if (xmlFilePath.endsWith(GuiKonstanten.FORMAT_ZIP)) {
-            zipOutputStream = new ZipOutputStream(outputStream);
-            ZipEntry entry = new ZipEntry(Konstanten.PROGRAMMNAME);
-            zipOutputStream.putNextEntry(entry);
-            out = new OutputStreamWriter(zipOutputStream, Konstanten.KODIERUNG_UTF);
-        } else {
-            out = new OutputStreamWriter(outputStream, Konstanten.KODIERUNG_UTF);
-        }
+        decompressor = new FileDecompressor(xmlFilePath);
+        out = new OutputStreamWriter(decompressor.decompress(), Konstanten.KODIERUNG_UTF);
 
         XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
         writer = outFactory.createXMLStreamWriter(out);
@@ -148,114 +164,94 @@ public class IoXmlSchreiben {
     }
 
     private void xmlSchreibenErsetzungstabelle() {
-        ListIterator<String[]> iterator;
-        iterator = Daten.mVReplaceList.liste.listIterator();
-        while (iterator.hasNext()) {
-            String[] sa = iterator.next();
+        for (String[] sa : Daten.mVReplaceList.liste) {
             xmlSchreibenDaten(MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa, false);
         }
     }
 
     private void xmlSchreibenProg(Daten daten) {
-        ListIterator<DatenPset> iterator;
         //Proggruppen schreiben
-        DatenPset datenPset;
-        ListIterator<DatenProg> it;
-        iterator = daten.listePset.listIterator();
-        while (iterator.hasNext()) {
-            datenPset = iterator.next();
+        for (DatenPset datenPset : daten.listePset) {
             xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false);
-            it = datenPset.getListeProg().listIterator();
-            while (it.hasNext()) {
-                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, it.next().arr, false);
+            for (DatenProg datenProg : datenPset.getListeProg()) {
+                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false);
             }
         }
     }
 
+    /**
+     * ProgrammSet in die Konfigurationsdatei schreiben.
+     * @param psetArray Die PSet-Informationen.
+     */
     private void xmlSchreibenPset(DatenPset[] psetArray) {
-        ListIterator<DatenProg> it;
         for (DatenPset pset : psetArray) {
             xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, pset.arr, false);
-            it = pset.getListeProg().listIterator();
-            while (it.hasNext()) {
-                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, it.next().arr, false);
+            for (DatenProg datenProg : pset.getListeProg()) {
+                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false);
             }
         }
     }
 
     private void xmlSchreibenDownloads() {
-        Iterator<DatenDownload> iterator;
         //Abo schreiben
-        DatenDownload d;
-        iterator = Daten.listeDownloads.iterator();
-        while (iterator.hasNext()) {
-            d = iterator.next();
-            if (d.isInterrupted()) {
+        for (DatenDownload download : Daten.listeDownloads) {
+            if (download.isInterrupted()) {
                 // unterbrochene werden gespeichert, dass die Info "Interrupt" erhalten bleibt
-                xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr, false);
-            } else if (!d.istAbo() && !d.isFinished()) {
+                xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, download.arr, false);
+            } else if (!download.istAbo() && !download.isFinished()) {
                 //Download, (Abo müssen neu angelegt werden)
-                xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr, false);
+                xmlSchreibenDaten(DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, download.arr, false);
             }
         }
     }
 
     private void xmlSchreibenAbo() {
-        ListIterator<DatenAbo> iterator;
-        //Abo schreibem
-        DatenAbo datenAbo;
-        iterator = Daten.listeAbo.listIterator();
-        while (iterator.hasNext()) {
-            datenAbo = iterator.next();
+        //Abo schreiben
+        for (DatenAbo datenAbo : Daten.listeAbo) {
             xmlSchreibenDaten(DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr, false);
         }
     }
 
     private void xmlSchreibenBlackList() {
-        Iterator<DatenBlacklist> it = Daten.listeBlacklist.iterator();
-        //Blacklist schreibem
-        DatenBlacklist blacklist;
-        while (it.hasNext()) {
-            blacklist = it.next();
+        //Blacklist schreiben
+        for (DatenBlacklist blacklist : Daten.listeBlacklist) {
             xmlSchreibenDaten(DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, blacklist.arr, false);
         }
     }
 
     private void xmlSchreibenFilmUpdateServer() throws XMLStreamException {
-        Iterator<DatenFilmlisteUrl> iterator;
-        //FilmUpdate schreibem
-        DatenFilmlisteUrl datenUrlFilmliste;
+        //FilmUpdate schreiben
         writer.writeCharacters("\n");
         writer.writeComment("Akt-Filmliste");
         writer.writeCharacters("\n");
-        iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().iterator();
-        while (iterator.hasNext()) {
-            datenUrlFilmliste = iterator.next();
+        for (DatenFilmlisteUrl datenUrlFilmliste : Daten.filmeLaden.getDownloadUrlsFilmlisten_akt()) {
             datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_AKT;
             xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
         writer.writeCharacters("\n");
         writer.writeComment("Old-Filmliste");
         writer.writeCharacters("\n");
-        iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten_old().iterator();
+
+        Iterator<DatenFilmlisteUrl> iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten_old().iterator();
         while (iterator.hasNext()) {
-            datenUrlFilmliste = iterator.next();
+            DatenFilmlisteUrl datenUrlFilmliste = iterator.next();
             datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_OLD;
             xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
         writer.writeCharacters("\n");
         writer.writeComment("Diff-Filmliste");
         writer.writeCharacters("\n");
+
         iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().iterator();
         while (iterator.hasNext()) {
-            datenUrlFilmliste = iterator.next();
+            DatenFilmlisteUrl datenUrlFilmliste = iterator.next();
             datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_DIFF;
             xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
     }
 
     private void xmlSchreibenDaten(String xmlName, String[] xmlSpalten, String[] datenArray, boolean newLine) {
-        int xmlMax = datenArray.length;
+        final int xmlMax = datenArray.length;
         try {
             writer.writeStartElement(xmlName);
             if (newLine) {
@@ -312,19 +308,10 @@ public class IoXmlSchreiben {
         writer.writeEndDocument();
         writer.flush();
 
-        if (xmlFilePath.endsWith(GuiKonstanten.FORMAT_BZ2)) {
-            writer.close();
-            out.close();
-            bZip2CompressorOutputStream.close();
-        } else if (xmlFilePath.endsWith(GuiKonstanten.FORMAT_ZIP)) {
-            zipOutputStream.closeEntry();
-            writer.close();
-            out.close();
-            zipOutputStream.close();
-        } else {
-            writer.close();
-            out.close();
-        }
+        decompressor.close();
+        writer.close();
+        out.close();
+
         Log.systemMeldung("geschrieben!");
     }
 }

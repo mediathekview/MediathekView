@@ -24,8 +24,7 @@ import java.util.Date;
 
 public class Datum extends Date {
 
-    final static SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy");
-    final static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy.MM.dd");
+    private final static SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy");
 
     public Datum() {
         super();
@@ -40,32 +39,24 @@ public class Datum extends Date {
         if (this.getTime() == 0) {
             return "";
         } else {
-            return sdf1.format(this);
+            return dateFormatter.format(this);
         }
     }
 
-    public String toStringR() {
-        if (this.getTime() == 0) {
-            return sdf2.format(new Date());
-        } else {
-            return sdf2.format(this);
-        }
-    }
-
+    /**
+     * Liefert den Betrag der Zeitdifferenz zu jetzt.
+     * @return Differenz in Sekunden.
+     */
     public int diffInSekunden() {
-        // liefert den BETRAG! der Zeitdifferenz zu jetzt
-        int ret;
-        ret = new Long((this.getTime() - new Datum().getTime()) / (1000)).intValue(); // Zeitdifferenz in Sekunden
-        if (ret < 0) {
-            ret = -1 * ret;
-        }
-        return ret;
+        final int ret = new Long((this.getTime() - new Datum().getTime()) / (1000)).intValue();
+        return Math.abs(ret);
     }
 
+    /**
+     * Liefert den BETRAG! der Zeitdifferenz zu jetzt.
+     * @return Differenz in Minuten.
+     */
     public int diffInMinuten() {
-        // liefert den BETRAG! der Zeitdifferenz zu jetzt
-        int ret = this.diffInSekunden();
-        ret = ret / 60; // Minuten
-        return ret;
+        return (diffInSekunden() / 60);
     }
 }
