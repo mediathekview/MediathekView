@@ -432,7 +432,7 @@ public class StarterClass {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new DialogDownloadfehler(null, exMessage, datenDownload).setVisible(true);
+                        new DialogDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
                     }
                 });
             }
@@ -640,7 +640,7 @@ public class StarterClass {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    new DialogDownloadfehler(null, "URL des Films:\n"
+                                    new DialogDownloadfehler(daten.mediathekGui, "URL des Films:\n"
                                             + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] + "\n\n"
                                             + responseCode + "\n", datenDownload).setVisible(true);
                                 }
@@ -667,7 +667,7 @@ public class StarterClass {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new DialogDownloadfehler(null, exMessage, datenDownload).setVisible(true);
+                        new DialogDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
                     }
                 });
             }

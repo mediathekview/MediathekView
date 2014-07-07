@@ -502,6 +502,7 @@ public class GuiDownloads extends PanelVorlage {
                     if (download.start.status > Start.STATUS_RUN) {
                         // wenn er noch läuft gibts nix
                         // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
+                        //TODO in auto dialog umwandeln!
                         int a = JOptionPane.showConfirmDialog(parentComponent, "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL_NR],
                                 "Fertiger Download", JOptionPane.YES_NO_OPTION);
                         if (a != JOptionPane.YES_OPTION) {
