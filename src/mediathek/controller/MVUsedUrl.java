@@ -25,6 +25,11 @@ import msearch.tool.GermanStringSorter;
 public class MVUsedUrl implements Comparable<MVUsedUrl> {
 
     public static String[] title = {"Datum", "Thema", "Titel", "Url"};
+    public static final int USED_URL_DATUM = 0;
+    public static final int USED_URL_THEMA = 1;
+    public static final int USED_URL_TITEL = 2;
+    public static final int USED_URL_URL = 3;
+    
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private final static String TRENNER = "  |###|  ";
     private final static String PAUSE = " |#| ";
@@ -43,10 +48,10 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
     }
 
     public String getUsedUrl() {
-        return uUrl[0] + PAUSE
-                + GuiFunktionen.textLaenge(25, putzen(uUrl[1]), false /* mitte */, false /*addVorne*/) + PAUSE
-                + GuiFunktionen.textLaenge(40, putzen(uUrl[2]), false /* mitte */, false /*addVorne*/) + TRENNER
-                + uUrl[3] + "\n";
+        return uUrl[USED_URL_DATUM] + PAUSE
+                + GuiFunktionen.textLaenge(25, putzen(uUrl[USED_URL_THEMA]), false /* mitte */, false /*addVorne*/) + PAUSE
+                + GuiFunktionen.textLaenge(40, putzen(uUrl[USED_URL_TITEL]), false /* mitte */, false /*addVorne*/) + TRENNER
+                + uUrl[USED_URL_URL] + "\n";
     }
 
     public static MVUsedUrl getUrlAusZeile(String zeile) {
@@ -73,26 +78,26 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
     }
 
     public static String getHeaderString() {
-        return GuiFunktionen.textLaenge(40, title[2], false /* mitte */, false /*addVorne*/)
-                + "    " + GuiFunktionen.textLaenge(25, title[1], false /* mitte */, false /*addVorne*/)
-                + "    " + GuiFunktionen.textLaenge(10, title[0], false /* mitte */, false /*addVorne*/)
-                + "    " + title[3];
+        return GuiFunktionen.textLaenge(40, title[USED_URL_TITEL], false /* mitte */, false /*addVorne*/)
+                + "    " + GuiFunktionen.textLaenge(25, title[USED_URL_THEMA], false /* mitte */, false /*addVorne*/)
+                + "    " + GuiFunktionen.textLaenge(10, title[USED_URL_DATUM], false /* mitte */, false /*addVorne*/)
+                + "    " + title[USED_URL_URL];
     }
 
     public String getString() {
-        return GuiFunktionen.textLaenge(40, uUrl[2], false /* mitte */, false /*addVorne*/)
-                + "    " + GuiFunktionen.textLaenge(25, uUrl[1], false /* mitte */, false /*addVorne*/)
-                + "    " + (uUrl[0].isEmpty() ? "          " : uUrl[0])
-                + "    " + uUrl[3];
+        return GuiFunktionen.textLaenge(40, uUrl[USED_URL_TITEL], false /* mitte */, false /*addVorne*/)
+                + "    " + GuiFunktionen.textLaenge(25, uUrl[USED_URL_THEMA], false /* mitte */, false /*addVorne*/)
+                + "    " + (uUrl[USED_URL_DATUM].isEmpty() ? "          " : uUrl[USED_URL_DATUM])
+                + "    " + uUrl[USED_URL_URL];
     }
 
     public String getUrl() {
-        return uUrl[3];
+        return uUrl[USED_URL_URL];
     }
 
     @Override
     public int compareTo(MVUsedUrl arg0) {
-        return sorter.compare(uUrl[2], arg0.uUrl[2]);
+        return sorter.compare(uUrl[USED_URL_TITEL], arg0.uUrl[USED_URL_TITEL]);
     }
 
     private static String putzen(String s) {

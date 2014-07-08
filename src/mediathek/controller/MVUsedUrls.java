@@ -37,8 +37,6 @@ import mediathek.tool.ListenerMediathekView;
 
 public class MVUsedUrls {
 
-//    private final static String TRENNER = "  |###|  ";
-//    private final static String PAUSE = " |#| ";
     private final HashSet<String> listeUrls;
     private LinkedList<MVUsedUrl> listeUrlsSortDate;
     private final String fileName;
@@ -81,7 +79,7 @@ public class MVUsedUrls {
         Object[][] object;
         int i = 0;
         Iterator<MVUsedUrl> iterator = listeUrlsSortDate.iterator();
-        object = new Object[listeUrlsSortDate.size()][3];
+        object = new Object[listeUrlsSortDate.size()][];
         while (iterator.hasNext()) {
             object[i] = iterator.next().uUrl;
             ++i;
@@ -240,31 +238,4 @@ public class MVUsedUrls {
         }
     }
 
-//    private String putzen(String s) {
-//        s = s.replace("\n", "");
-//        s = s.replace("|", "");
-//        s = s.replace(TRENNER, "");
-//        return s;
-//    }
-//    private String[] getUrlAusZeile(String zeile) {
-//        String url = "", titel = "", datum = "";
-//        int a1;
-//
-//        try {
-//            if (zeile.contains(TRENNER)) {
-//                //neues Logfile-Format
-//                a1 = zeile.lastIndexOf(TRENNER);
-//                a1 += TRENNER.length();
-//                url = zeile.substring(a1);
-//                // titel
-//                titel = zeile.substring(zeile.lastIndexOf(PAUSE) + PAUSE.length(), zeile.lastIndexOf(TRENNER));
-//                datum = zeile.substring(0, zeile.indexOf(PAUSE));
-//            } else {
-//                url = zeile;
-//            }
-//        } catch (Exception ex) {
-//            Log.fehlerMeldung(398853224, Log.FEHLER_ART_PROG, "ErledigteAbos.getUrlAusZeile: " + zeile, ex);
-//        }
-//        return new String[]{datum, titel, url};
-//    }
 }

@@ -279,7 +279,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             int nr = jTable1.rowAtPoint(p);
             if (nr >= 0) {
                 jTable1.setRowSelectionInterval(nr, nr);
-                String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), 3).toString();
+                String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), MVUsedUrl.USED_URL_URL).toString();
                 film = Daten.listeFilme.getFilmByUrl(url);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();
@@ -343,7 +343,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 int selectedTableRow = jTable1.getSelectedRow();
                 if (selectedTableRow >= 0) {
-                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), 2).toString();
+                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrl.USED_URL_URL).toString();
                     if (abo) {
                         GuiFunktionen.copyToClipboard(del);
                     } else {
@@ -360,7 +360,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 int selectedTableRow = jTable1.getSelectedRow();
                 if (selectedTableRow >= 0) {
-                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), 2).toString();
+                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrl.USED_URL_URL).toString();
                     if (abo) {
                         daten.erledigteAbos.urlAusLogfileLoeschen(del);
                     } else {
