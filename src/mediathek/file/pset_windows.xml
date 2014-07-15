@@ -27,7 +27,7 @@
         <Programmname>ffmpeg</Programmname>
         <Zieldateiname>%t-%T-%N.mp4</Zieldateiname>
         <Programmpfad>bin\ffmpeg.exe</Programmpfad>
-        <Programmschalter>-i %f -c copy -absf aac_adtstoasc "**"</Programmschalter>
+		<Programmschalter>-i %f -c copy -bsf:a aac_adtstoasc "**"</Programmschalter>
         <Praefix>http</Praefix>
         <Suffix>m3u8</Suffix>
         <Restart>false</Restart>
