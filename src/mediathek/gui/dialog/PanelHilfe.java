@@ -171,7 +171,7 @@ public class PanelHilfe extends PanelVorlage {
 
         jXHyperlinkAnleitung.setText("http://sourceforge.net/p/zdfmediathk/wiki/Home/");
 
-        jXHyperlinkForum.setText("http://sourceforge.net/apps/phpbb/zdfmediathk/");
+        jXHyperlinkForum.setText("http://zdfmediathk.sourceforge.net/forum/");
 
         jLabel1.setText("Programmversion:");
 
@@ -200,7 +200,7 @@ public class PanelHilfe extends PanelVorlage {
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldPfad, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
+                            .addComponent(jTextFieldPfad)
                             .addComponent(jTextFieldVersion)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

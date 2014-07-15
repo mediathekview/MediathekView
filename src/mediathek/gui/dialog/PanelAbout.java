@@ -199,7 +199,7 @@ public class PanelAbout extends PanelVorlage {
 
         jXHyperlinkAnleitung.setText("http://sourceforge.net/p/zdfmediathk/wiki/Home/");
 
-        jXHyperlinkForum.setText("http://sourceforge.net/apps/phpbb/zdfmediathk/");
+        jXHyperlinkForum.setText("http://zdfmediathk.sourceforge.net/forum/");
 
         jLabel8.setText("Spende:");
 

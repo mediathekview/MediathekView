@@ -317,7 +317,7 @@
             </Component>
             <Component class="org.jdesktop.swingx.JXHyperlink" name="jXHyperlinkForum">
               <Properties>
-                <Property name="text" type="java.lang.String" value="http://sourceforge.net/apps/phpbb/zdfmediathk/"/>
+                <Property name="text" type="java.lang.String" value="http://zdfmediathk.sourceforge.net/forum/"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel8">
