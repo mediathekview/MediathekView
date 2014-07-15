@@ -139,7 +139,7 @@
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jTextFieldPfad" pref="344" max="32767" attributes="0"/>
+                              <Component id="jTextFieldPfad" max="32767" attributes="0"/>
                               <Component id="jTextFieldVersion" max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -241,7 +241,7 @@
         </Component>
         <Component class="org.jdesktop.swingx.JXHyperlink" name="jXHyperlinkForum">
           <Properties>
-            <Property name="text" type="java.lang.String" value="http://sourceforge.net/apps/phpbb/zdfmediathk/"/>
+            <Property name="text" type="java.lang.String" value="http://zdfmediathk.sourceforge.net/forum/"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">

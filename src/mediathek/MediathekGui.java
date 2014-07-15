@@ -83,6 +83,7 @@ import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.res.GetIcon;
 import mediathek.tool.Duration;
+import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
@@ -351,7 +352,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             String laf = Daten.mVConfig.get(MVConfig.SYSTEM_LOOK);
             //if we have the old values, reset to System LAF
             if (laf.equals("") || laf.length() == 1) {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                if (Funktionen.getOs() != Funktionen.OS_LINUX) {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                }
             } else {
                 //otherwise set the requested UI
                 laf = Daten.mVConfig.get(MVConfig.SYSTEM_LOOK);
