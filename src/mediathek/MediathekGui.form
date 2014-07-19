@@ -316,7 +316,7 @@
             </MenuItem>
             <Menu class="javax.swing.JMenu" name="jMenu1">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Schriftr&#xf6;&#xdf;e"/>
+                <Property name="text" type="java.lang.String" value="Schriftgr&#xf6;&#xdf;e"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
