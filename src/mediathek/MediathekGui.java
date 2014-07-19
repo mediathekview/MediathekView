@@ -679,7 +679,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         panelMeldungen.setLayout(new BorderLayout());
         panelMeldungen.add(splitPane, BorderLayout.CENTER);
         if (Daten.debug) {
-////            jTabbedPane.addTab("Debug", new GuiDebug(daten));
+//////            jTabbedPane.addTab("Debug", new GuiDebug(daten));
         }
         initFrames();
     }
@@ -1584,7 +1584,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
         jMenuAnsicht.add(jCheckBoxMenuItemVideoplayer);
 
-        jMenu1.setText("Schriftröße");
+        jMenu1.setText("Schriftgröße");
 
         jMenuItemSchriftGr.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ADD, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemSchriftGr.setText("Vergrößern");
