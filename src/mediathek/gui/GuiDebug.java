@@ -390,7 +390,7 @@ public class GuiDebug extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Daten.listeFilme.delSender(sender);
+            Daten.listeFilme.deleteAllFilms(sender);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
         }
     }

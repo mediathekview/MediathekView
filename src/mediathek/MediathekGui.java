@@ -282,7 +282,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         duration.ping("CheckUpdate");
 
         if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
-            if (Daten.listeFilme.filmlisteZuAlt()) {
+            if (Daten.listeFilme.isTooOld()) {
                 Log.systemMeldung("Neue Filmliste laden");
                 Daten.filmeLaden.importFilmliste("");
             }
@@ -1292,7 +1292,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         DialogBeenden dialogBeenden = null;
         if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
-            dialogBeenden = new DialogBeenden(this, "Laufende Downloads abbrechen?");
+            dialogBeenden = new DialogBeenden(this);
             dialogBeenden.setVisible(true);
             if (!dialogBeenden.beenden) {
                 return;
@@ -1336,7 +1336,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         daten.allesSpeichern();
         Log.printEndeMeldung();
         if (dialogBeenden != null) {
-            if (dialogBeenden.shutdown) {
+            if (dialogBeenden.isShutdownRequested()) {
                 shutdown();
             }
         }
