@@ -58,7 +58,7 @@ public class MediathekAuto {
                     download();
                 }
             });
-            if (Daten.listeFilme.filmlisteZuAlt()) {
+            if (Daten.listeFilme.isTooOld()) {
                 Log.systemMeldung("Neue Filmliste laden");
                 Daten.filmeLaden.importFilmliste("");
             } else {

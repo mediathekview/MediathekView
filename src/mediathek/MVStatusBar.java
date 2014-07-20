@@ -140,7 +140,7 @@ public final class MVStatusBar extends JPanel {
         strText += Daten.listeFilme.genDate();
         strText += " Uhr  ";
 
-        int sekunden = Daten.listeFilme.alterFilmlisteSek();
+        int sekunden = Daten.listeFilme.getAge();
 
         if (sekunden != 0) {
             strText += "||  Alter: ";

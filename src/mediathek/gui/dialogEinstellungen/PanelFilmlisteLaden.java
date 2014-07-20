@@ -32,7 +32,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
@@ -44,7 +43,6 @@ import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 import msearch.filmeLaden.DatenFilmlisteUrl;
-import msearch.filmeLaden.MSFilmlistenSuchen;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
 
@@ -240,8 +238,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private void initComponents() {
 
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        buttonGroup2 = new javax.swing.ButtonGroup();
+        javax.swing.ButtonGroup buttonGroup2 = new javax.swing.ButtonGroup();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTextAreaAuto = new javax.swing.JTextArea();
@@ -262,8 +259,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jRadioButtonOld = new javax.swing.JRadioButton();
         jRadioButtonAuto = new javax.swing.JRadioButton();
         jRadioButtonUpdateAus = new javax.swing.JRadioButton();
-
-        jCheckBox1.setText("jCheckBox1");
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Die Filmliste automatisch laden"));
 
@@ -352,7 +347,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                         .addComponent(jRadioButtonDiff)
                         .addGap(18, 18, 18)
                         .addComponent(jRadioButtonOld)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonAkualisieren)))
@@ -370,7 +365,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     .addComponent(jLabel2)
                     .addComponent(jButtonAkualisieren))
                 .addGap(9, 9, 9)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -421,11 +416,9 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton jButtonAkualisieren;
     private javax.swing.JButton jButtonDateiAuswaehlen;
     private javax.swing.JButton jButtonFilmeLaden;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBoxUpdate;
     private javax.swing.JRadioButton jRadioButtonAkt;
     private javax.swing.JRadioButton jRadioButtonAuto;
@@ -454,15 +447,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private class BeobachterTableSelect implements MouseListener {
-
-        public void valueChanged(ListSelectionEvent event) {
-            if (!stopBeob) {
-                if (!event.getValueIsAdjusting()) {
-                    table1Select(false);
-                }
-            }
-        }
-
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
