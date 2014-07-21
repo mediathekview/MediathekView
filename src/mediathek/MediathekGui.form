@@ -328,7 +328,7 @@
                     <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                       <KeyStroke key="Ctrl+ADD"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Vergr&#xf6;&#xdf;ern"/>
+                    <Property name="text" type="java.lang.String" value="vergr&#xf6;&#xdf;ern"/>
                   </Properties>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItemSchriftKl">
@@ -336,7 +336,7 @@
                     <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                       <KeyStroke key="Ctrl+SUBTRACT"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Verkleinern"/>
+                    <Property name="text" type="java.lang.String" value="verkleinern"/>
                   </Properties>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItemSchriftNormal">

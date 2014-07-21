@@ -1587,11 +1587,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenu1.setText("Schriftgröße");
 
         jMenuItemSchriftGr.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ADD, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemSchriftGr.setText("Vergrößern");
+        jMenuItemSchriftGr.setText("vergrößern");
         jMenu1.add(jMenuItemSchriftGr);
 
         jMenuItemSchriftKl.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_SUBTRACT, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemSchriftKl.setText("Verkleinern");
+        jMenuItemSchriftKl.setText("verkleinern");
         jMenu1.add(jMenuItemSchriftKl);
 
         jMenuItemSchriftNormal.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_0, java.awt.event.InputEvent.CTRL_MASK));

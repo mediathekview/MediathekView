@@ -97,7 +97,7 @@ public class DialogOkCancel extends javax.swing.JDialog {
 
         jButtonAbbrechen.setText("Abbrechen");
 
-        jButtonOk.setText("Ok");
+        jButtonOk.setText("Installieren");
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
@@ -143,7 +143,7 @@ public class DialogOkCancel extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(jCheckBoxMorgen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
                         .addComponent(jButtonOk)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonAbbrechen))
