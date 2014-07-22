@@ -20,6 +20,7 @@
 package mediathek.controller;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.tool.DatumZeit;
@@ -54,7 +55,9 @@ public class CheckUpdate {
                         } else {
                             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
                         }
-                        ListePsetVorlagen.getNeuVersionStandarset(parent, daten, Funktionen.getOsString());
+
+                        SwingUtilities.invokeLater(new GetNewSet(parent, daten));
+
                         try {
                             this.wait(10 * 1000); // 10 Sekunden den Titel anzeigen
                         } catch (Exception ignored) {
