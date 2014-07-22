@@ -42,6 +42,7 @@ public class GetFile {
     public static String PFAD_HILFETEXT_STANDARD_PSET = "hilfetext_standardPset.txt";
     public static String PFAD_HILFETEXT_UNICODE = "hilfetext_unicode.txt";
     public static String PFAD_HILFETEXT_RESET = "hilfetext_reset.txt";
+    public static String PFAD_HILFETEXT_RESET_SET = "hilfetext_reset_set.txt";
 
     public String getHilfeSuchen(String pfad) {
         String ret = "";

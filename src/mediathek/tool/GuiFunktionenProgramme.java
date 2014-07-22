@@ -231,7 +231,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG);
     }
 
-    public static void addSetVorlagen(JFrame parent, Daten ddaten, ListePset pSet, boolean auto, boolean setVersion) {
+    public static void addSetVorlagen(JFrame parent, Daten daten, ListePset pSet, boolean auto, boolean setVersion) {
         if (pSet == null) {
             if (!auto) {
                 MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
@@ -258,16 +258,16 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
         if (auto) {
-            if (ddaten.listePset.addPset(pSet)) {
+            if (daten.listePset.addPset(pSet)) {
                 if (setVersion) {
                     Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
                 }
             }
         } else {
-            DialogImportPset dialog = new DialogImportPset(parent, true, ddaten, pSet);
+            DialogImportPset dialog = new DialogImportPset(parent, true, daten, pSet);
             dialog.setVisible(true);
             if (dialog.ok) {
-                if (ddaten.listePset.addPset(pSet)) {
+                if (daten.listePset.addPset(pSet)) {
                     if (setVersion) {
                         Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
                     }
