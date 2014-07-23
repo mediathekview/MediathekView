@@ -436,7 +436,7 @@
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Filterprofile: Profil w&#xe4;hlen und Einstellungen vornehmen"/>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/filter_on.png"/>
+          <Image iconType="3" name="/mediathek/res/filter_off.png"/>
         </Property>
       </Properties>
     </Component>

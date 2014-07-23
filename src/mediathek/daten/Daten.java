@@ -68,7 +68,7 @@ public class Daten {
     public static boolean RESET = false; // Programm auf Starteinstellungen zurücksetzen
     //alle Programmeinstellungen
     public static MVConfig mVConfig = new MVConfig();
-    public static int aktFilter = 0; // welcher Filter ausgewählt ist 1 ... 5
+    //public static int aktFilter = 0; // welcher Filter ausgewählt ist 1 ... 5
 
     // zentrale Klassen
     public static MVColor mVColor = new MVColor(); // verwendete Farben
@@ -112,7 +112,7 @@ public class Daten {
 
         updateSplashScreen("Lade Blacklist...");
         listeFilmeNachBlackList = new ListeFilme();
-        listeBlacklist = new ListeBlacklist();
+        listeBlacklist = new ListeBlacklist(this);
 
         updateSplashScreen("Lade Programmsets...");
         listePset = new ListePset();

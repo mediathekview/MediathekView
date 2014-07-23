@@ -41,6 +41,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     private boolean blacklistAusgeschaltet;
     private long filmlaengeSoll = 0;
     private int nr = 0;
+    private final Daten daten;
+
+    public ListeBlacklist(Daten d) {
+        daten = d;
+    }
 
     @Override
     public boolean add(DatenBlacklist b) {
@@ -154,10 +159,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     private void setFilter() {
         try {
             //if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("") || Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("0")) {
-            if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE, Daten.aktFilter).equals("") || Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE, Daten.aktFilter).equals("0")) {
+            if ( daten.guiFilme.getFilterTage()==0) {
                 tage = 0;
             } else {
-                long max = 1000L * 60L * 60L * 24L * GuiFilme.COMBO_ZEIT_INT[Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE, Daten.aktFilter))];
+                long max = 1000L * 60L * 60L * 24L * GuiFilme.COMBO_ZEIT_INT[daten.guiFilme.getFilterTage()];
                 tage = new Date().getTime() - max;
             }
         } catch (Exception ex) {
