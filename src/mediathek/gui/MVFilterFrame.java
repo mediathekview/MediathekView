@@ -127,16 +127,16 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             }
         });
         jRadioButtonF1.setSelected(true);
-        jRadioButtonF1.addActionListener(new BeobRadio());
-        jRadioButtonF2.addActionListener(new BeobRadio());
-        jRadioButtonF3.addActionListener(new BeobRadio());
-        jRadioButtonF4.addActionListener(new BeobRadio());
-        jRadioButtonF5.addActionListener(new BeobRadio());
-        jRadioButtonF1.addMouseListener(new BeobMaus(jRadioButtonF1));
-        jRadioButtonF2.addMouseListener(new BeobMaus(jRadioButtonF2));
-        jRadioButtonF3.addMouseListener(new BeobMaus(jRadioButtonF3));
-        jRadioButtonF4.addMouseListener(new BeobMaus(jRadioButtonF4));
-        jRadioButtonF5.addMouseListener(new BeobMaus(jRadioButtonF5));
+        jRadioButtonF1.addActionListener(new BeobRadio(1));
+        jRadioButtonF2.addActionListener(new BeobRadio(2));
+        jRadioButtonF3.addActionListener(new BeobRadio(3));
+        jRadioButtonF4.addActionListener(new BeobRadio(4));
+        jRadioButtonF5.addActionListener(new BeobRadio(5));
+        jRadioButtonF1.addMouseListener(new BeobMaus(jRadioButtonF1, 1));
+        jRadioButtonF2.addMouseListener(new BeobMaus(jRadioButtonF2, 2));
+        jRadioButtonF3.addMouseListener(new BeobMaus(jRadioButtonF3, 3));
+        jRadioButtonF4.addMouseListener(new BeobMaus(jRadioButtonF4, 4));
+        jRadioButtonF5.addMouseListener(new BeobMaus(jRadioButtonF5, 5));
         setFilterAnzahl();
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILTER_ANZAHL, MVFilterFrame.class.getSimpleName()) {
             @Override
@@ -144,56 +144,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 setFilterAnzahl();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILTER_AKT, MVFilterFrame.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setRadio();
-            }
-        });
 
         pack();
-    }
-
-    private void setAktFilter() {
-        if (jRadioButtonF1.isSelected()) {
-            Daten.aktFilter = 0;
-            jRadioButtonF1.setIcon(GetIcon.getIcon("filter_on.png"));
-        } else {
-            jRadioButtonF1.setIcon(GetIcon.getIcon("filter_off.png"));
-        }
-        if (jRadioButtonF2.isSelected()) {
-            Daten.aktFilter = 1;
-            jRadioButtonF2.setIcon(GetIcon.getIcon("filter_on.png"));
-        } else {
-            jRadioButtonF2.setIcon(GetIcon.getIcon("filter_off.png"));
-        }
-        if (jRadioButtonF3.isSelected()) {
-            Daten.aktFilter = 2;
-            jRadioButtonF3.setIcon(GetIcon.getIcon("filter_on.png"));
-        } else {
-            jRadioButtonF3.setIcon(GetIcon.getIcon("filter_off.png"));
-        }
-        if (jRadioButtonF4.isSelected()) {
-            Daten.aktFilter = 3;
-            jRadioButtonF4.setIcon(GetIcon.getIcon("filter_on.png"));
-        } else {
-            jRadioButtonF4.setIcon(GetIcon.getIcon("filter_off.png"));
-        }
-        if (jRadioButtonF5.isSelected()) {
-            Daten.aktFilter = 4;
-            jRadioButtonF5.setIcon(GetIcon.getIcon("filter_on.png"));
-        } else {
-            jRadioButtonF5.setIcon(GetIcon.getIcon("filter_off.png"));
-        }
-    }
-
-    private void setRadio() {
-        jRadioButtonF1.setSelected(Daten.aktFilter == 0);
-        jRadioButtonF2.setSelected(Daten.aktFilter == 1);
-        jRadioButtonF3.setSelected(Daten.aktFilter == 2);
-        jRadioButtonF4.setSelected(Daten.aktFilter == 3);
-        jRadioButtonF5.setSelected(Daten.aktFilter == 4);
-        setAktFilter();
     }
 
     private void setFilterAnzahl() {
@@ -208,25 +160,18 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jRadioButtonF3.setVisible(i >= 3);
         jRadioButtonF4.setVisible(i >= 4);
         jRadioButtonF5.setVisible(i == 5);
-        if (Daten.aktFilter >= i) {
-            jRadioButtonF1.setSelected(true);
-            setAktFilter();
-            filterChange();
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILTER_AKT, MVFilterFrame.class.getSimpleName());
-        }
     }
 
     private class BeobRadio implements ActionListener {
 
-        public BeobRadio() {
-            setAktFilter();
+        int filter;
+
+        public BeobRadio(int f) {
+            filter = f;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            setAktFilter();
-            filterChange();
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILTER_AKT, MVFilterFrame.class.getSimpleName());
         }
     }
 
@@ -235,9 +180,11 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         //rechhte Maustaste
         private final JRadioButton JRadioButton;
         JSpinner jSpinner;
+        int filter;
 
-        public BeobMaus(JRadioButton jr) {
+        public BeobMaus(JRadioButton jr, int f) {
             JRadioButton = jr;
+            filter = f;
         }
 
         @Override
@@ -256,20 +203,27 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         private void showMenu(MouseEvent evt) {
             JPopupMenu jPopupMenu = new JPopupMenu();
-            if (JRadioButton.isSelected()) {
-                JMenuItem item = new JMenuItem("Filter löschen");
-                item.setIcon(GetIcon.getIcon("filter_loeschen_16.png"));
-                item.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        filterReset();
-                    }
-                });
-                jPopupMenu.add(item);
-                //##Trenner##
-                jPopupMenu.addSeparator();
-                //##Trenner##
-            }
+            JMenuItem item = new JMenuItem("Filter speichern");
+            item.setIcon(GetIcon.getIcon("filter_speichern_16.png"));
+            item.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    saveFilter(filter);
+                }
+            });
+            jPopupMenu.add(item);
+            item = new JMenuItem("Filter löschen");
+            item.setIcon(GetIcon.getIcon("filter_loeschen_16.png"));
+            item.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    delFilter(filter);
+                }
+            });
+            jPopupMenu.add(item);
+            //##Trenner##
+            jPopupMenu.addSeparator();
+            //##Trenner##
             JPanel p = new JPanel(new FlowLayout());
             JSpinner jSp = new JSpinner(new javax.swing.SpinnerNumberModel(1, 1, 5, 1));
             jSpinner = jSp;
@@ -637,11 +591,15 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void filterChange() {
+    public void delFilter(int i) {
     }
 
     @Override
-    public void filterReset() {
+    public void saveFilter(int i) {
+    }
+
+    @Override
+    public void filter(int i) {
     }
 
     @Override

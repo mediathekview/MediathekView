@@ -26,6 +26,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import mediathek.daten.Daten;
+import mediathek.tool.MVConfig;
+import mediathek.tool.MVListeFilme;
 
 /**
  *
@@ -75,7 +78,11 @@ public interface MVFilter {
 
     public void setVisible(boolean v);
 
-    public void filterChange();
+    public void delFilter(int i);
 
-    public void filterReset();
+    public void saveFilter(int i);
+
+    public void filter(int i);
+
+//    public void filterReset();
 }

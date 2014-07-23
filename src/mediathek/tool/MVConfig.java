@@ -115,7 +115,6 @@ public class MVConfig {
     public static final String SYSTEM_FILTER_TT = "filter-TT-oder-irgendwo";
     public static final String SYSTEM_FILTER_ANZAHL = "filter-anzahl";
 
-    //public static final String SYSTEM_FILTER_IRGENDWO = "filter-irgendwo";
     // Programmpfade
     public static final String SYSTEM_PFAD_VLC = "pfad-vlc";
     public static final String SYSTEM_PFAD_FLVSTREAMER = "pfad-flvstreamer";
