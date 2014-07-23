@@ -129,16 +129,22 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 new DialogHilfe(f, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
             }
         });
-        jRadioButtonF1.addActionListener(new BeobRadio(1));
-        jRadioButtonF2.addActionListener(new BeobRadio(2));
-        jRadioButtonF3.addActionListener(new BeobRadio(3));
-        jRadioButtonF4.addActionListener(new BeobRadio(4));
-        jRadioButtonF5.addActionListener(new BeobRadio(5));
-        jRadioButtonF1.addMouseListener(new BeobMaus(jRadioButtonF1, 1));
-        jRadioButtonF2.addMouseListener(new BeobMaus(jRadioButtonF2, 2));
-        jRadioButtonF3.addMouseListener(new BeobMaus(jRadioButtonF3, 3));
-        jRadioButtonF4.addMouseListener(new BeobMaus(jRadioButtonF4, 4));
-        jRadioButtonF5.addMouseListener(new BeobMaus(jRadioButtonF5, 5));
+        resetIcon(0);
+        resetIcon(1);
+        resetIcon(2);
+        resetIcon(3);
+        resetIcon(4);
+        jRadioButtonF1.addActionListener(new BeobRadio(0));
+        jRadioButtonF2.addActionListener(new BeobRadio(1));
+        jRadioButtonF3.addActionListener(new BeobRadio(2));
+        jRadioButtonF4.addActionListener(new BeobRadio(3));
+        jRadioButtonF5.addActionListener(new BeobRadio(4));
+        jRadioButtonF1.addMouseListener(new BeobMaus(jRadioButtonF1, 0));
+        jRadioButtonF2.addMouseListener(new BeobMaus(jRadioButtonF2, 1));
+        jRadioButtonF3.addMouseListener(new BeobMaus(jRadioButtonF3, 2));
+        jRadioButtonF4.addMouseListener(new BeobMaus(jRadioButtonF4, 3));
+        jRadioButtonF5.addMouseListener(new BeobMaus(jRadioButtonF5, 4));
+
         setFilterAnzahl();
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILTER_ANZAHL, MVFilterFrame.class.getSimpleName()) {
             @Override
@@ -162,6 +168,26 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jRadioButtonF3.setVisible(i >= 3);
         jRadioButtonF4.setVisible(i >= 4);
         jRadioButtonF5.setVisible(i == 5);
+    }
+
+    private void resetIcon(int filter) {
+        switch (filter) {
+            case 0:
+                jRadioButtonF1.setIcon(GetIcon.getIcon("filter_off_1.png"));
+                break;
+            case 1:
+                jRadioButtonF2.setIcon(GetIcon.getIcon("filter_off_2.png"));
+                break;
+            case 2:
+                jRadioButtonF3.setIcon(GetIcon.getIcon("filter_off_3.png"));
+                break;
+            case 3:
+                jRadioButtonF4.setIcon(GetIcon.getIcon("filter_off_4.png"));
+                break;
+            case 4:
+                jRadioButtonF5.setIcon(GetIcon.getIcon("filter_off_5.png"));
+                break;
+        }
     }
 
     private class BeobRadio implements ActionListener {
@@ -200,7 +226,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         @Override
         public void mouseReleased(MouseEvent arg0) {
-            JRadioButton.setIcon(GetIcon.getIcon("filter_off.png"));
+            resetIcon(filter);
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
@@ -257,16 +283,15 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
                 @Override
                 public void popupMenuCanceled(PopupMenuEvent popupMenuEvent) {
-                    JRadioButton.setIcon(GetIcon.getIcon("filter_off.png"));
-
+                    resetIcon(filter);
                 }
 
                 @Override
                 public void popupMenuWillBecomeInvisible(PopupMenuEvent popupMenuEvent) {
-                    JRadioButton.setIcon(GetIcon.getIcon("filter_off.png"));
-
+                    resetIcon(filter);
                 }
 
+                @Override
                 public void popupMenuWillBecomeVisible(PopupMenuEvent popupMenuEvent) {
                 }
             }
