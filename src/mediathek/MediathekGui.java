@@ -922,20 +922,20 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemFilmAbspielen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.filmAbspielen();
+                daten.guiFilme.guiFilmeFilmAbspielen();
             }
         });
         jMenuItemFilmAufzeichnen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.filmSpeichern();
+                daten.guiFilme.guiFilmeFilmSpeichern();
             }
         });
         jMenuItemFilterLoeschen.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.filterLoeschen();
+                daten.guiFilme.guiFilmeFilterLoeschen();
             }
         });
         jMenuItemBlacklist.addActionListener(new ActionListener() {

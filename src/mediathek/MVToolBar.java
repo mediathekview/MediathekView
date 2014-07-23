@@ -229,7 +229,7 @@ public final class MVToolBar extends JToolBar {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
                     Filter.checkPattern2(jTextFieldFilter);
-                    daten.guiFilme.filtern();
+                    daten.guiFilme.guiFilmeFiltern();
                 }
             });
             //looks like you need to explicitly set this on Linux...
@@ -414,13 +414,13 @@ public final class MVToolBar extends JToolBar {
         jButtonFilmSpeichern.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.filmSpeichern();
+                daten.guiFilme.guiFilmeFilmSpeichern();
             }
         });
         jButtonFilmAbspielen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.filmAbspielen();
+                daten.guiFilme.guiFilmeFilmAbspielen();
             }
         });
         jButtonInfo.addActionListener(new ActionListener() {

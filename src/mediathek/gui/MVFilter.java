@@ -78,11 +78,11 @@ public interface MVFilter {
 
     public void setVisible(boolean v);
 
-    public void delFilter(int i);
+    public void mvFdeleteFilter(int i);
 
-    public void saveFilter(int i);
+    public void mvFsaveFilter(int i);
 
-    public void filter(int i);
+    public void mvFfilter(int i);
 
 //    public void filterReset();
 }
