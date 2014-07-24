@@ -269,12 +269,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         + "Downloads sofort starten:\n"
                         + "Neu angelegte Downloads (aus Abos) werden\n"
                         + "sofort gestartet. Ansonsten muss man sie\n"
-                        + "selbst starten.\n"
-                        + "\n"
-                        + "Alte Filmliste vorher umbenennen:\n"
-                        + "Vor dem Neuladen einer Filmliste wird\n"
-                        + "die bestehende umbenannt und bleibt so erhalten.\n"
-                        + "Ansonsten wir sie überschrieben.").setVisible(true);
+                        + "selbst starten.\n").setVisible(true);
             }
         });
         jButtonHilfeVideoplayer.setIcon(GetIcon.getIcon("help_16.png"));

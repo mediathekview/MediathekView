@@ -379,7 +379,7 @@
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Filterprofile: Profil w&#xe4;hlen und Einstellungen vornehmen"/>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/filter_off.png"/>
+          <Image iconType="3" name="/mediathek/res/filter_off_1.png"/>
         </Property>
       </Properties>
     </Component>
@@ -390,7 +390,7 @@
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Filterprofile: Profil w&#xe4;hlen und Einstellungen vornehmen"/>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/filter_off.png"/>
+          <Image iconType="3" name="/mediathek/res/filter_off_2.png"/>
         </Property>
       </Properties>
     </Component>
@@ -401,7 +401,7 @@
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Filterprofile: Profil w&#xe4;hlen und Einstellungen vornehmen"/>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/filter_off.png"/>
+          <Image iconType="3" name="/mediathek/res/filter_off_3.png"/>
         </Property>
       </Properties>
     </Component>
@@ -412,7 +412,7 @@
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Filterprofile: Profil w&#xe4;hlen und Einstellungen vornehmen"/>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/filter_off.png"/>
+          <Image iconType="3" name="/mediathek/res/filter_off_4.png"/>
         </Property>
       </Properties>
     </Component>
@@ -423,7 +423,7 @@
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Filterprofile: Profil w&#xe4;hlen und Einstellungen vornehmen"/>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/filter_off.png"/>
+          <Image iconType="3" name="/mediathek/res/filter_off_5.png"/>
         </Property>
       </Properties>
     </Component>
