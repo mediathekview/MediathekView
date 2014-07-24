@@ -170,6 +170,26 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jRadioButtonF5.setVisible(i == 5);
     }
 
+    private void setIcon(int filter) {
+        switch (filter) {
+            case 0:
+                jRadioButtonF1.setIcon(GetIcon.getIcon("filter_on_1.png"));
+                break;
+            case 1:
+                jRadioButtonF2.setIcon(GetIcon.getIcon("filter_on_2.png"));
+                break;
+            case 2:
+                jRadioButtonF3.setIcon(GetIcon.getIcon("filter_on_3.png"));
+                break;
+            case 3:
+                jRadioButtonF4.setIcon(GetIcon.getIcon("filter_on_4.png"));
+                break;
+            case 4:
+                jRadioButtonF5.setIcon(GetIcon.getIcon("filter_on_5.png"));
+                break;
+        }
+    }
+
     private void resetIcon(int filter) {
         switch (filter) {
             case 0:
@@ -218,7 +238,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         @Override
         public void mousePressed(MouseEvent arg0) {
-            JRadioButton.setIcon(GetIcon.getIcon("filter_on.png"));
+            setIcon(filter);
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
@@ -506,23 +526,23 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         buttonGroup1.add(jRadioButtonF1);
         jRadioButtonF1.setToolTipText("Filterprofile: Profil wählen und Einstellungen vornehmen");
-        jRadioButtonF1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off.png"))); // NOI18N
+        jRadioButtonF1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off_1.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF2);
         jRadioButtonF2.setToolTipText("Filterprofile: Profil wählen und Einstellungen vornehmen");
-        jRadioButtonF2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off.png"))); // NOI18N
+        jRadioButtonF2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off_2.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF3);
         jRadioButtonF3.setToolTipText("Filterprofile: Profil wählen und Einstellungen vornehmen");
-        jRadioButtonF3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off.png"))); // NOI18N
+        jRadioButtonF3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off_3.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF4);
         jRadioButtonF4.setToolTipText("Filterprofile: Profil wählen und Einstellungen vornehmen");
-        jRadioButtonF4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off.png"))); // NOI18N
+        jRadioButtonF4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off_4.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF5);
         jRadioButtonF5.setToolTipText("Filterprofile: Profil wählen und Einstellungen vornehmen");
-        jRadioButtonF5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off.png"))); // NOI18N
+        jRadioButtonF5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/filter_off_5.png"))); // NOI18N
 
         jLabel6.setText("Filterprofile:");
 
