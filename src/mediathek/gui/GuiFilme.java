@@ -149,7 +149,6 @@ public class GuiFilme extends PanelVorlage {
         filmInfoHud = daten.filmInfoHud;
         init(); //alles einrichten, Beobachter anhängen
         setFilterPanel();
-        //setFilterAction();
         loadTable(); //Filme laden
         tabelle.initTabelle();
         if (tabelle.getRowCount() > 0) {
@@ -625,6 +624,10 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
         mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
         mVFilter.get_jToggleButtonHistory().setSelected(history);
+        mVFilter.get_jComboBoxZeitraum().setSelectedIndex(5);
+        mVFilter.get_jSliderMinuten().setValue(0);
+        mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
+
         setFilterAction();
         this.updateUI();
     }
@@ -643,7 +646,6 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!stopBeob) {
-
                     MVListeFilme.checkBlacklist();
                     loadTable();
                 }

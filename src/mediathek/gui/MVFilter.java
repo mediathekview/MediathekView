@@ -26,9 +26,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import mediathek.daten.Daten;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVListeFilme;
 
 /**
  *
