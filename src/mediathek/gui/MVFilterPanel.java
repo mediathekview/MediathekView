@@ -257,6 +257,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                     resetIcon(filter);
                 }
 
+                @Override
                 public void popupMenuWillBecomeVisible(PopupMenuEvent popupMenuEvent) {
                 }
             }
@@ -612,13 +613,11 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         return jRadioButtonIrgendwo;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public JComboBox get_jComboBoxFilterThema() {
         return jComboBoxFilterThema;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public JComboBox get_jComboBoxZeitraum() {
         return jComboBoxZeitraum;

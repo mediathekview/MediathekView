@@ -129,7 +129,7 @@ public class PanelEinstellungen extends PanelVorlage {
             Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.FALSE.toString());
         }
         try {
-            File[] files = new File(Funktionen.getPfadIcons()).listFiles();
+            File[] files = new File(Funktionen.pathProgramIcons()).listFiles();
             if (files != null) {
                 for (File file : files) {
                     if (file.isDirectory() && file.getName().equals(iconName)) {
@@ -217,7 +217,7 @@ public class PanelEinstellungen extends PanelVorlage {
         ArrayList<String> iconList = new ArrayList<>();
         iconList.add(ICONSET_STANDARD);
         try {
-            File[] files = new File(Funktionen.getPfadIcons()).listFiles();
+            File[] files = new File(Funktionen.pathProgramIcons()).listFiles();
             if (files != null) {
                 for (File file : files) {
                     // System.out.print(files[i].getAbsolutePath());

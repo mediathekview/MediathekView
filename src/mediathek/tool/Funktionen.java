@@ -99,8 +99,12 @@ public class Funktionen {
         return s;
     }
 
-    public static String getPfadIcons() {
-        return getPathJar() + Konstanten.VERZEICNHISS_ICONS;
+    public static String pathProgramIcons() {
+        return getPathJar() + Konstanten.VERZEICNHISS_PROGRAMM_ICONS;
+    }
+
+    public static String pathSenderIcons() {
+        return getPathJar() + Konstanten.VERZEICNHISS_SENDER_ICONS;
     }
 
     public static String getProgVersionString() {
