@@ -276,7 +276,7 @@ public class GuiFilme extends PanelVorlage {
             }
         });
 
-        jCheckBoxProgamme.setIcon(GetIcon.getIcon("close_15.png"));
+        jCheckBoxProgamme.setIcon(GetIcon.getProgramIcon("close_15.png"));
         jCheckBoxProgamme.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1205,7 +1205,7 @@ public class GuiFilme extends PanelVorlage {
 
             //Thema laden
             JMenuItem item = new JMenuItem("Film abspielen");
-            item.setIcon(GetIcon.getIcon("film_start_16.png"));
+            item.setIcon(GetIcon.getProgramIcon("film_start_16.png"));
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -1215,7 +1215,7 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.add(item);
             //Url
             item = new JMenuItem("Film aufzeichnen");
-            item.setIcon(GetIcon.getIcon("film_rec_16.png"));
+            item.setIcon(GetIcon.getProgramIcon("film_rec_16.png"));
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

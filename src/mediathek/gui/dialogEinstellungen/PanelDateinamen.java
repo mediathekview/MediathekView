@@ -36,7 +36,7 @@ public class PanelDateinamen extends PanelVorlage {
         super(d, pparentComponent);
         initComponents();
         daten = d;
-        jButtonHilfeZielname.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonHilfeZielname.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfeZielname.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -190,7 +190,7 @@ public class PanelDateinamen extends PanelVorlage {
                 .addContainerGap(11, Short.MAX_VALUE))
         );
 
-        jButtonHilfeZielname.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfeZielname.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

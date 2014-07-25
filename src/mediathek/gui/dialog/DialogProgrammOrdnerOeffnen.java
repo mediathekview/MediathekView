@@ -51,7 +51,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
         super(parent, modal);
         parentComponent = parent;
         initComponents();
-        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonZiel.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         setTitle(titel);
         jTextArea1.setText(text);
         jButtonOk.addActionListener(new OkBeobachter());
@@ -115,7 +115,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         jLabel1.setText("Programm:");
 

@@ -37,7 +37,7 @@ public class BeobMpanel implements ActionListener {
         box.setSelected(true);
         panel = ppanel;
         box.setText(text);
-        box.setIcon(GetIcon.getIcon("abschnitt_zu_16.png"));
+        box.setIcon(GetIcon.getProgramIcon("abschnitt_zu_16.png"));
         box.setFont(new java.awt.Font("Dialog", 0, 11));
     }
 
@@ -48,11 +48,11 @@ public class BeobMpanel implements ActionListener {
         if (box.isSelected()) {
             panel.setSize(panel.getSize().width, hoehe);
             panel.setPreferredSize(new Dimension(panel.getSize().width, hoehe));
-            box.setIcon(GetIcon.getIcon("abschnitt_zu_16.png"));
+            box.setIcon(GetIcon.getProgramIcon("abschnitt_zu_16.png"));
         } else {
             panel.setSize(panel.getSize().width, box.getSize().height + 2);
             panel.setPreferredSize(new Dimension(panel.getSize().width, box.getSize().height + 2));
-            box.setIcon(GetIcon.getIcon("abschnitt_auf_16.png"));
+            box.setIcon(GetIcon.getProgramIcon("abschnitt_auf_16.png"));
         }
         panel.updateUI();
     }

@@ -71,7 +71,7 @@ public class PanelHilfe extends PanelVorlage {
                 ProgrammLog.LogDateiSchreiben(daten, parentComponent);
             }
         });
-        jButtonHilfeReset.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonHilfeReset.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfeReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -250,7 +250,7 @@ public class PanelHilfe extends PanelVorlage {
 
         jButtonReset.setText("Alle Einstellungen zurücksetzen!");
 
-        jButtonHilfeReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfeReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
         jButtonHilfeReset.setToolTipText("Hilfe");
 
         jLabel3.setText("Achtung, es werden dadurch auch eigene");

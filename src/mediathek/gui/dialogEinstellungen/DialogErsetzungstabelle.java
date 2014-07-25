@@ -61,10 +61,10 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
             }
         };
         jLabelAlert.setVisible(false);
-        jButtonPlus.setIcon(GetIcon.getIcon("add_16.png"));
-        jButtonMinus.setIcon(GetIcon.getIcon("remove_16.png"));
-        jButtonUp.setIcon(GetIcon.getIcon("move_up_16.png"));
-        jButtonDown.setIcon(GetIcon.getIcon("move_down_16.png"));
+        jButtonPlus.setIcon(GetIcon.getProgramIcon("add_16.png"));
+        jButtonMinus.setIcon(GetIcon.getProgramIcon("remove_16.png"));
+        jButtonUp.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
+        jButtonDown.setIcon(GetIcon.getProgramIcon("move_down_16.png"));
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonReset.addActionListener(new ActionListener() {
 
@@ -279,15 +279,15 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
 
         jLabel2.setText("nach:");
 
-        jButtonMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/remove_16.png"))); // NOI18N
+        jButtonMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/remove_16.png"))); // NOI18N
 
-        jButtonPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/add_16.png"))); // NOI18N
+        jButtonPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/add_16.png"))); // NOI18N
 
         jButtonReset.setText("Reset Tabelle");
 
-        jButtonDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/move_down_16.png"))); // NOI18N
+        jButtonDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_down_16.png"))); // NOI18N
 
-        jButtonUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/move_up_16.png"))); // NOI18N
+        jButtonUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_up_16.png"))); // NOI18N
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
@@ -299,7 +299,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane2.setViewportView(jTextArea1);
 
-        jLabelAlert.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/alert_32.png"))); // NOI18N
+        jLabelAlert.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/alert_32.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

@@ -106,7 +106,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
                 melden();
             }
         });
-        jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -160,7 +160,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
         buttonGroup1.add(jRadioButtonSonst);
         jRadioButtonSonst.setText("sonst");
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);

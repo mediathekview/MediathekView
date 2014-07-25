@@ -48,7 +48,7 @@ public class PanelBeschreibung extends JPanel {
         initComponents();
         parent = pparent;
         daten = dd;
-        jCheckBoxBeschreibung.setIcon(GetIcon.getIcon("close_15.png"));
+        jCheckBoxBeschreibung.setIcon(GetIcon.getProgramIcon("close_15.png"));
         jCheckBoxBeschreibung.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,7 +65,7 @@ public class PanelBeschreibung extends JPanel {
         jEditorPane.setEditable(false);
 //        jEditorPane.setFocusable(false);
         jEditorPane.setContentType("text/html");
-        jCheckBoxChange.setIcon(GetIcon.getIcon("edit_16.png"));
+        jCheckBoxChange.setIcon(GetIcon.getProgramIcon("edit_16.png"));
         jCheckBoxChange.addActionListener(new ActionListener() {
 
             @Override

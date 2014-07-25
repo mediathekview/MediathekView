@@ -349,7 +349,7 @@ public class GuiAbo extends PanelVorlage {
             JPopupMenu jPopupMenu = new JPopupMenu();
             // Abo einschalten
             JMenuItem itemEinschalten = new JMenuItem("Abo einschalten");
-            itemEinschalten.setIcon(GetIcon.getIcon("ja_16.png"));
+            itemEinschalten.setIcon(GetIcon.getProgramIcon("ja_16.png"));
             itemEinschalten.setEnabled(!ein);
             itemEinschalten.addActionListener(new ActionListener() {
                 @Override
@@ -360,7 +360,7 @@ public class GuiAbo extends PanelVorlage {
             jPopupMenu.add(itemEinschalten);
             // Abo deaktivieren
             JMenuItem itemDeaktivieren = new JMenuItem("Abo deaktivieren");
-            itemDeaktivieren.setIcon(GetIcon.getIcon("nein_16.png"));
+            itemDeaktivieren.setIcon(GetIcon.getProgramIcon("nein_16.png"));
             itemDeaktivieren.setEnabled(ein);
             itemDeaktivieren.addActionListener(new ActionListener() {
                 @Override
@@ -371,7 +371,7 @@ public class GuiAbo extends PanelVorlage {
             jPopupMenu.add(itemDeaktivieren);
             //Abo lösschen
             JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
-            itemLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
+            itemLoeschen.setIcon(GetIcon.getProgramIcon("del_16.png"));
             itemLoeschen.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -381,7 +381,7 @@ public class GuiAbo extends PanelVorlage {
             jPopupMenu.add(itemLoeschen);
             //Abo ändern
             JMenuItem itemAendern = new JMenuItem("Abo ändern");
-            itemAendern.setIcon(GetIcon.getIcon("configure_16.png"));
+            itemAendern.setIcon(GetIcon.getProgramIcon("configure_16.png"));
             itemAendern.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

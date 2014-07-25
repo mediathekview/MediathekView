@@ -105,7 +105,7 @@ public class DialogNewSet extends javax.swing.JDialog {
                 }
             }
         });
-        jButtonSetHelp.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonSetHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonSetHelp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -254,7 +254,7 @@ public class DialogNewSet extends javax.swing.JDialog {
         jTextArea3.setRows(5);
         jScrollPane3.setViewportView(jTextArea3);
 
-        jButtonSetHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonSetHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

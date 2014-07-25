@@ -736,7 +736,7 @@ public class GuiDownloads extends PanelVorlage {
             }
             // Download starten
             JMenuItem itemStarten = new JMenuItem("Download starten");
-            itemStarten.setIcon(GetIcon.getIcon("download_start_16.png"));
+            itemStarten.setIcon(GetIcon.getProgramIcon("download_start_16.png"));
             itemStarten.setEnabled(!wartenOderLaufen);
             jPopupMenu.add(itemStarten);
             itemStarten.addActionListener(new ActionListener() {
@@ -748,7 +748,7 @@ public class GuiDownloads extends PanelVorlage {
 
             // Download stoppen
             JMenuItem itemStoppen = new JMenuItem("Download stoppen");
-            itemStoppen.setIcon(GetIcon.getIcon("download_stop_16.png"));
+            itemStoppen.setIcon(GetIcon.getProgramIcon("download_stop_16.png"));
             itemStoppen.setEnabled(wartenOderLaufen);
             jPopupMenu.add(itemStoppen);
             itemStoppen.addActionListener(new ActionListener() {
@@ -760,7 +760,7 @@ public class GuiDownloads extends PanelVorlage {
 
             // Zielordner öffnen
             JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(GetIcon.getIcon("fileopen_16.png"));
+            itemOeffnen.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
             jPopupMenu.add(itemOeffnen);
             itemOeffnen.addActionListener(new ActionListener() {
                 @Override
@@ -774,7 +774,7 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
 
             JMenuItem itemVorziehen = new JMenuItem("Download vorziehen");
-            itemVorziehen.setIcon(GetIcon.getIcon("move_up_16.png"));
+            itemVorziehen.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
             jPopupMenu.add(itemVorziehen);
             itemVorziehen.addActionListener(new ActionListener() {
                 @Override
@@ -783,7 +783,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemLoeschen = new JMenuItem("Download zurückstellen");
-            itemLoeschen.setIcon(GetIcon.getIcon("undo_16.png"));
+            itemLoeschen.setIcon(GetIcon.getProgramIcon("undo_16.png"));
             jPopupMenu.add(itemLoeschen);
             itemLoeschen.addActionListener(new ActionListener() {
                 @Override
@@ -793,7 +793,7 @@ public class GuiDownloads extends PanelVorlage {
             });
             //dauerhaft löschen
             JMenuItem itemDauerhaftLoeschen = new JMenuItem("Download dauerhaft löschen");
-            itemDauerhaftLoeschen.setIcon(GetIcon.getIcon("download_del_16.png"));
+            itemDauerhaftLoeschen.setIcon(GetIcon.getProgramIcon("download_del_16.png"));
             jPopupMenu.add(itemDauerhaftLoeschen);
             itemDauerhaftLoeschen.addActionListener(new ActionListener() {
                 @Override
@@ -803,7 +803,7 @@ public class GuiDownloads extends PanelVorlage {
             });
             //ändern
             JMenuItem itemAendern = new JMenuItem("Download ändern");
-            itemAendern.setIcon(GetIcon.getIcon("configure_16.png"));
+            itemAendern.setIcon(GetIcon.getProgramIcon("configure_16.png"));
             jPopupMenu.add(itemAendern);
             itemAendern.addActionListener(new ActionListener() {
                 @Override
@@ -817,7 +817,7 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
 
             JMenuItem itemAlleStarten = new JMenuItem("alle Downloads starten");
-            itemAlleStarten.setIcon(GetIcon.getIcon("download_alleStarten_16.png"));
+            itemAlleStarten.setIcon(GetIcon.getProgramIcon("download_alleStarten_16.png"));
             jPopupMenu.add(itemAlleStarten);
             itemAlleStarten.addActionListener(new ActionListener() {
                 @Override
@@ -826,7 +826,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemAlleStoppen = new JMenuItem("alle Downloads stoppen");
-            itemAlleStoppen.setIcon(GetIcon.getIcon("download_stop_16.png"));
+            itemAlleStoppen.setIcon(GetIcon.getProgramIcon("download_stop_16.png"));
             jPopupMenu.add(itemAlleStoppen);
             itemAlleStoppen.addActionListener(new ActionListener() {
                 @Override
@@ -835,7 +835,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
-            itemWartendeStoppen.setIcon(GetIcon.getIcon("download_stop_16.png"));
+            itemWartendeStoppen.setIcon(GetIcon.getProgramIcon("download_stop_16.png"));
             jPopupMenu.add(itemWartendeStoppen);
             itemWartendeStoppen.addActionListener(new ActionListener() {
                 @Override
@@ -844,7 +844,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemAktualisieren = new JMenuItem("Liste der Downloads aktualisieren");
-            itemAktualisieren.setIcon(GetIcon.getIcon("view-refresh_16.png"));
+            itemAktualisieren.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
             jPopupMenu.add(itemAktualisieren);
             itemAktualisieren.addActionListener(new ActionListener() {
                 @Override
@@ -853,7 +853,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             JMenuItem itemAufraeumen = new JMenuItem("Liste aufräumen");
-            itemAufraeumen.setIcon(GetIcon.getIcon("download_clear_16.png"));
+            itemAufraeumen.setIcon(GetIcon.getProgramIcon("download_clear_16.png"));
             jPopupMenu.add(itemAufraeumen);
             itemAufraeumen.addActionListener(new ActionListener() {
                 @Override
@@ -867,7 +867,7 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
             // Film abspielen
             JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film abspielen");
-            itemPlayerDownload.setIcon(GetIcon.getIcon("film_start_16.png"));
+            itemPlayerDownload.setIcon(GetIcon.getProgramIcon("film_start_16.png"));
 
             itemPlayerDownload.addActionListener(new ActionListener() {
                 @Override

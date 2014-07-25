@@ -60,7 +60,7 @@ public class PanelPsetKurz extends PanelVorlage {
     public PanelPsetKurz(Daten d, JFrame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
-        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonZiel.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         listePset = llistePset;
         jListPset.setModel(new DefaultComboBoxModel<String>(listePset.getObjectDataCombo()));
         if (listePset.size() > 0) {
@@ -191,7 +191,7 @@ public class PanelPsetKurz extends PanelVorlage {
         c.gridx = 2;
         c.weightx = 0;
         JButton button = new JButton();
-        button.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        button.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         button.addActionListener(new ZielBeobachter(textField, arr, idx));
         gridbag.setConstraints(button, c);
         panel.add(button);
@@ -268,7 +268,7 @@ public class PanelPsetKurz extends PanelVorlage {
 
         jLabel2.setText("Zielpfad:");
 
-        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("TextField.selectionBackground")));
 

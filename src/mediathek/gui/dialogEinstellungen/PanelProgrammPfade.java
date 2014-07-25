@@ -64,10 +64,10 @@ public class PanelProgrammPfade extends JPanel {
     }
 
     private void init() {
-        jButtonVlcPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        jButtonFlvPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
-        jButtonMplayerPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonVlcPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonFlvPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonMplayerPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jPanelVlc.setVisible(vlc);
         jPanelFlv.setVisible(flvstreamer);
         jPanelMplayer.setVisible(mplayer);
@@ -238,7 +238,7 @@ public class PanelProgrammPfade extends JPanel {
 
         jPanelVlc.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zum VLC-Player auswählen"));
 
-        jButtonVlcPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonVlcPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         jButtonVlcSuchen.setText("suchen");
 
@@ -285,7 +285,7 @@ public class PanelProgrammPfade extends JPanel {
 
         jPanelFlv.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zum flvstreamer auswählen"));
 
-        jButtonFlvPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonFlvPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         jButtonFlvSuchen.setText("suchen");
 
@@ -330,11 +330,11 @@ public class PanelProgrammPfade extends JPanel {
 
         jPanelFlvLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonFlvPfad, jTextFieldFlv});
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
         jPanelMplayer.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zum mplayer auswählen"));
 
-        jButtonMplayerPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonMplayerPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         jButtonMplayerSuchen.setText("suchen");
 
@@ -383,7 +383,7 @@ public class PanelProgrammPfade extends JPanel {
 
         jButtonFFmpegSuchen.setText("suchen");
 
-        jButtonFFmpegPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonFFmpegPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         jLabel4.setText("Website:");
 

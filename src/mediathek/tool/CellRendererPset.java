@@ -65,18 +65,18 @@ public class CellRendererPset extends DefaultTableCellRenderer {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 setText(""); // nur das Icon anzeigen
                 if (datenPset.istAbspielen()) {
-                    setIcon(GetIcon.getIcon("ja_16.png"));
+                    setIcon(GetIcon.getProgramIcon("ja_16.png"));
                 } else {
-                    setIcon(GetIcon.getIcon("nein_12.png"));
+                    setIcon(GetIcon.getProgramIcon("nein_12.png"));
                 }
             }
             if (c == DatenPset.PROGRAMMSET_IST_SPEICHERN_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 setText(""); // nur das Icon anzeigen
                 if (datenPset.istSpeichern()) {
-                    setIcon(GetIcon.getIcon("ja_16.png"));
+                    setIcon(GetIcon.getProgramIcon("ja_16.png"));
                 } else {
-                    setIcon(GetIcon.getIcon("nein_12.png"));
+                    setIcon(GetIcon.getProgramIcon("nein_12.png"));
                 }
             }
 //            if (c == DatenPset.PROGRAMMSET_IST_BUTTON_NR) {

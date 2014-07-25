@@ -48,12 +48,12 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
 
     public CellRendererFilme(Daten d) {
         history = d.history;
-        film_start_tab = GetIcon.getIcon("film_start_tab.png");
-        film_start_sw_tab = GetIcon.getIcon("film_start_sw_tab.png");
-        film_rec_tab = GetIcon.getIcon("film_rec_tab.png");
-        film_rec_sw_tab = GetIcon.getIcon("film_rec_sw_tab.png");
-        film_stop_tab = GetIcon.getIcon("film_stop_tab.png");
-        film_stop_sw_tab = GetIcon.getIcon("film_stop_sw_tab.png");
+        film_start_tab = GetIcon.getProgramIcon("film_start_tab.png");
+        film_start_sw_tab = GetIcon.getProgramIcon("film_start_sw_tab.png");
+        film_rec_tab = GetIcon.getProgramIcon("film_rec_tab.png");
+        film_rec_sw_tab = GetIcon.getProgramIcon("film_rec_sw_tab.png");
+        film_stop_tab = GetIcon.getProgramIcon("film_stop_tab.png");
+        film_stop_sw_tab = GetIcon.getProgramIcon("film_stop_sw_tab.png");
         geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_GEO, CellRendererFilme.class.getSimpleName()) {
             @Override

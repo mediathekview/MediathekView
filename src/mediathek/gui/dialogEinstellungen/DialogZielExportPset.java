@@ -55,7 +55,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
         parentComponent = parent;
         ddaten = dd;
         initComponents();
-        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonZiel.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonZiel.addActionListener(new ZielBeobachter());
         if (name.equals("")) {
@@ -108,7 +108,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         jLabel1.setText("Ziel:");
 

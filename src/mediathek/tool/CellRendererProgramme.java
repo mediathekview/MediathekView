@@ -50,9 +50,9 @@ public class CellRendererProgramme extends DefaultTableCellRenderer {
             int c = table.convertColumnIndexToModel(column);
             if (c == DatenProg.PROGRAMM_RESTART_NR) {
                 if (getText().equals(Boolean.TRUE.toString())) {
-                    setIcon(GetIcon.getIcon("ja_16.png"));
+                    setIcon(GetIcon.getProgramIcon("ja_16.png"));
                 } else {
-                    setIcon(GetIcon.getIcon("nein_12.png"));
+                    setIcon(GetIcon.getProgramIcon("nein_12.png"));
                 }
                 setText("");
             }

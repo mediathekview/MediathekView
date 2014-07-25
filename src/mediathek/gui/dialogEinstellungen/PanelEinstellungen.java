@@ -51,13 +51,13 @@ public class PanelEinstellungen extends PanelVorlage {
     public PanelEinstellungen(Daten d, JFrame parent) {
         super(d, parent);
         initComponents();
-        jButtonInfos.setIcon(GetIcon.getIcon("icons_refresh_16.png"));
+        jButtonInfos.setIcon(GetIcon.getProgramIcon("icons_refresh_16.png"));
         daten = d;
         init();
         jCheckBoxEchtzeit.addActionListener(new BeobCheckBox());
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
         setupLookAndFeelComboBox();
-        jButtonHilfeAnzahl.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonHilfeAnzahl.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfeAnzahl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -305,7 +305,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jLabel1.setText("Icon-Pack:");
 
-        jButtonRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/icons_refresh_16.png"))); // NOI18N
+        jButtonRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/icons_refresh_16.png"))); // NOI18N
         jButtonRefresh.setToolTipText("neue Icons suchen");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -355,7 +355,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jSpinnerDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
 
-        jButtonHilfeAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfeAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
         jSliderBandbreite.setMajorTickSpacing(10);
         jSliderBandbreite.setMinorTickSpacing(5);

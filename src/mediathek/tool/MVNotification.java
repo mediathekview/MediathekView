@@ -84,7 +84,7 @@ public class MVNotification {
 
             messageFrame.setContentPane(panel);
 
-            JLabel iconLabel = new JLabel(GetIcon.getIcon(fehler ? "mv-notification.png" : "mv-notification-fehler.png"));
+            JLabel iconLabel = new JLabel(GetIcon.getProgramIcon(fehler ? "mv-notification.png" : "mv-notification-fehler.png"));
             iconLabel.setVerticalAlignment(SwingConstants.TOP);
             messageFrame.getContentPane().add(iconLabel, BorderLayout.WEST);
             JXLabel meldungsLabel = new JXLabel(meldung);

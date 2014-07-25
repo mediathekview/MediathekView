@@ -89,7 +89,7 @@ public class DialogDownloadfehler extends javax.swing.JDialog {
         jTextArea1.setRows(4);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/alert_32.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/alert_32.png"))); // NOI18N
 
         jLabel2.setText("Filmtitel:");
 

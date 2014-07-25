@@ -29,15 +29,24 @@ import mediathek.tool.MVConfig;
 
 public class GetIcon {
 
-    private final static String PFAD_INTERN = "/mediathek/res/";
+    private final static String PFAD_PROGRAMM = "/mediathek/res/programm/";
+    private final static String PFAD_SENDER = "/mediathek/res/sender/";
 
     public static Image getImage(String strIcon) {
-        return getIcon(strIcon).getImage();
+        return getProgramIcon(strIcon).getImage();
     }
 
-    public static ImageIcon getIcon(String strIcon) {
+    public static ImageIcon getSenderIcon(String strIcon) {
+        return getIcon(strIcon, PFAD_SENDER);
+    }
+
+    public static ImageIcon getProgramIcon(String strIcon) {
+        return getIcon(strIcon, PFAD_PROGRAMM);
+    }
+
+    private static ImageIcon getIcon(String strIcon, String path) {
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
-            return getStandard(strIcon);
+            return getStandard(strIcon, path);
         } else {
             ImageIcon icon;
             try {
@@ -46,17 +55,17 @@ public class GetIcon {
                 if (new File(pfad).exists()) {
                     icon = new ImageIcon(pfad);
                 } else {
-                    icon = getStandard(strIcon);
+                    icon = getStandard(strIcon, path);
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(932107891, Log.FEHLER_ART_PROG, "GetIcon.getIcon", strIcon);
-                icon = getStandard(strIcon);
+                icon = getStandard(strIcon, path);
             }
             return icon;
         }
     }
 
-    private static ImageIcon getStandard(String strIcon) {
-        return new ImageIcon(GetIcon.class.getResource(PFAD_INTERN + strIcon));
+    private static ImageIcon getStandard(String strIcon, String path) {
+        return new ImageIcon(GetIcon.class.getResource(path + strIcon));
     }
 }

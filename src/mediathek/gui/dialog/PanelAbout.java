@@ -44,6 +44,7 @@ public class PanelAbout extends PanelVorlage {
     public PanelAbout(Daten dd, JFrame parentComponent) {
         super(dd, parentComponent);
         initComponents();
+        
         //init
         try {
             Date d = new Date(Main.class.getResource("Main.class").openConnection().getLastModified());
@@ -66,7 +67,7 @@ public class PanelAbout extends PanelVorlage {
             jXHyperlinkSpende.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_DONATION));
         } catch (URISyntaxException ignored) {
         }
-        jButtonUpdate.setIcon(GetIcon.getIcon("view-refresh_16.png"));
+        jButtonUpdate.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
         jButtonUpdate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -143,7 +144,7 @@ public class PanelAbout extends PanelVorlage {
 
         jTextFieldSpeicher3.setEditable(false);
 
-        jButtonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png"))); // NOI18N
+        jButtonUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/view-refresh_16.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
