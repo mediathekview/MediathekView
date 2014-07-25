@@ -52,7 +52,7 @@ public class DialogZiel extends javax.swing.JDialog {
         parent = pparent;
 //        ddaten = dd;
         initComponents();
-        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonZiel.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         setTitle(titel);
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
@@ -116,7 +116,7 @@ public class DialogZiel extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         jLabel1.setText("Zielpfad:");
 

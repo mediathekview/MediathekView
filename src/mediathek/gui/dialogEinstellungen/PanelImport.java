@@ -49,7 +49,7 @@ public class PanelImport extends PanelVorlage {
     }
 
     private void init() {
-        jButtonPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jButtonImportDatei.setEnabled(false);
         jButtonPfad.addActionListener(new BeobPfad());
         jTextFieldDatei.getDocument().addDocumentListener(new BeobPfadDoc());
@@ -109,7 +109,7 @@ public class PanelImport extends PanelVorlage {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Abos und Blacklist aus Datei importieren"));
 
-        jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         jButtonImportDatei.setText("Import");
 

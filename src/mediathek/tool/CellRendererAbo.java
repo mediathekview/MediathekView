@@ -81,9 +81,9 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                 case DatenAbo.ABO_EINGESCHALTET_NR:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (eingeschaltet) {
-                        setIcon(GetIcon.getIcon("ja_16.png"));
+                        setIcon(GetIcon.getProgramIcon("ja_16.png"));
                     } else {
-                        setIcon(GetIcon.getIcon("nein_12.png"));
+                        setIcon(GetIcon.getProgramIcon("nein_12.png"));
                     }
                     break;
                 case DatenAbo.ABO_SENDER_NR:

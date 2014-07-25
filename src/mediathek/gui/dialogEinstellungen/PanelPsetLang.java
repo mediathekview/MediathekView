@@ -92,19 +92,19 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void init() {
-        jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
-        jButtonGruppePfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        jButtonProgPlus.setIcon(GetIcon.getIcon("add_16.png"));
-        jButtonProgMinus.setIcon(GetIcon.getIcon("remove_16.png"));
-        jButtonProgAuf.setIcon(GetIcon.getIcon("move_up_16.png"));
-        jButtonProgAb.setIcon(GetIcon.getIcon("move_down_16.png"));
-        jButtonProgPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        jButtonGruppeNeu.setIcon(GetIcon.getIcon("add_16.png"));
-        jButtonGruppeLoeschen.setIcon(GetIcon.getIcon("remove_16.png"));
-        jButtonGruppeAuf.setIcon(GetIcon.getIcon("move_up_16.png"));
-        jButtonGruppeAb.setIcon(GetIcon.getIcon("move_down_16.png"));
-        jLabelMeldungAbspielen.setIcon(GetIcon.getIcon("alert_16.png"));
-        jLabelMeldungSeichern.setIcon(GetIcon.getIcon("alert_16.png"));
+        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonGruppePfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonProgPlus.setIcon(GetIcon.getProgramIcon("add_16.png"));
+        jButtonProgMinus.setIcon(GetIcon.getProgramIcon("remove_16.png"));
+        jButtonProgAuf.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
+        jButtonProgAb.setIcon(GetIcon.getProgramIcon("move_down_16.png"));
+        jButtonProgPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonGruppeNeu.setIcon(GetIcon.getProgramIcon("add_16.png"));
+        jButtonGruppeLoeschen.setIcon(GetIcon.getProgramIcon("remove_16.png"));
+        jButtonGruppeAuf.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
+        jButtonGruppeAb.setIcon(GetIcon.getProgramIcon("move_down_16.png"));
+        jLabelMeldungAbspielen.setIcon(GetIcon.getProgramIcon("alert_16.png"));
+        jLabelMeldungSeichern.setIcon(GetIcon.getProgramIcon("alert_16.png"));
         //Programme
         tabellePset.setAutoResizeMode(MVTable.AUTO_RESIZE_OFF);
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
@@ -693,7 +693,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeAuf = new javax.swing.JButton();
         jButtonGruppeAb = new javax.swing.JButton();
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
         jButtonHilfe.setToolTipText("Hilfedialog anzeigen");
 
         jButtonPruefen.setText("Prüfen");
@@ -766,10 +766,10 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap(37, Short.MAX_VALUE))
         );
 
-        jLabelMeldungAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/alert_16.png"))); // NOI18N
+        jLabelMeldungAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/alert_16.png"))); // NOI18N
         jLabelMeldungAbspielen.setText("kein Set zum Abspielen ausgewählt!");
 
-        jLabelMeldungSeichern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/alert_16.png"))); // NOI18N
+        jLabelMeldungSeichern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/alert_16.png"))); // NOI18N
         jLabelMeldungSeichern.setText("kein Set zum Speichern ausgewählt!");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -896,7 +896,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jLabel7.setText("Zielpfad:");
 
-        jButtonGruppePfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonGruppePfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
         jButtonGruppePfad.setToolTipText("Pfad auswählen");
 
         jCheckBoxThema.setText("einen Unterordner mit dem Thema anlegen");
@@ -1126,19 +1126,19 @@ public class PanelPsetLang extends PanelVorlage {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButtonProgPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/add_16.png"))); // NOI18N
+        jButtonProgPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/add_16.png"))); // NOI18N
         jButtonProgPlus.setToolTipText("neues Programm anlegen");
 
-        jButtonProgMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/remove_16.png"))); // NOI18N
+        jButtonProgMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/remove_16.png"))); // NOI18N
         jButtonProgMinus.setToolTipText("markiertes Programm löschen");
 
         jButtonProgDuplizieren.setText("Duplizieren");
         jButtonProgDuplizieren.setToolTipText("markierte Zeile duplizieren");
 
-        jButtonProgAuf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/move_up_16.png"))); // NOI18N
+        jButtonProgAuf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_up_16.png"))); // NOI18N
         jButtonProgAuf.setToolTipText("markierte Zeile eins nach oben");
 
-        jButtonProgAb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/move_down_16.png"))); // NOI18N
+        jButtonProgAb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_down_16.png"))); // NOI18N
         jButtonProgAb.setToolTipText("markierte Zeile eins nach unten");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -1176,7 +1176,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jLabel.setText("Programm:");
 
-        jButtonProgPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonProgPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
         jButtonProgPfad.setToolTipText("Pfad auswählen");
 
         jLabel1.setText("Schalter:");
@@ -1304,16 +1304,16 @@ public class PanelPsetLang extends PanelVorlage {
 
         jButtonExport.setText("Export");
 
-        jButtonGruppeNeu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/add_16.png"))); // NOI18N
+        jButtonGruppeNeu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/add_16.png"))); // NOI18N
         jButtonGruppeNeu.setToolTipText("neue Programmgruppe anlegen");
 
-        jButtonGruppeLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/remove_16.png"))); // NOI18N
+        jButtonGruppeLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/remove_16.png"))); // NOI18N
         jButtonGruppeLoeschen.setToolTipText("Programmgruppe löschen");
 
-        jButtonGruppeAuf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/move_up_16.png"))); // NOI18N
+        jButtonGruppeAuf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_up_16.png"))); // NOI18N
         jButtonGruppeAuf.setToolTipText("Programmgruppe nach oben schieben");
 
-        jButtonGruppeAb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/move_down_16.png"))); // NOI18N
+        jButtonGruppeAb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_down_16.png"))); // NOI18N
         jButtonGruppeAb.setToolTipText("Programmgruppe nach unten schieben");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);

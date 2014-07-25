@@ -87,7 +87,7 @@ public class DialogAddDownload extends JDialog {
                 Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected()));
             }
         });
-        jButtonZiel.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonZiel.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         if (daten.listePset.getListeSpeichern().size() == 0) {
             // Satz mit x, war wohl nix
             ok = false;
@@ -473,7 +473,7 @@ public class DialogAddDownload extends JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Speicherort"));
 
-        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
         jButtonZiel.setToolTipText("Zielpfad auswählen");
 
         jLabel1.setText("Zielpfad:");
@@ -484,7 +484,7 @@ public class DialogAddDownload extends JDialog {
         jComboBoxPfad.setMaximumRowCount(15);
         jComboBoxPfad.setModel(new javax.swing.DefaultComboBoxModel(new String[] { " " }));
 
-        jButtonDelHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
+        jButtonDelHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/del_16.png"))); // NOI18N
         jButtonDelHistory.setToolTipText("History löschen");
 
         jCheckBoxPfadSpeichern.setText("Zielpfad speichern und als Vorgabe verwenden");

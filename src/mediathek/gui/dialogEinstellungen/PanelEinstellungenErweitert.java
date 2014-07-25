@@ -45,11 +45,11 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     public PanelEinstellungenErweitert(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
-        jButtonProgrammDateimanager.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        jButtonProgrammUrl.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonProgrammDateimanager.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonProgrammUrl.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         daten = d;
         init();
-        jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -243,7 +243,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
             }
         });
-        jButtonHilfeProgrammDateimanager.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonHilfeProgrammDateimanager.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfeProgrammDateimanager.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -256,7 +256,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
             }
         });
-        jButtonHilfeNeuladen.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonHilfeNeuladen.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfeNeuladen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -272,7 +272,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         + "selbst starten.\n").setVisible(true);
             }
         });
-        jButtonHilfeVideoplayer.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonHilfeVideoplayer.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfeVideoplayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -284,7 +284,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
             }
         });
-        jButtonHilfeProgrammUrl.setIcon(GetIcon.getIcon("help_16.png"));
+        jButtonHilfeProgrammUrl.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfeProgrammUrl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -424,7 +424,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jCheckBoxDownloadSofortStarten.setText("Downloads aus Abos sofort starten");
 
-        jButtonHilfeNeuladen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfeNeuladen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -453,7 +453,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("User-Agent"));
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonAuto);
         jRadioButtonAuto.setText("Auto:");
@@ -500,17 +500,17 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab Downloads"));
 
-        jButtonProgrammDateimanager.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonProgrammDateimanager.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
-        jButtonHilfeProgrammDateimanager.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfeProgrammDateimanager.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
         jLabel1.setText("Datei-Manager zum Öffnen des Downloadordners");
 
         jLabel2.setText("Videoplayer zum Abspielen gespeicherter Filme");
 
-        jButtonHilfeVideoplayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfeVideoplayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
-        jButtonProgrammVideoplayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonProgrammVideoplayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -567,9 +567,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Programm zum Öffnen von URLs"));
 
-        jButtonProgrammUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonProgrammUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
-        jButtonHilfeProgrammUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfeProgrammUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);

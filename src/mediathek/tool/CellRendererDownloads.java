@@ -67,18 +67,18 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     private final MVSenderIconCache senderIconCache;
 
     public CellRendererDownloads() {
-        ja_16 = GetIcon.getIcon("ja_16.png");
-        nein_12 = GetIcon.getIcon("nein_12.png");
-        film_start_tab = GetIcon.getIcon("film_start_tab.png");
-        film_start_sw_tab = GetIcon.getIcon("film_start_sw_tab.png");
-        download_stop_tab = GetIcon.getIcon("download_stop_tab.png");
-        download_stop_sw_tab = GetIcon.getIcon("download_stop_sw_tab.png");
-        download_start_tab = GetIcon.getIcon("download_start_tab.png");
-        download_start_sw_tab = GetIcon.getIcon("download_start_sw_tab.png");
-        download_clear_tab = GetIcon.getIcon("download_clear_tab.png");
-        download_clear_sw_tab = GetIcon.getIcon("download_clear_sw_tab.png");
-        download_del_tab = GetIcon.getIcon("download_del_tab.png");
-        download_del_sw_tab = GetIcon.getIcon("download_del_sw_tab.png");
+        ja_16 = GetIcon.getProgramIcon("ja_16.png");
+        nein_12 = GetIcon.getProgramIcon("nein_12.png");
+        film_start_tab = GetIcon.getProgramIcon("film_start_tab.png");
+        film_start_sw_tab = GetIcon.getProgramIcon("film_start_sw_tab.png");
+        download_stop_tab = GetIcon.getProgramIcon("download_stop_tab.png");
+        download_stop_sw_tab = GetIcon.getProgramIcon("download_stop_sw_tab.png");
+        download_start_tab = GetIcon.getProgramIcon("download_start_tab.png");
+        download_start_sw_tab = GetIcon.getProgramIcon("download_start_sw_tab.png");
+        download_clear_tab = GetIcon.getProgramIcon("download_clear_tab.png");
+        download_clear_sw_tab = GetIcon.getProgramIcon("download_clear_sw_tab.png");
+        download_del_tab = GetIcon.getProgramIcon("download_del_tab.png");
+        download_del_sw_tab = GetIcon.getProgramIcon("download_del_sw_tab.png");
         geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_GEO, CellRendererDownloads.class.getSimpleName()) {
             @Override

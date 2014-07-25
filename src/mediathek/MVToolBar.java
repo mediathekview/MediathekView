@@ -224,7 +224,7 @@ public final class MVToolBar extends JToolBar {
             jTextFieldFilter.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
             jTextFieldFilter.setSearchMode(JXSearchField.SearchMode.INSTANT);
             jTextFieldFilter.setUseNativeSearchFieldIfPossible(true);
-            jTextFieldFilter.getFindButton().setIcon(GetIcon.getIcon("suchen_22.png"));
+            jTextFieldFilter.getFindButton().setIcon(GetIcon.getProgramIcon("suchen_22.png"));
             jTextFieldFilter.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
@@ -246,7 +246,7 @@ public final class MVToolBar extends JToolBar {
             jButtonFilterPanel.setOpaque(false);
             jButtonFilterPanel.setPreferredSize(new java.awt.Dimension(40, 40));
             jButtonFilterPanel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-            jButtonFilterPanel.setIcon(GetIcon.getIcon("filter_anzeigen_22.png"));
+            jButtonFilterPanel.setIcon(GetIcon.getProgramIcon("filter_anzeigen_22.png"));
             this.add(jButtonFilterPanel);
 
             this.add(filler__10);
@@ -526,9 +526,9 @@ public final class MVToolBar extends JToolBar {
         void setIcon() {
             if (!nrIconKlein.isEmpty()) {
                 if (Boolean.parseBoolean(Daten.mVConfig.get(nrIconKlein))) {
-                    this.setIcon(GetIcon.getIcon(imageIconKlein));
+                    this.setIcon(GetIcon.getProgramIcon(imageIconKlein));
                 } else {
-                    this.setIcon(GetIcon.getIcon(imageIconNormal));
+                    this.setIcon(GetIcon.getProgramIcon(imageIconNormal));
                 }
             }
         }
@@ -589,7 +589,7 @@ public final class MVToolBar extends JToolBar {
                 }
                 if (box[i] != null) {
                     box[i] = new JCheckBoxMenuItem(buttonListToUse.get(i).name);
-                    box[i].setIcon(GetIcon.getIcon(buttonListToUse.get(i).imageIconKlein));
+                    box[i].setIcon(GetIcon.getProgramIcon(buttonListToUse.get(i).imageIconKlein));
                     box[i].setSelected(buttonListToUse.get(i).anzeigen);
                     box[i].addActionListener(new ActionListener() {
                         @Override

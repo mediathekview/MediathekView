@@ -62,8 +62,8 @@ public class PanelBlacklist extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         name = nname;
-        jButtonHilfe.setIcon(GetIcon.getIcon("help_16.png"));
-        jButtonTabelleLoeschen.setIcon(GetIcon.getIcon("del_16.png"));
+        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonTabelleLoeschen.setIcon(GetIcon.getProgramIcon("del_16.png"));
         init_();
         init();
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name) {
@@ -605,11 +605,11 @@ public class PanelBlacklist extends PanelVorlage {
         buttonGroup1.add(jRadioButtonWhitelist);
         jRadioButtonWhitelist.setText("nur diese \"Sender / Thema / Titel\" anzeigen (Whitelist)");
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/help_16.png"))); // NOI18N
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
         jLabel10.setText("alle Einträge löschen:");
 
-        jButtonTabelleLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
+        jButtonTabelleLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/del_16.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

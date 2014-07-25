@@ -38,7 +38,7 @@ public class PanelSenderLaden extends JPanel {
     public PanelSenderLaden() {
         super();
         initComponents();
-        jButtonStop.setIcon(GetIcon.getIcon("stop_16.png"));
+        jButtonStop.setIcon(GetIcon.getProgramIcon("stop_16.png"));
         init();
     }
 
@@ -136,7 +136,7 @@ public class PanelSenderLaden extends JPanel {
 
         jLabelProgress.setText(" ");
 
-        jButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/stop_16.png"))); // NOI18N
+        jButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/stop_16.png"))); // NOI18N
         jButtonStop.setToolTipText("Abbrechen");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

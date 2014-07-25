@@ -62,8 +62,8 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void init() {
-        jButtonAkualisieren.setIcon(GetIcon.getIcon("view-refresh_16.png"));
-        jButtonDateiAuswaehlen.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonAkualisieren.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
+        jButtonDateiAuswaehlen.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         initRadio();
         tabelleLaden();
         jButtonAkualisieren.addActionListener(new ActionListener() {
@@ -295,11 +295,11 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jLabel2.setText("Liste aktualisieren:");
 
-        jButtonAkualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png"))); // NOI18N
+        jButtonAkualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/view-refresh_16.png"))); // NOI18N
 
         jLabel1.setText("URL/Datei:");
 
-        jButtonDateiAuswaehlen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonDateiAuswaehlen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         jButtonFilmeLaden.setText("Filme jetzt laden");
 

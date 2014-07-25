@@ -57,8 +57,8 @@ public class PanelPsetImport extends PanelVorlage {
     }
 
     private void init() {
-        jButtonAktualisieren.setIcon(GetIcon.getIcon("view-refresh_16.png"));
-        jButtonPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonAktualisieren.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
+        jButtonPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jComboBoxBs.setModel(new DefaultComboBoxModel<>(ListePsetVorlagen.BS));
         jComboBoxBs.addActionListener(new ActionListener() {
             @Override
@@ -312,7 +312,7 @@ public class PanelPsetImport extends PanelVorlage {
 
         jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonImportVorlage, jTextFieldBs, jTextFieldName, jTextFieldUrl, jXHyperlinkInfos});
 
-        jButtonAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/view-refresh_16.png"))); // NOI18N
+        jButtonAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/view-refresh_16.png"))); // NOI18N
         jButtonAktualisieren.setToolTipText("Neu laden");
 
         jLabel4.setText("Vorlagen von der Website laden:");
@@ -393,7 +393,7 @@ public class PanelPsetImport extends PanelVorlage {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Set aus Datei importieren"));
 
-        jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         jButtonImportDatei.setText("Set importieren");
 

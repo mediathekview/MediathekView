@@ -60,7 +60,7 @@ public final class MVStatusBar extends JPanel {
 
         stopButton = new JButton();
         //stopButton.setIcon(new ImageIcon(getClass().getResource("/com/explodingpixels/macwidgets/images/close.png")));
-        stopButton.setIcon(GetIcon.getIcon("close.png"));
+        stopButton.setIcon(GetIcon.getProgramIcon("close.png"));
 
         stopButton.setToolTipText("Abbrechen");
         stopButton.addActionListener(new ActionListener() {

@@ -57,8 +57,8 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         datenDownload = download;
         orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
         letztenPfadAnzeigen = letzterPfad;
-        jButtonPath.setIcon(GetIcon.getIcon("fileopen_16.png"));
-        jButtonDelPath.setIcon(GetIcon.getIcon("del_16.png"));
+        jButtonPath.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonDelPath.setIcon(GetIcon.getProgramIcon("del_16.png"));
         jLabelExists.setText("Dateiname wird noch nicht verwendet.");
         jCheckBoxPath.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
         jCheckBoxPath.addActionListener(new ActionListener() {
@@ -249,9 +249,9 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         jComboBoxPath.setEditable(true);
         jComboBoxPath.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jButtonPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
-        jButtonDelPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/del_16.png"))); // NOI18N
+        jButtonDelPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/del_16.png"))); // NOI18N
 
         jLabel2.setText("Dateiname:");
 

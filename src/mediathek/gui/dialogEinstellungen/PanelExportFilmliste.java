@@ -50,7 +50,7 @@ public class PanelExportFilmliste extends PanelVorlage {
     }
 
     private void init() {
-        jButtonExportPfad.setIcon(GetIcon.getIcon("fileopen_16.png"));
+        jButtonExportPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jTextFieldPfad.setText(Daten.mVConfig.get(MVConfig.SYSTEM_EXPORT_DATEI));
         jTextFieldPfad.getDocument().addDocumentListener(new BeobTextFeld());
         jButtonExportieren.addActionListener(new BeobExport());
@@ -106,7 +106,7 @@ public class PanelExportFilmliste extends PanelVorlage {
 
         jPanel4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jButtonExportPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/fileopen_16.png"))); // NOI18N
+        jButtonExportPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
         jLabelDatei.setText("Datei:");
 

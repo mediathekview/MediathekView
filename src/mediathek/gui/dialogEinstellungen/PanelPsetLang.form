@@ -53,7 +53,7 @@
     <Component class="javax.swing.JButton" name="jButtonHilfe">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/help_16.png"/>
+          <Image iconType="3" name="/mediathek/res/programm/programm/help_16.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Hilfedialog anzeigen"/>
       </Properties>
@@ -306,7 +306,7 @@
                     <Component class="javax.swing.JLabel" name="jLabelMeldungAbspielen">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/alert_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/programm/alert_16.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="kein Set zum Abspielen ausgew&#xe4;hlt!"/>
                       </Properties>
@@ -314,7 +314,7 @@
                     <Component class="javax.swing.JLabel" name="jLabelMeldungSeichern">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/alert_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/programm/alert_16.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="kein Set zum Speichern ausgew&#xe4;hlt!"/>
                       </Properties>
@@ -551,7 +551,7 @@
                     <Component class="javax.swing.JButton" name="jButtonGruppePfad">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/fileopen_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/programm/fileopen_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="Pfad ausw&#xe4;hlen"/>
                       </Properties>
@@ -950,7 +950,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgPlus">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/add_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/programm/add_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="neues Programm anlegen"/>
                       </Properties>
@@ -958,7 +958,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgMinus">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/remove_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/programm/remove_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="markiertes Programm l&#xf6;schen"/>
                       </Properties>
@@ -972,7 +972,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgAuf">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/move_up_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/programm/move_up_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="markierte Zeile eins nach oben"/>
                       </Properties>
@@ -980,7 +980,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgAb">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/move_down_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/programm/move_down_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="markierte Zeile eins nach unten"/>
                       </Properties>
@@ -1099,7 +1099,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgPfad">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/fileopen_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/programm/fileopen_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="Pfad ausw&#xe4;hlen"/>
                       </Properties>
@@ -1264,7 +1264,7 @@
             <Component class="javax.swing.JButton" name="jButtonGruppeNeu">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/add_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/programm/programm/add_16.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="neue Programmgruppe anlegen"/>
               </Properties>
@@ -1272,7 +1272,7 @@
             <Component class="javax.swing.JButton" name="jButtonGruppeLoeschen">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/remove_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/programm/programm/remove_16.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Programmgruppe l&#xf6;schen"/>
               </Properties>
@@ -1280,7 +1280,7 @@
             <Component class="javax.swing.JButton" name="jButtonGruppeAuf">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/move_up_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/programm/programm/move_up_16.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Programmgruppe nach oben schieben"/>
               </Properties>
@@ -1288,7 +1288,7 @@
             <Component class="javax.swing.JButton" name="jButtonGruppeAb">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/move_down_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/programm/programm/move_down_16.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Programmgruppe nach unten schieben"/>
               </Properties>

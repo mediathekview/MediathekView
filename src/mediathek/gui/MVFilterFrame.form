@@ -409,7 +409,7 @@
         <Component class="javax.swing.JButton" name="jButtonHilfe">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/help_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Hilfe"/>
           </Properties>
@@ -429,7 +429,7 @@
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Filterprofile: Profil w&#xe4;hlen und Einstellungen vornehmen"/>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/filter_off_1.png"/>
+				<Image iconType="3" name="/mediathek/res/programm/filter_off_1.png"/>
             </Property>
           </Properties>
         </Component>
@@ -440,7 +440,7 @@
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Filterprofile: Profil w&#xe4;hlen und Einstellungen vornehmen"/>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/filter_off_2.png"/>
+				<Image iconType="3" name="/mediathek/res/programm/filter_off_2.png"/>
             </Property>
           </Properties>
         </Component>
@@ -451,7 +451,7 @@
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Filterprofile: Profil w&#xe4;hlen und Einstellungen vornehmen"/>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/filter_off_3.png"/>
+				<Image iconType="3" name="/mediathek/res/programm/filter_off_3.png"/>
             </Property>
           </Properties>
         </Component>
@@ -462,7 +462,7 @@
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Filterprofile: Profil w&#xe4;hlen und Einstellungen vornehmen"/>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/filter_off_4.png"/>
+				<Image iconType="3" name="/mediathek/res/programm/filter_off_4.png"/>
             </Property>
           </Properties>
         </Component>
@@ -473,7 +473,7 @@
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Filterprofile: Profil w&#xe4;hlen und Einstellungen vornehmen"/>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/filter_off_5.png"/>
+				<Image iconType="3" name="/mediathek/res/programm/filter_off_5.png"/>
             </Property>
           </Properties>
         </Component>
@@ -485,7 +485,7 @@
         <Component class="javax.swing.JButton" name="jButtonFilterLoeschen">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/clear_16.png"/>
+				<Image iconType="3" name="/mediathek/res/programm/clear_16.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Filter l&#xf6;schen"/>
           </Properties>
