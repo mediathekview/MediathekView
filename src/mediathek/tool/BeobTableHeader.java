@@ -105,36 +105,36 @@ public class BeobTableHeader extends MouseAdapter {
             });
             jPopupMenu.add(item2);
         }
-////        if (icon) {
-////            //##Trenner##
-////            jPopupMenu.addSeparator();
-////            final JCheckBoxMenuItem item3 = new JCheckBoxMenuItem("Icons anzeigen");
-////            item3.setSelected(tabelle.iconAnzeigen);
-////            item3.addActionListener(new ActionListener() {
-////                @Override
-////                public void actionPerformed(ActionEvent e) {
-////                    tabelle.iconAnzeigen = item3.isSelected();
-////                    tabelle.setHeight();
-////                    setSpalten();
-////                }
-////            });
-////            jPopupMenu.add(item3);
-////            final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("kleine Icons anzeigen");
-////            item2.setSelected(tabelle.iconKlein);
-////            if (!tabelle.iconAnzeigen) {
-////                item2.setEnabled(false);
-////            } else {
-////                item2.addActionListener(new ActionListener() {
-////                    @Override
-////                    public void actionPerformed(ActionEvent e) {
-////                        tabelle.iconKlein = item2.isSelected();
-////                        tabelle.setHeight();
-////                        setSpalten();
-////                    }
-////                });
-////            }
-////            jPopupMenu.add(item2);
-////        }
+        if (icon) {
+            //##Trenner##
+            jPopupMenu.addSeparator();
+            final JCheckBoxMenuItem item3 = new JCheckBoxMenuItem("Icons anzeigen");
+            item3.setSelected(tabelle.iconAnzeigen);
+            item3.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    tabelle.iconAnzeigen = item3.isSelected();
+                    tabelle.setHeight();
+                    setSpalten();
+                }
+            });
+            jPopupMenu.add(item3);
+            final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("kleine Icons anzeigen");
+            item2.setSelected(tabelle.iconKlein);
+            if (!tabelle.iconAnzeigen) {
+                item2.setEnabled(false);
+            } else {
+                item2.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        tabelle.iconKlein = item2.isSelected();
+                        tabelle.setHeight();
+                        setSpalten();
+                    }
+                });
+            }
+            jPopupMenu.add(item2);
+        }
         //##Trenner##
         jPopupMenu.addSeparator();
         //##Trenner##
