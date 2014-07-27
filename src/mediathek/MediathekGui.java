@@ -20,18 +20,7 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.SplashScreen;
-import java.awt.Toolkit;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -41,27 +30,10 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.InputMap;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.KeyStroke;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.CheckUpdate;
@@ -156,7 +128,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     /**
      * helper variable to calculate splash screen progress
      */
-    private int splashScreenProgress = 0; //currently 10
+    private int splashScreenProgress = 0;
 
     /**
      * Update the {@link java.awt.SplashScreen} with the given text
@@ -232,8 +204,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 }
             }
         }
-        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); // soll abgefangen werden
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
+
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); // soll abgefangen werden
+        setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
         //Hier wird F10 default Funktion unterbunden:
         InputMap im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         im.put(KeyStroke.getKeyStroke("F10"), "none");
@@ -332,6 +305,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         });
 
         setFocusSuchfeld();
+
+        bandwidthMonitor = new MVBandwidthMonitor(this,cbBandwidthDisplay);
+        cbBandwidthDisplay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bandwidthMonitor.toggleVisibility();
+            }
+        });
+
         duration.ping("Gui steht!");
     }
 
@@ -694,25 +676,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     /**
-     * Enables OS X fullscreen mode for a given {@link java.awt.Window}.
-     *
-     * @param window The window where to enable the fullscreen capability
-     */
-    public void enableOsxFullScreenMode(Window window) {
-        String className = "com.apple.eawt.FullScreenUtilities";
-        String methodName = "setWindowCanFullScreen";
-
-        try {
-            Class<?> clazz = Class.forName(className);
-            Method method = clazz.getMethod(methodName, Window.class, boolean.class);
-            method.invoke(null, window, true);
-        } catch (Exception t) {
-            System.err.println("Full screen mode is not supported");
-            t.printStackTrace();
-        }
-    }
-
-    /**
      * Setup the UI for OS X
      */
     private void setupUserInterfaceForOsx() {
@@ -741,14 +704,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             //Hilfe->Über
             jMenuHilfe.remove(jSeparator4);
             jMenuHilfe.remove(jMenuItemAbout);
-        }
-
-        //WORKAROUND: Versions below 10.9 don´t seem to work correctly...
-        String strOsVersion = SystemInfo.getOSVersion();
-        if (strOsVersion.startsWith("10.9")) {
-            enableOsxFullScreenMode(this);
-        } else {
-            Log.debugMeldung("OS X Fullscreen Support NOT enabled.");
         }
 
         setupOsxDockIconBadge();
@@ -781,6 +736,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
     }
+
+    /**
+     * Bandwidth monitoring for downloads.
+     */
+    private MVBandwidthMonitor bandwidthMonitor = null;
 
     /**
      * This thread will update the percentage drawn on the dock icon on OS X.
@@ -834,7 +794,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                     numOfDownloadsActive = 0;
                     accumPercentage = 0.0;
 
-                    //only count running/active downloads and calc accumulated progres..
+                    //only count running/active downloads and calc accumulated progress..
                     LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(Start.QUELLE_ALLE);
                     for (DatenDownload download : activeDownloadList) {
                         if (download.start != null && download.start.status == Start.STATUS_RUN) {
@@ -844,7 +804,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                     }
                     activeDownloadList.clear();
 
-                    double percentage = accumPercentage / numOfDownloadsActive;
+                    final double percentage = accumPercentage / numOfDownloadsActive;
                     final int progressBarWidth = (int) ((appIconWidth / 100.0) * percentage);
 
                     if (bFirstUpdate) {
@@ -1410,6 +1370,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemSchriftGr = new javax.swing.JMenuItem();
         jMenuItemSchriftKl = new javax.swing.JMenuItem();
         jMenuItemSchriftNormal = new javax.swing.JMenuItem();
+        javax.swing.JPopupMenu.Separator jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        cbBandwidthDisplay = new javax.swing.JCheckBoxMenuItem();
         jMenuHilfe = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -1599,6 +1561,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenu1.add(jMenuItemSchriftNormal);
 
         jMenuAnsicht.add(jMenu1);
+        jMenuAnsicht.add(jSeparator5);
+
+        cbBandwidthDisplay.setText("Bandbreitennutzung");
+        jMenuAnsicht.add(cbBandwidthDisplay);
 
         jMenuBar.add(jMenuAnsicht);
 
@@ -1636,6 +1602,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBoxMenuItem cbBandwidthDisplay;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
