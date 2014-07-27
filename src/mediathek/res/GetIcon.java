@@ -31,6 +31,7 @@ public class GetIcon {
 
     private final static String PFAD_PROGRAMM = "/mediathek/res/programm/";
     private final static String PFAD_SENDER = "/mediathek/res/sender/";
+    public final static String PFAD_RES = "/mediathek/res/";
 
     public static Image getImage(String strIcon) {
         return getProgramIcon(strIcon).getImage();
@@ -44,7 +45,7 @@ public class GetIcon {
         return getIcon(strIcon, PFAD_PROGRAMM);
     }
 
-    private static ImageIcon getIcon(String strIcon, String path) {
+    public static ImageIcon getIcon(String strIcon, String path) {
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
             return getStandard(strIcon, path);
         } else {

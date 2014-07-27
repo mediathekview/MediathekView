@@ -134,7 +134,7 @@ public final class MVTable extends JTable {
         breite = getArray(maxSpalten);
         reihe = getArray(maxSpalten);
         if (!iconAnzeigenStr.isEmpty()) {
-////            iconAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(iconAnzeigenStr));
+            iconAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(iconAnzeigenStr));
         }
         if (!iconKleinStr.isEmpty()) {
             iconKlein = Boolean.parseBoolean(Daten.mVConfig.get(iconKleinStr));
